@@ -1,128 +1,115 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm to kazakh\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2011-01-18 22:43+0000\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-12-27 20:33+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
+"Language: kk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Poedit-Language: Kazakh\n"
-"X-Poedit-Country: KAZAKHSTAN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:456
+#: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom символдық құрылғы емес"
-
-#: ../daemon/factory-slave-main.c:178
-#: ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182
-#: ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "Display ID"
-msgstr "Дисплей ID"
-
-#: ../daemon/factory-slave-main.c:178
-#: ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182
-#: ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/factory-slave-main.c:190
-#: ../daemon/product-slave-main.c:194
-#: ../daemon/simple-slave-main.c:194
-#: ../daemon/xdmcp-chooser-slave-main.c:196
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME Display Manager Slave"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "жүйеден \"%s\" пайдаланушысы табылмады"
 
-#: ../daemon/gdm-factory-slave.c:203
-#: ../daemon/gdm-simple-slave.c:325
-msgid "Unable to initialize login system"
-msgstr "Жүйеге кіру жүйесін іске қосу мүмкін емес"
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#, c-format
+#| msgid "no user account available"
+msgid "No session available yet"
+msgstr "қолжетерлік сессиялар әлі жоқ"
 
-#: ../daemon/gdm-factory-slave.c:235
-#: ../daemon/gdm-simple-slave.c:361
-msgid "Unable to authenticate user"
-msgstr "Пайдаланушыны анықтау мүмкін емес"
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#, c-format
+#| msgid "Unable to authorize user"
+msgid "Unable to look up UID of user %s"
+msgstr "%s пайдаланушысы үшін UID табу мүмкін емес"
 
-#: ../daemon/gdm-factory-slave.c:257
-#: ../daemon/gdm-simple-slave.c:418
-msgid "Unable to authorize user"
-msgstr "Пайдаланушыны растау мүмкін емес"
+#: ../daemon/gdm-manager.c:291
+#| msgid "no user account available"
+msgid "no sessions available"
+msgstr "қолжетерлік сессиялар жоқ"
 
-#: ../daemon/gdm-factory-slave.c:279
-#: ../daemon/gdm-simple-slave.c:547
-msgid "Unable to establish credentials"
-msgstr "Нақтылықты тексеру мүмкін емес"
+#: ../daemon/gdm-manager.c:352
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "%s үшін қайта аутентификация үшін бірде-бір сессия жоқ"
 
-#: ../daemon/gdm-factory-slave.c:302
-#: ../daemon/gdm-simple-slave.c:581
-msgid "Unable to open session"
-msgstr "Сессияны ашу мүмкін емес"
+#: ../daemon/gdm-manager.c:406
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find session for user %s"
+msgstr "%s пайдаланушысы үшін сессияны табу мүмкін емес"
 
-#: ../daemon/gdm-factory-slave.c:689
-#: ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1267
-msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr "X серверін іске қосу мүмкін емес (сіздің графикалық қоршамыңыз), себебі ішкі қатеде. Жүйелік администраторыңызға хабарласыңыз немесе өзіңіздің syslog шығысын тексеріңіз. Бұл экран уақытша сөндіріледі. Мәселе шешілген кезде GDM қызметін қайта қосыңыз."
+#: ../daemon/gdm-manager.c:476
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find appropriate session for user %s"
+msgstr "%s пайдаланушысы үшін жарайтын сессияны табу мүмкін емес"
 
-#: ../daemon/gdm-server.c:250
+#: ../daemon/gdm-manager.c:671
+#| msgid "User %s doesn't exist"
+msgid "User doesn't own session"
+msgstr "Пайдаланушы сессияға ие емес"
+
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+#| msgid "no user account available"
+msgid "No session available"
+msgstr "қолжетерлік сессиялар жоқ"
+
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: аталық экранға '%s' байланыс орнату қатесі"
 
-#: ../daemon/gdm-server.c:365
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Серверді %s пайдаланушысы қосқан, бірақ ол пайдаланушысы жоқ болып тұр"
 
-#: ../daemon/gdm-server.c:376
-#: ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:599
-#: ../daemon/gdm-welcome-session.c:619
+#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Groupid мәнін %d-ға орнату қатесі"
 
-#: ../daemon/gdm-server.c:382
-#: ../daemon/gdm-welcome-session.c:605
+#: ../daemon/gdm-server.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s үшін initgroups () қатесі"
 
-#: ../daemon/gdm-server.c:388
-#: ../daemon/gdm-welcome-session.c:611
+#: ../daemon/gdm-server.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Userid мәнін %d-ға орнату қатесі"
 
-#: ../daemon/gdm-server.c:435
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s экраны үшін лог файлын ашу мүмкін емес!"
 
-#: ../daemon/gdm-server.c:446
-#: ../daemon/gdm-server.c:452
-#: ../daemon/gdm-server.c:458
+#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s жаңа %s мәніне орнату қатесі"
 
-#: ../daemon/gdm-server.c:478
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Сервердің приоритеті %d мәніне орнатуға болмайды: %s"
 
-#: ../daemon/gdm-server.c:631
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s экраны үшін бос сервер командасы"
@@ -151,341 +138,336 @@ msgstr "Экран құрылғысы"
 msgid "The display device"
 msgstr "экран құрылғысы"
 
-#: ../daemon/gdm-session-worker.c:1290
-#, c-format
-msgid "error initiating conversation with authentication system: %s"
+#: ../daemon/gdm-session.c:1183
+#, fuzzy
+#| msgid "%s: Could not read Authentication Names"
+msgid "Could not create authentication helper process"
+msgstr "%s: Authentication Names оқу мүмкін емес"
+
+#: ../daemon/gdm-session-worker.c:1029
+#, fuzzy, c-format
+#| msgid "error initiating conversation with authentication system: %s"
+msgid "error initiating conversation with authentication system - %s"
 msgstr "пайдаланушыны анықтау жүйесімен алмасу қатесі: %s"
 
-#: ../daemon/gdm-session-worker.c:1291
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "жалпы қате"
 
-#: ../daemon/gdm-session-worker.c:1292
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "жады жеткіліксіз"
 
-#: ../daemon/gdm-session-worker.c:1293
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "бағдарламалаушы қатесі"
 
-#: ../daemon/gdm-session-worker.c:1294
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "белгісіз қате"
 
-#: ../daemon/gdm-session-worker.c:1301
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "Пайдаланушы:"
 
-#: ../daemon/gdm-session-worker.c:1307
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
-msgstr "аутентификация жүйесіне тандалған пайдаланушы жөнінде хабарлау қатесі: %s"
+msgstr ""
+"аутентификация жүйесіне тандалған пайдаланушы жөнінде хабарлау қатесі: %s"
 
-#: ../daemon/gdm-session-worker.c:1321
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
-msgstr "аутентификация жүйесіне пайдаланушының хост аты жөнінде хабарлау қатесі: %s"
+msgstr ""
+"аутентификация жүйесіне пайдаланушының хост аты жөнінде хабарлау қатесі: %s"
 
-#: ../daemon/gdm-session-worker.c:1336
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
-msgstr "аутентификация жүйесіне пайдаланушының консолі жөнінде хабарлау қатесі: %s"
+msgstr ""
+"аутентификация жүйесіне пайдаланушының консолі жөнінде хабарлау қатесі: %s"
 
-#: ../daemon/gdm-session-worker.c:1349
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "аутентификация жүйесіне экран жолы жөнінде хабарлау қатесі: %s"
 
-#: ../daemon/gdm-session-worker.c:1364
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
-msgstr "аутентификация жүйесіне экран xauth credentials жөнінде хабарлау қатесі: %s"
+msgstr ""
+"аутентификация жүйесіне экран xauth credentials жөнінде хабарлау қатесі: %s"
 
-#: ../daemon/gdm-session-worker.c:1661
-#: ../daemon/gdm-session-worker.c:1678
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "қолжетерлік пайдаланушы тіркелгілер жоқ"
 
-#: ../daemon/gdm-session-worker.c:1705
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "Пайдаланушыға ауысу мүмкін емес"
 
-#: ../daemon/gdm-welcome-session.c:549
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "%s пайдаланушысы жоқ"
+#: ../daemon/gdm-simple-slave.c:1330
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"X серверін іске қосу мүмкін емес (сіздің графикалық қоршамыңыз), себебі ішкі "
+"қатеде. Жүйелік администраторыңызға хабарласыңыз немесе өзіңіздің syslog "
+"шығысын тексеріңіз. Бұл экран уақытша сөндіріледі. Мәселе шешілген кезде GDM "
+"қызметін қайта қосыңыз."
 
-#: ../daemon/gdm-welcome-session.c:556
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
-msgid "Group %s doesn't exist"
-msgstr "%s тобы жоқ"
+msgid "Can only be called before user is logged in"
+msgstr "Пайдаланушы кіргенге дейін ғана шақыруға болады"
+
+#: ../daemon/gdm-simple-slave.c:1381
+#, c-format
+msgid "Caller not GDM"
+msgstr "Шақырушы GDM емес"
+
+#: ../daemon/gdm-simple-slave.c:1434
+#| msgid "Currently logged in"
+msgid "User not logged in"
+msgstr "Пайдаланушы жүйеге кіріп тұрған жоқ"
+
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "Қазір, бір уақытта тек бір клиент қосулы тұра алады"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "Сокет құру мүмкін емес!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:873
-#, c-format
-msgid "Denied XDMCP query from host %s"
-msgstr "%s хостынан тыйым салынған XDMCP сұранымы түсті"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1031
-#: ../daemon/gdm-xdmcp-display-factory.c:1255
-msgid "Could not extract authlist from packet"
-msgstr "Дестеден authlist алу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1044
-#: ../daemon/gdm-xdmcp-display-factory.c:1270
-msgid "Error in checksum"
-msgstr "Тексеру сомасы қате"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1523
-msgid "Bad address"
-msgstr "Адрес қате"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1607
-#, c-format
-msgid "%s: Could not read display address"
-msgstr "%s: Экран адресін оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1615
-#, c-format
-msgid "%s: Could not read display port number"
-msgstr "%s: Экран порт нөмірін оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1624
-#, c-format
-msgid "%s: Could not extract authlist from packet"
-msgstr "%s: Дестеден authlist тарқату мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1644
-#, c-format
-msgid "%s: Error in checksum"
-msgstr "%s: Тексеру сомасы қате"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2200
-#, c-format
-msgid "%s: Got REQUEST from banned host %s"
-msgstr "%s: REQUEST блокталған %s хостынан алынды"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2210
-#: ../daemon/gdm-xdmcp-display-factory.c:2568
-#: ../daemon/gdm-xdmcp-display-factory.c:2822
-#, c-format
-msgid "%s: Could not read Display Number"
-msgstr "%s: Экран нөмірін оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2217
-#, c-format
-msgid "%s: Could not read Connection Type"
-msgstr "%s: Байланыс түрін оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2224
-#, c-format
-msgid "%s: Could not read Client Address"
-msgstr "%s: Клиент адресін оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2232
-#, c-format
-msgid "%s: Could not read Authentication Names"
-msgstr "%s: Authentication Names оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2241
-#, c-format
-msgid "%s: Could not read Authentication Data"
-msgstr "%s: Authentication Data оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2251
-#, c-format
-msgid "%s: Could not read Authorization List"
-msgstr "%s: Authorization List оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2270
-#, c-format
-msgid "%s: Could not read Manufacturer ID"
-msgstr "%s: Manufacturer ID оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2297
-#, c-format
-msgid "%s: Failed checksum from %s"
-msgstr "%s: %s тексеру сомасы қате"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2552
-#, c-format
-msgid "%s: Got Manage from banned host %s"
-msgstr "%s: Блокталған %s хостынан Manage хабарламасы алынды"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2561
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
-#, c-format
-msgid "%s: Could not read Session ID"
-msgstr "%s: Session ID оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2575
-#, c-format
-msgid "%s: Could not read Display Class"
-msgstr "%s: Display Class оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2681
-#: ../daemon/gdm-xdmcp-display-factory.c:2731
-#: ../daemon/gdm-xdmcp-display-factory.c:2737
-#, c-format
-msgid "%s: Could not read address"
-msgstr "%s: адресті оқу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2812
-#, c-format
-msgid "%s: Got KEEPALIVE from banned host %s"
-msgstr "%s: Блокталған %s хостынан KEEPALIVE хабарламасы алынды"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2902
-msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-msgstr "GdmXdmcpDisplayFactory: XDMCP header оқу мүмкін емес!"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2908
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
-msgstr "XMDCP: Қате XDMCP нұсқасы!"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2914
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: Адресті өндеу мүмкін емес"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:3359
-#, c-format
-msgid "Could not get server hostname: %s!"
-msgstr "Сервердің хост атын алу мүмкін емес: %s!"
-
-#: ../daemon/main.c:237
-#: ../daemon/main.c:250
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "%s PID файлын жазу мүмкін емес: дискіде орын жоқ болуы мүмкін: %s"
 
-#: ../daemon/main.c:271
+#: ../daemon/main.c:189
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Лог бумасы %s жоқ немесе ол бума емес болып тұр."
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr ""
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Аутентификация %s бумасы жоқ. Тоқтатылады."
+#| msgid "Failed to restart computer"
+msgid "Failed to create AuthDir %s: %s"
+msgstr "AuthDir %s жасау сәтсіз: %s"
 
-#: ../daemon/main.c:291
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Аутентификация %s бумасы бума емес. Тоқтатылады."
+#| msgid "Failed to restart computer"
+msgid "Failed to create LogDir %s: %s"
+msgstr "LogDir %s жасау сәтсіз: %s"
 
-#: ../daemon/main.c:365
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "Аутентификация %s бумасы пайдаланушы %d, тобы %d иелігінде емес. Тоқтатылады."
-
-#: ../daemon/main.c:372
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "Аутентификация %s бумасының %o рұқсаты қате. %o болуы керек. Тоқтатылады."
-
-#: ../daemon/main.c:409
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM пайдаланушысы '%s' табылмады. Тоқтатылады!"
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM пайдаланушысы root болмауы керек. Тоқтатылады!"
 
-#: ../daemon/main.c:421
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM тобы '%s' табылмады. Тоқтатылады!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM тобы root болмауы керек. Тоқтатылады!"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "Барлық ескертулерді фаталды деп белгілеу"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "Уақыт өте шығу (жөндеу режимі)"
 
-#: ../daemon/main.c:535
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "GDM нұсқасын көрсету"
 
-#: ../daemon/main.c:550
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "GNOME Дисплей Менеджері"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:616
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "GDM бағдарламасын тек root жібере алады"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:158
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
-#: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT-SPI Registry Wrapper"
-msgstr "AT-SPI Registry Wrapper"
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "Display ID"
+msgstr "Дисплей ID"
 
-#: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1695
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "ID"
+msgstr "ID"
+
+#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
+msgid "GNOME Display Manager Slave"
+msgstr "GNOME Display Manager Slave"
+
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Кіру терезесі"
 
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:1
-msgid "Power Manager"
-msgstr "Электр қоректендіру менеджері"
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "GNOME Shell"
 
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
-msgid "Power management daemon"
-msgstr "Электр қоректендіру менеджер қызметі"
+#: ../data/applications/gnome-shell.desktop.in.h:2
+#| msgid "Power management daemon"
+msgid "Window management and compositing"
+msgstr "Терезелерді басқару мен эффектілер"
 
-#: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
-msgid "GNOME Settings Daemon"
-msgstr "GNOME баптаулар қызметі"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+#, fuzzy
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Жүйеге кіру үшін саусақ оқитын құрылғыларды рұқсат ету ма"
 
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "GNOME экран ұлғайтқышы"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
 
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Экран бөліктерін ұлғайту"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#, fuzzy
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Жүйеге кіру үшін смарткарта құрылғыларды рұқсат ету ма"
 
-#: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "GNOME экрандағы пернетақта"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
 
-#: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Экрандағы пернетақтаны қолдану"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Path to small image at top of user list"
+msgstr "Пайдаланушылар тізімінің үстіндегі кішкене суретке дейінгі жол"
 
-#: ../data/greeter-autostart/metacity.desktop.in.h:1
-msgid "Metacity"
-msgstr "Metacity"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
 
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca Экранды Оқу"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
 
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Экрандағы ақпараттын бар болуы, оқу не braille"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+msgid "Avoid showing user list"
+msgstr "Пайдаланушылар тізімін көрсетпеу"
 
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.in.h:1
-msgid "PolicyKit Authentication Agent"
-msgstr "PolicyKit аутентификация агенті"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
+msgstr ""
+"Жүйеге кіру экраны әдетте жүйеге кіре алатын пайдаланушылар тізімін "
+"көрсетеді. Бұл баптау арқылы ол мүмкіндікті сөндіруге болады."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+msgid "Enable showing the banner message"
+msgstr "Қарсы алу хабарламасын көрсету"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid "Set to true to show the banner message text."
+msgstr "Ақиқат деп орнатыңыз, егер қарсы алу мәтінді көргіңіз келсе."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+msgid "Banner message text"
+msgstr "Қарсы алу хабарламасы"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+msgid "Text banner message to show in the login window."
+msgstr "Кіру терезесінде көрсетілетін мәтін хабарламасы."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+msgid "Disable showing the restart buttons"
+msgstr "Қайта қосу батырмасын көрсетпеу"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"АҚИҚАТ мәніне орнатыңыз, жүйеге кіру терезесінде қайта қосу батырмасын "
+"көрсетпеу үшін."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#| msgid "%s: Could not read Authentication Names"
+msgid "Number of allowed authentication failures"
+msgstr "Рұқсат етілген аутентификация қателері"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+#, fuzzy
+#| msgid "Unable to start new display"
+msgid "Unable to create transient display: "
+msgstr "Жаңа экранды бастау мүмкін емес"
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+#| msgid "Unable to open session"
+msgid "Unable to activate session: "
+msgstr "Сессияны белсендіру мүмкін емес:"
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Ағымдағы сессияны анықтау мүмкін емес."
+
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
+#, c-format
+#| msgid "Unable to open session"
+msgid "User unable to switch sessions."
+msgstr "Пайдаланушы сессияларды ауыстыра алмайды."
+
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
+#, fuzzy, c-format
+#| msgid "Could not identify the current session."
+msgid "Could not identify the current seat."
+msgstr "Ағымдағы сессияны анықтау мүмкін емес."
+
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Жүйеге кірудің жаңа экраның жүйе іске қоса алмады."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -499,6 +481,127 @@ msgstr "XMCP: XDMCP буферін жасау мүмкін емес!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: XDMCP header оқу мүмкін емес!"
 
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
+#| msgid "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XMDCP: XDMCP нұсқасы қате!"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
+#| msgid "XMDCP: Unable to parse address"
+msgid "XDMCP: Unable to parse address"
+msgstr "XMDCP: Адресті талдау мүмкін емес"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+#, fuzzy
+#| msgid "PolicyKit Authentication Agent"
+msgid "Fingerprint Authentication"
+msgstr "PolicyKit аутентификация агенті"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+#, fuzzy
+msgid "Log into session with fingerprint"
+msgstr "Сессияға саусақты оқу"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+#| msgid "PolicyKit Authentication Agent"
+msgid "Password Authentication"
+msgstr "Парольдік аутентификация"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "Сессияны пайдаланушы аты мен пароль арқылы бастау"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "Кіру"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "Слот ID"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "Карта орналасқан слот"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "Слоттар"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "слотқа тиісті карта анықтағышы"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+#| msgid "Username"
+msgid "name"
+msgstr "аты"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "Модуль"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "смарткарталар драйвері"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "Смарткарталық аутентификация"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "Сессияға смарткарта көмегімен кіру"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "Модуль жолы"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "смарткартаның PKCS #11 драйверіне дейінгі жол"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
+msgid "received error or hang up from event source"
+msgstr "оқиғалар көзінен қате не үзілу алынды"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "NSS қауіпсіздік жүйесін іске қосу мүмкін емес"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "сәйкес келетін смарткарталар драйверін табу мүмкін емес"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "'%s' смарткарталар драйверін жүктеу мүмкін емес"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "картаның кіріс оқиғаларын бақылау мүмкін емес - %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "смарткартаның оқиғаларын күту кезінде күтпеген қате орын алды"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+#| msgid "PolicyKit Authentication Agent"
+msgid "Authentication"
+msgstr "Аутентификация"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+#| msgid "Custom session"
+msgid "Log into session"
+msgstr "Сессияға кіру"
+
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
 msgstr "Мәні"
@@ -507,27 +610,27 @@ msgstr "Мәні"
 msgid "percentage of time complete"
 msgstr "орындалған уақыт пайызын көрсету"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1469
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
 msgid "Inactive Text"
 msgstr "Белсенді емес мәтін"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1470
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Пайдаланушы элементті таңдамаса, белгі мәтіні"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1478
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
 msgid "Active Text"
 msgstr "Белсенді мәтін"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1479
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Пайдаланушы элементті таңдаса, белгі мәтіні"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1488
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
 msgid "List Visible"
 msgstr "Көрінетін тізім"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1489
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
 msgid "Whether the chooser list is visible"
 msgstr "Таңдау тізімі көріне ма, жоқ па"
 
@@ -559,116 +662,68 @@ msgstr "%a %l:%M:%S %p"
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:290
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
 msgid "Automatically logging in…"
 msgstr "Жүйеге авто кіру..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:576
-msgid "Select language and click Log In"
-msgstr "Тілді тандап, Кіру пернесін шертіңіз"
-
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:693
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
 msgid "Cancelling…"
 msgstr "Бас тарту..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-#| msgid "Panel"
-msgid "Cancel"
-msgstr "Бас тарту"
+#. just wait for the user to select language and stuff
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
+msgid "Select language and click Log In"
+msgstr "Тілді тандап, Кіру пернесін шертіңіз"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
+msgctxt "customsession"
+msgid "Custom"
+msgstr "Таңдауыңызша"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
+msgid "Custom session"
+msgstr "Таңдауыңызша сесия"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Computer Name"
 msgstr "Компьютер аты"
 
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
+msgid "Version"
+msgstr "Нұсқасы"
+
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Login"
-msgstr "Тіркелгі"
+msgid "Cancel"
+msgstr "Бас тарту"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
 msgid "Unlock"
 msgstr "Блоктаудан босату"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Version"
-msgstr "Нұсқасы"
+msgid "Login"
+msgstr "Тіркелгі"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:888
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Ұйықтату"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:893
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Қайта қосу"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:897
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Сөндіру"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:930
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Қалған уақыты белгісіз"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:967
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Панель"
-
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:252
-msgid "Languages"
-msgstr "Тілдер"
-
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:276
-msgid "_Languages:"
-msgstr "_Тілдер:"
-
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:277
-msgid "_Language:"
-msgstr "_Тіл:"
-
-#. translators: This brings up a dialog
-#. * with a list of languages to choose from
-#.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
-msgctxt "language"
-msgid "Other…"
-msgstr "Басқа..."
-
-#: ../gui/simple-greeter/gdm-language-option-widget.c:232
-msgid "Choose a language from the full list of available languages."
-msgstr "Қолжетерлік тілдер тізімінен тілді тандаңыз."
-
-#: ../gui/simple-greeter/gdm-language-option-widget.c:262
-msgid "Language"
-msgstr "Тіл"
-
-#: ../gui/simple-greeter/gdm-languages.c:698
-msgid "Unspecified"
-msgstr "Көрсетілмеген"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:242
-msgid "Keyboard layouts"
-msgstr "Пернетақта жаймалары"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:202
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:203
-msgid "_Keyboard:"
-msgstr "_Пернетақта:"
-
-#. translators: This brings up a dialog of
-#. * available keyboard layouts
-#.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
-msgctxt "keyboard"
-msgid "Other…"
-msgstr "Басқа..."
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
-msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "Қолжетерлік пернетақта жаймалар тізімінен керектігін тандаңыз."
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
-msgid "Keyboard"
-msgstr "Пернетақта"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
@@ -694,14 +749,6 @@ msgstr "Бастапқы құрама"
 msgid "The ID of the default item"
 msgstr "Бастапқы құраманың ID-ы"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
-msgid "Max Item Count"
-msgstr "Максималды саны"
-
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
-msgid "The maximum number of items to keep around in the list"
-msgstr "Тізімде сақталатын элементтер макс. саны"
-
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
@@ -720,176 +767,32 @@ msgstr "Алыстан кіру"
 msgid "Session"
 msgstr "Сессия"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Banner message text"
-msgstr "Қарсы алу хабарламасы"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Banner message text when chooser is empty"
-msgstr "Тіркелгі таңдалмаған кезде қарсы алу хабарламасы"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "Disable showing the restart buttons"
-msgstr "Қайта қосу батырмасын көрсетпеу"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-msgid "Do not show known users in the login window"
-msgstr "Кіру тересінде белгілі пайдаланушыларды көрсетпеу"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
-msgid "Enable accessibility keyboard plugin"
-msgstr "Ыңғайлылық пернетақта плагинің қосу"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid "Enable on-screen keyboard"
-msgstr "Экрандағы пернетақтаны қосу"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Enable screen magnifier"
-msgstr "Экран ұлғайтқышын қосу"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-msgid "Enable screen reader"
-msgstr "Экран оқуды қосу"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
-msgid "Enable showing the banner message"
-msgstr "Қарсы алу хабарламасын көрсету"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
-msgid "Icon name to use for greeter logo"
-msgstr "Қарсы алу белгішесі"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Recently selected keyboard layouts"
-msgstr "Соңғы тандалған пернетақта жаймалары"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-msgid "Recently selected languages"
-msgstr "Соңғы тандалған тілдер"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Set to a list of keyboard layouts to be shown by default in the login window."
-msgstr "Жүйеге кіру тересінде көрсетілетін пернетақта жаймалар тізімін көрсетіңіз."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to a list of languages to be shown by default in the login window."
-msgstr "Жүйеге кіру тересінде көрсетілетін тілдер тізімін көрсетіңіз."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr "Белгішелер темасының атын көрсетіңіз, қарсы алу лого ретінде қолдану үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to true to disable showing known users in the login window."
-msgstr "АҚИҚАТ мәніне орнатыңыз, жүйеге кіру терезесінде белгілі пайдаланушыларды көрсетпеу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "АҚИҚАТ мәніне орнатыңыз, жүйеге кіру терезесінде қайта қосу батырмасын көрсетпеу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to true to enable the XRandR settings manager plugin."
-msgstr "Ақиқат мәніне орнатыңыз, XRandR баптаулар менеджер плагинді қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to true to enable the background settings manager plugin."
-msgstr "Ақиқат мәніне орнатыңыз, фон баптаулар менеджер плагинді қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr "Ақиқат мәніне орнатыңыз, медиа пернелер баптаулар менеджер плагинді қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to true to enable the on-screen keyboard."
-msgstr "Ақиқат мәніне орнатыңыз, экрандағы пернетақтаны қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to true to enable the plugin to manage the accessibility keyboard settings."
-msgstr "Ақиқат мәніне орнатыңыз, арнайы баптауларды басқару плагинді қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to true to enable the screen magnifier."
-msgstr "Ақиқат мәніне орнатыңыз, экран ұлғайтқышын қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to true to enable the screen reader."
-msgstr "Ақиқат мәніне орнатыңыз, экраннан оқуды қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to enable the sound settings manager plugin."
-msgstr "Ақиқат мәніне орнатыңыз, дыбыс баптаулар менеджер плагинді қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr "Ақиқат мәніне орнатыңыз, xsettings баптаулар менеджер плагинді қосу үшін."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid "Set to true to show the banner message text."
-msgstr "Ақиқат деп орнатыңыз, егер қарсы алу мәтінді көргіңіз келсе."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to use Compiz as the window manager."
-msgstr "Ақиқат деп орнатыңыз, егер терезелер менеджері ретінде Compiz қолданғыңыз келсе."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "Text banner message to show in the login window when the user chooser is empty, instead of banner_message_text."
-msgstr "Пайдаланушыны таңдаушысы бос болған кезде кіру терезесінде көрсетілетін қарсы алу мәтіні, banner_message_text орнына."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Text banner message to show in the login window."
-msgstr "Кіру терезесінде көрсетілетін мәтін хабарламасы."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "Ақиқат, егер XRandR баптаулар менеджер плагині қосулы тұрса."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "True if the background settings manager plugin is enabled."
-msgstr "Ақиқат, егер фон баптаулар менеджер плагині қосулы тұрса."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr "Ақиқат, егер медиа пернелер баптаулар менеджер плагині қосулы тұрса."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "True if the sound settings manager plugin is enabled."
-msgstr "Ақиқат, егер дыбыс баптаулар менеджер плагині қосулы тұрса."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "Ақиқат, егер xsettings баптаулар менеджер плагині қосулы тұрса."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-msgid "Use Compiz as the window manager"
-msgstr "Терезелер басқарушысы ретінде Compiz қолдану"
-
-#: ../gui/simple-greeter/gdm-timer.c:149
+#: ../gui/simple-greeter/gdm-timer.c:147
 msgid "Duration"
 msgstr "Уақыты"
 
-#: ../gui/simple-greeter/gdm-timer.c:150
+#: ../gui/simple-greeter/gdm-timer.c:148
 msgid "Number of seconds until timer stops"
 msgstr "Таймер тоқтағанға дейін қалған секунд саны"
 
-#: ../gui/simple-greeter/gdm-timer.c:157
+#: ../gui/simple-greeter/gdm-timer.c:155
 msgid "Start time"
 msgstr "Уақытты жіберу"
 
-#: ../gui/simple-greeter/gdm-timer.c:158
+#: ../gui/simple-greeter/gdm-timer.c:156
 msgid "Time the timer was started"
 msgstr "Таймер қосылған уақыты"
 
-#: ../gui/simple-greeter/gdm-timer.c:165
+#: ../gui/simple-greeter/gdm-timer.c:163
 msgid "Is it Running?"
 msgstr "Ол орындалып тұр ма?"
 
-#: ../gui/simple-greeter/gdm-timer.c:166
+#: ../gui/simple-greeter/gdm-timer.c:164
 msgid "Whether the timer is currently ticking"
 msgstr "Таймер қазір қосулы тұр ма, жоқ па"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:488
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "%s ретінде кіру"
@@ -899,70 +802,62 @@ msgstr "%s ретінде кіру"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:262
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "Басқа..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:263
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "Басқа тіркелгіні тандаңыз"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:277
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "Қонақ"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:278
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "Уақытша қонақ ретінде кіру"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:293
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "Автоматты кіру"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:294
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "Опцияларды тандау кейін жүйеге автоматты түрде кіру"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1000
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "Жүйеге кіріп тұр"
 
-#: ../utils/gdmflexiserver.c:61
+#: ../utils/gdmflexiserver.c:64
 msgid "Only the VERSION command is supported"
 msgstr "Тек VERSION командасына қолдау бар"
 
-#: ../utils/gdmflexiserver.c:61
+#: ../utils/gdmflexiserver.c:64
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../utils/gdmflexiserver.c:62
-#: ../utils/gdmflexiserver.c:63
-#: ../utils/gdmflexiserver.c:65
-#: ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
 msgid "Ignored — retained for compatibility"
 msgstr "Елемеу — үйлесімділік үшін ұсталады"
 
-#: ../utils/gdmflexiserver.c:64
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Шығысты логтау"
 
-#: ../utils/gdmflexiserver.c:68
+#: ../utils/gdmflexiserver.c:71
 msgid "Version of this application"
 msgstr "Осы бағдарламасының нұсқасы"
 
-#: ../utils/gdmflexiserver.c:675
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Ағымдағы сессияны анықтау мүмкін емес."
-
 #. Option parsing
-#: ../utils/gdmflexiserver.c:711
+#: ../utils/gdmflexiserver.c:706
 msgid "- New GDM login"
 msgstr "- Жаңа GDM жүйеге кіру"
 
-#: ../utils/gdmflexiserver.c:767
+#: ../utils/gdmflexiserver.c:762
 msgid "Unable to start new display"
 msgstr "Жаңа экранды бастау мүмкін емес"
 
@@ -975,15 +870,293 @@ msgstr "Скриншот алынды"
 msgid "Take a picture of the screen"
 msgstr "Экранның сурет көшірмесін сақтау"
 
+#~ msgid "Unable to initialize login system"
+#~ msgstr "Жүйеге кіру жүйесін іске қосу мүмкін емес"
+
+#~ msgid "Unable to authenticate user"
+#~ msgstr "Пайдаланушыны анықтау мүмкін емес"
+
+#~ msgid "Unable to establish credentials"
+#~ msgstr "Нақтылықты тексеру мүмкін емес"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "%s тобы жоқ"
+
+#~ msgid "Denied XDMCP query from host %s"
+#~ msgstr "%s хостынан тыйым салынған XDMCP сұранымы түсті"
+
+#~ msgid "Could not extract authlist from packet"
+#~ msgstr "Дестеден authlist алу мүмкін емес"
+
+#~ msgid "Error in checksum"
+#~ msgstr "Тексеру сомасы қате"
+
+#~ msgid "Bad address"
+#~ msgstr "Адрес қате"
+
+#~ msgid "%s: Could not read display address"
+#~ msgstr "%s: Экран адресін оқу мүмкін емес"
+
+#~ msgid "%s: Could not read display port number"
+#~ msgstr "%s: Экран порт нөмірін оқу мүмкін емес"
+
+#~ msgid "%s: Could not extract authlist from packet"
+#~ msgstr "%s: Дестеден authlist тарқату мүмкін емес"
+
+#~ msgid "%s: Error in checksum"
+#~ msgstr "%s: Тексеру сомасы қате"
+
+#~ msgid "%s: Got REQUEST from banned host %s"
+#~ msgstr "%s: REQUEST блокталған %s хостынан алынды"
+
+#~ msgid "%s: Could not read Display Number"
+#~ msgstr "%s: Экран нөмірін оқу мүмкін емес"
+
+#~ msgid "%s: Could not read Connection Type"
+#~ msgstr "%s: Байланыс түрін оқу мүмкін емес"
+
+#~ msgid "%s: Could not read Client Address"
+#~ msgstr "%s: Клиент адресін оқу мүмкін емес"
+
+#~ msgid "%s: Could not read Authentication Data"
+#~ msgstr "%s: Authentication Data оқу мүмкін емес"
+
+#~ msgid "%s: Could not read Authorization List"
+#~ msgstr "%s: Authorization List оқу мүмкін емес"
+
+#~ msgid "%s: Could not read Manufacturer ID"
+#~ msgstr "%s: Manufacturer ID оқу мүмкін емес"
+
+#~ msgid "%s: Failed checksum from %s"
+#~ msgstr "%s: %s тексеру сомасы қате"
+
+#~ msgid "%s: Got Manage from banned host %s"
+#~ msgstr "%s: Блокталған %s хостынан Manage хабарламасы алынды"
+
+#~ msgid "%s: Could not read Session ID"
+#~ msgstr "%s: Session ID оқу мүмкін емес"
+
+#~ msgid "%s: Could not read Display Class"
+#~ msgstr "%s: Display Class оқу мүмкін емес"
+
+#~ msgid "%s: Could not read address"
+#~ msgstr "%s: адресті оқу мүмкін емес"
+
+#~ msgid "%s: Got KEEPALIVE from banned host %s"
+#~ msgstr "%s: Блокталған %s хостынан KEEPALIVE хабарламасы алынды"
+
+#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
+#~ msgstr "GdmXdmcpDisplayFactory: XDMCP header оқу мүмкін емес!"
+
+#~ msgid "Could not get server hostname: %s!"
+#~ msgstr "Сервердің хост атын алу мүмкін емес: %s!"
+
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Лог бумасы %s жоқ немесе ол бума емес болып тұр."
+
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr "Аутентификация %s бумасы жоқ. Тоқтатылады."
+
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr "Аутентификация %s бумасы бума емес. Тоқтатылады."
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr ""
+#~ "Аутентификация %s бумасы пайдаланушы %d, тобы %d иелігінде емес. "
+#~ "Тоқтатылады."
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr ""
+#~ "Аутентификация %s бумасының %o рұқсаты қате. %o болуы керек. Тоқтатылады."
+
+#~ msgid "AT-SPI Registry Wrapper"
+#~ msgstr "AT-SPI Registry Wrapper"
+
+#~ msgid "Power Manager"
+#~ msgstr "Электр қоректендіру менеджері"
+
+#~ msgid "GNOME Settings Daemon"
+#~ msgstr "GNOME баптаулар қызметі"
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "GNOME экран ұлғайтқышы"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "Экран бөліктерін ұлғайту"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "GNOME экрандағы пернетақта"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "Экрандағы пернетақтаны қолдану"
+
+#~ msgid "Metacity"
+#~ msgstr "Metacity"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Orca Экранды Оқу"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "Экрандағы ақпараттын бар болуы, оқу не braille"
+
+#~ msgid "Languages"
+#~ msgstr "Тілдер"
+
+#~ msgid "_Languages:"
+#~ msgstr "_Тілдер:"
+
+#~ msgid "_Language:"
+#~ msgstr "_Тіл:"
+
+#~ msgctxt "language"
+#~ msgid "Other…"
+#~ msgstr "Басқа..."
+
+#~ msgid "Choose a language from the full list of available languages."
+#~ msgstr "Қолжетерлік тілдер тізімінен тілді тандаңыз."
+
+#~ msgid "Language"
+#~ msgstr "Тіл"
+
+#~ msgid "Unspecified"
+#~ msgstr "Көрсетілмеген"
+
+#~ msgid "Keyboard layouts"
+#~ msgstr "Пернетақта жаймалары"
+
+#~ msgid "_Keyboard:"
+#~ msgstr "_Пернетақта:"
+
+#~ msgctxt "keyboard"
+#~ msgid "Other…"
+#~ msgstr "Басқа..."
+
+#~ msgid "Choose a keyboard layout from the full list of available layouts."
+#~ msgstr "Қолжетерлік пернетақта жаймалар тізімінен керектігін тандаңыз."
+
+#~ msgid "Keyboard"
+#~ msgstr "Пернетақта"
+
+#~ msgid "Max Item Count"
+#~ msgstr "Максималды саны"
+
+#~ msgid "The maximum number of items to keep around in the list"
+#~ msgstr "Тізімде сақталатын элементтер макс. саны"
+
+#~ msgid "Banner message text when chooser is empty"
+#~ msgstr "Тіркелгі таңдалмаған кезде қарсы алу хабарламасы"
+
+#~ msgid "Do not show known users in the login window"
+#~ msgstr "Кіру тересінде белгілі пайдаланушыларды көрсетпеу"
+
+#~ msgid "Enable accessibility keyboard plugin"
+#~ msgstr "Ыңғайлылық пернетақта плагинің қосу"
+
+#~ msgid "Enable on-screen keyboard"
+#~ msgstr "Экрандағы пернетақтаны қосу"
+
+#~ msgid "Enable screen magnifier"
+#~ msgstr "Экран ұлғайтқышын қосу"
+
+#~ msgid "Enable screen reader"
+#~ msgstr "Экран оқуды қосу"
+
+#~ msgid "Icon name to use for greeter logo"
+#~ msgstr "Қарсы алу белгішесі"
+
+#~ msgid "Recently selected keyboard layouts"
+#~ msgstr "Соңғы тандалған пернетақта жаймалары"
+
+#~ msgid "Recently selected languages"
+#~ msgstr "Соңғы тандалған тілдер"
+
+#~ msgid ""
+#~ "Set to a list of keyboard layouts to be shown by default in the login "
+#~ "window."
+#~ msgstr ""
+#~ "Жүйеге кіру тересінде көрсетілетін пернетақта жаймалар тізімін көрсетіңіз."
+
+#~ msgid ""
+#~ "Set to a list of languages to be shown by default in the login window."
+#~ msgstr "Жүйеге кіру тересінде көрсетілетін тілдер тізімін көрсетіңіз."
+
+#~ msgid "Set to the themed icon name to use for the greeter logo."
+#~ msgstr ""
+#~ "Белгішелер темасының атын көрсетіңіз, қарсы алу лого ретінде қолдану үшін."
+
+#~ msgid "Set to true to disable showing known users in the login window."
+#~ msgstr ""
+#~ "АҚИҚАТ мәніне орнатыңыз, жүйеге кіру терезесінде белгілі пайдаланушыларды "
+#~ "көрсетпеу үшін."
+
+#~ msgid "Set to true to enable the XRandR settings manager plugin."
+#~ msgstr ""
+#~ "Ақиқат мәніне орнатыңыз, XRandR баптаулар менеджер плагинді қосу үшін."
+
+#~ msgid "Set to true to enable the background settings manager plugin."
+#~ msgstr "Ақиқат мәніне орнатыңыз, фон баптаулар менеджер плагинді қосу үшін."
+
+#~ msgid "Set to true to enable the media-keys settings manager plugin."
+#~ msgstr ""
+#~ "Ақиқат мәніне орнатыңыз, медиа пернелер баптаулар менеджер плагинді қосу "
+#~ "үшін."
+
+#~ msgid "Set to true to enable the on-screen keyboard."
+#~ msgstr "Ақиқат мәніне орнатыңыз, экрандағы пернетақтаны қосу үшін."
+
+#~ msgid ""
+#~ "Set to true to enable the plugin to manage the accessibility keyboard "
+#~ "settings."
+#~ msgstr ""
+#~ "Ақиқат мәніне орнатыңыз, арнайы баптауларды басқару плагинді қосу үшін."
+
+#~ msgid "Set to true to enable the screen magnifier."
+#~ msgstr "Ақиқат мәніне орнатыңыз, экран ұлғайтқышын қосу үшін."
+
+#~ msgid "Set to true to enable the screen reader."
+#~ msgstr "Ақиқат мәніне орнатыңыз, экраннан оқуды қосу үшін."
+
+#~ msgid "Set to true to enable the sound settings manager plugin."
+#~ msgstr ""
+#~ "Ақиқат мәніне орнатыңыз, дыбыс баптаулар менеджер плагинді қосу үшін."
+
+#~ msgid "Set to true to enable the xsettings settings manager plugin."
+#~ msgstr ""
+#~ "Ақиқат мәніне орнатыңыз, xsettings баптаулар менеджер плагинді қосу үшін."
+
+#~ msgid "Set to true to use Compiz as the window manager."
+#~ msgstr ""
+#~ "Ақиқат деп орнатыңыз, егер терезелер менеджері ретінде Compiz қолданғыңыз "
+#~ "келсе."
+
+#~ msgid ""
+#~ "Text banner message to show in the login window when the user chooser is "
+#~ "empty, instead of banner_message_text."
+#~ msgstr ""
+#~ "Пайдаланушыны таңдаушысы бос болған кезде кіру терезесінде көрсетілетін "
+#~ "қарсы алу мәтіні, banner_message_text орнына."
+
+#~ msgid "True if the XRandR settings manager plugin is enabled."
+#~ msgstr "Ақиқат, егер XRandR баптаулар менеджер плагині қосулы тұрса."
+
+#~ msgid "True if the background settings manager plugin is enabled."
+#~ msgstr "Ақиқат, егер фон баптаулар менеджер плагині қосулы тұрса."
+
+#~ msgid "True if the media-keys settings manager plugin is enabled."
+#~ msgstr ""
+#~ "Ақиқат, егер медиа пернелер баптаулар менеджер плагині қосулы тұрса."
+
+#~ msgid "True if the sound settings manager plugin is enabled."
+#~ msgstr "Ақиқат, егер дыбыс баптаулар менеджер плагині қосулы тұрса."
+
+#~ msgid "True if the xsettings settings manager plugin is enabled."
+#~ msgstr "Ақиқат, егер xsettings баптаулар менеджер плагині қосулы тұрса."
+
+#~ msgid "Use Compiz as the window manager"
+#~ msgstr "Терезелер басқарушысы ретінде Compiz қолдану"
+
 #~ msgid "Shutdown Options…"
 #~ msgstr "Сөндіру опциялары..."
-#~ msgctxt "customsession"
-
-#~ msgid "Custom"
-#~ msgstr "Таңдауыңызша"
-
-#~ msgid "Custom session"
-#~ msgstr "Таңдауыңызша сесия"
 
 #~ msgid ""
 #~ "The User Switch Applet is free software; you can redistribute it and/or "
@@ -1104,9 +1277,6 @@ msgstr "Экранның сурет көшірмесін сақтау"
 
 #~ msgid "%1$s, %2$s"
 #~ msgstr "%1$s, %2$s"
-
-#~ msgid "Failed to restart computer"
-#~ msgstr "Компьютерді қайта қосу сәтсіз аяқталды"
 
 #~ msgid ""
 #~ "You are not allowed to restart the computer because multiple users are "
