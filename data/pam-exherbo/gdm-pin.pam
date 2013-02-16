@@ -1,0 +1,10 @@
+account  include  system-login
+
+auth     requisite pam_pin.so
+auth     substack system-login
+auth     optional pam_gnome_keyring.so
+
+password required pam_deny.so
+
+session  substack system-login
+session  optional pam_gnome_keyring.so auto_start

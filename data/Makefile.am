@@ -97,12 +97,14 @@ pam_redhat_files = pam-redhat/gdm.pam		\
 	pam-redhat/gdm-fingerprint.pam		\
 	pam-redhat/gdm-smartcard.pam		\
 	pam-redhat/gdm-password.pam		\
+	pam-redhat/gdm-pin.pam			\
 	$(NULL)
 EXTRA_DIST += $(pam_redhat_files)
 
 pam_openembedded_files = pam-openembedded/gdm.pam	\
 	pam-openembedded/gdm-autologin.pam		\
 	pam-openembedded/gdm-launch-environment.pam	\
+	pam-openembedded/gdm-pin.pam			\
 	$(NULL)
 EXTRA_DIST += $(pam_openembedded_files)
 
@@ -111,6 +113,7 @@ pam_exherbo_files = pam-exherbo/gdm-autologin.pam \
 	pam-exherbo/gdm-fingerprint.pam	         \
 	pam-exherbo/gdm-smartcard.pam            \
 	pam-exherbo/gdm-password.pam             \
+	pam-exherbo/gdm-pin.pam	                 \
 	$(NULL)
 EXTRA_DIST += $(pam_exherbo_files)
 
@@ -120,6 +123,7 @@ pam_lfs_files = pam-lfs/gdm.pam			\
 	pam-lfs/gdm-fingerprint.pam		\
 	pam-lfs/gdm-smartcard.pam		\
 	pam-lfs/gdm-password.pam		\
+	pam-lfs/gdm-pin.pam			\
 	$(NULL)
 EXTRA_DIST += $(pam_lfs_files)
 
