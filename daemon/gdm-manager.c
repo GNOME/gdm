@@ -749,6 +749,12 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 
         seat_id = get_seat_id_for_pid (connection, pid, &error);
 
+        if (seat_id == NULL) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
         session_id = get_session_id_for_user_on_seat (connection, username, seat_id, &error);
         if (session_id == NULL) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
