@@ -184,19 +184,19 @@ gdm_daemon_ensure_dirs (uid_t uid,
         GError *error = NULL;
 
         /* Set up /var/run/gdm */
-        if (!ensure_dir_with_perms (GDM_RAN_ONCE_MARKER_DIR, 0, gid, (S_IRWXU | S_IRWXG), &error)) {
+        if (!ensure_dir_with_perms (GDM_RAN_ONCE_MARKER_DIR, 0, gid, 0711, &error)) {
                 gdm_fail (_("Failed to create ran once marker dir %s: %s"),
                           GDM_RAN_ONCE_MARKER_DIR, error->message);
         }
 
         /* Set up /var/gdm */
-        if (!ensure_dir_with_perms (AUTHDIR, uid, gid, (S_IRWXU | S_IRWXG | S_ISVTX), &error)) {
+        if (!ensure_dir_with_perms (AUTHDIR, uid, gid, 0711, &error)) {
                 gdm_fail (_("Failed to create AuthDir %s: %s"),
                           AUTHDIR, error->message);
         }
 
         /* Set up /var/log/gdm */
-        if (!ensure_dir_with_perms (LOGDIR, 0, gid, (S_IRWXU | S_IRWXG | S_ISVTX), &error)) {
+        if (!ensure_dir_with_perms (LOGDIR, 0, gid, 0711, &error)) {
                 gdm_fail (_("Failed to create LogDir %s: %s"),
                           LOGDIR, error->message);
         }
