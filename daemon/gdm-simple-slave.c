@@ -986,14 +986,6 @@ setup_server (GdmSimpleSlave *slave)
         /* Put cursor out of the way on first head */
         gdm_slave_set_initial_cursor_position (GDM_SLAVE (slave));
 
-        /* The root window has a background that may be useful
-         * to cross fade or transition from when setting the
-         * login screen background.  We read it here, and stuff
-         * it into the standard _XROOTPMAP_ID root window property,
-         * so gnome-settings-daemon can get at it.
-         */
-        gdm_slave_save_root_windows (GDM_SLAVE (slave));
-
 #ifdef WITH_PLYMOUTH
         /* Plymouth is waiting for the go-ahead to exit */
         if (slave->priv->plymouth_is_running) {
