@@ -12,15 +12,15 @@
 # Alexander Saprykin <xelfium@gmail.com>, 2009, 2010.
 # Maxim Petrov <maximpetov@yahoo.com>, 2011.
 # Stas Solovey <whats_up@tut.by>, 2011, 2012.
-# Yuri Myasoedov <omerta13@yandex.ru>, 2012.
+# Yuri Myasoedov <omerta13@yandex.ru>, 2012, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-09-04 19:23+0000\n"
-"PO-Revision-Date: 2012-09-06 20:45+0400\n"
+"POT-Creation-Date: 2012-12-27 20:33+0000\n"
+"PO-Revision-Date: 2013-02-21 16:07+0400\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -41,37 +41,10 @@ msgstr "/dev/urandom не является символьным устройст
 msgid "could not find user \"%s\" on system"
 msgstr "не удалось найти в системе пользователя «%s»"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
 #, c-format
 msgid "No session available yet"
 msgstr "Сеанс пока что недоступен"
-
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Пользователь %s не существует"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Группа %s не существует"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Не удалось установить идентификатор группы в %d"
-
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "сбой функции initgroups () для %s"
-
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Не удалось установить идентификатор пользователя в %d"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
@@ -105,35 +78,50 @@ msgstr "Пользователь не владеет сеансом"
 msgid "No session available"
 msgstr "Сеанс недоступен"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: не удалось подсоединиться к родительскому дисплею «%s»"
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Сервер был запущен с идентификатором (uid) %s, но такой пользователь не "
 "существует"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Не удалось установить идентификатор группы в %d"
+
+#: ../daemon/gdm-server.c:468
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "сбой функции initgroups () для %s"
+
+#: ../daemon/gdm-server.c:474
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Не удалось установить идентификатор пользователя в %d"
+
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не удалось открыть файл журнала для дисплея %s!"
 
-#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: ошибка установки %s в %s"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: не удалось установить приоритет сервера в %d: %s"
 
-#: ../daemon/gdm-server.c:718
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: пустая команда сервера для дисплея %s"
@@ -162,73 +150,73 @@ msgstr "Устройство дисплея"
 msgid "The display device"
 msgstr "Устройство дисплея"
 
-#: ../daemon/gdm-session.c:1177
+#: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
 msgstr "Не удалось создать вспомогательный процесс аутентификации"
 
-#: ../daemon/gdm-session-worker.c:1025
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "ошибка установки связи с системой аутентификации: %s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "общий сбой"
 
-#: ../daemon/gdm-session-worker.c:1027
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "недостаточно памяти"
 
-#: ../daemon/gdm-session-worker.c:1028
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "программная ошибка приложения"
 
-#: ../daemon/gdm-session-worker.c:1029
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "неизвестная ошибка"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: ../daemon/gdm-session-worker.c:1042
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "ошибка извещения системы аутентификации о предпочтительном формате имени "
 "пользователя: %s"
 
-#: ../daemon/gdm-session-worker.c:1056
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "ошибка извещения системы аутентификации об имени узла пользователя: %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "ошибка извещения системы аутентификации о консоли пользователя: %s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "ошибка извещения системы аутентификации о строке дисплея: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "ошибка извещения системы аутентификации о мандате xauth для дисплея: %s"
 
-#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "учётная запись пользователя недоступна"
 
-#: ../daemon/gdm-session-worker.c:1486
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "Не удалось сменить пользователя"
 
-#: ../daemon/gdm-simple-slave.c:1356
+#: ../daemon/gdm-simple-slave.c:1330
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -240,21 +228,21 @@ msgstr ""
 "журнал. В настоящее время этот дисплей будет отключен. Перезапустите GDM, "
 "когда проблема будет устранена."
 
-#: ../daemon/gdm-simple-slave.c:1397
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Может быть вызван до того, как пользователь вошёл в систему"
 
-#: ../daemon/gdm-simple-slave.c:1407
+#: ../daemon/gdm-simple-slave.c:1381
 #, c-format
 msgid "Caller not GDM"
 msgstr "Другой вызывающий компонент (не GDM)"
 
-#: ../daemon/gdm-simple-slave.c:1466
+#: ../daemon/gdm-simple-slave.c:1434
 msgid "User not logged in"
 msgstr "Пользователь не вошёл в систему"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "На данный момент только один клиент может быть подключён одновременно"
@@ -268,84 +256,68 @@ msgstr "Не удалось создать сокет!"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Не удалось записать PID-файл %s: возможно, диск переполнен: %s"
 
-#: ../daemon/main.c:160
+# Может быть найдётся более удачный перевод
+#: ../daemon/main.c:189
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Каталог для журналов «%s» не существует или не является каталогом."
+#| msgid "Unable to create transient display: "
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "Не удалось создать маркерный каталог %s: %s"
 
-#: ../daemon/main.c:176
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr ""
-"Каталог с файлами для проверки подлинности «%s» не существует. Аварийное "
-"завершение работы."
+msgid "Failed to create AuthDir %s: %s"
+msgstr "Не удалось создать каталог аутентификации %s: %s"
 
-#: ../daemon/main.c:180
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr ""
-"Путь «%s», где должны находиться файлы для проверки подлинности, не является "
-"каталогом. Аварийное завершение работы."
+msgid "Failed to create LogDir %s: %s"
+msgstr "Не удалось создать каталог журналов %s: %s"
 
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr ""
-"Каталог с файлами для проверки подлинности «%s» не принадлежит пользователю  "
-"%d, группе %d. Аварийное завершение работы."
-
-#: ../daemon/main.c:261
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr ""
-"Каталог с файлами для проверки подлинности «%s» имеет неверные права %o. "
-"Должно быть %o. Аварийное завершение работы."
-
-#: ../daemon/main.c:298
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Не найден пользователь GDM «%s». Аварийное завершение работы!"
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
 "Пользователь GDM не может быть суперпользователем. Аварийное завершение "
 "работы!"
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Не найдена группа GDM «%s». Аварийное завершение работы!"
+msgstr "Не удалось найти группу GDM «%s». Аварийное завершение работы!"
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 "Группа GDM не должна быть суперпользовательской. Аварийное завершение работы!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "Сделать все предупреждения фатальными"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "Выйти через определённое время (для отладки)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "Вывести версию GDM"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "Менеджер дисплеев среды GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "Только суперпользователь может запустить GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM (Менеджер дисплеев среды GNOME) не запущен"
 
@@ -357,7 +329,7 @@ msgstr "Идентификатор дисплея"
 msgid "ID"
 msgstr "Идентификатор"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager (ведомый)"
 
@@ -366,14 +338,6 @@ msgstr "GNOME Display Manager (ведомый)"
 msgid "Login Window"
 msgstr "Окно входа в систему"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "Экранная лупа среды GNOME"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Увеличить части экрана"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
@@ -381,23 +345,6 @@ msgstr "GNOME Shell"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Управление окнами и компоновкой"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "Экранная клавиатура среды GNOME"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Использовать экранную клавиатуру"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Программа чтения экрана Orca"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr ""
-"Озвучивает информацию, имеющуюся на экране, или выводит её на экран Брайля"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -512,22 +459,23 @@ msgid "Unable to activate session: "
 msgstr "Не удалось активировать сеанс:"
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Не удалось идентифицировать текущий сеанс."
 
-#: ../gui/libgdm/gdm-user-switching.c:351
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "Пользователь не может переключать сеансы."
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Не удалось идентифицировать текущее рабочее место."
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -536,7 +484,7 @@ msgstr ""
 "Системе не удалось найти для переключения экран входа в систему или "
 "запустить новый экран входа."
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Системе не удалось запустить новый экран входа в систему."
@@ -554,12 +502,14 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: не удалось прочитать заголовок XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
-msgstr "XMDCP: неверная версия XDMCP!"
+#| msgid "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: неверная версия XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: не удалось разобрать адрес"
+#| msgid "XMDCP: Unable to parse address"
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: не удалось разобрать адрес"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -578,7 +528,7 @@ msgid "Log into session with username and password"
 msgstr "Вход в систему после указания имени и пароля"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "Войти в систему"
@@ -628,31 +578,31 @@ msgstr "Путь к модулю"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "путь к драйверу PKCS #11 для смарт-карты"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "получена ошибка или сброс из источника событий"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "невозможно инициализировать систему безопасности NSS"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "не найден подходящий драйвер смарт-карты"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "невозможно загрузить драйвер смарт-карты «%s»"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "невозможно отслеживать поступающие от карты события — %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "при ожидании событий от смарт-карты произошла неожиданная ошибка"
@@ -771,23 +721,23 @@ msgstr "Разблокировать"
 msgid "Login"
 msgstr "Войти в систему"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Спящий режим"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Перезапустить"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Выключить"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Оставшееся время неизвестно"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Панель"
 
@@ -897,9 +847,36 @@ msgstr "Автоматически входить в систему после �
 msgid "Currently logged in"
 msgstr "Уже зарегистрирован в системе"
 
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:64
+msgid "Only the VERSION command is supported"
+msgstr "Поддерживается только команда VERSION"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "COMMAND"
+msgstr "КОМАНДА"
+
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+msgid "Ignored — retained for compatibility"
+msgstr "Игнорируется — осталось для совместимости"
+
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Отладочный вывод"
+
+#: ../utils/gdmflexiserver.c:71
+msgid "Version of this application"
+msgstr "Версия этого приложения"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:706
+msgid "- New GDM login"
+msgstr "— вход в систему через GDM"
+
+#: ../utils/gdmflexiserver.c:762
+#| msgid "Unable to create transient display: "
+msgid "Unable to start new display"
+msgstr "Не удалось запустить новый дисплей"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -910,6 +887,54 @@ msgstr "Снимок экрана готов"
 msgid "Take a picture of the screen"
 msgstr "Сделать снимок экрана"
 
+#~ msgid "User %s doesn't exist"
+#~ msgstr "Пользователь %s не существует"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "Группа %s не существует"
+
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Каталог для журналов «%s» не существует или не является каталогом."
+
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr ""
+#~ "Каталог с файлами для проверки подлинности «%s» не существует. Аварийное "
+#~ "завершение работы."
+
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr ""
+#~ "Путь «%s», где должны находиться файлы для проверки подлинности, не "
+#~ "является каталогом. Аварийное завершение работы."
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr ""
+#~ "Каталог с файлами для проверки подлинности «%s» не принадлежит "
+#~ "пользователю  %d, группе %d. Аварийное завершение работы."
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr ""
+#~ "Каталог с файлами для проверки подлинности «%s» имеет неверные права %o. "
+#~ "Должно быть %o. Аварийное завершение работы."
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "Экранная лупа среды GNOME"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "Увеличить части экрана"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "Экранная клавиатура среды GNOME"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "Использовать экранную клавиатуру"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Программа чтения экрана Orca"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr ""
+#~ "Озвучивает информацию, имеющуюся на экране, или выводит её на экран Брайля"
+
 #~ msgid "Unable to initialize login system"
 #~ msgstr "Не удалось инициализировать систему входа"
 
@@ -919,20 +944,5 @@ msgstr "Сделать снимок экрана"
 #~ msgid "Unable to establish credentials"
 #~ msgstr "Не удалось установить мандаты"
 
-#~ msgid "Only the VERSION command is supported"
-#~ msgstr "Поддерживается только команда VERSION"
-
-#~ msgid "COMMAND"
-#~ msgstr "КОМАНДА"
-
-#~ msgid "Ignored — retained for compatibility"
-#~ msgstr "Игнорируется — осталось для совместимости"
-
-#~ msgid "Version of this application"
-#~ msgstr "Версия этого приложения"
-
 #~ msgid "The system is unable to find a login screen to switch to."
 #~ msgstr "Системе не удалось найти для переключения экран входа в систему."
-
-#~ msgid "- New GDM login"
-#~ msgstr "— вход в систему через GDM"
