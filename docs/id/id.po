@@ -1,13 +1,13 @@
 # Indonesian translation of gdm manual
 # Copyright (C) 2010 THE gdm manual'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gdm package.
-# Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012.
+# Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"POT-Creation-Date: 2012-09-04 21:13+0000\n"
-"PO-Revision-Date: 2012-09-15 18:56+0700\n"
+"POT-Creation-Date: 2013-02-20 18:02+0000\n"
+"PO-Revision-Date: 2013-02-21 18:09+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "Language: id_ID\n"
@@ -16,14 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.5.3\n"
+"X-Generator: Poedit 1.5.5\n"
 "X-Poedit-SearchPath-0: /S/gnome/gdm/docs\n"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
-#| msgid "translator-credits"
 msgctxt "_"
 msgid "translator-credits"
-msgstr "Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012."
+msgstr "Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012, 2013."
 
 #: C/index.docbook:13(articleinfo/title)
 msgid "GNOME Display Manager Reference Manual"
@@ -101,7 +100,6 @@ msgstr ""
 "holder>"
 
 #: C/index.docbook:78(articleinfo/copyright)
-#| msgid "Oracle and/or its affiliates. All rights reserved."
 msgid ""
 "<year>2003</year> <year>2011</year> <holder>Oracle and/or its affiliates. "
 "All rights reserved.</holder>"
@@ -205,10 +203,6 @@ msgstr ""
 "MESTINYA TELAH DIBERITAHU TENTANG KEMUNGKINAN KERUSAKAN TERSEBUT."
 
 #: C/index.docbook:28(legalnotice/para) C/legal.xml:28(legalnotice/para)
-#| msgid ""
-#| "DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED UNDER THE "
-#| "TERMS OF THE GNU FREE DOCUMENTATION LICENSE WITH THE FURTHER "
-#| "UNDERSTANDING THAT: <placeholder-1/>"
 msgid ""
 "DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED UNDER THE TERMS "
 "OF THE GNU FREE DOCUMENTATION LICENSE WITH THE FURTHER UNDERSTANDING THAT: "
@@ -467,21 +461,6 @@ msgstr ""
 "penyapa pada tampilan."
 
 #: C/index.docbook:265(sect2/para)
-#| msgid ""
-#| "The greeter program is run as the unprivileged \"gdm\" user/group. This "
-#| "user and group are described in the \"Security\" section of this "
-#| "document. The main functions of the greeter program are to provide a "
-#| "mechanism for selecting an account for log in and to drive the dialogue "
-#| "between the user and system when authenticating that account. The "
-#| "authentication process is driven by Pluggable Authentication Modules "
-#| "(PAM). The PAM modules determine what prompts (if any) are shown to the "
-#| "user to authenticate. On the average system, the greeter program will "
-#| "request a username and password for authentication. However some systems "
-#| "may be configured to use supplemental mechanisms such as a fingerprint or "
-#| "SmartCard readers. GDM can be configured to support these alternatives in "
-#| "parallel with greeter login extensions and the <command>--enable-split-"
-#| "authentication</command><filename>./configure</filename> option, or one "
-#| "at a time via system PAM configuration."
 msgid ""
 "The greeter program is run as the unprivileged \"gdm\" user/group. This user "
 "and group are described in the \"Security\" section of this document. The "
@@ -897,32 +876,37 @@ msgstr ""
 
 #: C/index.docbook:533(sect2/para)
 msgid ""
-"The session output is piped through the GDM daemon to the <filename>~/."
-"xsession-errors</filename> file. The file is overwritten on each login, so "
-"logging out and logging back into the same user via GDM will cause any "
-"messages from the previous session to be lost."
+"The session output is piped through the GDM daemon to the <filename>~/"
+"<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log</filename> file "
+"which usually expands to <filename>~/.cache/gdm/session.log</filename>. The "
+"file is overwritten on each login, so logging out and logging back into the "
+"same user via GDM will cause any messages from the previous session to be "
+"lost."
 msgstr ""
-"Keluaran sesi disalurkan melalui daemon GDM ke berkas <filename>~/.xsession-"
-"errors</filename>. Berkas ditimpa setiap kali log masuk, sehingga log keluar "
-"dan masuk lagi ke pengguna yang sama melalui GDM akan menyebabkan sebarang "
-"pesan dari sesi sebelumnya hilang."
+"Keluaran sesi disalurkan melalui daemon GDM ke berkas <filename>~/"
+"<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log</filename> yang "
+"biasanya mengembang menjadi <filename>~/.cache/gdm/session.log</filename>. "
+"Berkas ditimpa setiap kali log masuk, sehingga log keluar dan masuk lagi ke "
+"pengguna yang sama melalui GDM akan menyebabkan sebarang pesan dari sesi "
+"sebelumnya hilang."
 
-#: C/index.docbook:540(sect2/para)
+#: C/index.docbook:542(sect2/para)
 msgid ""
 "Note that if GDM can not create this file for some reason, then a fallback "
-"file will be created named <filename>~/.xsession-errors.XXXXXXXX</filename> "
-"where the <filename>XXXXXXXX</filename> are some random characters."
+"file will be created named <filename>~/<replaceable>$XDG_CACHE_HOME</"
+"replaceable>/gdm/session.log.XXXXXXXX</filename> where the "
+"<filename>XXXXXXXX</filename> are some random characters."
 msgstr ""
 "Catat bahwa bila GDM tak bisa membuat berkas ini karena beberapa alasan, "
-"maka berkas cadangan akan dibuat dengan nama <filename>~/.xsession-errors."
-"XXXXXXXX</filename> dimana <filename>XXXXXXXX</filename> adalah beberapa "
-"karakter acak."
+"maka berkas cadangan akan dibuat dengan nama <filename>~/<replaceable>"
+"$XDG_CACHE_HOME</replaceable>/gdm/session.log.XXXXXXXX</filename> dimana "
+"<filename>XXXXXXXX</filename> adalah beberapa karakter acak."
 
-#: C/index.docbook:548(sect2/title)
+#: C/index.docbook:550(sect2/title)
 msgid "Fast User Switching"
 msgstr "Pindah Pengguna Dengan Cepat"
 
-#: C/index.docbook:550(sect2/para)
+#: C/index.docbook:552(sect2/para)
 msgid ""
 "GDM allows multiple users to be logged in at the same time. After one user "
 "is logged in, additional users can log in via the User Switcher on the GNOME "
@@ -939,7 +923,7 @@ msgstr ""
 "menambahkan Penukar Pengguna ke konfigurasi panel bawaan. Itu dapat "
 "ditambahkan memakai menu konteks panel."
 
-#: C/index.docbook:559(sect2/para)
+#: C/index.docbook:561(sect2/para)
 msgid ""
 "Note this feature is available on systems that support Virtual Terminals. "
 "This feature will not function if Virtual Terminals is not available."
@@ -947,15 +931,15 @@ msgstr ""
 "Catat bahwa fitur ini tersedia pada sistem yang mendukung Terminal Virtual. "
 "Fitur ini tak akan berfungsi bila Terminal Virtual tak tersedia."
 
-#: C/index.docbook:570(sect1/title)
+#: C/index.docbook:572(sect1/title)
 msgid "Security"
 msgstr "Keamanan"
 
-#: C/index.docbook:573(sect2/title)
+#: C/index.docbook:575(sect2/title)
 msgid "The GDM User And Group"
 msgstr "Grup dan Pengguna GDM"
 
-#: C/index.docbook:575(sect2/para)
+#: C/index.docbook:577(sect2/para)
 msgid ""
 "For security reasons a dedicated user and group id are recommended for "
 "proper operation. This user and group are normally \"gdm\" on most systems, "
@@ -970,7 +954,7 @@ msgstr ""
 "berinteraksi dengan pengguna dijalankan dalam suatu kotak pasir. Pengguna "
 "dan grup ini mesti memiliki hak terbatas."
 
-#: C/index.docbook:584(sect2/para)
+#: C/index.docbook:586(sect2/para)
 msgid ""
 "The only special privilege the \"gdm\" user requires is the ability to read "
 "and write Xauth files to the <filename>&lt;var&gt;/run/gdm</filename> "
@@ -982,7 +966,7 @@ msgstr ""
 "var&gt;/run/gdm</filename> directory. Direktori <filename>&lt;var&gt;/run/"
 "gdm</filename> mesti dimiliki oleh root:gdm dan hak 1777."
 
-#: C/index.docbook:592(sect2/para)
+#: C/index.docbook:594(sect2/para)
 msgid ""
 "You should not, under any circumstances, configure the GDM user/group to a "
 "user which a user could easily gain access to, such as the user "
@@ -1004,7 +988,7 @@ msgstr ""
 "Sebagai contoh, akun mesti disiapkan untuk tak memiliki sandi atau "
 "mengijinkan pengguna bukan root untuk log masuk ke akun."
 
-#: C/index.docbook:605(sect2/para)
+#: C/index.docbook:607(sect2/para)
 msgid ""
 "The GDM greeter configuration is stored in GConf. To allow the GDM user to "
 "be able to write configuration, it is necessary for the \"gdm\" user to have "
@@ -1020,11 +1004,11 @@ msgstr ""
 "direktori $HOME yang dapat ditulisi. Namun beberapa fitur GDM mungkin mati "
 "bila tak bisa menulis informasi keadaan ke konfigurasi GConf."
 
-#: C/index.docbook:617(sect2/title)
+#: C/index.docbook:619(sect2/title)
 msgid "PAM"
 msgstr "PAM"
 
-#: C/index.docbook:619(sect2/para)
+#: C/index.docbook:621(sect2/para)
 msgid ""
 "GDM uses PAM for login authentication. PAM stands for Pluggable "
 "Authentication Module, and is used by most programs that request "
@@ -1039,7 +1023,7 @@ msgstr ""
 "program log masuk yang berbeda (seperti misalnya ssh, log masuk GUI, "
 "screensaver, dsb.)"
 
-#: C/index.docbook:627(sect2/para)
+#: C/index.docbook:629(sect2/para)
 msgid ""
 "PAM is complicated and highly configurable, and this documentation does not "
 "intend to explain this in detail. Instead, it is intended to give an "
@@ -1058,7 +1042,7 @@ msgstr ""
 "bagaimana menata PAM dan memahami istilah-istilah yang dipakai pada bagian "
 "ini."
 
-#: C/index.docbook:637(sect2/para)
+#: C/index.docbook:639(sect2/para)
 msgid ""
 "PAM configuration has different, but similar, interfaces on different "
 "Operating Systems, so check the <ulink type=\"help\" url=\"man:pam.d\">pam."
@@ -1074,7 +1058,7 @@ msgstr ""
 "dokumentasi PAM dan merasa nyaman dengan implikasi keamanan dari perubahan "
 "apapun yang hendak Anda lakukan pada konfigurasi Anda."
 
-#: C/index.docbook:647(sect2/para)
+#: C/index.docbook:649(sect2/para)
 msgid ""
 "Note that, by default, GDM uses the \"gdm\" PAM service name for normal "
 "login and the \"gdm-autologin\" PAM service name for automatic login. These "
@@ -1091,7 +1075,7 @@ msgstr ""
 "baik. Namun, fitur log masuk otomatis mungkin tak bekerja bila layanan gdm-"
 "autologin tak terdefinisi."
 
-#: C/index.docbook:657(sect2/para)
+#: C/index.docbook:659(sect2/para)
 msgid ""
 "The <filename>PostLogin</filename> script is run before pam_open_session is "
 "called, and the <filename>PreSession</filename> script is called after. This "
@@ -1103,7 +1087,7 @@ msgstr ""
 "Ini memungkinkan administrator sistem untuk menambahkan sebarang penskripan "
 "ke proses log masuk sebelum atau setelah PAM menginisialisasi sesi."
 
-#: C/index.docbook:665(sect2/para)
+#: C/index.docbook:667(sect2/para)
 msgid ""
 "If you wish to make GDM work with other types of authentication mechanisms "
 "(such as a fingerprint or SmartCard reader), then you should implement this "
@@ -1121,7 +1105,7 @@ msgstr ""
 "didiskusikan di milis <address><email>gdm-list@gnome.org</email></address>, "
 "sehingga Anda dapat mengacu ke arsip milis untuk informasi lebih lanjut."
 
-#: C/index.docbook:676(sect2/para)
+#: C/index.docbook:678(sect2/para)
 msgid ""
 "PAM does have some limitations regarding being able to work with multiple "
 "types of authentication at the same time, like supporting the ability to "
@@ -1137,7 +1121,7 @@ msgstr ""
 "dan yang terbaik adalah meneliti bagaimana masalah ini secara umum "
 "dipecahkan ketika menyiapkan konfigurasi seperti itu."
 
-#: C/index.docbook:685(sect2/para)
+#: C/index.docbook:687(sect2/para)
 msgid ""
 "If automatic login does not work on a system, check to see if the \"gdm-"
 "autologin\" PAM stack is defined in the PAM configuration. For this to work, "
@@ -1154,7 +1138,7 @@ msgstr ""
 "ini, konfigurasi PAM yang mengaktifkan \"gdm-autologin\" akan terlihat "
 "seperti ini:"
 
-#: C/index.docbook:695(sect2/screen)
+#: C/index.docbook:697(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1171,7 +1155,7 @@ msgstr ""
 "       gdm-autologin session  sufficient  pam_allow.so.1\n"
 "       gdm-autologin password  sufficient  pam_allow.so.1\n"
 
-#: C/index.docbook:703(sect2/para)
+#: C/index.docbook:705(sect2/para)
 msgid ""
 "The above setup will cause no lastlog entry to be generated. If a lastlog "
 "entry is desired, then use the following for the session:"
@@ -1179,7 +1163,7 @@ msgstr ""
 "Penataan di atas akan menyebabkan tiadanya entri lastlog. Bila suatu entri "
 "lastlog dikehendaki, maka gunakan yang berikut bagi sesi:"
 
-#: C/index.docbook:708(sect2/screen)
+#: C/index.docbook:710(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1188,7 +1172,7 @@ msgstr ""
 "\n"
 "       gdm-autologin session required pam_unix_session.so.1\n"
 
-#: C/index.docbook:712(sect2/para)
+#: C/index.docbook:714(sect2/para)
 msgid ""
 "If the computer is used by several people, which makes automatic login "
 "unsuitable, you may want to allow some users to log in without entering "
@@ -1206,7 +1190,7 @@ msgstr ""
 "\"nopasswdlogin\" sebelum menanyakan sandi. Agar ini bekerja, berkas "
 "konfigurasi PAM bagi layanan \"gdm\" mesti memuat suatu baris seperti:"
 
-#: C/index.docbook:723(sect2/screen)
+#: C/index.docbook:725(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1215,11 +1199,11 @@ msgstr ""
 "\n"
 "      gdm auth  sufficient  pam_succeed_if.so  user ingroup nopasswdlogin\n"
 
-#: C/index.docbook:730(sect2/title)
+#: C/index.docbook:732(sect2/title)
 msgid "utmp and wtmp"
 msgstr "utmp dan wtmp"
 
-#: C/index.docbook:732(sect2/para)
+#: C/index.docbook:734(sect2/para)
 msgid ""
 "GDM generates utmp and wtmp User Accounting Database entries upon session "
 "login and logout. The utmp database contains user access and accounting "
@@ -1239,11 +1223,11 @@ msgstr ""
 "\"man:utmp\">utmp</ulink> dan <ulink type=\"help\" url=\"man:wtmp\">wtmp</"
 "ulink> pada sistem Anda untuk informasi lebih jauh."
 
-#: C/index.docbook:747(sect2/title)
+#: C/index.docbook:749(sect2/title)
 msgid "Xserver Authentication Scheme"
 msgstr "Skema Otentikasi Xserver"
 
-#: C/index.docbook:749(sect2/para)
+#: C/index.docbook:751(sect2/para)
 msgid ""
 "Xserver authorization files are stored in a newly created subdirectory of "
 "<filename>&lt;var&gt;/run/gdm</filename> at start up. These files are used "
@@ -1257,7 +1241,7 @@ msgstr ""
 "\"Sandi\" ini unik bagi setiap sesi log masuk, sehingga pengguna dari sesi "
 "satu tak bisa menyadap pengguna sesi lain."
 
-#: C/index.docbook:757(sect2/para)
+#: C/index.docbook:759(sect2/para)
 msgid ""
 "GDM only supports the MIT-MAGIC-COOKIE-1 Xserver authentication scheme. "
 "Normally little is gained from the other schemes, and no effort has been "
@@ -1282,11 +1266,11 @@ msgstr ""
 "keamanan sama. Dalam kebanyakan kasus, ssh -Y mesti lebih disukai daripada "
 "fitur XDMCP GDM."
 
-#: C/index.docbook:774(sect2/title)
+#: C/index.docbook:776(sect2/title)
 msgid "XDMCP Security"
 msgstr "Keamanan XDMCP"
 
-#: C/index.docbook:776(sect2/para)
+#: C/index.docbook:778(sect2/para)
 msgid ""
 "Even though your display is protected by cookies, XEvents and thus "
 "keystrokes typed when entering passwords will still go over the wire in "
@@ -1296,7 +1280,7 @@ msgstr ""
 "saat memasukkan sandi masih akan dilewatkan jaringan dalam bentuk teks "
 "polos. Sangat mudah untuk menangkap itu."
 
-#: C/index.docbook:782(sect2/para)
+#: C/index.docbook:784(sect2/para)
 msgid ""
 "XDMCP is primarily useful for running thin clients such as in terminal labs. "
 "Those thin clients will only ever need the network to access the server, and "
@@ -1314,11 +1298,11 @@ msgstr ""
 "adalah server. Jenis penyiapan ini tak boleh memakai unmanaged hub atau "
 "jaringa lain yang dapat disadap."
 
-#: C/index.docbook:795(sect2/title)
+#: C/index.docbook:797(sect2/title)
 msgid "XDMCP Access Control"
 msgstr "Kendali Akses XDMCP"
 
-#: C/index.docbook:797(sect2/para)
+#: C/index.docbook:799(sect2/para)
 msgid ""
 "XDMCP access control is done using TCP wrappers. It is possible to compile "
 "GDM without TCP wrapper support, so this feature may not be supported on "
@@ -1328,7 +1312,7 @@ msgstr ""
 "mengompail GDM tanpa dukungan TCP wrappers, sehingga fitur ini mungkin tak "
 "didukung pada beberapa Sistem Operasi."
 
-#: C/index.docbook:803(sect2/para)
+#: C/index.docbook:805(sect2/para)
 msgid ""
 "You should use the daemon name <command>gdm</command> in the <filename>&lt;"
 "etc&gt;/hosts.allow</filename> and <filename>&lt;etc&gt;/hosts.deny</"
@@ -1340,7 +1324,7 @@ msgstr ""
 "deny</filename>. Sebagai contoh untuk menolak komputer dari <filename>.evil."
 "domain</filename> yang berusaha log masuk, maka tambahkan"
 
-#: C/index.docbook:810(sect2/screen)
+#: C/index.docbook:812(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1349,14 +1333,14 @@ msgstr ""
 "\n"
 "gdm: .evil.domain\n"
 
-#: C/index.docbook:813(sect2/para)
+#: C/index.docbook:815(sect2/para)
 msgid ""
 "to <filename>&lt;etc&gt;/hosts.deny</filename>. You may also need to add"
 msgstr ""
 "ke <filename>&lt;etc&gt;/hosts.deny</filename>. Anda mungkin juga perlu "
 "menambah"
 
-#: C/index.docbook:817(sect2/screen)
+#: C/index.docbook:819(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1365,7 +1349,7 @@ msgstr ""
 "\n"
 "gdm: .your.domain\n"
 
-#: C/index.docbook:820(sect2/para)
+#: C/index.docbook:822(sect2/para)
 msgid ""
 "to your <filename>&lt;etc&gt;/hosts.allow</filename> if you normally "
 "disallow all services from all hosts. See the <ulink type=\"help\" url=\"man:"
@@ -1375,11 +1359,11 @@ msgstr ""
 "semua layanan dari semua host. Lihat halaman man <ulink type=\"help\" url="
 "\"man:hosts.allow\">hosts.allow(5)</ulink> untuk rinciannya."
 
-#: C/index.docbook:829(sect2/title)
+#: C/index.docbook:831(sect2/title)
 msgid "Firewall Security"
 msgstr "Keamanan Firewall"
 
-#: C/index.docbook:831(sect2/para)
+#: C/index.docbook:833(sect2/para)
 msgid ""
 "Even though GDM tries to outsmart potential attackers trying to take "
 "advantage of XDMCP, it is still advised that you block the XDMCP port "
@@ -1398,7 +1382,7 @@ msgstr ""
 "sumber daya, sehingga jauh lebih mudah melakukan serangan denial of service "
 "melalui XDMCP daripada menyerang suatu server web."
 
-#: C/index.docbook:842(sect2/para)
+#: C/index.docbook:844(sect2/para)
 msgid ""
 "It is also wise to block all of the Xserver ports. These are TCP ports 6000+ "
 "(one for each display number) on your firewall. Note that GDM will use "
@@ -1409,7 +1393,7 @@ msgstr ""
 "akan memakai tampilan nomor 20 dan yang lebih tinggi bagi server on-demand "
 "yang fleksibel."
 
-#: C/index.docbook:849(sect2/para)
+#: C/index.docbook:851(sect2/para)
 msgid ""
 "X is not a very safe protocol when using it over the Internet, and XDMCP is "
 "even less safe."
@@ -1417,11 +1401,11 @@ msgstr ""
 "X bukan protokol yang aman ketika dipakai di Internet, dan XDMCP bahkan "
 "lebih tidak aman lagi."
 
-#: C/index.docbook:856(sect2/title)
+#: C/index.docbook:858(sect2/title)
 msgid "PolicyKit"
 msgstr "PolicyKit"
 
-#: C/index.docbook:864(sect2/para)
+#: C/index.docbook:866(sect2/para)
 msgid ""
 "GDM may be configured to use PolicyKit to allow the system administrator to "
 "control whether the login screen should provide the shutdown and restart "
@@ -1431,7 +1415,7 @@ msgstr ""
 "sistem mengendalikan apakah layar log masuk mesti menyediakan tombol matikan "
 "dan mulai ulang pada layar penyapa."
 
-#: C/index.docbook:870(sect2/para)
+#: C/index.docbook:872(sect2/para)
 msgid ""
 "These buttons are controlled by the <filename>org.freedesktop.consolekit."
 "system.stop-multiple-users</filename> and <filename>org.freedesktop."
@@ -1439,17 +1423,17 @@ msgid ""
 "Policy for these actions can be set up using the polkit-gnome-authorization "
 "tool, or the polkit-auth command line program."
 msgstr ""
-"Tombol-tombol ini masing-masing dikendalikan oleh aksi filename>org."
+"Tombol-tombol ini masing-masing dikendalikan oleh aksi <filename>org."
 "freedesktop.consolekit.system.stop-multiple-users</filename> dan "
 "<filename>org.freedesktop.consolekit.system.restart-multiple-users</"
 "filename>. Kebijakan bagi aksi-aksi ini dapat disiapkan memakai perkakas "
 "polkit-gnome-authorization, atau program baris perintah polkit-auth."
 
-#: C/index.docbook:882(sect2/title)
+#: C/index.docbook:884(sect2/title)
 msgid "RBAC (Role Based Access Control)"
 msgstr "RBAC (Role Based Access Control)"
 
-#: C/index.docbook:884(sect2/para)
+#: C/index.docbook:886(sect2/para)
 msgid ""
 "GDM may be configured to use RBAC instead of PolicyKit. In this case the "
 "RBAC configuration is used to control whether the login screen should "
@@ -1459,7 +1443,7 @@ msgstr ""
 "ini konfigurasi RBAC dipakai untuk mengendalikan apakah layar log masuk "
 "mesti menyediakan tombol matikan dan mulai ulang pada layar penyapa."
 
-#: C/index.docbook:890(sect2/para)
+#: C/index.docbook:892(sect2/para)
 msgid ""
 "For example, on Oracle Solaris, the \"solaris.system.shutdown\" "
 "authorization is used to control this. Simply modify the <filename>/etc/"
@@ -1469,11 +1453,11 @@ msgstr ""
 "dipakai untuk mengendalikan ini. Cukup ubah berkas <filename>/etc/user_attr</"
 "filename> sehingga pengguna \"gdm\" memiliki otorisasi ini."
 
-#: C/index.docbook:903(sect1/title)
+#: C/index.docbook:905(sect1/title)
 msgid "Support for ConsoleKit"
 msgstr "Dukungan untuk ConsoleKit"
 
-#: C/index.docbook:914(sect1/para)
+#: C/index.docbook:916(sect1/para)
 msgid ""
 "GDM includes support for publishing user login information with the user and "
 "login session accounting framework known as ConsoleKit. ConsoleKit is able "
@@ -1487,7 +1471,7 @@ msgstr ""
 "sehingga dapat dipakai sebagai pengganti berkas utmp atau utmpx yang "
 "tersedia pada kebanyakan Sistem Operasi mirip Unix."
 
-#: C/index.docbook:922(sect1/para)
+#: C/index.docbook:924(sect1/para)
 msgid ""
 "When GDM is about to create a new login process for a user it will call a "
 "privileged method of ConsoleKit in order to open a new session for this "
@@ -1511,7 +1495,7 @@ msgstr ""
 "kepingan informasi ini. Penggunaan metode dengan hak khusus ini dibatasi "
 "oleh pemakaian kebijakan keamanan bus pesan sistem D-BUS."
 
-#: C/index.docbook:936(sect1/para)
+#: C/index.docbook:938(sect1/para)
 msgid ""
 "In case a user with an existing session has authenticated at GDM and "
 "requests to resume that existing session, GDM calls a privileged method of "
@@ -1526,7 +1510,7 @@ msgstr ""
 "terdefinisi dan spesifik sesi. Namun kebanyakan sesi akan membuka kunci "
 "screensaver sebagai respon."
 
-#: C/index.docbook:945(sect1/para)
+#: C/index.docbook:947(sect1/para)
 msgid ""
 "When the user chooses to log out, or if GDM or the session quit unexpectedly "
 "the user session will be unregistered from ConsoleKit."
@@ -1534,11 +1518,11 @@ msgstr ""
 "Ketika pengguna memilih untuk log keluar, atau bila GDM atau sesi keluar tak "
 "disangka-sangka, sesi pengguna akan dikeluarkan dari daftar ConsoleKit."
 
-#: C/index.docbook:954(sect1/title)
+#: C/index.docbook:956(sect1/title)
 msgid "Configuration"
 msgstr "Konfigurasi"
 
-#: C/index.docbook:956(sect1/para)
+#: C/index.docbook:958(sect1/para)
 msgid ""
 "GDM has a number of configuration interfaces. These include scripting "
 "integration points, daemon configuration, greeter configuration, general "
@@ -1551,11 +1535,11 @@ msgstr ""
 "integrasi dengan konfigurasi gnome-settings-daemon, dan konfigurasi sesi. "
 "Integrasi tipe ini diuraikan secara rinci di bawah."
 
-#: C/index.docbook:965(sect2/title)
+#: C/index.docbook:967(sect2/title)
 msgid "Scripting Integration Points"
 msgstr "Titik Integrasi Skrip"
 
-#: C/index.docbook:967(sect2/para)
+#: C/index.docbook:969(sect2/para)
 msgid ""
 "The GDM script integration points can be found in the <filename>&lt;etc&gt;/"
 "gdm/</filename> directory:"
@@ -1563,7 +1547,7 @@ msgstr ""
 "Titik integrasi skrip GDM dapat ditemukan dalam direktori <filename>&lt;"
 "etc&gt;/gdm/</filename>:"
 
-#: C/index.docbook:972(sect2/screen)
+#: C/index.docbook:974(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1580,7 +1564,7 @@ msgstr ""
 "PreSession/\n"
 "PostSession/\n"
 
-#: C/index.docbook:980(sect2/para)
+#: C/index.docbook:982(sect2/para)
 msgid ""
 "The <filename>Init</filename>, <filename>PostLogin</filename>, "
 "<filename>PreSession</filename>, and <filename>PostSession</filename> "
@@ -1590,7 +1574,7 @@ msgstr ""
 "<filename>PreSession</filename>, dan <filename>PostSession</filename> semua "
 "bekerja seperti dijelaskan di bawah."
 
-#: C/index.docbook:986(sect2/para)
+#: C/index.docbook:988(sect2/para)
 msgid ""
 "For each type of script, the default one which will be executed is called "
 "\"Default\" and is stored in a directory associated with the script type. So "
@@ -1611,7 +1595,7 @@ msgstr ""
 "skrip <filename>&lt;Init&gt;/:0</filename> ada, itu akan dijalankan bagi "
 "DISPLAY \":0\"."
 
-#: C/index.docbook:998(sect2/para)
+#: C/index.docbook:1000(sect2/para)
 msgid ""
 "All of these scripts are run with root privilege and return 0 if run "
 "successfully, and a non-zero return code if there was any failure that "
@@ -1625,7 +1609,7 @@ msgstr ""
 "memblok sampai skrip selesai, sehingga bila salah satu skrip ini hang, ini "
 "akan menyebabkan proses log masuk juga hang."
 
-#: C/index.docbook:1006(sect2/para)
+#: C/index.docbook:1008(sect2/para)
 msgid ""
 "When the Xserver for the login GUI has been successfully started, but before "
 "the login GUI is actually displayed, GDM will run the <filename>Init</"
@@ -1639,7 +1623,7 @@ msgstr ""
 "mesti dijalankan ketika layar log masuk tampil, atau untuk melakukan "
 "inisialisasi khusus apapun bila diperlukan."
 
-#: C/index.docbook:1014(sect2/para)
+#: C/index.docbook:1016(sect2/para)
 msgid ""
 "After the user has been successfully authenticated GDM will run the "
 "<filename>PostLogin</filename> script. This is done before any session setup "
@@ -1655,7 +1639,7 @@ msgstr ""
 "mulai. Sebagai contoh, Anda mungkin perlu menyiapkan direktori $HOME "
 "pengguna bila diperlukan."
 
-#: C/index.docbook:1023(sect2/para)
+#: C/index.docbook:1025(sect2/para)
 msgid ""
 "After the user session has been initialized, GDM will run the "
 "<filename>PreSession</filename> script. This script is useful for doing any "
@@ -1668,7 +1652,7 @@ msgstr ""
 "inisialisasi sesi yang perlu terjadi setelah sesi diinisialisasi. Ini dapat "
 "dipakai untuk manajemen sesi atau akunting, misalnya."
 
-#: C/index.docbook:1031(sect2/para)
+#: C/index.docbook:1033(sect2/para)
 msgid ""
 "When a user terminates their session, GDM will run the "
 "<filename>PostSession</filename> script. Note that the Xserver will have "
@@ -1678,7 +1662,7 @@ msgstr ""
 "<filename>PostSession</filename>. Perhatikan bahwa Xserver bakal telah "
 "berhenti saat skrip ini dijalankan, sehingga itu tak boleh diakses."
 
-#: C/index.docbook:1038(sect2/para)
+#: C/index.docbook:1040(sect2/para)
 msgid ""
 "Note that the <filename>PostSession</filename> script will be run even when "
 "the display fails to respond due to an I/O error or similar. Thus, there is "
@@ -1688,7 +1672,7 @@ msgstr ""
 "bahkan ketika tampilan gagal merespon karena galat I/O atau yang serupa. "
 "Jadi tak ada jaminan bahwa aplikasi X akan bekerja selama eksekusi skrip."
 
-#: C/index.docbook:1045(sect2/para)
+#: C/index.docbook:1047(sect2/para)
 msgid ""
 "All of the above scripts will set the <filename>$RUNNING_UNDER_GDM</"
 "filename> environment variable to <filename>yes</filename>. If the scripts "
@@ -1702,11 +1686,11 @@ msgstr ""
 "mengidentifikasi ketika GDM sedang memanggil skrip ini, sehingga Anda dapat "
 "menjalankan kode khusus ketika GDM sedang dipakai."
 
-#: C/index.docbook:1055(sect2/title)
+#: C/index.docbook:1057(sect2/title)
 msgid "Autostart Configuration"
 msgstr "Konfigurasi Autostart"
 
-#: C/index.docbook:1057(sect2/para)
+#: C/index.docbook:1059(sect2/para)
 msgid ""
 "The <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> directory "
 "contains files in the format specified by the \"FreeDesktop.org Desktop "
@@ -1721,7 +1705,7 @@ msgstr ""
 "otomatis atau hanya diluncurkan bila suatu nilai konfigurasi GConf ditata, "
 "dsb."
 
-#: C/index.docbook:1066(sect2/para)
+#: C/index.docbook:1068(sect2/para)
 msgid ""
 "Any <filename>.desktop</filename> files in this directory will cause the "
 "associated program to automatically start with the login GUI greeter. By "
@@ -1742,11 +1726,11 @@ msgstr ""
 "konfigurasi yang dinyatakan dalam bagian Konfigurasi Aksesabilitas di bawah "
 "ditata."
 
-#: C/index.docbook:1080(sect2/title)
+#: C/index.docbook:1082(sect2/title)
 msgid "Xsession Script"
 msgstr "Skrip Xsession"
 
-#: C/index.docbook:1082(sect2/para)
+#: C/index.docbook:1084(sect2/para)
 msgid ""
 "There is also an <filename>Xsession</filename> script located at "
 "<filename>&lt;etc&gt;/gdm/Xsession</filename> which is called between the "
@@ -1764,11 +1748,11 @@ msgstr ""
 "dan akan menjalankan sesi apapun yang dinyatakan oleh berkas sesi Desktop "
 "yang dipilih pengguna untuk dimulai."
 
-#: C/index.docbook:1095(sect2/title)
+#: C/index.docbook:1097(sect2/title)
 msgid "Daemon Configuration"
 msgstr "Konfigurasi Daemon"
 
-#: C/index.docbook:1097(sect2/para)
+#: C/index.docbook:1099(sect2/para)
 msgid ""
 "The GDM daemon is configured using the <filename>&lt;etc&gt;/gdm/custom."
 "conf</filename> file. Default values are stored in GConf in the "
@@ -1784,7 +1768,7 @@ msgstr ""
 "tertimpa ketika pengguna memutakhirkan sistem mereka untuk mendapatkan versi "
 "GDM yang lebih baru."
 
-#: C/index.docbook:1107(sect2/para)
+#: C/index.docbook:1109(sect2/para)
 msgid ""
 "Note that older versions of GDM supported additional configuration options "
 "which are no longer supported in the latest versions of GDM."
@@ -1792,7 +1776,7 @@ msgstr ""
 "Perhatikan bahwa GDM versi lebih lama mendukung opsi konfigurasi tambahan "
 "yang tak didukung lagi pada versi GDM terakhir."
 
-#: C/index.docbook:1112(sect2/para)
+#: C/index.docbook:1114(sect2/para)
 msgid ""
 "The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file is in the "
 "<filename>keyfile</filename> format. Keywords in brackets define group "
@@ -1806,7 +1790,7 @@ msgstr ""
 "tanda sama dengan mewakili nilai mereka. Baris kosong atau baris yang "
 "diawali dengan tanda pagar (#) diabaikan."
 
-#: C/index.docbook:1120(sect2/para)
+#: C/index.docbook:1122(sect2/para)
 msgid ""
 "The file <filename>&lt;etc&gt;/gdm/custom.conf</filename> supports the "
 "\"[daemon]\", \"[security]\", and \"[xdmcp]\" group sections. Within each "
@@ -1823,7 +1807,7 @@ msgstr ""
 "tenggang waktu adalah pengguna bernama \"you\", Anda perlu mengubah berkas "
 "sehingga memuat baris-baris berikut:"
 
-#: C/index.docbook:1130(sect2/screen)
+#: C/index.docbook:1132(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1836,25 +1820,25 @@ msgstr ""
 "TimedLoginEnable=true\n"
 "TimedLogin=you\n"
 
-#: C/index.docbook:1136(sect2/para)
+#: C/index.docbook:1138(sect2/para)
 msgid "A full list of supported configuration keys follow:"
 msgstr ""
 "Daftar lengkap dari kunci konfigurasi yang didukung adalah sebagai berikut:"
 
-#: C/index.docbook:1141(sect3/title)
+#: C/index.docbook:1143(sect3/title)
 msgid "[chooser]"
 msgstr "[chooser]"
 
-#: C/index.docbook:1145(varlistentry/term)
+#: C/index.docbook:1147(varlistentry/term)
 msgid "Multicast"
 msgstr "Multicast"
 
-#: C/index.docbook:1147(listitem/synopsis)
+#: C/index.docbook:1149(listitem/synopsis)
 #, no-wrap
 msgid "Multicast=false"
 msgstr "Multicast=false"
 
-#: C/index.docbook:1148(listitem/para)
+#: C/index.docbook:1150(listitem/para)
 msgid ""
 "If true and IPv6 is enabled, the chooser will send a multicast query to the "
 "local network and collect responses from the hosts who have joined multicast "
@@ -1864,33 +1848,33 @@ msgstr ""
 "ke jaringan lokal dan mengumpulkan jawaban dari host yang telah bergabung ke "
 "grup multicast."
 
-#: C/index.docbook:1157(varlistentry/term)
+#: C/index.docbook:1159(varlistentry/term)
 msgid "MulticastAddr"
 msgstr "MulticastAddr"
 
-#: C/index.docbook:1159(listitem/synopsis)
+#: C/index.docbook:1161(listitem/synopsis)
 #, no-wrap
 msgid "MulticastAddr=ff02::1"
 msgstr "MulticastAddr=ff02::1"
 
-#: C/index.docbook:1160(listitem/para)
+#: C/index.docbook:1162(listitem/para)
 msgid "This is the Link-local multicast address."
 msgstr "Ini adalaha alamat multicast Link-local."
 
-#: C/index.docbook:1169(sect3/title)
+#: C/index.docbook:1171(sect3/title)
 msgid "[daemon]"
 msgstr "[daemon]"
 
-#: C/index.docbook:1172(varlistentry/term)
+#: C/index.docbook:1174(varlistentry/term)
 msgid "TimedLoginEnable"
 msgstr "TimedLoginEnable"
 
-#: C/index.docbook:1174(listitem/synopsis)
+#: C/index.docbook:1176(listitem/synopsis)
 #, no-wrap
 msgid "TimedLoginEnable=false"
 msgstr "TimedLoginEnable=false"
 
-#: C/index.docbook:1175(listitem/para)
+#: C/index.docbook:1177(listitem/para)
 msgid ""
 "If the user given in <filename>TimedLogin</filename> should be logged in "
 "after a number of seconds (set with <filename>TimedLoginDelay</filename>) of "
@@ -1920,16 +1904,16 @@ msgstr ""
 "bagian \"Keamanan-&gt;PAM\" dari manual untuk informasi lebih jauh, atau "
 "untuk bantuan bila fitur ini sepertinya tak bekerja."
 
-#: C/index.docbook:1197(varlistentry/term)
+#: C/index.docbook:1199(varlistentry/term)
 msgid "TimedLogin"
 msgstr "TimedLogin"
 
-#: C/index.docbook:1199(listitem/synopsis)
+#: C/index.docbook:1201(listitem/synopsis)
 #, no-wrap
 msgid "TimedLogin="
 msgstr "TimedLogin="
 
-#: C/index.docbook:1200(listitem/para)
+#: C/index.docbook:1202(listitem/para)
 msgid ""
 "This is the user that should be logged in after a specified number of "
 "seconds of inactivity."
@@ -1937,7 +1921,7 @@ msgstr ""
 "Ini adalah pengguna yang mesti dilogmasukkan setelah sekian detik tanpa "
 "aktivitas seperti yang dinyatakan."
 
-#: C/index.docbook:1204(listitem/para) C/index.docbook:1248(listitem/para)
+#: C/index.docbook:1206(listitem/para) C/index.docbook:1250(listitem/para)
 msgid ""
 "If the value ends with a vertical bar | (the pipe symbol), then GDM will "
 "execute the program specified and use whatever value is returned on standard "
@@ -1954,16 +1938,16 @@ msgstr ""
 "adalah \"/usr/bin/getloginuser|\", maka program \"/usr/bin/getloginuser\" "
 "akan dijalankan untuk mendapat nilai pengguna."
 
-#: C/index.docbook:1218(varlistentry/term)
+#: C/index.docbook:1220(varlistentry/term)
 msgid "TimedLoginDelay"
 msgstr "TimedLoginDelay"
 
-#: C/index.docbook:1220(listitem/synopsis)
+#: C/index.docbook:1222(listitem/synopsis)
 #, no-wrap
 msgid "TimedLoginDelay=30"
 msgstr "TimedLoginDelay=30"
 
-#: C/index.docbook:1221(listitem/para)
+#: C/index.docbook:1223(listitem/para)
 msgid ""
 "Delay in seconds before the <filename>TimedLogin</filename> user will be "
 "logged in."
@@ -1971,16 +1955,16 @@ msgstr ""
 "Tundaan dalam detik sebelum pengguna <filename>TimedLogin</filename> akan "
 "dilogmasukkan."
 
-#: C/index.docbook:1229(varlistentry/term)
+#: C/index.docbook:1231(varlistentry/term)
 msgid "AutomaticLoginEnable"
 msgstr "AutomaticLoginEnable"
 
-#: C/index.docbook:1231(listitem/synopsis)
+#: C/index.docbook:1233(listitem/synopsis)
 #, no-wrap
 msgid "AutomaticLoginEnable=false"
 msgstr "AutomaticLoginEnable=false"
 
-#: C/index.docbook:1232(listitem/para)
+#: C/index.docbook:1234(listitem/para)
 msgid ""
 "If true, the user given in <filename>AutomaticLogin</filename> should be "
 "logged in immediately. This feature is like timed login with a delay of 0 "
@@ -1990,16 +1974,16 @@ msgstr ""
 "filename> mesti dilogmasukkan seketika. Fitur ini seperti log masuk dengan "
 "tenggang waktu 0 detik."
 
-#: C/index.docbook:1241(varlistentry/term)
+#: C/index.docbook:1243(varlistentry/term)
 msgid "AutomaticLogin"
 msgstr "AutomaticLogin"
 
-#: C/index.docbook:1243(listitem/synopsis)
+#: C/index.docbook:1245(listitem/synopsis)
 #, no-wrap
 msgid "AutomaticLogin="
 msgstr "AutomaticLogin="
 
-#: C/index.docbook:1244(listitem/para)
+#: C/index.docbook:1246(listitem/para)
 msgid ""
 "This is the user that should be logged in immediately if "
 "<filename>AutomaticLoginEnable</filename> is true."
@@ -2007,16 +1991,16 @@ msgstr ""
 "Ini adalah pengguna yang mesti seketika log masuk bila "
 "<filename>AutomaticLoginEnable</filename> berisi true."
 
-#: C/index.docbook:1262(varlistentry/term)
+#: C/index.docbook:1264(varlistentry/term)
 msgid "User"
 msgstr "User"
 
-#: C/index.docbook:1264(listitem/synopsis)
+#: C/index.docbook:1266(listitem/synopsis)
 #, no-wrap
 msgid "User=gdm"
 msgstr "User=gdm"
 
-#: C/index.docbook:1265(listitem/para)
+#: C/index.docbook:1267(listitem/para)
 msgid ""
 "The username under which the greeter and other GUI programs are run. Refer "
 "to the <filename>Group</filename> configuration key and to the \"Security-"
@@ -2026,16 +2010,16 @@ msgstr ""
 "konfigurasi <filename>Group</filename> dan bagian \"Keamanan-&gt;Pengguna "
 "Dan Grup GDM\" dari dokumentasi ini untuk informasi lebih lanjut."
 
-#: C/index.docbook:1275(varlistentry/term)
+#: C/index.docbook:1277(varlistentry/term)
 msgid "Group"
 msgstr "Group"
 
-#: C/index.docbook:1277(listitem/synopsis)
+#: C/index.docbook:1279(listitem/synopsis)
 #, no-wrap
 msgid "Group=gdm"
 msgstr "Group=gdm"
 
-#: C/index.docbook:1278(listitem/para)
+#: C/index.docbook:1280(listitem/para)
 msgid ""
 "The group name under which the greeter and other GUI programs are run. Refer "
 "to the <filename>User</filename> configuration key and to the \"Security-&gt;"
@@ -2045,26 +2029,26 @@ msgstr ""
 "konfigurasi <filename>Group</filename> dan bagian \"Keamanan-&gt;Pengguna "
 "Dan Grup GDM\" dari dokumentasi ini untuk informasi lebih lanjut."
 
-#: C/index.docbook:1290(sect3/title)
+#: C/index.docbook:1292(sect3/title)
 msgid "Debug Options"
 msgstr "Opsi Debug"
 
-#: C/index.docbook:1293(variablelist/title)
+#: C/index.docbook:1295(variablelist/title)
 msgid "[debug]"
 msgstr "[debug]"
 
-#: C/index.docbook:1296(varlistentry/term)
-#: C/index.docbook:1427(varlistentry/term)
+#: C/index.docbook:1298(varlistentry/term)
+#: C/index.docbook:1429(varlistentry/term)
 msgid "Enable"
 msgstr "Enable"
 
-#: C/index.docbook:1298(listitem/synopsis)
-#: C/index.docbook:1429(listitem/synopsis)
+#: C/index.docbook:1300(listitem/synopsis)
+#: C/index.docbook:1431(listitem/synopsis)
 #, no-wrap
 msgid "Enable=false"
 msgstr "Enable=false"
 
-#: C/index.docbook:1299(listitem/para)
+#: C/index.docbook:1301(listitem/para)
 msgid ""
 "To enable debugging, set the debug/Enable key to \"true\" in the "
 "<filename>&lt;etc&gt;/gdm/custom.conf</filename> file and restart GDM. Then "
@@ -2078,24 +2062,24 @@ msgstr ""
 "(<filename>&lt;var&gt;/log/messages</filename> atau <filename>&lt;var&gt;/"
 "adm/messages</filename> bergantung kepada Sistem Operasi Anda)."
 
-#: C/index.docbook:1314(sect3/title)
+#: C/index.docbook:1316(sect3/title)
 msgid "Greeter Options"
 msgstr "Opsi Greeter"
 
-#: C/index.docbook:1317(variablelist/title)
+#: C/index.docbook:1319(variablelist/title)
 msgid "[greeter]"
 msgstr "[greeter]"
 
-#: C/index.docbook:1320(varlistentry/term)
+#: C/index.docbook:1322(varlistentry/term)
 msgid "IncludeAll"
 msgstr "IncludeAll"
 
-#: C/index.docbook:1322(listitem/synopsis)
+#: C/index.docbook:1324(listitem/synopsis)
 #, no-wrap
 msgid "IncludeAll=true"
 msgstr "IncludeAll=true"
 
-#: C/index.docbook:1323(listitem/para)
+#: C/index.docbook:1325(listitem/para)
 msgid ""
 "If true, then the face browser will show all users on the local machine. If "
 "false, the face browser will only show users who have recently logged in."
@@ -2104,7 +2088,7 @@ msgstr ""
 "mesin lokal. Bila berisi false, maka peramban wajah hanya akan menampilkan "
 "pengguna yang baru-baru ini log masuk."
 
-#: C/index.docbook:1329(listitem/para)
+#: C/index.docbook:1331(listitem/para)
 msgid ""
 "When this key is true, GDM will call fgetpwent() to get a list of local "
 "users on the system. Any users with a user id less than 500 (or 100 if "
@@ -2127,7 +2111,7 @@ msgstr ""
 "() - /sbin/nologin atau /bin/false dianggap sebagai shell yang tak valid "
 "walaupun getusershell() mengembalikan mereka)."
 
-#: C/index.docbook:1343(listitem/para)
+#: C/index.docbook:1345(listitem/para)
 msgid ""
 "If false, then GDM more simply only displays users that have previously "
 "logged in on the system (local or NIS/LDAP users) by calling the <command>ck-"
@@ -2137,16 +2121,16 @@ msgstr ""
 "sebelumnya pernah log masuk ke sistem (pengguna lokal atau NIS/LDAP) dengan "
 "memanggil antar muka ConsoleKit <command>ck-history</command>."
 
-#: C/index.docbook:1352(varlistentry/term)
+#: C/index.docbook:1354(varlistentry/term)
 msgid "Include"
 msgstr "Include"
 
-#: C/index.docbook:1354(listitem/synopsis)
+#: C/index.docbook:1356(listitem/synopsis)
 #, no-wrap
 msgid "Include="
 msgstr "Include="
 
-#: C/index.docbook:1355(listitem/para)
+#: C/index.docbook:1357(listitem/para)
 msgid ""
 "Set to a list of users to always include in the Face Browser. This value is "
 "set to a list of users separated by commas. By default, the value is empty."
@@ -2155,16 +2139,16 @@ msgstr ""
 "Nilai ini diisi dengan daftar pengguna yang dipisah dengan koma. Nilai "
 "bawaan adalah kosong."
 
-#: C/index.docbook:1364(varlistentry/term)
+#: C/index.docbook:1366(varlistentry/term)
 msgid "Exclude"
 msgstr "Exclude"
 
-#: C/index.docbook:1366(listitem/synopsis)
+#: C/index.docbook:1368(listitem/synopsis)
 #, no-wrap
 msgid "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
 msgstr "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
 
-#: C/index.docbook:1367(listitem/para)
+#: C/index.docbook:1369(listitem/para)
 msgid ""
 "Set to a list of users to always exclude in the Face Browser. This value is "
 "set to a list of users separated by commas. Note that the setting in the "
@@ -2179,24 +2163,24 @@ msgstr ""
 "maka Anda perlu menata nilai ke nilai bawaan dengan pengguna tambahan "
 "ditambahkan ke daftar."
 
-#: C/index.docbook:1381(sect3/title)
+#: C/index.docbook:1383(sect3/title)
 msgid "Security Options"
 msgstr "Opsi Keamanan"
 
-#: C/index.docbook:1384(variablelist/title)
+#: C/index.docbook:1386(variablelist/title)
 msgid "[security]"
 msgstr "[security]"
 
-#: C/index.docbook:1387(varlistentry/term)
+#: C/index.docbook:1389(varlistentry/term)
 msgid "DisallowTCP"
 msgstr "DisallowTCP"
 
-#: C/index.docbook:1389(listitem/synopsis)
+#: C/index.docbook:1391(listitem/synopsis)
 #, no-wrap
 msgid "DisallowTCP=true"
 msgstr "DisallowTCP=true"
 
-#: C/index.docbook:1390(listitem/para)
+#: C/index.docbook:1392(listitem/para)
 msgid ""
 "If true, then always append <filename>-nolisten tcp</filename> to the "
 "command line when starting attached Xservers, thus disallowing TCP "
@@ -2208,24 +2192,24 @@ msgstr ""
 "koneksi TCP. Ini konfigurasi yang lebih aman bila Anda tak memakai koneksi "
 "jauh."
 
-#: C/index.docbook:1402(sect3/title)
+#: C/index.docbook:1404(sect3/title)
 msgid "XDCMP Support"
 msgstr "Dukungan XDMCP"
 
-#: C/index.docbook:1405(variablelist/title)
+#: C/index.docbook:1407(variablelist/title)
 msgid "[xdmcp]"
 msgstr "[xdmcp]"
 
-#: C/index.docbook:1408(varlistentry/term)
+#: C/index.docbook:1410(varlistentry/term)
 msgid "DisplaysPerHost"
 msgstr "DisplaysPerHost"
 
-#: C/index.docbook:1410(listitem/synopsis)
+#: C/index.docbook:1412(listitem/synopsis)
 #, no-wrap
 msgid "DisplaysPerHost=1"
 msgstr "DisplaysPerHost=1"
 
-#: C/index.docbook:1411(listitem/para)
+#: C/index.docbook:1413(listitem/para)
 msgid ""
 "To prevent attackers from filling up the pending queue, GDM will only allow "
 "one connection for each remote computer. If you want to provide display "
@@ -2237,7 +2221,7 @@ msgstr ""
 "menyediakanlayanan tampilan ke komputer yang memiliki lebih dari satu layar, "
 "Anda mesti menaikkan nilai ini."
 
-#: C/index.docbook:1418(listitem/para)
+#: C/index.docbook:1420(listitem/para)
 msgid ""
 "Note that the number of attached DISPLAYS allowed is not limited. Only "
 "remote connections via XDMCP are limited by this configuration option."
@@ -2245,7 +2229,7 @@ msgstr ""
 "Perhatikan bahwa cacah DISPLAY tercantol yang diijinkan tak dibatasi. Hanya "
 "koneksi jauh melalui XDMCP yang dibatasi oleh opsi konfigurasi ini."
 
-#: C/index.docbook:1430(listitem/para)
+#: C/index.docbook:1432(listitem/para)
 msgid ""
 "Setting this to true enables XDMCP support allowing remote displays/X "
 "terminals to be managed by GDM."
@@ -2253,7 +2237,7 @@ msgstr ""
 "Menata ini ke true memungkinkan dukungan XDMCP yang mengijinkan tampilan "
 "jauh/terminal X dikelola oleh GDM."
 
-#: C/index.docbook:1435(listitem/para)
+#: C/index.docbook:1437(listitem/para)
 msgid ""
 "<filename>gdm</filename> listens for requests on UDP port 177. See the Port "
 "option for more information."
@@ -2261,7 +2245,7 @@ msgstr ""
 "<filename>gdm</filename> mendengarkan permintaan pada UDP port 177. Lihat "
 "opsi Port untuk informasi lebih jauh."
 
-#: C/index.docbook:1440(listitem/para)
+#: C/index.docbook:1442(listitem/para)
 msgid ""
 "If GDM is compiled to support it, access from remote displays can be "
 "controlled using the TCP Wrappers library. The service name is "
@@ -2271,11 +2255,8 @@ msgstr ""
 "dikendalikan memakai pustaka TCP Wrapper. Nama layanan adalah <filename>gdm</"
 "filename>"
 
-#: C/index.docbook:1448(para/screen)
+#: C/index.docbook:1450(para/screen)
 #, no-wrap
-#| msgid ""
-#| "\n"
-#| "gdm: .your.domain\n"
 msgid ""
 "\n"
 "gdm:.my.domain\n"
@@ -2283,13 +2264,7 @@ msgstr ""
 "\n"
 "gdm:.my.domain\n"
 
-#: C/index.docbook:1446(listitem/para)
-#| msgid ""
-#| "You should add <screen>\n"
-#| "gdm:.my.domain\n"
-#| "</screen> to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending "
-#| "on your TCP Wrappers configuration. See the <ulink type=\"help\" url="
-#| "\"man:hosts.allow\">hosts.allow</ulink> man page for details."
+#: C/index.docbook:1448(listitem/para)
 msgid ""
 "You should add <_:screen-1/> to your <filename>&lt;etc&gt;/hosts.allow</"
 "filename>, depending on your TCP Wrappers configuration. See the <ulink type="
@@ -2300,7 +2275,7 @@ msgstr ""
 "halaman man <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> "
 "untuk rinciannya."
 
-#: C/index.docbook:1457(listitem/para)
+#: C/index.docbook:1459(listitem/para)
 msgid ""
 "Please note that XDMCP is not a particularly secure protocol and that it is "
 "a good idea to block UDP port 177 on your firewall unless you really need it."
@@ -2309,16 +2284,16 @@ msgstr ""
 "untuk memblokir UDP port 177 pada firewall Anda kecuali Anda memang "
 "memerlukannya."
 
-#: C/index.docbook:1466(varlistentry/term)
+#: C/index.docbook:1468(varlistentry/term)
 msgid "HonorIndirect"
 msgstr "HonorIndirect"
 
-#: C/index.docbook:1468(listitem/synopsis)
+#: C/index.docbook:1470(listitem/synopsis)
 #, no-wrap
 msgid "HonorIndirect=true"
 msgstr "HonorIndirect=true"
 
-#: C/index.docbook:1469(listitem/para)
+#: C/index.docbook:1471(listitem/para)
 msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of "
 "<filename>gdmchooser</filename>) for X-terminals which do not supply their "
@@ -2328,16 +2303,16 @@ msgstr ""
 "<filename>gdmchooser</filename>) bagi X-terminal yang tak menyediakan "
 "peramban tampilannya sendiri."
 
-#: C/index.docbook:1478(varlistentry/term)
+#: C/index.docbook:1480(varlistentry/term)
 msgid "MaxPending"
 msgstr "MaxPending"
 
-#: C/index.docbook:1480(listitem/synopsis)
+#: C/index.docbook:1482(listitem/synopsis)
 #, no-wrap
 msgid "MaxPending=4"
 msgstr "MaxPending=4"
 
-#: C/index.docbook:1481(listitem/para)
+#: C/index.docbook:1483(listitem/para)
 msgid ""
 "To avoid denial of service attacks, GDM has fixed size queue of pending "
 "connections. Only MaxPending displays can start at the same time."
@@ -2346,7 +2321,7 @@ msgstr ""
 "sambungan yang tertunda berukuran tetap. Hanya MaxPending tampilan yang "
 "dapat dimulai pada saat yang sama."
 
-#: C/index.docbook:1487(listitem/para)
+#: C/index.docbook:1489(listitem/para)
 msgid ""
 "Please note that this parameter does not limit the number of remote displays "
 "which can be managed. It only limits the number of displays initiating a "
@@ -2356,16 +2331,16 @@ msgstr ""
 "dapat dikelola. Ini hanya membatasi cacah tampilan yang mengawali koneksi "
 "secara simultan."
 
-#: C/index.docbook:1496(varlistentry/term)
+#: C/index.docbook:1498(varlistentry/term)
 msgid "MaxSessions"
 msgstr "MaxSessions"
 
-#: C/index.docbook:1498(listitem/synopsis)
+#: C/index.docbook:1500(listitem/synopsis)
 #, no-wrap
 msgid "MaxSessions=16"
 msgstr "MaxSessions=16"
 
-#: C/index.docbook:1499(listitem/para)
+#: C/index.docbook:1501(listitem/para)
 msgid ""
 "Determines the maximum number of remote display connections which will be "
 "managed simultaneously. I.e. the total number of remote displays that can "
@@ -2375,16 +2350,16 @@ msgstr ""
 "secara simultan. Yaitu cacah total tampilan jauh yang dapat memakai host "
 "Anda."
 
-#: C/index.docbook:1508(varlistentry/term)
+#: C/index.docbook:1510(varlistentry/term)
 msgid "MaxWait"
 msgstr "MaxWait"
 
-#: C/index.docbook:1510(listitem/synopsis)
+#: C/index.docbook:1512(listitem/synopsis)
 #, no-wrap
 msgid "MaxWait=30"
 msgstr "MaxWait=30"
 
-#: C/index.docbook:1511(listitem/para)
+#: C/index.docbook:1513(listitem/para)
 msgid ""
 "When GDM is ready to manage a display an ACCEPT packet is sent to it "
 "containing a unique session id which will be used in future XDMCP "
@@ -2394,7 +2369,7 @@ msgstr ""
 "kepadanya, yang memuat id sesi unik yang akan dipakai dalam percakapan XDMCP "
 "di masa mendatang."
 
-#: C/index.docbook:1517(listitem/para)
+#: C/index.docbook:1519(listitem/para)
 msgid ""
 "GDM will then place the session id in the pending queue waiting for the "
 "display to respond with a MANAGE request."
@@ -2402,7 +2377,7 @@ msgstr ""
 "GDM lalu akan menempatkan id sesi ke dalam antrian tertunda yang menunggu "
 "tampilan merespon dengan permintaan MANAGE."
 
-#: C/index.docbook:1522(listitem/para)
+#: C/index.docbook:1524(listitem/para)
 msgid ""
 "If no response is received within MaxWait seconds, GDM will declare the "
 "display dead and erase it from the pending queue freeing up the slot for "
@@ -2412,16 +2387,16 @@ msgstr ""
 "bahwa tampilan mati dan menghapusnya dari antrian tertunda, membebaskan slot "
 "bagi tampilan lain."
 
-#: C/index.docbook:1531(varlistentry/term)
+#: C/index.docbook:1533(varlistentry/term)
 msgid "MaxWaitIndirect"
 msgstr "MaxWaitIndirect"
 
-#: C/index.docbook:1533(listitem/synopsis)
+#: C/index.docbook:1535(listitem/synopsis)
 #, no-wrap
 msgid "MaxWaitIndirect=30"
 msgstr "MaxWaitIndirect=30"
 
-#: C/index.docbook:1534(listitem/para)
+#: C/index.docbook:1536(listitem/para)
 msgid ""
 "The MaxWaitIndirect parameter determines the maximum number of seconds "
 "between the time where a user chooses a host and the subsequent indirect "
@@ -2439,16 +2414,16 @@ msgstr ""
 "ada lebih banyak host mencoba mengirim query tak langsung daripada "
 "<filename>MaxPendingIndirect</filename>."
 
-#: C/index.docbook:1548(varlistentry/term)
+#: C/index.docbook:1550(varlistentry/term)
 msgid "PingIntervalSeconds"
 msgstr "PingIntervalSeconds"
 
-#: C/index.docbook:1550(listitem/synopsis)
+#: C/index.docbook:1552(listitem/synopsis)
 #, no-wrap
 msgid "PingIntervalSeconds=60"
 msgstr "PingIntervalSeconds=60"
 
-#: C/index.docbook:1551(listitem/para)
+#: C/index.docbook:1553(listitem/para)
 msgid ""
 "If the Xserver does not respond in the specified number of seconds, then the "
 "connection is stopped and the session ended. When this happens the slave "
@@ -2462,7 +2437,7 @@ msgstr ""
 "pengaturan ini, sehingga mungkin perlu menaikkan tenggang waktu bila "
 "meningkatkan dari GDM 2.20 dan sebelumnya ke versi yang lebih baru."
 
-#: C/index.docbook:1560(listitem/para)
+#: C/index.docbook:1562(listitem/para)
 msgid ""
 "Note that GDM in the past used to have a <filename>PingInterval</filename> "
 "configuration key which was also in minutes. For most purposes you'd want "
@@ -2479,16 +2454,16 @@ msgstr ""
 "terminal dimatikan atau dimulai ulang dan Anda ingin mengakhiri sesi "
 "tersebut."
 
-#: C/index.docbook:1573(varlistentry/term)
+#: C/index.docbook:1575(varlistentry/term)
 msgid "Port"
 msgstr "Port"
 
-#: C/index.docbook:1575(listitem/synopsis)
+#: C/index.docbook:1577(listitem/synopsis)
 #, no-wrap
 msgid "Port=177"
 msgstr "Port=177"
 
-#: C/index.docbook:1576(listitem/para)
+#: C/index.docbook:1578(listitem/para)
 msgid ""
 "The UDP port number <filename>gdm</filename> should listen to for XDMCP "
 "requests. Do not change this unless you know what you are doing."
@@ -2497,16 +2472,16 @@ msgstr ""
 "permintaan XDMCP. Jangan mengubah ini kecuali Anda tahu apa yang Anda "
 "lakukan."
 
-#: C/index.docbook:1585(varlistentry/term)
+#: C/index.docbook:1587(varlistentry/term)
 msgid "Willing"
 msgstr "Willing"
 
-#: C/index.docbook:1587(listitem/synopsis)
+#: C/index.docbook:1589(listitem/synopsis)
 #, no-wrap
 msgid "Willing=&lt;etc&gt;/gdm/Xwilling"
 msgstr "Willing=&lt;etc&gt;/gdm/Xwilling"
 
-#: C/index.docbook:1588(listitem/para)
+#: C/index.docbook:1590(listitem/para)
 msgid ""
 "When the machine sends a WILLING packet back after a QUERY it sends a string "
 "that gives the current status of this server. The default message is the "
@@ -2526,11 +2501,11 @@ msgstr ""
 "3 detik untuk mencegah kemungkinan denial of service dengan membanjiri mesin "
 "dengan paket QUERY."
 
-#: C/index.docbook:1607(sect2/title)
+#: C/index.docbook:1609(sect2/title)
 msgid "Simple Greeter Configuration"
 msgstr "Konfigurasi Penyapa Sederhana"
 
-#: C/index.docbook:1609(sect2/para)
+#: C/index.docbook:1611(sect2/para)
 msgid ""
 "The GDM default greeter is called the simple Greeter and is configured via "
 "GConf. Default values are stored in GConf in the <filename>gdm-simple-"
@@ -2548,58 +2523,58 @@ msgstr ""
 "command> atau <command>gconf-editor</command>. Opsi konfigurasi berikut "
 "didukung:"
 
-#: C/index.docbook:1620(variablelist/title)
+#: C/index.docbook:1622(variablelist/title)
 msgid "Greeter Configuration Keys"
 msgstr "Kunci Konfigurasi Penyapa"
 
-#: C/index.docbook:1623(varlistentry/term)
+#: C/index.docbook:1625(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/banner_message_enable"
 msgstr "/apps/gdm/simple-greeter/banner_message_enable"
 
-#: C/index.docbook:1625(listitem/synopsis)
-#: C/index.docbook:1646(listitem/synopsis)
-#: C/index.docbook:1657(listitem/synopsis)
-#: C/index.docbook:1722(listitem/synopsis)
-#: C/index.docbook:1787(listitem/synopsis)
-#: C/index.docbook:1798(listitem/synopsis)
-#: C/index.docbook:1809(listitem/synopsis)
-#: C/index.docbook:1820(listitem/synopsis)
+#: C/index.docbook:1627(listitem/synopsis)
+#: C/index.docbook:1648(listitem/synopsis)
+#: C/index.docbook:1659(listitem/synopsis)
+#: C/index.docbook:1724(listitem/synopsis)
+#: C/index.docbook:1789(listitem/synopsis)
+#: C/index.docbook:1800(listitem/synopsis)
+#: C/index.docbook:1811(listitem/synopsis)
+#: C/index.docbook:1822(listitem/synopsis)
 #, no-wrap
 msgid "false (boolean)"
 msgstr "false (boolean)"
 
-#: C/index.docbook:1626(listitem/para)
+#: C/index.docbook:1628(listitem/para)
 msgid "Controls whether the banner message text is displayed."
 msgstr "Mengendalikan apakah teks pesan banner ditampilkan."
 
-#: C/index.docbook:1633(varlistentry/term)
+#: C/index.docbook:1635(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/banner_message_text"
 msgstr "/apps/gdm/simple-greeter/banner_message_text"
 
-#: C/index.docbook:1635(listitem/synopsis)
+#: C/index.docbook:1637(listitem/synopsis)
 #, no-wrap
 msgid "NULL (string)"
 msgstr "NULL (string)"
 
-#: C/index.docbook:1636(listitem/para)
+#: C/index.docbook:1638(listitem/para)
 msgid "Specifies the text banner message to show on the greeter window."
 msgstr "Menyatakan pesan banner teks untuk ditampilkan pada jendela penyapa."
 
-#: C/index.docbook:1644(varlistentry/term)
+#: C/index.docbook:1646(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
 msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 
-#: C/index.docbook:1647(listitem/para)
+#: C/index.docbook:1649(listitem/para)
 msgid "Controls whether to show the restart buttons in the login window."
 msgstr ""
 "Mengendalikan apakah menampilkan tombol hidupkan ulang komputer pada jendela "
 "log masuk."
 
-#: C/index.docbook:1655(varlistentry/term)
+#: C/index.docbook:1657(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/disable_user_list"
 msgstr "/apps/gdm/simple-greeter/disable_user_list"
 
-#: C/index.docbook:1658(listitem/para)
+#: C/index.docbook:1660(listitem/para)
 msgid ""
 "If true, then the face browser with known users is not shown in the login "
 "window."
@@ -2607,30 +2582,30 @@ msgstr ""
 "Bila true, maka peramban wajah dengan pengguna yang dikenal tak ditampilkan "
 "di jendela log masuk."
 
-#: C/index.docbook:1666(varlistentry/term)
+#: C/index.docbook:1668(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
 msgstr "/apps/gdm/simple-greeter/logo_icon_name"
 
-#: C/index.docbook:1668(listitem/synopsis)
+#: C/index.docbook:1670(listitem/synopsis)
 #, no-wrap
 msgid "computer (string)"
 msgstr "komputer (string)"
 
-#: C/index.docbook:1669(listitem/para)
+#: C/index.docbook:1671(listitem/para)
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Tata ke nama ikon ditemakan untuk dipakai bagi logo penyapa."
 
-#: C/index.docbook:1676(varlistentry/term)
+#: C/index.docbook:1678(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/recent-languages"
 msgstr "/apps/gdm/simple-greeter/recent-languages"
 
-#: C/index.docbook:1678(listitem/synopsis)
-#: C/index.docbook:1700(listitem/synopsis)
+#: C/index.docbook:1680(listitem/synopsis)
+#: C/index.docbook:1702(listitem/synopsis)
 #, no-wrap
 msgid "[] (string list)"
 msgstr "[] (daftar string)"
 
-#: C/index.docbook:1679(listitem/para)
+#: C/index.docbook:1681(listitem/para)
 msgid ""
 "Set to a list of languages to be shown by default in the login window. "
 "Default value is \"[]\". With the default setting only the system default "
@@ -2643,7 +2618,7 @@ msgstr ""
 "dialog yang menampilkan daftar lengkap bahasa yang tersedia tempat pengguna "
 "dapat memilih."
 
-#: C/index.docbook:1687(listitem/para)
+#: C/index.docbook:1689(listitem/para)
 msgid ""
 "Users are not intended to change this setting by hand. Instead GDM keeps "
 "track of any languages selected in this configuration key, and will show "
@@ -2656,11 +2631,11 @@ msgstr ""
 "pilihan \"Lainnya...\". Dengan cara ini, bahasa yang umum dipilih akan lebih "
 "mudah dipilih."
 
-#: C/index.docbook:1698(varlistentry/term)
+#: C/index.docbook:1700(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/recent-layouts"
 msgstr "/apps/gdm/simple-greeter/recent-layouts"
 
-#: C/index.docbook:1701(listitem/para)
+#: C/index.docbook:1703(listitem/para)
 msgid ""
 "Set to a list of keyboard layouts to be shown by default in the login panel. "
 "Default value is \"[]\". With the default setting only the system default "
@@ -2674,7 +2649,7 @@ msgstr ""
 "yang memunculkan kotak dialog yang menunjukkan daftar lengkap tata letak "
 "papan tik yang tersedia yang dapat dipilih oleh pengguna."
 
-#: C/index.docbook:1709(listitem/para)
+#: C/index.docbook:1711(listitem/para)
 msgid ""
 "Users are not intended to change this setting by hand. Instead GDM keeps "
 "track of any keyboard layouts selected in this configuration key, and will "
@@ -2687,33 +2662,33 @@ msgstr ""
 "papan tik bersama dengan pilihan \"Lainnya...\". Dengan cara ini, tata letak "
 "papan tik yang umum dipilih akan lebih mudah dipilih."
 
-#: C/index.docbook:1720(varlistentry/term)
+#: C/index.docbook:1722(varlistentry/term)
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
 msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 
-#: C/index.docbook:1723(listitem/para)
+#: C/index.docbook:1725(listitem/para)
 msgid ""
 "Controls whether compiz is used as the window manager instead of metacity."
 msgstr ""
 "Mengendalikan apakah compiz dipakai sebagai manajer jendela menggantikan "
 "metacity."
 
-#: C/index.docbook:1733(sect2/title)
+#: C/index.docbook:1735(sect2/title)
 msgid "Accessibility Configuration"
 msgstr "Konfigurasi Aksesibilitas"
 
-#: C/index.docbook:1735(sect2/para)
+#: C/index.docbook:1737(sect2/para)
 msgid ""
 "This section describes the accessibility configuration options available in "
 "GDM."
 msgstr ""
 "Seksi ini menjelaskan opsi konfigurasi aksesibilitas yang tersedia dalam GDM."
 
-#: C/index.docbook:1741(sect3/title)
+#: C/index.docbook:1743(sect3/title)
 msgid "GDM Accessibility Dialog And GConf Keys"
 msgstr "Dialog Aksesibilitas GDM Dan Kunci GConf"
 
-#: C/index.docbook:1743(sect3/para)
+#: C/index.docbook:1745(sect3/para)
 msgid ""
 "The GDM greeter panel at the login screen displays an accessibility icon. "
 "Clicking on that icon opens the GDM Accessibility Dialog. In the GDM "
@@ -2725,7 +2700,7 @@ msgstr ""
 "Aksesibilitas GDM, ada daftar kotak contreng, sehingga pengguna dapat "
 "mengaktifkan atau menonaktifkan perkakas bantu yang terkait."
 
-#: C/index.docbook:1750(sect3/para)
+#: C/index.docbook:1752(sect3/para)
 msgid ""
 "The checkboxes that correspond to the on-screen keyboard, screen magnifier "
 "and screen reader assistive tools act on the three GConf keys that are "
@@ -2750,7 +2725,7 @@ msgstr ""
 "berjalan selama sesi log masuk terakhir akan otomatis diluncurkan pada sesi "
 "log masuk selanjutnya."
 
-#: C/index.docbook:1764(sect3/para)
+#: C/index.docbook:1766(sect3/para)
 msgid ""
 "The other checkboxes in the GDM Accessibility Dialog do not have "
 "corresponding GConf keys because no additional program is launched to "
@@ -2764,26 +2739,26 @@ msgstr ""
 "dengan fitur aksesibilitas yang disediakan oleh Xserver, yang selalu "
 "berjalan selama sesi GDM."
 
-#: C/index.docbook:1774(sect3/title)
+#: C/index.docbook:1776(sect3/title)
 msgid "Accessibility GConf Keys"
 msgstr "Kunci GConf Aksesibilitas"
 
-#: C/index.docbook:1776(sect3/para)
+#: C/index.docbook:1778(sect3/para)
 msgid ""
 "GDM offers the following GConf keys to control its accessibility features:"
 msgstr ""
 "GDM menawarkan kunci GConf berikut untuk mengendalikan fitur "
 "aksesibilitasnya:"
 
-#: C/index.docbook:1782(variablelist/title)
+#: C/index.docbook:1784(variablelist/title)
 msgid "GDM Configuration Keys"
 msgstr "Kunci Konfigurasi GDM"
 
-#: C/index.docbook:1785(varlistentry/term)
+#: C/index.docbook:1787(varlistentry/term)
 msgid "/desktop/gnome/interface/accessibility"
 msgstr "/desktop/gnome/interface/accessibility"
 
-#: C/index.docbook:1788(listitem/para)
+#: C/index.docbook:1790(listitem/para)
 msgid ""
 "Controls whether the Accessibility infrastructure will be started with the "
 "GDM GUI. This is needed for many accessibility technology programs to work."
@@ -2791,11 +2766,11 @@ msgstr ""
 "Mengendalikan apakah infrastruktur Aksesibilitas akan dimulai dengan GUI "
 "GDM. Ini diperlukan oleh banyak program teknologi aksesibilitas agar bekerja."
 
-#: C/index.docbook:1796(varlistentry/term)
+#: C/index.docbook:1798(varlistentry/term)
 msgid "/desktop/gnome/applications/at/screen_magnifier_enabled"
 msgstr "/desktop/gnome/applications/at/screen_magnifier_enabled"
 
-#: C/index.docbook:1799(listitem/para)
+#: C/index.docbook:1801(listitem/para)
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen magnifier application."
@@ -2803,11 +2778,11 @@ msgstr ""
 "Bila ditata, alat asistif yang dikaitkan ke kunci GConf ini akan dimulai "
 "dengan program GUI GDM. Secara baku ini adalah aplikasi pembesaran layar."
 
-#: C/index.docbook:1807(varlistentry/term)
+#: C/index.docbook:1809(varlistentry/term)
 msgid "/desktop/gnome/applications/at/screen_keyboard_enabled"
 msgstr "/desktop/gnome/applications/at/screen_keyboard_enabled"
 
-#: C/index.docbook:1810(listitem/para)
+#: C/index.docbook:1812(listitem/para)
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is an on-screen keyboard "
@@ -2816,11 +2791,11 @@ msgstr ""
 "Bila ditata, alat asistif yang dikaitkan ke kunci GConf ini akan dimulai "
 "dengan program GUI GDM. Secara baku ini adalah aplikasi papan tik di layar."
 
-#: C/index.docbook:1818(varlistentry/term)
+#: C/index.docbook:1820(varlistentry/term)
 msgid "/desktop/gnome/applications/at/screen_reader_enabled"
 msgstr "/desktop/gnome/applications/at/screen_reader_enabled"
 
-#: C/index.docbook:1821(listitem/para)
+#: C/index.docbook:1823(listitem/para)
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen reader application."
@@ -2828,11 +2803,11 @@ msgstr ""
 "Bila ditata, alat asistif yang dikaitkan ke kunci GConf ini akan dimulai "
 "dengan program GUI GDM. Secara baku ini adalah aplikasi pembaca layar."
 
-#: C/index.docbook:1832(sect3/title)
+#: C/index.docbook:1834(sect3/title)
 msgid "Linking GConf Keys to Accessbility Tools"
 msgstr "Mengaitkan Kunci GConf ke Alat Aksesibilitas"
 
-#: C/index.docbook:1834(sect3/para)
+#: C/index.docbook:1836(sect3/para)
 msgid ""
 "For the screen_magnifier_enabled, the screen_keyboard_enabled, and the "
 "screen_reader_enabled GConf keys, the assistive tool which gets launched "
@@ -2852,7 +2827,7 @@ msgstr ""
 "AutostartCondition pada berkas desktop. Maka baris AutostartCondition dalam "
 "berkas desktop secara persis bisa salah satu dari berikut:"
 
-#: C/index.docbook:1846(sect3/screen)
+#: C/index.docbook:1848(sect3/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -2865,7 +2840,7 @@ msgstr ""
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled\n"
 
-#: C/index.docbook:1852(sect3/para)
+#: C/index.docbook:1854(sect3/para)
 msgid ""
 "When an accessibility key is true, then any program which is linked to that "
 "key in a GDM autostart desktop file will be launched (unless the Hidden key "
@@ -2880,11 +2855,11 @@ msgstr ""
 "asistif bila ada beberapa berkas desktop dengan AutostartCondition ini dalam "
 "direktori autostart GDM."
 
-#: C/index.docbook:1862(sect3/title)
+#: C/index.docbook:1864(sect3/title)
 msgid "Example Of Modifying Accessibility Tool Configuration"
 msgstr "Contoh Pengubahan Konfigurasi Alat Aksesibilitas"
 
-#: C/index.docbook:1864(sect3/para)
+#: C/index.docbook:1866(sect3/para)
 msgid ""
 "For example, if GNOME is distributed with GOK as the default on-screen "
 "keyboard, then this could be replaced with a different program if desired. "
@@ -2898,7 +2873,7 @@ msgstr ""
 "\"onboard\" dan sebagai tambah mengaktifkan perkakas asistif \"mousetweaks\" "
 "untuk dukungan dwelling, maka konfigurasi berikut diperlukan."
 
-#: C/index.docbook:1872(sect3/para)
+#: C/index.docbook:1874(sect3/para)
 msgid ""
 "Create a desktop file for onboard and a second one for mousetweaks; for "
 "example, onboard.desktop and mousetweaks.desktop. These files must be placed "
@@ -2910,11 +2885,11 @@ msgstr ""
 "mesti ditempatkan dalam direktori autostart GDM dan dalam format yang "
 "diterangkan dalam bagian \"Konfigurasi Mulai Otomatis\" dari dokumen ini."
 
-#: C/index.docbook:1880(sect3/para)
+#: C/index.docbook:1882(sect3/para)
 msgid "The following is an example <filename>onboard.desktop</filename> file:"
 msgstr "Berikut ini adalah contoh berkas <filename>onboard.desktop</filename>:"
 
-#: C/index.docbook:1884(sect3/screen)
+#: C/index.docbook:1886(sect3/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -2943,13 +2918,13 @@ msgstr ""
 "Categories=GNOME;GTK;Accessibility;\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 
-#: C/index.docbook:1898(sect3/para)
+#: C/index.docbook:1900(sect3/para)
 msgid ""
 "The following is an example <filename>mousetweaks.desktop</filename> file:"
 msgstr ""
 "Berikut ini adalah contoh berkas <filename>mousetweaks.desktop</filename>:"
 
-#: C/index.docbook:1903(sect3/screen)
+#: C/index.docbook:1905(sect3/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -2978,7 +2953,7 @@ msgstr ""
 "Categories=GNOME;GTK;Accessibility;\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 
-#: C/index.docbook:1917(sect3/para)
+#: C/index.docbook:1919(sect3/para)
 msgid ""
 "Note the line with the AutostartCondition that links both desktop files to "
 "the GConf key for the on-screen keyboard."
@@ -2986,7 +2961,7 @@ msgstr ""
 "Perhatikan baris dengan AutostartCondition yang menautkan kedua berkas "
 "desktop ke kunci GConf bagi papan tik pada layar."
 
-#: C/index.docbook:1922(sect3/para)
+#: C/index.docbook:1924(sect3/para)
 msgid ""
 "To disable GOK from starting, the desktop file for the GOK on-screen "
 "keyboard must be removed or deactivated. Otherwise onboard and GOK would "
@@ -3000,7 +2975,7 @@ msgstr ""
 "dari direktori mulai-sendiri GDM atau dengan menambahkan pengaturan kunci "
 "\"Hidden=true\" ke berkas gok.desktop."
 
-#: C/index.docbook:1930(sect3/para)
+#: C/index.docbook:1932(sect3/para)
 msgid ""
 "After making these changes, GOK will no longer be started when the user "
 "activates the on-screen keyboard in the GDM session; but onboard and "
@@ -3010,11 +2985,11 @@ msgstr ""
 "mengaktifkan papan tik pada layar dalam sesi GDM, tapi sebagai gantinya yang "
 "akan diluncurkan adalah onboard dan mousetweaks."
 
-#: C/index.docbook:1939(sect2/title)
+#: C/index.docbook:1941(sect2/title)
 msgid "General Session Settings"
 msgstr "Tatanan Sesi Umum"
 
-#: C/index.docbook:1948(sect2/para)
+#: C/index.docbook:1950(sect2/para)
 msgid ""
 "The GDM Greeter uses some of the same framework that your desktop session "
 "will use. And so, it is influenced by a number of the same GConf settings. "
@@ -3030,11 +3005,11 @@ msgstr ""
 "terpasang GDM b) kebijakan wajib sistem. GDM memasang kebijakan wajibnya "
 "sendiri untuk mengunci beberapa pengaturan demi keamanan."
 
-#: C/index.docbook:1959(sect2/title)
+#: C/index.docbook:1961(sect2/title)
 msgid "GNOME Settings Daemon"
 msgstr "Daemon Penataan GNOME"
 
-#: C/index.docbook:1972(sect2/para)
+#: C/index.docbook:1974(sect2/para)
 msgid ""
 "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, "
 "background, sound, xsettings."
@@ -3042,7 +3017,7 @@ msgstr ""
 "GDM mengaktifkan plugin gnome-settings-daemon berikut: a11y-keyboard, "
 "background, sound, xsettings."
 
-#: C/index.docbook:1977(sect2/para)
+#: C/index.docbook:1979(sect2/para)
 msgid ""
 "These are responsible for things like the background image, font and theme "
 "settings, sound events, etc."
@@ -3050,7 +3025,7 @@ msgstr ""
 "Ini bertanggungjawab bagi hal-hal seperti gambar latar, pengaturan fonta dan "
 "tema, kejadian-kejadian bersuara, dsb."
 
-#: C/index.docbook:1982(sect2/para)
+#: C/index.docbook:1984(sect2/para)
 msgid ""
 "Plugins can also be disabled using GConf. For example, if you want to "
 "disable the sound plugin then unset the following key: <filename>/apps/gdm/"
@@ -3060,11 +3035,11 @@ msgstr ""
 "ingin mematikan plugin suara maka hapuskan tatanan kunci berikut: <filename>/"
 "apps/gdm/simple-greeter/settings-manager-plugins/sound/active</filename>."
 
-#: C/index.docbook:1990(sect2/title)
+#: C/index.docbook:1992(sect2/title)
 msgid "GDM Session Configuration"
 msgstr "Konfigurasi Sesi GDM"
 
-#: C/index.docbook:1992(sect2/para)
+#: C/index.docbook:1994(sect2/para)
 msgid ""
 "GDM sessions are specified using the FreeDesktop.org Desktop Entry "
 "Specification, which can be referenced at the following URL: <ulink url="
@@ -3076,7 +3051,7 @@ msgstr ""
 "Specifications/desktop-entry-spec\"> http://www.freedesktop.org/wiki/"
 "Specifications/desktop-entry-spec</ulink>."
 
-#: C/index.docbook:1999(sect2/para)
+#: C/index.docbook:2001(sect2/para)
 msgid ""
 "By default, GDM will install desktop files in the <filename>&lt;share&gt;/"
 "xsessions</filename> directory. GDM will search the following directories in "
@@ -3096,7 +3071,7 @@ msgstr ""
 "filename> ditata ke <filename>&lt;etc&gt;/dm/</filename> kecuali GDM ditata "
 "untuk memakai direktori lain melalui opsi \"--with-dmconfdir\"."
 
-#: C/index.docbook:2012(sect2/para)
+#: C/index.docbook:2014(sect2/para)
 msgid ""
 "A session can be disabled by editing the desktop file and adding a line as "
 "follows: <filename>Hidden=true</filename>."
@@ -3104,7 +3079,7 @@ msgstr ""
 "Suatu sesi dapat dimatikan dengan menyunting berkas desktop dan menambahkan "
 "baris berikut: <filename>Hidden=true</filename>."
 
-#: C/index.docbook:2017(sect2/para)
+#: C/index.docbook:2019(sect2/para)
 msgid ""
 "GDM desktop files support a GDM-specific extension, a key named \"X-GDM-"
 "BypassXsession\". If the key is not specified in a desktop file, the value "
@@ -3131,11 +3106,11 @@ msgstr ""
 "mengawakutu masalah dalam skrip pengguna atau sistem yang mungkin mencegah "
 "seorang pengguna untuk mengawali suatu sesi."
 
-#: C/index.docbook:2036(sect2/title)
+#: C/index.docbook:2038(sect2/title)
 msgid "GDM User Session and Language Configuration"
 msgstr "Konfigurasi Bahasa dan Sesi Pengguna GDM "
 
-#: C/index.docbook:2037(sect2/para)
+#: C/index.docbook:2039(sect2/para)
 msgid ""
 "The user's default session and language choices are stored in the "
 "<filename>~/.dmrc</filename> file. When a user logs in for the first time, "
@@ -3149,7 +3124,7 @@ msgstr ""
 "bawaan ini hanya dengan mengubah ke nilai yang berbeda ketika sedang log "
 "masuk. GDM akan mengingat perubahan ini untuk log masuk seterusnya."
 
-#: C/index.docbook:2045(sect2/para)
+#: C/index.docbook:2047(sect2/para)
 msgid ""
 "The <filename>~/.dmrc</filename> file is in the standard <filename>INI</"
 "filename> format. It has one section called <filename>[Desktop]</filename> "
@@ -3161,7 +3136,7 @@ msgstr ""
 "yang memiliki dua kunci: <filename>Session</filename> dan "
 "<filename>Language</filename>."
 
-#: C/index.docbook:2052(sect2/para)
+#: C/index.docbook:2054(sect2/para)
 msgid ""
 "The <filename>Session</filename> key specifies the basename of the session "
 "<filename>.desktop</filename> file that the user wishes to normally use "
@@ -3177,7 +3152,7 @@ msgstr ""
 "salah satu kunci tersebut hilang, akan dipakai bawaan sistem. Berkas "
 "biasanya nampak sebagai berikut:"
 
-#: C/index.docbook:2061(sect2/screen)
+#: C/index.docbook:2063(sect2/screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -3190,15 +3165,15 @@ msgstr ""
 "Session=gnome\n"
 "Language=id_ID.UTF-8\n"
 
-#: C/index.docbook:2073(sect1/title)
+#: C/index.docbook:2075(sect1/title)
 msgid "GDM Commands"
 msgstr "Perintah GDM"
 
-#: C/index.docbook:2076(sect2/title)
+#: C/index.docbook:2078(sect2/title)
 msgid "GDM Root User Commands"
 msgstr "Perintah Pengguna Root GDM"
 
-#: C/index.docbook:2078(sect2/para)
+#: C/index.docbook:2080(sect2/para)
 msgid ""
 "The GDM package provides the following commands in <filename>sbindir</"
 "filename> intended to be run by the root user:"
@@ -3206,69 +3181,55 @@ msgstr ""
 "Paket GDM menyediakan perintah berikut di <filename>sbindir</filename> yang "
 "dimaksudkan untuk dijalankan oleh pengguna root:"
 
-#: C/index.docbook:2084(sect3/title) C/index.docbook:2099(variablelist/title)
-msgid ""
-"<command>gdm</command> and <command>gdm-binary</command> Command Line Options"
-msgstr ""
-"Opsi Perintah Baris <command>gdm</command> dan <command>gdm-binary</command>"
+#: C/index.docbook:2086(sect3/title) C/index.docbook:2094(variablelist/title)
+msgid "<command>gdm</command> Command Line Options"
+msgstr "Opsi Perintah Baris <command>gdm</command>"
 
-#: C/index.docbook:2087(sect3/para)
+#: C/index.docbook:2088(sect3/para)
 msgid ""
-"The <command>gdm</command> command is really just a script which runs the "
-"<command>gdm-binary</command>, passing along any options. Before launching "
-"<command>gdm-binary</command>, the gdm wrapper script will source the "
-"<filename>&lt;etc&gt;/profile</filename> file to set the standard system "
-"environment variables. In order to better support internationalization, it "
-"will also set the LC_MESSAGES environment variable to LANG if neither "
-"LC_MESSAGES or LC_ALL are set. The <command>gdm-binary</command> is the "
-"actual GDM daemon."
+"<command>gdm</command> is the main daemon which sets up graphical login "
+"environment and starts necesary helpers."
 msgstr ""
-"Perintah <command>gdm</command> sebenarnya hanya suatu skrip yang "
-"menjalankan <command>gdm-binary</command>, meneruskan semua opsi. Sebelum "
-"meluncurkan <command>gdm-binary</command>, skrip pembungkus gdm akan men-"
-"source berkas <filename>&lt;etc&gt;/profile</filename> untuk menata variabel "
-"lingkungan sistem standar. Agar dapat mendukung internasionalisasi secara "
-"lebih baik, itu juga akan menata variabel lingkungan LC_MESSAGES ke LANG "
-"bila LC_MESSAGES maupun LC_ALL tak diisi. <command>gdm-binary</command> "
-"adalah daemon GDM yang sebenarnya."
+"<command>gdm</command> adalah daemon utama yang menyiapkan lingkungan log "
+"masuk grafis dan memulai para pembantu yang diperlukan."
 
-#: C/index.docbook:2103(varlistentry/term)
+#: C/index.docbook:2097(varlistentry/term)
 msgid "-?, --help"
 msgstr "-?, --help"
 
-#: C/index.docbook:2105(listitem/para)
+#: C/index.docbook:2099(listitem/para)
 msgid "Gives a brief overview of the command line options."
 msgstr "Memberi kilasan singkat atas opsi perintah baris."
 
-#: C/index.docbook:2112(varlistentry/term)
+#: C/index.docbook:2106(varlistentry/term)
 msgid "--fatal-warnings"
 msgstr "--fatal-warnings"
 
-#: C/index.docbook:2114(listitem/para)
+#: C/index.docbook:2108(listitem/para)
 msgid "Make all warnings cause GDM to exit."
 msgstr "Buat semua peringatan menyebabkan GDM keluar."
 
-#: C/index.docbook:2121(varlistentry/term)
+#: C/index.docbook:2115(varlistentry/term)
 msgid "--timed-exit"
 msgstr "--timed-exit"
 
-#: C/index.docbook:2123(listitem/para)
+#: C/index.docbook:2117(listitem/para)
 msgid "Exit after 30 seconds. Useful for debugging."
 msgstr "Keluar setelah 30 detik. Berguna untuk pengawakutuan."
 
-#: C/index.docbook:2130(varlistentry/term)
+#: C/index.docbook:2124(varlistentry/term)
 msgid "--version"
 msgstr "--version"
 
-#: C/index.docbook:2132(listitem/para)
+#: C/index.docbook:2126(listitem/para)
 msgid "Print the version of the GDM daemon."
 msgstr "Cetak versi daemon GDM."
 
-#: C/index.docbook:2141(sect3/title)
+#: C/index.docbook:2135(sect3/title)
 msgid "<command>gdm-restart</command> Command Line Options"
 msgstr "Opsi Perintah Baris <command>gdm-restart</command>"
 
-#: C/index.docbook:2143(sect3/para)
+#: C/index.docbook:2137(sect3/para)
 msgid ""
 "<command>gdm-restart</command> stops and restarts GDM by sending the GDM "
 "daemon a HUP signal. This command will immediately terminate all sessions "
@@ -3278,11 +3239,11 @@ msgstr ""
 "mengirim sinyal HUP ke daemon GDM. Perintah ini akan seketika menghentikan "
 "semua sesi dan melog keluar pengguna yang sedang log masuk dengan GDM."
 
-#: C/index.docbook:2151(sect3/title)
+#: C/index.docbook:2145(sect3/title)
 msgid "<command>gdm-safe-restart</command> Command Line Options"
 msgstr "Opsi Perintah Baris <command>gdm-safe-restart</command>"
 
-#: C/index.docbook:2153(sect3/para)
+#: C/index.docbook:2147(sect3/para)
 msgid ""
 "<command>gdm-safe-restart</command> stops and restarts GDM by sending the "
 "GDM daemon a USR1 signal. GDM will be restarted as soon as all users log out."
@@ -3291,11 +3252,11 @@ msgstr ""
 "dengan mengirim sinyal USR1 ke daemon GDM. GDM akan direstart segera setelah "
 "semua pengguna log keluar."
 
-#: C/index.docbook:2161(sect3/title)
+#: C/index.docbook:2155(sect3/title)
 msgid "<command>gdm-stop</command> Command Line Options"
 msgstr "Opsi Perintah Baris <command>gdm-stop</command>"
 
-#: C/index.docbook:2163(sect3/para)
+#: C/index.docbook:2157(sect3/para)
 msgid ""
 "<command>gdm-stop</command> stops GDM by sending the GDM daemon a TERM "
 "signal."
@@ -3303,11 +3264,11 @@ msgstr ""
 "<command>gdm-stop</command> menghentikan GDM dengan cara mengirim sinyal "
 "TERM ke daemon GDM."
 
-#: C/index.docbook:2174(sect1/title)
+#: C/index.docbook:2168(sect1/title)
 msgid "Troubleshooting"
 msgstr "Penanganan Masalah"
 
-#: C/index.docbook:2182(sect1/para)
+#: C/index.docbook:2176(sect1/para)
 msgid ""
 "This section discusses helpful tips for getting GDM working. In general, if "
 "you have a problem using GDM, you can submit a bug or send an email to the "
@@ -3319,7 +3280,7 @@ msgstr ""
 "kutu atau surel ke milis gdm-list. Informasi tentang bagaimana melakukan ini "
 "ada pada bagian pengantar dokumen ini."
 
-#: C/index.docbook:2189(sect1/para)
+#: C/index.docbook:2183(sect1/para)
 msgid ""
 "If GDM is failing to work properly, it is always a good idea to include "
 "debug information. To enable debugging, set the debug/Enable key to \"true\" "
@@ -3346,11 +3307,11 @@ msgstr ""
 "ulang syslog (lihat halaman man <ulink type=\"help\" url=\"man:syslog"
 "\">syslog</ulink>)."
 
-#: C/index.docbook:2205(sect2/title)
+#: C/index.docbook:2199(sect2/title)
 msgid "GDM Will Not Start"
 msgstr "GDM Tidak Akan Dimulai"
 
-#: C/index.docbook:2207(sect2/para)
+#: C/index.docbook:2201(sect2/para)
 msgid ""
 "There are a many problems that can cause GDM to fail to start, but this "
 "section will discuss a few common problems and how to approach tracking down "
@@ -3364,7 +3325,7 @@ msgstr ""
 "galat atau dialog ketika ia mencoba memulai, tapi bisa menjadi sulit melacak "
 "masalah ketika GDM gagal diam-diam."
 
-#: C/index.docbook:2216(sect2/para)
+#: C/index.docbook:2210(sect2/para)
 msgid ""
 "First make sure that the Xserver is configured properly. The GDM "
 "configuration file contains a command in the [server-Standard] section that "
@@ -3386,7 +3347,7 @@ msgstr ""
 "begitu, maka ubahlah perintah Xserver di berkas konfigurasi GDM sehingga "
 "tepat bagi sistem Anda."
 
-#: C/index.docbook:2229(sect2/para)
+#: C/index.docbook:2223(sect2/para)
 msgid ""
 "Also make sure that the <filename>/tmp</filename> directory has reasonable "
 "ownership and permissions, and that the machine's file system is not full. "
@@ -3396,17 +3357,11 @@ msgstr ""
 "dan ijin yang memadai, dan sistem berkas mesin tak penuh. Masalah-masalah "
 "ini akan menyebabkan GDM gagal dijalankan."
 
-#: C/index.docbook:2240(sect1/title)
+#: C/index.docbook:2234(sect1/title)
 msgid "License"
 msgstr "Lisensi"
 
-#: C/index.docbook:2241(sect1/para)
-#| msgid ""
-#| "This program is free software; you can redistribute it and/or modify it "
-#| "under the terms of the <ulink type=\"help\" url=\"gnome-help:gpl"
-#| "\"><citetitle>GNU General Public License</citetitle></ulink> as published "
-#| "by the Free Software Foundation; either version 2 of the License, or (at "
-#| "your option) any later version."
+#: C/index.docbook:2235(sect1/para)
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the <ulink type=\"help\" url=\"gnome-help:gpl\"> "
@@ -3420,7 +3375,7 @@ msgstr ""
 "dipublikasikan oleh Free Software Foundation; baik versi 2 dari Lisensi, "
 "atau (terserah pilihan Anda) versi setelahnya."
 
-#: C/index.docbook:2249(sect1/para)
+#: C/index.docbook:2243(sect1/para)
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -3432,7 +3387,7 @@ msgstr ""
 "TERTENTU. Lihat <citetitle>GNU General Public License</citetitle> untuk "
 "rincian lebih lanjut."
 
-#: C/index.docbook:2263(para/address)
+#: C/index.docbook:2257(para/address)
 #, no-wrap
 msgid ""
 "\n"
@@ -3449,16 +3404,7 @@ msgstr ""
 "      <country>USA</country>\n"
 "      "
 
-#: C/index.docbook:2255(sect1/para)
-#| msgid ""
-#| "A copy of the <citetitle>GNU General Public License</citetitle> is "
-#| "included as an appendix to the <citetitle>GNOME Users Guide</citetitle>. "
-#| "You may also obtain a copy of the <citetitle>GNU General Public License</"
-#| "citetitle> from the Free Software Foundation by visiting <ulink type="
-#| "\"http\" url=\"http://www.fsf.org\">their Web site</ulink> or by writing "
-#| "to <address> Free Software Foundation, Inc. <street>51 Franklin Street, "
-#| "Fifth Floor</street><city>Boston</city>, <state>MA</"
-#| "state><postcode>02110-1301</postcode><country>USA</country></address>"
+#: C/index.docbook:2249(sect1/para)
 msgid ""
 "A copy of the <citetitle>GNU General Public License</citetitle> is included "
 "as an appendix to the <citetitle>GNOME Users Guide</citetitle>. You may also "
@@ -3470,21 +3416,14 @@ msgstr ""
 "disertakan sebagai lampiran dari <citetitle>Panduan Pengguna GNOME</"
 "citetitle>. Anda juga dapat memperoleh salinan dari <citetitle>GNU General "
 "Public License</citetitle> dari Free Software Foundation dengan mengunjungi "
-"ulink type=\"http\" url=\"http://www.fsf.org\">laman Web mereka</ulink> atau "
-"dengan mengirim surat ke <_:address-1/>"
+"<ulink type=\"http\" url=\"http://www.fsf.org\">laman Web mereka</ulink> "
+"atau dengan mengirim surat ke <_:address-1/>"
 
 #: C/legal.xml:9(para/ulink)
 msgid "link"
 msgstr "taut"
 
 #: C/legal.xml:2(legalnotice/para)
-#| msgid ""
-#| "Permission is granted to copy, distribute and/or modify this document "
-#| "under the terms of the GNU Free Documentation License (GFDL), Version 1.1 "
-#| "or any later version published by the Free Software Foundation with no "
-#| "Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. You "
-#| "can find a copy of the GFDL at this <ulink type=\"help\" url=\"ghelp:fdl"
-#| "\">link</ulink> or in the file COPYING-DOCS distributed with this manual."
 msgid ""
 "Permission is granted to copy, distribute and/or modify this document under "
 "the terms of the GNU Free Documentation License (GFDL), Version 1.1 or any "
