@@ -1359,7 +1359,7 @@ AC_ARG_WITH([run-dir],
 if ! test -z "$with_run_dir"; then
    GDM_RUN_DIR=$with_run_dir
 else
-   GDM_RUN_DIR=${localstatedir}/gdm
+   GDM_RUN_DIR=${localstatedir}/run/gdm
 fi
 
 AC_SUBST([GDM_RUN_DIR])
