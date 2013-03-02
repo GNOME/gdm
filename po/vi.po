@@ -1,7 +1,7 @@
 # Vietnamese translation for GDM2.
 # Copyright © 2010 GNOME i18n Project for Vietnamese.
 # This file is distributed under the same license as the gdm2 package.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2012.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2012-2013.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
 #
 msgid ""
@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-12-27 20:33+0000\n"
-"PO-Revision-Date: 2013-03-02 09:45+0700\n"
+"PO-Revision-Date: 2013-03-02 09:48+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "Language: vi\n"
@@ -236,7 +236,7 @@ msgstr "Hiện thời chỉ một trình khác có thể kết nối"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
-msgstr "Không thể tạo ổ cắm !"
+msgstr "Không thể tạo socket!"
 
 #: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
@@ -244,20 +244,19 @@ msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Không thể ghi tập tin PID %s, có thể do hết đĩa: %s"
 
 #: ../daemon/main.c:189
-#, fuzzy, c-format
-#| msgid "Unable to create transient display: "
+#, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr "Không thể tạo trình bày chuyển tiếp: "
+msgstr "Không thể tạo thư mục đánh dấu chạy một lần %s: %s"
 
 #: ../daemon/main.c:195
 #, c-format
 msgid "Failed to create AuthDir %s: %s"
-msgstr ""
+msgstr "Lỗi tạo AuthDir %s: %s"
 
 #: ../daemon/main.c:201
 #, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr ""
+msgstr "Lỗi tạo LogDir %s: %s"
 
 #: ../daemon/main.c:236
 #, c-format
@@ -412,13 +411,15 @@ msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Number of allowed authentication failures"
-msgstr ""
+msgstr "Số lần xác thực thất bại cho phép"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
+"Số lần người dùng được phép xác thực, trược khi bỏ cuộc và quay lại chọn "
+"người dùng."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
@@ -466,23 +467,19 @@ msgstr "Chọn hệ thống"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
 msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: không thể tạo vùng đệm XDMCP !"
+msgstr "XDMCP: không thể tạo vùng đệm XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "Không thể đọc phần đầu XDMCP."
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-#, fuzzy
-#| msgid "XMDCP: Incorrect XDMCP version!"
 msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XMDCP: phiên bản XDMCP không đúng !"
+msgstr "XMDCP: Phiên bản XDMCP không đúng!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-#, fuzzy
-#| msgid "XMDCP: Unable to parse address"
 msgid "XDMCP: Unable to parse address"
-msgstr "XMDCP: không thể phân tích địa chỉ"
+msgstr "XMDCP: Không thể phân tích địa chỉ"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -844,10 +841,8 @@ msgid "- New GDM login"
 msgstr "— Đăng nhập GDM mới"
 
 #: ../utils/gdmflexiserver.c:762
-#, fuzzy
-#| msgid "Unable to create transient display: "
 msgid "Unable to start new display"
-msgstr "Không thể tạo trình bày chuyển tiếp: "
+msgstr "Không thể khởi động display mới"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
