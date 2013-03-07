@@ -13,16 +13,16 @@
 # Tommi Vainikainen <Tommi.Vainikainen@iki.fi>, 2003-2005, 2008-2011.
 # Ilkka Tuohela <hile@iki.fi>, 2005-2009.
 # Timo Jyrinki <timo.jyrinki@iki.fi>, 2010.
-# Jiri Grönroos <jiri.gronroos@iki.fi>, 2012.
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-09-15 14:28+0000\n"
-"PO-Revision-Date: 2012-09-23 14:39+0300\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
+"POT-Creation-Date: 2012-12-27 20:33+0000\n"
+"PO-Revision-Date: 2013-03-06 19:08+0200\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,20 +41,18 @@ msgstr "/dev/urandom ei ole merkkilaite"
 msgid "could not find user \"%s\" on system"
 msgstr "järjestelmästä ei löytynyt käyttäjää ”%s”"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
 #, c-format
-#| msgid "no user account available"
 msgid "No session available yet"
 msgstr "Ei istuntoa käytettävissä"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to authorize user"
 msgid "Unable to look up UID of user %s"
-msgstr "Käyttäjän valtuutus epäonnistui"
+msgstr "Käyttäjän %s UID-tunnisteen etsiminen epäonnistui"
 
 #: ../daemon/gdm-manager.c:291
-#| msgid "no user account available"
 msgid "no sessions available"
 msgstr "ei istuntoja käytettävissä"
 
@@ -65,68 +63,64 @@ msgstr ""
 
 #: ../daemon/gdm-manager.c:406
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find session for user %s"
 msgstr "Käyttäjälle %s ei löydy istuntoa"
 
 #: ../daemon/gdm-manager.c:476
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find appropriate session for user %s"
 msgstr "Käyttäjälle %s ei löydy soveltuvaa istuntoa"
 
 #: ../daemon/gdm-manager.c:671
-#| msgid "User %s doesn't exist"
 msgid "User doesn't own session"
 msgstr "Käyttäjä ei omista istuntoa"
 
 #: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
-#| msgid "no user account available"
 msgid "No session available"
 msgstr "Istuntoa ei ole käytettävissä"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: yhteydenotto isänäyttöön ”%s” ei onnistunut"
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Palvelin käynnistettiin käyttäjänä %s, mutta käyttäjää ei ole olemassa"
 
-#: ../daemon/gdm-server.c:463 ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Ryhmätunnusta ei voitu asettaa arvoon %d"
 
-#: ../daemon/gdm-server.c:469
+#: ../daemon/gdm-server.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() epäonnistui %s:lle"
 
-#: ../daemon/gdm-server.c:475
+#: ../daemon/gdm-server.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid:tä ei voitu asettaa arvoon %d"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Näytön %s lokitiedostoa ei voi avata."
 
-#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Virhe asetettaessa %s arvoksi %s"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Palvelimen prioriteettia ei voitu asettaa arvoon %d: %s"
 
-#: ../daemon/gdm-server.c:722
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tyhjä palvelinkomento näytölle %s"
@@ -155,7 +149,7 @@ msgstr "Näyttölaite"
 msgid "The display device"
 msgstr "Näyttölaite"
 
-#: ../daemon/gdm-session.c:1177
+#: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
 msgstr ""
 
@@ -211,16 +205,16 @@ msgstr "virhe kerrottaessa todennusjärjestelmälle näyttönimeä: %s"
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "virhe kerrottaessa todennusjärjestelmälle näytön xauth-oikeuksista: %s"
 
-#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "käyttäjätiliä ei ole saatavilla"
 
-#: ../daemon/gdm-session-worker.c:1490
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "Käyttäjää ei voitu vaihtaa"
 
-#: ../daemon/gdm-simple-slave.c:1370
+#: ../daemon/gdm-simple-slave.c:1330
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -232,25 +226,24 @@ msgstr ""
 "järjestelmälokia. Tämä näyttö poistetaan toistaiseksi käytöstä. Käynnistä "
 "GDM uudelleen, kun ongelma on korjattu."
 
-#: ../daemon/gdm-simple-slave.c:1411
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
 msgid "Can only be called before user is logged in"
-msgstr ""
+msgstr "On kutsuttavissa ainoastaan ennen käyttäjän sisäänkirjautumista"
 
-#: ../daemon/gdm-simple-slave.c:1421
+#: ../daemon/gdm-simple-slave.c:1381
 #, c-format
 msgid "Caller not GDM"
-msgstr ""
+msgstr "Kutsuja ei ole GDM"
 
-#: ../daemon/gdm-simple-slave.c:1474
-#| msgid "Currently logged in"
+#: ../daemon/gdm-simple-slave.c:1434
 msgid "User not logged in"
 msgstr "Käyttäjä ei ole kirjautunut sisään"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:370
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
-msgstr ""
+msgstr "Tällä hetkellä vain yksi asiakas voi olla yhdistettynä"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
@@ -261,75 +254,64 @@ msgstr "Pistokkeen luonti epäonnistui!"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID-tiedostoa %s ei voi kirjoittaa: levy on ehkä täynnä: %s"
 
-#: ../daemon/main.c:160
-#, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Lokikansiota %s ei ole olemassa tai se ei ole kansio."
+#: ../daemon/main.c:189
+#, fuzzy, c-format
+#| msgid "Unable to start new display"
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "Uuden näytön käynnistys epäonnistui"
 
-#: ../daemon/main.c:176
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Valtuuskansiota %s ei ole olemassa. Keskeytetään."
-
-#: ../daemon/main.c:180
-#, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Valtuuskansio %s ei ole kansio. Keskeytetään."
-
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+msgid "Failed to create AuthDir %s: %s"
 msgstr ""
-"Valtuuskansio %s ei ole käyttäjän %d ja ryhmän %d omistuksessa. Keskeytetään."
 
-#: ../daemon/main.c:261
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+msgid "Failed to create LogDir %s: %s"
 msgstr ""
-"Valtuuskansiolla %s on väärä oikeustaso %o, Pitäisi olla %o. Keskeytetään."
 
-#: ../daemon/main.c:298
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM-käyttäjää ”%s” ei löydy. Keskeytetään!"
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Pääkäyttäjä ei voi olla GDM-käyttäjä. Keskeytetään!"
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM-ryhmää ”%s” ei löydy. Keskeytetään!"
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM-ryhmä ei voi olla ”root”. Keskeytetään!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "Tee kaikista varoituksista kriittisiä"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "Lopeta tietyn ajan kuluttua (vianetsintää varten)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "Tulosta GDM-versio"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "Gnomen kirjautumisikkuna"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "Vain pääkäyttäjä voi suorittaa GDM:n"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "Gnomen kirjautumisikkunan istunnonhallinta"
 
@@ -341,7 +323,7 @@ msgstr "Näytön tunniste"
 msgid "ID"
 msgstr "Tunniste"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
 msgid "GNOME Display Manager Slave"
 msgstr "Gnome-työpöydänhallinta"
 
@@ -350,14 +332,6 @@ msgstr "Gnome-työpöydänhallinta"
 msgid "Login Window"
 msgstr "Kirjautumisikkuna"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "Gnomen suurennuslasi"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Suurenna osia näytöstä"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME-kuori"
@@ -365,22 +339,6 @@ msgstr "GNOME-kuori"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Ikkunoiden hallinta ja latominen"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "Gnomen virtuaalinäppäimistö"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Näytä virtuaalinäppäimistö"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca-näytönlukija"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Esitä näytön tietoja puheena tai pistekirjoituksena"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -490,28 +448,28 @@ msgstr "Uuden näytön käynnistys epäonnistui"
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#, fuzzy
 #| msgid "Unable to open session"
 msgid "Unable to activate session: "
-msgstr "Istuntoa ei voi avata"
+msgstr "Istunnon aktivointi epäonnistui: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Tämänhetkistä istuntoa ei voitu tunnistaa."
 
-#: ../gui/libgdm/gdm-user-switching.c:351
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "Käyttäjä ei voi vaihtaa istuntoja."
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
 #, fuzzy, c-format
 msgid "Could not identify the current seat."
 msgstr "Tämänhetkistä istuntoa ei voitu tunnistaa."
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -520,7 +478,7 @@ msgstr ""
 "Järjestelmä ei kykene päättää, pitäisikö vaihtaa olemassa olevaan "
 "kirjautumisruutuun vai käynnistää uusi."
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Järjestelmä ei kykene käynnistää uutta kirjautumisruutua."
@@ -538,12 +496,14 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP-otsakkeen luku epäonnistui!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
+#| msgid "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Väärä XDMCP-versio!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XDMCP: Osoitetta ei voitu tulkita"
+#| msgid "XMDCP: Unable to parse address"
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Osoitteen jäsennys epäonnistui"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -562,7 +522,7 @@ msgid "Log into session with username and password"
 msgstr "Kirjaudu istuntoon käyttäjätunnuksella ja salasanalla"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "Kirjaudu sisään"
@@ -612,31 +572,31 @@ msgstr "Moduulipolku"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "polku älykortin PKCS #11 -ajuriin"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "saatiin virhe tai katkos tapahtumalähteeltä"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "NSS-tietoturvajärjestelmää ei voitu alustaa"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "soveltuvaa älykorttiajuria ei löytynyt"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "älykorttiajuria ”%s” ei voitu ladata"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "ei voitu tarkkailla sisääntulevia korttitapahtumia - %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "kohdattiin odottamaton virhe odotettaessa älykorttitapahtumia"
@@ -753,23 +713,23 @@ msgstr "Avaa lukitus"
 msgid "Login"
 msgstr "Kirjaudu sisään"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Valmiustila"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Käynnistä uudelleen"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Sammuta"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Jäljellä oleva aika tuntematon"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Paneeli"
 
@@ -879,9 +839,36 @@ msgstr "Kirjaudu järjestelmään automaattisesti valintojen teon jälkeen"
 msgid "Currently logged in"
 msgstr "Sisäänkirjautuneena"
 
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:64
+msgid "Only the VERSION command is supported"
+msgstr "Vain VERSION-komento on tuettu"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "COMMAND"
+msgstr "KOMENTO"
+
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+msgid "Ignored — retained for compatibility"
+msgstr "Ei huomioitu – jätetty tähän yhteensopivuuden vuoksi"
+
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Vianetsintätuloste"
+
+#: ../utils/gdmflexiserver.c:71
+msgid "Version of this application"
+msgstr "Tämän ohjelman versio"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:706
+msgid "- New GDM login"
+msgstr "- uusi GDM-sisäänkirjautuminen"
+
+#: ../utils/gdmflexiserver.c:762
+#| msgid "Unable to start new display"
+msgid "Unable to start new display"
+msgstr "Uuden näytön käynnistys epäonnistui"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -891,6 +878,42 @@ msgstr "Kuvakaappaus otettu"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Kaappaa kuva näytöstä"
+
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Lokikansiota %s ei ole olemassa tai se ei ole kansio."
+
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr "Valtuuskansiota %s ei ole olemassa. Keskeytetään."
+
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr "Valtuuskansio %s ei ole kansio. Keskeytetään."
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr ""
+#~ "Valtuuskansio %s ei ole käyttäjän %d ja ryhmän %d omistuksessa. "
+#~ "Keskeytetään."
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr ""
+#~ "Valtuuskansiolla %s on väärä oikeustaso %o, Pitäisi olla %o. Keskeytetään."
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "Gnomen suurennuslasi"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "Suurenna osia näytöstä"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "Gnomen virtuaalinäppäimistö"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "Näytä virtuaalinäppäimistö"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Orca-näytönlukija"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "Esitä näytön tietoja puheena tai pistekirjoituksena"
 
 #~ msgid "Unable to initialize login system"
 #~ msgstr "Kirjautumisjärjestelmän alustus epäonnistui"
@@ -1016,21 +1039,6 @@ msgstr "Kaappaa kuva näytöstä"
 #~ "Aseta todeksi, jos haluat käyttää xsettings-asetusten "
 #~ "hallintaliitännäistä."
 
-#~ msgid "Only the VERSION command is supported"
-#~ msgstr "Vain VERSION-komento on tuettu"
-
-#~ msgid "COMMAND"
-#~ msgstr "KOMENTO"
-
-#~ msgid "Ignored — retained for compatibility"
-#~ msgstr "Ei huomioitu – jätetty tähän yhteensopivuuden vuoksi"
-
-#~ msgid "Version of this application"
-#~ msgstr "Tämän ohjelman versio"
-
 #~ msgid "The system is unable to find a login screen to switch to."
 #~ msgstr ""
 #~ "Järjestelmä ei löydä kirjautumisruutua, johon olisi mahdollista vaihtaa."
-
-#~ msgid "- New GDM login"
-#~ msgstr "- uusi GDM-sisäänkirjautuminen"
