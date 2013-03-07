@@ -291,6 +291,11 @@ AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
                            [Add plymouth support @<:@default=auto@:>@]),
             [with_plymouth=$withval], [with_plymouth=auto])
+AC_ARG_ENABLE(fallback-greeter,
+	      AS_HELP_STRING([--enable-fallback-greeter],
+                             [Enable fallback greeter @<:@default=no@:>@]),,
+              enable_fallback_greeter=no)
+AM_CONDITIONAL(ENABLE_FALLBACK_GREETER, test x$enable_fallback_greeter = xyes)
 
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],

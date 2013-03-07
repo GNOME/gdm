@@ -80,10 +80,18 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.schemas.in.in >gdm.schemas.in
 
-gdm-shell.session: $(srcdir)/gdm-shell.session.in
+if ENABLE_FALLBACK_GREETER
+FALLBACK_SESSION_IN = $(srcdir)/gdm-shell-with-fallback.session.in
+else
+FALLBACK_SESSION_IN = $(srcdir)/gdm-shell.session.in
+endif
+
+EXTRA_DIST += gdm-shell.session.in gdm-shell-with-fallback.session.in
+
+gdm-shell.session: $(FALLBACK_SESSION_IN)
 	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
 		-e 's,[@]CHECK_ACCELERATED_DIR[@],$(CHECK_ACCELERATED_DIR),g' \
-		< $(srcdir)/gdm-shell.session.in > gdm-shell.session
+		< $< > $@.tmp && mv $@.tmp $@
 
 localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
@@ -153,7 +161,6 @@ EXTRA_DIST +=			\
 	PreSession.in 		\
 	PostSession.in 		\
 	PostLogin 		\
-	gdm-shell.session.in    \
 	dconf-profile \
 	00-upstream-settings \
 	00-upstream-settings-locks \
