@@ -1,11 +1,11 @@
 # Thai translation of gdm.
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2013 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm package.
 # Ross Golder <ross@golder.org>, 2002.
 # Surichat Sumrit <nook@opentle.org>, 2003, 2004.
 # Supranee Thirawatthanasuk <supranee@opentle.org>, 2004.
 # Chanchai Junlouchai <taz@opentle.org>, 2004.
-# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2004-2012.
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2004-2013.
 # Sira Nokyoongtong <gumaraa@gmail.com>, 2010.
 #
 msgid ""
@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-09-04 19:23+0000\n"
-"PO-Revision-Date: 2012-09-11 17:59+0700\n"
+"POT-Creation-Date: 2012-12-27 20:33+0000\n"
+"PO-Revision-Date: 2013-03-09 10:27+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "Language: th\n"
@@ -33,37 +33,10 @@ msgstr "/dev/urandom ไม่ได้เป็นอุปกรณ์แบ�
 msgid "could not find user \"%s\" on system"
 msgstr "ไม่พบผู้ใช้ \"%s\" ในระบบ"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
 #, c-format
 msgid "No session available yet"
 msgstr "ยังไม่มีวาระให้ใช้"
-
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "ไม่มีผู้ใช้ %s"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "ไม่มีกลุ่ม %s"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "ไม่สามารถกำหนด groupid เป็น %d"
-
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () ล้มเหลวสำหรับ %s"
-
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %d"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
@@ -97,33 +70,48 @@ msgstr "ผู้ใช้ไม่ได้เป็นเจ้าของว
 msgid "No session available"
 msgstr "ไม่มีวาระให้ใช้"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: ไม่สามารถเชื่อมต่อไปยังดิสเพลย์แม่ '%s'"
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "จะสร้างโพรเซสเซิร์ฟเวอร์ในนามผู้ใช้ %s แต่ผู้ใช้นั้นไม่มีอยู่จริง"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "ไม่สามารถกำหนด groupid เป็น %d"
+
+#: ../daemon/gdm-server.c:468
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () ล้มเหลวสำหรับ %s"
+
+#: ../daemon/gdm-server.c:474
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %d"
+
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ไม่สามารถเปิดแฟ้มปูมสำหรับดิสเพลย์ %s!"
 
-#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: เกิดความผิดพลาดขณะตั้งค่า %s เป็น %s"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: ไม่สามารถกำหนดลำดับความสำคัญของเซิร์ฟเวอร์เป็น %d ได้: %s"
 
-#: ../daemon/gdm-server.c:718
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: คำสั่งเซิร์ฟเวอร์ว่างเปล่าสำหรับดิสเพลย์ %s"
@@ -152,70 +140,70 @@ msgstr "อุปกรณ์ดิสเพลย์"
 msgid "The display device"
 msgstr "อุปกรณ์ดิสเพลย์"
 
-#: ../daemon/gdm-session.c:1177
+#: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
 msgstr "ไม่สามารถสร้างโพรเซสสำหรับช่วยยืนยันตัวบุคคลได้"
 
-#: ../daemon/gdm-session-worker.c:1025
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "เกิดข้อผิดพลาดขณะเตรียมการโต้ตอบกับระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "ข้อผิดพลาดทั่วไป"
 
-#: ../daemon/gdm-session-worker.c:1027
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "หน่วยความจำหมด"
 
-#: ../daemon/gdm-session-worker.c:1028
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "ข้อผิดพลาดของผู้เขียนโปรแกรม"
 
-#: ../daemon/gdm-session-worker.c:1029
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "ชื่อผู้ใช้:"
 
-#: ../daemon/gdm-session-worker.c:1042
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งพร็อมต์ที่จะใช้ต่อระบบยืนยันตัวบุคคล: %s"
 
-#: ../daemon/gdm-session-worker.c:1056
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อโฮสต์ของผู้ใช้ต่อระบบยืนยันตัวบุคคล: %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อคอนโซลของผู้ใช้ต่อระบบยืนยันตัวบุคคล: %s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อดิสเพลย์ต่อระบบยืนยันตัวบุคคล: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งข้อมูลลับ xauth ของดิสเพลย์ต่อระบบยืนยันตัวบุคคล: %s"
 
-#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "ไม่มีบัญชีผู้ใช้"
 
-#: ../daemon/gdm-session-worker.c:1486
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "ไม่สามารถเปลี่ยนไปเป็นผู้ใช้ได้"
 
-#: ../daemon/gdm-simple-slave.c:1356
+#: ../daemon/gdm-simple-slave.c:1330
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -227,21 +215,21 @@ msgstr ""
 "หรือตรวจสอบปูมของระบบเพื่อหาสาเหตุ ในระหว่างนี้ หน้าจอนี้จะถูกปิดใช้งาน กรุณาเริ่ม GDM "
 "ใหม่เมื่อแก้ปัญหาแล้ว"
 
-#: ../daemon/gdm-simple-slave.c:1397
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "ถูกเรียกได้ก่อนผู้ใช้เข้าระบบเท่านั้น"
 
-#: ../daemon/gdm-simple-slave.c:1407
+#: ../daemon/gdm-simple-slave.c:1381
 #, c-format
 msgid "Caller not GDM"
 msgstr "ผู้เรียกไม่ใช่ GDM"
 
-#: ../daemon/gdm-simple-slave.c:1466
+#: ../daemon/gdm-simple-slave.c:1434
 msgid "User not logged in"
 msgstr "ผู้ใช้ไม่ได้เข้าระบบ"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "ขณะนี้ ยอมให้ลูกข่ายเชื่อมต่อได้ครั้งละหนึ่งรายเท่านั้น"
@@ -255,73 +243,63 @@ msgstr "ไม่สามารถสร้างซ็อกเก็ตได
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "ไม่สามารถเขียนแฟ้ม PID %s: เป็นไปได้ว่าพื้นที่ดิสก์ไม่พอ: %s"
 
-#: ../daemon/main.c:160
+#: ../daemon/main.c:189
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Logdir %s ไม่มีอยู่หรือไม่ใช่ไดเรกทอรี"
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "สร้างไดเรกทอรี %s สำหรับทำเครื่องหมายว่ามีการทำงานแล้วไม่สำเร็จ: %s"
 
-#: ../daemon/main.c:176
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "ไม่มี Authdir %s อยู่ ขอยกเลิก"
+msgid "Failed to create AuthDir %s: %s"
+msgstr "สร้าง AuthDir %s ไม่สำเร็จ: %s"
 
-#: ../daemon/main.c:180
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Authdir %s ไม่ใช่ไดเรกทอรี ขอยกเลิก"
+msgid "Failed to create LogDir %s: %s"
+msgstr "สร้าง LogDir %s ไม่สำเร็จ: %s"
 
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "AuthDir %s ไม่ได้เป็นของผู้ใช้ %d กลุ่ม %d ขอยกเลิก"
-
-#: ../daemon/main.c:261
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "Authdir %s มีการอนุญาตสิทธิ์ %o ซึ่งไม่ถูกต้อง และควรเป็น %o  ขอยกเลิก"
-
-#: ../daemon/main.c:298
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "ไม่พบบัญชีผู้ใช้ '%s' สำหรับ GDM  ขอยกเลิก!"
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr "บัญชีผู้ใช้สำหรับ GDM ไม่ควรเป็น root  ขอยกเลิก!"
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "ไม่พบกลุ่ม '%s' ของ GDM  ขอยกเลิก!"
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr "กลุ่มของ GDM ไม่ควรเป็น root  ขอยกเลิก!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "ถือว่าคำเตือนเสมือนข้อผิดพลาด"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "จบการทำงานหลังจากระยะเวลาหนึ่ง (สำหรับการดีบั๊ก)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "พิมพ์รุ่น GDM"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "โปรแกรมจัดการการเข้าระบบของ GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "ผู้ใช้ root เท่านั้นที่สามารถเรียกทำงาน GDM ได้"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "ตัวดำเนินงานวาระของโปรแกรมจัดการการเข้าระบบของ GNOME"
 
@@ -333,7 +311,7 @@ msgstr "หมายเลขดิสเพลย์"
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
 msgid "GNOME Display Manager Slave"
 msgstr "หน่วยลูกของโปรแกรมจัดการการเข้าระบบของ GNOME"
 
@@ -342,14 +320,6 @@ msgstr "หน่วยลูกของโปรแกรมจัดการ
 msgid "Login Window"
 msgstr "หน้าจอเข้าระบบ"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "แว่นขยายหน้าจอของ GNOME"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "ขยายดูส่วนต่างๆ ของหน้าจอ"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
@@ -357,22 +327,6 @@ msgstr "GNOME Shell"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "การจัดการหน้าต่างและ composite"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "แป้นพิมพ์บนจอของ GNOME"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "ใช้แป้นพิมพ์บนจอ"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca: โปรแกรมอ่านหน้าจอ"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "นำเสนอข้อมูลหน้าจอเป็นเสียงพูดหรืออักษรเบรลล์"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -472,22 +426,23 @@ msgid "Unable to activate session: "
 msgstr "ไม่สามารถเปิดใช้วาระได้: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
 #, c-format
 msgid "Could not identify the current session."
 msgstr "ไม่สามารถระบุวาระปัจจุบันได้"
 
-#: ../gui/libgdm/gdm-user-switching.c:351
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "ผู้ใช้ไม่สามารถสลับวาระได้"
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "ไม่สามารถระบุที่นั่งปัจจุบันได้"
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -495,7 +450,7 @@ msgid ""
 msgstr ""
 "ระบบไม่สามารถตัดสินได้ว่าจะสลับไปยังหน้าจอเข้าระบบที่มีอยู่ หรือจะเปิดหน้าจอเข้าระบบอันใหม่"
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "ระบบไม่สามารถเปิดหน้าจอเข้าระบบอันใหม่"
@@ -513,11 +468,11 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: ไม่สามารถอ่านข้อมูลส่วนหัวของ XDMCP ได้"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: รุ่นของ XDMCP ไม่ถูกต้อง"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
+msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ไม่สามารถแจงที่อยู่"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
@@ -537,7 +492,7 @@ msgid "Log into session with username and password"
 msgstr "เข้าระบบโดยใช้ชื่อผู้ใช้และรหัสผ่าน"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "เข้าระบบ"
@@ -587,31 +542,31 @@ msgstr "พาธของมอดูล"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "พาธเต็มของไดรเวอร์ PKCS #11 สำหรับสมาร์ตการ์ด"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "ได้รับข้อผิดพลาดหรือถูกตัดการเชื่อมต่อจากแหล่งเหตุการณ์"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "ไม่สามารถตั้งต้นระบบรักษาความปลอดภัย NSS ได้"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "ไม่พบไดรเวอร์สมาร์ตการ์ดที่เหมาะสม"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "ไม่สามารถโหลดไดรเวอร์ '%s' สำหรับสมาร์ตการ์ด"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "ไม่สามารถเฝ้าดูเหตุการณ์ขาเข้าของการ์ดได้ - %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "พบข้อผิดพลาดที่ไม่คาดหมายขณะคอยเหตุการณ์จากสมาร์ตการ์ด"
@@ -727,23 +682,23 @@ msgstr "ปลดล็อค"
 msgid "Login"
 msgstr "เข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "พักเครื่อง"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "เริ่มเปิดเครื่องใหม่"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "ปิดเครื่อง"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "ไม่ทราบเวลาที่เหลืออยู่"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "พาเนล"
 
@@ -853,9 +808,35 @@ msgstr "เข้าระบบโดยอัตโนมัติหลัง
 msgid "Currently logged in"
 msgstr "เข้าระบบอยู่"
 
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:64
+msgid "Only the VERSION command is supported"
+msgstr "รองรับแค่คำสั่ง VERSION เท่านั้น"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "COMMAND"
+msgstr "คำสั่ง"
+
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+msgid "Ignored — retained for compatibility"
+msgstr "ไม่สนใจ — คงไว้เพื่อความเข้ากันได้กับระบบเก่าเท่านั้น"
+
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "การแสดงข้อความดีบั๊ก"
+
+#: ../utils/gdmflexiserver.c:71
+msgid "Version of this application"
+msgstr "แสดงรุ่นของโปรแกรมนี้"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:706
+msgid "- New GDM login"
+msgstr "- การเข้าระบบผ่าน GDM"
+
+#: ../utils/gdmflexiserver.c:762
+msgid "Unable to start new display"
+msgstr "ไม่สามารถเปิดดิสเพลย์ใหม่ได้"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -866,3 +847,41 @@ msgstr "ภาพหน้าจอถูกจับ"
 msgid "Take a picture of the screen"
 msgstr "จับภาพหน้าจอ"
 
+#~ msgid "User %s doesn't exist"
+#~ msgstr "ไม่มีผู้ใช้ %s"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "ไม่มีกลุ่ม %s"
+
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Logdir %s ไม่มีอยู่หรือไม่ใช่ไดเรกทอรี"
+
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr "ไม่มี Authdir %s อยู่ ขอยกเลิก"
+
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr "Authdir %s ไม่ใช่ไดเรกทอรี ขอยกเลิก"
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr "AuthDir %s ไม่ได้เป็นของผู้ใช้ %d กลุ่ม %d ขอยกเลิก"
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr "Authdir %s มีการอนุญาตสิทธิ์ %o ซึ่งไม่ถูกต้อง และควรเป็น %o  ขอยกเลิก"
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "แว่นขยายหน้าจอของ GNOME"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "ขยายดูส่วนต่างๆ ของหน้าจอ"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "แป้นพิมพ์บนจอของ GNOME"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "ใช้แป้นพิมพ์บนจอ"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Orca: โปรแกรมอ่านหน้าจอ"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "นำเสนอข้อมูลหน้าจอเป็นเสียงพูดหรืออักษรเบรลล์"
