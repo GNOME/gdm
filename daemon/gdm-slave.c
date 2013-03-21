@@ -46,7 +46,6 @@
 
 #ifdef WITH_SYSTEMD
 #include <systemd/sd-login.h>
-#include <systemd/sd-daemon.h>
 #endif
 
 #include "gdm-common.h"
@@ -1411,7 +1410,7 @@ gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
         }
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return gdm_slave_get_primary_session_id_for_user_from_systemd (slave, username);
         }
 #endif
@@ -1496,7 +1495,7 @@ activate_session_id (GdmSlave   *slave,
 {
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return activate_session_id_for_systemd (slave, seat_id, session_id);
         }
 #endif
@@ -1549,7 +1548,7 @@ session_is_active (GdmSlave   *slave,
                    const char *session_id)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return sd_session_is_active (session_id) > 0;
         }
 #endif
@@ -1633,7 +1632,7 @@ session_unlock (GdmSlave   *slave,
         g_debug ("Unlocking session %s", ssid);
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return session_unlock_for_systemd (slave, ssid);
         }
 #endif

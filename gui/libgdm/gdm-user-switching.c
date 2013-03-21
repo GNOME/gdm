@@ -32,10 +32,10 @@
 #include <gio/gio.h>
 
 #ifdef WITH_SYSTEMD
-#include <systemd/sd-daemon.h>
 #include <systemd/sd-login.h>
 #endif
 
+#include "common/gdm-common.h"
 #include "gdm-user-switching.h"
 #include "gdm-client.h"
 
@@ -578,7 +578,7 @@ gdm_goto_login_session_sync (GCancellable  *cancellable,
                 return FALSE;
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 retval = goto_login_session_for_systemd (connection,
                                                          cancellable,
                                                          error);

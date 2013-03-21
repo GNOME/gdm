@@ -1089,7 +1089,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
 
 #ifdef WITH_SYSTEMD
         /* set seat ID */
-        if (seat_id != NULL && seat_id[0] != '\0' && sd_booted() > 0) {
+        if (seat_id != NULL && seat_id[0] != '\0' && LOGIND_RUNNING()) {
                 gdm_session_worker_set_environment_variable (worker, "XDG_SEAT", seat_id);
         }
 #endif
@@ -1556,7 +1556,7 @@ static void
 register_ck_session (GdmSessionWorker *worker)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted() > 0) {
+        if (LOGIND_RUNNING()) {
                 return;
         }
 #endif

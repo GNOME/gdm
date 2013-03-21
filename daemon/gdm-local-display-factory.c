@@ -28,10 +28,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#ifdef WITH_SYSTEMD
-#include <systemd/sd-daemon.h>
-#endif
-
+#include "gdm-common.h"
 #include "gdm-manager.h"
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
@@ -521,7 +518,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 gdm_local_display_factory_start_monitor (factory);
                 return gdm_local_display_factory_sync_seats (factory);
         }

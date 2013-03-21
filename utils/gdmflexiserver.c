@@ -29,8 +29,9 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include "common/gdm-common.h"
+
 #ifdef WITH_SYSTEMD
-#include <systemd/sd-daemon.h>
 #include <systemd/sd-login.h>
 #endif
 
@@ -680,7 +681,7 @@ goto_login_session (GError **error)
         }
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return goto_login_session_for_systemd (connection, error);
         }
 #endif

@@ -35,7 +35,6 @@
 #include <glib-object.h>
 
 #ifdef WITH_SYSTEMD
-#include <systemd/sd-daemon.h>
 #include <systemd/sd-login.h>
 #endif
 
@@ -166,7 +165,7 @@ get_session_id_for_pid (GDBusConnection  *connection,
                         GError          **error)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return get_session_id_for_pid_systemd (pid, error);
         }
 #endif
@@ -242,7 +241,7 @@ get_uid_for_session_id (GDBusConnection  *connection,
                         GError          **error)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return get_uid_for_systemd_session_id (session_id, uid, error);
         }
 #endif
@@ -487,7 +486,7 @@ get_session_id_for_user_on_seat (GDBusConnection  *connection,
                                  GError          **error)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return get_session_id_for_user_on_seat_systemd (username, seat, error);
         }
 #endif
@@ -601,7 +600,7 @@ get_seat_id_for_pid (GDBusConnection  *connection,
                      GError          **error)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 return get_seat_id_for_pid_systemd (pid, error);
         }
 #endif

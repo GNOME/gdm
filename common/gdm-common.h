@@ -33,6 +33,9 @@
 
 #define GDM_CUSTOM_SESSION  "custom"
 
+/* check if logind is running */
+#define LOGIND_RUNNING() (access("/run/systemd/seats/", F_OK) >= 0)
+
 G_BEGIN_DECLS
 
 gboolean       gdm_is_version_unstable            (void);

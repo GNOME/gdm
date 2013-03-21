@@ -39,10 +39,6 @@
 #include <sys/prctl.h>
 #endif
 
-#ifdef WITH_SYSTEMD
-#include <systemd/sd-daemon.h>
-#endif
-
 #ifdef WITH_PLYMOUTH
 #include <linux/vt.h>
 #endif
@@ -173,7 +169,7 @@ char *
 gdm_server_get_display_device (GdmServer *server)
 {
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0) {
+        if (LOGIND_RUNNING()) {
                 /* systemd finds the display device out on its own based on the display */
                 return NULL;
         }
@@ -275,7 +271,7 @@ gdm_server_init_command (GdmServer *server)
          * wasn't booted using systemd, or b) the wrapper tool is
          * missing, or c) we are running for the main seat 'seat0'. */
 
-        if (sd_booted () <= 0) {
+        if (!LOGIND_RUNNING()) {
                 goto fallback;
         }
 
@@ -345,7 +341,7 @@ gdm_server_resolve_command_line (GdmServer  *server,
         }
 
 #ifdef WITH_SYSTEMD
-        if (sd_booted () > 0 && server->priv->display_seat_id != NULL) {
+        if (LOGIND_RUNNING() && server->priv->display_seat_id != NULL) {
                 argv[len++] = g_strdup ("-seat");
                 argv[len++] = g_strdup (server->priv->display_seat_id);
         }
@@ -745,7 +741,7 @@ gdm_server_start (GdmServer *server)
 
 #ifdef WITH_SYSTEMD
                 /* undo the hardcoding if we are an auxillary seat */
-                if (sd_booted () > 0) {
+                if (LOGIND_RUNNING()) {
                      if (strcmp (server->priv->display_seat_id, "seat0") != 0) {
                          vtarg = NULL;
                      }
