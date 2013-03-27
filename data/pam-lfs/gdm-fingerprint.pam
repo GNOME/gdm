@@ -6,6 +6,7 @@ auth     required       pam_env.so
 auth     requisite      pam_fprintd.so
 auth     required       pam_succeed_if.so uid >= 1000 quiet
 auth     required       pam_deny.so
+auth     optional       pam_gnome_keyring.so
 
 account  include        system-account
 
@@ -14,5 +15,6 @@ password required       pam_deny.so
 session  optional       pam_keyinit.so revoke
 session  required       pam_limits.so
 session  include        system-session
+session  optional       pam_gnome_keyring.so auto_start
 
 # End /etc/pam.d/gdm-fingerprint

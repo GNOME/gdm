@@ -1,4 +1,4 @@
-# Begin /etc/pam.d/gdm-welcome
+# Begin /etc/pam.d/gdm-launch-environment
 
 auth     required       pam_env.so
 auth     required       pam_permit.so
@@ -8,6 +8,7 @@ account  include        system-account
 
 password required       pam_deny.so
 
+session  required       pam_systemd.so kill-session-processes=1
 session  optional       pam_keyinit.so force revoke
 
-# End /etc/pam.d/gdm-welcome
+# End /etc/pam.d/gdm-launch-environment
