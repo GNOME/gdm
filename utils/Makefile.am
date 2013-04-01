@@ -1,8 +1,10 @@
 NULL =
 
 AM_CPPFLAGS = \
-	-I.						\
-	-I..						\
+	-I$(srcdir)					\
+	-I$(builddir)					\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\" 		\
 	-DGDM_SCREENSHOT_DIR=\""$(GDM_SCREENSHOT_DIR)"\"\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\

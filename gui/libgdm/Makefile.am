@@ -32,10 +32,11 @@ gdm-client-glue.c gdm-client-glue.h : $(top_srcdir)/daemon/gdm-session.xml Makef
 		$(top_srcdir)/daemon/gdm-session.xml
 
 AM_CPPFLAGS = \
-        -I.                                                                   \
-        -I..                                                                  \
-        -I$(srcdir)                                                           \
-        -DG_LOG_DOMAIN=\"Gdm\"                                         \
+        -I$(srcdir)                                                     \
+        -I$(builddir)                                                   \
+        -I$(top_srcdir)                                                 \
+        -I$(top_builddir)                                               \
+        -DG_LOG_DOMAIN=\"Gdm\"                                          \
         -DDMCONFDIR=\""$(dmconfdir)"\"                                        \
         -DDATADIR=\""$(datadir)"\"                                            \
         $(END_OF_LIST)
