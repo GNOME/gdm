@@ -8,25 +8,25 @@
 # Arman Aksoy <armish@linux-sevenler.de>, 2003.
 # Görkem Çetin <gorkem@kde.org>, 2003.
 # Baris Cicek <baris@teamforce.name.tr>, 2004, 2009.
-# Muhammet Kara <muhammetk@acikkaynak.name.tr>, 2011, 2012.
+# Muhammet Kara <muhammetk@acikkaynak.name.tr>, 2011, 2012, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-29 20:29+0000\n"
-"PO-Revision-Date: 2012-08-12 22:41+0300\n"
+"POT-Creation-Date: 2013-04-01 12:36+0000\n"
+"PO-Revision-Date: 2013-04-02 01:30+0300\n"
 "Last-Translator: Muhammet Kara <muhammetk@acikkaynak.name.tr>\n"
-"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
-#: ../common/gdm-common.c:492
+#: ../common/gdm-common.c:518
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom bir karakter aygıtı değil"
@@ -36,98 +36,86 @@ msgstr "/dev/urandom bir karakter aygıtı değil"
 msgid "could not find user \"%s\" on system"
 msgstr "kullanıcı \"%s\" sistemde bulunamadı"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
 #, c-format
 msgid "No session available yet"
 msgstr "Henüz kullanılabilir oturum yok"
 
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "%s kullanıcısı mevcut değil"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "%s grubu mevcut değil"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "groupid %d olarak değiştirilemedi"
-
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "%s için initgroups () başarısız oldu"
-
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "userid %d olarak değiştirilemedi"
-
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "%s kullanıcısının UID bilgisi çözülemiyor"
 
-#: ../daemon/gdm-manager.c:291
+#: ../daemon/gdm-manager.c:290
 msgid "no sessions available"
 msgstr "kullanılabilir oturum yok"
 
-#: ../daemon/gdm-manager.c:352
+#: ../daemon/gdm-manager.c:351
 #, c-format
 msgid "No sessions for %s available for reauthentication"
-msgstr "%s oturumlarından hiç biri yeniden kimlik denetimi için müsait değil"
+msgstr "%s oturumlarından hiçbiri yeniden kimlik denetimi için müsait değil"
 
-#: ../daemon/gdm-manager.c:406
+#: ../daemon/gdm-manager.c:405
 #, c-format
 msgid "Unable to find session for user %s"
 msgstr "%s kullanıcısının oturumu bulunamıyor"
 
-#: ../daemon/gdm-manager.c:476
+#: ../daemon/gdm-manager.c:475
 #, c-format
 msgid "Unable to find appropriate session for user %s"
 msgstr "%s kullanıcısı için uygun oturum bulunamıyor"
 
-#: ../daemon/gdm-manager.c:671
+#: ../daemon/gdm-manager.c:670
 msgid "User doesn't own session"
 msgstr "Kullanıcının oturumu yok"
 
-#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+#: ../daemon/gdm-manager.c:686 ../daemon/gdm-manager.c:773
 msgid "No session available"
 msgstr "Kullanılabilir oturum yok"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-server.c:234
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: '%s' üst ekranına bağlanılırken başarısız olundu"
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:413
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Sunucu %s kullanıcısı tarafından yeniden başlatılmalı ama bu kullanıcı yok"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "groupid %d olarak değiştirilemedi"
+
+#: ../daemon/gdm-server.c:430
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "%s için initgroups () başarısız oldu"
+
+#: ../daemon/gdm-server.c:436
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "userid %d olarak değiştirilemedi"
+
+#: ../daemon/gdm-server.c:483
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s ekranı için günlük dosyası açılamadı!"
 
-#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
+#: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ayarı %s olarak atarken hata"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:526
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Sunucu önceliği %d olarak atanamadı: %s"
 
-#: ../daemon/gdm-server.c:718
+#: ../daemon/gdm-server.c:682
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s ekranı için boş sunucu komutu"
@@ -156,79 +144,79 @@ msgstr "Görüntü Aygıtı"
 msgid "The display device"
 msgstr "Görüntü aygıtı"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
 msgstr "Kimlik doğrulama yardımcı süreci oluşturulamadı"
 
-#: ../daemon/gdm-session-worker.c:1025
+#: ../daemon/gdm-session-worker.c:1037
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "kimlik doğrulama sistemi ile iletişim başlatılırken hata  -%s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1038
 msgid "general failure"
 msgstr "genel başarısızlık"
 
-#: ../daemon/gdm-session-worker.c:1027
+#: ../daemon/gdm-session-worker.c:1039
 msgid "out of memory"
 msgstr "bellek yetersiz"
 
-#: ../daemon/gdm-session-worker.c:1028
+#: ../daemon/gdm-session-worker.c:1040
 msgid "application programmer error"
 msgstr "uygulama programcısı hatası"
 
-#: ../daemon/gdm-session-worker.c:1029
+#: ../daemon/gdm-session-worker.c:1041
 msgid "unknown error"
 msgstr "bilinmeyen hata"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1048
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
-#: ../daemon/gdm-session-worker.c:1042
+#: ../daemon/gdm-session-worker.c:1054
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "tercih edilen kullanıcı adı isteminin kimlik denetimi sistemine bilgi "
 "verilirken hata oluştu: %s"
 
-#: ../daemon/gdm-session-worker.c:1056
+#: ../daemon/gdm-session-worker.c:1068
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "kullanıcının makine adının kimlik denetimi sistemine bilgi verilirken hata "
 "oluştu: %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1085
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr ""
 "kullanıcı konsolunun kimlik denetimi sistemi bilgilendirilirken hata oluştu: "
 "%s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1109
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr ""
 "ekran dizgisinin kimlik denetimi sistemi bilgilendirilirken hata oluştu: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1124
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "ekran xauth tanıtımlarının kimlik denetimi sistemi bilgilendirilirken hata "
 "oluştu: %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
 #, c-format
 msgid "no user account available"
 msgstr "hiçbir kullanıcı hesabı mevcut değil"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1506
 msgid "Unable to change to user"
 msgstr "Kullanıcıya değiştirilemiyor"
 
-#: ../daemon/gdm-simple-slave.c:1358
+#: ../daemon/gdm-simple-slave.c:1315
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -240,21 +228,21 @@ msgstr ""
 "bu ekran devre dışı kalacaktır. Sorun çözüldüğünde lütfen GDM'yi yeniden "
 "başlatın."
 
-#: ../daemon/gdm-simple-slave.c:1399
+#: ../daemon/gdm-simple-slave.c:1356
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Sadece kullanıcı oturum açmadan önce çağrılabilir"
 
-#: ../daemon/gdm-simple-slave.c:1409
+#: ../daemon/gdm-simple-slave.c:1366
 #, c-format
 msgid "Caller not GDM"
 msgstr "Çağıran GDM değil"
 
-#: ../daemon/gdm-simple-slave.c:1468
+#: ../daemon/gdm-simple-slave.c:1419
 msgid "User not logged in"
 msgstr "Kullanıcı oturum açmadı"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "Şu anda, tek seferde sadece bir istemci bağlanabilir"
@@ -263,90 +251,80 @@ msgstr "Şu anda, tek seferde sadece bir istemci bağlanabilir"
 msgid "Could not create socket!"
 msgstr "Soket oluşturulamadı!"
 
-#: ../daemon/main.c:126 ../daemon/main.c:139
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID dosyası %s yazılamıyor: muhtemelen disk dolu: %s"
 
-#: ../daemon/main.c:160
+#: ../daemon/main.c:188
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Logdir %s yok veya bir dizin değil."
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "Bir kerelik çalışma belirleyicisi dizin %s oluşturulamadı: %s"
 
-#: ../daemon/main.c:176
+#: ../daemon/main.c:194
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Authdir %s yok. İptal ediliyor."
+msgid "Failed to create AuthDir %s: %s"
+msgstr "AuthDir %s oluşturulamadı: %s"
 
-#: ../daemon/main.c:180
+#: ../daemon/main.c:200
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Authdir %s dizin değil. İptal ediliyor."
+msgid "Failed to create LogDir %s: %s"
+msgstr "LogDir %s oluşturulamadı: %s"
 
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "Authdir %s sahibi kullanıcı %d, grup %d değil. İptal ediliyor."
-
-#: ../daemon/main.c:261
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "Authdir %s sahip olduğu izinler %o yanlış. %o olmalı. İptal ediliyor."
-
-#: ../daemon/main.c:298
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM kullanıcısı '%s' bulunamadı. İptal ediliyor!"
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:241
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM kullanıcısının 'root' olmaması gerekiyor. İptal ediliyor!"
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:247
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM grubu '%s' bulunamadı. İptal ediliyor!"
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:253
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM grubu 'root' olmaması gerekiyor. İptal ediliyor!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:333
 msgid "Make all warnings fatal"
 msgstr "Tüm uyarıları ölümcül yap"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:334
 msgid "Exit after a time (for debugging)"
 msgstr "Bir süre sonra çık (hata ayıklama için)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:335
 msgid "Print GDM version"
 msgstr "GDM sürümünü yazdır"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:346
 msgid "GNOME Display Manager"
 msgstr "GNOME Görüntü Yöneticisi"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:394
 msgid "Only the root user can run GDM"
 msgstr "Yalnızca yetkili kullanıcı GDM'yi çalıştırabilir"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:101
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Görüntü Yöneticisi Oturum Çalıştırıcısı"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
 msgid "Display ID"
 msgstr "Görüntü Kimliği (ID)"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
 msgid "ID"
 msgstr "Kimlik"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Görüntü Yöneticisi Yedeği"
 
@@ -355,14 +333,6 @@ msgstr "GNOME Görüntü Yöneticisi Yedeği"
 msgid "Login Window"
 msgstr "Giriş Penceresi"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "GNOME Ekran Bütüteci"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Ekranın parçalarını büyütün"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Kabuğu"
@@ -370,22 +340,6 @@ msgstr "GNOME Kabuğu"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Pencere yönetimi ve kompozisyon"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "GNOME Ekran Klavyesi"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Ekran klavyesi kullan"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca Ekran Okuyucu"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Konuşma ya da körler alfabesi olarak mevcut ekran bilgisini sun"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -474,36 +428,45 @@ msgstr ""
 "Giriş pencerede yeniden başlatma düğmelerini göstermeyi devre dışı bırakmak "
 "için doğru şeklinde ayarlayın."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "İzin verilen kimlik denetimi hatası sayısı"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Kullanıcı seçimine tekrar dönülmeden önce kullanıcılara izin verilecek giriş "
+"denemesi sayısı."
+
 #: ../gui/libgdm/gdm-user-switching.c:72
-#, fuzzy
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
-msgstr "Yeni görüntü başlatılamadı"
+msgstr "Geçici ekran oluşturulamadı:"
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#, fuzzy
-#| msgid "Unable to authenticate user"
 msgid "Unable to activate session: "
-msgstr "Kullanıcının kimliği doğrulanamadı"
+msgstr "Oturum etkinleştirilemedi:"
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
+#: ../utils/gdmflexiserver.c:614
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Geçerli oturum tespit edilemedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:351
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "Kullanıcı oturum değiştiremedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Geçerli oturum tespit edilemedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -512,7 +475,7 @@ msgstr ""
 "Sistem, varolan bir giriş ekranına geçiş yapılacağına ya da yeni bir giriş "
 "ekranı başlatılacağına karar veremedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Sistem, yeni bir giriş ekranı başlatamadı."
@@ -530,12 +493,13 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: XDMCP başlığı okunamadı!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
-msgstr "XMDCP: Geçersiz XDMCP sürümü!"
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Geçersiz XDMCP sürümü!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: Adres çözümlenemedi"
+#, fuzzy
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Adres ayıklanamadı"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -554,7 +518,7 @@ msgid "Log into session with username and password"
 msgstr "Kullanıcı adı ve parolayla oturum aç"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "Oturum Aç"
@@ -582,7 +546,7 @@ msgstr "isim"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
 msgid "Module"
-msgstr "Modül"
+msgstr "Modül"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
 msgid "smartcard driver"
@@ -604,31 +568,31 @@ msgstr "Modül Yolu"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "PKCS #11 akıllı kart sürücüsünün yolu"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "olay kaynağından, hata alındı veya olay kaynağı kapattı"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "NSS güvenlik sistemi başlatılamadı"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "uygun bir akıllı kart sürücüsü bulunamadı"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "akıllı kart sürücüsü '%s' yüklenemedi"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "gelen kart olayları izlenemedi - %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr ""
@@ -745,23 +709,23 @@ msgstr "Kilidi Aç"
 msgid "Login"
 msgstr "Oturum aç"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Askıya Al"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Yeniden Başlat"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Kapat"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Bilinmeyen bir süre kaldı"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Panel"
 
@@ -871,9 +835,35 @@ msgstr "Seçenekleri seçtikten sonra sisteme otomatik olarak giriş yap"
 msgid "Currently logged in"
 msgstr "Şu anda girişi bulunan "
 
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:65
+msgid "Only the VERSION command is supported"
+msgstr "Sadece SÜRÜM (VERSION) komutu destekleniyor"
+
+#: ../utils/gdmflexiserver.c:65
+msgid "COMMAND"
+msgstr "KOMUT"
+
+#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
+#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+msgid "Ignored — retained for compatibility"
+msgstr "Yok Sayılıyor - uyum için korunmuştur"
+
+#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Hata ayıklama çıktısı"
+
+#: ../utils/gdmflexiserver.c:72
+msgid "Version of this application"
+msgstr "Bu uygulamanın sürümü"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:707
+msgid "- New GDM login"
+msgstr "- Yeni GDM girişi"
+
+#: ../utils/gdmflexiserver.c:763
+msgid "Unable to start new display"
+msgstr "Yeni ekran başlatılamadı"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -884,20 +874,45 @@ msgstr "Ekran görüntüsü alındı"
 msgid "Take a picture of the screen"
 msgstr "Ekranın bir resmini çek"
 
-#~ msgid "Only the VERSION command is supported"
-#~ msgstr "Sadece SÜRÜM (VERSION) komutu destekleniyor"
+#~ msgid "User %s doesn't exist"
+#~ msgstr "%s kullanıcısı mevcut değil"
 
-#~ msgid "COMMAND"
-#~ msgstr "KOMUT"
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "%s grubu mevcut değil"
 
-#~ msgid "Ignored — retained for compatibility"
-#~ msgstr "Yok Sayılıyor - uyum için korunmuştur"
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Logdir %s yok veya bir dizin değil."
 
-#~ msgid "Version of this application"
-#~ msgstr "Bu uygulamanın sürümü"
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr "Authdir %s yok. İptal ediliyor."
 
-#~ msgid "- New GDM login"
-#~ msgstr "- Yeni GDM girişi"
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr "Authdir %s dizin değil. İptal ediliyor."
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr "Authdir %s sahibi kullanıcı %d, grup %d değil. İptal ediliyor."
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr ""
+#~ "Authdir %s sahip olduğu izinler %o yanlış. %o olmalı. İptal ediliyor."
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "GNOME Ekran Bütüteci"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "Ekranın parçalarını büyütün"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "GNOME Ekran Klavyesi"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "Ekran klavyesi kullan"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Orca Ekran Okuyucu"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "Konuşma ya da körler alfabesi olarak mevcut ekran bilgisini sun"
 
 #~ msgid "Unable to initialize login system"
 #~ msgstr "Giriş sistemi başlatılamadı"
@@ -1258,9 +1273,6 @@ msgstr "Ekranın bir resmini çek"
 
 #~ msgid "Unable establish credentials"
 #~ msgstr "Koşullar sağlanamıyor"
-
-#~ msgid "Failed to restart computer"
-#~ msgstr "Bilgisayar yeniden başlatılamadı"
 
 #~ msgid ""
 #~ "You are not allowed to restart the computer because multiple users are "
