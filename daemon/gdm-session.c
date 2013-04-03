@@ -526,9 +526,89 @@ get_default_language_name (GdmSession *self)
 }
 
 static const char *
+get_configured_default_session_name (GdmSession *self)
+{
+        static const char *config_file = "/etc/sysconfig/desktop";
+        const char    *session_name = "gnome-classic";
+        gchar         *contents = NULL;
+        gchar         *p;
+        gsize          length;
+        GError        *error;
+        GString       *line;
+        GRegex        *re;
+
+        if (!g_file_test (config_file, G_FILE_TEST_EXISTS)) {
+                g_debug ("Cannot access '%s'", config_file);
+                return session_name;
+        }
+
+        error = NULL;
+        if (!g_file_get_contents (config_file, &contents, &length, &error)) {
+                g_debug ("Failed to parse '%s': %s",
+                         config_file,
+                         (error && error->message) ? error->message : "(null)");
+                g_error_free (error);
+                return session_name;
+        }
+
+        if (!g_utf8_validate (contents, length, NULL)) {
+                g_warning ("Invalid UTF-8 in '%s'", config_file);
+                g_free (contents);
+                return session_name;
+        }
+
+        re = g_regex_new ("DESKTOP=\"?KDE\"?[ \t]*", 0, 0, &error);
+        if (re == NULL) {
+                g_warning ("Failed to regex: %s",
+                           (error && error->message) ? error->message : "(null)");
+                g_error_free (error);
+                g_free (contents);
+                return session_name;
+        }
+
+        line = g_string_new ("");
+        for (p = contents; p && *p; p = g_utf8_find_next_char (p, NULL)) {
+                gunichar ch;
+                GMatchInfo *match_info = NULL;
+
+                ch = g_utf8_get_char (p);
+                if ((ch != '\n') && (ch != '\0')) {
+                        g_string_append_unichar (line, ch);
+                        continue;
+                }
+
+                if (line->str && g_utf8_get_char (line->str) == '#') {
+                        goto next_line;
+                }
+
+                if (!g_regex_match (re, line->str, 0, &match_info)) {
+                        goto next_line;
+                }
+
+                if (!g_match_info_matches (match_info)) {
+                        goto next_line;
+                }
+
+                session_name = "1-kde-plasma-standard";
+                break;
+
+next_line:
+                g_match_info_free (match_info);
+                g_string_set_size (line, 0);
+        }
+
+        g_string_free (line, TRUE);
+        g_regex_unref (re);
+        g_free (contents);
+
+        return session_name;
+}
+
+static const char *
 get_fallback_session_name (GdmSession *self)
 {
         char          **search_dirs;
+        const char     *configured_session;
         int             i;
         char           *name;
         GSequence      *sessions;
@@ -539,6 +619,26 @@ get_fallback_session_name (GdmSession *self)
                 if (get_session_command_for_name (self, self->priv->fallback_session_name, NULL)) {
                         goto out;
                 }
+        }
+
+        configured_session = get_configured_default_session_name (self);
+
+        name = g_strdup (configured_session);
+        if (get_session_command_for_name (self, name, NULL)) {
+                g_free (self->priv->fallback_session_name);
+                self->priv->fallback_session_name = name;
+                goto out;
+        }
+        g_free (name);
+
+        if (g_strcmp0 (configured_session, "gnome-classic") != 0) {
+                name = g_strdup ("gnome-classic");
+                if (get_session_command_for_name (self, name, NULL)) {
+                        g_free (self->priv->fallback_session_name);
+                        self->priv->fallback_session_name = name;
+                        goto out;
+                }
+                g_free (name);
         }
 
         name = g_strdup ("gnome");
