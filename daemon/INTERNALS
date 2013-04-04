@@ -53,30 +53,18 @@ session.
 
 ** GdmServer
 
-A class that manages running a local X Server.
+A class, used by the slave, that manages running a local X Server.
 
-** GdmGreeterServer
+** GdmLaunchEnvironment
 
-A class that creates a D-Bus server on a private connection that is
-used to command the greeter subprocess.
-
-** GdmGreeterSession
-
-A class that manages running an external greeter session.  This will
-provide the GdmGreeterServer D-Bus address to the subprocesses.
+A class, used by the slave, that manages a GdmSession.
 
 ** GdmSession
 
-An interface used to control the authentication process and the user
-session itself.  Once the authentication process is started an object
-that implements this interface will emit signals to request any
-required information.
-
-*** GdmSessionDirect
-
-A class of object that implements the GdmSession interface.  It is
-used to start and directly control a GdmSessionWorker subprocess by
-creating a D-Bus server on a private connection.
+A class, used by multiple components, to manage PAM conversations and
+sessions. It's used by GdmLaunchEnvironment to manage program sessions
+(greeters, choosers, initial-setup), by GdmSimpleSlave to manage user
+sessions, and by the worker itself to perform reauth.
 
 ** GdmSessionWorkerJob
 
