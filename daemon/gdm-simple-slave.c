@@ -65,7 +65,6 @@
 #define DEFAULT_PING_INTERVAL 15
 
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
-#define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "/lib/gdm/run-initial-setup"
 
 struct GdmSimpleSlavePrivate
 {
@@ -1168,21 +1167,81 @@ wants_autologin (GdmSimpleSlave *slave)
 static gboolean
 wants_initial_setup (GdmSimpleSlave *slave)
 {
-        gboolean enabled;
-
-        if (!g_file_test (INITIAL_SETUP_TRIGGER_FILE, G_FILE_TEST_EXISTS)) {
-                return FALSE;
-        }
+        gboolean enabled = FALSE;
+        GSList *users = NULL;
 
         if (!gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &enabled)) {
-                return FALSE;
+                goto out;
         }
 
         if (!enabled) {
-                return FALSE;
+                goto out;
         }
 
-        return TRUE;
+        enabled = FALSE;
+
+        users = act_user_manager_list_users (act_user_manager_get_default ());
+        if (users != NULL) {
+                goto out;
+        }
+
+        enabled = TRUE;
+
+ out:
+        g_clear_pointer (&users, g_slist_free);
+        return enabled;
+}
+
+static void
+setup_session (GdmSimpleSlave *slave)
+{
+        if (wants_initial_setup (slave)) {
+                start_initial_setup (slave);
+        } else if (wants_autologin (slave)) {
+                /* Run the init script. gdmslave suspends until script has terminated */
+                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
+        } else {
+                start_greeter (slave);
+        }
+        create_new_session (slave);
+}
+
+static void
+user_manager_loaded (ActUserManager *user_manager,
+                     GParamSpec     *pspec,
+                     GdmSimpleSlave *slave)
+{
+        gboolean is_loaded;
+
+        g_object_get (user_manager,
+                      "is-loaded", &is_loaded,
+                      NULL);
+
+        if (!is_loaded)
+                return;
+
+        g_signal_handlers_disconnect_by_func (user_manager,
+                                              user_manager_loaded,
+                                              slave);
+        setup_session (slave);
+}
+
+static void
+wait_until_user_manager_loaded (GdmSimpleSlave *slave)
+{
+        ActUserManager *user_manager = act_user_manager_get_default ();
+        gboolean is_loaded;
+
+        g_object_get (user_manager,
+                      "is-loaded", &is_loaded,
+                      NULL);
+
+        if (is_loaded) {
+                setup_session (slave);
+        } else {
+                g_signal_connect (user_manager, "notify::is-loaded",
+                                  G_CALLBACK (user_manager_loaded), slave);
+        }
 }
 
 static gboolean
@@ -1195,16 +1254,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
                 setup_server (slave);
-
-                if (wants_initial_setup (slave)) {
-                        start_initial_setup (slave);
-                } else if (wants_autologin (slave)) {
-                        /* Run the init script. gdmslave suspends until script has terminated */
-                        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
-                } else {
-                        start_greeter (slave);
-                }
-                create_new_session (slave);
+                wait_until_user_manager_loaded (slave);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
@@ -1460,6 +1510,10 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 g_source_remove (self->priv->start_session_id);
                 self->priv->start_session_id = 0;
         }
+
+        g_signal_handlers_disconnect_by_func (act_user_manager_get_default (),
+                                              user_manager_loaded,
+                                              slave);
 
         g_clear_pointer (&self->priv->start_session_service_name,
                          (GDestroyNotify) g_free);
