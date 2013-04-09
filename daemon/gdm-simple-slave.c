@@ -89,6 +89,8 @@ struct GdmSimpleSlavePrivate
 
         GHashTable        *open_reauthentication_requests;
 
+        GDBusProxy        *accountsservice_proxy;
+
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
         guint              session_is_running : 1;
@@ -1168,34 +1170,18 @@ static gboolean
 wants_initial_setup (GdmSimpleSlave *slave)
 {
         gboolean enabled = FALSE;
-        GSList *users = NULL;
 
         if (!gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &enabled)) {
-                goto out;
+                return FALSE;
         }
 
-        if (!enabled) {
-                goto out;
-        }
-
-        enabled = FALSE;
-
-        users = act_user_manager_list_users (act_user_manager_get_default ());
-        if (users != NULL) {
-                goto out;
-        }
-
-        enabled = TRUE;
-
- out:
-        g_clear_pointer (&users, g_slist_free);
         return enabled;
 }
 
 static void
-setup_session (GdmSimpleSlave *slave)
+setup_session (GdmSimpleSlave *slave, gboolean has_users)
 {
-        if (wants_initial_setup (slave)) {
+        if (wants_initial_setup (slave) && !has_users) {
                 start_initial_setup (slave);
         } else if (wants_autologin (slave)) {
                 /* Run the init script. gdmslave suspends until script has terminated */
@@ -1204,44 +1190,6 @@ setup_session (GdmSimpleSlave *slave)
                 start_greeter (slave);
         }
         create_new_session (slave);
-}
-
-static void
-user_manager_loaded (ActUserManager *user_manager,
-                     GParamSpec     *pspec,
-                     GdmSimpleSlave *slave)
-{
-        gboolean is_loaded;
-
-        g_object_get (user_manager,
-                      "is-loaded", &is_loaded,
-                      NULL);
-
-        if (!is_loaded)
-                return;
-
-        g_signal_handlers_disconnect_by_func (user_manager,
-                                              user_manager_loaded,
-                                              slave);
-        setup_session (slave);
-}
-
-static void
-wait_until_user_manager_loaded (GdmSimpleSlave *slave)
-{
-        ActUserManager *user_manager = act_user_manager_get_default ();
-        gboolean is_loaded;
-
-        g_object_get (user_manager,
-                      "is-loaded", &is_loaded,
-                      NULL);
-
-        if (is_loaded) {
-                setup_session (slave);
-        } else {
-                g_signal_connect (user_manager, "notify::is-loaded",
-                                  G_CALLBACK (user_manager_loaded), slave);
-        }
 }
 
 static gboolean
@@ -1254,7 +1202,6 @@ idle_connect_to_display (GdmSimpleSlave *slave)
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
                 setup_server (slave);
-                wait_until_user_manager_loaded (slave);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
@@ -1307,6 +1254,46 @@ on_server_died (GdmServer      *server,
 #endif
 }
 
+static void
+on_list_cached_users_complete (GObject       *proxy,
+                               GAsyncResult  *result,
+                               gpointer       user_data)
+{
+        GdmSimpleSlave *slave = GDM_SIMPLE_SLAVE (user_data);
+        GVariant *call_result = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), result, NULL);
+        GVariant *user_list;
+        gboolean have_users;
+
+        if (!call_result) {
+                have_users = FALSE;
+        } else {
+                g_variant_get (call_result, "(@ao)", &user_list);
+                have_users = g_variant_n_children (user_list) > 0;
+                g_variant_unref (user_list);
+                g_variant_unref (call_result);
+        }
+                                               
+        setup_session (slave, have_users);
+}
+
+static void
+on_accountsservice_ready (GObject       *object,
+                          GAsyncResult  *result,
+                          gpointer       user_data)
+{
+        GdmSimpleSlave *slave = GDM_SIMPLE_SLAVE (user_data);
+        GError *local_error = NULL;
+
+        slave->priv->accountsservice_proxy = g_dbus_proxy_new_for_bus_finish (result, &local_error);
+        if (!slave->priv->accountsservice_proxy) {
+                g_error ("Failed to contact accountsservice: %s", local_error->message);
+        } 
+
+        g_dbus_proxy_call (slave->priv->accountsservice_proxy, "ListCachedUsers", NULL, 0, -1, NULL,
+                           on_list_cached_users_complete, slave);
+}
+                          
+
 static gboolean
 gdm_simple_slave_run (GdmSimpleSlave *slave)
 {
@@ -1353,6 +1340,14 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                                   G_CALLBACK (on_server_ready),
                                   slave);
 
+                g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+                                          0, NULL,
+                                          "org.freedesktop.Accounts",
+                                          "/org/freedesktop/Accounts",
+                                          "org.freedesktop.Accounts",
+                                          NULL,
+                                          on_accountsservice_ready, slave);
+                
 #ifdef WITH_PLYMOUTH
                 slave->priv->plymouth_is_running = plymouth_is_running ();
 
@@ -1511,10 +1506,6 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 self->priv->start_session_id = 0;
         }
 
-        g_signal_handlers_disconnect_by_func (act_user_manager_get_default (),
-                                              user_manager_loaded,
-                                              slave);
-
         g_clear_pointer (&self->priv->start_session_service_name,
                          (GDestroyNotify) g_free);
 
@@ -1546,6 +1537,8 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 gdm_server_stop (self->priv->server);
                 g_clear_object (&self->priv->server);
         }
+
+        g_clear_object (&self->priv->accountsservice_proxy);
 
         return TRUE;
 }
