@@ -90,6 +90,9 @@ struct GdmSimpleSlavePrivate
         GHashTable        *open_reauthentication_requests;
 
         GDBusProxy        *accountsservice_proxy;
+        guint              have_existing_user_accounts : 1;
+        guint              accountsservice_ready : 1;
+        guint              waiting_to_connect_to_display : 1;
 
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
@@ -1171,6 +1174,11 @@ wants_initial_setup (GdmSimpleSlave *slave)
 {
         gboolean enabled = FALSE;
 
+        /* don't run if the system has existing users */
+        if (slave->priv->have_existing_user_accounts) {
+                return FALSE;
+        }
+
         if (!gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &enabled)) {
                 return FALSE;
         }
@@ -1179,9 +1187,9 @@ wants_initial_setup (GdmSimpleSlave *slave)
 }
 
 static void
-setup_session (GdmSimpleSlave *slave, gboolean has_users)
+setup_session (GdmSimpleSlave *slave)
 {
-        if (wants_initial_setup (slave) && !has_users) {
+        if (wants_initial_setup (slave)) {
                 start_initial_setup (slave);
         } else if (wants_autologin (slave)) {
                 /* Run the init script. gdmslave suspends until script has terminated */
@@ -1202,6 +1210,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
                 setup_server (slave);
+                setup_session (slave);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
@@ -1214,10 +1223,21 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 }
 
 static void
+connect_to_display_when_accountsservice_ready (GdmSimpleSlave *slave)
+{
+        if (slave->priv->accountsservice_ready) {
+                slave->priv->waiting_to_connect_to_display = FALSE;
+                g_idle_add ((GSourceFunc)idle_connect_to_display, slave);
+        } else {
+                slave->priv->waiting_to_connect_to_display = TRUE;
+        }
+}
+
+static void
 on_server_ready (GdmServer      *server,
                  GdmSimpleSlave *slave)
 {
-        g_idle_add ((GSourceFunc)idle_connect_to_display, slave);
+        connect_to_display_when_accountsservice_ready (slave);
 }
 
 static void
@@ -1262,18 +1282,21 @@ on_list_cached_users_complete (GObject       *proxy,
         GdmSimpleSlave *slave = GDM_SIMPLE_SLAVE (user_data);
         GVariant *call_result = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), result, NULL);
         GVariant *user_list;
-        gboolean have_users;
 
         if (!call_result) {
-                have_users = FALSE;
+                slave->priv->have_existing_user_accounts = FALSE;
         } else {
                 g_variant_get (call_result, "(@ao)", &user_list);
-                have_users = g_variant_n_children (user_list) > 0;
+                slave->priv->have_existing_user_accounts = g_variant_n_children (user_list) > 0;
                 g_variant_unref (user_list);
                 g_variant_unref (call_result);
         }
-                                               
-        setup_session (slave, have_users);
+
+        slave->priv->accountsservice_ready = TRUE;
+
+        if (slave->priv->waiting_to_connect_to_display) {
+                connect_to_display_when_accountsservice_ready (slave);
+        }
 }
 
 static void
