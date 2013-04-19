@@ -340,19 +340,6 @@ else
 fi
 AC_SUBST(LANG_CONFIG_FILE)
 
-dnl
-dnl Whether or not to show locales in the language list that
-dnl lack translations
-dnl
-AC_ARG_WITH(incomplete-locales,
-            AS_HELP_STRING([--with-incomplete-locales=yes|no],
-                           [Show incomplete locales in lang list]),,
-            with_incomplete_locales=no)
-
-if test x$with_incomplete_locales != xno; then
-        AC_DEFINE(WITH_INCOMPLETE_LOCALES, 1, [Show incomplete locales in lang list])
-fi
-
 # stropts has been removed from glibc
 # https://bugzilla.redhat.com/show_bug.cgi?id=436349
 AC_CHECK_HEADERS(stropts.h)
