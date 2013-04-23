@@ -301,13 +301,13 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                 g_bus_unwatch_name (display->priv->slave_name_id);
         }
 
-        g_bus_watch_name_on_connection (display->priv->connection,
-                                        name,
-                                        G_BUS_NAME_WATCHER_FLAGS_NONE,
-                                        NULL, /* name appeared */
-                                        on_name_vanished,
-                                        g_object_ref (display),
-                                        NULL);
+        display->priv->slave_name_id = g_bus_watch_name_on_connection (display->priv->connection,
+                                                                       name,
+                                                                       G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                                                       NULL, /* name appeared */
+                                                                       on_name_vanished,
+                                                                       g_object_ref (display),
+                                                                       NULL);
 
         g_clear_object (&display->priv->slave_bus_proxy);
         display->priv->slave_bus_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_sync (display->priv->connection,
@@ -772,6 +772,11 @@ gdm_display_real_unmanage (GdmDisplay *display)
                 _gdm_display_set_status (display, GDM_DISPLAY_FAILED);
         } else {
                 _gdm_display_set_status (display, GDM_DISPLAY_UNMANAGED);
+        }
+
+        if (display->priv->slave_name_id > 0) {
+                g_bus_unwatch_name (display->priv->slave_name_id);
+                display->priv->slave_name_id = 0;
         }
 
         return TRUE;
