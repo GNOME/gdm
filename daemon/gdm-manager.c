@@ -1135,7 +1135,8 @@ unexport_display (const char *id,
                   GdmDisplay *display,
                   GdmManager *manager)
 {
-    g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+        if (!g_dbus_connection_is_closed (manager->priv->connection))
+                g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
 }
 
 static void
