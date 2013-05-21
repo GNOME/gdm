@@ -1824,28 +1824,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         _exit (2);
                 }
 
-                kerberos_cache = gdm_session_worker_get_environment_variable (worker, "KRB5CCNAME");
-
-                if (kerberos_cache == NULL) {
-                        char  *kerberos_dir;
-
-                        /* FIXME: this is just until 1.11 when krb5-libs does this by default
-                         */
-                        kerberos_dir = g_strdup_printf ("/run/user/%d/krb5cc_%s",
-                                                        (int) getuid(),
-                                                        g_dbus_connection_get_guid (worker->priv->connection));
-
-                        if (g_mkdir_with_parents (kerberos_dir, S_IRWXU) == 0) {
-                                kerberos_cache = g_strdup_printf ("DIR:%s", kerberos_dir);
-                                gdm_session_worker_set_environment_variable (worker,
-                                                                             "KRB5CCNAME",
-                                                                             kerberos_cache);
-                                g_free (kerberos_cache);
-                                kerberos_cache = NULL;
-                        }
-                        g_free (kerberos_dir);
-                }
-
                 environment = gdm_session_worker_get_environment (worker);
 
                 g_assert (geteuid () == getuid ());
