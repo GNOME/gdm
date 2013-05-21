@@ -1163,14 +1163,12 @@ gdm_manager_finalize (GObject *object)
                                               G_CALLBACK (on_display_removed),
                                               manager);
 
-        if (!g_dbus_connection_is_closed (manager->priv->connection)) {
-                gdm_display_store_foreach (manager->priv->display_store,
-                                           (GdmDisplayStoreFunc)unexport_display,
-                                           manager);
-                g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (manager));
-        }
-
+        gdm_display_store_foreach (manager->priv->display_store,
+                                   (GdmDisplayStoreFunc)unexport_display,
+                                   manager);
         gdm_display_store_clear (manager->priv->display_store);
+
+        g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (manager));
 
         g_dbus_object_manager_server_set_connection (manager->priv->object_manager, NULL);
 
