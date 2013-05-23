@@ -150,16 +150,6 @@ fi
 AC_SUBST(LIBSELINUX_CFLAGS)
 AC_SUBST(LIBSELINUX_LIBS)
 
-PKG_CHECK_MODULES(SIMPLE_GREETER,
-        gtk+-3.0 >= $GTK_REQUIRED_VERSION
-	fontconfig >= $FONTCONFIG_REQUIRED_VERSION
-        accountsservice >= $ACCOUNTS_SERVICE_REQUIRED_VERSION
-	x11
-)
-SIMPLE_GREETER_LIBS="$SIMPLE_GREETER_LIBS -lm"
-AC_SUBST(SIMPLE_GREETER_CFLAGS)
-AC_SUBST(SIMPLE_GREETER_LIBS)
-
 PKG_CHECK_MODULES(SIMPLE_CHOOSER,
         gtk+-3.0 >= $GTK_REQUIRED_VERSION
 )
@@ -291,11 +281,6 @@ AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
                            [Add plymouth support @<:@default=auto@:>@]),
             [with_plymouth=$withval], [with_plymouth=auto])
-AC_ARG_ENABLE(fallback-greeter,
-	      AS_HELP_STRING([--enable-fallback-greeter],
-                             [Enable fallback greeter @<:@default=no@:>@]),,
-              enable_fallback_greeter=no)
-AM_CONDITIONAL(ENABLE_FALLBACK_GREETER, test x$enable_fallback_greeter = xyes)
 
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],
@@ -368,7 +353,6 @@ EXTRA_FLEXI_LIBS=""
 EXTRA_DYNAMIC_LIBS=""
 EXTRA_SETUP_LIBS=""
 EXTRA_TEST_LIBS=""
-EXTRA_GREETER_LIBS=""
 
 AC_CHECK_FUNC(socket,,[
 	      AC_CHECK_LIB(socket,socket, [
@@ -1231,7 +1215,6 @@ AC_SUBST(EXTRA_FLEXI_LIBS)
 AC_SUBST(EXTRA_DYNAMIC_LIBS)
 AC_SUBST(EXTRA_SETUP_LIBS)
 AC_SUBST(EXTRA_TEST_LIBS)
-AC_SUBST(EXTRA_GREETER_LIBS)
 
 # Check for Solaris logindevperm support
 #
@@ -1591,20 +1574,6 @@ docs/Makefile
 gui/Makefile
 gui/libgdm/Makefile
 gui/libgdm/gdm.pc
-gui/simple-greeter/Makefile
-gui/simple-greeter/libgdmsimplegreeter/Makefile
-gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
-gui/simple-greeter/extensions/Makefile
-gui/simple-greeter/extensions/unified/Makefile
-gui/simple-greeter/extensions/password/Makefile
-gui/simple-greeter/extensions/fingerprint/Makefile
-gui/simple-greeter/extensions/fingerprint/icons/Makefile
-gui/simple-greeter/extensions/fingerprint/icons/16x16/Makefile
-gui/simple-greeter/extensions/fingerprint/icons/48x48/Makefile
-gui/simple-greeter/extensions/smartcard/Makefile
-gui/simple-greeter/extensions/smartcard/icons/Makefile
-gui/simple-greeter/extensions/smartcard/icons/16x16/Makefile
-gui/simple-greeter/extensions/smartcard/icons/48x48/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/gdm.conf
