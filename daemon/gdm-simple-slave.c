@@ -65,6 +65,7 @@
 #define DEFAULT_PING_INTERVAL 15
 
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+#define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 
 struct GdmSimpleSlavePrivate
 {
@@ -998,6 +999,20 @@ setup_server (GdmSimpleSlave *slave)
 #endif
 }
 
+static gboolean
+can_create_environment (const char *session_id)
+{
+        char *path;
+        gboolean session_exists;
+
+        path = g_strdup_printf (GNOME_SESSION_SESSIONS_PATH "/%s.desktop", session_id);
+        session_exists = g_file_test (path, G_FILE_TEST_EXISTS);
+
+        g_free (path);
+
+        return session_exists;
+}
+
 static GdmLaunchEnvironment *
 create_environment (const char *session_id,
                     const char *user_name,
@@ -1176,6 +1191,11 @@ wants_initial_setup (GdmSimpleSlave *slave)
 
         /* don't run if the system has existing users */
         if (slave->priv->have_existing_user_accounts) {
+                return FALSE;
+        }
+
+        /* don't run if initial-setup is unavailable */
+        if (!can_create_environment ("gnome-initial-setup")) {
                 return FALSE;
         }
 
