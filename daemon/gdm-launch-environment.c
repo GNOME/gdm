@@ -411,7 +411,7 @@ ensure_directory_with_uid_gid (const char  *path,
                                gid_t        gid,
                                GError     **error)
 {
-        if (mkdir (path, 0755) == -1 && errno != EEXIST) {
+        if (mkdir (path, 0700) == -1 && errno != EEXIST) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
                              "Failed to create directory %s: %s", path,
                              g_strerror (errno));
