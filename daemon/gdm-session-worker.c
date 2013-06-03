@@ -1788,7 +1788,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         if (session_pid == 0) {
                 const char * const * environment;
-                char  *kerberos_cache;
                 char  *home_dir;
                 int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
                 gboolean has_journald = FALSE;
