@@ -668,9 +668,6 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
                                                                _("User doesn't own session"));
-                g_prefix_error (&error, "Error while retrieving caller session id: ");
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
                 return TRUE;
         }
 
