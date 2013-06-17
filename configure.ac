@@ -63,18 +63,10 @@ dnl ---------------------------------------------------------------------------
 dnl - Dependencies
 dnl ---------------------------------------------------------------------------
 
-DBUS_GLIB_REQUIRED_VERSION=0.74
 GLIB_REQUIRED_VERSION=2.35.0
 GTK_REQUIRED_VERSION=2.91.1
-PANGO_REQUIRED_VERSION=1.3.0
-SCROLLKEEPER_REQUIRED_VERSION=0.1.4
-GNOME_PANEL_REQUIRED_VERSION=2.0.0
 LIBCANBERRA_GTK_REQUIRED_VERSION=0.4
-#FONTCONFIG_REQUIRED_VERSION=2.6.0
-FONTCONFIG_REQUIRED_VERSION=2.5.0
-UPOWER_REQUIRED_VERSION=0.9.0
 ACCOUNTS_SERVICE_REQUIRED_VERSION=0.6.12
-NSS_REQUIRED_VERSION=3.11.1
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -101,12 +93,6 @@ AC_SUBST(DAEMON_LIBS)
 
 GLIB_GSETTINGS
 
-PKG_CHECK_MODULES(NSS,
-        nss >= $NSS_REQUIRED_VERSION
-)
-AC_SUBST(NSS_CFLAGS)
-AC_SUBST(NSS_LIBS)
-
 PKG_CHECK_MODULES(XLIB, x11 xau xrandr, ,
   [AC_PATH_XTRA
     if test "x$no_x" = xyes; then
@@ -129,18 +115,6 @@ PKG_CHECK_MODULES(CANBERRA_GTK,
 )
 AC_SUBST(CANBERRA_GTK_CFLAGS)
 AC_SUBST(CANBERRA_GTK_LIBS)
-
-PKG_CHECK_MODULES(UPOWER,
-        upower-glib >= $UPOWER_REQUIRED_VERSION,
-        have_upower=yes,
-        have_upower=no
-)
-if test "x$have_upower" = "xyes" ; then
-  AC_DEFINE(HAVE_UPOWER, [], [Define if we have UPower])
-fi
-AC_SUBST(UPOWER)
-AC_SUBST(UPOWER_CFLAGS)
-AC_SUBST(UPOWER_LIBS)
 
 PKG_CHECK_MODULES(LIBSELINUX, libselinux, have_selinux=yes, have_selinux=no)
 
