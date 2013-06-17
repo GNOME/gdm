@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.14"/>
+    <object class="GtkVBox" id="page">
+      <property name="visible">True</property>
+      <property name="orientation">vertical</property>
+      <child>
+        <object class="GtkHBox" id="auth-input-box">
+          <property name="visible">True</property>
+          <property name="spacing">6</property>
+          <child>
+            <object class="GtkLabel" id="auth-prompt-label">
+              <property name="visible">True</property>
+            </object>
+            <packing>
+              <property name="expand">False</property>
+              <property name="fill">False</property>
+              <property name="position">0</property>
+            </packing>
+          </child>
+          <child>
+            <object class="GtkEntry" id="auth-prompt-entry">
+              <property name="visible">True</property>
+              <property name="can_focus">True</property>
+              <property name="activates_default">True</property>
+            </object>
+            <packing>
+              <property name="position">1</property>
+            </packing>
+          </child>
+        </object>
+        <packing>
+          <property name="expand">True</property>
+          <property name="fill">True</property>
+          <property name="position">0</property>
+        </packing>
+      </child>
+      <child>
+        <object class="GtkHBox" id="auth-message-box">
+          <property name="visible">True</property>
+          <child>
+            <object class="GtkLabel" id="auth-message-label">
+              <property name="visible">True</property>
+            </object>
+            <packing>
+              <property name="position">0</property>
+            </packing>
+          </child>
+        </object>
+        <packing>
+          <property name="expand">True</property>
+          <property name="fill">True</property>
+          <property name="position">1</property>
+        </packing>
+      </child>
+    </object>
+</interface>
