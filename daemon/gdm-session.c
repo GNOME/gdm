@@ -2487,14 +2487,9 @@ stop_all_conversations (GdmSession *self)
         stop_all_other_conversations (self, NULL, TRUE);
 }
 
-void
-gdm_session_close (GdmSession *self)
+static void
+do_reset (GdmSession *self)
 {
-
-        g_return_if_fail (GDM_IS_SESSION (self));
-
-        g_debug ("GdmSession: Closing session");
-
         if (self->priv->session_conversation != NULL) {
                 gdm_session_record_logout (self->priv->session_pid,
                                            self->priv->selected_user,
@@ -2504,9 +2499,6 @@ gdm_session_close (GdmSession *self)
         }
 
         stop_all_conversations (self);
-
-        g_list_free_full (self->priv->outside_connections, g_object_unref);
-        self->priv->outside_connections = NULL;
 
         g_list_free_full (self->priv->pending_worker_connections, g_object_unref);
         self->priv->pending_worker_connections = NULL;
@@ -2533,6 +2525,19 @@ gdm_session_close (GdmSession *self)
 
         self->priv->session_pid = -1;
         self->priv->session_conversation = NULL;
+}
+
+void
+gdm_session_close (GdmSession *self)
+{
+
+        g_return_if_fail (GDM_IS_SESSION (self));
+
+        g_debug ("GdmSession: Closing session");
+        do_reset (self);
+
+        g_list_free_full (self->priv->outside_connections, g_object_unref);
+        self->priv->outside_connections = NULL;
 }
 
 void
@@ -2566,7 +2571,7 @@ gdm_session_reset (GdmSession *self)
                 gdm_dbus_user_verifier_emit_reset (self->priv->user_verifier_interface);
         }
 
-        gdm_session_close (self);
+        do_reset (self);
 }
 
 void
