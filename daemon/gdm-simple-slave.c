@@ -593,13 +593,14 @@ on_session_opened (GdmSession       *session,
         gdm_simple_slave_grant_console_permissions (slave);
 #endif  /* HAVE_LOGINDEVPERM */
 
-        if (gdm_session_client_is_connected (slave->priv->session)) {
-                gdm_simple_slave_start_session_when_ready (slave, service_name);
-        } else {
-                /* Auto login */
+        if (g_strcmp0 (service_name, "gdm-autologin") == 0 &&
+            !gdm_session_client_is_connected (slave->priv->session)) {
+                /* If we're auto logging in then don't wait for the go-ahead from a greeter,
+                 * (since there is no greeter) */
                 slave->priv->start_session_when_ready = TRUE;
-                gdm_simple_slave_start_session_when_ready (slave, service_name);
         }
+
+        gdm_simple_slave_start_session_when_ready (slave, service_name);
 }
 
 static void
