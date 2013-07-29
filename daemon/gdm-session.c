@@ -3010,6 +3010,11 @@ gdm_session_dispose (GObject *object)
                 g_clear_object (&self->priv->worker_server);
         }
 
+        if (self->priv->outside_server != NULL) {
+                g_dbus_server_stop (self->priv->outside_server);
+                g_clear_object (&self->priv->outside_server);
+        }
+
         if (self->priv->environment != NULL) {
                 g_hash_table_destroy (self->priv->environment);
                 self->priv->environment = NULL;
