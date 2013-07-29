@@ -1553,10 +1553,11 @@ setup_worker_server (GdmSession *self)
         g_debug ("GdmSession: Creating D-Bus server for worker for session");
 
         observer = g_dbus_auth_observer_new ();
-        g_signal_connect (observer,
-                          "authorize-authenticated-peer",
-                          G_CALLBACK (allow_worker_function),
-                          self);
+        g_signal_connect_object (observer,
+                                 "authorize-authenticated-peer",
+                                 G_CALLBACK (allow_worker_function),
+                                 self,
+                                 0);
 
         server = gdm_dbus_setup_private_server (observer, &error);
         g_object_unref (observer);
@@ -1567,10 +1568,11 @@ setup_worker_server (GdmSession *self)
                 return;
         }
 
-        g_signal_connect (server,
-                          "new-connection",
-                          G_CALLBACK (handle_connection_from_worker),
-                          self);
+        g_signal_connect_object (server,
+                                 "new-connection",
+                                 G_CALLBACK (handle_connection_from_worker),
+                                 self,
+                                 0);
         self->priv->worker_server = server;
 
         g_dbus_server_start (server);
@@ -1607,10 +1609,11 @@ setup_outside_server (GdmSession *self)
         g_debug ("GdmSession: Creating D-Bus server for greeters and such");
 
         observer = g_dbus_auth_observer_new ();
-        g_signal_connect (observer,
-                          "authorize-authenticated-peer",
-                          G_CALLBACK (allow_user_function),
-                          self);
+        g_signal_connect_object (observer,
+                                 "authorize-authenticated-peer",
+                                 G_CALLBACK (allow_user_function),
+                                 self,
+                                 0);
 
         server = gdm_dbus_setup_private_server (observer, &error);
         g_object_unref (observer);
@@ -1621,10 +1624,11 @@ setup_outside_server (GdmSession *self)
                 return;
         }
 
-        g_signal_connect (server,
-                          "new-connection",
-                          G_CALLBACK (handle_connection_from_outside),
-                          self);
+        g_signal_connect_object (server,
+                                 "new-connection",
+                                 G_CALLBACK (handle_connection_from_outside),
+                                 self,
+                                 0);
         self->priv->outside_server = server;
 
         g_dbus_server_start (server);
