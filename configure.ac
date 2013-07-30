@@ -1625,7 +1625,6 @@ echo \
         systemd support:          ${use_systemd}
         systemd unit dir:         ${with_systemdsystemunitdir}
         plymouth support:         ${use_plymouth}
-        UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
         Initial VT:               ${GDM_INITIAL_VT}
         Enable documentation:     ${enable_documentation}
