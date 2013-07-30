@@ -811,6 +811,30 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         return res;
 }
 
+static const char *
+get_friendly_error_message (int error_code)
+{
+        switch (error_code) {
+            case PAM_SUCCESS:
+            case PAM_IGNORE:
+                return "";
+                break;
+
+            case PAM_ACCT_EXPIRED:
+            case PAM_AUTHTOK_EXPIRED:
+                return _("Your account was given a time limit that's now passed.");
+                break;
+
+                return _("Your account was given an expiration date that's now passed.");
+                break;
+
+            default:
+                break;
+        }
+
+        return _("Sorry, that didn't work. Please try again.");
+}
+
 static int
 gdm_session_worker_pam_new_messages_handler (int                        number_of_messages,
                                              const struct pam_message **messages,
@@ -1025,20 +1049,15 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                 username,
                                 &pam_conversation,
                                 &worker->priv->pam_handle);
-
         if (error_code != PAM_SUCCESS) {
-                g_debug ("GdmSessionWorker: could not initialize PAM");
+                g_debug ("GdmSessionWorker: could not initialize PAM: (error code %d)", error_code);
                 /* we don't use pam_strerror here because it requires a valid
                  * pam handle, and if pam_start fails pam_handle is undefined
                  */
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
-                             _("error initiating conversation with authentication system - %s"),
-                             error_code == PAM_ABORT? _("general failure") :
-                             error_code == PAM_BUF_ERR? _("out of memory") :
-                             error_code == PAM_SYSTEM_ERR? _("application programmer error") :
-                             _("unknown error"));
+                             "%s", "");
 
                 goto out;
         }
@@ -1048,11 +1067,12 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_USER_PROMPT, _("Username:"));
 
                 if (error_code != PAM_SUCCESS) {
+                        g_debug ("GdmSessionWorker: error informing authentication system of preferred username prompt: %s",
+                                pam_strerror (worker->priv->pam_handle, error_code));
                         g_set_error (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     _("error informing authentication system of preferred username prompt: %s"),
-                                     pam_strerror (worker->priv->pam_handle, error_code));
+                                     "%s", "");
                         goto out;
                 }
         }
@@ -1060,13 +1080,15 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         /* set RHOST */
         if (hostname != NULL && hostname[0] != '\0') {
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_RHOST, hostname);
+                g_debug ("error informing authentication system of user's hostname %s: %s",
+                         hostname,
+                         pam_strerror (worker->priv->pam_handle, error_code));
 
                 if (error_code != PAM_SUCCESS) {
                         g_set_error (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     _("error informing authentication system of user's hostname: %s"),
-                                     pam_strerror (worker->priv->pam_handle, error_code));
+                                     "%s", "");
                         goto out;
                 }
         }
@@ -1076,16 +1098,19 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         if (pam_tty != NULL && pam_tty[0] != '\0') {
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
         }
-        g_free (pam_tty);
 
         if (error_code != PAM_SUCCESS) {
+                g_debug ("error informing authentication system of user's console %s: %s",
+                         pam_tty,
+                         pam_strerror (worker->priv->pam_handle, error_code));
+                g_free (pam_tty);
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error informing authentication system of user's console: %s"),
-                             pam_strerror (worker->priv->pam_handle, error_code));
+                             "%s", "");
                 goto out;
         }
+        g_free (pam_tty);
 
 #ifdef WITH_SYSTEMD
         /* set seat ID */
@@ -1103,11 +1128,13 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, x11_display_name);
 
         if (error_code != PAM_SUCCESS) {
+                g_debug ("error informing authentication system of display string %s: %s",
+                         x11_display_name,
+                         pam_strerror (worker->priv->pam_handle, error_code));
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error informing authentication system of display string: %s"),
-                             pam_strerror (worker->priv->pam_handle, error_code));
+                             "%s", "");
                 goto out;
         }
 #endif
@@ -1115,16 +1142,19 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         /* set XAUTHDATA */
         pam_xauth = _get_xauth_for_pam (x11_authority_file);
         error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
-        g_free (pam_xauth);
-
         if (error_code != PAM_SUCCESS) {
+                g_debug ("error informing authentication system of display string %s: %s",
+                         x11_display_name,
+                         pam_strerror (worker->priv->pam_handle, error_code));
+                g_free (pam_xauth);
+
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error informing authentication system of display xauth credentials: %s"),
-                             pam_strerror (worker->priv->pam_handle, error_code));
+                             "%s", "");
                 goto out;
         }
+        g_free (pam_xauth);
 #endif
 
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
@@ -1164,7 +1194,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
-                             "%s", pam_strerror (worker->priv->pam_handle, error_code));
+                             "%s", "");
                 goto out;
         } else if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
@@ -1180,7 +1210,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", pam_strerror (worker->priv->pam_handle, error_code));
+                             "%s", get_friendly_error_message (error_code));
                 goto out;
         }
 
@@ -1246,7 +1276,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHORIZING,
-                             "%s", pam_strerror (worker->priv->pam_handle, error_code));
+                             "%s", get_friendly_error_message (error_code));
                 goto out;
         }
 
