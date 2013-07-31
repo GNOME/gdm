@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-20 14:51+0200\n"
-"PO-Revision-Date: 2012-12-20 14:54+0200\n"
+"POT-Creation-Date: 2013-07-31 10:28+0300\n"
+"PO-Revision-Date: 2013-07-31 10:31+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "Language: he\n"
@@ -17,8 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:492
+#: ../common/gdm-common.c:518
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom is not a character device"
@@ -28,90 +29,85 @@ msgstr "/dev/urandom is not a character device"
 msgid "could not find user \"%s\" on system"
 msgstr "לא ניתן לאתר את המשתמש „%s“ במערכת"
 
-#: ../daemon/gdm-display.c:1320
-#: ../daemon/gdm-display.c:1354
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "אין עדיין הפעלות זמינות"
 
-#: ../daemon/gdm-manager.c:277
-#: ../daemon/gdm-manager.c:384
+#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "לא ניתן לחפש את מזהה המשתמש %s"
 
-#: ../daemon/gdm-manager.c:291
+#: ../daemon/gdm-manager.c:290
 msgid "no sessions available"
 msgstr "אין הפעלות זמינות"
 
-#: ../daemon/gdm-manager.c:352
+#: ../daemon/gdm-manager.c:351
 #, c-format
 msgid "No sessions for %s available for reauthentication"
 msgstr "אין הפעלות עבור %s הזמינות לאימות מחדש"
 
-#: ../daemon/gdm-manager.c:406
+#: ../daemon/gdm-manager.c:405
 #, c-format
 msgid "Unable to find session for user %s"
 msgstr "לא ניתן למצוא את ההפעלה של המשתמש %s"
 
-#: ../daemon/gdm-manager.c:476
+#: ../daemon/gdm-manager.c:475
 #, c-format
 msgid "Unable to find appropriate session for user %s"
 msgstr "לא ניתן למצוא את ההפעלה המתאימה עבור המשתמש %s"
 
-#: ../daemon/gdm-manager.c:671
+#: ../daemon/gdm-manager.c:670
 msgid "User doesn't own session"
 msgstr "למשתמש אין בעלות על הפעלה"
 
-#: ../daemon/gdm-manager.c:687
-#: ../daemon/gdm-manager.c:768
+#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
 msgid "No session available"
 msgstr "אין הפעלה זמינה"
 
-#: ../daemon/gdm-server.c:272
+#: ../daemon/gdm-server.c:234
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: failed to connect to parent display '%s'"
 
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-server.c:413
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
 
-#: ../daemon/gdm-server.c:462
-#: ../daemon/gdm-server.c:482
+#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Couldn't set groupid to %d"
 
-#: ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:430
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () failed for %s"
 
-#: ../daemon/gdm-server.c:474
+#: ../daemon/gdm-server.c:436
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Couldn't set userid to %d"
 
-#: ../daemon/gdm-server.c:521
+#: ../daemon/gdm-server.c:483
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Could not open log file for display %s!"
 
-#: ../daemon/gdm-server.c:532
-#: ../daemon/gdm-server.c:538
-#: ../daemon/gdm-server.c:544
+#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
+#: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Error setting %s to %s"
 
-#: ../daemon/gdm-server.c:564
+#: ../daemon/gdm-server.c:526
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server priority couldn't be set to %d: %s"
 
-#: ../daemon/gdm-server.c:720
+#: ../daemon/gdm-server.c:682
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
@@ -144,81 +140,58 @@ msgstr "התקן התצוגה"
 msgid "Could not create authentication helper process"
 msgstr "לא ניתן ליצור תהליך מסייע אימות"
 
-#: ../daemon/gdm-session-worker.c:1029
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "error initiating conversation with authentication system - %s"
+#: ../daemon/gdm-session-worker.c:825
+msgid "Your account was given a time limit that's now passed."
+msgstr "לחשבון שלך ניתנה מגבלת זמן שנכון לעכשיו חלפה."
 
-#: ../daemon/gdm-session-worker.c:1030
-msgid "general failure"
-msgstr "general failure"
+#: ../daemon/gdm-session-worker.c:828
+msgid "Your account was given an expiration date that's now passed."
+msgstr "לחשבון שלך ניתן תאריך תפוגה שנכון לעכשיו חלף."
 
-#: ../daemon/gdm-session-worker.c:1031
-msgid "out of memory"
-msgstr "out of memory"
+#: ../daemon/gdm-session-worker.c:835
+msgid "Sorry, that didn't work. Please try again."
+msgstr "פעולה זו לא צלחה. נא לנסות שוב, עמך הסליחה."
 
-#: ../daemon/gdm-session-worker.c:1032
-msgid "application programmer error"
-msgstr "application programmer error"
-
-#: ../daemon/gdm-session-worker.c:1033
-msgid "unknown error"
-msgstr "שגיאה לא ידועה"
-
-#: ../daemon/gdm-session-worker.c:1040
+#: ../daemon/gdm-session-worker.c:1067
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: ../daemon/gdm-session-worker.c:1046
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr "error informing authentication system of preferred username prompt: %s"
+#: ../daemon/gdm-session-worker.c:1254
+msgid "Your password has expired, please change it now."
+msgstr "תוקף הססמה שלך פג, נא לשנות אותה כעת."
 
-#: ../daemon/gdm-session-worker.c:1060
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr "error informing authentication system of user's hostname: %s"
-
-#: ../daemon/gdm-session-worker.c:1077
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr "error informing authentication system of user's console: %s"
-
-#: ../daemon/gdm-session-worker.c:1101
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "error informing authentication system of display string: %s"
-
-#: ../daemon/gdm-session-worker.c:1116
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr "error informing authentication system of display xauth credentials: %s"
-
-#: ../daemon/gdm-session-worker.c:1454
-#: ../daemon/gdm-session-worker.c:1471
+#: ../daemon/gdm-session-worker.c:1493 ../daemon/gdm-session-worker.c:1510
 #, c-format
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1537
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-simple-slave.c:1330
-msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
+#: ../daemon/gdm-simple-slave.c:1527
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
 
-#: ../daemon/gdm-simple-slave.c:1371
+#: ../daemon/gdm-simple-slave.c:1568
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "ניתן לקרוא לזה רק לפני שהמשתמש נכנס"
 
-#: ../daemon/gdm-simple-slave.c:1381
+#: ../daemon/gdm-simple-slave.c:1578
 #, c-format
 msgid "Caller not GDM"
 msgstr "הקורא אינו GDM"
 
-#: ../daemon/gdm-simple-slave.c:1434
+#: ../daemon/gdm-simple-slave.c:1631
 msgid "User not logged in"
 msgstr "המשתמש לא נכנס"
 
@@ -231,89 +204,84 @@ msgstr "נכון לעכשיו, ניתן לחבר לקוח אחד בלבד בכל
 msgid "Could not create socket!"
 msgstr "Could not create socket!"
 
-#: ../daemon/main.c:126
-#: ../daemon/main.c:139
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Cannot write PID file %s: possibly out of disk space: %s"
 
-#: ../daemon/main.c:189
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "לא ניתן ליצור ספריית סימון להרצה חד־פעמית %s:‏ %s"
 
-#: ../daemon/main.c:195
+#: ../daemon/main.c:194
 #, c-format
 msgid "Failed to create AuthDir %s: %s"
 msgstr "יצירת ה־AuthDir %s נכשלה: %s"
 
-#: ../daemon/main.c:201
+#: ../daemon/main.c:200
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "יצירת ה־LogDir %s נכשלה: %s"
 
-#: ../daemon/main.c:236
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Can't find the GDM user '%s'. Aborting!"
 
-#: ../daemon/main.c:242
+#: ../daemon/main.c:241
 msgid "The GDM user should not be root. Aborting!"
 msgstr "The GDM user should not be root. Aborting!"
 
-#: ../daemon/main.c:248
+#: ../daemon/main.c:247
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Can't find the GDM group '%s'. Aborting!"
 
-#: ../daemon/main.c:254
+#: ../daemon/main.c:253
 msgid "The GDM group should not be root. Aborting!"
 msgstr "The GDM group should not be root. Aborting!"
 
-#: ../daemon/main.c:362
+#: ../daemon/main.c:333
 msgid "Make all warnings fatal"
 msgstr "Make all warnings fatal"
 
-#: ../daemon/main.c:363
+#: ../daemon/main.c:334
 msgid "Exit after a time (for debugging)"
 msgstr "Exit after a time (for debugging)"
 
-#: ../daemon/main.c:364
+#: ../daemon/main.c:335
 msgid "Print GDM version"
 msgstr "Print GDM version"
 
-#: ../daemon/main.c:375
+#: ../daemon/main.c:346
 msgid "GNOME Display Manager"
 msgstr "GNOME Display Manager"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:423
+#: ../daemon/main.c:394
 msgid "Only the root user can run GDM"
 msgstr "Only the root user can run GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:148
+#: ../daemon/session-worker-main.c:101
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
-#: ../daemon/simple-slave-main.c:177
-#: ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
 msgid "Display ID"
 msgstr "Display ID"
 
-#: ../daemon/simple-slave-main.c:177
-#: ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:185
-#: ../daemon/xdmcp-chooser-slave-main.c:186
+#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "חלון התחברות"
 
@@ -330,68 +298,109 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Whether or not to allow fingerprint readers for login"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
-msgstr "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Whether or not to allow smartcard readers for login"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
-msgstr "The login screen can optionally allow users who have smartcards to log in using those smartcards."
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow passwords for login"
+msgstr "Whether or not to allow passwords for login"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Path to small image at top of user list"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Avoid showing user list"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
-msgstr "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
+msgstr ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Enable showing the banner message"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Set to true to show the banner message text."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Banner message text"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Text banner message to show in the login window."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Disable showing the restart buttons"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Set to true to disable showing the restart buttons in the login window."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Number of allowed authentication failures"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
-msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
-msgstr "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
@@ -403,33 +412,31 @@ msgid "Unable to activate session: "
 msgstr "לא ניתן לגשת את ההפעלה:"
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514
-#: ../utils/gdmflexiserver.c:446
-#: ../utils/gdmflexiserver.c:613
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
+#: ../utils/gdmflexiserver.c:614
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Could not identify the current session."
 
-#: ../gui/libgdm/gdm-user-switching.c:351
-#: ../utils/gdmflexiserver.c:453
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "User unable to switch sessions."
 
-#: ../gui/libgdm/gdm-user-switching.c:523
-#: ../utils/gdmflexiserver.c:622
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "לא ניתן לזהות את המושב הנוכחי."
 
-#: ../gui/libgdm/gdm-user-switching.c:533
-#: ../utils/gdmflexiserver.c:632
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
 #, c-format
-msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
-msgstr "המערכת לא הצליחה לוודא האם לעבור למסך כניסה קיים או להפעיל מסך כניסה חדש."
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"המערכת לא הצליחה לוודא האם לעבור למסך כניסה קיים או להפעיל מסך כניסה חדש."
 
-#: ../gui/libgdm/gdm-user-switching.c:541
-#: ../utils/gdmflexiserver.c:640
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "המערכת לא הצליחה לפעיל מסך כניסה חדש."
@@ -454,369 +461,33 @@ msgstr "XDMCP: גרסת XDMCP שגויה!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: לא ניתן לנתח את הכתובת"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "אימות בטביעת אצבע"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "כניסה להפעלה עם טביעת אצבע"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "אימות בססמה"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "כניסה להפעלה עם שם משתמש וססמה"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "כניסה"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "מזהה החריץ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "החריץ בו נמצא הכרטיס"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "סדרת החריץ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "מזהה לפי חריץ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "שם"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "מודול"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "מנהל התקן כרטיס חכם"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "אימות בכרטיס חכם"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "כניסה להפעלה עם כרטיס חכם"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "נתיב המודול"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "נתיב אל מנהל התקן הכרטיס החכם מסוג PKCS #11"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "התקבלה שגיאה או ניתוק ממקור אירוע"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "לא ניתן להפעיל את מערכת האבטחה NSS"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "לא נמצאו מנהלי התקנים הולמים לכרטיס החכם"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "לא ניתן לטעון את מנהל ההתקן '%s' של הכרטיס החכם"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "לא ניתן לעקוב אחר אירועי כרטיסים נכנסים – %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "אירעה שגיאה בלתי צפויה בעת ההמתנה לשירותי כרטיס חכם"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "אימות"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "כניסה להפעלה"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "ערך"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "אחוז הזמן שהסתיים"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Inactive Text"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "The text to use in the label if the user hasn't picked an item yet"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Active Text"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "The text to use in the label if the user has picked an item"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "הרשימה גלויה"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "האם רשימת הבחירה גלויה "
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a %e c%b, %H:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a %e ב%b, %H:%M"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a %H:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "מתבצעת התחברות אוטומטית..."
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "בהליכי ביטול..."
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "יש לבחור שפה וללחוץ להתחברות"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "התאמה אישית"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "הפעלה מותאמת אישית"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "שם מחשב"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "גרסה"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "ביטול"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "שחרור"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "כניסה"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "השהה"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "הפעל מחדש"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "כיבוי"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "הזמן שנותר בלתי ידוע"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "לוח"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "טקסט התווית"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "הטקסט לשימוש כתווית"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "שם הסמל"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "הסמל לשימוש עם התווית"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "פריט בררת המחדל"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "המזהה של פריט ברירת המחדל"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "התחברות מרוחקת (התחברות אל %s...)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "התחברות מרוחקת (מחובר אל %s...)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "התחברות מרוחקת"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "הפעלה"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "משך"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "מספר השניות עד שקוצב הזמן יעצור"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "שעת התחלה"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "השעה בה קוצב הזמן התחיל"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "האם הקוצב רץ?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "האם קוצב הזמן מתקתק"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "התחברות כ־%s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "אחר..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "בחירה בחשבון אחר"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "אורח"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "התחברות כאורח זמני"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "התחברות אוטומטית"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "התחברות אוטומטית למערכת לאחר בחירת אפשרויות"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "כבר מחובר"
-
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
 msgstr "Only the VERSION command is supported"
 
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:65
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:65
-#: ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68
-#: ../utils/gdmflexiserver.c:69
+#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
+#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
 msgid "Ignored — retained for compatibility"
 msgstr "Ignored — retained for compatibility"
 
-#: ../utils/gdmflexiserver.c:67
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Debugging output"
 
-#: ../utils/gdmflexiserver.c:71
+#: ../utils/gdmflexiserver.c:72
 msgid "Version of this application"
 msgstr "Version of this application"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:706
+#: ../utils/gdmflexiserver.c:707
 msgid "- New GDM login"
 msgstr "- New GDM login"
 
-#: ../utils/gdmflexiserver.c:762
+#: ../utils/gdmflexiserver.c:763
 msgid "Unable to start new display"
 msgstr "לא ניתן להתחיל תצוגה חדשה"
 
@@ -828,6 +499,267 @@ msgstr "המסך צולם"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "צילום המסך"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "error initiating conversation with authentication system - %s"
+
+#~ msgid "general failure"
+#~ msgstr "general failure"
+
+#~ msgid "out of memory"
+#~ msgstr "out of memory"
+
+#~ msgid "application programmer error"
+#~ msgstr "application programmer error"
+
+#~ msgid "unknown error"
+#~ msgstr "שגיאה לא ידועה"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "error informing authentication system of preferred username prompt: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr "error informing authentication system of user's hostname: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr "error informing authentication system of user's console: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr "error informing authentication system of display string: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr ""
+#~ "error informing authentication system of display xauth credentials: %s"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "אימות בטביעת אצבע"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "כניסה להפעלה עם טביעת אצבע"
+
+#~ msgid "Password Authentication"
+#~ msgstr "אימות בססמה"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "כניסה להפעלה עם שם משתמש וססמה"
+
+#~ msgid "Log In"
+#~ msgstr "כניסה"
+
+#~ msgid "Slot ID"
+#~ msgstr "מזהה החריץ"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "החריץ בו נמצא הכרטיס"
+
+#~ msgid "Slot Series"
+#~ msgstr "סדרת החריץ"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "מזהה לפי חריץ"
+
+#~ msgid "name"
+#~ msgstr "שם"
+
+#~ msgid "Module"
+#~ msgstr "מודול"
+
+#~ msgid "smartcard driver"
+#~ msgstr "מנהל התקן כרטיס חכם"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "אימות בכרטיס חכם"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "כניסה להפעלה עם כרטיס חכם"
+
+#~ msgid "Module Path"
+#~ msgstr "נתיב המודול"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "נתיב אל מנהל התקן הכרטיס החכם מסוג PKCS #11"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "התקבלה שגיאה או ניתוק ממקור אירוע"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "לא ניתן להפעיל את מערכת האבטחה NSS"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "לא נמצאו מנהלי התקנים הולמים לכרטיס החכם"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "לא ניתן לטעון את מנהל ההתקן '%s' של הכרטיס החכם"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr "לא ניתן לעקוב אחר אירועי כרטיסים נכנסים – %s"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr "אירעה שגיאה בלתי צפויה בעת ההמתנה לשירותי כרטיס חכם"
+
+#~ msgid "Authentication"
+#~ msgstr "אימות"
+
+#~ msgid "Log into session"
+#~ msgstr "כניסה להפעלה"
+
+#~ msgid "Value"
+#~ msgstr "ערך"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "אחוז הזמן שהסתיים"
+
+#~ msgid "Inactive Text"
+#~ msgstr "Inactive Text"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr "The text to use in the label if the user hasn't picked an item yet"
+
+#~ msgid "Active Text"
+#~ msgstr "Active Text"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr "The text to use in the label if the user has picked an item"
+
+#~ msgid "List Visible"
+#~ msgstr "הרשימה גלויה"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "האם רשימת הבחירה גלויה "
+
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%a %e c%b, %H:%M:%S"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%a %e ב%b, %H:%M"
+
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%a %H:%M:%S"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%a %H:%M"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "מתבצעת התחברות אוטומטית..."
+
+#~ msgid "Cancelling…"
+#~ msgstr "בהליכי ביטול..."
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "יש לבחור שפה וללחוץ להתחברות"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "התאמה אישית"
+
+#~ msgid "Custom session"
+#~ msgstr "הפעלה מותאמת אישית"
+
+#~ msgid "Computer Name"
+#~ msgstr "שם מחשב"
+
+#~ msgid "Version"
+#~ msgstr "גרסה"
+
+#~ msgid "Cancel"
+#~ msgstr "ביטול"
+
+#~ msgid "Unlock"
+#~ msgstr "שחרור"
+
+#~ msgid "Login"
+#~ msgstr "כניסה"
+
+#~ msgid "Suspend"
+#~ msgstr "השהה"
+
+#~ msgid "Restart"
+#~ msgstr "הפעל מחדש"
+
+#~ msgid "Shut Down"
+#~ msgstr "כיבוי"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "הזמן שנותר בלתי ידוע"
+
+#~ msgid "Panel"
+#~ msgstr "לוח"
+
+#~ msgid "Label Text"
+#~ msgstr "טקסט התווית"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "הטקסט לשימוש כתווית"
+
+#~ msgid "Icon name"
+#~ msgstr "שם הסמל"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "הסמל לשימוש עם התווית"
+
+#~ msgid "Default Item"
+#~ msgstr "פריט בררת המחדל"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "המזהה של פריט ברירת המחדל"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "התחברות מרוחקת (התחברות אל %s...)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "התחברות מרוחקת (מחובר אל %s...)"
+
+#~ msgid "Remote Login"
+#~ msgstr "התחברות מרוחקת"
+
+#~ msgid "Session"
+#~ msgstr "הפעלה"
+
+#~ msgid "Duration"
+#~ msgstr "משך"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "מספר השניות עד שקוצב הזמן יעצור"
+
+#~ msgid "Start time"
+#~ msgstr "שעת התחלה"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "השעה בה קוצב הזמן התחיל"
+
+#~ msgid "Is it Running?"
+#~ msgstr "האם הקוצב רץ?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "האם קוצב הזמן מתקתק"
+
+#~ msgid "Log in as %s"
+#~ msgstr "התחברות כ־%s"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "אחר..."
+
+#~ msgid "Choose a different account"
+#~ msgstr "בחירה בחשבון אחר"
+
+#~ msgid "Guest"
+#~ msgstr "אורח"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "התחברות כאורח זמני"
+
+#~ msgid "Automatic Login"
+#~ msgstr "התחברות אוטומטית"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "התחברות אוטומטית למערכת לאחר בחירת אפשרויות"
+
+#~ msgid "Currently logged in"
+#~ msgstr "כבר מחובר"
 
 #~ msgid "User %s doesn't exist"
 #~ msgstr "User %s doesn't exist"
@@ -1078,8 +1010,8 @@ msgstr "צילום המסך"
 
 #~ msgid "_Language:"
 #~ msgstr "_שפה:"
-#~ msgctxt "language"
 
+#~ msgctxt "language"
 #~ msgid "Other…"
 #~ msgstr "אחר..."
 
@@ -1097,8 +1029,8 @@ msgstr "צילום המסך"
 
 #~ msgid "_Keyboard:"
 #~ msgstr "_מקלדת:"
-#~ msgctxt "keyboard"
 
+#~ msgctxt "keyboard"
 #~ msgid "Other…"
 #~ msgstr "אחר..."
 
@@ -1238,16 +1170,16 @@ msgstr "צילום המסך"
 
 #~ msgid "%x"
 #~ msgstr "%x"
+
 #~ msgctxt "language"
-
 #~ msgid "Other..."
 #~ msgstr "אחר..."
+
 #~ msgctxt "keyboard"
-
 #~ msgid "Other..."
 #~ msgstr "אחר..."
-#~ msgctxt "user"
 
+#~ msgctxt "user"
 #~ msgid "Other..."
 #~ msgstr "אחר..."
 
