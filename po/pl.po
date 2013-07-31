@@ -9,16 +9,16 @@
 # Wojciech Kapusta <wkapusta@aviary.pl>, 2006-2007.
 # Wadim Dziedzic <wdziedzic@aviary.pl>, 2007-2008.
 # Tomasz Dominikowski <dominikowski@gmail.com>, 2008-2009.
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2012.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2013.
 # Wojciech Szczęsny <wszczesny@aviary.pl>, 2013.
 # Aviary.pl <gnomepl@aviary.pl>, 2006-2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-05 00:30+0200\n"
-"PO-Revision-Date: 2013-04-05 00:31+0200\n"
-"Last-Translator: Wojciech Szczęsny <wszczesny@aviary.pl>\n"
+"POT-Creation-Date: 2013-07-31 20:31+0200\n"
+"PO-Revision-Date: 2013-07-31 20:32+0200\n"
+"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,7 @@ msgstr "/dev/urandom nie jest urządzeniem znakowym"
 msgid "could not find user \"%s\" on system"
 msgstr "nie można odnaleźć użytkownika \"%s\" w systemie"
 
-#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "Sesja nie jest jeszcze dostępna"
@@ -72,7 +72,7 @@ msgstr "Nie można odnaleźć odpowiedniej sesji dla użytkownika %s"
 msgid "User doesn't own session"
 msgstr "Użytkownik nie posiada sesji"
 
-#: ../daemon/gdm-manager.c:686 ../daemon/gdm-manager.c:773
+#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
 msgid "No session available"
 msgstr "Brak dostępnych sesji"
 
@@ -217,7 +217,7 @@ msgstr "brak konta użytkownika"
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
-#: ../daemon/gdm-simple-slave.c:1315
+#: ../daemon/gdm-simple-slave.c:1527
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -230,17 +230,17 @@ msgstr ""
 "zostanie tymczasowo wyłączony. Po naprawieniu problemu proszę ponownie "
 "uruchomić GDM."
 
-#: ../daemon/gdm-simple-slave.c:1356
+#: ../daemon/gdm-simple-slave.c:1568
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Może być wywoływane tylko przed zalogowaniem użytkownika"
 
-#: ../daemon/gdm-simple-slave.c:1366
+#: ../daemon/gdm-simple-slave.c:1578
 #, c-format
 msgid "Caller not GDM"
 msgstr "Program wywołujący to nie GDM"
 
-#: ../daemon/gdm-simple-slave.c:1419
+#: ../daemon/gdm-simple-slave.c:1631
 msgid "User not logged in"
 msgstr "Użytkownik nie jest zalogowany"
 
@@ -369,10 +369,23 @@ msgstr ""
 "smartcard logowanie za ich pomocą."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow passwords for login"
+msgstr "Określa, czy umożliwiać logowanie za hasła"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"Ekran logowania może zostać opcjonalnie skonfigurowany tak, aby nie zezwalać "
+"na uwierzytelnianie za pomocą hasła, wymuszając uwierzytelnianie za pomocą "
+"karty smartcard lub odcisków palców."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Ścieżka do małego obrazu na górze listy użytkowników"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -381,7 +394,7 @@ msgstr ""
 "Ekran logowania może opcjonalnie wyświetlać mały obraz na górze listy "
 "użytkowników, aby administratorzy i dystrybucje mogły użyć swoich marek."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -391,11 +404,11 @@ msgstr ""
 "listy użytkowników, aby administratorzy i dystrybucje mogły użyć swoich "
 "marek."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Bez wyświetlania listy użytkowników"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -403,37 +416,37 @@ msgstr ""
 "Ekran logowania zwykle wyświetla listę dostępnych użytkowników. To "
 "ustawienie może być używane, aby wyłączyć jej wyświetlanie."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Włączenie wyświetlania komunikatu bannera"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Wartość \"true\" włącza wyświetlanie komunikatu bannera."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Tekst komunikatu bannera"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Treść komunikatu bannera do wyświetlenia na ekranie logowania."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Wyłączenie wyświetlania przycisków ponownego uruchomienia"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Wartość \"true\" wyłącza wyświetlanie przycisków ponownego uruchamiania na "
 "ekranie logowania."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Liczba dozwolonych niepowodzeń uwierzytelnienia"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
