@@ -4,6 +4,7 @@
 # Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>.
 # Copyright (C) 2006 Petr Tomeš <ptomes@gmail.com>.
 # This file is distributed under the same license as the gdm package.
+#
 # George Lebl <jirka@5z.com>, 2000.
 # Michal Bukovjan <bukm@centrum.cz>, 2002, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005, 2006.
@@ -18,8 +19,8 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-07-29 01:34+0000\n"
-"PO-Revision-Date: 2013-07-30 09:12+0200\n"
+"POT-Creation-Date: 2013-08-02 09:42+0000\n"
+"PO-Revision-Date: 2013-08-02 20:47+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -40,7 +41,7 @@ msgstr "/dev/urandom není znakovým zobrazovačem"
 msgid "could not find user \"%s\" on system"
 msgstr "v systému nelze najít uživatele „%s“"
 
-#: ../daemon/gdm-display.c:1323 ../daemon/gdm-display.c:1357
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "Zatím není dostupné žádné sezení"
@@ -151,66 +152,32 @@ msgstr "Zařízení displeje"
 msgid "Could not create authentication helper process"
 msgstr "Nelze vytvořit obslužný proces ověření"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "chyba při spouštění komunikace s ověřovacím systémem – %s"
+#: ../daemon/gdm-session-worker.c:825
+msgid "Your account was given a time limit that's now passed."
+msgstr "Váš účet měl omezenou časovou platnost, která nyní vypršela."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "obecné selhání"
+#: ../daemon/gdm-session-worker.c:828
+msgid "Your account was given an expiration date that's now passed."
+msgstr "Váš účet měl omezenou platnost do data, které nyní nastalo."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "nedostatek paměti"
+#: ../daemon/gdm-session-worker.c:835
+msgid "Sorry, that didn't work. Please try again."
+msgstr "Bohužel, ale nefunguje to. Zkuste to prosím znovu."
 
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "aplikační chyba programátora"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "neznámá chyba"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1067
 msgid "Username:"
 msgstr "Uživatel:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"chyba při informování ověřovacího systému o preferovaném dotazu na "
-"uživatelské jméno: %s"
+#: ../daemon/gdm-session-worker.c:1254
+msgid "Your password has expired, please change it now."
+msgstr "Vašemu heslu vypršela platnost. Proveďte prosím nyní jeho změnu."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"chyba při informování ověřovacího systému o názvu počítače uživatele: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr "chyba při informování ověřovacího systému o uživatelově konzole: %s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "chyba při informování ověřovacího systému o řetězci displeje: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"chyba při informování ověřovacího systému o pověření xauth displeje: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1493 ../daemon/gdm-session-worker.c:1510
 #, c-format
 msgid "no user account available"
 msgstr "není dostupný žádný uživatelský účet"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1537
 msgid "Unable to change to user"
 msgstr "Nelze změnit uživatele"
 
