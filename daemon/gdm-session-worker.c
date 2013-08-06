@@ -825,9 +825,6 @@ get_friendly_error_message (int error_code)
                 return _("Your account was given a time limit that's now passed.");
                 break;
 
-                return _("Your account was given an expiration date that's now passed.");
-                break;
-
             default:
                 break;
         }
