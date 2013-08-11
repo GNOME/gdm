@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-07-30 18:45+0000\n"
-"PO-Revision-Date: 2013-08-11 19:52+0300\n"
+"POT-Creation-Date: 2013-08-11 16:53+0000\n"
+"PO-Revision-Date: 2013-08-11 20:01+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -151,66 +151,28 @@ msgstr "Vaizdavimo įrenginys"
 msgid "Could not create authentication helper process"
 msgstr "Nepavyko sukurti tapatybės patvirtinimo pagalbinio proceso"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "klaida užmezgant kontaktą su tapatybės patvirtinimo sistema - %s"
+#: ../daemon/gdm-session-worker.c:825
+msgid "Your account was given a time limit that's now passed."
+msgstr "Jūsų paskyrai buvo suteiktas laiko limitas, kuris dabar baigėsi."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "bendroji klaida"
+#: ../daemon/gdm-session-worker.c:832
+msgid "Sorry, that didn't work. Please try again."
+msgstr "Atleiskite, tai nesuveikė. Bandykite dar kartą."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "baigėsi atmintis"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "programuotojo klaida"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "nežinoma klaida"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1064
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"klaida pranešant autentikacijos sistemai apie pageidaujamą naudotojo vardo "
-"užklausimą: %s"
+#: ../daemon/gdm-session-worker.c:1251
+msgid "Your password has expired, please change it now."
+msgstr "Jūsų slaptažodžio galiojimas baigėsi, pakeiskite jį."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"klaida pranešant tapatybės nustatymo sistemai naudotojo kompiuterio vardą: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr "klaida pranešant tapatybės nustatymo sistemai naudotojo konsolę: %s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "klaida pranešant tapatybės nustatymo sistemai ekrano eilutę: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"klaida pranešant tapatybės nustatymo sistemai ekrano xauth kredencialus: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1490 ../daemon/gdm-session-worker.c:1507
 #, c-format
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1534
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
@@ -327,7 +289,6 @@ msgid "GNOME Display Manager Slave"
 msgstr "GNOME ekrano valdyklės šalutinis modulis"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Prisijungimo langas"
 
@@ -364,7 +325,6 @@ msgstr ""
 "korteles, prisijungti naudojant šias korteles."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
 msgstr "Ar leisti slaptažodžius prisijungimui"
 
@@ -511,339 +471,6 @@ msgstr "XDMCP: Neteisinga XDMCP versija!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Nepavyko perskaityti adreso"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Tapatybės patvirtinimas piršto atspaudu"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Prisijungti prie seanso piršto atspaudu"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Tapatybės patvirtinimas slaptažodžiu"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Prisijungti prie seanso naudotojo vardu ir slaptažodžiu"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Prisijungti"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Lizdo ID"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Lizdas, kuriame yra kortelė"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Lizdo serijos"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "kortelės identifikatorius pagal lizdą"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "vardas"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Modulis"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "lustinės kortelės tvarkyklė"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Tapatybės nustatymas lustine kortele"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Prisijungti prie seanso lustine kortele"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Modulio kelias"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "kelias iki lustinės kortelės PKCS #11 tvarkyklės"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "gauta klaida arba pakibimas įvykio šaltinyje"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS saugumo sistema negalėjo būti inicializuota"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "nerasta tinkama lustinės kortelės tvakyklė"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "nepavyko įkelti lustinės kortelės tvarkyklės „%s“"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "nepavyko stebėti įeinančių lustinės kortelė įvykių - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "aptikta netikėta klaida laukiant lustinės kortelės įvykių"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Tapatybės nustatymas"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Prisijungti prie seanso"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Reikšmė"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "praėjusio laiko procentai"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Neaktyvus tekstas"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "Tekstas, naudojamas užrašui, jei naudotojas dar nepasirinko elemento"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Aktyvus tekstas"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "Tekstas, naudojamas užrašui, jei naudotojas pasirinko elementą"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "Sąrašas matomas"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Ar matomas pasirinkimo sąrašas"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a, %b %e d., %k:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a, %b %e d., %k:%M"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a, %k:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a, %k:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "Automatiškai prijungiama…"
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "Atšaukiama…"
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Pasirinkite kalbą ir spustelėkite „Prisijungti“"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Pasirinktinis"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Pasirinktinis seansas"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Kompiuterio vardas"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Versija"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Atšaukti"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Atrakinti"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Prisijungti"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "Sustabdyti"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "Paleisti iš naujo"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "Išjungti"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "Likęs laikas nežinomas"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "Skydelis"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Užrašo tekstas"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "Tekstas užrašui"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Piktogramos pavadinimas"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "Piktograma, naudotina su užrašu"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Numatytasis elementas"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "Numatytojo elemento ID"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Nutolęs prisijungimas (jungiamasi prie %s…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Nutolęs prisijungimas (prisijungta prie %s)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Nutolęs prisijungimas"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Seansas:"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Trukmė"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Laikas sekundėmis, kol chronometras sustos"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Paleidimo laikas"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "Laikas, kada chronometras pradėjo eiti"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "Ar jis veikia?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Ar chronometras dabar veikia"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "Prijungti kaip %s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "Kita…"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Pasirinkite kitą paskyrą"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Svečias"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Prisijungti kaip laikinam svečiui"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Automatinis prijungimas"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Automatiškai prisijungti prie sistemos pasirinkus parinktis"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "Jau prisijungė"
-
 #: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
 msgstr "Palaikoma tik komanda VERSION"
@@ -882,3 +509,4 @@ msgstr "Ekranvaizdis įrašytas"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Įrašyti ekranvaizdį"
+
