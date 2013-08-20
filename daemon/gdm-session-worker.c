@@ -795,7 +795,6 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                  */
                 if (res && response_text != NULL) {
                         *response_text = strndup (user_answer, PAM_MAX_RESP_SIZE - 1);
-                        (*response_text)[PAM_MAX_RESP_SIZE - 1] = '\0';
                 }
 
                 memset (user_answer, '\0', strlen (user_answer));
