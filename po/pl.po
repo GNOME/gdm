@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-31 20:31+0200\n"
-"PO-Revision-Date: 2013-07-31 20:33+0200\n"
+"POT-Creation-Date: 2013-08-20 21:27+0200\n"
+"PO-Revision-Date: 2013-08-20 21:28+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -152,68 +152,28 @@ msgstr "Nazwa urządzenia wyświetlającego"
 msgid "Could not create authentication helper process"
 msgstr "Nie można utworzyć pomocniczego procesu uwierzytelniania"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "błąd podczas inicjowania negocjacji z systemem uwierzytelniania - %s"
+#: ../daemon/gdm-session-worker.c:824
+msgid "Your account was given a time limit that's now passed."
+msgstr "Konto posiada ograniczenie czasowe, które już minęło."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "błąd ogólny"
+#: ../daemon/gdm-session-worker.c:831
+msgid "Sorry, that didn't work. Please try again."
+msgstr "To nie zadziałało. Proszę spróbować ponownie."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "brak pamięci"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "błąd programisty"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "nieznany błąd"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1063
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"błąd podczas wysyłania do systemu uwierzytelniania żądanej nazwy "
-"użytkownika: %s"
+#: ../daemon/gdm-session-worker.c:1250
+msgid "Your password has expired, please change it now."
+msgstr "Hasło wygasło, proszę je teraz zmienić."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr "błąd podczas wysyłania do systemu uwierzytelniania nazwy komputera: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"błąd podczas wysyłania do systemu uwierzytelniania informacji o konsoli: %s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr ""
-"błąd podczas informowania systemu uwierzytelniania o ciągu wyświetlania: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"błąd podczas informowania systemu uwierzytelniania o wyświetlaniu uprawnień "
-"xauth: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1489 ../daemon/gdm-session-worker.c:1506
 #, c-format
 msgid "no user account available"
 msgstr "brak konta użytkownika"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1533
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
@@ -332,7 +292,6 @@ msgid "GNOME Display Manager Slave"
 msgstr "Proces podrzędny menedżera wyświetlania GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Okno logowania"
 
@@ -513,346 +472,6 @@ msgstr "XDMCP: niepoprawna wersja XDMCP."
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: nie można przetworzyć adresu"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Uwierzytelnianie za pomocą odcisku palca"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Loguje do sesji za pomocą odcisku palca"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Uwierzytelnianie za pomocą hasła"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Loguje do sesji za pomocą nazwy użytkownika i hasła"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Zaloguj"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Identyfikator gniazda"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Gniazdo, w którym znajduje się karta"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Seria gniazda"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "identyfikator karty w gnieździe"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "nazwa"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Moduł"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "sterownik karty smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Uwierzytelnianie za pomocą karty smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Loguje do sesji za pomocą karty smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Ścieżka do modułu"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "ścieżka do sterownika PKCS #11 karty smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "odebrano błąd lub rozłączenie ze źródła zdarzeń"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "Nie można zainicjować systemu zabezpieczeń NSS"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "nie odnaleziono odpowiedniego sterownika karty smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "nie można wczytać sterownika karty smartcard \"%s\""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "nie można obserwować przychodzących zdarzeń karty - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-"wystąpił nieoczekiwany błąd podczas oczekiwania na zdarzenia karty smartcard"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Uwierzytelnienie"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Loguje do sesji"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Wartość"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "procent czasu ukończono"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Tekst nieaktywny"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr ""
-"Tekst etykiety w przypadku, gdy użytkownik nie wybrał jeszcze żadnego "
-"elementu"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Tekst aktywny"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "Tekst etykiety w przypadku, gdy użytkownik wybrał element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "Widoczna lista"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Określa, czy lista wyboru jest widoczna"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a %e %b, %H:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a %e %b, %H:%M"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a, %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a, %H:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "Logowanie automatyczne…"
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "Anulowanie…"
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Proszę wybrać język i nacisnąć przycisk Zaloguj"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Własna"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Własna sesja"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Nazwa komputera"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Wersja"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Anuluj"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Odblokuj"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Zaloguj"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "Uśpij"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "Uruchom ponownie"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "Wyłącz"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "Nieznany pozostały czas"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "Panel"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Tekst etykiety"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "Tekst użyty jako etykieta"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Nazwa ikony"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "Ikona do użycia z etykietą"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Element domyślny"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "Identyfikator domyślnego elementu"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Logowanie zdalne (łączenie z %s…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Logowanie zdalne (połączono z %s)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Logowanie zdalne"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Sesja"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Czas trwania"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Liczba sekund do zatrzymania odliczania"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Czas rozpoczęcia"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "Czas rozpoczęcia odliczania"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "Jest uruchomiony?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Określa, czy odbywa się odliczanie"
-
-# tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "Loguje jako %s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "Inny…"
-
-# tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Wybiera inne konto"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Gość"
-
-# tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Loguje jako tymczasowego gościa"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Logowanie automatyczne"
-
-# tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Automatycznie loguje do systemu po wybraniu opcji"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "Obecnie zalogowany"
 
 #: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
