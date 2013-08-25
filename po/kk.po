@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gdm to kazakh\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-05-23 23:22+0000\n"
+"POT-Creation-Date: 2013-08-20 19:29+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -24,7 +24,7 @@ msgstr "/dev/urandom символдық құрылғы емес"
 msgid "could not find user \"%s\" on system"
 msgstr "жүйеден \"%s\" пайдаланушысы табылмады"
 
-#: ../daemon/gdm-display.c:1323 ../daemon/gdm-display.c:1357
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "қолжетерлік сессиялар әлі жоқ"
@@ -57,7 +57,7 @@ msgstr "%s пайдаланушысы үшін жарайтын сессияны
 msgid "User doesn't own session"
 msgstr "Пайдаланушы сессияға ие емес"
 
-#: ../daemon/gdm-manager.c:686 ../daemon/gdm-manager.c:773
+#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
 msgid "No session available"
 msgstr "қолжетерлік сессиялар жоқ"
 
@@ -132,75 +132,35 @@ msgid "The display device"
 msgstr "экран құрылғысы"
 
 #: ../daemon/gdm-session.c:1183
-#| msgid "%s: Could not read Authentication Names"
 msgid "Could not create authentication helper process"
 msgstr "Аутентификациясының көмекші үрдісін жасау мүмкін емес"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-#| msgid "error initiating conversation with authentication system: %s"
-msgid "error initiating conversation with authentication system - %s"
-msgstr "аутентификация жүйесімен сөйлесуді бастау қатесі - %s"
+#: ../daemon/gdm-session-worker.c:824
+msgid "Your account was given a time limit that's now passed."
+msgstr "Тіркелгіңіз үшін берілген уақыт мерзімі енді аяқталды."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "жалпы қате"
+#: ../daemon/gdm-session-worker.c:831
+msgid "Sorry, that didn't work. Please try again."
+msgstr "Кешіріңіз, бұл дұрыс емес болды. Қайтадан көріңіз."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "жады жеткіліксіз"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "бағдарламалаушы қатесі"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "белгісіз қате"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1063
 msgid "Username:"
 msgstr "Пайдаланушы:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"аутентификация жүйесіне тандалған пайдаланушы жөнінде хабарлау қатесі: %s"
+#: ../daemon/gdm-session-worker.c:1250
+msgid "Your password has expired, please change it now."
+msgstr "Пароліңіздің мерзімі аяқталды, оны қазір ауыстырыңыз."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"аутентификация жүйесіне пайдаланушының хост аты жөнінде хабарлау қатесі: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"аутентификация жүйесіне пайдаланушының консолі жөнінде хабарлау қатесі: %s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "аутентификация жүйесіне экран жолы жөнінде хабарлау қатесі: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"аутентификация жүйесіне экран xauth credentials жөнінде хабарлау қатесі: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1489 ../daemon/gdm-session-worker.c:1506
 #, c-format
 msgid "no user account available"
 msgstr "қолжетерлік пайдаланушы тіркелгілер жоқ"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1533
 msgid "Unable to change to user"
 msgstr "Пайдаланушыға ауысу мүмкін емес"
 
-#: ../daemon/gdm-simple-slave.c:1383
+#: ../daemon/gdm-simple-slave.c:1527
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -212,17 +172,17 @@ msgstr ""
 "шығысын тексеріңіз. Бұл экран уақытша сөндіріледі. Мәселе шешілген кезде GDM "
 "қызметін қайта қосыңыз."
 
-#: ../daemon/gdm-simple-slave.c:1424
+#: ../daemon/gdm-simple-slave.c:1568
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Пайдаланушы кіргенге дейін ғана шақыруға болады"
 
-#: ../daemon/gdm-simple-slave.c:1434
+#: ../daemon/gdm-simple-slave.c:1578
 #, c-format
 msgid "Caller not GDM"
 msgstr "Шақырушы GDM емес"
 
-#: ../daemon/gdm-simple-slave.c:1487
+#: ../daemon/gdm-simple-slave.c:1631
 msgid "User not logged in"
 msgstr "Пайдаланушы жүйеге кіріп тұрған жоқ"
 
@@ -243,7 +203,7 @@ msgstr "%s PID файлын жазу мүмкін емес: дискіде ор�
 #: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
+msgstr "Дара жөнелту маркер %s бумасын жасау сәтсіз аяқталды: %s"
 
 #: ../daemon/main.c:194
 #, c-format
@@ -349,10 +309,24 @@ msgstr ""
 "жүйеге кіруге рұқсат ете алады."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#| msgid "Whether or not to allow smartcard readers for login"
+msgid "Whether or not to allow passwords for login"
+msgstr "Жүйеге парольмен кіруді рұқсат ету ма, жоқ па"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"Жүйеге кіру экраны үшін парольмен кіру мүмкіндігін сөндіруге болады, "
+"пайдаланушы смарткарта немесе саусақ аутентификациясын қолдануға мәжбүр "
+"болады."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Пайдаланушылар тізімінің үстіндегі кішкене суретке дейінгі жол"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -361,7 +335,7 @@ msgstr ""
 "Жүйеге кіру экраны әкімшілер және өндірушілер үшін ұйымды анықтауды мүмкін "
 "қылатын, пайдаланушылар тізімінің үстінде кіші бейнені көрсете алады."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -370,11 +344,11 @@ msgstr ""
 "Жүйеге кіру қосымша экраны әкімшілер және өндірушілер үшін ұйымды анықтауды "
 "мүмкін қылатын, пайдаланушылар тізімінің үстінде кіші бейнені көрсете алады."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Пайдаланушылар тізімін көрсетпеу"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -382,37 +356,37 @@ msgstr ""
 "Жүйеге кіру экраны әдетте жүйеге кіре алатын пайдаланушылар тізімін "
 "көрсетеді. Бұл баптау арқылы ол мүмкіндікті сөндіруге болады."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Қарсы алу хабарламасын көрсету"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Ақиқат деп орнатыңыз, егер қарсы алу мәтінді көргіңіз келсе."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Қарсы алу хабарламасы"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Кіру терезесінде көрсетілетін мәтін хабарламасы."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Қайта қосу батырмасын көрсетпеу"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "АҚИҚАТ мәніне орнатыңыз, жүйеге кіру терезесінде қайта қосу батырмасын "
 "көрсетпеу үшін."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Рұқсат етілген аутентификация қателері"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -421,7 +395,6 @@ msgstr ""
 "жүйеге кіру талабы рұқсат етіледі."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
 msgstr "Аралық экранды жасау мүмкін емес:"
 
@@ -444,7 +417,6 @@ msgstr "Пайдаланушы сессияларды ауыстыра алма�
 
 #: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
 #, c-format
-#| msgid "Could not identify the current session."
 msgid "Could not identify the current seat."
 msgstr "Ағымдағы отыру орнын анықтау мүмкін емес."
 
@@ -520,6 +492,45 @@ msgstr "Скриншот алынды"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Экранның сурет көшірмесін сақтау"
+
+#~| msgid "error initiating conversation with authentication system: %s"
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "аутентификация жүйесімен сөйлесуді бастау қатесі - %s"
+
+#~ msgid "general failure"
+#~ msgstr "жалпы қате"
+
+#~ msgid "out of memory"
+#~ msgstr "жады жеткіліксіз"
+
+#~ msgid "application programmer error"
+#~ msgstr "бағдарламалаушы қатесі"
+
+#~ msgid "unknown error"
+#~ msgstr "белгісіз қате"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "аутентификация жүйесіне тандалған пайдаланушы жөнінде хабарлау қатесі: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr ""
+#~ "аутентификация жүйесіне пайдаланушының хост аты жөнінде хабарлау қатесі: "
+#~ "%s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr ""
+#~ "аутентификация жүйесіне пайдаланушының консолі жөнінде хабарлау қатесі: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr "аутентификация жүйесіне экран жолы жөнінде хабарлау қатесі: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr ""
+#~ "аутентификация жүйесіне экран xauth credentials жөнінде хабарлау қатесі: "
+#~ "%s"
 
 #~| msgid "PolicyKit Authentication Agent"
 #~ msgid "Fingerprint Authentication"
