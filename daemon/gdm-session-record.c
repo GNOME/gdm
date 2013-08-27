@@ -363,9 +363,11 @@ gdm_session_record_failed (GPid                  session_pid,
         record_set_host (&session_record, x11_display_name, host_name);
         record_set_line (&session_record, display_device, x11_display_name);
 
+#if defined(HAVE_UPDWTMPX) || defined(HAVE_UPDWTMP)
         /* Handle btmp */
         g_debug ("Writing btmp failed session attempt record to "
                  GDM_BAD_SESSION_RECORDS_FILE);
+#endif
 
 #if defined(HAVE_UPDWTMPX)
         updwtmpx (GDM_BAD_SESSION_RECORDS_FILE, &session_record);
