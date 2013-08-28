@@ -8,7 +8,6 @@ SUBDIRS =			\
 	$(NULL)
 
 initdir = $(gdmconfdir)/Init
-authdir = $(localstatedir)/gdm
 postdir = $(gdmconfdir)/PostSession
 predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
@@ -69,7 +68,6 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]X_XNEST_CONFIG_OPTIONS[@],$(X_XNEST_CONFIG_OPTIONS),g' \
 		-e 's,[@]X_XNEST_UNSCALED_FONTPATH[@],$(X_XNEST_UNSCALED_FONTPATH),g' \
 		-e 's,[@]GDM_RBAC_SYSCMD_KEYS[@],$(GDM_RBAC_SYSCMD_KEYS),g' \
-		-e 's,[@]authdir[@],$(authdir),g' \
 		-e 's,[@]datadir[@],$(datadir),g' \
 		-e 's,[@]gdmconfdir[@],$(gdmconfdir),g' \
 		-e 's,[@]libdir[@],$(libdir),g' \
@@ -273,12 +271,6 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstr
 		$(mkinstalldirs) $(DESTDIR)$(logdir); \
 		chmod 755 $(DESTDIR)$(logdir); \
 		chown root:root $(DESTDIR)$(logdir) || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(authdir); then \
-		$(mkinstalldirs) $(DESTDIR)$(authdir); \
-		chmod 1770 $(DESTDIR)$(authdir); \
-		chown root:gdm $(DESTDIR)$(authdir) || : ; \
 	fi
 
 	system=`uname`; \

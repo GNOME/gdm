@@ -200,7 +200,6 @@ get_script_environment (GdmSlave   *slave,
         GPtrArray     *env;
         GHashTable    *hash;
         struct passwd *pwent;
-        char          *x_servers_file;
         char          *temp;
 
         env = g_ptr_array_new ();
@@ -242,13 +241,6 @@ get_script_environment (GdmSlave   *slave,
                 /*g_hash_table_insert (hash, "GDM_PARENT_XAUTHORITY"), slave->priv->parent_temp_auth_file));*/
         }
 #endif
-
-        /* some env for use with the Pre and Post scripts */
-        temp = g_strconcat (slave->priv->display_name, ".Xservers", NULL);
-        x_servers_file = g_build_filename (AUTHDIR, temp, NULL);
-        g_free (temp);
-
-        g_hash_table_insert (hash, g_strdup ("X_SERVERS"), x_servers_file);
 
         if (! slave->priv->display_is_local) {
                 g_hash_table_insert (hash, g_strdup ("REMOTE_HOST"), g_strdup (slave->priv->display_hostname));

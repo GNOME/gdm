@@ -189,12 +189,6 @@ gdm_daemon_ensure_dirs (uid_t uid,
                           GDM_RAN_ONCE_MARKER_DIR, error->message);
         }
 
-        /* Set up /var/gdm */
-        if (!ensure_dir_with_perms (AUTHDIR, uid, gid, 0711, &error)) {
-                gdm_fail (_("Failed to create AuthDir %s: %s"),
-                          AUTHDIR, error->message);
-        }
-
         /* Set up /var/log/gdm */
         if (!ensure_dir_with_perms (LOGDIR, 0, gid, 0711, &error)) {
                 gdm_fail (_("Failed to create LogDir %s: %s"),

@@ -5,7 +5,6 @@ AM_CPPFLAGS = \
 	-I..						\
 	-I$(top_srcdir)/common				\
 	-I$(top_builddir)/common			\
-	-DAUTHDIR=\"$(authdir)\"			\
 	-DBINDIR=\"$(bindir)\"				\
 	-DDATADIR=\"$(datadir)\"			\
 	-DDMCONFDIR=\"$(dmconfdir)\"			\

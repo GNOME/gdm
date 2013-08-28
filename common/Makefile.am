@@ -6,7 +6,6 @@ AM_CPPFLAGS = \
 	-I.						\
 	-I..						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DAUTHDIR=\"$(authdir)\"			\
 	-DBINDIR=\"$(bindir)\"				\
 	-DDATADIR=\"$(datadir)\"			\
 	-DDMCONFDIR=\"$(dmconfdir)\"			\

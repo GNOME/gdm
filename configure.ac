@@ -1039,7 +1039,6 @@ dnl ---------------------------------------------------------------------------
 dnl - Define some variables to represent the directories we use.
 dnl ---------------------------------------------------------------------------
 
-AC_SUBST(authdir, ${localstatedir}/gdm)
 AC_SUBST(gdmlocaledir, ${gdmconfdir})
 AC_SUBST(pixmapdir, ${datadir}/pixmaps)
 

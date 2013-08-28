@@ -4,7 +4,6 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
 	-I$(top_srcdir)/gui/libgdm			\
 	-I$(top_builddir)/gui/libgdm			\
-	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
