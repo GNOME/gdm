@@ -399,7 +399,7 @@ main (int    argc,
         /* clean up any stale ran once marker file that may be lingering */
         delete_first_run_marker ();
 
-        g_chdir (AUTHDIR);
+        g_chdir ("/");
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
