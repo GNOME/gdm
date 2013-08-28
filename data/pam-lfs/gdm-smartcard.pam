@@ -3,16 +3,13 @@
 auth     requisite      pam_nologin.so
 auth     required       pam_env.so
 
-auth     requisite      pam_pkcs11.so wait_for_card card_only
 auth     required       pam_succeed_if.so uid >= 1000 quiet
-auth     required       pam_deny.so
+auth     required       pam_pkcs11.so wait_for_card card_only
 auth     optional       pam_gnome_keyring.so
 
 account  include        system-account
-
 password required       pam_pkcs11.so
 
-session  optional       pam_keyinit.so revoke
 session  required       pam_limits.so
 session  include        system-session
 session  optional       pam_gnome_keyring.so auto_start

@@ -1,14 +1,17 @@
 # Begin /etc/pam.d/gdm-launch-environment
 
+auth     required       pam_succeed_if.so audit quiet_success user = gdm
 auth     required       pam_env.so
-auth     required       pam_permit.so
+auth     optional       pam_permit.so
 
-account  required       pam_nologin.so
+account  required       pam_succeed_if.so audit quiet_success user = gdm
 account  include        system-account
 
 password required       pam_deny.so
 
-session  required       pam_systemd.so kill-session-processes=1
+session  required       pam_succeed_if.so audit quiet_success user = gdm
+session  required       pam_systemd.so
 session  optional       pam_keyinit.so force revoke
+session  optional       pam_permit.so
 
 # End /etc/pam.d/gdm-launch-environment

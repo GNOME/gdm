@@ -3,13 +3,11 @@
 auth     requisite      pam_nologin.so
 auth     required       pam_env.so
 
-auth     requisite      pam_pin.so
 auth     required       pam_succeed_if.so uid >= 1000 quiet
-auth     required       pam_deny.so
+auth     required       pam_pin.so
 auth     optional       pam_gnome_keyring.so
 
 account  include        system-account
-
 password required       pam_pin.so
 
 session  required       pam_limits.so

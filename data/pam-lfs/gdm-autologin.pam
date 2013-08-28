@@ -7,7 +7,6 @@ auth     required       pam_succeed_if.so uid >= 1000 quiet
 auth     required       pam_permit.so
 
 account  include        system-account
-
 password include        system-password
 
 session  optional       pam_keyinit.so revoke
