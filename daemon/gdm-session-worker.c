@@ -780,11 +780,11 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 res = gdm_session_worker_report_problem (worker, utf8_msg);
                 break;
 #ifdef PAM_RADIO_TYPE
-	case PAM_RADIO_TYPE:
-		msg = g_strdup_printf ("%s (yes/no/maybe)", utf8_msg);
+        case PAM_RADIO_TYPE:
+                msg = g_strdup_printf ("%s (yes/no/maybe)", utf8_msg);
                 res = gdm_session_worker_ask_question (worker, msg, &user_answer);
-		g_free (msg);
-		break;
+                g_free (msg);
+                break;
 #endif
         default:
                 g_assert_not_reached ();
