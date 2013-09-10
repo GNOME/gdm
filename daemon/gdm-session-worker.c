@@ -787,7 +787,10 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 break;
 #endif
         default:
-                g_assert_not_reached ();
+                res = false;
+                g_warning ("Unknown and unhandled message type %d\n",
+                           query->msg_style);
+
                 break;
         }
 
