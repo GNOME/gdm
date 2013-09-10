@@ -748,6 +748,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         char    *user_answer;
         gboolean res;
         char    *utf8_msg;
+        char	*msg;
 
         if (response_text != NULL) {
                 *response_text = NULL;
@@ -778,6 +779,13 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         case PAM_ERROR_MSG:
                 res = gdm_session_worker_report_problem (worker, utf8_msg);
                 break;
+#ifdef PAM_RADIO_TYPE
+	case PAM_RADIO_TYPE:
+		msg = g_strdup_printf ("%s (yes/no/maybe)", utf8_msg);
+                res = gdm_session_worker_ask_question (worker, msg, &user_answer);
+		g_free (msg);
+		break;
+#endif
         default:
                 g_assert_not_reached ();
                 break;
