@@ -11,6 +11,7 @@
 # Ask Hjorth Larsen <asklarsen@gmail.com>, 2008, 09.
 # Kenneth Nielsen <k.nielsen81@gmail.com>, 2009, 2010-2012.
 # flemming christensen <fc@stromata.dk>, 2011
+# Kris Thomsen <mail@kristhomsen.dk>, 2013
 # Konventioner:
 #
 #   authentication -> autentificering (jvf. RO også i andre former)
@@ -29,9 +30,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-17 14:43+0100\n"
-"PO-Revision-Date: 2013-03-16 18:13+0100\n"
-"Last-Translator: Kenneth Nielsen <k.nielsen81@gmail.com>\n"
+"POT-Creation-Date: 2013-09-14 15:51+0200\n"
+"PO-Revision-Date: 2013-09-14 15:43+0100\n"
+"Last-Translator: Kris Thomsen <mail@kristhomsen.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
@@ -50,86 +51,86 @@ msgstr "/dev/urandom er ikke en tegn-enhed"
 msgid "could not find user \"%s\" on system"
 msgstr "kunne ikke finde brugeren \"%s\" på systemet"
 
-#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "Ingen session tilgængelig endnu"
 
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "Ikke i stand til at slå UID op for brugeren %s"
 
-#: ../daemon/gdm-manager.c:291
+#: ../daemon/gdm-manager.c:290
 msgid "no sessions available"
 msgstr "ingen session tilgængelig"
 
-#: ../daemon/gdm-manager.c:352
+#: ../daemon/gdm-manager.c:351
 #, c-format
 msgid "No sessions for %s available for reauthentication"
 msgstr "Der er ingen session for %s tilgængelig for genautentificering"
 
-#: ../daemon/gdm-manager.c:406
+#: ../daemon/gdm-manager.c:405
 #, c-format
 msgid "Unable to find session for user %s"
 msgstr "Ikke i stand til at finde session for brugeren %s"
 
-#: ../daemon/gdm-manager.c:476
+#: ../daemon/gdm-manager.c:475
 #, c-format
 msgid "Unable to find appropriate session for user %s"
 msgstr "Ikke i stand til at finde passende session for brugeren %s"
 
-#: ../daemon/gdm-manager.c:671
+#: ../daemon/gdm-manager.c:670
 msgid "User doesn't own session"
 msgstr "Brugeren ejer ikke sessionen"
 
-#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:774
+#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
 msgid "No session available"
 msgstr "Ingen session tilgængelig"
 
-#: ../daemon/gdm-server.c:238
+#: ../daemon/gdm-server.c:234
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: kan ikke tilslutte til ophavsterminalen \"%s\""
 
-#: ../daemon/gdm-server.c:417
+#: ../daemon/gdm-server.c:413
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Serveren skulle være startet af brugeren %s, men den bruger eksisterer ikke"
 
-#: ../daemon/gdm-server.c:428 ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunne ikke sætte gruppe-id til %d"
 
-#: ../daemon/gdm-server.c:434
+#: ../daemon/gdm-server.c:430
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () mislykkedes for %s"
 
-#: ../daemon/gdm-server.c:440
+#: ../daemon/gdm-server.c:436
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunne ikke sætte bruger-id til %d"
 
-#: ../daemon/gdm-server.c:487
+#: ../daemon/gdm-server.c:483
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kunne ikke åbne logfil for terminalen %s!"
 
-#: ../daemon/gdm-server.c:498 ../daemon/gdm-server.c:504
-#: ../daemon/gdm-server.c:510
+#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
+#: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Fejl ved sætning af %s til %s"
 
-#: ../daemon/gdm-server.c:530
+#: ../daemon/gdm-server.c:526
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server-prioritet kunne ikke angives til %d: %s"
 
-#: ../daemon/gdm-server.c:686
+#: ../daemon/gdm-server.c:682
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tom serverkommando til terminalen %s"
@@ -163,72 +164,32 @@ msgstr "Skærmenheden"
 msgid "Could not create authentication helper process"
 msgstr "Kunne ikke oprette proces for autentificeringshjælp"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "fejl ved initiering af kommunikation med autentificeringssystemet - %s"
+#: ../daemon/gdm-session-worker.c:835
+msgid "Your account was given a time limit that's now passed."
+msgstr "Din konto fik en tidsgrænse, som nu er overskredet."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "generel fejl"
+#: ../daemon/gdm-session-worker.c:842
+msgid "Sorry, that didn't work. Please try again."
+msgstr "Beklager, det virkede ikke. Prøv igen."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "løbet tør for hukommelse"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "applikationsprogrammørfejl"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "ukendt fejl"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1074
 msgid "Username:"
 msgstr "Brugernavn:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"fejl under informering af autentificeringssystemet om foretrukken "
-"brugernavnsprompt: %s"
+#: ../daemon/gdm-session-worker.c:1261
+msgid "Your password has expired, please change it now."
+msgstr "Din adgangskode er udløbet, ændr den venligst med det samme."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"fejl under informering af autentificeringssystemet om brugerens værtsnavn: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"fejl under informering af autentificeringssystemet om brugerens konsol: %s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "fejl under informering af autentificeringssystemet om skærmstreng: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"fejl under informering af autentificeringssystemet om skærm-xauth-"
-"akkreditiver: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
 #, c-format
 msgid "no user account available"
 msgstr "ingen brugerkonto tilgængelig"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1544
 msgid "Unable to change to user"
 msgstr "Kan ikke skifte til bruger"
 
-#: ../daemon/gdm-simple-slave.c:1315
+#: ../daemon/gdm-simple-slave.c:1527
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -240,17 +201,17 @@ msgstr ""
 "diagnosticere problemet. I mellemtiden bliver denne visning deaktiveret. "
 "Genstart GDM når problemet er løst."
 
-#: ../daemon/gdm-simple-slave.c:1356
+#: ../daemon/gdm-simple-slave.c:1568
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Kan kun kaldes før brugeren er logget ind"
 
-#: ../daemon/gdm-simple-slave.c:1366
+#: ../daemon/gdm-simple-slave.c:1578
 #, c-format
 msgid "Caller not GDM"
 msgstr "Kaldeophav er ikke GDM"
 
-#: ../daemon/gdm-simple-slave.c:1419
+#: ../daemon/gdm-simple-slave.c:1631
 msgid "User not logged in"
 msgstr "Brugeren er ikke logget ind"
 
@@ -276,50 +237,45 @@ msgstr "Kunne ikke oprette \"ran once marker dir\" %s: %s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Kunne ikke oprette AuthDir %s: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Kunne ikke oprette LogDir %s: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Kan ikke finde GDM-brugeren \"%s\". Afbryder!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM-brugeren må ikke være root. Afbryder!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Kan ikke finde GDM-gruppen \"%s\". Afbryder!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM-gruppen må ikke være root. Afbryder!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:327
 msgid "Make all warnings fatal"
 msgstr "Gør alle advarsler fatale"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:328
 msgid "Exit after a time (for debugging)"
 msgstr "Afslut efter et stykke tid (til fejlsøgning)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:329
 msgid "Print GDM version"
 msgstr "Udskriv GDM-version"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:340
 msgid "GNOME Display Manager"
 msgstr "GNOME-skærmhåndtering"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:388
 msgid "Only the root user can run GDM"
 msgstr "Kun root-brugeren kan køre GDM"
 
@@ -343,7 +299,6 @@ msgid "GNOME Display Manager Slave"
 msgstr "GNOME-skærmhåndteringsslave"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Logind-skærm"
 
@@ -380,10 +335,23 @@ msgstr ""
 "logge ind ved hjælp af disse."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow passwords for login"
+msgstr "Om adgangskoder skal tillades til logind"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"Logindskærmen kan konfigureres til ikke at tillade adgangskode-godkendelse, "
+"og dermed tvinge brugeren til at bruge smartcard- eller fingeraftryks-"
+"godkendelse."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Sti til lille billede øverst på brugerlisten"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -393,7 +361,7 @@ msgstr ""
 "brugerlisten for at give administratorer og distributioner mulighed for "
 "branding."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -403,11 +371,11 @@ msgstr ""
 "billede øverst på brugerlisten for at give administratorer og distributioner "
 "mulighed for markedsføring (branding)."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Undgå at vise brugerlisten"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -415,37 +383,37 @@ msgstr ""
 "Logindskærmen viser normalt en liste af tilgængelige brugere, som der kan "
 "logges ind som. Denne indstilling kan slås fra, således at listen ikke vises."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Aktivér visning af bannermeddelelse"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Sæt til true for at vise bannermeddelelsesteksten."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Meddelelsestekst i banner"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Tekstbannermeddelelsen, der vises i logind-vinduet."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Deaktivér visning af genstart-knapper"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Sæt til true for at deaktivere visning af genstartsknapperne i logind-"
 "vinduet."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Antal tilladte autentificeringsfejl"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -463,23 +431,23 @@ msgid "Unable to activate session: "
 msgstr "Kan ikke aktivere session: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
-#: ../utils/gdmflexiserver.c:613
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
+#: ../utils/gdmflexiserver.c:614
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Kunne ikke identificere den aktuelle session."
 
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "Bruger ude af stand til at skifte session."
 
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Kunne ikke identificere det aktuelle sæde."
 
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -488,7 +456,7 @@ msgstr ""
 "Systemet var ude af stand til at bestemme, hvorvidt der skal skiftes til en "
 "eksisterende logindskærm, eller startes en ny logindskærm."
 
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Systemet var ude af stand til starte en ny logindskærm."
@@ -513,368 +481,33 @@ msgstr "XDMCP: Forkert XDMCP-version!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Kan ikke fortolke adresse"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Autentificering af fingeraftryk"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Log ind i session med fingeraftryk"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Autentificering af adgangskode"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Log ind i session med brugernavn og adgangskode"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Log ind"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Plads-id"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Pladsen hvor kortet er indsat"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Pladsrække"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "pladsvis identifikation til kort"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "navn"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Modul"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "smartcard-driver"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Smartcardautentificering"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Log ind i session med smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Modulsti"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "sti til smartcard PKCS #11-driver"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "modtog fejl eller \"hangup\"-signal fra begivenhedskilde"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS-sikkerhedssystem kunne ikke klargøres"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "ingen passende smartcard-driver blev fundet"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "smartcard-driver %s kunne ikke blive indlæst"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "kunne ikke holde øje med indkommende kortbegivenheder - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "stødte på en uventet fejl ved afventning af smartcard-begivenheder"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Autentificering"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Log ind i session"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Værdi"
-
-# ???
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "procentdel af tid fuldført"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Tekst ved inaktivitet"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr ""
-"Teksten der bruges i etiketten, hvis brugeren endnu ikke har valgt et element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Tekst ved aktivitet"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "Teksten der bruges i etiketten, hvis brugeren har valgt et element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "Liste synlig"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Hvorvidt vælgerlisten er synlig"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a %e. %b, %H:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a %e. %b, %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a %H:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "Logger ind automatisk…"
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "Annullerer…"
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Vælg sprog og klik på log ind"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Brugerdefineret"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Brugerdefineret session"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Computernavn"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Version"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Annullér"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Lås op"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Log ind"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "Hvile"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "Genstart"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "Luk ned"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "Ukendt resterende tid"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "Panel"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Etikettekst"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "Teksten der bruges som etiket"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Ikonnavn"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "Ikonet, der bruges til etiketten"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Standardelement"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "Standardelementets id"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Fjernt logind (Forbinder til %s…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Fjernindlogind (Forbundet til %s)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Fjernt logind"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Session"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Varighed"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Antal sekunder til stopuret stopper"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Starttid"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "Starttidspunktet for stopuret"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "Tager det tid?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Hvorvidt stopuret tager tid i øjeblikket"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "Log ind som %s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "Andre…"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Vælg en anden konto"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Gæst"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Log ind som midlertidig gæst"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Automatisk logind"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Log automatisk ind på systemet efter indstillingsvalg"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "Logget ind lige nu"
-
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
 msgstr "Kun VERSION-kommandoen er understøttet"
 
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:65
 msgid "COMMAND"
 msgstr "KOMMANDO"
 
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
+#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
 msgid "Ignored — retained for compatibility"
 msgstr "Ignoreret — beholdt af hensyn til kompatibilitet"
 
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Fejlsøgingsinformation"
 
-#: ../utils/gdmflexiserver.c:71
+#: ../utils/gdmflexiserver.c:72
 msgid "Version of this application"
 msgstr "Versionen af dette program"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:706
+#: ../utils/gdmflexiserver.c:707
 msgid "- New GDM login"
 msgstr "- Nyt GDM-logind"
 
-#: ../utils/gdmflexiserver.c:762
+#: ../utils/gdmflexiserver.c:763
 msgid "Unable to start new display"
 msgstr "Kan ikke starte ny skærm"
 
@@ -886,6 +519,280 @@ msgstr "Skærmbillede taget"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Tag et billede af skærmen"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr ""
+#~ "fejl ved initiering af kommunikation med autentificeringssystemet - %s"
+
+#~ msgid "general failure"
+#~ msgstr "generel fejl"
+
+#~ msgid "out of memory"
+#~ msgstr "løbet tør for hukommelse"
+
+#~ msgid "application programmer error"
+#~ msgstr "applikationsprogrammørfejl"
+
+#~ msgid "unknown error"
+#~ msgstr "ukendt fejl"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "fejl under informering af autentificeringssystemet om foretrukken "
+#~ "brugernavnsprompt: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr ""
+#~ "fejl under informering af autentificeringssystemet om brugerens "
+#~ "værtsnavn: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr ""
+#~ "fejl under informering af autentificeringssystemet om brugerens konsol: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr ""
+#~ "fejl under informering af autentificeringssystemet om skærmstreng: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr ""
+#~ "fejl under informering af autentificeringssystemet om skærm-xauth-"
+#~ "akkreditiver: %s"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "Kunne ikke oprette AuthDir %s: %s"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "Autentificering af fingeraftryk"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "Log ind i session med fingeraftryk"
+
+#~ msgid "Password Authentication"
+#~ msgstr "Autentificering af adgangskode"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "Log ind i session med brugernavn og adgangskode"
+
+#~ msgid "Log In"
+#~ msgstr "Log ind"
+
+#~ msgid "Slot ID"
+#~ msgstr "Plads-id"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "Pladsen hvor kortet er indsat"
+
+#~ msgid "Slot Series"
+#~ msgstr "Pladsrække"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "pladsvis identifikation til kort"
+
+#~ msgid "name"
+#~ msgstr "navn"
+
+#~ msgid "Module"
+#~ msgstr "Modul"
+
+#~ msgid "smartcard driver"
+#~ msgstr "smartcard-driver"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "Smartcardautentificering"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "Log ind i session med smartcard"
+
+#~ msgid "Module Path"
+#~ msgstr "Modulsti"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "sti til smartcard PKCS #11-driver"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "modtog fejl eller \"hangup\"-signal fra begivenhedskilde"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "NSS-sikkerhedssystem kunne ikke klargøres"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "ingen passende smartcard-driver blev fundet"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "smartcard-driver %s kunne ikke blive indlæst"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr "kunne ikke holde øje med indkommende kortbegivenheder - %s"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr "stødte på en uventet fejl ved afventning af smartcard-begivenheder"
+
+#~ msgid "Authentication"
+#~ msgstr "Autentificering"
+
+#~ msgid "Log into session"
+#~ msgstr "Log ind i session"
+
+#~ msgid "Value"
+#~ msgstr "Værdi"
+
+# ???
+#~ msgid "percentage of time complete"
+#~ msgstr "procentdel af tid fuldført"
+
+#~ msgid "Inactive Text"
+#~ msgstr "Tekst ved inaktivitet"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr ""
+#~ "Teksten der bruges i etiketten, hvis brugeren endnu ikke har valgt et "
+#~ "element"
+
+#~ msgid "Active Text"
+#~ msgstr "Tekst ved aktivitet"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr "Teksten der bruges i etiketten, hvis brugeren har valgt et element"
+
+#~ msgid "List Visible"
+#~ msgstr "Liste synlig"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "Hvorvidt vælgerlisten er synlig"
+
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%a %e. %b, %H:%M:%S"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%a %e. %b, %H:%M:%S"
+
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%a %H:%M:%S"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%a %H:%M"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "Logger ind automatisk…"
+
+#~ msgid "Cancelling…"
+#~ msgstr "Annullerer…"
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "Vælg sprog og klik på log ind"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "Brugerdefineret"
+
+#~ msgid "Custom session"
+#~ msgstr "Brugerdefineret session"
+
+#~ msgid "Computer Name"
+#~ msgstr "Computernavn"
+
+#~ msgid "Version"
+#~ msgstr "Version"
+
+#~ msgid "Cancel"
+#~ msgstr "Annullér"
+
+#~ msgid "Unlock"
+#~ msgstr "Lås op"
+
+#~ msgid "Login"
+#~ msgstr "Log ind"
+
+#~ msgid "Suspend"
+#~ msgstr "Hvile"
+
+#~ msgid "Restart"
+#~ msgstr "Genstart"
+
+#~ msgid "Shut Down"
+#~ msgstr "Luk ned"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "Ukendt resterende tid"
+
+#~ msgid "Panel"
+#~ msgstr "Panel"
+
+#~ msgid "Label Text"
+#~ msgstr "Etikettekst"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "Teksten der bruges som etiket"
+
+#~ msgid "Icon name"
+#~ msgstr "Ikonnavn"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "Ikonet, der bruges til etiketten"
+
+#~ msgid "Default Item"
+#~ msgstr "Standardelement"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "Standardelementets id"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "Fjernt logind (Forbinder til %s…)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "Fjernindlogind (Forbundet til %s)"
+
+#~ msgid "Remote Login"
+#~ msgstr "Fjernt logind"
+
+#~ msgid "Session"
+#~ msgstr "Session"
+
+#~ msgid "Duration"
+#~ msgstr "Varighed"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "Antal sekunder til stopuret stopper"
+
+#~ msgid "Start time"
+#~ msgstr "Starttid"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "Starttidspunktet for stopuret"
+
+#~ msgid "Is it Running?"
+#~ msgstr "Tager det tid?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "Hvorvidt stopuret tager tid i øjeblikket"
+
+#~ msgid "Log in as %s"
+#~ msgstr "Log ind som %s"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "Andre…"
+
+#~ msgid "Choose a different account"
+#~ msgstr "Vælg en anden konto"
+
+#~ msgid "Guest"
+#~ msgstr "Gæst"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "Log ind som midlertidig gæst"
+
+#~ msgid "Automatic Login"
+#~ msgstr "Automatisk logind"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "Log automatisk ind på systemet efter indstillingsvalg"
+
+#~ msgid "Currently logged in"
+#~ msgstr "Logget ind lige nu"
 
 #~ msgid "Logdir %s does not exist or isn't a directory."
 #~ msgstr "Logmappe %s eksisterer ikke eller er ikke en mappe."
@@ -2328,13 +2235,6 @@ msgstr "Tag et billede af skærmen"
 #~ msgstr ""
 #~ "Din adgangskode er blevet ændret, men du skal muligvis ændre den igen. "
 #~ "Prøv igen senere eller kontakt din systemadministrator."
-
-#~ msgid ""
-#~ "Your password has expired.\n"
-#~ "Only a system administrator can now change it"
-#~ msgstr ""
-#~ "Din adgangskode er udløbet.\n"
-#~ "Kun en systemadministrator kan ændre det nu"
 
 #~ msgid "Internal error on passwdexpired"
 #~ msgstr "Intern fejl ved passwdexpired"
