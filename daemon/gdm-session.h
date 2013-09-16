@@ -110,6 +110,7 @@ char             *gdm_session_get_display_device          (GdmSession     *sessi
 char             *gdm_session_get_display_seat_id         (GdmSession     *session);
 char             *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
+gboolean          gdm_session_needs_vt                    (GdmSession     *session);
 
 void              gdm_session_start_conversation          (GdmSession *session,
                                                            const char *service_name);

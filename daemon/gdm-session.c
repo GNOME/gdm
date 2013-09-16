@@ -2689,6 +2689,10 @@ gdm_session_bypasses_xsession (GdmSession *self)
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
+        if (gdm_session_needs_vt (self)) {
+                return TRUE;
+        }
+
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
 
         key_file = g_key_file_new ();
@@ -2723,6 +2727,54 @@ gdm_session_bypasses_xsession (GdmSession *self)
 out:
         g_free (filename);
         return bypasses_xsession;
+}
+
+gboolean
+gdm_session_needs_vt (GdmSession *self)
+{
+        GError     *error;
+        GKeyFile   *key_file;
+        gboolean    res;
+        gboolean    needs_vt = FALSE;
+        char       *filename;
+
+        g_return_val_if_fail (self != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+
+        filename = g_strdup_printf ("%s.desktop", get_session_name (self));
+
+        key_file = g_key_file_new ();
+        error = NULL;
+        res = g_key_file_load_from_dirs (key_file,
+                                         filename,
+                                         get_system_session_dirs (),
+                                         NULL,
+                                         G_KEY_FILE_NONE,
+                                         &error);
+        if (! res) {
+                g_debug ("GdmSession: File '%s' not found: %s", filename, error->message);
+                goto out;
+        }
+
+        error = NULL;
+        res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-NeedsVT", NULL);
+        if (!res) {
+                goto out;
+        } else {
+                needs_vt = g_key_file_get_boolean (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-NeedsVT", &error);
+                if (error) {
+                        needs_vt = FALSE;
+                        g_error_free (error);
+                        goto out;
+                }
+                if (needs_vt) {
+                        g_debug ("GdmSession: Session %s runs on its own VT", filename);
+                }
+        }
+
+out:
+        g_free (filename);
+        return needs_vt;
 }
 
 void
@@ -2760,6 +2812,7 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
+        gboolean needs_vt;
 
         g_free (self->priv->selected_session);
 
@@ -2768,6 +2821,8 @@ gdm_session_select_session (GdmSession *self,
         } else {
                 self->priv->selected_session = g_strdup (text);
         }
+
+        needs_vt = gdm_session_needs_vt (self);
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -2778,6 +2833,9 @@ gdm_session_select_session (GdmSession *self,
                 gdm_dbus_worker_call_set_session_name (conversation->worker_proxy,
                                                        get_session_name (self),
                                                        NULL, NULL, NULL);
+                gdm_dbus_worker_call_set_session_needs_vt (conversation->worker_proxy,
+                                                           needs_vt,
+                                                           NULL, NULL, NULL);
         }
 }
 

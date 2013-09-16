@@ -104,6 +104,9 @@ static void     gdm_manager_finalize    (GObject         *object);
 static void     on_initial_session_set_up (GdmDisplay   *display,
                                            GAsyncResult *result,
                                            GdmManager   *manager);
+static void on_initial_session_started (GdmDisplay   *display,
+                                        GAsyncResult *result,
+                                        GdmManager   *manager);
 static void create_session_for_display (GdmManager *manager,
                                         GdmDisplay *display,
                                         uid_t       allowed_user);
@@ -957,6 +960,27 @@ start_user_session (GdmManager *manager,
 }
 
 static void
+reset_session_on_display (GdmManager *manager,
+                          GdmDisplay *display)
+{
+        GdmSession *session;
+        uid_t allowed_uid;
+
+        session = get_session_for_display (manager, display);
+
+        if (session == NULL) {
+                return;
+        }
+
+        allowed_uid = gdm_session_get_allowed_user (session);
+
+        g_object_set_data (G_OBJECT (display), "gdm-session", NULL);
+        g_object_set_data (G_OBJECT (session), "gdm-display", NULL);
+
+        create_session_for_display (manager, display, allowed_uid);
+}
+
+static void
 on_initial_session_stopped (GdmDisplay   *display,
                             GAsyncResult *result,
                             StartUserSessionOperation *operation)
@@ -978,11 +1002,31 @@ on_initial_session_stopped (GdmDisplay   *display,
         start_user_session (operation->manager, display, operation);
 }
 
+static void
+on_initial_session_reset (GdmDisplay   *display,
+                          GAsyncResult *result)
+{
+        GError *error = NULL;
+        gboolean reset;
+
+        reset = gdm_display_reset_initial_session_finish (display, result, &error);
+
+        if (!reset) {
+                g_warning ("Couldn't reset initial session on display: %s",
+                           error->message);
+                g_error_free (error);
+                gdm_display_unmanage (display);
+                gdm_display_finish (display);
+                return;
+        }
+}
+
 static gboolean
 on_start_user_session (StartUserSessionOperation *operation)
 {
         gboolean migrated;
         gboolean fail_if_already_switched = TRUE;
+        gboolean needs_vt;
 
         g_debug ("GdmManager: start or jump to session");
 
@@ -991,6 +1035,7 @@ on_start_user_session (StartUserSessionOperation *operation)
          * start a session on it.
          */
         migrated = switch_to_compatible_user_session (operation->manager, operation->session, fail_if_already_switched);
+        needs_vt = gdm_session_needs_vt (operation->session);
 
         g_debug ("GdmManager: migrated: %d", migrated);
         if (migrated) {
@@ -1000,6 +1045,19 @@ on_start_user_session (StartUserSessionOperation *operation)
                    user switching. */
                 gdm_session_reset (operation->session);
                 destroy_start_user_session_operation (operation);
+        } else if (needs_vt) {
+                GdmDisplay *display;
+
+                g_debug ("GdmManager: session needs own VT, reinstating login screen on this VT");
+                /* if we're going to run on a different VT, reset this display for a login screen */
+                display = get_display_for_session (operation->manager, operation->session);
+                reset_session_on_display (operation->manager, display);
+                gdm_display_reset_initial_session (display,
+                                                   NULL,
+                                                   (GAsyncReadyCallback)
+                                                   on_initial_session_reset,
+                                                   NULL);
+                start_user_session (operation->manager, NULL, operation);
         } else {
                 GdmDisplay *display;
                 char *username;

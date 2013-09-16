@@ -762,6 +762,16 @@ gdm_simple_slave_start_initial_session (GdmSlave *slave)
         }
 }
 
+static void
+gdm_simple_slave_reset_initial_session (GdmSlave *slave)
+{
+        GdmSimpleSlave *self = GDM_SIMPLE_SLAVE (slave);
+
+        if (self->priv->greeter_environment != NULL) {
+                gdm_launch_environment_reset (GDM_LAUNCH_ENVIRONMENT (self->priv->greeter_environment));
+        }
+}
+
 static gboolean
 idle_connect_to_display (GdmSimpleSlave *slave)
 {
@@ -1014,6 +1024,7 @@ gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
         slave_class->stop = gdm_simple_slave_stop;
         slave_class->set_up_initial_session = gdm_simple_slave_set_up_initial_session;
         slave_class->start_initial_session = gdm_simple_slave_start_initial_session;
+        slave_class->reset_initial_session = gdm_simple_slave_reset_initial_session;
         slave_class->stop_initial_session = gdm_simple_slave_stop_initial_session;
 
         g_type_class_add_private (klass, sizeof (GdmSimpleSlavePrivate));

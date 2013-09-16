@@ -53,6 +53,7 @@ typedef struct
         void     (* set_up_initial_session) (GdmSlave    *slave,
                                              char       **username);
         void     (* start_initial_session) (GdmSlave  *slave);
+        void     (* reset_initial_session) (GdmSlave  *slave);
         void     (* stop_initial_session) (GdmSlave   *slave,
                                            const char *username);
 

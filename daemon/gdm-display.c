@@ -1690,6 +1690,53 @@ gdm_display_start_initial_session_finish (GdmDisplay    *display,
 }
 
 static void
+on_slave_initial_session_reset (GdmDBusSlave *slave,
+                                GAsyncResult *result,
+                                GTask        *task)
+{
+        GError *error = NULL;
+
+        if (!gdm_dbus_slave_call_reset_initial_session_finish (slave, result, &error)) {
+                g_task_return_error (task, error);
+                return;
+        }
+
+        g_debug ("GdmDisplay: slave reset initial session");
+
+        g_task_return_boolean (task, TRUE);
+}
+
+void
+gdm_display_reset_initial_session (GdmDisplay *display,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
+{
+        GTask *task;
+
+        task = g_task_new (display, cancellable, callback, user_data);
+
+        gdm_dbus_slave_call_reset_initial_session (display->priv->slave_proxy,
+                                                   cancellable,
+                                                   (GAsyncReadyCallback)
+                                                   on_slave_initial_session_reset,
+                                                   task);
+}
+
+gboolean
+gdm_display_reset_initial_session_finish (GdmDisplay *display,
+                                          GAsyncResult *result,
+                                          GError **error)
+{
+        gboolean outcome;
+
+        outcome = g_task_propagate_boolean (G_TASK (result), error);
+        g_object_unref (G_OBJECT (result));
+
+        return outcome;
+}
+
+static void
 on_slave_initial_session_stopped (GdmDBusSlave *slave,
                                   GAsyncResult *result,
                                   GTask        *task)

@@ -54,6 +54,10 @@
 #include <systemd/sd-journal.h>
 #endif
 
+#include <sys/vt.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif /* HAVE_SELINUX */
@@ -152,12 +156,16 @@ struct GdmSessionWorkerPrivate
         gboolean          password_is_required;
 
         int               cred_flags;
+        int               login_vt;
+        int               session_vt;
+        int               session_tty_fd;
 
         char            **arguments;
         guint32           cancelled : 1;
         guint32           timed_out : 1;
         guint32           is_program_session : 1;
         guint32           is_reauth_session : 1;
+        guint32           session_needs_vt : 1;
         guint32           display_is_local : 1;
         guint             state_change_idle_id;
 
@@ -948,6 +956,23 @@ gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
 }
 
 static void
+jump_to_vt (GdmSessionWorker  *worker,
+            int                vt_number)
+{
+        int fd;
+
+        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+        if (ioctl(fd, VT_ACTIVATE, vt_number) < 0) {
+                g_debug ("GdmSessionWorker: couldn't initiate jump to VT %d: %s",
+                         vt_number, g_strerror (errno));
+        } else if (ioctl (fd, VT_WAITACTIVE, vt_number) < 0) {
+                g_debug ("GdmSessionWorker: couldn't finalize jump to VT %d: %s",
+                         vt_number, g_strerror (errno));
+        }
+        close(fd);
+}
+
+static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                                      int               status)
 {
@@ -975,6 +1000,13 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         worker->priv->pam_handle = NULL;
 
         gdm_session_worker_stop_auditor (worker);
+
+        if (worker->priv->login_vt != worker->priv->session_vt) {
+                jump_to_vt (worker, worker->priv->login_vt);
+        }
+
+        worker->priv->login_vt = 0;
+        worker->priv->session_vt = 0;
 
         g_debug ("GdmSessionWorker: state NONE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_NONE;
@@ -1756,6 +1788,11 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         error_code = PAM_SUCCESS;
 
+        if (worker->priv->session_vt != worker->priv->login_vt) {
+                gdm_session_worker_set_environment_variable (worker, "DISPLAY", NULL);
+                jump_to_vt (worker, worker->priv->session_vt);
+        }
+
         session_pid = fork ();
 
         if (session_pid < 0) {
@@ -1773,9 +1810,15 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
                 gboolean has_journald = FALSE;
 
-                stdin_fd = open ("/dev/null", O_RDWR);
-                dup2 (stdin_fd, STDIN_FILENO);
-                close (stdin_fd);
+                if (worker->priv->session_tty_fd > 0) {
+                        dup2 (worker->priv->session_tty_fd, STDIN_FILENO);
+                        close (worker->priv->session_tty_fd);
+                        worker->priv->session_tty_fd = -1;
+                } else {
+                        stdin_fd = open ("/dev/null", O_RDWR);
+                        dup2 (stdin_fd, STDIN_FILENO);
+                        close (stdin_fd);
+                }
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
                 has_journald = sd_booted() > 0;
@@ -1886,6 +1929,11 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 _exit (127);
         }
 
+        if (worker->priv->session_tty_fd > 0) {
+                close (worker->priv->session_tty_fd);
+                worker->priv->session_tty_fd = -1;
+        }
+
         /* If we end up execing again, make sure we don't use the executable context set up
          * by pam_selinux durin pam_open_session
          */
@@ -1910,6 +1958,59 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         }
 
         return TRUE;
+}
+
+static gboolean
+set_up_for_new_vt (GdmSessionWorker *worker)
+{
+        int fd;
+        char vt_string[256] = "", tty_string[256] = "";
+        struct vt_stat vt_state = { 0 };
+        int session_vt = 0;
+
+        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+
+        if (fd < 0) {
+                g_debug ("GdmSessionWorker: couldn't open VT master: %s",
+                         g_strerror (errno));
+                return FALSE;
+        }
+
+        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
+                g_debug ("GdmSessionWorker: couldn't get current VT: %s",
+                         g_strerror (errno));
+                goto fail;
+        }
+
+        if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
+                g_debug ("GdmSessionWorker: couldn't open new VT: %s",
+                         g_strerror (errno));
+                goto fail;
+        }
+
+        worker->priv->login_vt = vt_state.v_active;
+        worker->priv->session_vt = session_vt;
+
+        close (fd);
+        fd = -1;
+
+        g_assert (session_vt > 0);
+
+        g_snprintf(vt_string, 256, "%d", session_vt);
+        g_snprintf(tty_string, 256, "/dev/tty%d", session_vt);
+
+        gdm_session_worker_set_environment_variable (worker,
+                                                     "XDG_VTNR",
+                                                     vt_string);
+
+        worker->priv->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
+        pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+
+        return TRUE;
+
+fail:
+        close (fd);
+        return FALSE;
 }
 
 static gboolean
@@ -1990,7 +2091,19 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
 
-        set_up_for_current_vt (worker, NULL);
+        if (worker->priv->session_needs_vt) {
+                if (!set_up_for_new_vt (worker)) {
+                        g_set_error (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                                     "Unable to open VT");
+                        return FALSE;
+                }
+        } else {
+                if (!set_up_for_current_vt (worker, error)) {
+                        return FALSE;
+                }
+        }
 
         flags = 0;
 
@@ -2137,6 +2250,19 @@ gdm_session_worker_handle_set_session_type (GdmDBusWorker         *object,
         g_free (worker->priv->session_type);
         worker->priv->session_type = g_strdup (session_type);
         gdm_dbus_worker_complete_set_session_type (object, invocation);
+        return TRUE;
+}
+
+static gboolean
+gdm_session_worker_handle_set_session_needs_vt (GdmDBusWorker         *object,
+                                                GDBusMethodInvocation *invocation,
+                                                gboolean               needs_vt)
+{
+        GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
+
+        g_debug ("GdmSessionWorker: session needs VT: %s", needs_vt? "yes" : "no");
+        worker->priv->session_needs_vt = needs_vt;
+        gdm_dbus_worker_complete_set_session_needs_vt (object, invocation);
         return TRUE;
 }
 
@@ -2923,6 +3049,7 @@ worker_interface_init (GdmDBusWorkerIface *interface)
         interface->handle_set_language_name = gdm_session_worker_handle_set_language_name;
         interface->handle_set_session_name = gdm_session_worker_handle_set_session_name;
         interface->handle_set_session_type = gdm_session_worker_handle_set_session_type;
+        interface->handle_set_session_needs_vt = gdm_session_worker_handle_set_session_needs_vt;
         interface->handle_set_environment_variable = gdm_session_worker_handle_set_environment_variable;
         interface->handle_start_program = gdm_session_worker_handle_start_program;
         interface->handle_start_reauthentication = gdm_session_worker_handle_start_reauthentication;

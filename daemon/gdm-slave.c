@@ -1283,6 +1283,29 @@ handle_start_initial_session (GdmDBusSlave          *skeleton,
 }
 
 static gboolean
+handle_reset_initial_session (GdmDBusSlave          *skeleton,
+                              GDBusMethodInvocation *invocation,
+                              GdmSlave              *slave)
+{
+        GdmSlaveClass *slave_class;
+
+        slave_class = GDM_SLAVE_GET_CLASS (slave);
+        if (slave_class->reset_initial_session == NULL) {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.Slave.Unsupported",
+                                                            "Connections to the slave are not supported by this slave");
+                return TRUE;
+        }
+
+        slave_class->reset_initial_session (slave);
+
+        gdm_dbus_slave_complete_reset_initial_session (skeleton, invocation);
+
+        return TRUE;
+}
+
+
+static gboolean
 handle_stop_initial_session (GdmDBusSlave          *skeleton,
                              GDBusMethodInvocation *invocation,
                              const char            *username,
@@ -1329,6 +1352,10 @@ register_slave (GdmSlave *slave)
         g_signal_connect (slave->priv->skeleton,
                           "handle-start-initial-session",
                           G_CALLBACK (handle_start_initial_session),
+                          slave);
+        g_signal_connect (slave->priv->skeleton,
+                          "handle-reset-initial-session",
+                          G_CALLBACK (handle_reset_initial_session),
                           slave);
         g_signal_connect (slave->priv->skeleton,
                           "handle-stop-initial-session",

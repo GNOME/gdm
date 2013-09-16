@@ -162,6 +162,14 @@ void                gdm_display_start_initial_session           (GdmDisplay *dis
 gboolean            gdm_display_start_initial_session_finish    (GdmDisplay *display,
                                                                  GAsyncResult *result,
                                                                  GError **error);
+void                gdm_display_reset_initial_session           (GdmDisplay *display,
+                                                                 GCancellable *cancellable,
+                                                                 GAsyncReadyCallback callback,
+                                                                 gpointer user_data);
+
+gboolean            gdm_display_reset_initial_session_finish    (GdmDisplay *display,
+                                                                 GAsyncResult *result,
+                                                                 GError **error);
 void                gdm_display_stop_initial_session           (GdmDisplay   *display,
                                                                 const char   *username,
                                                                 GCancellable *cancellable,
