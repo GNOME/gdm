@@ -7,15 +7,16 @@
 # Pau Iranzo <paugnu@gmail.com>, 2011, 2012.
 # Jordi Serratosa <jordis@softcatala.cat>, 2012.
 # Gil Forcada <gilforcada@guifi.net>, 2012, 2013.
+# Josep Sànchez <papapep@gmx.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-07-30 18:45+0000\n"
-"PO-Revision-Date: 2013-08-03 23:40+0200\n"
-"Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
+"POT-Creation-Date: 2013-09-13 17:57+0000\n"
+"PO-Revision-Date: 2013-09-14 02:20+0200\n"
+"Last-Translator: Josep Sànchez <papapep@gmx.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -145,74 +146,28 @@ msgstr "El dispositiu de pantalla"
 msgid "Could not create authentication helper process"
 msgstr "No s'ha pogut crear un procés auxiliar d'autenticació"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr ""
-"s'ha produït un error en iniciar la conversa amb el sistema d'autenticació - "
-"%s"
+#: ../daemon/gdm-session-worker.c:835
+msgid "Your account was given a time limit that's now passed."
+msgstr "El compte tenia un temps límit que s'ha sobrepassat."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "s'ha produït una fallada general"
+#: ../daemon/gdm-session-worker.c:842
+msgid "Sorry, that didn't work. Please try again."
+msgstr "S'ha produït algun error. Torneu-ho a provar."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "s'ha exhaurit la memòria"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "s'ha produït un error de programació de l'aplicació"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "error desconegut"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1074
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"s'ha produït un error en informar el sistema d'autenticació de l'indicador "
-"de nom d'usuari preferit: %s"
+#: ../daemon/gdm-session-worker.c:1261
+msgid "Your password has expired, please change it now."
+msgstr "Ha expirat la contrasenya, l'heu de canviar ara."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"s'ha produït un error en informar el sistema d'autenticació del nom de "
-"l'ordinador de l'usuari: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"s'ha produït un error en informar el sistema d'autenticació de la consola de "
-"l'usuari: %s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr ""
-"s'ha produït un error en informar el sistema d'autenticació de la cadena de "
-"la pantalla: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"s'ha produït un error en informar el sistema d'autenticació de les "
-"credencials xauth de la pantalla: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
 #, c-format
 msgid "no user account available"
 msgstr "no hi ha tal compte d'usuari disponible"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1544
 msgid "Unable to change to user"
 msgstr "No s'ha pogut commutar a aquest usuari"
 
@@ -266,51 +221,46 @@ msgstr "No s'ha pogut crear el directori de marcatge d'un sol ús %s: %s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "No s'ha pogut crear el directori d'autenticació %s: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "No s'ha pogut crear el directori de registre %s: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "No es pot trobar l'usuari del GDM «%s». S'interromprà."
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "L'usuari del GDM no hauria de ser l'usuari primari. S'interromprà."
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "No s'ha trobat el grup «%s» del GDM. S'interromprà."
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 "El grup del GDM no hauria de ser el de l'usuari primari. S'interromprà."
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:327
 msgid "Make all warnings fatal"
 msgstr "Fes que tots els avisos siguin fatals"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:328
 msgid "Exit after a time (for debugging)"
 msgstr "Surt al cap d'un temps (utilitzeu-ho per a la depuració)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:329
 msgid "Print GDM version"
 msgstr "Mostra la versió del GDM"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:340
 msgid "GNOME Display Manager"
 msgstr "Gestor de pantalla del GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:388
 msgid "Only the root user can run GDM"
 msgstr "Només l'usuari primari pot executar el GDM"
 
@@ -335,7 +285,6 @@ msgid "GNOME Display Manager Slave"
 msgstr "Esclau del gestor de pantalla del GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Finestra d'entrada"
 
@@ -520,347 +469,6 @@ msgstr "XDMCP: la versió de l'XDMCP és incorrecte"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: no s'ha pogut analitzar l'adreça"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Autenticació per empremta"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Inicia la sessió amb empremta"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Autenticació per contrasenya"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Inicia la sessió amb nom d'usuari i contrasenya"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Inici de sessió"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Identificador de la ranura"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "La ranura on és la targeta"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Sèrie de la ranura"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "identificador de targetes per ranura"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "nom"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Mòdul:"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "controlador de targetes intel·ligents"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Autenticació per targeta intel·ligent"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Inicia la sessió amb targeta intel·ligent"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Camí al mòdul"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "camí al mòdul PKCS #11 de la targeta intel·ligent"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "s'ha rebut un error o s'ha penjant des de la font de l'esdeveniment"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "No s'ha pogut inicialitzar el sistema de seguretat NSS"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "no s'ha pogut trobar cap controlador de targetes intel·ligents adequat"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "no s'ha pogut carregar el controlador de targetes intel·ligents «%s»"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "no s'han pogut vigilar els esdeveniments d'entrada de la targeta - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-"s'ha produït un error inesperat mentre s'esperaven esdeveniments de la "
-"targeta intel·ligent"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Autenticació"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Entra en la sessió"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Valor"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "percentatge de temps completat"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Text inactiu"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr ""
-"El text a utilitzar a l'etiqueta si l'usuari encara no ha seleccionat cap "
-"element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Text actiu"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "El text a utilitzar a l'etiqueta si l'usuari ha seleccionat un element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "La llista és visible"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Si la llista per triar l'usuari és visible"
-
-# Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
-# Time.html#Formatting-Calendar-Time
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a, %e de %b, %H:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a, %e de %b, %H:%M"
-
-# Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
-# Time.html#Formatting-Calendar-Time
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a %H:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "S'està entrant de manera automàtica…"
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "S'està cancel·lant…"
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Seleccioneu la llengua i feu clic a «Entra»"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Personalitzat"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Sessió personalitzada"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Nom de l'ordinador"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Versió"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Cancel·la"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Desbloca"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Entra"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "Atura temporalment"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "Reinicia"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "Atura"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "Es desconeix el temps restant"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "Quadre"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Text de l'etiqueta"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "El text a utilitzar com a etiqueta"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Nom de la icona"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "La icona a utilitzar amb l'etiqueta"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Element predeterminat"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "L'identificador de l'element predeterminat"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Entrada remota (s'està connectant a %s…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Entrada remota (connectat a %s)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Entrada remota"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Sessió"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Durada"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Nombre de segons abans d'aturar el temporitzador"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Hora d'inici"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "L'hora en què s'ha iniciat el temporitzador"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "S'està executant?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Si el temporitzador està activat"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "Entra com a %s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "Altres…"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Seleccioneu un compte diferent"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Convidat"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Entra com a convidat temporal"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Entrada automàtica"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Entra automàticament a la sessió després de seleccionar les opcions"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "Actualment connectat"
-
 #: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
 msgstr "Només s'admet l'ordre VERSION"
@@ -899,3 +507,289 @@ msgstr "S'ha fet una captura de pantalla"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fes una foto de la pantalla"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr ""
+#~ "s'ha produït un error en iniciar la conversa amb el sistema "
+#~ "d'autenticació - %s"
+
+#~ msgid "general failure"
+#~ msgstr "s'ha produït una fallada general"
+
+#~ msgid "out of memory"
+#~ msgstr "s'ha exhaurit la memòria"
+
+#~ msgid "application programmer error"
+#~ msgstr "s'ha produït un error de programació de l'aplicació"
+
+#~ msgid "unknown error"
+#~ msgstr "error desconegut"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "s'ha produït un error en informar el sistema d'autenticació de "
+#~ "l'indicador de nom d'usuari preferit: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr ""
+#~ "s'ha produït un error en informar el sistema d'autenticació del nom de "
+#~ "l'ordinador de l'usuari: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr ""
+#~ "s'ha produït un error en informar el sistema d'autenticació de la consola "
+#~ "de l'usuari: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr ""
+#~ "s'ha produït un error en informar el sistema d'autenticació de la cadena "
+#~ "de la pantalla: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr ""
+#~ "s'ha produït un error en informar el sistema d'autenticació de les "
+#~ "credencials xauth de la pantalla: %s"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "No s'ha pogut crear el directori d'autenticació %s: %s"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "Autenticació per empremta"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "Inicia la sessió amb empremta"
+
+#~ msgid "Password Authentication"
+#~ msgstr "Autenticació per contrasenya"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "Inicia la sessió amb nom d'usuari i contrasenya"
+
+#~ msgid "Log In"
+#~ msgstr "Inici de sessió"
+
+#~ msgid "Slot ID"
+#~ msgstr "Identificador de la ranura"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "La ranura on és la targeta"
+
+#~ msgid "Slot Series"
+#~ msgstr "Sèrie de la ranura"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "identificador de targetes per ranura"
+
+#~ msgid "name"
+#~ msgstr "nom"
+
+#~ msgid "Module"
+#~ msgstr "Mòdul:"
+
+#~ msgid "smartcard driver"
+#~ msgstr "controlador de targetes intel·ligents"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "Autenticació per targeta intel·ligent"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "Inicia la sessió amb targeta intel·ligent"
+
+#~ msgid "Module Path"
+#~ msgstr "Camí al mòdul"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "camí al mòdul PKCS #11 de la targeta intel·ligent"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "s'ha rebut un error o s'ha penjant des de la font de l'esdeveniment"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "No s'ha pogut inicialitzar el sistema de seguretat NSS"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr ""
+#~ "no s'ha pogut trobar cap controlador de targetes intel·ligents adequat"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr ""
+#~ "no s'ha pogut carregar el controlador de targetes intel·ligents «%s»"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr ""
+#~ "no s'han pogut vigilar els esdeveniments d'entrada de la targeta - %s"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr ""
+#~ "s'ha produït un error inesperat mentre s'esperaven esdeveniments de la "
+#~ "targeta intel·ligent"
+
+#~ msgid "Authentication"
+#~ msgstr "Autenticació"
+
+#~ msgid "Log into session"
+#~ msgstr "Entra en la sessió"
+
+#~ msgid "Value"
+#~ msgstr "Valor"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "percentatge de temps completat"
+
+#~ msgid "Inactive Text"
+#~ msgstr "Text inactiu"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr ""
+#~ "El text a utilitzar a l'etiqueta si l'usuari encara no ha seleccionat cap "
+#~ "element"
+
+#~ msgid "Active Text"
+#~ msgstr "Text actiu"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr ""
+#~ "El text a utilitzar a l'etiqueta si l'usuari ha seleccionat un element"
+
+#~ msgid "List Visible"
+#~ msgstr "La llista és visible"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "Si la llista per triar l'usuari és visible"
+
+# Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
+# Time.html#Formatting-Calendar-Time
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%a, %e de %b, %H:%M:%S"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%a, %e de %b, %H:%M"
+
+# Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
+# Time.html#Formatting-Calendar-Time
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%a %H:%M:%S"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%a %H:%M"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "S'està entrant de manera automàtica…"
+
+#~ msgid "Cancelling…"
+#~ msgstr "S'està cancel·lant…"
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "Seleccioneu la llengua i feu clic a «Entra»"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "Personalitzat"
+
+#~ msgid "Custom session"
+#~ msgstr "Sessió personalitzada"
+
+#~ msgid "Computer Name"
+#~ msgstr "Nom de l'ordinador"
+
+#~ msgid "Version"
+#~ msgstr "Versió"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancel·la"
+
+#~ msgid "Unlock"
+#~ msgstr "Desbloca"
+
+#~ msgid "Login"
+#~ msgstr "Entra"
+
+#~ msgid "Suspend"
+#~ msgstr "Atura temporalment"
+
+#~ msgid "Restart"
+#~ msgstr "Reinicia"
+
+#~ msgid "Shut Down"
+#~ msgstr "Atura"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "Es desconeix el temps restant"
+
+#~ msgid "Panel"
+#~ msgstr "Quadre"
+
+#~ msgid "Label Text"
+#~ msgstr "Text de l'etiqueta"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "El text a utilitzar com a etiqueta"
+
+#~ msgid "Icon name"
+#~ msgstr "Nom de la icona"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "La icona a utilitzar amb l'etiqueta"
+
+#~ msgid "Default Item"
+#~ msgstr "Element predeterminat"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "L'identificador de l'element predeterminat"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "Entrada remota (s'està connectant a %s…)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "Entrada remota (connectat a %s)"
+
+#~ msgid "Remote Login"
+#~ msgstr "Entrada remota"
+
+#~ msgid "Session"
+#~ msgstr "Sessió"
+
+#~ msgid "Duration"
+#~ msgstr "Durada"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "Nombre de segons abans d'aturar el temporitzador"
+
+#~ msgid "Start time"
+#~ msgstr "Hora d'inici"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "L'hora en què s'ha iniciat el temporitzador"
+
+#~ msgid "Is it Running?"
+#~ msgstr "S'està executant?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "Si el temporitzador està activat"
+
+#~ msgid "Log in as %s"
+#~ msgstr "Entra com a %s"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "Altres…"
+
+#~ msgid "Choose a different account"
+#~ msgstr "Seleccioneu un compte diferent"
+
+#~ msgid "Guest"
+#~ msgstr "Convidat"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "Entra com a convidat temporal"
+
+#~ msgid "Automatic Login"
+#~ msgstr "Entrada automàtica"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "Entra automàticament a la sessió després de seleccionar les opcions"
+
+#~ msgid "Currently logged in"
+#~ msgstr "Actualment connectat"
