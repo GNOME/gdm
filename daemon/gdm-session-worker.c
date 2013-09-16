@@ -1036,11 +1036,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    GError          **error)
 {
         struct pam_conv        pam_conversation;
-#ifdef PAM_XAUTHDATA
-        struct pam_xauth_data *pam_xauth;
-#endif
         int                    error_code;
-        char                  *pam_tty;
 
         g_assert (worker->priv->pam_handle == NULL);
 
@@ -1101,25 +1097,6 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 }
         }
 
-        /* set TTY */
-        pam_tty = _get_tty_for_pam (x11_display_name, display_device);
-        if (pam_tty != NULL && pam_tty[0] != '\0') {
-                error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
-
-                if (error_code != PAM_SUCCESS) {
-                        g_debug ("error informing authentication system of user's console %s: %s",
-                                 pam_tty,
-                                 pam_strerror (worker->priv->pam_handle, error_code));
-                        g_free (pam_tty);
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     "%s", "");
-                        goto out;
-                }
-        }
-        g_free (pam_tty);
-
 #ifdef WITH_SYSTEMD
         /* set seat ID */
         if (seat_id != NULL && seat_id[0] != '\0' && LOGIND_RUNNING()) {
@@ -1130,40 +1107,6 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         if (strcmp (service, "gdm-launch-environment") == 0) {
                 gdm_session_worker_set_environment_variable (worker, "XDG_SESSION_CLASS", "greeter");
         }
-
-#ifdef PAM_XDISPLAY
-        /* set XDISPLAY */
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, x11_display_name);
-
-        if (error_code != PAM_SUCCESS) {
-                g_debug ("error informing authentication system of display string %s: %s",
-                         x11_display_name,
-                         pam_strerror (worker->priv->pam_handle, error_code));
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", "");
-                goto out;
-        }
-#endif
-#ifdef PAM_XAUTHDATA
-        /* set XAUTHDATA */
-        pam_xauth = _get_xauth_for_pam (x11_authority_file);
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
-        if (error_code != PAM_SUCCESS) {
-                g_debug ("error informing authentication system of display string %s: %s",
-                         x11_display_name,
-                         pam_strerror (worker->priv->pam_handle, error_code));
-                g_free (pam_xauth);
-
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", "");
-                goto out;
-        }
-        g_free (pam_xauth);
-#endif
 
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SETUP_COMPLETE;
@@ -1971,6 +1914,73 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 }
 
 static gboolean
+set_up_for_current_vt (GdmSessionWorker  *worker,
+                       GError           **error)
+{
+#ifdef PAM_XAUTHDATA
+        struct pam_xauth_data *pam_xauth;
+#endif
+        int                    error_code;
+        char                  *pam_tty;
+
+        /* set TTY */
+        pam_tty = _get_tty_for_pam (worker->priv->x11_display_name, worker->priv->display_device);
+        if (pam_tty != NULL && pam_tty[0] != '\0') {
+                error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
+
+                if (error_code != PAM_SUCCESS) {
+                        g_debug ("error informing authentication system of user's console %s: %s",
+                                 pam_tty,
+                                 pam_strerror (worker->priv->pam_handle, error_code));
+                        g_free (pam_tty);
+                        g_set_error (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                     "%s", "");
+                        goto out;
+                }
+        }
+        g_free (pam_tty);
+
+#ifdef PAM_XDISPLAY
+        /* set XDISPLAY */
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, worker->priv->x11_display_name);
+
+        if (error_code != PAM_SUCCESS) {
+                g_debug ("error informing authentication system of display string %s: %s",
+                         worker->priv->x11_display_name,
+                         pam_strerror (worker->priv->pam_handle, error_code));
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                             "%s", "");
+                goto out;
+        }
+#endif
+#ifdef PAM_XAUTHDATA
+        /* set XAUTHDATA */
+        pam_xauth = _get_xauth_for_pam (worker->priv->x11_authority_file);
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
+        if (error_code != PAM_SUCCESS) {
+                g_debug ("error informing authentication system of display string %s: %s",
+                         worker->priv->x11_display_name,
+                         pam_strerror (worker->priv->pam_handle, error_code));
+                g_free (pam_xauth);
+
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                             "%s", "");
+                goto out;
+        }
+        g_free (pam_xauth);
+#endif
+        return TRUE;
+out:
+        return FALSE;
+}
+
+static gboolean
 gdm_session_worker_open_session (GdmSessionWorker  *worker,
                                  GError           **error)
 {
@@ -1980,6 +1990,8 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
+
+        set_up_for_current_vt (worker, NULL);
 
         flags = 0;
 
