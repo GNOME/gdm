@@ -73,7 +73,7 @@ struct GdmDisplayPrivate
 
         GdmSlaveJob          *slave_job;
         char                 *slave_bus_name;
-        GdmDBusSlave         *slave_bus_proxy;
+        GdmDBusSlave         *slave_proxy;
         int                   slave_name_id;
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
@@ -303,8 +303,8 @@ gdm_display_real_set_slave_bus_name_finish (GObject      *source_object,
 {
         GdmDisplay *display = user_data;
 
-        display->priv->slave_bus_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_finish (res, NULL));
-        g_object_bind_property (G_OBJECT (display->priv->slave_bus_proxy),
+        display->priv->slave_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_finish (res, NULL));
+        g_object_bind_property (G_OBJECT (display->priv->slave_proxy),
                                 "session-id",
                                 G_OBJECT (display),
                                 "session-id",
@@ -331,7 +331,7 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                                                                        g_object_ref (display),
                                                                        NULL);
 
-        g_clear_object (&display->priv->slave_bus_proxy);
+        g_clear_object (&display->priv->slave_proxy);
         gdm_dbus_slave_proxy_new (display->priv->connection,
                                   G_DBUS_PROXY_FLAGS_NONE,
                                   name,
@@ -683,7 +683,6 @@ gdm_display_prepare (GdmDisplay *display)
 
         return ret;
 }
-
 
 static gboolean
 gdm_display_real_manage (GdmDisplay *display)
@@ -1340,7 +1339,7 @@ gdm_display_open_session_sync (GdmDisplay    *display,
         char *address;
         int ret;
 
-        if (display->priv->slave_bus_proxy == NULL) {
+        if (display->priv->slave_proxy == NULL) {
                 g_set_error (error,
                              G_DBUS_ERROR,
                              G_DBUS_ERROR_ACCESS_DENIED,
@@ -1349,7 +1348,7 @@ gdm_display_open_session_sync (GdmDisplay    *display,
         }
 
         address = NULL;
-        ret = gdm_dbus_slave_call_open_session_sync (display->priv->slave_bus_proxy,
+        ret = gdm_dbus_slave_call_open_session_sync (display->priv->slave_proxy,
                                                      (int) pid_of_caller,
                                                      (int) uid_of_caller,
                                                      &address,
@@ -1374,7 +1373,7 @@ gdm_display_open_reauthentication_channel_sync (GdmDisplay    *display,
         char *address;
         int ret;
 
-        if (display->priv->slave_bus_proxy == NULL) {
+        if (display->priv->slave_proxy == NULL) {
                 g_set_error (error,
                              G_DBUS_ERROR,
                              G_DBUS_ERROR_ACCESS_DENIED,
@@ -1383,7 +1382,7 @@ gdm_display_open_reauthentication_channel_sync (GdmDisplay    *display,
         }
 
         address = NULL;
-        ret = gdm_dbus_slave_call_open_reauthentication_channel_sync (display->priv->slave_bus_proxy,
+        ret = gdm_dbus_slave_call_open_reauthentication_channel_sync (display->priv->slave_proxy,
                                                                       username,
                                                                       pid_of_caller,
                                                                       uid_of_caller,
