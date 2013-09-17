@@ -321,6 +321,14 @@ gdm_SOURCES = 			\
 	gdm-transient-display.h		\
 	gdm-manager.c			\
 	gdm-manager.h			\
+	gdm-session.c			\
+	gdm-session.h			\
+	gdm-session-record.c		\
+	gdm-session-record.h		\
+	gdm-session-worker-common.c	\
+	gdm-session-worker-common.h	\
+	gdm-session-worker-job.c	\
+	gdm-session-worker-job.h	\
 	gdm-slave-job.c			\
 	gdm-slave-job.h			\
 	gdm-dbus-util.c			\
@@ -340,6 +348,12 @@ nodist_gdm_SOURCES = 			\
 	gdm-static-display-glue.c		\
 	gdm-slave-glue.h			\
 	gdm-slave-glue.c			\
+	gdm-session-glue.h			\
+	gdm-session-glue.c			\
+	gdm-session-worker-glue.c		\
+	gdm-session-worker-glue.h		\
+	gdm-session-enum-types.c		\
+	gdm-session-enum-types.h		\
 	$(NULL)
 
 XDMCP_SOURCES =				\

@@ -90,18 +90,6 @@ GType               gdm_display_get_type                       (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
-char *              gdm_display_open_session_sync              (GdmDisplay    *display,
-                                                                GPid           pid_of_caller,
-                                                                uid_t          uid_of_caller,
-                                                                GCancellable  *cancellable,
-                                                                GError       **error);
-
-char *              gdm_display_open_reauthentication_channel_sync        (GdmDisplay    *display,
-                                                                           const char    *username,
-                                                                           GPid           pid_of_caller,
-                                                                           uid_t          uid_of_caller,
-                                                                           GCancellable  *cancellable,
-                                                                           GError       **error);
 char *              gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
@@ -157,6 +145,33 @@ gboolean            gdm_display_remove_user_authorization      (GdmDisplay *disp
 gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
                                                                 const char *name,
                                                                 GError    **error);
+
+void                gdm_display_set_up_initial_session           (GdmDisplay *display,
+                                                                  GCancellable *cancellable,
+                                                                  GAsyncReadyCallback callback,
+                                                                  gpointer user_data);
+
+char *              gdm_display_set_up_initial_session_finish    (GdmDisplay *display,
+                                                                  GAsyncResult *result,
+                                                                  GError **error);
+void                gdm_display_start_initial_session           (GdmDisplay *display,
+                                                                 GCancellable *cancellable,
+                                                                 GAsyncReadyCallback callback,
+                                                                 gpointer user_data);
+
+gboolean            gdm_display_start_initial_session_finish    (GdmDisplay *display,
+                                                                 GAsyncResult *result,
+                                                                 GError **error);
+void                gdm_display_stop_initial_session           (GdmDisplay   *display,
+                                                                const char   *username,
+                                                                GCancellable *cancellable,
+                                                                GAsyncReadyCallback callback,
+                                                                gpointer user_data);
+
+gboolean           gdm_display_stop_initial_session_finish     (GdmDisplay *display,
+                                                                GAsyncResult *result,
+                                                                GError **error);
+gboolean           gdm_display_run_pre_session_script          (GdmDisplay *display);
 
 G_END_DECLS
 

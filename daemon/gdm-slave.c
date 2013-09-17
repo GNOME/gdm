@@ -200,7 +200,6 @@ get_script_environment (GdmSlave   *slave,
         GPtrArray     *env;
         GHashTable    *hash;
         struct passwd *pwent;
-        char          *temp;
 
         env = g_ptr_array_new ();
 
@@ -637,6 +636,10 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 ret = TRUE;
         }
 
+        if (ret) {
+                gdm_dbus_slave_emit_started (slave->priv->skeleton);
+        }
+
         return ret;
 }
 
@@ -996,8 +999,7 @@ gdm_slave_parse_enriched_login (GdmSlave   *slave,
                 }
         }
 
- out:
-
+out:
         return parsed_username;
 }
 
@@ -1074,615 +1076,6 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         }
 
         return res;
-}
-
-static gboolean
-_get_uid_and_gid_for_user (const char *username,
-                           uid_t      *uid,
-                           gid_t      *gid)
-{
-        struct passwd *passwd_entry;
-
-        g_assert (username != NULL);
-
-        errno = 0;
-        gdm_get_pwent_for_name (username, &passwd_entry);
-
-        if (passwd_entry == NULL) {
-                return FALSE;
-        }
-
-        if (uid != NULL) {
-                *uid = passwd_entry->pw_uid;
-        }
-
-        if (gid != NULL) {
-                *gid = passwd_entry->pw_gid;
-        }
-
-        return TRUE;
-}
-
-#ifdef WITH_CONSOLE_KIT
-
-static gboolean
-x11_session_is_on_seat (GdmSlave        *slave,
-                        const char      *session_id,
-                        const char      *seat_id)
-{
-        GError          *error = NULL;
-        GVariant        *reply;
-        char            *sid;
-        gboolean         ret;
-        char            *x11_display_device;
-        char            *x11_display;
-
-        ret = FALSE;
-        sid = NULL;
-        x11_display = NULL;
-        x11_display_device = NULL;
-
-        if (seat_id == NULL || seat_id[0] == '\0' || session_id == NULL || session_id[0] == '\0') {
-                return FALSE;
-        }
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             session_id,
-                                             CK_SESSION_INTERFACE,
-                                             "GetSeatId",
-                                             NULL, /* parameters */
-                                             G_VARIANT_TYPE ("(o)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("Failed to identify the current seat: %s", error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_get (reply, "(o)", &sid);
-        g_variant_unref (reply);
-
-        if (sid == NULL || sid[0] == '\0' || strcmp (sid, seat_id) != 0) {
-                g_debug ("GdmSlave: session not on current seat: %s", seat_id);
-                goto out;
-        }
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             session_id,
-                                             CK_SESSION_INTERFACE,
-                                             "GetX11Display",
-                                             NULL, /* parameters */
-                                             G_VARIANT_TYPE ("(s)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_error_free (error);
-                goto out;
-        }
-
-        g_variant_get (reply, "(s)", &x11_display);
-        g_variant_unref (reply);
-
-        /* ignore tty sessions */
-        if (x11_display == NULL || x11_display[0] == '\0') {
-                goto out;
-        }
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             session_id,
-                                             CK_SESSION_INTERFACE,
-                                             "GetX11DisplayDevice",
-                                             NULL, /* parameters */
-                                             G_VARIANT_TYPE ("(s)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_error_free (error);
-                goto out;
-        }
-
-        g_variant_get (reply, "(s)", &x11_display_device);
-        g_variant_unref (reply);
-
-        if (x11_display_device == NULL || x11_display_device[0] == '\0') {
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-        g_free (x11_display_device);
-        g_free (x11_display);
-        g_free (sid);
-
-        return ret;
-}
-
-#endif
-
-#ifdef WITH_SYSTEMD
-static char*
-gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
-                                                        const char *username)
-{
-        int     res, i;
-        char  **sessions;
-        uid_t   uid;
-        char   *primary_ssid;
-        gboolean got_primary_ssid;
-
-        primary_ssid = NULL;
-        got_primary_ssid = FALSE;
-
-        res = sd_seat_can_multi_session (slave->priv->display_seat_id);
-        if (res < 0) {
-                g_warning ("GdmSlave: Failed to determine whether seat is multi-session capable: %s", strerror (-res));
-                return NULL;
-        } else if (res == 0) {
-                g_debug ("GdmSlave: seat is unable to activate sessions");
-                return NULL;
-        }
-
-        if (! _get_uid_and_gid_for_user (username, &uid, NULL)) {
-                g_debug ("GdmSlave: unable to determine uid for user: %s", username);
-                return NULL;
-        }
-
-        res = sd_seat_get_sessions (slave->priv->display_seat_id, &sessions, NULL, NULL);
-        if (res < 0) {
-                g_warning ("GdmSlave: Failed to get sessions on seat: %s", strerror (-res));
-                return NULL;
-        }
-
-        if (sessions == NULL) {
-                g_debug ("GdmSlave: seat has no active sessions");
-                return NULL;
-        }
-
-        for (i = 0; sessions[i] != NULL; i++) {
-                char *type;
-                char *state;
-                gboolean is_closing;
-                gboolean is_active;
-                gboolean is_x11;
-                uid_t other;
-
-                res = sd_session_get_type (sessions[i], &type);
-
-                if (res < 0) {
-                        g_warning ("GdmSlave: could not fetch type of session '%s': %s",
-                                   sessions[i], strerror (-res));
-                        continue;
-                }
-
-                is_x11 = g_strcmp0 (type, "x11") == 0;
-                free (type);
-
-                /* Only migrate to graphical sessions
-                 */
-                if (!is_x11) {
-                        continue;
-                }
-
-                /* Always give preference to non-active sessions,
-                 * so we migrate when we can and don't when we can't
-                 */
-                res = sd_session_get_state (sessions[i], &state);
-                if (res < 0) {
-                        g_warning ("GdmSlave: could not fetch state of session '%s': %s",
-                                   sessions[i], strerror (-res));
-                        continue;
-                }
-
-                is_closing = g_strcmp0 (state, "closing") == 0;
-                is_active = g_strcmp0 (state, "active") == 0;
-                free (state);
-
-                /* Ignore closing sessions
-                 */
-                if (is_closing) {
-                        continue;
-                }
-
-                res = sd_session_get_uid (sessions[i], &other);
-                if (res == 0 && other == uid && !got_primary_ssid) {
-                        g_free (primary_ssid);
-                        primary_ssid = g_strdup (sessions[i]);
-
-                        if (!is_active) {
-                                got_primary_ssid = TRUE;
-                        }
-                }
-                free (sessions[i]);
-        }
-
-        free (sessions);
-        return primary_ssid;
-}
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-static char *
-gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
-                                                   const char *username)
-{
-        gboolean      can_activate_sessions;
-        GError       *error;
-        const char  **sessions;
-        int           i;
-        char         *primary_ssid;
-        uid_t         uid;
-        GVariant     *reply;
-
-        error = NULL;
-        primary_ssid = NULL;
-
-        g_debug ("GdmSlave: getting proxy for seat: %s", slave->priv->display_seat_id);
-        g_debug ("GdmSlave: checking if seat can activate sessions");
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             slave->priv->display_seat_id,
-                                             CK_SEAT_INTERFACE,
-                                             "CanActivateSessions",
-                                             NULL, /* parameters */
-                                             G_VARIANT_TYPE ("(b)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_warning ("unable to determine if seat can activate sessions: %s", error->message);
-                g_error_free (error);
-                return NULL;
-        }
-
-        g_variant_get (reply, "(b)", &can_activate_sessions);
-        g_variant_unref (reply);
-
-        if (! can_activate_sessions) {
-                g_debug ("GdmSlave: seat is unable to activate sessions");
-                return NULL;
-        }
-
-        if (! _get_uid_and_gid_for_user (username, &uid, NULL)) {
-                g_debug ("GdmSlave: unable to determine uid for user: %s", username);
-                return NULL;
-        }
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             CK_MANAGER_PATH,
-                                             CK_MANAGER_INTERFACE,
-                                             "GetSessionsForUnixUser",
-                                             g_variant_new ("(u)", uid),
-                                             G_VARIANT_TYPE ("(ao)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-
-        if (reply == NULL) {
-                g_warning ("unable to determine sessions for user: %s", error->message);
-                g_error_free (error);
-                return NULL;
-        }
-
-        g_variant_get_child (reply, 0, "^a&o", &sessions);
-        for (i = 0; sessions[i] != NULL; i++) {
-                if (x11_session_is_on_seat (slave, sessions[i], slave->priv->display_seat_id)) {
-                        primary_ssid = g_strdup (sessions[i]);
-                        break;
-                }
-        }
-
-        g_free (sessions);
-        g_variant_unref (reply);
-        return primary_ssid;
-}
-#endif
-
-char *
-gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
-                                           const char *username)
-{
-
-        if (slave->priv->display_seat_id == NULL || slave->priv->display_seat_id[0] == '\0') {
-                g_debug ("GdmSlave: display seat ID is not set; can't switch sessions");
-                return NULL;
-        }
-
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                return gdm_slave_get_primary_session_id_for_user_from_systemd (slave, username);
-        }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return gdm_slave_get_primary_session_id_for_user_from_ck (slave, username);
-#else
-        return NULL;
-#endif
-}
-
-#ifdef WITH_SYSTEMD
-static gboolean
-activate_session_id_for_systemd (GdmSlave   *slave,
-                                 const char *seat_id,
-                                 const char *session_id)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             "org.freedesktop.login1",
-                                             "/org/freedesktop/login1",
-                                             "org.freedesktop.login1.Manager",
-                                             "ActivateSessionOnSeat",
-                                             g_variant_new ("(ss)", session_id, seat_id),
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmSlave: logind 'ActivateSessionOnSeat' %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-activate_session_id_for_ck (GdmSlave   *slave,
-                            const char *seat_id,
-                            const char *session_id)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             seat_id,
-                                             "org.freedesktop.ConsoleKit.Seat",
-                                             "ActivateSession",
-                                             g_variant_new ("(o)", session_id),
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-#endif
-
-static gboolean
-activate_session_id (GdmSlave   *slave,
-                     const char *seat_id,
-                     const char *session_id)
-{
-
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                return activate_session_id_for_systemd (slave, seat_id, session_id);
-        }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return activate_session_id_for_ck (slave, seat_id, session_id);
-#else
-        return FALSE;
-#endif
-}
-
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-ck_session_is_active (GdmSlave   *slave,
-                      const char *seat_id,
-                      const char *session_id)
-{
-        GError *error = NULL;
-        GVariant *reply;
-        gboolean is_active;
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             session_id,
-                                             "org.freedesktop.ConsoleKit.Session",
-                                             "IsActive",
-                                             NULL,
-                                             G_VARIANT_TYPE ("(b)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmSlave: ConsoleKit IsActive %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_get (reply, "(b)", &is_active);
-        g_variant_unref (reply);
-
-        return is_active;
-}
-#endif
-
-static gboolean
-session_is_active (GdmSlave   *slave,
-                   const char *seat_id,
-                   const char *session_id)
-{
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                return sd_session_is_active (session_id) > 0;
-        }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return ck_session_is_active (slave, seat_id, session_id);
-#else
-        return FALSE;
-#endif
-}
-
-#ifdef WITH_SYSTEMD
-static gboolean
-session_unlock_for_systemd (GdmSlave   *slave,
-                            const char *ssid)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             "org.freedesktop.login1",
-                                             "/org/freedesktop/login1",
-                                             "org.freedesktop.login1.Manager",
-                                             "UnlockSession",
-                                             g_variant_new ("(s)", ssid),
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmSlave: logind 'UnlockSession' %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-session_unlock_for_ck (GdmSlave   *slave,
-                       const char *ssid)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (slave->priv->connection,
-                                             CK_NAME,
-                                             ssid,
-                                             CK_SESSION_INTERFACE,
-                                             "Unlock",
-                                             NULL, /* parameters */
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-#endif
-
-static gboolean
-session_unlock (GdmSlave   *slave,
-                const char *ssid)
-{
-
-        g_debug ("Unlocking session %s", ssid);
-
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                return session_unlock_for_systemd (slave, ssid);
-        }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return session_unlock_for_ck (slave, ssid);
-#else
-        return TRUE;
-#endif
-}
-
-gboolean
-gdm_slave_switch_to_user_session (GdmSlave   *slave,
-                                  const char *username,
-                                  gboolean    fail_if_already_switched)
-{
-        gboolean    res;
-        gboolean    ret;
-        gboolean    session_already_switched;
-        char       *ssid_to_activate;
-
-        ret = FALSE;
-
-        ssid_to_activate = gdm_slave_get_primary_session_id_for_user (slave, username);
-        if (ssid_to_activate == NULL) {
-                g_debug ("GdmSlave: unable to determine session to activate");
-                goto out;
-        }
-
-        session_already_switched = session_is_active (slave, slave->priv->display_seat_id, ssid_to_activate);
-
-        g_debug ("GdmSlave: Activating session: '%s'", ssid_to_activate);
-
-        if (session_already_switched && fail_if_already_switched) {
-                g_debug ("GdmSlave: unable to activate session since it's already active: %s", ssid_to_activate);
-                goto out;
-        }
-
-        if (!session_already_switched) {
-                res = activate_session_id (slave, slave->priv->display_seat_id, ssid_to_activate);
-                if (! res) {
-                        g_debug ("GdmSlave: unable to activate session: %s", ssid_to_activate);
-                        goto out;
-                }
-        }
-
-        res = session_unlock (slave, ssid_to_activate);
-        if (!res) {
-                /* this isn't fatal */
-                g_debug ("GdmSlave: unable to unlock session: %s", ssid_to_activate);
-        }
-
-        ret = TRUE;
-
- out:
-        g_free (ssid_to_activate);
-
-        return ret;
 }
 
 static void
@@ -1843,95 +1236,71 @@ gdm_slave_get_property (GObject    *object,
 }
 
 static gboolean
-handle_open_session (GdmDBusSlave          *skeleton,
-                     GDBusMethodInvocation *invocation,
-                     int                    pid_of_caller,
-                     int                    uid_of_caller,
-                     GdmSlave              *slave)
+handle_set_up_initial_session (GdmDBusSlave          *skeleton,
+                               GDBusMethodInvocation *invocation,
+                               GdmSlave              *slave)
 {
-        GError        *error;
         GdmSlaveClass *slave_class;
-        char          *address;
+        char          *username;
 
         slave_class = GDM_SLAVE_GET_CLASS (slave);
-        if (slave_class->open_session == NULL) {
+        if (slave_class->set_up_initial_session == NULL) {
                 g_dbus_method_invocation_return_dbus_error (invocation,
                                                             "org.gnome.DisplayManager.Slave.Unsupported",
                                                             "Connections to the slave are not supported by this slave");
                 return TRUE;
         }
 
-        error = NULL;
-        address = NULL;
-        if (!slave_class->open_session (slave,
-                                        (GPid) pid_of_caller,
-                                        (uid_t) uid_of_caller,
-                                        &address,
-                                        &error)) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
-                return TRUE;
-        }
+        username = NULL;
+        slave_class->set_up_initial_session (slave, &username);
 
-        gdm_dbus_slave_complete_open_session (skeleton, invocation, address);
+        gdm_dbus_slave_complete_set_up_initial_session (skeleton, invocation, username);
 
-        g_free (address);
+        g_free (username);
         return TRUE;
 }
 
-static void
-on_reauthentication_channel_opened (GdmSlave              *slave,
-                                    GAsyncResult          *result,
-                                    GDBusMethodInvocation *invocation)
-{
-        GdmSlaveClass      *slave_class;
-        GError             *error;
-        char               *address;
-
-        slave_class = GDM_SLAVE_GET_CLASS (slave);
-
-        g_assert (slave_class->open_reauthentication_channel_finish != NULL);
-
-        error = NULL;
-        address = slave_class->open_reauthentication_channel_finish (slave, result, &error);
-
-        if (address == NULL) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-        } else {
-                gdm_dbus_slave_complete_open_reauthentication_channel (slave->priv->skeleton,
-                                                                       invocation,
-                                                                       address);
-        }
-
-        g_object_unref (invocation);
-}
-
 static gboolean
-handle_open_reauthentication_channel (GdmDBusSlave          *skeleton,
-                                      GDBusMethodInvocation *invocation,
-                                      const char            *username,
-                                      GPid                   pid_of_caller,
-                                      uid_t                  uid_of_caller,
-                                      GdmSlave              *slave)
+handle_start_initial_session (GdmDBusSlave          *skeleton,
+                              GDBusMethodInvocation *invocation,
+                              GdmSlave              *slave)
 {
         GdmSlaveClass *slave_class;
 
         slave_class = GDM_SLAVE_GET_CLASS (slave);
-        if (slave_class->open_reauthentication_channel == NULL) {
+        if (slave_class->start_initial_session == NULL) {
                 g_dbus_method_invocation_return_dbus_error (invocation,
                                                             "org.gnome.DisplayManager.Slave.Unsupported",
                                                             "Connections to the slave are not supported by this slave");
                 return TRUE;
         }
 
-        slave_class->open_reauthentication_channel (slave,
-                                                    username,
-                                                    pid_of_caller,
-                                                    uid_of_caller,
-                                                    (GAsyncReadyCallback)
-                                                    on_reauthentication_channel_opened,
-                                                    g_object_ref (invocation),
-                                                    NULL);
+        slave_class->start_initial_session (slave);
+
+        gdm_dbus_slave_complete_start_initial_session (skeleton, invocation);
+
+        return TRUE;
+}
+
+static gboolean
+handle_stop_initial_session (GdmDBusSlave          *skeleton,
+                             GDBusMethodInvocation *invocation,
+                             const char            *username,
+                             GdmSlave              *slave)
+{
+        GdmSlaveClass *slave_class;
+
+        slave_class = GDM_SLAVE_GET_CLASS (slave);
+        if (slave_class->stop_initial_session == NULL) {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.Slave.Unsupported",
+                                                            "Connections to the slave are not supported by this slave");
+                return TRUE;
+        }
+
+        slave_class->stop_initial_session (slave, username);
+
+        gdm_dbus_slave_complete_stop_initial_session (skeleton, invocation);
 
         return TRUE;
 }
@@ -1954,14 +1323,17 @@ register_slave (GdmSlave *slave)
         slave->priv->skeleton = GDM_DBUS_SLAVE (gdm_dbus_slave_skeleton_new ());
 
         g_signal_connect (slave->priv->skeleton,
-                          "handle-open-session",
-                          G_CALLBACK (handle_open_session),
+                          "handle-set-up-initial-session",
+                          G_CALLBACK (handle_set_up_initial_session),
                           slave);
         g_signal_connect (slave->priv->skeleton,
-                          "handle-open-reauthentication-channel",
-                          G_CALLBACK (handle_open_reauthentication_channel),
+                          "handle-start-initial-session",
+                          G_CALLBACK (handle_start_initial_session),
                           slave);
-
+        g_signal_connect (slave->priv->skeleton,
+                          "handle-stop-initial-session",
+                          G_CALLBACK (handle_stop_initial_session),
+                          slave);
         g_object_bind_property (G_OBJECT (slave),
                                 "session-id",
                                 G_OBJECT (slave->priv->skeleton),

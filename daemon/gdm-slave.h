@@ -50,22 +50,11 @@ typedef struct
         gboolean (*start) (GdmSlave *slave);
         gboolean (*stop)  (GdmSlave *slave);
 
-        gboolean     (*open_session)       (GdmSlave   *slave,
-                                            GPid        pid_of_caller,
-                                            uid_t       uid_of_caller,
-                                            char      **address,
-                                            GError    **error);
-
-        void     (*open_reauthentication_channel) (GdmSlave            *slave,
-                                                   const char          *username,
-                                                   GPid                 pid_of_caller,
-                                                   uid_t                uid_of_caller,
-                                                   GAsyncReadyCallback  callback,
-                                                   gpointer             user_data,
-                                                   GCancellable        *cancellable);
-        char *   (*open_reauthentication_channel_finish) (GdmSlave      *slave,
-                                                          GAsyncResult  *result,
-                                                          GError       **error);
+        void     (* set_up_initial_session) (GdmSlave    *slave,
+                                             char       **username);
+        void     (* start_initial_session) (GdmSlave  *slave);
+        void     (* stop_initial_session) (GdmSlave   *slave,
+                                           const char *username);
 
         /* signals */
         void (*stopped) (GdmSlave *slave);
@@ -85,22 +74,13 @@ GQuark              gdm_slave_error_quark            (void);
 GType               gdm_slave_get_type               (void);
 gboolean            gdm_slave_start                  (GdmSlave   *slave);
 gboolean            gdm_slave_stop                   (GdmSlave   *slave);
-
-char *              gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
-                                                               const char *username);
-
 gboolean            gdm_slave_get_timed_login_details (GdmSlave  *slave,
                                                        gboolean  *enabled,
                                                        char     **username,
                                                        int       *delay);
-
 gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
                                                       const char *username,
                                                       char      **filename);
-
-gboolean            gdm_slave_switch_to_user_session (GdmSlave   *slave,
-                                                      const char *username,
-                                                      gboolean    fail_if_already_switched);
 
 gboolean            gdm_slave_connect_to_x11_display (GdmSlave   *slave);
 

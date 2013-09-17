@@ -349,31 +349,6 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
         return TRUE;
 }
 
-static gboolean
-gdm_xdmcp_chooser_slave_open_session (GdmSlave  *slave,
-                                      GPid       pid_of_caller,
-                                      uid_t      uid_of_caller,
-                                      char     **address,
-                                      GError   **error)
-{
-        GdmXdmcpChooserSlave *self = GDM_XDMCP_CHOOSER_SLAVE (slave);
-        GdmSession           *session;
-
-        session = gdm_launch_environment_get_session (GDM_LAUNCH_ENVIRONMENT (self->priv->chooser_environment));
-
-        if (gdm_session_client_is_connected (session)) {
-                g_set_error (error,
-                             G_DBUS_ERROR,
-                             G_DBUS_ERROR_ACCESS_DENIED,
-                             _("Currently, only one client can be connected at once"));
-
-                return FALSE;
-        }
-
-        *address = gdm_session_get_server_address (session);
-        return TRUE;
-}
-
 static GObject *
 gdm_xdmcp_chooser_slave_constructor (GType                  type,
                                      guint                  n_construct_properties,
@@ -403,7 +378,6 @@ gdm_xdmcp_chooser_slave_class_init (GdmXdmcpChooserSlaveClass *klass)
 
         slave_class->start = gdm_xdmcp_chooser_slave_start;
         slave_class->stop = gdm_xdmcp_chooser_slave_stop;
-        slave_class->open_session = gdm_xdmcp_chooser_slave_open_session;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpChooserSlavePrivate));
 }
