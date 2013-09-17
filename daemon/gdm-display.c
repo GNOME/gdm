@@ -73,7 +73,7 @@ struct GdmDisplayPrivate
 
         GdmSlaveJob          *slave_job;
         char                 *slave_bus_name;
-        GdmDBusSlave         *slave_bus_proxy;
+        GdmDBusSlave         *slave_proxy;
         int                   slave_name_id;
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
@@ -309,13 +309,13 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                                                                        g_object_ref (display),
                                                                        NULL);
 
-        g_clear_object (&display->priv->slave_bus_proxy);
-        display->priv->slave_bus_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_sync (display->priv->connection,
-                                                                                        G_DBUS_PROXY_FLAGS_NONE,
-                                                                                        name,
-                                                                                        GDM_SLAVE_PATH,
-                                                                                        NULL, NULL));
-        g_object_bind_property (G_OBJECT (display->priv->slave_bus_proxy),
+        g_clear_object (&display->priv->slave_proxy);
+        display->priv->slave_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_sync (display->priv->connection,
+                                                                                    G_DBUS_PROXY_FLAGS_NONE,
+                                                                                    name,
+                                                                                    GDM_SLAVE_PATH,
+                                                                                    NULL, NULL));
+        g_object_bind_property (G_OBJECT (display->priv->slave_proxy),
                                 "session-id",
                                 G_OBJECT (display),
                                 "session-id",
@@ -664,7 +664,6 @@ gdm_display_prepare (GdmDisplay *display)
 
         return ret;
 }
-
 
 static gboolean
 gdm_display_real_manage (GdmDisplay *display)
