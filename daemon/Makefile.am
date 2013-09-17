@@ -313,8 +313,8 @@ gdm_SOURCES = 			\
 	gdm-transient-display.h		\
 	gdm-manager.c			\
 	gdm-manager.h			\
-	gdm-slave-proxy.c		\
-	gdm-slave-proxy.h		\
+	gdm-slave-job.c			\
+	gdm-slave-job.h			\
 	gdm-dbus-util.c			\
 	gdm-dbus-util.h			\
 	$(NULL)

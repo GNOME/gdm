@@ -41,13 +41,13 @@
 
 #include "gdm-common.h"
 
-#include "gdm-slave-proxy.h"
+#include "gdm-slave-job.h"
 
-#define GDM_SLAVE_PROXY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxyPrivate))
+#define GDM_SLAVE_JOB_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE_JOB, GdmSlaveJobPrivate))
 
 #define MAX_LOGS 5
 
-struct GdmSlaveProxyPrivate
+struct GdmSlaveJobPrivate
 {
         char    *command;
         char    *log_path;
@@ -69,18 +69,18 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void     gdm_slave_proxy_class_init      (GdmSlaveProxyClass *klass);
-static void     gdm_slave_proxy_init            (GdmSlaveProxy      *slave);
-static void     gdm_slave_proxy_finalize        (GObject            *object);
+static void     gdm_slave_job_class_init      (GdmSlaveJobClass *klass);
+static void     gdm_slave_job_init            (GdmSlaveJob      *slave);
+static void     gdm_slave_job_finalize        (GObject            *object);
 
-G_DEFINE_TYPE (GdmSlaveProxy, gdm_slave_proxy, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmSlaveJob, gdm_slave_job, G_TYPE_OBJECT)
 
 static void
 child_watch (GPid           pid,
              int            status,
-             GdmSlaveProxy *slave)
+             GdmSlaveJob *slave)
 {
-        g_debug ("GdmSlaveProxy: slave (pid:%d) done (%s:%d)",
+        g_debug ("GdmSlaveJob: slave (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -221,19 +221,19 @@ spawn_command_line_async (const char *command_line,
 }
 
 static void
-clear_child_watch (GdmSlaveProxy *slave)
+clear_child_watch (GdmSlaveJob *slave)
 {
         slave->priv->child_watch_id = 0;
         g_object_unref (slave);
 }
 
 static gboolean
-spawn_slave (GdmSlaveProxy *slave)
+spawn_slave (GdmSlaveJob *slave)
 {
         gboolean    result;
         GError     *error;
 
-        g_debug ("GdmSlaveProxy: Running command: %s", slave->priv->command);
+        g_debug ("GdmSlaveJob: Running command: %s", slave->priv->command);
 
         error = NULL;
         result = spawn_command_line_async (slave->priv->command,
@@ -247,7 +247,7 @@ spawn_slave (GdmSlaveProxy *slave)
                 goto out;
         }
 
-        g_debug ("GdmSlaveProxy: Started slave with pid %d", slave->priv->pid);
+        g_debug ("GdmSlaveJob: Started slave with pid %d", slave->priv->pid);
 
         slave->priv->child_watch_id = g_child_watch_add_full (G_PRIORITY_DEFAULT,
                                                               slave->priv->pid,
@@ -264,7 +264,7 @@ spawn_slave (GdmSlaveProxy *slave)
 }
 
 static void
-kill_slave (GdmSlaveProxy *slave)
+kill_slave (GdmSlaveJob *slave)
 {
         int res;
 
@@ -280,7 +280,7 @@ kill_slave (GdmSlaveProxy *slave)
 
                 exit_status = gdm_wait_on_pid (slave->priv->pid);
 
-                g_debug ("GdmSlaveProxy: slave died with exit status %d", exit_status);
+                g_debug ("GdmSlaveJob: slave died with exit status %d", exit_status);
 
                 g_spawn_close_pid (slave->priv->pid);
                 slave->priv->pid = 0;
@@ -288,9 +288,9 @@ kill_slave (GdmSlaveProxy *slave)
 }
 
 gboolean
-gdm_slave_proxy_start (GdmSlaveProxy *slave)
+gdm_slave_job_start (GdmSlaveJob *slave)
 {
-        gdm_slave_proxy_stop (slave);
+        gdm_slave_job_stop (slave);
 
         spawn_slave (slave);
 
@@ -298,9 +298,9 @@ gdm_slave_proxy_start (GdmSlaveProxy *slave)
 }
 
 gboolean
-gdm_slave_proxy_stop (GdmSlaveProxy *slave)
+gdm_slave_job_stop (GdmSlaveJob *slave)
 {
-        g_debug ("GdmSlaveProxy: Killing slave");
+        g_debug ("GdmSlaveJob: Killing slave");
 
         if (slave->priv->child_watch_id > 0) {
                 g_source_remove (slave->priv->child_watch_id);
@@ -313,7 +313,7 @@ gdm_slave_proxy_stop (GdmSlaveProxy *slave)
 }
 
 void
-gdm_slave_proxy_set_command (GdmSlaveProxy *slave,
+gdm_slave_job_set_command (GdmSlaveJob *slave,
                              const char    *command)
 {
         g_free (slave->priv->command);
@@ -321,7 +321,7 @@ gdm_slave_proxy_set_command (GdmSlaveProxy *slave,
 }
 
 void
-gdm_slave_proxy_set_log_path (GdmSlaveProxy *slave,
+gdm_slave_job_set_log_path (GdmSlaveJob *slave,
                               const char    *path)
 {
         g_free (slave->priv->log_path);
@@ -329,21 +329,21 @@ gdm_slave_proxy_set_log_path (GdmSlaveProxy *slave,
 }
 
 static void
-gdm_slave_proxy_set_property (GObject      *object,
+gdm_slave_job_set_property (GObject      *object,
                               guint         prop_id,
                               const GValue *value,
                               GParamSpec   *pspec)
 {
-        GdmSlaveProxy *self;
+        GdmSlaveJob *self;
 
-        self = GDM_SLAVE_PROXY (object);
+        self = GDM_SLAVE_JOB (object);
 
         switch (prop_id) {
         case PROP_COMMAND:
-                gdm_slave_proxy_set_command (self, g_value_get_string (value));
+                gdm_slave_job_set_command (self, g_value_get_string (value));
                 break;
         case PROP_LOG_PATH:
-                gdm_slave_proxy_set_log_path (self, g_value_get_string (value));
+                gdm_slave_job_set_log_path (self, g_value_get_string (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -352,14 +352,14 @@ gdm_slave_proxy_set_property (GObject      *object,
 }
 
 static void
-gdm_slave_proxy_get_property (GObject    *object,
+gdm_slave_job_get_property (GObject    *object,
                               guint       prop_id,
                               GValue     *value,
                               GParamSpec *pspec)
 {
-        GdmSlaveProxy *self;
+        GdmSlaveJob *self;
 
-        self = GDM_SLAVE_PROXY (object);
+        self = GDM_SLAVE_JOB (object);
 
         switch (prop_id) {
         case PROP_COMMAND:
@@ -375,29 +375,29 @@ gdm_slave_proxy_get_property (GObject    *object,
 }
 
 static void
-gdm_slave_proxy_dispose (GObject *object)
+gdm_slave_job_dispose (GObject *object)
 {
-        GdmSlaveProxy *slave;
+        GdmSlaveJob *slave;
 
-        slave = GDM_SLAVE_PROXY (object);
+        slave = GDM_SLAVE_JOB (object);
 
-        g_debug ("GdmSlaveProxy: Disposing slave proxy");
-        gdm_slave_proxy_stop (slave);
+        g_debug ("GdmSlaveJob: Disposing slave job");
+        gdm_slave_job_stop (slave);
 
-        G_OBJECT_CLASS (gdm_slave_proxy_parent_class)->dispose (object);
+        G_OBJECT_CLASS (gdm_slave_job_parent_class)->dispose (object);
 }
 
 static void
-gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
+gdm_slave_job_class_init (GdmSlaveJobClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->get_property = gdm_slave_proxy_get_property;
-        object_class->set_property = gdm_slave_proxy_set_property;
-        object_class->dispose = gdm_slave_proxy_dispose;
-        object_class->finalize = gdm_slave_proxy_finalize;
+        object_class->get_property = gdm_slave_job_get_property;
+        object_class->set_property = gdm_slave_job_set_property;
+        object_class->dispose = gdm_slave_job_dispose;
+        object_class->finalize = gdm_slave_job_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmSlaveProxyPrivate));
+        g_type_class_add_private (klass, sizeof (GdmSlaveJobPrivate));
 
         g_object_class_install_property (object_class,
                                          PROP_COMMAND,
@@ -418,7 +418,7 @@ gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSlaveProxyClass, exited),
+                              G_STRUCT_OFFSET (GdmSlaveJobClass, exited),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -430,7 +430,7 @@ gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
                 g_signal_new ("died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSlaveProxyClass, died),
+                              G_STRUCT_OFFSET (GdmSlaveJobClass, died),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -440,39 +440,39 @@ gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
 }
 
 static void
-gdm_slave_proxy_init (GdmSlaveProxy *slave)
+gdm_slave_job_init (GdmSlaveJob *slave)
 {
 
-        slave->priv = GDM_SLAVE_PROXY_GET_PRIVATE (slave);
+        slave->priv = GDM_SLAVE_JOB_GET_PRIVATE (slave);
 
         slave->priv->pid = -1;
 }
 
 static void
-gdm_slave_proxy_finalize (GObject *object)
+gdm_slave_job_finalize (GObject *object)
 {
-        GdmSlaveProxy *slave;
+        GdmSlaveJob *slave;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_SLAVE_PROXY (object));
+        g_return_if_fail (GDM_IS_SLAVE_JOB (object));
 
-        slave = GDM_SLAVE_PROXY (object);
+        slave = GDM_SLAVE_JOB (object);
 
         g_return_if_fail (slave->priv != NULL);
 
         g_free (slave->priv->command);
         g_free (slave->priv->log_path);
 
-        G_OBJECT_CLASS (gdm_slave_proxy_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_slave_job_parent_class)->finalize (object);
 }
 
-GdmSlaveProxy *
-gdm_slave_proxy_new (void)
+GdmSlaveJob *
+gdm_slave_job_new (void)
 {
         GObject *object;
 
-        object = g_object_new (GDM_TYPE_SLAVE_PROXY,
+        object = g_object_new (GDM_TYPE_SLAVE_JOB,
                                NULL);
 
-        return GDM_SLAVE_PROXY (object);
+        return GDM_SLAVE_JOB (object);
 }

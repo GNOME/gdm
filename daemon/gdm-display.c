@@ -41,7 +41,7 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#include "gdm-slave-proxy.h"
+#include "gdm-slave-job.h"
 #include "gdm-slave-glue.h"
 #include "gdm-dbus-util.h"
 
@@ -71,7 +71,7 @@ struct GdmDisplayPrivate
         gboolean              is_local;
         guint                 finish_idle_id;
 
-        GdmSlaveProxy        *slave_proxy;
+        GdmSlaveJob          *slave_job;
         char                 *slave_bus_name;
         GdmDBusSlave         *slave_bus_proxy;
         int                   slave_name_id;
@@ -592,9 +592,9 @@ queue_finish (GdmDisplay *display)
 }
 
 static void
-slave_exited (GdmSlaveProxy       *proxy,
-              int                  code,
-              GdmDisplay          *display)
+slave_exited (GdmSlaveJob       *job,
+              int                code,
+              GdmDisplay        *display)
 {
         g_debug ("GdmDisplay: Slave exited: %d", code);
 
@@ -602,9 +602,9 @@ slave_exited (GdmSlaveProxy       *proxy,
 }
 
 static void
-slave_died (GdmSlaveProxy       *proxy,
-            int                  signum,
-            GdmDisplay          *display)
+slave_died (GdmSlaveJob       *job,
+            int                signum,
+            GdmDisplay        *display)
 {
         g_debug ("GdmDisplay: Slave died: %d", signum);
 
@@ -633,7 +633,7 @@ gdm_display_real_prepare (GdmDisplay *display)
 
         g_debug ("GdmDisplay: prepare display");
 
-        g_assert (display->priv->slave_proxy == NULL);
+        g_assert (display->priv->slave_job == NULL);
 
         if (!gdm_display_create_authority (display)) {
                 g_warning ("Unable to set up access control for display %d",
@@ -643,12 +643,12 @@ gdm_display_real_prepare (GdmDisplay *display)
 
         _gdm_display_set_status (display, GDM_DISPLAY_PREPARED);
 
-        display->priv->slave_proxy = gdm_slave_proxy_new ();
-        g_signal_connect (display->priv->slave_proxy,
+        display->priv->slave_job = gdm_slave_job_new ();
+        g_signal_connect (display->priv->slave_job,
                           "exited",
                           G_CALLBACK (slave_exited),
                           display);
-        g_signal_connect (display->priv->slave_proxy,
+        g_signal_connect (display->priv->slave_job,
                           "died",
                           G_CALLBACK (slave_died),
                           display);
@@ -656,13 +656,13 @@ gdm_display_real_prepare (GdmDisplay *display)
         log_file = g_strdup_printf ("%s-slave.log", display->priv->x11_display_name);
         log_path = g_build_filename (LOGDIR, log_file, NULL);
         g_free (log_file);
-        gdm_slave_proxy_set_log_path (display->priv->slave_proxy, log_path);
+        gdm_slave_job_set_log_path (display->priv->slave_job, log_path);
         g_free (log_path);
 
         command = g_strdup_printf ("%s --display-id %s",
                                    display->priv->slave_command,
                                    display->priv->id);
-        gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
+        gdm_slave_job_set_command (display->priv->slave_job, command);
         g_free (command);
 
         return TRUE;
@@ -702,11 +702,11 @@ gdm_display_real_manage (GdmDisplay *display)
                 }
         }
 
-        g_assert (display->priv->slave_proxy != NULL);
+        g_assert (display->priv->slave_job != NULL);
 
         g_timer_start (display->priv->slave_timer);
 
-        gdm_slave_proxy_start (display->priv->slave_proxy);
+        gdm_slave_job_start (display->priv->slave_job);
 
         return TRUE;
 }
@@ -766,11 +766,11 @@ gdm_display_real_unmanage (GdmDisplay *display)
 
         g_timer_stop (display->priv->slave_timer);
 
-        if (display->priv->slave_proxy != NULL) {
-                gdm_slave_proxy_stop (display->priv->slave_proxy);
+        if (display->priv->slave_job != NULL) {
+                gdm_slave_job_stop (display->priv->slave_job);
 
-                g_object_unref (display->priv->slave_proxy);
-                display->priv->slave_proxy = NULL;
+                g_object_unref (display->priv->slave_job);
+                display->priv->slave_job = NULL;
         }
 
         if (display->priv->user_access_file != NULL) {
@@ -1446,11 +1446,11 @@ gdm_display_dispose (GObject *object)
                 display->priv->finish_idle_id = 0;
         }
 
-        if (display->priv->slave_proxy != NULL) {
-                gdm_slave_proxy_stop (display->priv->slave_proxy);
+        if (display->priv->slave_job != NULL) {
+                gdm_slave_job_stop (display->priv->slave_job);
 
-                g_object_unref (display->priv->slave_proxy);
-                display->priv->slave_proxy = NULL;
+                g_object_unref (display->priv->slave_job);
+                display->priv->slave_job = NULL;
         }
 
         if (display->priv->user_access_file != NULL) {
