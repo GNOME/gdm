@@ -160,6 +160,7 @@ void              gdm_session_request_timed_login         (GdmSession *session,
                                                            const char *username,
                                                            int         delay);
 gboolean          gdm_session_client_is_connected         (GdmSession *session);
+gboolean          gdm_session_is_running                  (GdmSession *session);
 
 G_END_DECLS
 

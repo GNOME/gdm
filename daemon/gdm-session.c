@@ -2568,6 +2568,12 @@ gdm_session_request_timed_login (GdmSession *self,
 }
 
 gboolean
+gdm_session_is_running (GdmSession *self)
+{
+        return self->priv->session_pid > 0;
+}
+
+gboolean
 gdm_session_client_is_connected (GdmSession *self)
 {
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
