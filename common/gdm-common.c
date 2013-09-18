@@ -31,12 +31,34 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <gio/gio.h>
 
 #include "gdm-common.h"
 
 #ifndef HAVE_MKDTEMP
 #include "mkdtemp.h"
 #endif
+
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-login.h>
+#endif
+
+#define GDM_DBUS_NAME                            "org.gnome.DisplayManager"
+#define GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH      "/org/gnome/DisplayManager/LocalDisplayFactory"
+#define GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE "org.gnome.DisplayManager.LocalDisplayFactory"
+
+#ifdef WITH_CONSOLE_KIT
+#define CK_NAME      "org.freedesktop.ConsoleKit"
+#define CK_PATH      "/org/freedesktop/ConsoleKit"
+#define CK_INTERFACE "org.freedesktop.ConsoleKit"
+
+#define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
+#define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
+#define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
+#define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
+#endif
+
+G_DEFINE_QUARK (gdm-common-error, gdm_common_error);
 
 const char *
 gdm_make_temp_dir (char *template)
@@ -531,4 +553,527 @@ gdm_generate_random_bytes (gsize    size,
 
         close (fd);
         return bytes;
+}
+static gboolean
+create_transient_display (GDBusConnection *connection,
+                          GError         **error)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+        const char     *value;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             GDM_DBUS_NAME,
+                                             GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
+                                             GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE,
+                                             "CreateTransientDisplay",
+                                             NULL, /* parameters */
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to create transient display: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(&o)", &value);
+        g_debug ("Started %s", value);
+
+        g_variant_unref (reply);
+        return TRUE;
+}
+
+#ifdef WITH_CONSOLE_KIT
+
+static gboolean
+get_current_session_id (GDBusConnection  *connection,
+                        char            **session_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             CK_MANAGER_PATH,
+                                             CK_MANAGER_INTERFACE,
+                                             "GetCurrentSession",
+                                             NULL, /* parameters */
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to determine session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(o)", session_id);
+        g_variant_unref (reply);
+
+        return TRUE;
+}
+
+static gboolean
+get_seat_id_for_session (GDBusConnection  *connection,
+                         const char       *session_id,
+                         char            **seat_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetSeatId",
+                                             NULL, /* parameters */
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to determine seat: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(o)", seat_id);
+        g_variant_unref (reply);
+
+        return TRUE;
+}
+
+static char *
+get_current_seat_id (GDBusConnection *connection)
+{
+        gboolean res;
+        char    *session_id;
+        char    *seat_id;
+
+        session_id = NULL;
+        seat_id = NULL;
+
+        res = get_current_session_id (connection, &session_id);
+        if (res) {
+                res = get_seat_id_for_session (connection, session_id, &seat_id);
+        }
+        g_free (session_id);
+
+        return seat_id;
+}
+
+static gboolean
+activate_session_id_for_ck (GDBusConnection *connection,
+                            const char      *seat_id,
+                            const char      *session_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "ActivateSession",
+                                             g_variant_new ("(o)", session_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to activate session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_unref (reply);
+
+        return TRUE;
+}
+
+static gboolean
+session_is_login_window (GDBusConnection *connection,
+                         const char      *session_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+        const char *value;
+        gboolean ret;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetSessionType",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(s)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to determine session type: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(&s)", &value);
+
+        if (value == NULL || value[0] == '\0' || strcmp (value, "LoginWindow") != 0) {
+                ret = FALSE;
+        } else {
+                ret = TRUE;
+        }
+
+        g_variant_unref (reply);
+
+        return ret;
+}
+
+static gboolean
+seat_can_activate_sessions (GDBusConnection *connection,
+                            const char      *seat_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+        gboolean ret;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "CanActivateSessions",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(b)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to determine if can activate sessions: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(b)", &ret);
+        g_variant_unref (reply);
+
+        return ret;
+}
+
+static const char **
+seat_get_sessions (GDBusConnection *connection,
+                   const char      *seat_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+        const char **value;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "GetSessions",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(ao)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to list sessions: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(^ao)", &value);
+        g_variant_unref (reply);
+
+        return value;
+}
+
+static gboolean
+get_login_window_session_id_for_ck (GDBusConnection  *connection,
+                                    const char       *seat_id,
+                                    char            **session_id)
+{
+        gboolean     can_activate_sessions;
+        const char **sessions;
+        int          i;
+
+        *session_id = NULL;
+        sessions = NULL;
+
+        g_debug ("checking if seat can activate sessions");
+
+        can_activate_sessions = seat_can_activate_sessions (connection, seat_id);
+        if (! can_activate_sessions) {
+                g_debug ("seat is unable to activate sessions");
+                return FALSE;
+        }
+
+        sessions = seat_get_sessions (connection, seat_id);
+        for (i = 0; sessions [i] != NULL; i++) {
+                const char *ssid;
+
+                ssid = sessions [i];
+
+                if (session_is_login_window (connection, ssid)) {
+                        *session_id = g_strdup (ssid);
+                        break;
+                }
+        }
+        g_free (sessions);
+
+        return TRUE;
+}
+
+static gboolean
+goto_login_session_for_ck (GDBusConnection  *connection,
+                           GError          **error)
+{
+        gboolean        ret;
+        gboolean        res;
+        char           *session_id;
+        char           *seat_id;
+
+        ret = FALSE;
+
+        /* First look for any existing LoginWindow sessions on the seat.
+           If none are found, create a new one. */
+
+        seat_id = get_current_seat_id (connection);
+        if (seat_id == NULL || seat_id[0] == '\0') {
+                g_debug ("seat id is not set; can't switch sessions");
+                g_set_error (error, GDM_COMMON_ERROR, 0, _("Could not identify the current session."));
+
+                return FALSE;
+        }
+
+        res = get_login_window_session_id_for_ck (connection, seat_id, &session_id);
+        if (! res) {
+                g_set_error (error, GDM_COMMON_ERROR, 1, _("User unable to switch sessions."));
+                return FALSE;
+        }
+
+        if (session_id != NULL) {
+                res = activate_session_id_for_ck (connection, seat_id, session_id);
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        if (! ret && g_strcmp0 (seat_id, "/org/freedesktop/ConsoleKit/Seat1") == 0) {
+                res = create_transient_display (connection, error);
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        return ret;
+}
+#endif
+
+#ifdef WITH_SYSTEMD
+
+static gboolean
+activate_session_id_for_systemd (GDBusConnection *connection,
+                                 const char      *seat_id,
+                                 const char      *session_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "ActivateSessionOnSeat",
+                                             g_variant_new ("(ss)", session_id, seat_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to activate session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_unref (reply);
+
+        return TRUE;
+}
+
+static gboolean
+get_login_window_session_id_for_systemd (const char  *seat_id,
+                                         char       **session_id)
+{
+        gboolean   ret;
+        int        res, i;
+        char     **sessions;
+        char      *service_class;
+        char      *state;
+
+        res = sd_seat_get_sessions (seat_id, &sessions, NULL, NULL);
+        if (res < 0) {
+                g_debug ("Failed to determine sessions: %s", strerror (-res));
+                return FALSE;
+        }
+
+        if (sessions == NULL || sessions[0] == NULL) {
+                *session_id = NULL;
+                ret = TRUE;
+                goto out;
+        }
+
+        for (i = 0; sessions[i]; i ++) {
+                res = sd_session_get_class (sessions[i], &service_class);
+                if (res < 0) {
+                        g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_class, "greeter") != 0) {
+                        free (service_class);
+                        continue;
+                }
+
+                free (service_class);
+
+                ret = sd_session_get_state (sessions[i], &state);
+                if (ret < 0) {
+                        g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (g_strcmp0 (state, "closing") == 0) {
+                        free (state);
+                        continue;
+                }
+                free (state);
+
+                *session_id = g_strdup (sessions[i]);
+                ret = TRUE;
+                break;
+
+        }
+
+        *session_id = NULL;
+        ret = TRUE;
+
+out:
+        for (i = 0; sessions[i]; i ++) {
+                free (sessions[i]);
+        }
+
+        free (sessions);
+
+        return ret;
+}
+
+static gboolean
+goto_login_session_for_systemd (GDBusConnection  *connection,
+                                GError          **error)
+{
+        gboolean        ret;
+        int             res;
+        char           *our_session;
+        char           *session_id;
+        char           *seat_id;
+
+        ret = FALSE;
+        session_id = NULL;
+        seat_id = NULL;
+
+        /* First look for any existing LoginWindow sessions on the seat.
+           If none are found, create a new one. */
+
+        /* Note that we mostly use free () here, instead of g_free ()
+         * since the data allocated is from libsystemd-logind, which
+         * does not use GLib's g_malloc (). */
+
+        res = sd_pid_get_session (0, &our_session);
+        if (res < 0) {
+                g_debug ("failed to determine own session: %s", strerror (-res));
+                g_set_error (error, GDM_COMMON_ERROR, 0, _("Could not identify the current session."));
+
+                return FALSE;
+        }
+
+        res = sd_session_get_seat (our_session, &seat_id);
+        free (our_session);
+        if (res < 0) {
+                g_debug ("failed to determine own seat: %s", strerror (-res));
+                g_set_error (error, GDM_COMMON_ERROR, 0, _("Could not identify the current seat."));
+
+                return FALSE;
+        }
+
+        res = sd_seat_can_multi_session (seat_id);
+        if (res < 0) {
+                free (seat_id);
+
+                g_debug ("failed to determine whether seat can do multi session: %s", strerror (-res));
+                g_set_error (error, GDM_COMMON_ERROR, 0, _("The system is unable to determine whether to switch to an existing login screen or start up a new login screen."));
+
+                return FALSE;
+        }
+
+        if (res == 0) {
+                free (seat_id);
+
+                g_set_error (error, GDM_COMMON_ERROR, 0, _("The system is unable to start up a new login screen."));
+
+                return FALSE;
+        }
+
+        res = get_login_window_session_id_for_systemd (seat_id, &session_id);
+        if (res && session_id != NULL) {
+                res = activate_session_id_for_systemd (connection, seat_id, session_id);
+
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        if (! ret && g_strcmp0 (seat_id, "seat0") == 0) {
+                res = create_transient_display (connection, error);
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        free (seat_id);
+        g_free (session_id);
+
+        return ret;
+}
+#endif
+
+gboolean
+gdm_goto_login_session (GError **error)
+{
+        GError *local_error;
+        GDBusConnection *connection;
+
+        local_error = NULL;
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
+        if (connection == NULL) {
+                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                return FALSE;
+        }
+
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                return goto_login_session_for_systemd (connection, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return goto_login_session_for_ck (connection, error);
+#endif
 }
