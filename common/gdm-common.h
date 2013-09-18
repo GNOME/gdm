@@ -36,6 +36,9 @@
 /* check if logind is running */
 #define LOGIND_RUNNING() (access("/run/systemd/seats/", F_OK) >= 0)
 
+GQuark gdm_common_error_quark (void);
+#define GDM_COMMON_ERROR gdm_common_error_quark()
+
 G_BEGIN_DECLS
 
 int            gdm_wait_on_pid           (int pid);
@@ -61,7 +64,7 @@ gboolean       gdm_string_hex_decode     (const GString *source,
                                           int            insert_at);
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
-
+gboolean       gdm_goto_login_session    (GError **error);
 G_END_DECLS
 
 #endif /* _GDM_COMMON_H */
