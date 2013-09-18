@@ -27,7 +27,6 @@
 #include <locale.h>
 
 #include <glib/gi18n.h>
-#include <gtk/gtk.h>
 
 #include "common/gdm-common.h"
 
@@ -170,8 +169,6 @@ main (int argc, char *argv[])
                 return 1;
         }
 
-        gtk_init (&argc, &argv);
-
         if (monte_carlo_pi) {
                 calc_pi ();
                 return 0;
@@ -189,33 +186,7 @@ main (int argc, char *argv[])
         error = NULL;
         res = gdm_goto_login_session (&error);
         if (! res) {
-                GtkWidget *dialog;
-                char      *message;
-
-                if (error != NULL) {
-                        message = g_strdup_printf ("%s", error->message);
-                        g_error_free (error);
-                } else {
-                        message = g_strdup ("");
-                }
-
-                dialog = gtk_message_dialog_new (NULL,
-                                                 GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                 GTK_MESSAGE_ERROR,
-                                                 GTK_BUTTONS_CLOSE,
-                                                 "%s", _("Unable to start new display"));
-
-                gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                          "%s", message);
-                g_free (message);
-
-                gtk_window_set_title (GTK_WINDOW (dialog), "");
-                gtk_window_set_icon_name (GTK_WINDOW (dialog), "session-properties");
-                gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-                gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 14);
-
-                gtk_dialog_run (GTK_DIALOG (dialog));
-                gtk_widget_destroy (dialog);
+                g_printerr ("%s", error->message);
         } else {
                 maybe_lock_screen ();
         }
