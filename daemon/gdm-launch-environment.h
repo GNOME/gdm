@@ -54,6 +54,7 @@ typedef struct
         /* signals */
         void (* opened)            (GdmLaunchEnvironment  *launch_environment);
         void (* started)           (GdmLaunchEnvironment  *launch_environment);
+        void (* reset)             (GdmLaunchEnvironment  *launch_environment);
         void (* stopped)           (GdmLaunchEnvironment  *launch_environment);
         void (* exited)            (GdmLaunchEnvironment  *launch_environment,
                                     int                    exit_code);
@@ -64,6 +65,7 @@ typedef struct
 GType                 gdm_launch_environment_get_type           (void);
 
 gboolean              gdm_launch_environment_start              (GdmLaunchEnvironment *launch_environment);
+gboolean              gdm_launch_environment_reset              (GdmLaunchEnvironment *launch_environment);
 gboolean              gdm_launch_environment_stop               (GdmLaunchEnvironment *launch_environment);
 GdmSession *          gdm_launch_environment_get_session        (GdmLaunchEnvironment *launch_environment);
 char *                gdm_launch_environment_get_session_id     (GdmLaunchEnvironment *launch_environment);

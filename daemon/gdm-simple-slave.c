@@ -364,6 +364,18 @@ on_greeter_environment_session_opened (GdmLaunchEnvironment *greeter_environment
         g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
         g_free (session_id);
 }
+static void
+on_greeter_environment_session_reset (GdmLaunchEnvironment *greeter_environment,
+                                      GdmSimpleSlave       *slave)
+{
+        char       *session_id;
+
+        g_debug ("GdmSimpleSlave: Greeter reset");
+        session_id = gdm_launch_environment_get_session_id (GDM_LAUNCH_ENVIRONMENT (greeter_environment));
+
+        g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
+        g_free (session_id);
+}
 
 static void
 on_greeter_environment_session_started (GdmLaunchEnvironment *greeter_environment,
@@ -611,6 +623,10 @@ start_launch_environment (GdmSimpleSlave *slave,
         g_signal_connect (slave->priv->greeter_environment,
                           "opened",
                           G_CALLBACK (on_greeter_environment_session_opened),
+                          slave);
+        g_signal_connect (slave->priv->greeter_environment,
+                          "reset",
+                          G_CALLBACK (on_greeter_environment_session_reset),
                           slave);
         g_signal_connect (slave->priv->greeter_environment,
                           "started",

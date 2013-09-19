@@ -73,6 +73,7 @@ struct GdmLaunchEnvironmentPrivate
         char           *x11_authority_file;
         char           *dbus_session_bus_address;
         gboolean        x11_display_is_local;
+        gboolean        resetting;
 };
 
 enum {
@@ -93,6 +94,7 @@ enum {
 enum {
         OPENED,
         STARTED,
+        RESET,
         STOPPED,
         EXITED,
         DIED,
@@ -329,7 +331,9 @@ on_session_opened (GdmSession           *session,
 {
         launch_environment->priv->session_id = g_strdup (session_id);
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [OPENED], 0);
+        if (!launch_environment->priv->resetting) {
+                g_signal_emit (G_OBJECT (launch_environment), signals [OPENED], 0);
+        }
         gdm_session_start_session (launch_environment->priv->session, service_name);
 }
 
@@ -340,7 +344,12 @@ on_session_started (GdmSession           *session,
                     GdmLaunchEnvironment *launch_environment)
 {
         launch_environment->priv->pid = pid;
-        g_signal_emit (G_OBJECT (launch_environment), signals [STARTED], 0);
+        if (!launch_environment->priv->resetting) {
+                g_signal_emit (G_OBJECT (launch_environment), signals [STARTED], 0);
+        } else {
+                launch_environment->priv->resetting = FALSE;
+                g_signal_emit (G_OBJECT (launch_environment), signals [RESET], 0);
+        }
 }
 
 static void
@@ -348,9 +357,15 @@ on_session_exited (GdmSession           *session,
                    int                   exit_code,
                    GdmLaunchEnvironment *launch_environment)
 {
+        if (session != launch_environment->priv->session) {
+                return;
+        }
+
         gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [EXITED], 0, exit_code);
+        if (!launch_environment->priv->resetting) {
+                g_signal_emit (G_OBJECT (launch_environment), signals [EXITED], 0, exit_code);
+        }
 }
 
 static void
@@ -358,9 +373,15 @@ on_session_died (GdmSession           *session,
                  int                   signal_number,
                  GdmLaunchEnvironment *launch_environment)
 {
+        if (session != launch_environment->priv->session) {
+                return;
+        }
+
         gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [DIED], 0, signal_number);
+        if (!launch_environment->priv->resetting) {
+                g_signal_emit (G_OBJECT (launch_environment), signals [DIED], 0, signal_number);
+        }
 }
 
 static void
@@ -396,7 +417,9 @@ on_conversation_stopped (GdmSession           *session,
 
         if (launch_environment->priv->pid > 1) {
                 gdm_signal_pid (-launch_environment->priv->pid, SIGTERM);
-                g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+                if (!launch_environment->priv->resetting) {
+                        g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+                }
         }
 
         if (conversation_session != NULL) {
@@ -424,6 +447,23 @@ ensure_directory_with_uid_gid (const char  *path,
                 return FALSE;
         }
         return TRUE;
+}
+
+static void
+start_program (GdmLaunchEnvironment *launch_environment)
+{
+        gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
+
+        if (launch_environment->priv->dbus_session_bus_address) {
+                gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
+        } else {
+                /* wrap it in dbus-launch */
+                char *command = g_strdup_printf ("%s %s", DBUS_LAUNCH_COMMAND, launch_environment->priv->command);
+
+                gdm_session_select_program (launch_environment->priv->session, command);
+                g_free (command);
+        }
+
 }
 
 /**
@@ -502,18 +542,7 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                           "session-died",
                           G_CALLBACK (on_session_died),
                           launch_environment);
-
-        gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
-
-        if (launch_environment->priv->dbus_session_bus_address) {
-                gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
-        } else {
-                /* wrap it in dbus-launch */
-                char *command = g_strdup_printf ("%s %s", DBUS_LAUNCH_COMMAND, launch_environment->priv->command);
-
-                gdm_session_select_program (launch_environment->priv->session, command);
-                g_free (command);
-        }
+        start_program (launch_environment);
 
         res = TRUE;
  out:
@@ -522,6 +551,16 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                 g_clear_error (&local_error);
         }
         return res;
+}
+
+gboolean
+gdm_launch_environment_reset (GdmLaunchEnvironment *launch_environment)
+{
+        launch_environment->priv->resetting = TRUE;
+        gdm_launch_environment_stop (launch_environment);
+        gdm_launch_environment_start (launch_environment);
+
+        return TRUE;
 }
 
 gboolean
@@ -537,7 +576,9 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
                         g_clear_object (&launch_environment->priv->session);
                 }
 
-                g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+                if (!launch_environment->priv->resetting) {
+                        g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+                }
         }
 
         return TRUE;
@@ -845,6 +886,16 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, started),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+        signals [RESET] =
+                g_signal_new ("reset",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, reset),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
