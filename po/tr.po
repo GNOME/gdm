@@ -10,22 +10,23 @@
 # Baris Cicek <baris@teamforce.name.tr>, 2004, 2009.
 # Ozan Çağlayan <ozancag@gmail.com>, 2013.
 # Muhammet Kara <muhammetk@gmail.com>, 2011, 2012, 2013.
+# Gökhan Gurbetoğlu <ggurbet@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-04-09 19:55+0000\n"
-"PO-Revision-Date: 2013-04-08 11:37+0300\n"
-"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
+"POT-Creation-Date: 2013-09-20 16:01+0000\n"
+"PO-Revision-Date: 2013-08-31 23:23+0300\n"
+"Last-Translator: Gökhan Gurbetoğlu <ggurbet@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.5\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #: ../common/gdm-common.c:518
 #, c-format
@@ -35,9 +36,9 @@ msgstr "/dev/urandom bir karakter aygıtı değil"
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "Sistemde \"%s\" adlı kullanıcı bulunamadı"
+msgstr "\"%s\" adlı kullanıcı sistemde bulunamadı"
 
-#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "Henüz kullanılabilir bir oturum yok"
@@ -70,7 +71,7 @@ msgstr "%s kullanıcısı için uygun oturum bulunamıyor"
 msgid "User doesn't own session"
 msgstr "Kullanıcının oturumu yok"
 
-#: ../daemon/gdm-manager.c:686 ../daemon/gdm-manager.c:773
+#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
 msgid "No session available"
 msgstr "Kullanılabilir oturum yok"
 
@@ -149,75 +150,32 @@ msgstr "Görüntü aygıtı"
 msgid "Could not create authentication helper process"
 msgstr "Kimlik doğrulama yardımcı süreci oluşturulamadı"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "kimlik doğrulama sistemi ile iletişim başlatılırken hata  -%s"
+#: ../daemon/gdm-session-worker.c:835
+msgid "Your account was given a time limit that's now passed."
+msgstr "Hesabınıza şu anda geçmiş olan bir zaman sınırı verilmiş."
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "genel başarısızlık"
+#: ../daemon/gdm-session-worker.c:842
+msgid "Sorry, that didn't work. Please try again."
+msgstr "Üzgünüm ama işe yaramadı. Lütfen tekrar deneyin."
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "bellek yetersiz"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "uygulama programcısı hatası"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "bilinmeyen hata"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1074
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"tercih edilen kullanıcı adı isteminin kimlik denetimi sistemine bilgi "
-"verilirken hata oluştu: %s"
+#: ../daemon/gdm-session-worker.c:1261
+msgid "Your password has expired, please change it now."
+msgstr "Parolanızın kullanım süresi doldu, lütfen şimdi değiştirin."
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"kullanıcının makine adının kimlik denetimi sistemine bilgi verilirken hata "
-"oluştu: %s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"kullanıcı konsolunun kimlik denetimi sistemi bilgilendirilirken hata oluştu: "
-"%s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr ""
-"ekran dizgisinin kimlik denetimi sistemi bilgilendirilirken hata oluştu: %s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"ekran xauth tanıtımlarının kimlik denetimi sistemi bilgilendirilirken hata "
-"oluştu: %s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
 #, c-format
 msgid "no user account available"
 msgstr "hiçbir kullanıcı hesabı mevcut değil"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1544
 msgid "Unable to change to user"
 msgstr "Kullanıcıya değiştirilemiyor"
 
-#: ../daemon/gdm-simple-slave.c:1360
+#: ../daemon/gdm-simple-slave.c:1527
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -229,17 +187,17 @@ msgstr ""
 "bu ekran devre dışı kalacaktır. Sorun çözüldüğünde lütfen GDM'yi yeniden "
 "başlatın."
 
-#: ../daemon/gdm-simple-slave.c:1401
+#: ../daemon/gdm-simple-slave.c:1568
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Sadece kullanıcı oturum açmadan önce çağrılabilir"
 
-#: ../daemon/gdm-simple-slave.c:1411
+#: ../daemon/gdm-simple-slave.c:1578
 #, c-format
 msgid "Caller not GDM"
 msgstr "Çağıran GDM değil"
 
-#: ../daemon/gdm-simple-slave.c:1464
+#: ../daemon/gdm-simple-slave.c:1631
 msgid "User not logged in"
 msgstr "Kullanıcı oturum açmadı"
 
@@ -264,50 +222,45 @@ msgstr "Bir kerelik çalışma belirleyicisi dizin %s oluşturulamadı: %s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "AuthDir %s oluşturulamadı: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s oluşturulamadı: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM kullanıcısı '%s' bulunamadı. İptal ediliyor!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM kullanıcısının 'root' olmaması gerekiyor. İptal ediliyor!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM grubu '%s' bulunamadı. İptal ediliyor!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM grubu 'root' olmaması gerekiyor. İptal ediliyor!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:327
 msgid "Make all warnings fatal"
 msgstr "Tüm uyarıları ölümcül yap"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:328
 msgid "Exit after a time (for debugging)"
 msgstr "Bir süre sonra çık (hata ayıklama için)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:329
 msgid "Print GDM version"
 msgstr "GDM sürümünü yazdır"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:340
 msgid "GNOME Display Manager"
 msgstr "GNOME Görüntü Yöneticisi"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:388
 msgid "Only the root user can run GDM"
 msgstr "Yalnızca yetkili kullanıcı GDM'yi çalıştırabilir"
 
@@ -330,7 +283,6 @@ msgid "GNOME Display Manager Slave"
 msgstr "GNOME Görüntü Yöneticisi Yedeği"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Giriş Penceresi"
 
@@ -367,10 +319,23 @@ msgstr ""
 "akıllı kartlarıyla giriş yapmalarına izin verebilir."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow passwords for login"
+msgstr "Oturum açmak için parolalara izin verilip verilmeyeceği"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"Oturum açma ekranı parolayla kimlik denetimine izin vermeyecek şekilde "
+"yapılandırılabilir, böylece kullanıcı akıllı kartla ya da parmak izi "
+"okuyucuyla kimlik denetimini kullanmaya zorlanır."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Kullanıcı listesinin tepesindeki küçük resme giden yol"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -380,7 +345,7 @@ msgstr ""
 "küçük bir resim gösterebilir. Böylece, site yöneticileri ve dağıtımlara "
 "markalaşma olanağı sağlanmış olur."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -390,11 +355,11 @@ msgstr ""
 "tepesinde küçük bir resim gösterebilir. Böylece, site yöneticileri ve "
 "dağıtımlara markalaşma olanağı sağlanmış olur."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Kullanıcı listesini göstermekten kaçın"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -403,37 +368,37 @@ msgstr ""
 "gösterir. Bu ayar, kullanıcı listesinin gösterimini devre dışı bırakmak için "
 "açılıp kapatılabilir."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Afiş mesajı göstermeyi etkinleştir"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Afiş mesajı metnini göstermek için TRUE şeklinde ayarlayın."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Afiş mesaj metni"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Giriş penceresinde gösterilecek için metin afişi mesajı."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Yeniden başlatma düğmelerini devre dışı bırak"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Giriş pencerede yeniden başlatma düğmelerini göstermeyi devre dışı bırakmak "
 "için doğru şeklinde ayarlayın."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "İzin verilen kimlik denetimi hatası sayısı"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -452,7 +417,7 @@ msgstr "Oturum etkinleştirilemedi:"
 
 #: ../gui/libgdm/gdm-user-switching.c:344
 #: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
+#: ../utils/gdmflexiserver.c:600
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Geçerli oturum tespit edilemedi."
@@ -462,12 +427,12 @@ msgstr "Geçerli oturum tespit edilemedi."
 msgid "User unable to switch sessions."
 msgstr "Kullanıcı oturum değiştiremedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:609
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Geçerli oturum tespit edilemedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:619
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -476,7 +441,7 @@ msgstr ""
 "Sistem, varolan bir giriş ekranına geçiş yapılacağına ya da yeni bir giriş "
 "ekranı başlatılacağına karar veremedi."
 
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:627
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Sistem, yeni bir giriş ekranı başlatamadı."
@@ -501,340 +466,6 @@ msgstr "XDMCP: Geçersiz XDMCP sürümü!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Adres ayrıştırılamadı"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Parmak İziyle Kimlik Doğrulama"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Parmak iziyle oturum aç"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Parolayla Kimlik Doğrulama"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Kullanıcı adı ve parolayla oturum aç"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Oturum Aç"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Yuva Kimliği"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Kartın bulunduğu yuva"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Yuva Serisi"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "yuva başına kart tanımlayıcısı"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "isim"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Modül"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "akıllı kart sürücüsü"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Akıllı Kartla Kimlik Doğrulama"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Akıllı kartla oturum aç"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Modül Yolu"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "PKCS #11 akıllı kart sürücüsünün yolu"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "olay kaynağından, hata alındı veya olay kaynağı kapattı"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS güvenlik sistemi başlatılamadı"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "uygun bir akıllı kart sürücüsü bulunamadı"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "akıllı kart sürücüsü '%s' yüklenemedi"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "gelen kart olayları izlenemedi - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-"akıllı kart olayları beklenirken, beklenmeyen bir hata ile karşılaşıldı"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Kimlik Doğrulama"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Oturum aç"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Değer"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "tamamlanan zaman yüzdesi"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Kapalı Metin"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "Kullanıcı henüz bir öğe seçmemişken kullanmak için etiket metni"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Etkin Metin"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "Kullanıcı bir öğe seçmişken kullanmak için etiket metni"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "Liste Görünür"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Seçme listesinin görünür olup olmayacağı"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a %b %e, %l:%M:%S %p"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a %b %e, %l:%M %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a %l:%M:%S %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "Otomatik olarak oturum açılıyor..."
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "İptal ediliyor..."
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Bir dil seçin ve Giriş'e tıklayın"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Özel"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Özel oturum"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Bilgisayar Adı"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Sürüm"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Vazgeç"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Kilidi Aç"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Oturum aç"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "Askıya Al"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "Yeniden Başlat"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "Kapat"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "Bilinmeyen bir süre kaldı"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "Panel"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Etiket Metni"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "Etiket olarak kullanmak için metin "
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Simge ismi"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "Etiket ile kullanmak için simge"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Öntanımlı Öğe"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "Öntanımlı öğenin kimliği (ID)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Uzaktan Giriş (%s ile bağlantı kuruluyor...)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Uzaktan Giriş (%s ile bağlantı kuruldu)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Uzaktan Giriş"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Oturum"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Süre"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Zamanlayıcı durana kadar saniye miktarı"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Başlama zamanı"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "Zamanlayıcının başlatıldığı zaman"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "Çalışmıyor mu?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Zamanlayıcının şu anda çalışıp çalışmadığı"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "%s olarak giriş yap"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "Diğer..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Başka bir hesap seç"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Konuk"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Geçici konuk olarak oturum aç"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Otomatik Giriş"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Seçenekleri seçtikten sonra sisteme otomatik olarak giriş yap"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "Şu anda girişi bulunan "
-
 #: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
 msgstr "Sadece SÜRÜM (VERSION) komutu destekleniyor"
@@ -857,11 +488,11 @@ msgid "Version of this application"
 msgstr "Bu uygulamanın sürümü"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:693
 msgid "- New GDM login"
 msgstr "- Yeni GDM girişi"
 
-#: ../utils/gdmflexiserver.c:763
+#: ../utils/gdmflexiserver.c:749
 msgid "Unable to start new display"
 msgstr "Yeni ekran başlatılamadı"
 
@@ -873,6 +504,279 @@ msgstr "Ekran görüntüsü alındı"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Ekranın bir resmini çek"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "kimlik doğrulama sistemi ile iletişim başlatılırken hata  -%s"
+
+#~ msgid "general failure"
+#~ msgstr "genel başarısızlık"
+
+#~ msgid "out of memory"
+#~ msgstr "bellek yetersiz"
+
+#~ msgid "application programmer error"
+#~ msgstr "uygulama programcısı hatası"
+
+#~ msgid "unknown error"
+#~ msgstr "bilinmeyen hata"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "tercih edilen kullanıcı adı isteminin kimlik denetimi sistemine bilgi "
+#~ "verilirken hata oluştu: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr ""
+#~ "kullanıcının makine adının kimlik denetimi sistemine bilgi verilirken "
+#~ "hata oluştu: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr ""
+#~ "kullanıcı konsolunun kimlik denetimi sistemi bilgilendirilirken hata "
+#~ "oluştu: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr ""
+#~ "ekran dizgisinin kimlik denetimi sistemi bilgilendirilirken hata oluştu: "
+#~ "%s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr ""
+#~ "ekran xauth tanıtımlarının kimlik denetimi sistemi bilgilendirilirken "
+#~ "hata oluştu: %s"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "AuthDir %s oluşturulamadı: %s"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "Parmak İziyle Kimlik Doğrulama"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "Parmak iziyle oturum aç"
+
+#~ msgid "Password Authentication"
+#~ msgstr "Parolayla Kimlik Doğrulama"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "Kullanıcı adı ve parolayla oturum aç"
+
+#~ msgid "Log In"
+#~ msgstr "Oturum Aç"
+
+#~ msgid "Slot ID"
+#~ msgstr "Yuva Kimliği"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "Kartın bulunduğu yuva"
+
+#~ msgid "Slot Series"
+#~ msgstr "Yuva Serisi"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "yuva başına kart tanımlayıcısı"
+
+#~ msgid "name"
+#~ msgstr "isim"
+
+#~ msgid "Module"
+#~ msgstr "Modül"
+
+#~ msgid "smartcard driver"
+#~ msgstr "akıllı kart sürücüsü"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "Akıllı Kartla Kimlik Doğrulama"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "Akıllı kartla oturum aç"
+
+#~ msgid "Module Path"
+#~ msgstr "Modül Yolu"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "PKCS #11 akıllı kart sürücüsünün yolu"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "olay kaynağından, hata alındı veya olay kaynağı kapattı"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "NSS güvenlik sistemi başlatılamadı"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "uygun bir akıllı kart sürücüsü bulunamadı"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "akıllı kart sürücüsü '%s' yüklenemedi"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr "gelen kart olayları izlenemedi - %s"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr ""
+#~ "akıllı kart olayları beklenirken, beklenmeyen bir hata ile karşılaşıldı"
+
+#~ msgid "Authentication"
+#~ msgstr "Kimlik Doğrulama"
+
+#~ msgid "Log into session"
+#~ msgstr "Oturum aç"
+
+#~ msgid "Value"
+#~ msgstr "Değer"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "tamamlanan zaman yüzdesi"
+
+#~ msgid "Inactive Text"
+#~ msgstr "Kapalı Metin"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr "Kullanıcı henüz bir öğe seçmemişken kullanmak için etiket metni"
+
+#~ msgid "Active Text"
+#~ msgstr "Etkin Metin"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr "Kullanıcı bir öğe seçmişken kullanmak için etiket metni"
+
+#~ msgid "List Visible"
+#~ msgstr "Liste Görünür"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "Seçme listesinin görünür olup olmayacağı"
+
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%a %b %e, %l:%M:%S %p"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%a %b %e, %l:%M %p"
+
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%a %l:%M:%S %p"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%a %l:%M %p"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "Otomatik olarak oturum açılıyor..."
+
+#~ msgid "Cancelling…"
+#~ msgstr "İptal ediliyor..."
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "Bir dil seçin ve Giriş'e tıklayın"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "Özel"
+
+#~ msgid "Custom session"
+#~ msgstr "Özel oturum"
+
+#~ msgid "Computer Name"
+#~ msgstr "Bilgisayar Adı"
+
+#~ msgid "Version"
+#~ msgstr "Sürüm"
+
+#~ msgid "Cancel"
+#~ msgstr "Vazgeç"
+
+#~ msgid "Unlock"
+#~ msgstr "Kilidi Aç"
+
+#~ msgid "Login"
+#~ msgstr "Oturum aç"
+
+#~ msgid "Suspend"
+#~ msgstr "Askıya Al"
+
+#~ msgid "Restart"
+#~ msgstr "Yeniden Başlat"
+
+#~ msgid "Shut Down"
+#~ msgstr "Kapat"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "Bilinmeyen bir süre kaldı"
+
+#~ msgid "Panel"
+#~ msgstr "Panel"
+
+#~ msgid "Label Text"
+#~ msgstr "Etiket Metni"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "Etiket olarak kullanmak için metin "
+
+#~ msgid "Icon name"
+#~ msgstr "Simge ismi"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "Etiket ile kullanmak için simge"
+
+#~ msgid "Default Item"
+#~ msgstr "Öntanımlı Öğe"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "Öntanımlı öğenin kimliği (ID)"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "Uzaktan Giriş (%s ile bağlantı kuruluyor...)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "Uzaktan Giriş (%s ile bağlantı kuruldu)"
+
+#~ msgid "Remote Login"
+#~ msgstr "Uzaktan Giriş"
+
+#~ msgid "Session"
+#~ msgstr "Oturum"
+
+#~ msgid "Duration"
+#~ msgstr "Süre"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "Zamanlayıcı durana kadar saniye miktarı"
+
+#~ msgid "Start time"
+#~ msgstr "Başlama zamanı"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "Zamanlayıcının başlatıldığı zaman"
+
+#~ msgid "Is it Running?"
+#~ msgstr "Çalışmıyor mu?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "Zamanlayıcının şu anda çalışıp çalışmadığı"
+
+#~ msgid "Log in as %s"
+#~ msgstr "%s olarak giriş yap"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "Diğer..."
+
+#~ msgid "Choose a different account"
+#~ msgstr "Başka bir hesap seç"
+
+#~ msgid "Guest"
+#~ msgstr "Konuk"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "Geçici konuk olarak oturum aç"
+
+#~ msgid "Automatic Login"
+#~ msgstr "Otomatik Giriş"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "Seçenekleri seçtikten sonra sisteme otomatik olarak giriş yap"
+
+#~ msgid "Currently logged in"
+#~ msgstr "Şu anda girişi bulunan "
 
 #~ msgid "User %s doesn't exist"
 #~ msgstr "%s kullanıcısı mevcut değil"
