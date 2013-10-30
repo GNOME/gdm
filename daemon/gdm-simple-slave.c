@@ -1312,6 +1312,17 @@ static gboolean
 wants_initial_setup (GdmSimpleSlave *slave)
 {
         gboolean enabled = FALSE;
+        gboolean display_is_local = FALSE;
+
+        g_object_get (G_OBJECT (slave),
+                      "display-is-local", &display_is_local,
+                      NULL);
+
+        /* don't run initial-setup on remote displays
+         */
+        if (!display_is_local) {
+                return FALSE;
+        }
 
         /* don't run if the system has existing users */
         if (slave->priv->have_existing_user_accounts) {
