@@ -725,9 +725,14 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         ret = gdm_dbus_get_pid_for_name (sender, &pid, &error);
 
         if (!ret) {
-                g_prefix_error (&error, "Error while retrieving caller session id: ");
-                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_debug ("GdmManager: could not get pid of caller: %s",
+                         error->message);
                 g_error_free (error);
+
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Error getting process id of caller");
                 return TRUE;
 
         }
@@ -735,9 +740,14 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         ret = gdm_dbus_get_uid_for_name (sender, &caller_uid, &error);
 
         if (!ret) {
-                g_prefix_error (&error, "Error while retrieving caller session id: ");
-                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_debug ("GdmManager: could not get uid of caller: %s",
+                         error->message);
                 g_error_free (error);
+
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Error getting user id of caller");
                 return TRUE;
         }
 
@@ -746,15 +756,27 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         seat_id = get_seat_id_for_pid (connection, pid, &error);
 
         if (seat_id == NULL) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_debug ("GdmManager: could not get seat id of caller: %s",
+                         error->message);
                 g_error_free (error);
+
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Error getting seat id of caller");
                 return TRUE;
         }
 
         session_id = get_session_id_for_user_on_seat (connection, username, seat_id, &error);
         if (session_id == NULL) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_debug ("GdmManager: could not get session id for caller: %s",
+                         error->message);
                 g_error_free (error);
+
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Error getting session id for caller");
                 return TRUE;
         }
 
