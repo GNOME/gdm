@@ -843,17 +843,7 @@ on_session_client_disconnected (GdmSession          *session,
                                 GPid                 pid_of_client,
                                 GdmSimpleSlave      *slave)
 {
-        gboolean display_is_local;
-
         g_debug ("GdmSimpleSlave: client disconnected");
-
-        g_object_get (slave,
-                      "display-is-local", &display_is_local,
-                      NULL);
-
-        if ( ! display_is_local && !slave->priv->session_is_running) {
-                gdm_slave_stop (GDM_SLAVE (slave));
-        }
 }
 
 static void
