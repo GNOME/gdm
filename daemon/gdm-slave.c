@@ -1639,6 +1639,7 @@ session_unlock (GdmSlave   *slave,
 gboolean
 gdm_slave_switch_to_user_session (GdmSlave   *slave,
                                   const char *username,
+                                  const char *session_id,
                                   gboolean    fail_if_already_switched)
 {
         gboolean    res;
@@ -1648,10 +1649,14 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
 
         ret = FALSE;
 
-        ssid_to_activate = gdm_slave_get_primary_session_id_for_user (slave, username);
-        if (ssid_to_activate == NULL) {
-                g_debug ("GdmSlave: unable to determine session to activate");
-                goto out;
+        if (session_id != NULL) {
+                ssid_to_activate = g_strdup (session_id);
+        } else {
+                ssid_to_activate = gdm_slave_get_primary_session_id_for_user (slave, username);
+                if (ssid_to_activate == NULL) {
+                        g_debug ("GdmSlave: unable to determine session to activate");
+                        goto out;
+                }
         }
 
         session_already_switched = session_is_active (slave, slave->priv->display_seat_id, ssid_to_activate);

@@ -437,15 +437,18 @@ switch_to_and_unlock_session (GdmSimpleSlave  *slave,
                               gboolean         fail_if_already_switched)
 {
         char    *username;
+        char    *session_id;
         gboolean res;
 
         username = gdm_session_get_username (slave->priv->session);
+        session_id = gdm_session_get_session_id (slave->priv->session);
 
         g_debug ("GdmSimpleSlave: trying to switch to session for user %s", username);
 
         /* try to switch to an existing session */
-        res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username, fail_if_already_switched);
+        res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username, session_id, fail_if_already_switched);
         g_free (username);
+        g_free (session_id);
 
         return res;
 }
