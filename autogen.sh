@@ -19,8 +19,10 @@ if test -z $INTLTOOLIZE; then
         exit 1
 fi
 
-autopoint --force
-AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
+set -e
+
+intltoolize --force --copy --automake 
+autoreconf --force --install --verbose
 
 cd $olddir
 test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
