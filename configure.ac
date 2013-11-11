@@ -1101,6 +1101,14 @@ AC_ARG_WITH(consolekit-directory,
 CONSOLEKIT_DIR=$with_consolekit_directory
 AC_SUBST(CONSOLEKIT_DIR)
 
+AC_ARG_WITH(gnome-settings-daemon-directory,
+              [AC_HELP_STRING([--with-gnome-settings-daemon-directory],
+                              [Specify the directory of gnome-settings-daemon used by the chooser @<:@default=libexecdir@:>@])],,
+                              [with_gnome_settings_daemon_directory="\${libexecdir}"])
+
+GNOME_SETTINGS_DAEMON_DIR=$with_gnome_settings_daemon_directory
+AC_SUBST(GNOME_SETTINGS_DAEMON_DIR)
+
 AC_ARG_WITH(check-accelerated-directory,
               [AC_HELP_STRING([--with-check-accelerated-directory],
                               [Specify the directory of gnome-session-check-accelerated @<:@default=libexecdir@:>@])],,
@@ -1591,6 +1599,7 @@ echo "
         localstatedir:            ${localstatedir}
         datadir:                  ${datadir}
 	consolekit location:      ${with_consolekit_directory}
+	gnome-settings-daemon location: ${with_gnome_settings_daemon_directory}
 	gnome-session-check-accel location: ${with_check_accelerated_directory}
 	polkit-gnome location:    ${with_authentication_agent_directory}
 	source code location:	  ${srcdir}
