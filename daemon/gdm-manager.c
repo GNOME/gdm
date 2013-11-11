@@ -65,7 +65,7 @@ struct GdmManagerPrivate
 
         gboolean                started;
         gboolean                wait_for_go;
-        gboolean                no_console;
+        gboolean                show_local_greeter;
 
         GDBusProxy               *bus_proxy;
         GDBusConnection          *connection;
@@ -74,7 +74,8 @@ struct GdmManagerPrivate
 
 enum {
         PROP_0,
-        PROP_XDMCP_ENABLED
+        PROP_XDMCP_ENABLED,
+        PROP_SHOW_LOCAL_GREETER
 };
 
 enum {
@@ -544,7 +545,7 @@ gdm_manager_start (GdmManager *manager)
 {
         g_debug ("GdmManager: GDM starting to manage displays");
 
-        if (! manager->priv->wait_for_go) {
+        if (! manager->priv->wait_for_go && (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter)) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
         }
 
@@ -570,7 +571,9 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
 
                 if (! wait_for_go) {
                         /* we got a go */
-                        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+                        if (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter) {
+                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+                        }
 
 #ifdef HAVE_LIBXDMCP
                         if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
@@ -643,6 +646,15 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
 
 }
 
+void
+gdm_manager_set_show_local_greeter (GdmManager *manager,
+                                    gboolean    show_local_greeter)
+{
+        g_return_if_fail (GDM_IS_MANAGER (manager));
+
+        manager->priv->show_local_greeter = show_local_greeter;
+}
+
 static void
 gdm_manager_set_property (GObject      *object,
                           guint         prop_id,
@@ -656,6 +668,9 @@ gdm_manager_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_XDMCP_ENABLED:
                 gdm_manager_set_xdmcp_enabled (self, g_value_get_boolean (value));
+                break;
+        case PROP_SHOW_LOCAL_GREETER:
+                gdm_manager_set_show_local_greeter (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -676,6 +691,9 @@ gdm_manager_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_XDMCP_ENABLED:
                 g_value_set_boolean (value, self->priv->xdmcp_enabled);
+                break;
+        case PROP_SHOW_LOCAL_GREETER:
+                g_value_set_boolean (value, self->priv->show_local_greeter);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
