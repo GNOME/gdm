@@ -12,15 +12,16 @@
 # Ilkka Tuohela <hile@iki.fi>, 2005-2009.
 # Timo Jyrinki <timo.jyrinki@iki.fi>, 2010.
 # Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2012, 2013.
+# Juhani Numminen <juhaninumminen0@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-28 13:17+0000\n"
-"PO-Revision-Date: 2013-09-02 20:27+0300\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+"POT-Creation-Date: 2013-11-11 17:15+0000\n"
+"PO-Revision-Date: 2013-11-05 15:38+0200\n"
+"Last-Translator: Juhani Numminen <juhaninumminen0@gmail.com>\n"
 "Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
@@ -43,39 +44,9 @@ msgstr "järjestelmästä ei löytynyt käyttäjää ”%s”"
 #: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
-msgstr "Ei istuntoa käytettävissä"
+msgstr "Istuntoa ei ole vielä käytettävissä"
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Käyttäjän %s UID-tunnisteen etsiminen epäonnistui"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "ei istuntoja käytettävissä"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr ""
-"Käyttäjälle %s ei ole istuntoja käytettävissä uudelleentunnistautumista "
-"varten"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Käyttäjälle %s ei löydy istuntoa"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Käyttäjälle %s ei löydy soveltuvaa istuntoa"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Käyttäjä ei omista istuntoa"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:367 ../daemon/gdm-manager.c:412
 msgid "No session available"
 msgstr "Istuntoa ei ole käytettävissä"
 
@@ -113,7 +84,7 @@ msgstr "%s: Näytön %s lokitiedostoa ei voi avata."
 #: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Error setting %s to %s"
-msgstr "%s: Virhe asetettaessa %s arvoksi %s"
+msgstr "%s: Virhe asetettaessa %s arvoon %s"
 
 #: ../daemon/gdm-server.c:526
 #, c-format
@@ -149,36 +120,36 @@ msgstr "Näyttölaite"
 msgid "The display device"
 msgstr "Näyttölaite"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1161
 msgid "Could not create authentication helper process"
 msgstr "Tunnistautumisen avustusprosessin luominen ei onnistunut"
 
-#: ../daemon/gdm-session-worker.c:824
+#: ../daemon/gdm-session-worker.c:835
 msgid "Your account was given a time limit that's now passed."
 msgstr "Tunnuksellesi annettiin aikaraja, joka on nyt ohitettu."
 
-#: ../daemon/gdm-session-worker.c:831
+#: ../daemon/gdm-session-worker.c:842
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Valitettavasti se ei toiminut. Yritä uudelleen."
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1074
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: ../daemon/gdm-session-worker.c:1250
+#: ../daemon/gdm-session-worker.c:1261
 msgid "Your password has expired, please change it now."
 msgstr "Salasanasi on vanhentunut, vaihda se nyt."
 
-#: ../daemon/gdm-session-worker.c:1489 ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
 #, c-format
 msgid "no user account available"
-msgstr "käyttäjätiliä ei ole saatavilla"
+msgstr "käyttäjätiliä ei ole käytettävissä"
 
-#: ../daemon/gdm-session-worker.c:1533
+#: ../daemon/gdm-session-worker.c:1544
 msgid "Unable to change to user"
 msgstr "Käyttäjää ei voitu vaihtaa"
 
-#: ../daemon/gdm-simple-slave.c:1527
+#: ../daemon/gdm-simple-slave.c:1531
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -190,17 +161,17 @@ msgstr ""
 "järjestelmälokia. Tämä näyttö poistetaan toistaiseksi käytöstä. Käynnistä "
 "GDM uudelleen, kun ongelma on korjattu."
 
-#: ../daemon/gdm-simple-slave.c:1568
+#: ../daemon/gdm-simple-slave.c:1572
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "On kutsuttavissa ainoastaan ennen käyttäjän sisäänkirjautumista"
 
-#: ../daemon/gdm-simple-slave.c:1578
+#: ../daemon/gdm-simple-slave.c:1582
 #, c-format
 msgid "Caller not GDM"
 msgstr "Kutsuja ei ole GDM"
 
-#: ../daemon/gdm-simple-slave.c:1631
+#: ../daemon/gdm-simple-slave.c:1635
 msgid "User not logged in"
 msgstr "Käyttäjä ei ole kirjautunut sisään"
 
@@ -219,15 +190,14 @@ msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID-tiedostoa %s ei voi kirjoittaa: levy on ehkä täynnä: %s"
 
 #: ../daemon/main.c:188
-#, fuzzy, c-format
-#| msgid "Unable to start new display"
+#, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr "Uuden näytön käynnistys epäonnistui"
+msgstr "Suoritettu kerran -merkitsinhakemiston %s luominen epäonnistui: %s"
 
 #: ../daemon/main.c:194
 #, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr ""
+msgstr "Lokihakemiston %s luominen epäonnistui: %s"
 
 #: ../daemon/main.c:229
 #, c-format
@@ -292,7 +262,7 @@ msgstr "Kirjautumisikkuna"
 
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
-msgstr "GNOME-kuori"
+msgstr "Gnome Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
@@ -307,8 +277,8 @@ msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"Kirjautumisruutu voi valinnaisesti sallia käyttäjien kirjautua sisään "
-"sormenjäljellään mikäli he ovat rekisteröineet sellaisen."
+"Kirjautumisruutu voi valinnaisesti sallia sormenjälkensä antaneiden "
+"käyttäjien kirjautua sisään sormenjäljellään."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
@@ -319,11 +289,10 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"Kirjautumisruutu voi valinnaisesti sallia käyttäjien kirjautua sisään "
-"älykorteilla mikäli heillä on sellainen."
+"Kirjautumisruutu voi valinnaisesti sallia älykortin haltijoiden kirjautua "
+"sisään älykortillaan."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
 msgstr "Sallitaanko salasanat sisäänkirjautumisessa"
 
@@ -346,22 +315,18 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"Kirjautumisruutu voi valinnaisesti näyttää pienen kuvan käyttäjäluettelon "
-"yläpuolella mahdollistaen paikan ylläpitäjille ja jakeluille keinon brändätä."
+"Kirjautumisruutu voi valinnaisesti näyttää käyttäjäluettelon yläpuolella "
+"pienen kuvan osana paikallisen ylläpitäjän tai jakelun brändäystä."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-#, fuzzy
-#| msgid ""
-#| "The login screen can optionally show a small image at the top of its user "
-#| "list to provide site administrators and distributions a way to provide "
-#| "branding."
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
-"Kirjautumisruutu voi valinnaisesti näyttää pienen kuvan käyttäjäluettelon "
-"yläpuolella mahdollistaen paikan ylläpitäjille ja jakeluille keinon brändätä."
+"Vikasietoinen kirjautumisruutu voi valinnaisesti näyttää käyttäjäluettelon "
+"yläpuolella pienen kuvan osana paikallisen ylläpitäjän tai jakelun "
+"brändäystä."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -399,7 +364,7 @@ msgstr "Älä näytä uudelleenkäynnistyspainikkeita"
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
-"Aseta todeksi, jos et halua näyttää uudelleenkäynnistysnappeja "
+"Aseta todeksi, jos et halua näyttää uudelleenkäynnistyspainikkeita "
 "kirjautumisikkunassa."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
@@ -415,10 +380,8 @@ msgstr ""
 "käyttäjävalintaan."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
-#, fuzzy
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
-msgstr "Uuden näytön käynnistys epäonnistui"
+msgstr "Tilapäisnäytön käynnistys epäonnistui:"
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
@@ -427,7 +390,7 @@ msgstr "Istunnon aktivointi epäonnistui: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
 #: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
+#: ../utils/gdmflexiserver.c:600
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Tämänhetkistä istuntoa ei voitu tunnistaa."
@@ -437,24 +400,24 @@ msgstr "Tämänhetkistä istuntoa ei voitu tunnistaa."
 msgid "User unable to switch sessions."
 msgstr "Käyttäjä ei voi vaihtaa istuntoja."
 
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, fuzzy, c-format
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:609
+#, c-format
 msgid "Could not identify the current seat."
-msgstr "Tämänhetkistä istuntoa ei voitu tunnistaa."
+msgstr "Tämänhetkistä istuinta ei voitu tunnistaa."
 
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:619
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr ""
-"Järjestelmä ei kykene päättää, pitäisikö vaihtaa olemassa olevaan "
+"Järjestelmä ei kykene päättämään, pitäisikö vaihtaa olemassa olevaan "
 "kirjautumisruutuun vai käynnistää uusi."
 
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:627
 #, c-format
 msgid "The system is unable to start up a new login screen."
-msgstr "Järjestelmä ei kykene käynnistää uutta kirjautumisruutua."
+msgstr "Järjestelmä ei kykene käynnistämään uutta kirjautumisruutua."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -466,7 +429,7 @@ msgstr "XDMCP: XDMCP-puskurin luonti epäonnistui!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP-otsakkeen luku epäonnistui!"
+msgstr "XDMCP: XDMCP-otsakkeen luku epäonnistui!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
 msgid "XDMCP: Incorrect XDMCP version!"
@@ -487,7 +450,7 @@ msgstr "KOMENTO"
 #: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
 #: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
 msgid "Ignored — retained for compatibility"
-msgstr "Ei huomioitu – jätetty tähän yhteensopivuuden vuoksi"
+msgstr "Ei huomioida – jätetty tähän yhteensopivuuden vuoksi"
 
 #: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -498,11 +461,11 @@ msgid "Version of this application"
 msgstr "Tämän ohjelman versio"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:693
 msgid "- New GDM login"
 msgstr "- uusi GDM-sisäänkirjautuminen"
 
-#: ../utils/gdmflexiserver.c:763
+#: ../utils/gdmflexiserver.c:749
 msgid "Unable to start new display"
 msgstr "Uuden näytön käynnistys epäonnistui"
 
@@ -514,6 +477,26 @@ msgstr "Kuvakaappaus otettu"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Kaappaa kuva näytöstä"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Käyttäjän %s UID-tunnisteen etsiminen epäonnistui"
+
+#~ msgid "no sessions available"
+#~ msgstr "ei istuntoja käytettävissä"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr ""
+#~ "Käyttäjälle %s ei ole istuntoja käytettävissä uudelleentunnistautumista "
+#~ "varten"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Käyttäjälle %s ei löydy istuntoa"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Käyttäjälle %s ei löydy soveltuvaa istuntoa"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Käyttäjä ei omista istuntoa"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr "virhe alustettaessa keskustelua todennusjärjestelmän kanssa - %s"
