@@ -1751,6 +1751,8 @@ start_conversation (GdmSession *self,
         conversation->job = gdm_session_worker_job_new ();
         gdm_session_worker_job_set_server_address (conversation->job,
                                                    g_dbus_server_get_client_address (self->priv->worker_server));
+        gdm_session_worker_job_set_for_reauth (conversation->job,
+                                               self->priv->verification_mode == GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE);
 
         if (self->priv->conversation_environment != NULL) {
                 gdm_session_worker_job_set_environment (conversation->job,
