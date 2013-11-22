@@ -45,27 +45,6 @@ gdm_make_temp_dir (char *template)
 }
 
 gboolean
-gdm_is_version_unstable (void)
-{
-        char   **versions;
-        gboolean unstable;
-
-        unstable = FALSE;
-
-        versions = g_strsplit (VERSION, ".", 3);
-        if (versions && versions [0] && versions [1]) {
-                int major;
-                major = atoi (versions [1]);
-                if ((major % 2) != 0) {
-                        unstable = TRUE;
-                }
-        }
-        g_strfreev (versions);
-
-        return unstable;
-}
-
-gboolean
 gdm_clear_close_on_exec_flag (int fd)
 {
         int flags;

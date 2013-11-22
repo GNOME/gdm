@@ -38,8 +38,6 @@
 
 G_BEGIN_DECLS
 
-gboolean       gdm_is_version_unstable            (void);
-
 int            gdm_wait_on_pid           (int pid);
 int            gdm_wait_on_and_disown_pid (int pid,
                                            int timeout);

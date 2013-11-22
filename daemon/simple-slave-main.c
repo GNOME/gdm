@@ -101,13 +101,7 @@ on_slave_stopped (GdmSlave   *slave,
 static gboolean
 is_debug_set (void)
 {
-        gboolean debug = FALSE;
-
-        /* enable debugging for unstable builds */
-        if (gdm_is_version_unstable ()) {
-                return TRUE;
-        }
-
+        gboolean debug;
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
         return debug;
 }
