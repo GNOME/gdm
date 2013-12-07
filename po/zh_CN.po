@@ -10,22 +10,23 @@
 # Lele Long <schemacs@gmail.com>, 2011.
 # Cheng Lu <chenglu1990@gmail.com>, 2012.
 # YunQiang Su <wzssyqa@gmail.com>, 2011, 2012, 2013.
+# tuhaihe <1132321739qq@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-20 16:01+0000\n"
-"PO-Revision-Date: 2013-04-06 18:20+0800\n"
-"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2013-11-12 19:30+0000\n"
+"PO-Revision-Date: 2013-11-30 22:31+0800\n"
+"Last-Translator: tuhaihe <1132321739qq@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.5\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../common/gdm-common.c:518
 #, c-format
@@ -35,49 +36,21 @@ msgstr "/dev/urandom 不是字符设备"
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "无法在系统中找到用户 \"%s\""
+msgstr "无法在系统中找到用户“%s”"
 
 #: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "尚无可用会话"
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "无法查询用户 %s 的 UID"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "无可用会话"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "没有 %s 的可用于重新验证的会话"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "无法找到用户 %s 的会话"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "无法找到适合用户 %s 的会话"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "用户未拥有会话"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:367 ../daemon/gdm-manager.c:412
 msgid "No session available"
 msgstr "无可用的会话"
 
 #: ../daemon/gdm-server.c:234
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s：无法连接到父显示“%s”"
+msgstr "%s：无法连接到父显示屏“%s”"
 
 #: ../daemon/gdm-server.c:413
 #, c-format
@@ -102,18 +75,18 @@ msgstr "无法将用户 ID 设置为 %d"
 #: ../daemon/gdm-server.c:483
 #, c-format
 msgid "%s: Could not open log file for display %s!"
-msgstr "%s：无法打开日志文件显示 %s！"
+msgstr "%s：无法打开显示屏 %s 的日志文件！"
 
 #: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
 #: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Error setting %s to %s"
-msgstr "%s：将 %s 设置为 %s 出错"
+msgstr "%s：将 %s 设为 %s 出错"
 
 #: ../daemon/gdm-server.c:526
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s：服务器优先级无法设定为 %d：%s"
+msgstr "%s：服务器优先级无法设为 %d：%s"
 
 #: ../daemon/gdm-server.c:682
 #, c-format
@@ -126,7 +99,7 @@ msgstr "用户名"
 
 #: ../daemon/gdm-session-auditor.c:91
 msgid "The username"
-msgstr "该用户名"
+msgstr "用户名"
 
 #: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
@@ -144,7 +117,7 @@ msgstr "显示设备"
 msgid "The display device"
 msgstr "显示设备"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1161
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
@@ -162,7 +135,7 @@ msgstr "用户名："
 
 #: ../daemon/gdm-session-worker.c:1261
 msgid "Your password has expired, please change it now."
-msgstr "你的密码已过期，请立即修改它。"
+msgstr "你的密码已过期，请立即修改。"
 
 #: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
 #, c-format
@@ -173,29 +146,29 @@ msgstr "无可用用户帐户"
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
-#: ../daemon/gdm-simple-slave.c:1527
+#: ../daemon/gdm-simple-slave.c:1531
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"由于一个内部错误无法启动 X 服务器(您的图形界面)。请与您的系统管理员联系或检查"
-"您的系统日志以便进行诊断。此时该显示将被禁用。请在问题更正以后重新启动 GDM。"
+"由于内部错误无法启动 X 服务器(您的图形界面)。请与系统管理员联系或检查系统日志"
+"以便进行诊断。在此期间该显示将被禁用。请在问题更正以后重新启动 GDM。"
 
-#: ../daemon/gdm-simple-slave.c:1568
+#: ../daemon/gdm-simple-slave.c:1572
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "只能在用户登录前被调用"
 
-#: ../daemon/gdm-simple-slave.c:1578
+#: ../daemon/gdm-simple-slave.c:1582
 #, c-format
 msgid "Caller not GDM"
 msgstr "调用者不是 GDM"
 
-#: ../daemon/gdm-simple-slave.c:1631
+#: ../daemon/gdm-simple-slave.c:1635
 msgid "User not logged in"
-msgstr "用户未已登录"
+msgstr "用户未登录"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
@@ -219,7 +192,7 @@ msgstr "无法创建单次运行标记目录 %s：%s"
 #: ../daemon/main.c:194
 #, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "闯将 LogDir 失败 %s: %s"
+msgstr "无法创建 LogDir %s: %s"
 
 #: ../daemon/main.c:229
 #, c-format
@@ -228,7 +201,7 @@ msgstr "找不到 GDM 用户“%s”。中止！"
 
 #: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
-msgstr "GDM 用户不能为 root 。中止！"
+msgstr "GDM 用户不能为 root。中止！"
 
 #: ../daemon/main.c:241
 #, c-format
@@ -241,11 +214,11 @@ msgstr "GDM 组不能为 root。中止！"
 
 #: ../daemon/main.c:327
 msgid "Make all warnings fatal"
-msgstr "置所有警告为致命错误"
+msgstr "设置所有警告为致命错误"
 
 #: ../daemon/main.c:328
 msgid "Exit after a time (for debugging)"
-msgstr "一段时间后退出 - 调试时使用"
+msgstr "一段时间后退出(用于调试)"
 
 #: ../daemon/main.c:329
 msgid "Print GDM version"
@@ -264,7 +237,7 @@ msgstr "只有 root 用户才能运行 GDM"
 #. of starting up a session
 #: ../daemon/session-worker-main.c:101
 msgid "GNOME Display Manager Session Worker"
-msgstr "GNOME 显示管理器会话工人进程"
+msgstr "GNOME 显示管理器会话工作进程"
 
 #: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
 msgid "Display ID"
@@ -298,7 +271,7 @@ msgstr "是否允许通过指纹阅读器登录"
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
-msgstr "此登录屏幕也可以允许已经登记了指纹的用户使用指纹登录。"
+msgstr "登录屏幕允许已登记指纹的用户使用指纹登录(可选)。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
@@ -308,19 +281,17 @@ msgstr "是否允许通过智能卡读卡器登录"
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
-msgstr "此登录屏幕也可以允许拥有智能卡的用户使用智能卡登录。"
+msgstr "登录屏幕允许拥有智能卡的用户使用智能卡登录(可选)。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#, fuzzy
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
-msgstr "是否允许通过智能卡读卡器登录"
+msgstr "是否允许通过密码登录"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
-msgstr "登录界面可以设置为不允许密码登录，强制用户使用智能卡或者指纹识别登录。"
+msgstr "登录屏幕可以设置为不允许密码登录，强制用户使用智能卡或者指纹识别登录。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -332,8 +303,8 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"此登录屏幕也可以在用户列表的顶部显示一个小图像，以为管理员和分发者提供标识的"
-"方法。"
+"登录屏幕可以在用户列表的顶部显示一个小图像，允许网站管理员和发行版本展示标识"
+"(可选)。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
@@ -341,8 +312,8 @@ msgid ""
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
-"备用模式登录屏幕也可以在用户列表的顶部显示一个小图像，为管理员和分发者提供添"
-"加标识的方法。"
+"备用模式登录屏幕可以在用户列表的顶部显示一个小图像，允许网站管理员和发行版本"
+"展示标识(可选)。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -372,11 +343,11 @@ msgstr "显示在登录窗口的文本横幅信息。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
-msgstr "禁止显示重启动按钮"
+msgstr "禁止显示重启按钮"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "设置为真将禁止在登录窗口中显示重启动按钮"
+msgstr "设置为 true，则禁止在登录窗口显示重启按钮。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
@@ -386,16 +357,16 @@ msgstr "允许的认证失败次数"
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
-msgstr "放弃并返回用户选择前，允许用户尝试认证的次数。"
+msgstr "放弃并返回用户选择界面前，允许某个用户尝试认证的次数。"
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
-msgstr "无法建立过渡显示："
+msgstr "无法创建过渡显示界面："
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
 msgid "Unable to activate session: "
-msgstr "无法使会话生效："
+msgstr "无法激活会话："
 
 #: ../gui/libgdm/gdm-user-switching.c:344
 #: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
@@ -474,7 +445,7 @@ msgstr "- 新 GDM 登录"
 
 #: ../utils/gdmflexiserver.c:749
 msgid "Unable to start new display"
-msgstr "无法启动新显示(display)"
+msgstr "无法启动新显示会话"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -483,7 +454,25 @@ msgstr "已经截屏"
 #. Option parsing
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
-msgstr "抓取屏幕的一张截图"
+msgstr "截取屏幕"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "无法查询用户 %s 的 UID"
+
+#~ msgid "no sessions available"
+#~ msgstr "无可用会话"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "没有 %s 的可用于重新验证的会话"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "无法找到用户 %s 的会话"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "无法找到适合用户 %s 的会话"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "用户未拥有会话"
 
 #~ msgid "Failed to create AuthDir %s: %s"
 #~ msgstr "闯将 AuthDir 失败 %s: %s"
