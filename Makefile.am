@@ -4,6 +4,7 @@ SUBDIRS = 			\
 	data			\
 	common 			\
 	daemon 			\
+	libgdm 			\
 	gui 			\
 	utils 			\
 	po 			\

@@ -1557,9 +1557,9 @@ Makefile
 daemon/Makefile
 docs/Makefile
 gui/Makefile
-gui/libgdm/Makefile
-gui/libgdm/gdm.pc
 gui/simple-chooser/Makefile
+libgdm/Makefile
+libgdm/gdm.pc
 utils/Makefile
 data/gdm.conf
 data/Makefile

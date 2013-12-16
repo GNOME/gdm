@@ -2,8 +2,8 @@ NULL =
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
-	-I$(top_srcdir)/gui/libgdm			\
-	-I$(top_builddir)/gui/libgdm			\
+	-I$(top_srcdir)/libgdm			\
+	-I$(top_builddir)/libgdm			\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
@@ -40,7 +40,7 @@ gdm_simple_chooser_SOURCES =  		\
 
 gdm_simple_chooser_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(top_builddir)/gui/libgdm/libgdm.la	\
+	$(top_builddir)/libgdm/libgdm.la	\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
