@@ -2240,10 +2240,32 @@ gdm_session_set_environment_variable (GdmSession *self,
 }
 
 static void
+set_up_session_language (GdmSession *self)
+{
+        char **environment;
+        int i;
+        const char *value;
+
+        environment = g_listenv ();
+        for (i = 0; environment[i] != NULL; i++) {
+                if (strcmp (environment[i], "LANG") != 0 &&
+                    strcmp (environment[i], "LANGUAGE") != 0 &&
+                    !g_str_has_prefix (environment[i], "LC_")) {
+                    continue;
+                }
+
+                value = g_getenv (environment[i]);
+
+                gdm_session_set_environment_variable (self,
+                                                      environment[i],
+                                                      value);
+        }
+        g_strfreev (environment);
+}
+
+static void
 setup_session_environment (GdmSession *self)
 {
-        const char *locale;
-
         gdm_session_set_environment_variable (self,
                                               "GDMSESSION",
                                               get_session_name (self));
@@ -2251,16 +2273,7 @@ setup_session_environment (GdmSession *self)
                                               "DESKTOP_SESSION",
                                               get_session_name (self));
 
-        locale = get_default_language_name (self);
-
-        if (locale != NULL && locale[0] != '\0') {
-                gdm_session_set_environment_variable (self,
-                                                      "LANG",
-                                                      locale);
-                gdm_session_set_environment_variable (self,
-                                                      "GDM_LANG",
-                                                      locale);
-        }
+        set_up_session_language (self);
 
         gdm_session_set_environment_variable (self,
                                               "DISPLAY",
