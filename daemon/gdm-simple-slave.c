@@ -1668,8 +1668,23 @@ gdm_simple_slave_stop (GdmSlave *slave)
         GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 
         if (self->priv->greeter_environment != NULL) {
-                stop_greeter (self);
-                self->priv->greeter_environment = NULL;
+                g_signal_handlers_disconnect_by_func (G_OBJECT (self->priv->greeter_environment),
+                                                      G_CALLBACK (on_greeter_environment_session_opened),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (G_OBJECT (self->priv->greeter_environment),
+                                                      G_CALLBACK (on_greeter_environment_session_started),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (G_OBJECT (self->priv->greeter_environment),
+                                                      G_CALLBACK (on_greeter_environment_session_stopped),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (G_OBJECT (self->priv->greeter_environment),
+                                                      G_CALLBACK (on_greeter_environment_session_exited),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (G_OBJECT (self->priv->greeter_environment),
+                                                      G_CALLBACK (on_greeter_environment_session_died),
+                                                      self);
+                gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (self->priv->greeter_environment));
+                g_clear_object (&self->priv->greeter_environment);
         }
 
         if (self->priv->start_session_id > 0) {
