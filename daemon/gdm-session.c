@@ -84,7 +84,6 @@ struct _GdmSessionPrivate
         char                *selected_program;
         char                *selected_session;
         char                *saved_session;
-        char                *selected_language;
         char                *saved_language;
         char                *selected_user;
         char                *user_x11_authority_file;
@@ -1240,20 +1239,6 @@ gdm_session_handle_client_select_session (GdmDBusGreeter         *greeter_interf
 }
 
 static gboolean
-gdm_session_handle_client_select_language (GdmDBusGreeter         *greeter_interface,
-                                           GDBusMethodInvocation  *invocation,
-                                           const char             *language,
-                                           GdmSession             *self)
-{
-        if (self->priv->greeter_interface != NULL) {
-                gdm_dbus_greeter_complete_select_language (greeter_interface,
-                                                           invocation);
-        }
-        gdm_session_select_language (self, language);
-        return TRUE;
-}
-
-static gboolean
 gdm_session_handle_client_select_user (GdmDBusGreeter        *greeter_interface,
                                        GDBusMethodInvocation *invocation,
                                        const char            *username,
@@ -1351,10 +1336,6 @@ export_greeter_interface (GdmSession      *self,
         g_signal_connect (greeter_interface,
                           "handle-select-session",
                           G_CALLBACK (gdm_session_handle_client_select_session),
-                          self);
-        g_signal_connect (greeter_interface,
-                          "handle-select-language",
-                          G_CALLBACK (gdm_session_handle_client_select_language),
                           self);
         g_signal_connect (greeter_interface,
                           "handle-select-user",
@@ -2215,16 +2196,6 @@ gdm_session_send_environment (GdmSession *self,
 }
 
 static const char *
-get_language_name (GdmSession *self)
-{
-        if (self->priv->selected_language != NULL) {
-                return self->priv->selected_language;
-        }
-
-        return get_default_language_name (self);
-}
-
-static const char *
 get_session_name (GdmSession *self)
 {
         /* FIXME: test the session names before we use them? */
@@ -2280,7 +2251,7 @@ setup_session_environment (GdmSession *self)
                                               "DESKTOP_SESSION",
                                               get_session_name (self));
 
-        locale = get_language_name (self);
+        locale = get_default_language_name (self);
 
         if (locale != NULL && locale[0] != '\0') {
                 gdm_session_set_environment_variable (self,
@@ -2495,9 +2466,6 @@ do_reset (GdmSession *self)
 
         g_free (self->priv->saved_session);
         self->priv->saved_session = NULL;
-
-        g_free (self->priv->selected_language);
-        self->priv->selected_language = NULL;
 
         g_free (self->priv->saved_language);
         self->priv->saved_language = NULL;
@@ -2755,33 +2723,6 @@ gdm_session_select_session (GdmSession *self,
         }
 }
 
-void
-gdm_session_select_language (GdmSession *self,
-                             const char *text)
-{
-        GHashTableIter iter;
-        gpointer key, value;
-
-        g_free (self->priv->selected_language);
-
-        if (strcmp (text, "__previous") == 0) {
-                self->priv->selected_language = NULL;
-        } else {
-                self->priv->selected_language = g_strdup (text);
-        }
-
-        g_hash_table_iter_init (&iter, self->priv->conversations);
-        while (g_hash_table_iter_next (&iter, &key, &value)) {
-                GdmSessionConversation *conversation;
-
-                conversation = (GdmSessionConversation *) value;
-
-                gdm_dbus_worker_call_set_language_name (conversation->worker_proxy,
-                                                        get_language_name (self),
-                                                        NULL, NULL, NULL);
-        }
-}
-
 /* At some point we may want to read these right from
  * the slave but for now I don't want the dependency */
 static void
@@ -3018,7 +2959,6 @@ gdm_session_finalize (GObject *object)
         g_free (self->priv->selected_user);
         g_free (self->priv->selected_session);
         g_free (self->priv->saved_session);
-        g_free (self->priv->selected_language);
         g_free (self->priv->saved_language);
 
         g_free (self->priv->fallback_session_name);

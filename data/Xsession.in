@@ -146,13 +146,6 @@ fi
 
 unset XKB_IN_USE
 
-# Overwrite $LANG from /etc/profile (and friends) with the one picked in the
-# greeter
-if [ -n "$GDM_LANG" ]; then
-  LANG="$GDM_LANG"
-  export LANG
-fi
-
 xhost +si:localuser:`id -un` || :
 
 # run all system xinitrc shell scripts.

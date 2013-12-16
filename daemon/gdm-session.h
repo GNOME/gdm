@@ -151,8 +151,6 @@ void              gdm_session_select_session_type         (GdmSession *session,
                                                            const char *session_type);
 void              gdm_session_select_session              (GdmSession *session,
                                                            const char *session_name);
-void              gdm_session_select_language             (GdmSession *session,
-                                                           const char *language);
 void              gdm_session_select_user                 (GdmSession *session,
                                                            const char *username);
 void              gdm_session_cancel                      (GdmSession *session);
