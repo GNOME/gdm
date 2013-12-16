@@ -2264,7 +2264,7 @@ set_up_session_language (GdmSession *self)
 }
 
 static void
-setup_session_environment (GdmSession *self)
+set_up_session_environment (GdmSession *self)
 {
         gdm_session_set_environment_variable (self,
                                               "GDMSESSION",
@@ -2438,7 +2438,7 @@ gdm_session_start_session (GdmSession *self,
                 program = g_strdup (self->priv->selected_program);
         }
 
-        setup_session_environment (self);
+        set_up_session_environment (self);
         send_environment (self, conversation);
 
         gdm_dbus_worker_call_start_program (conversation->worker_proxy,
