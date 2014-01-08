@@ -655,6 +655,7 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                  * to keep trying to read settings)
                  */
                 if (worker->priv->username != NULL &&
+                    worker->priv->username[0] != '\0' &&
                     !gdm_session_settings_is_loaded (worker->priv->user_settings)) {
                         attempt_to_load_user_settings (worker, worker->priv->username);
                 }
