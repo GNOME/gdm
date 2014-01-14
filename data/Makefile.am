@@ -43,6 +43,19 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
 @INTLTOOL_SCHEMAS_RULE@
 @INTLTOOL_XML_NOMERGE_RULE@
 
+# dconf database and profile
+dconf_db_files = \
+	dconf/defaults/00-upstream-settings		\
+	dconf/defaults/locks/00-upstream-settings-locks
+
+dconfdbdir = $(pkgdatadir)
+dconfdb_DATA = greeter-dconf-defaults
+greeter-dconf-defaults: $(dconf_db_files)
+	$(AM_V_GEN) dconf compile $@ $(srcdir)/dconf/defaults
+
+dconfprofiledir = $(DATADIR)/dconf/profile
+dconfprofile_DATA = dconf/gdm
+
 gsettings_SCHEMAS = org.gnome.login-screen.gschema.xml
 @GSETTINGS_RULES@
 
@@ -141,6 +154,7 @@ pam_files = $(pam_lfs_files)
 endif
 
 EXTRA_DIST +=			\
+	$(dconf_db_files)	\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
@@ -152,9 +166,6 @@ EXTRA_DIST +=			\
 	PreSession.in 		\
 	PostSession.in 		\
 	PostLogin 		\
-	dconf-profile \
-	00-upstream-settings \
-	00-upstream-settings-locks \
 	org.gnome.login-screen.gschema.xml.in \
 	$(NULL)
 
@@ -165,6 +176,7 @@ CLEANFILES = 				\
 	PreSession			\
 	PostSession			\
 	$(gsettings_SCHEMAS)		\
+	greeter-dconf-defaults		\
 	$(NULL)
 
 DISTCLEANFILES =			\
@@ -204,17 +216,10 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
-	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d \
 	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
 	$(DESTDIR)$(xauthdir) \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d
-
-	-rmdir \
-	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks \
-	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d \
-	$(DESTDIR)$(sysconfdir)/dconf/db \
-	$(DESTDIR)$(sysconfdir)/dconf
 
 	if test -n "$(systemdsystemunit)"; then \
 		rm -f $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR)/$(systemdsystemunit); \
@@ -222,7 +227,7 @@ uninstall-hook:
 	fi
 
 
-install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstream-settings 00-upstream-settings-locks $(systemdsystemunit)
+install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession $(systemdsystemunit)
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -327,38 +332,8 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstr
 		chown gdm:gdm $(DESTDIR)$(workingdir)/.local/share/applications || : ; \
 	fi
 
-	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/profile; then \
-		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/profile; \
-		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/profile; \
-		chown root:root $(DESTDIR)$(sysconfdir)/dconf/profile || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/db; then \
-		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db; \
-		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db; \
-		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d; then \
-		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d; \
-		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d; \
-		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks; then \
-		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks; \
-		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks; \
-		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks || : ; \
-	fi
-
 	if test '!' -d $(DESTDIR)$(cachedir); then \
 		$(mkinstalldirs) $(DESTDIR)$(cachedir); \
 		chmod 1755 $(DESTDIR)$(cachedir); \
 		chown root:gdm $(DESTDIR)$(cachedir) || : ; \
 	fi
-
-	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
-	$(INSTALL_DATA) $(srcdir)/00-upstream-settings $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d
-	$(INSTALL_DATA) $(srcdir)/00-upstream-settings-locks $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks
-	test -z "$(DESTDIR)" && dconf update || :
-
