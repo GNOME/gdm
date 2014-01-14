@@ -11,7 +11,6 @@ initdir = $(gdmconfdir)/Init
 postdir = $(gdmconfdir)/PostSession
 predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
-workingdir = $(GDM_WORKING_DIR)
 xauthdir = $(GDM_XAUTH_DIR)
 screenshotdir = $(GDM_SCREENSHOT_DIR)
 cachedir = $(localstatedir)/cache/gdm
@@ -215,7 +214,6 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
-	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
 	$(DESTDIR)$(xauthdir) \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d
@@ -311,24 +309,6 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession $(system
 		$(mkinstalldirs) $(DESTDIR)$(screenshotdir); \
 		chmod 0755 $(DESTDIR)$(screenshotdir); \
 		chown gdm:gdm $(DESTDIR)$(screenshotdir) || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(workingdir); then \
-		$(mkinstalldirs) $(DESTDIR)$(workingdir); \
-		chmod 1770 $(DESTDIR)$(workingdir); \
-		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(workingdir)/.config/dconf; then \
-		$(mkinstalldirs) $(DESTDIR)$(workingdir)/.config/dconf; \
-		chmod 0755 $(DESTDIR)$(workingdir)/.config/dconf; \
-		chown gdm:gdm $(DESTDIR)$(workingdir)/.config/dconf || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(workingdir)/.local/share/applications; then \
-		$(mkinstalldirs) $(DESTDIR)$(workingdir)/.local/share/applications; \
-		chmod 0755 $(DESTDIR)$(workingdir)/.local/share/applications; \
-		chown gdm:gdm $(DESTDIR)$(workingdir)/.local/share/applications || : ; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(cachedir); then \
