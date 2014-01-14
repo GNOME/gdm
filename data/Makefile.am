@@ -216,7 +216,6 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
-	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
 	$(DESTDIR)$(xauthdir) \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d
@@ -318,12 +317,6 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession $(system
 		$(mkinstalldirs) $(DESTDIR)$(workingdir); \
 		chmod 1770 $(DESTDIR)$(workingdir); \
 		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(workingdir)/.config/dconf; then \
-		$(mkinstalldirs) $(DESTDIR)$(workingdir)/.config/dconf; \
-		chmod 0755 $(DESTDIR)$(workingdir)/.config/dconf; \
-		chown gdm:gdm $(DESTDIR)$(workingdir)/.config/dconf || : ; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(workingdir)/.local/share/applications; then \
