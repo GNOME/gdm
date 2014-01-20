@@ -22,6 +22,7 @@
 #define __GDM_SESSION_H
 
 #include <glib-object.h>
+#include <sys/types.h>
 
 G_BEGIN_DECLS
 

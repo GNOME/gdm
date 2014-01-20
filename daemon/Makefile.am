@@ -289,6 +289,7 @@ gdm_session_worker_LDADD = 			\
 	$(SYSTEMD_LIBS) 			\
 	$(JOURNALD_LIBS) 			\
 	$(LIBSELINUX_LIBS) 			\
+	$(EXTRA_DAEMON_LIBS)			\
 	$(NULL)
 
 sbin_PROGRAMS = 			\
