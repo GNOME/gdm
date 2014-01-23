@@ -43,6 +43,14 @@
 #include <linux/vt.h>
 #endif
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
+#ifdef ENABLE_SYSTEMD_JOURNAL
+#include <systemd/sd-journal.h>
+#endif
+
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
@@ -243,6 +251,7 @@ gdm_server_init_command (GdmServer *server)
 {
         gboolean debug = FALSE;
         const char *debug_options;
+        const char *verbosity = "";
 
         if (server->priv->command != NULL) {
                 return;
@@ -275,6 +284,15 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
+#ifdef ENABLE_SYSTEMD_JOURNAL
+        /* For systemd, we don't have a log file but instead log to stdout,
+           so set it to the xserver's built-in default verbosity */
+        if (debug)
+            verbosity = "7 -logfile /dev/null";
+        else
+            verbosity = "3 -logfile /dev/null";
+#endif
+
         if (g_access (SYSTEMD_X_SERVER, X_OK) < 0) {
                 goto fallback;
         }
@@ -284,13 +302,13 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
-        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -background none -verbose%s", debug_options);
+        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -background none -verbose %s%s", verbosity, debug_options);
         return;
 
 fallback:
 #endif
 
-        server->priv->command = g_strdup_printf (X_SERVER " -background none -verbose%s", debug_options);
+        server->priv->command = g_strdup_printf (X_SERVER " -background none -verbose %s%s", verbosity, debug_options);
 }
 
 static gboolean
@@ -451,12 +469,44 @@ change_user (GdmServer *server)
         }
 }
 
+static gboolean
+gdm_server_setup_journal_fds (GdmServer *server)
+{
+#ifdef ENABLE_SYSTEMD_JOURNAL
+    if (sd_booted () > 0) {
+        int out, err;
+        const char *prefix = "gdm-Xorg-";
+        char *identifier;
+        gsize size;
+
+        size = strlen (prefix) + strlen (server->priv->display_name) + 1;
+        identifier = g_alloca (size);
+        strcpy (identifier, prefix);
+        strcat (identifier, server->priv->display_name);
+        identifier[size - 1] = '\0';
+
+        out = sd_journal_stream_fd (identifier, LOG_INFO, FALSE);
+        if (out < 0)
+            return FALSE;
+
+        err = sd_journal_stream_fd (identifier, LOG_WARNING, FALSE);
+        if (err < 0) {
+            close (out);
+            return FALSE;
+        }
+
+        VE_IGNORE_EINTR (dup2 (out, 1));
+        VE_IGNORE_EINTR (dup2 (err, 2));
+        return TRUE;
+    }
+    return FALSE;
+#endif
+}
+
 static void
-server_child_setup (GdmServer *server)
+gdm_server_setup_logfile (GdmServer *server)
 {
         int              logfd;
-        struct sigaction ign_signal;
-        sigset_t         mask;
         char            *log_file;
         char            *log_path;
 
@@ -467,7 +517,6 @@ server_child_setup (GdmServer *server)
         /* Rotate the X server logs */
         rotate_logs (log_path, MAX_LOGS);
 
-        /* Log all output from spawned programs to a file */
         g_debug ("GdmServer: Opening logfile for server %s", log_path);
 
         VE_IGNORE_EINTR (g_unlink (log_path));
@@ -484,6 +533,16 @@ server_child_setup (GdmServer *server)
                            "gdm_server_spawn",
                            server->priv->display_name);
         }
+}
+
+static void
+server_child_setup (GdmServer *server)
+{
+        struct sigaction ign_signal;
+        sigset_t         mask;
+
+        if (!gdm_server_setup_journal_fds(server))
+            gdm_server_setup_logfile(server);
 
         /* The X server expects USR1/TTIN/TTOU to be SIG_IGN */
         ign_signal.sa_handler = SIG_IGN;
