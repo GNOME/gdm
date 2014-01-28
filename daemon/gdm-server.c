@@ -499,8 +499,8 @@ gdm_server_setup_journal_fds (GdmServer *server)
         VE_IGNORE_EINTR (dup2 (err, 2));
         return TRUE;
     }
-    return FALSE;
 #endif
+    return FALSE;
 }
 
 static void
