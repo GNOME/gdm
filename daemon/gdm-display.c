@@ -225,7 +225,14 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
         gboolean              res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-        g_return_val_if_fail (display->priv->access_file != NULL, FALSE);
+
+        if (display->priv->user_access_file != NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             "user access already assigned");
+                return FALSE;
+        }
 
         g_debug ("GdmDisplay: Adding user authorization for %s", username);
 
