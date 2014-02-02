@@ -294,14 +294,14 @@ gdm_display_real_set_slave_bus_name_finish (GObject      *source_object,
                                             GAsyncResult *res,
                                             gpointer      user_data)
 {
-    GdmDisplay *display = user_data;
+        GdmDisplay *display = user_data;
 
-    display->priv->slave_bus_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_finish (res, NULL));
-    g_object_bind_property (G_OBJECT (display->priv->slave_bus_proxy),
-                            "session-id",
-                            G_OBJECT (display),
-                            "session-id",
-                            G_BINDING_DEFAULT);
+        display->priv->slave_bus_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_finish (res, NULL));
+        g_object_bind_property (G_OBJECT (display->priv->slave_bus_proxy),
+                                "session-id",
+                                G_OBJECT (display),
+                                "session-id",
+                                G_BINDING_DEFAULT);
 }
 
 static gboolean
