@@ -676,6 +676,11 @@ gdm_slave_real_start (GdmSlave *slave)
 
         g_assert (slave->priv->display_proxy == NULL);
 
+        if (! g_variant_is_object_path (slave->priv->display_id)) {
+                g_warning ("Display ID isn't valid");
+                return FALSE;
+        }
+
         g_debug ("GdmSlave: Creating proxy for %s", slave->priv->display_id);
         error = NULL;
         slave->priv->display_proxy = GDM_DBUS_DISPLAY (gdm_dbus_display_proxy_new_sync (slave->priv->connection,
