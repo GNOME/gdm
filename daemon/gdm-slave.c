@@ -666,7 +666,7 @@ static gboolean
 gdm_slave_real_start (GdmSlave *slave)
 {
         gboolean    res;
-        char       *id;
+        char       *id = NULL;
         GError     *error;
         GVariant   *x11_cookie;
         const char *x11_cookie_bytes;
@@ -696,7 +696,7 @@ gdm_slave_real_start (GdmSlave *slave)
                                                  &id,
                                                  NULL,
                                                  &error);
-        if (! res) {
+        if (! res || !id) {
                 g_warning ("Failed to get display ID %s: %s", slave->priv->display_id, error->message);
                 g_error_free (error);
                 return FALSE;
@@ -705,8 +705,8 @@ gdm_slave_real_start (GdmSlave *slave)
         g_debug ("GdmSlave: Got display ID: %s", id);
 
         if (strcmp (id, slave->priv->display_id) != 0) {
-                g_critical ("Display ID doesn't match");
-                exit (1);
+                g_warning ("Display ID doesn't match");
+                return FALSE;
         }
 
         gdm_slave_set_slave_bus_name (slave);
