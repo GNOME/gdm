@@ -720,10 +720,6 @@ main (int argc, char *argv[])
                 return 0;
         }
 
-        if (args_remaining != NULL && args_remaining[0] != NULL) {
-
-        }
-
         if (use_xnest) {
                 g_warning ("Not yet implemented");
                 return 1;
