@@ -1696,72 +1696,11 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
 }
 
 static void
-_gdm_slave_set_session_id (GdmSlave   *slave,
-                           const char *id)
-{
-        g_free (slave->priv->session_id);
-        slave->priv->session_id = g_strdup (id);
-}
-
-static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
                            const char *id)
 {
         g_free (slave->priv->display_id);
         slave->priv->display_id = g_strdup (id);
-}
-
-static void
-_gdm_slave_set_display_name (GdmSlave   *slave,
-                             const char *name)
-{
-        g_free (slave->priv->display_name);
-        slave->priv->display_name = g_strdup (name);
-}
-
-static void
-_gdm_slave_set_display_number (GdmSlave   *slave,
-                               int         number)
-{
-        slave->priv->display_number = number;
-}
-
-static void
-_gdm_slave_set_display_hostname (GdmSlave   *slave,
-                                 const char *name)
-{
-        g_free (slave->priv->display_hostname);
-        slave->priv->display_hostname = g_strdup (name);
-}
-
-static void
-_gdm_slave_set_display_x11_authority_file (GdmSlave   *slave,
-                                           const char *name)
-{
-        g_free (slave->priv->display_x11_authority_file);
-        slave->priv->display_x11_authority_file = g_strdup (name);
-}
-
-static void
-_gdm_slave_set_display_seat_id (GdmSlave   *slave,
-                                const char *id)
-{
-        g_free (slave->priv->display_seat_id);
-        slave->priv->display_seat_id = g_strdup (id);
-}
-
-static void
-_gdm_slave_set_display_is_local (GdmSlave   *slave,
-                                 gboolean    is)
-{
-        slave->priv->display_is_local = is;
-}
-
-static void
-_gdm_slave_set_display_is_initial (GdmSlave   *slave,
-                                   gboolean    is)
-{
-        slave->priv->display_is_initial = is;
 }
 
 static void
@@ -1775,32 +1714,8 @@ gdm_slave_set_property (GObject      *object,
         self = GDM_SLAVE (object);
 
         switch (prop_id) {
-        case PROP_SESSION_ID:
-                _gdm_slave_set_session_id (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_ID:
                 _gdm_slave_set_display_id (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_NAME:
-                _gdm_slave_set_display_name (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_NUMBER:
-                _gdm_slave_set_display_number (self, g_value_get_int (value));
-                break;
-        case PROP_DISPLAY_HOSTNAME:
-                _gdm_slave_set_display_hostname (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_SEAT_ID:
-                _gdm_slave_set_display_seat_id (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_X11_AUTHORITY_FILE:
-                _gdm_slave_set_display_x11_authority_file (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_IS_LOCAL:
-                _gdm_slave_set_display_is_local (self, g_value_get_boolean (value));
-                break;
-        case PROP_DISPLAY_IS_INITIAL:
-                _gdm_slave_set_display_is_initial (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2026,7 +1941,7 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                               "Session id",
                                                               "ID of session",
                                                               NULL,
-                                                              G_PARAM_READWRITE));
+                                                              G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_ID,
                                          g_param_spec_string ("display-id",
@@ -2040,7 +1955,7 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                               "display name",
                                                               "display name",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NUMBER,
                                          g_param_spec_int ("display-number",
@@ -2049,42 +1964,42 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                            -1,
                                                            G_MAXINT,
                                                            -1,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                           G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
                                                               "display hostname",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("display-seat-id",
                                                               "",
                                                               "",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("display-x11-authority-file",
                                                               "",
                                                               "",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("display-is-local",
                                                                "display is local",
                                                                "display is local",
                                                                TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                               G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_INITIAL,
                                          g_param_spec_boolean ("display-is-initial",
                                                                NULL,
                                                                NULL,
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                               G_PARAM_READABLE));
 
         signals [STOPPED] =
                 g_signal_new ("stopped",
