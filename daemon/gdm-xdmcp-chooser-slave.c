@@ -184,7 +184,6 @@ create_chooser_session (const char *display_name,
 static void
 run_chooser (GdmXdmcpChooserSlave *slave)
 {
-        char          *display_id;
         char          *display_name;
         char          *display_device;
         char          *display_hostname;
@@ -194,14 +193,12 @@ run_chooser (GdmXdmcpChooserSlave *slave)
 
         g_debug ("GdmXdmcpChooserSlave: Running chooser");
 
-        display_id = NULL;
         display_name = NULL;
         auth_file = NULL;
         display_device = NULL;
         display_hostname = NULL;
 
         g_object_get (slave,
-                      "display-id", &display_id,
                       "display-name", &display_name,
                       "display-hostname", &display_hostname,
                       "display-x11-authority-file", &auth_file,
@@ -271,7 +268,6 @@ run_chooser (GdmXdmcpChooserSlave *slave)
                           "client-connected",
                           G_CALLBACK (on_chooser_connected),
                           slave);
-        g_free (display_id);
         g_free (display_name);
         g_free (display_device);
         g_free (display_hostname);
