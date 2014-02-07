@@ -2272,6 +2272,9 @@ set_up_session_environment (GdmSession *self)
         gdm_session_set_environment_variable (self,
                                               "DESKTOP_SESSION",
                                               get_session_name (self));
+        gdm_session_set_environment_variable (self,
+                                              "XDG_SESSION_DESKTOP",
+                                              get_session_name (self));
 
         set_up_session_language (self);
 
