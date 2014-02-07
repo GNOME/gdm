@@ -1638,12 +1638,6 @@ gdm_display_finalize (GObject *object)
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
 }
 
-GDBusConnection *
-gdm_display_get_bus_connection (GdmDisplay *display)
-{
-        return display->priv->connection;
-}
-
 GDBusObjectSkeleton *
 gdm_display_get_object_skeleton (GdmDisplay *display)
 {

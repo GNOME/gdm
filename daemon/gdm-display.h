@@ -109,7 +109,6 @@ gboolean            gdm_display_manage                         (GdmDisplay *disp
 gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);
 
-GDBusConnection    *gdm_display_get_bus_connection             (GdmDisplay *display);
 GDBusObjectSkeleton *gdm_display_get_object_skeleton           (GdmDisplay *display);
 
 /* exported to bus */
