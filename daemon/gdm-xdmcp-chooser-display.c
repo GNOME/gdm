@@ -121,16 +121,6 @@ gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
         return GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->set_slave_bus_name (display, name, error);
 }
 
-static gboolean
-gdm_xdmcp_chooser_display_manage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->manage (display);
-
-        return TRUE;
-}
-
 static GObject *
 gdm_xdmcp_chooser_display_constructor (GType                  type,
                                        guint                  n_construct_properties,
@@ -159,7 +149,6 @@ gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
         object_class->constructor = gdm_xdmcp_chooser_display_constructor;
         object_class->finalize = gdm_xdmcp_chooser_display_finalize;
 
-        display_class->manage = gdm_xdmcp_chooser_display_manage;
         display_class->set_slave_bus_name = gdm_xdmcp_chooser_display_set_slave_bus_name;
         display_class->finish = gdm_xdmcp_chooser_display_finish;
 
