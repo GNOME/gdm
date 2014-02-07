@@ -36,7 +36,6 @@ BUILT_SOURCES =					\
 	gdm-slave-glue.h			\
 	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-display-glue.h			\
-	gdm-xdmcp-display-glue.h		\
 	gdm-manager-glue.h			\
 	gdm-static-display-glue.h		\
 	gdm-transient-display-glue.h		\
@@ -58,13 +57,6 @@ gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
 		--interface-prefix=org.gnome.DisplayManager		\
 		--generate-c-code=gdm-display-glue			\
 		$(srcdir)/gdm-display.xml
-
-gdm-xdmcp-display-glue.c gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
-	$(AM_V_GEN)gdbus-codegen 					\
-		--c-namespace=GdmDBus					\
-		--interface-prefix=org.gnome.DisplayManager		\
-		--generate-c-code=gdm-xdmcp-display-glue		\
-		$(srcdir)/gdm-xdmcp-display.xml
 
 gdm-transient-display-glue.c gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -354,8 +346,6 @@ XDMCP_SOURCES =				\
 	$(NULL)
 
 XDMCP_nodist_SOURCES = 			\
-	gdm-xdmcp-display-glue.c	\
-	gdm-xdmcp-display-glue.h	\
 	gdm-xdmcp-chooser-slave-glue.c	\
 	gdm-xdmcp-chooser-slave-glue.h	\
 	$(NULL)
@@ -405,7 +395,6 @@ CLEANFILES =					\
 	gdm-static-display-glue.c		\
 	gdm-transient-display-glue.c		\
 	gdm-xdmcp-chooser-slave-glue.c		\
-	gdm-xdmcp-display-glue.c		\
 	$(BUILT_SOURCES)			\
 	$(NULL)
 
@@ -416,7 +405,6 @@ EXTRA_DIST = 				\
 	gdm-slave.xml			\
 	gdm-xdmcp-chooser-slave.xml	\
 	gdm-display.xml			\
-	gdm-xdmcp-display.xml		\
 	gdm-static-display.xml		\
 	gdm-transient-display.xml	\
 	gdm-local-display-factory.xml	\

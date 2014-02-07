@@ -37,7 +37,6 @@
 
 #include "gdm-display.h"
 #include "gdm-xdmcp-chooser-display.h"
-#include "gdm-xdmcp-display-glue.h"
 #include "gdm-xdmcp-chooser-slave-glue.h"
 
 #include "gdm-common.h"
@@ -52,7 +51,6 @@
 
 struct GdmXdmcpChooserDisplayPrivate
 {
-        GdmDBusXdmcpDisplay      *skeleton;
         GdmDBusXdmcpChooserSlave *slave_proxy;
 };
 
@@ -121,32 +119,12 @@ gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
         return GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->set_slave_bus_name (display, name, error);
 }
 
-static GObject *
-gdm_xdmcp_chooser_display_constructor (GType                  type,
-                                       guint                  n_construct_properties,
-                                       GObjectConstructParam *construct_properties)
-{
-        GdmXdmcpChooserDisplay      *display;
-
-        display = GDM_XDMCP_CHOOSER_DISPLAY (G_OBJECT_CLASS (gdm_xdmcp_chooser_display_parent_class)->constructor (type,
-                                                                                                           n_construct_properties,
-                                                                                                           construct_properties));
-
-        display->priv->skeleton = GDM_DBUS_XDMCP_DISPLAY (gdm_dbus_xdmcp_display_skeleton_new ());
-
-        g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
-                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
-
-        return G_OBJECT (display);
-}
-
 static void
 gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
-        object_class->constructor = gdm_xdmcp_chooser_display_constructor;
         object_class->finalize = gdm_xdmcp_chooser_display_finalize;
 
         display_class->set_slave_bus_name = gdm_xdmcp_chooser_display_set_slave_bus_name;
@@ -187,7 +165,6 @@ gdm_xdmcp_chooser_display_finalize (GObject *object)
         g_return_if_fail (chooser_display->priv != NULL);
 
         g_clear_object (&chooser_display->priv->slave_proxy);
-        g_clear_object (&chooser_display->priv->skeleton);
 
         G_OBJECT_CLASS (gdm_xdmcp_chooser_display_parent_class)->finalize (object);
 }
