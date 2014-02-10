@@ -41,9 +41,9 @@ _gdm_profile_log (const char *func,
                   ...)
 {
         va_list args;
-        char   *str;
-        char   *formatted;
-        char   *prgname;
+        char *str;
+        char *formatted;
+        const char *prgname;
 
         if (format == NULL) {
                 formatted = g_strdup ("");
