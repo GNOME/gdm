@@ -2691,6 +2691,12 @@ out:
         return bypasses_xsession;
 }
 
+gboolean
+gdm_session_has_own_display_server (GdmSession *self)
+{
+        return FALSE;
+}
+
 void
 gdm_session_select_program (GdmSession *self,
                             const char *text)

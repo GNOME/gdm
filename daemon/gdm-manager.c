@@ -870,7 +870,25 @@ on_start_user_session (StartUserSessionOperation *operation)
         }
 
         display = get_display_for_user_session (operation->session);
-        gdm_display_stop_greeter_session (display);
+
+        if (gdm_session_has_own_display_server (operation->session)) {
+                uid_t allowed_uid;
+
+                g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
+
+                /* The seed session is going to follow the session worker
+                 * into the new display. Untie it from this display and
+                 * create a new seed session for us. */
+                allowed_uid = gdm_session_get_allowed_user (operation->session);
+                g_object_set_data (G_OBJECT (display), "gdm-seed-session", NULL);
+                g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
+                create_seed_session_for_display (operation->manager, display, allowed_uid);
+        } else {
+                /* In this case, the greeter's display is morphing into
+                 * the user session display. Kill the greeter on this session
+                 * and let the seed session follow the same display. */
+                gdm_display_stop_greeter_session (display);
+        }
 
         start_user_session (operation->manager, operation);
 

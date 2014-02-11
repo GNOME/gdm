@@ -111,6 +111,7 @@ const char       *gdm_session_get_display_device          (GdmSession     *sessi
 const char       *gdm_session_get_display_seat_id         (GdmSession     *session);
 const char       *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
+gboolean          gdm_session_has_own_display_server      (GdmSession     *session);
 
 void              gdm_session_start_conversation          (GdmSession *session,
                                                            const char *service_name);
