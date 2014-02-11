@@ -73,8 +73,6 @@
 
 #define GDM_SLAVE_PATH "/org/gnome/DisplayManager/Slave"
 
-#define MAX_CONNECT_ATTEMPTS 10
-
 struct GdmSlavePrivate
 {
         GPid             pid;
