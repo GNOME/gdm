@@ -361,8 +361,8 @@ get_system_session_dirs (void)
         static const char *search_dirs[] = {
                 "/etc/X11/sessions/",
                 DMCONFDIR "/Sessions/",
-                DATADIR "/xsessions/",
                 DATADIR "/gdm/BuiltInSessions/",
+                DATADIR "/xsessions/",
                 NULL
         };
 
