@@ -381,6 +381,34 @@ is_prog_in_path (const char *prog)
         return ret;
 }
 
+static GKeyFile *
+load_key_file_for_file (const char *file)
+{
+        GKeyFile   *key_file;
+        GError     *error;
+        gboolean    res;
+
+        key_file = g_key_file_new ();
+
+        g_debug ("GdmSession: looking for session file '%s'", file);
+
+        error = NULL;
+        res = g_key_file_load_from_dirs (key_file,
+                                         file,
+                                         get_system_session_dirs (),
+                                         NULL,
+                                         G_KEY_FILE_NONE,
+                                         &error);
+        if (! res) {
+                g_debug ("GdmSession: File '%s' not found: %s", file, error->message);
+                g_error_free (error);
+                g_key_file_free (key_file);
+                key_file = NULL;
+        }
+
+        return key_file;
+}
+
 static gboolean
 get_session_command_for_file (const char *file,
                               char      **command)
@@ -397,23 +425,8 @@ get_session_command_for_file (const char *file,
                 *command = NULL;
         }
 
-        key_file = g_key_file_new ();
-
-        g_debug ("GdmSession: looking for session file '%s'", file);
-
-        error = NULL;
-        res = g_key_file_load_from_dirs (key_file,
-                                         file,
-                                         get_system_session_dirs (),
-                                         NULL,
-                                         G_KEY_FILE_NONE,
-                                         &error);
-        if (! res) {
-                g_debug ("GdmSession: File '%s' not found: %s", file, error->message);
-                g_error_free (error);
-                if (command != NULL) {
-                        *command = NULL;
-                }
+        key_file = load_key_file_for_file (file);
+        if (key_file == NULL) {
                 goto out;
         }
 
@@ -2649,18 +2662,7 @@ gdm_session_bypasses_xsession (GdmSession *self)
 
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
 
-        key_file = g_key_file_new ();
-        error = NULL;
-        res = g_key_file_load_from_dirs (key_file,
-                                         filename,
-                                         get_system_session_dirs (),
-                                         NULL,
-                                         G_KEY_FILE_NONE,
-                                         &error);
-        if (! res) {
-                g_debug ("GdmSession: File '%s' not found: %s", filename, error->message);
-                goto out;
-        }
+        key_file = load_key_file_for_file (filename);
 
         error = NULL;
         res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", NULL);
