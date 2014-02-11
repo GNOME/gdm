@@ -363,6 +363,7 @@ get_system_session_dirs (void)
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
+                DATADIR "/wayland-sessions/",
                 NULL
         };
 

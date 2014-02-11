@@ -193,6 +193,7 @@ collect_sessions (void)
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
+                DATADIR "/wayland-sessions/",
                 NULL
         };
 
