@@ -282,6 +282,95 @@ lookup_by_session_id (const char *id,
         return g_strcmp0 (current, looking_for) == 0;
 }
 
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+is_consolekit_login_session (GdmManager       *self,
+                             GDBusConnection  *connection,
+                             const char       *session_id,
+                             GError          **error)
+{
+        GVariant *reply;
+        char *session_type = NULL;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             session_id,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "GetSessionType",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(s)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             error);
+        if (reply == NULL) {
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(s)", &session_type);
+        g_variant_unref (reply);
+
+        if (g_strcmp0 (session_type, "LoginWindow") != 0) {
+                g_free (session_type);
+
+                return FALSE;
+        }
+
+        g_free (session_type);
+        return TRUE;
+}
+#endif
+
+#ifdef WITH_SYSTEMD
+static gboolean
+is_systemd_login_session (GdmManager  *self,
+                          const char  *session_id,
+                          GError     **error)
+{
+        char *session_class = NULL;
+        int ret;
+
+        ret = sd_session_get_class (session_id, &session_class);
+
+        if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting class for session id %s from systemd: %s",
+                             session_id,
+                             g_strerror (-ret));
+                return FALSE;
+        }
+
+        if (g_strcmp0 (session_class, "greeter") != 0) {
+                g_free (session_class);
+                return FALSE;
+        }
+
+        g_free (session_class);
+        return TRUE;
+}
+#endif
+
+static gboolean
+is_login_session (GdmManager       *self,
+                  GDBusConnection  *connection,
+                  const char       *session_id,
+                  GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                return is_systemd_login_session (self, session_id, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return is_consolekit_login_session (self, connection, session_id, error);
+#endif
+
+        return FALSE;
+}
+
 #ifdef WITH_SYSTEMD
 static gboolean
 activate_session_id_for_systemd (GdmManager   *manager,
@@ -486,7 +575,8 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                                         GDBusConnection  *connection,
                                         const char       *sender,
                                         GPid             *out_pid,
-                                        uid_t            *out_uid)
+                                        uid_t            *out_uid,
+                                        gboolean         *out_is_login_screen)
 {
         GdmDisplay *display = NULL;
         char       *session_id = NULL;
@@ -520,6 +610,17 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                          error->message);
                 g_error_free (error);
                 goto out;
+        }
+
+        if (out_is_login_screen != NULL) {
+                *out_is_login_screen = is_login_session (self, connection, session_id, &error);
+
+                if (error != NULL) {
+                        g_debug ("GdmManager: Error while checking if sender is login screen: %s",
+                                 error->message);
+                        g_error_free (error);
+                        goto out;
+                }
         }
 
         if (!get_uid_for_session_id (connection, session_id, &session_uid, &error)) {
@@ -631,7 +732,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        display = get_display_and_details_for_bus_sender (self, connection, sender, &pid, &uid);
+        display = get_display_and_details_for_bus_sender (self, connection, sender, &pid, &uid, NULL);
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -686,12 +787,21 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         GDBusConnection  *connection;
         GPid              pid;
         uid_t             uid;
+        gboolean          is_login_screen = FALSE;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        display = get_display_and_details_for_bus_sender (self, connection, sender, &pid, &uid);
+        display = get_display_and_details_for_bus_sender (self, connection, sender, &pid, &uid, &is_login_screen);
+
+        if (is_login_screen) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Login screen not allow to open reauthentication channel");
+                return TRUE;
+        }
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
