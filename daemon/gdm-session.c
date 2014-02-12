@@ -2734,6 +2734,7 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
+        GdmSessionDisplayMode mode;
 
         g_free (self->priv->selected_session);
 
@@ -2742,6 +2743,8 @@ gdm_session_select_session (GdmSession *self,
         } else {
                 self->priv->selected_session = g_strdup (text);
         }
+
+        mode = gdm_session_get_display_mode (self);
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -2752,6 +2755,9 @@ gdm_session_select_session (GdmSession *self,
                 gdm_dbus_worker_call_set_session_name (conversation->worker_proxy,
                                                        get_session_name (self),
                                                        NULL, NULL, NULL);
+                gdm_dbus_worker_call_set_session_display_mode (conversation->worker_proxy,
+                                                               gdm_session_display_mode_to_string (mode),
+                                                               NULL, NULL, NULL);
         }
 }
 
@@ -3326,4 +3332,36 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
                              NULL);
 
         return self;
+}
+
+GdmSessionDisplayMode
+gdm_session_display_mode_from_string (const char *str)
+{
+        if (strcmp (str, "reuse-vt") == 0)
+                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        if (strcmp (str, "new-vt") == 0)
+                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
+        if (strcmp (str, "logind-managed") == 0)
+                return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
+
+        g_warning ("Unknown GdmSessionDisplayMode %s", str);
+        return -1;
+}
+
+const char *
+gdm_session_display_mode_to_string (GdmSessionDisplayMode mode)
+{
+        switch (mode) {
+        case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
+                return "reuse-vt";
+        case GDM_SESSION_DISPLAY_MODE_NEW_VT:
+                return "new-vt";
+        case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:
+                return "logind-managed";
+        default:
+                break;
+        }
+
+        g_warning ("Unknown GdmSessionDisplayMode %d", mode);
+        return "";
 }

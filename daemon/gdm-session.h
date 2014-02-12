@@ -59,6 +59,9 @@ typedef enum {
         GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED,
 } GdmSessionDisplayMode;
 
+GdmSessionDisplayMode gdm_session_display_mode_from_string (const char *str);
+const char * gdm_session_display_mode_to_string (GdmSessionDisplayMode mode);
+
 typedef struct
 {
         GObject            parent;
