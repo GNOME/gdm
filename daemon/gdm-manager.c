@@ -272,6 +272,95 @@ lookup_by_session_id (const char *id,
         return res;
 }
 
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+is_consolekit_login_session (GdmManager       *self,
+                             GDBusConnection  *connection,
+                             const char       *session_id,
+                             GError          **error)
+{
+        GVariant *reply;
+        char *session_type = NULL;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             session_id,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "GetSessionType",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(s)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             error);
+        if (reply == NULL) {
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(s)", &session_type);
+        g_variant_unref (reply);
+
+        if (g_strcmp0 (session_type, "LoginWindow") != 0) {
+                g_free (session_type);
+
+                return FALSE;
+        }
+
+        g_free (session_type);
+        return TRUE;
+}
+#endif
+
+#ifdef WITH_SYSTEMD
+static gboolean
+is_systemd_login_session (GdmManager  *self,
+                          const char  *session_id,
+                          GError     **error)
+{
+        char *session_class = NULL;
+        int ret;
+
+        ret = sd_session_get_class (session_id, &session_class);
+
+        if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting class for session id %s from systemd: %s",
+                             session_id,
+                             g_strerror (-ret));
+                return FALSE;
+        }
+
+        if (g_strcmp0 (session_class, "greeter") != 0) {
+                g_free (session_class);
+                return FALSE;
+        }
+
+        g_free (session_class);
+        return TRUE;
+}
+#endif
+
+static gboolean
+is_login_session (GdmManager       *self,
+                  GDBusConnection  *connection,
+                  const char       *session_id,
+                  GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                return is_systemd_login_session (self, session_id, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return is_consolekit_login_session (self, connection, session_id, error);
+#endif
+
+        return FALSE;
+}
+
 static GdmDisplay *
 get_display_and_details_for_bus_sender (GdmManager       *self,
                             GDBusConnection  *connection,
@@ -285,6 +374,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
         int         ret;
         GPid        pid;
         uid_t       caller_uid, session_uid;
+        gboolean    is_login_screen;
 
         ret = gdm_dbus_get_pid_for_name (sender, &pid, &error);
 
@@ -310,6 +400,20 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 g_debug ("GdmManager: Error while retrieving session id for sender: %s",
                          error->message);
                 g_error_free (error);
+                goto out;
+        }
+
+        is_login_screen = is_login_session (self, connection, session_id, &error);
+
+        if (error != NULL) {
+                g_debug ("GdmManager: Error while checking if sender is login screen: %s",
+                         error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (is_login_screen) {
+                g_debug ("GdmManager: caller is login screen");
                 goto out;
         }
 
