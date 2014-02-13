@@ -438,20 +438,38 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
 
 gboolean
 gdm_display_get_timed_login_details (GdmDisplay *display,
-                                     gboolean   *enabled,
-                                     char      **username,
-                                     int        *delay,
+                                     gboolean   *out_enabled,
+                                     char      **out_username,
+                                     int        *out_delay,
                                      GError    **error)
 {
+        gboolean enabled;
+        char *username;
+        int delay;
+
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        GDM_DISPLAY_GET_CLASS (display)->get_timed_login_details (display, enabled, username, delay);
+        GDM_DISPLAY_GET_CLASS (display)->get_timed_login_details (display, &enabled, &username, &delay);
 
-        g_debug ("GdmSlave: Got timed login details for display %s: %d '%s' %d",
+        g_debug ("GdmDisplay: Got timed login details for display %s: %d '%s' %d",
                  display->priv->x11_display_name,
-                 *enabled,
-                 *username ? *username : "(null)",
-                 *delay);
+                 enabled,
+                 username,
+                 delay);
+
+        if (out_enabled) {
+                *out_enabled = enabled;
+        }
+
+        if (out_username) {
+                *out_username = username;
+        } else {
+                g_free (username);
+        }
+
+        if (out_delay) {
+                *out_delay = delay;
+        }
 
         return TRUE;
 }
