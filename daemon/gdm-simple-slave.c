@@ -44,7 +44,6 @@
 
 #include "gdm-common.h"
 
-#include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
 #include "gdm-simple-slave.h"
@@ -1491,8 +1490,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                 slave->priv->server = gdm_server_new (display_name, seat_id, auth_file, display_is_initial);
 
                 disable_tcp = TRUE;
-                if (gdm_settings_client_get_boolean (GDM_KEY_DISALLOW_TCP,
-                                                     &disable_tcp)) {
+                if (gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disable_tcp)) {
                         g_object_set (slave->priv->server,
                                       "disable-tcp", disable_tcp,
                                       NULL);

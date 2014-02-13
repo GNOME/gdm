@@ -43,7 +43,6 @@
 #include "gdm-settings.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
-#include "gdm-settings-client.h"
 
 static GdmSettings     *settings        = NULL;
 static int              gdm_return_code = 0;
@@ -156,11 +155,6 @@ main (int    argc,
 
         if (display_id == NULL) {
                 g_critical ("No display ID set");
-                exit (1);
-        }
-
-        if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
-                g_critical ("Unable to initialize settings client");
                 exit (1);
         }
 

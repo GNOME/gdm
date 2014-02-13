@@ -27,19 +27,8 @@ noinst_LTLIBRARIES = 		\
 	libgdmcommon.la		\
 	$(NULL)
 
-BUILT_SOURCES =			\
-	gdm-settings-glue.h	\
-	$(NULL)
-
 gdmdir = $(datadir)/gdm
 gdm_DATA = gdb-cmd
-
-gdm-settings-glue.c gdm-settings-glue.h : gdm-settings.xml Makefile.am
-	$(AM_V_GEN)gdbus-codegen 				\
-		--c-namespace=GdmDBus				\
-		--interface-prefix=org.gnome.DisplayManager	\
-		--generate-c-code=gdm-settings-glue		\
-		$(srcdir)/gdm-settings.xml
 
 if MKDTEMP_MISSING
 MKDTEMP_FILES = mkdtemp.c mkdtemp.h
@@ -65,16 +54,9 @@ libgdmcommon_la_SOURCES =	\
 	gdm-settings-utils.c	\
 	gdm-settings-direct.c 	\
 	gdm-settings-direct.h	\
-	gdm-settings-client.h	\
-	gdm-settings-client.c	\
 	gdm-log.h		\
 	gdm-log.c		\
 	$(MKDTEMP_FILES) 	\
-	$(NULL)
-
-nodist_libgdmcommon_la_SOURCES = 	\
-	gdm-settings-glue.h		\
-	gdm-settings-glue.c		\
 	$(NULL)
 
 libgdmcommon_la_CPPFLAGS = 		\
@@ -96,8 +78,6 @@ libgdmcommon_la_LDFLAGS = 	\
 	$(NULL)
 
 noinst_PROGRAMS = 		\
-	test-settings-server	\
-	test-settings-client	\
 	test-log		\
 	$(NULL)
 
@@ -110,31 +90,7 @@ test_log_LDADD =		\
 	$(COMMON_LIBS)		\
 	$(NULL)
 
-test_settings_server_SOURCES = 		\
-	test-settings-server.c	 	\
-	$(NULL)
-
-test_settings_server_LDADD =		\
-	libgdmcommon.la			\
-	$(COMMON_LIBS)			\
-	$(NULL)
-
-test_settings_client_SOURCES = 		\
-	test-settings-client.c	 	\
-	$(NULL)
-
-test_settings_client_LDADD =		\
-	libgdmcommon.la			\
-	$(COMMON_LIBS)			\
-	$(NULL)
-
-CLEANFILES =			\
-	gdm-settings-glue.c	\
-	$(BUILT_SOURCES)	\
-	$(NULL)
-
 EXTRA_DIST = 			\
-	gdm-settings.xml	\
 	mkdtemp.c 		\
 	mkdtemp.h		\
 	$(gdm_DATA)		\

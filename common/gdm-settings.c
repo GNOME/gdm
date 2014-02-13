@@ -36,20 +36,13 @@
 #include <gio/gio.h>
 
 #include "gdm-settings.h"
-#include "gdm-settings-glue.h"
 
 #include "gdm-settings-desktop-backend.h"
-
-#define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
-#define GDM_SETTINGS_DBUS_PATH GDM_DBUS_PATH "/Settings"
-#define GDM_SETTINGS_DBUS_NAME "org.gnome.DisplayManager.Settings"
 
 #define GDM_SETTINGS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS, GdmSettingsPrivate))
 
 struct GdmSettingsPrivate
 {
-        GDBusConnection    *connection;
-        GdmDBusSettings    *skeleton;
         GdmSettingsBackend *backend;
 };
 
@@ -79,10 +72,6 @@ gdm_settings_error_quark (void)
         return ret;
 }
 
-/*
-dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Settings org.gnome.DisplayManager.Settings.GetValue string:"xdmcp/Enable"
-*/
-
 gboolean
 gdm_settings_get_value (GdmSettings *settings,
                         const char  *key,
@@ -106,10 +95,6 @@ gdm_settings_get_value (GdmSettings *settings,
 
         return res;
 }
-
-/*
-dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Settings org.gnome.DisplayManager.Settings.SetValue string:"xdmcp/Enable" string:"false"
-*/
 
 gboolean
 gdm_settings_set_value (GdmSettings *settings,
@@ -136,91 +121,6 @@ gdm_settings_set_value (GdmSettings *settings,
 
         return res;
 }
-
-static gboolean
-handle_get_value (GdmDBusSettings       *settings,
-                  GDBusMethodInvocation *invocation,
-                  const char            *key,
-                  gpointer               user_data)
-{
-        GdmSettings *self = GDM_SETTINGS (user_data);
-        GError *error = NULL;
-        char *value = NULL;
-
-        gdm_settings_get_value (self, key, &value, &error);
-        if (error) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
-                return TRUE;
-        }
-
-        gdm_dbus_settings_complete_get_value (settings, invocation,
-                                              value);
-        g_free (value);
-
-        return TRUE;
-}
-
-static gboolean
-handle_set_value (GdmDBusSettings       *settings,
-                  GDBusMethodInvocation *invocation,
-                  const char            *key,
-                  const char            *value,
-                  gpointer               user_data)
-{
-        GdmSettings *self = GDM_SETTINGS (user_data);
-        GError *error = NULL;
-
-        gdm_settings_set_value (self, key, value, &error);
-        if (error) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
-                return TRUE;
-        }
-
-        gdm_dbus_settings_complete_set_value (settings, invocation);
-
-        return TRUE;
-}
-
-static gboolean
-register_settings (GdmSettings *settings)
-{
-        GError *error = NULL;
-
-        error = NULL;
-        settings->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
-        if (settings->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
-                exit (1);
-        }
-
-        settings->priv->skeleton = GDM_DBUS_SETTINGS (gdm_dbus_settings_skeleton_new ());
-        g_signal_connect_object (settings->priv->skeleton,
-                                 "handle-get-value",
-                                 G_CALLBACK (handle_get_value),
-                                 settings,
-                                 0);
-        g_signal_connect_object (settings->priv->skeleton,
-                                 "handle-set-value",
-                                 G_CALLBACK (handle_set_value),
-                                 settings,
-                                 0);
-
-        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (settings->priv->skeleton),
-                                          settings->priv->connection,
-                                          GDM_SETTINGS_DBUS_PATH,
-                                          NULL);
-
-        return TRUE;
-}
-
-/*
-dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Settings org.freedesktop.DBus.Introspectable.Introspect
-*/
 
 static void
 gdm_settings_class_init (GdmSettingsClass *klass)
@@ -257,9 +157,6 @@ backend_value_changed (GdmSettingsBackend *backend,
 
         /* proxy it to internal listeners */
         g_signal_emit (settings, signals [VALUE_CHANGED], 0, key, old_value, new_value);
-
-        /* and to dbus */
-        gdm_dbus_settings_emit_value_changed (settings->priv->skeleton, key, old_value, new_value);
 }
 
 static void
@@ -299,17 +196,7 @@ gdm_settings_new (void)
         if (settings_object != NULL) {
                 g_object_ref (settings_object);
         } else {
-                gboolean res;
-
                 settings_object = g_object_new (GDM_TYPE_SETTINGS, NULL);
-                g_object_add_weak_pointer (settings_object,
-                                           (gpointer *) &settings_object);
-                res = register_settings (settings_object);
-                if (! res) {
-                        g_warning ("Unable to register settings");
-                        g_object_unref (settings_object);
-                        return NULL;
-                }
         }
 
         return GDM_SETTINGS (settings_object);

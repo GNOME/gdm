@@ -33,8 +33,6 @@
 
 #include "gdm-common.h"
 #include "gdm-log.h"
-#include "gdm-settings-client.h"
-#include "gdm-settings-keys.h"
 
 #include "gdm-chooser-session.h"
 
