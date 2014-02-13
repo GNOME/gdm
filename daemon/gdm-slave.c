@@ -198,7 +198,6 @@ get_script_environment (GdmSlave   *slave,
         GPtrArray     *env;
         GHashTable    *hash;
         struct passwd *pwent;
-        char          *temp;
 
         env = g_ptr_array_new ();
 
