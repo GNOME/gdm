@@ -274,10 +274,10 @@ lookup_by_session_id (const char *id,
 
 static GdmDisplay *
 get_display_and_details_for_bus_sender (GdmManager       *self,
-                            GDBusConnection  *connection,
-                            const char       *sender,
-                            GPid             *out_pid,
-                            uid_t            *out_uid)
+                                        GDBusConnection  *connection,
+                                        const char       *sender,
+                                        GPid             *out_pid,
+                                        uid_t            *out_uid)
 {
         GdmDisplay *display = NULL;
         char       *session_id = NULL;
