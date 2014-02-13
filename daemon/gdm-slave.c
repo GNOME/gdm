@@ -1694,6 +1694,14 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
 }
 
 static void
+_gdm_slave_set_session_id (GdmSlave   *slave,
+                           const char *id)
+{
+        g_free (slave->priv->session_id);
+        slave->priv->session_id = g_strdup (id);
+}
+
+static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
                            const char *id)
 {
@@ -1712,6 +1720,9 @@ gdm_slave_set_property (GObject      *object,
         self = GDM_SLAVE (object);
 
         switch (prop_id) {
+        case PROP_SESSION_ID:
+                _gdm_slave_set_session_id (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_ID:
                 _gdm_slave_set_display_id (self, g_value_get_string (value));
                 break;
@@ -1939,7 +1950,7 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                               "Session id",
                                                               "ID of session",
                                                               NULL,
-                                                              G_PARAM_READABLE));
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_ID,
                                          g_param_spec_string ("display-id",
