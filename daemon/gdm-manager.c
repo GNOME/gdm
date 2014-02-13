@@ -332,11 +332,11 @@ out:
         g_free (session_id);
 
         if (display != NULL) {
-            if (out_pid != NULL)
-                *out_pid = pid;
+                if (out_pid != NULL)
+                        *out_pid = pid;
 
-            if (out_uid != NULL)
-                *out_uid = session_uid;
+                if (out_uid != NULL)
+                        *out_uid = session_uid;
         }
         return display;
 }
