@@ -632,7 +632,7 @@ get_server_environment (GdmServer *server)
                         g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->priv->parent_display_name));
                 }
         } else {
-                g_hash_table_insert (hash, g_strdup ("DISPLAY="), g_strdup (server->priv->display_name));
+                g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->priv->display_name));
         }
 
         if (server->priv->user_name != NULL) {
