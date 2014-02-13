@@ -89,7 +89,6 @@ struct GdmSlavePrivate
         int              display_number;
         char            *display_hostname;
         gboolean         display_is_local;
-        gboolean         display_is_parented;
         char            *display_seat_id;
         char            *display_x11_authority_file;
         char            *parent_display_name;
@@ -230,14 +229,6 @@ get_script_environment (GdmSlave   *slave,
                                              g_strdup (pwent->pw_shell));
                 }
         }
-
-#if 0
-        if (display_is_parented) {
-                g_hash_table_insert (hash, g_strdup ("GDM_PARENT_DISPLAY"), g_strdup (parent_display_name));
-
-                /*g_hash_table_insert (hash, "GDM_PARENT_XAUTHORITY"), slave->priv->parent_temp_auth_file));*/
-        }
-#endif
 
         if (! slave->priv->display_is_local) {
                 g_hash_table_insert (hash, g_strdup ("REMOTE_HOST"), g_strdup (slave->priv->display_hostname));

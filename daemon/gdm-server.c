@@ -93,11 +93,6 @@ struct GdmServerPrivate
         char    *display_seat_id;
         char    *auth_file;
 
-        gboolean is_parented;
-        char    *parent_display_name;
-        char    *parent_auth_file;
-        char    *chosen_hostname;
-
         guint    child_watch_id;
         guint    sigusr1_id;
 
@@ -110,15 +105,7 @@ enum {
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_DEVICE,
         PROP_AUTH_FILE,
-        PROP_IS_PARENTED,
-        PROP_PARENT_DISPLAY_NAME,
-        PROP_PARENT_AUTH_FILE,
-        PROP_CHOSEN_HOSTNAME,
-        PROP_COMMAND,
-        PROP_PRIORITY,
         PROP_USER_NAME,
-        PROP_SESSION_ARGS,
-        PROP_LOG_DIR,
         PROP_DISABLE_TCP,
         PROP_IS_INITIAL,
 };
@@ -364,14 +351,6 @@ gdm_server_resolve_command_line (GdmServer  *server,
                 argv[len++] = g_strdup (server->priv->display_seat_id);
         }
 #endif
-
-        if (server->priv->chosen_hostname) {
-                /* run just one session */
-                argv[len++] = g_strdup ("-terminate");
-                argv[len++] = g_strdup ("-query");
-                argv[len++] = g_strdup (server->priv->chosen_hostname);
-                query_in_arglist = TRUE;
-        }
 
         if (server->priv->disable_tcp && ! query_in_arglist) {
                 argv[len++] = g_strdup ("-nolisten");
@@ -623,17 +602,7 @@ get_server_environment (GdmServer *server)
         }
 
         /* modify environment here */
-        if (server->priv->is_parented) {
-                if (server->priv->parent_auth_file != NULL) {
-                        g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (server->priv->parent_auth_file));
-                }
-
-                if (server->priv->parent_display_name != NULL) {
-                        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->priv->parent_display_name));
-                }
-        } else {
-                g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->priv->display_name));
-        }
+        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->priv->display_name));
 
         if (server->priv->user_name != NULL) {
                 struct passwd *pwent;
@@ -1131,9 +1100,6 @@ gdm_server_finalize (GObject *object)
         g_free (server->priv->display_seat_id);
         g_free (server->priv->display_device);
         g_free (server->priv->auth_file);
-        g_free (server->priv->parent_display_name);
-        g_free (server->priv->parent_auth_file);
-        g_free (server->priv->chosen_hostname);
 
         G_OBJECT_CLASS (gdm_server_parent_class)->finalize (object);
 }
