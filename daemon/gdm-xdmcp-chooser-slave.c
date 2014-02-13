@@ -346,11 +346,11 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
 }
 
 static gboolean
-gdm_xdmcp_chooser_slave_open_session (GdmSlave  *slave,
-                                      GPid       pid_of_caller,
-                                      uid_t      uid_of_caller,
-                                      char     **address,
-                                      GError   **error)
+gdm_xdmcp_chooser_slave_open_session (GdmSlave    *slave,
+                                      GPid         pid_of_caller,
+                                      uid_t        uid_of_caller,
+                                      const char **address,
+                                      GError     **error)
 {
         GdmXdmcpChooserSlave *self = GDM_XDMCP_CHOOSER_SLAVE (slave);
         GdmSession           *session;

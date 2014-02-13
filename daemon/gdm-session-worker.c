@@ -2758,7 +2758,7 @@ reauthentication_request_new (GdmSessionWorker      *worker,
 {
         ReauthenticationRequest *request;
         const char * const * environment;
-        char *address;
+        const char *address;
 
         environment = gdm_session_worker_get_environment (worker);
 
@@ -2807,7 +2807,6 @@ reauthentication_request_new (GdmSessionWorker      *worker,
         gdm_dbus_worker_complete_start_reauthentication (GDM_DBUS_WORKER (worker),
                                                          invocation,
                                                          address);
-        g_free (address);
 
         return request;
 }

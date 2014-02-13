@@ -2606,31 +2606,31 @@ gdm_session_start_reauthentication (GdmSession *session,
                                                      conversation);
 }
 
-char *
+const char *
 gdm_session_get_server_address (GdmSession *self)
 {
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
 
-        return g_strdup (g_dbus_server_get_client_address (self->priv->outside_server));
+        return g_dbus_server_get_client_address (self->priv->outside_server);
 }
 
-char *
+const char *
 gdm_session_get_username (GdmSession *self)
 {
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
 
-        return g_strdup (self->priv->selected_user);
+        return self->priv->selected_user;
 }
 
-char *
+const char *
 gdm_session_get_display_device (GdmSession *self)
 {
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
 
-        return g_strdup (self->priv->display_device);
+        return self->priv->display_device;
 }
 
-char *
+const char *
 gdm_session_get_display_seat_id (GdmSession *self)
 {
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
@@ -2638,7 +2638,7 @@ gdm_session_get_display_seat_id (GdmSession *self)
         return g_strdup (self->priv->display_seat_id);
 }
 
-char *
+const char *
 gdm_session_get_session_id (GdmSession *self)
 {
         GdmSessionConversation *conversation;

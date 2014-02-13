@@ -1681,7 +1681,7 @@ handle_open_session (GdmDBusSlave          *skeleton,
 {
         GError        *error;
         GdmSlaveClass *slave_class;
-        char          *address;
+        const char    *address;
 
         slave_class = GDM_SLAVE_GET_CLASS (slave);
         if (slave_class->open_session == NULL) {
@@ -1705,7 +1705,6 @@ handle_open_session (GdmDBusSlave          *skeleton,
 
         gdm_dbus_slave_complete_open_session (skeleton, invocation, address);
 
-        g_free (address);
         return TRUE;
 }
 

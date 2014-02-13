@@ -252,8 +252,8 @@ on_session_started (GdmSession       *session,
                     int               pid,
                     GdmSimpleSlave   *slave)
 {
-        char *username;
-        char *session_id;
+        const char *username;
+        const char *session_id;
 
         g_debug ("GdmSimpleSlave: session started %d", pid);
 
@@ -261,14 +261,12 @@ on_session_started (GdmSession       *session,
 
         session_id = gdm_session_get_session_id (session);
         g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
-        g_free (session_id);
 
         /* Run the PreSession script. gdmslave suspends until script has terminated */
         username = gdm_session_get_username (slave->priv->session);
         if (username != NULL) {
                 gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
         }
-        g_free (username);
 
         /* FIXME: should we do something here?
          * Note that error return status from PreSession script should
@@ -282,8 +280,8 @@ on_session_started (GdmSession       *session,
 static void
 gdm_simple_slave_grant_console_permissions (GdmSimpleSlave *slave)
 {
-        char *username;
-        char *display_device;
+        const char *username;
+        const char *display_device;
         struct passwd *passwd_entry;
 
         username = gdm_session_get_username (slave->priv->session);
@@ -318,8 +316,8 @@ gdm_simple_slave_grant_console_permissions (GdmSimpleSlave *slave)
 static void
 gdm_simple_slave_revoke_console_permissions (GdmSimpleSlave *slave)
 {
-        char *username;
-        char *display_device;
+        const char *username;
+        const char *display_device;
 
         username = gdm_session_get_username (slave->priv->session);
         display_device = gdm_session_get_display_device (slave->priv->session);
@@ -342,9 +340,6 @@ gdm_simple_slave_revoke_console_permissions (GdmSimpleSlave *slave)
                 g_debug ("Not calling di_devperm_logout logout for user %s, device %s",
                          username, display_device);
         }
-
-        g_free (username);
-        g_free (display_device);
 }
 #endif  /* HAVE_LOGINDEVPERM */
 
@@ -376,14 +371,13 @@ static gboolean
 add_user_authorization (GdmSimpleSlave *slave,
                         char          **filename)
 {
-        char    *username;
+        const char *username;
         gboolean ret;
 
         username = gdm_session_get_username (slave->priv->session);
         ret = gdm_slave_add_user_authorization (GDM_SLAVE (slave),
                                                 username,
                                                 filename);
-        g_free (username);
 
         return ret;
 }
@@ -435,8 +429,8 @@ static gboolean
 switch_to_and_unlock_session (GdmSimpleSlave  *slave,
                               gboolean         fail_if_already_switched)
 {
-        char    *username;
-        char    *session_id;
+        const char *username;
+        const char *session_id;
         gboolean res;
 
         username = gdm_session_get_username (slave->priv->session);
@@ -446,8 +440,6 @@ switch_to_and_unlock_session (GdmSimpleSlave  *slave,
 
         /* try to switch to an existing session */
         res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username, session_id, fail_if_already_switched);
-        g_free (username);
-        g_free (session_id);
 
         return res;
 }
@@ -455,7 +447,7 @@ switch_to_and_unlock_session (GdmSimpleSlave  *slave,
 static void
 stop_greeter (GdmSimpleSlave *slave)
 {
-        char *username;
+        const char *username;
         gboolean script_successful;
 
         g_debug ("GdmSimpleSlave: Stopping greeter");
@@ -476,7 +468,6 @@ stop_greeter (GdmSimpleSlave *slave)
         } else {
                 script_successful = TRUE;
         }
-        g_free (username);
 
         if (!script_successful) {
                 g_debug ("GdmSimpleSlave: PostLogin script unsuccessful");
@@ -1554,11 +1545,11 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
 }
 
 static gboolean
-gdm_simple_slave_open_session (GdmSlave  *slave,
-                               GPid       pid_of_caller,
-                               uid_t      uid_of_caller,
-                               char     **address,
-                               GError   **error)
+gdm_simple_slave_open_session (GdmSlave    *slave,
+                               GPid         pid_of_caller,
+                               uid_t        uid_of_caller,
+                               const char **address,
+                               GError     **error)
 {
         GdmSimpleSlave     *self = GDM_SIMPLE_SLAVE (slave);
         uid_t               allowed_user;
@@ -1582,7 +1573,6 @@ gdm_simple_slave_open_session (GdmSlave  *slave,
         }
 
         *address = gdm_session_get_server_address (self->priv->session);
-
         return TRUE;
 }
 
@@ -1694,7 +1684,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
                          (GDestroyNotify) g_free);
 
         if (self->priv->session_is_running) {
-                char *username;
+                const char *username;
 
                 /* Run the PostSession script. gdmslave suspends until script
                  * has terminated
@@ -1703,7 +1693,6 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 if (username != NULL) {
                         gdm_slave_run_script (slave, GDMCONFDIR "/PostSession", username);
                 }
-                g_free (username);
 
 #ifdef  HAVE_LOGINDEVPERM
                 gdm_simple_slave_revoke_console_permissions (self);

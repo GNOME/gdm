@@ -105,11 +105,11 @@ void              gdm_session_start_reauthentication (GdmSession *session,
                                                       GPid        pid_of_caller,
                                                       uid_t       uid_of_caller);
 
-char             *gdm_session_get_server_address          (GdmSession     *session);
-char             *gdm_session_get_username                (GdmSession     *session);
-char             *gdm_session_get_display_device          (GdmSession     *session);
-char             *gdm_session_get_display_seat_id         (GdmSession     *session);
-char             *gdm_session_get_session_id              (GdmSession     *session);
+const char       *gdm_session_get_server_address          (GdmSession     *session);
+const char       *gdm_session_get_username                (GdmSession     *session);
+const char       *gdm_session_get_display_device          (GdmSession     *session);
+const char       *gdm_session_get_display_seat_id         (GdmSession     *session);
+const char       *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
 
 void              gdm_session_start_conversation          (GdmSession *session,

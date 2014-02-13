@@ -50,11 +50,11 @@ typedef struct
         gboolean (*start) (GdmSlave *slave);
         gboolean (*stop)  (GdmSlave *slave);
 
-        gboolean     (*open_session)       (GdmSlave   *slave,
-                                            GPid        pid_of_caller,
-                                            uid_t       uid_of_caller,
-                                            char      **address,
-                                            GError    **error);
+        gboolean     (*open_session)       (GdmSlave    *slave,
+                                            GPid         pid_of_caller,
+                                            uid_t        uid_of_caller,
+                                            const char **address,
+                                            GError     **error);
 
         void     (*open_reauthentication_channel) (GdmSlave            *slave,
                                                    const char          *username,
