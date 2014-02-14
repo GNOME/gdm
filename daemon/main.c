@@ -288,16 +288,6 @@ on_sighup_cb (gpointer user_data)
 }
 
 static gboolean
-on_sigusr1_cb (gpointer user_data)
-{
-        g_debug ("Got USR1 signal");
-
-        gdm_log_toggle_debug ();
-
-        return TRUE;
-}
-
-static gboolean
 is_debug_set (void)
 {
         gboolean debug;
@@ -400,7 +390,6 @@ main (int    argc,
         g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
         g_unix_signal_add (SIGINT, on_shutdown_signal_cb, main_loop);
         g_unix_signal_add (SIGHUP, on_sighup_cb, NULL);
-        g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         if (do_timed_exit) {
                 g_timeout_add_seconds (30, (GSourceFunc) timed_exit_cb, main_loop);
