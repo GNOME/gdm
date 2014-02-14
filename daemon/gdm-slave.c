@@ -31,7 +31,6 @@
 #include <errno.h>
 #include <pwd.h>
 #include <grp.h>
-#include <signal.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -484,8 +483,6 @@ gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
         gboolean ret;
-        sigset_t mask;
-        sigset_t omask;
 
         ret = FALSE;
 
@@ -493,13 +490,6 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
          * X server resetting due to lack of active connections. */
 
         g_debug ("GdmSlave: Server is ready - opening display %s", slave->priv->display_name);
-
-        g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
-        g_setenv ("XAUTHORITY", slave->priv->display_x11_authority_file, TRUE);
-
-        sigemptyset (&mask);
-        sigaddset (&mask, SIGCHLD);
-        sigprocmask (SIG_BLOCK, &mask, &omask);
 
         /* Give slave access to the display independent of current hostname */
         if (slave->priv->display_x11_cookie != NULL) {
@@ -511,9 +501,6 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         }
 
         slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
-
-        sigprocmask (SIG_SETMASK, &omask, NULL);
-
 
         if (slave->priv->server_display == NULL) {
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);
