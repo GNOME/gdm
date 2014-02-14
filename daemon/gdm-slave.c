@@ -90,8 +90,6 @@ struct GdmSlavePrivate
         gboolean         display_is_local;
         char            *display_seat_id;
         char            *display_x11_authority_file;
-        char            *parent_display_name;
-        char            *parent_display_x11_authority_file;
         char            *windowpath;
         GBytes          *display_x11_cookie;
         gboolean         display_is_initial;
@@ -1948,9 +1946,6 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->display_hostname);
         g_free (slave->priv->display_seat_id);
         g_free (slave->priv->display_x11_authority_file);
-        g_free (slave->priv->parent_display_name);
-        g_free (slave->priv->parent_display_x11_authority_file);
-        g_free (slave->priv->windowpath);
         g_bytes_unref (slave->priv->display_x11_cookie);
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
