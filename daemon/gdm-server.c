@@ -94,7 +94,6 @@ struct GdmServerPrivate
         char    *auth_file;
 
         guint    child_watch_id;
-        guint    sigusr1_id;
 
         gboolean is_initial;
 };
@@ -180,16 +179,77 @@ gdm_server_get_display_device (GdmServer *server)
         return g_strdup (server->priv->display_device);
 }
 
-static gboolean
-on_sigusr1 (gpointer user_data)
-
+static void
+gdm_server_ready (GdmServer *server)
 {
-        GdmServer *server = user_data;
-
         g_debug ("GdmServer: Got USR1 from X server - emitting READY");
-
         g_signal_emit (server, signals[READY], 0);
-        return FALSE;
+}
+
+static GSList *active_servers;
+static gboolean sigusr1_thread_running;
+static GCond sigusr1_thread_cond;
+static GMutex sigusr1_thread_mutex;
+
+static gboolean
+got_sigusr1 (gpointer user_data)
+{
+        GPid pid = GPOINTER_TO_UINT (user_data);
+        GSList *l;
+
+        g_debug ("GdmServer: got SIGUSR1 from PID %d", pid);
+
+        for (l = active_servers; l; l = l->next) {
+                GdmServer *server = l->data;
+
+                if (server->priv->pid == pid)
+                        gdm_server_ready (server);
+        }
+
+        return G_SOURCE_REMOVE;
+}
+
+static gpointer
+sigusr1_thread_main (gpointer user_data)
+{
+        sigset_t sigusr1_mask;
+
+        /* Handle only SIGUSR1 */
+        sigemptyset (&sigusr1_mask);
+        sigaddset (&sigusr1_mask, SIGUSR1);
+        sigprocmask (SIG_SETMASK, &sigusr1_mask, NULL);
+
+        g_mutex_lock (&sigusr1_thread_mutex);
+        sigusr1_thread_running = TRUE;
+        g_cond_signal (&sigusr1_thread_cond);
+        g_mutex_unlock (&sigusr1_thread_mutex);
+
+        /* Spin waiting for a SIGUSR1 */
+        while (TRUE) {
+                siginfo_t info;
+
+                if (sigwaitinfo (&sigusr1_mask, &info) == -1)
+                        continue;
+
+                g_idle_add (got_sigusr1, GUINT_TO_POINTER (info.si_pid));
+        }
+
+        return NULL;
+}
+
+static void
+gdm_server_launch_sigusr1_thread_if_needed (void)
+{
+        static GThread *sigusr1_thread;
+
+        if (sigusr1_thread == NULL) {
+                sigusr1_thread = g_thread_new ("gdm SIGUSR1 catcher", sigusr1_thread_main, NULL);
+
+                g_mutex_lock (&sigusr1_thread_mutex);
+                while (!sigusr1_thread_running)
+                        g_cond_wait (&sigusr1_thread_cond, &sigusr1_thread_mutex);
+                g_mutex_unlock (&sigusr1_thread_mutex);
+        }
 }
 
 /* We keep a connection (parent_dsp) open with the parent X server
@@ -676,6 +736,8 @@ server_child_watch (GPid       pid,
                 g_signal_emit (server, signals [DIED], 0, num);
         }
 
+        active_servers = g_slist_remove (active_servers, server);
+
         g_spawn_close_pid (server->priv->pid);
         server->priv->pid = -1;
 
@@ -718,6 +780,10 @@ gdm_server_spawn (GdmServer    *server,
         freeme = g_strjoinv (" ", argv);
         g_debug ("GdmServer: Starting X server process: %s", freeme);
         g_free (freeme);
+
+        active_servers = g_slist_append (active_servers, server);
+
+        gdm_server_launch_sigusr1_thread_if_needed ();
 
         if (!g_spawn_async_with_pipes (NULL,
                                        argv,
@@ -1063,16 +1129,11 @@ gdm_server_class_init (GdmServerClass *klass)
 static void
 gdm_server_init (GdmServer *server)
 {
-
         server->priv = GDM_SERVER_GET_PRIVATE (server);
 
         server->priv->pid = -1;
 
         server->priv->log_dir = g_strdup (LOGDIR);
-
-        server->priv->sigusr1_id = g_unix_signal_add (SIGUSR1,
-                                                      on_sigusr1,
-                                                      server);
 }
 
 static void
@@ -1086,9 +1147,6 @@ gdm_server_finalize (GObject *object)
         server = GDM_SERVER (object);
 
         g_return_if_fail (server->priv != NULL);
-
-        if (server->priv->sigusr1_id > 0)
-                g_source_remove (server->priv->sigusr1_id);
 
         gdm_server_stop (server);
 

@@ -295,6 +295,19 @@ is_debug_set (void)
         return debug;
 }
 
+/* SIGUSR1 is used by the X server to tell us that we're ready, so
+ * block it. We'll unblock it in the worker thread in gdm-server.c
+ */
+static void
+block_sigusr1 (void)
+{
+        sigset_t mask;
+
+        sigemptyset (&mask);
+        sigaddset (&mask, SIGUSR1);
+        sigprocmask (SIG_BLOCK, &mask, NULL);
+}
+
 int
 main (int    argc,
       char **argv)
@@ -314,6 +327,8 @@ main (int    argc,
 
                 { NULL }
         };
+
+        block_sigusr1 ();
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         textdomain (GETTEXT_PACKAGE);
