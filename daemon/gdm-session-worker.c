@@ -1105,18 +1105,18 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         pam_tty = _get_tty_for_pam (x11_display_name, display_device);
         if (pam_tty != NULL && pam_tty[0] != '\0') {
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
-        }
 
-        if (error_code != PAM_SUCCESS) {
-                g_debug ("error informing authentication system of user's console %s: %s",
-                         pam_tty,
-                         pam_strerror (worker->priv->pam_handle, error_code));
-                g_free (pam_tty);
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", "");
-                goto out;
+                if (error_code != PAM_SUCCESS) {
+                        g_debug ("error informing authentication system of user's console %s: %s",
+                                 pam_tty,
+                                 pam_strerror (worker->priv->pam_handle, error_code));
+                        g_free (pam_tty);
+                        g_set_error (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                     "%s", "");
+                        goto out;
+                }
         }
         g_free (pam_tty);
 
