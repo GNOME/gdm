@@ -102,7 +102,7 @@ char *              gdm_display_open_reauthentication_channel_sync        (GdmDi
                                                                            uid_t          uid_of_caller,
                                                                            GCancellable  *cancellable,
                                                                            GError       **error);
-char *              gdm_display_get_session_id                 (GdmDisplay *display);
+const char *        gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
 gboolean            gdm_display_manage                         (GdmDisplay *display);

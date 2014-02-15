@@ -134,10 +134,10 @@ gdm_display_get_status (GdmDisplay *display)
         return display->priv->status;
 }
 
-char *
+const char *
 gdm_display_get_session_id (GdmDisplay *display)
 {
-        return g_strdup (display->priv->session_id);
+        return display->priv->session_id;
 }
 
 static GdmDisplayAccessFile *

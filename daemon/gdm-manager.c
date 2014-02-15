@@ -260,16 +260,10 @@ lookup_by_session_id (const char *id,
                       gpointer    user_data)
 {
         const char *looking_for = user_data;
-        char *current;
-        gboolean res;
+        const char *current;
 
         current = gdm_display_get_session_id (display);
-
-        res = g_strcmp0 (current, looking_for) == 0;
-
-        g_free (current);
-
-        return res;
+        return g_strcmp0 (current, looking_for) == 0;
 }
 
 static GdmDisplay *
