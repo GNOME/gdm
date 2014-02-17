@@ -54,18 +54,6 @@ GOptionEntry options [] = {
         { NULL }
 };
 
-#define GDM_FLEXISERVER_ERROR gdm_flexiserver_error_quark ()
-static GQuark
-gdm_flexiserver_error_quark (void)
-{
-        static GQuark ret = 0;
-        if (ret == 0) {
-                ret = g_quark_from_static_string ("gdm_flexiserver_error");
-        }
-
-        return ret;
-}
-
 static gboolean
 is_program_in_path (const char *program)
 {
