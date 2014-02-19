@@ -570,13 +570,179 @@ find_session_for_user_on_seat (GdmManager *manager,
         return NULL;
 }
 
-static GdmDisplay *
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+is_consolekit_remote_session (GdmManager       *self,
+                             GDBusConnection  *connection,
+                             const char       *session_id,
+                             GError          **error)
+{
+        GVariant *reply;
+        gboolean is_remote;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             session_id,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "IsLocal",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(b)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             error);
+        if (reply == NULL) {
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(b)", &is_remote);
+        g_variant_unref (reply);
+
+        return is_remote;
+}
+#endif
+
+#ifdef WITH_SYSTEMD
+static gboolean
+is_systemd_remote_session (GdmManager  *self,
+                           const char  *session_id,
+                           GError     **error)
+{
+        char *seat;
+        int ret;
+        gboolean is_remote;
+
+        /* FIXME: The next release of logind is going to have explicit api for
+         * checking remoteness.
+         */
+        seat = NULL;
+        ret = sd_session_get_seat (session_id, &seat);
+
+        if (ret < 0 && ret != -ENOENT) {
+                g_debug ("GdmManager: Error while retrieving seat for session %s: %s",
+                         session_id, strerror (-ret));
+        }
+
+        if (seat != NULL) {
+                is_remote = FALSE;
+                free (seat);
+        } else {
+                is_remote = TRUE;
+        }
+
+        return is_remote;
+}
+#endif
+
+static gboolean
+is_remote_session (GdmManager       *self,
+                  GDBusConnection  *connection,
+                  const char       *session_id,
+                  GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                return is_systemd_remote_session (self, session_id, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return is_consolekit_remote_session (self, connection, session_id, error);
+#endif
+
+        return FALSE;
+}
+
+#ifdef WITH_SYSTEMD
+static char *
+get_seat_id_for_systemd_session_id (const char  *session_id,
+                                    GError     **error)
+{
+        int ret;
+        char *seat, *out_seat;
+
+        seat = NULL;
+        ret = sd_session_get_seat (session_id, &seat);
+
+        if (ret == -ENOENT) {
+                out_seat = NULL;
+        } else if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting uid for session id %s from systemd: %s",
+                             session_id,
+                             g_strerror (-ret));
+                out_seat = NULL;
+        } else {
+                out_seat = g_strdup (seat);
+                free (seat);
+        }
+
+        return out_seat;
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static char *
+get_seat_id_for_consolekit_session_id (GDBusConnection  *connection,
+                                       const char       *session_id,
+                                       GError          **error)
+{
+        GVariant *reply;
+        char *retval;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             session_id,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "GetSeatId",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             error);
+        if (reply == NULL) {
+                return NULL;
+        }
+
+        g_variant_get (reply, "(o)", &retval);
+        g_variant_unref (reply);
+
+        return retval;
+}
+#endif
+
+static char *
+get_seat_id_for_session_id (GDBusConnection  *connection,
+                            const char       *session_id,
+                            GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                return get_seat_id_for_systemd_session_id (session_id, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return get_seat_id_for_consolekit_session_id (connection, session_id, error);
+#endif
+
+        return NULL;
+}
+
+static void
 get_display_and_details_for_bus_sender (GdmManager       *self,
                                         GDBusConnection  *connection,
                                         const char       *sender,
+                                        GdmDisplay      **out_display,
+                                        char            **out_seat_id,
+                                        char            **out_session_id,
                                         GPid             *out_pid,
                                         uid_t            *out_uid,
-                                        gboolean         *out_is_login_screen)
+                                        gboolean         *out_is_login_screen,
+                                        gboolean         *out_is_remote)
 {
         GdmDisplay *display = NULL;
         char       *session_id = NULL;
@@ -592,6 +758,10 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                          error->message);
                 g_error_free (error);
                 goto out;
+        }
+
+        if (out_pid != NULL) {
+                *out_pid = pid;
         }
 
         ret = gdm_dbus_get_uid_for_name (sender, &caller_uid, &error);
@@ -610,6 +780,10 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                          error->message);
                 g_error_free (error);
                 goto out;
+        }
+ 
+        if (out_session_id != NULL) {
+                *out_session_id = g_strdup (session_id);
         }
 
         if (out_is_login_screen != NULL) {
@@ -630,26 +804,44 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 goto out;
         }
 
+        if (out_uid != NULL) {
+                *out_uid = session_uid;
+        }
+
         if (caller_uid != session_uid) {
                 g_debug ("GdmManager: uid for sender and uid for session don't match");
                 goto out;
+        }
+
+        if (out_seat_id != NULL) {
+                *out_seat_id = get_seat_id_for_session_id (connection, session_id, &error);
+
+                if (error != NULL) {
+                        g_debug ("GdmManager: Error while retrieving seat id for session: %s",
+                                 error->message);
+                        g_clear_error (&error);
+                }
+        }
+
+        if (out_is_remote != NULL) {
+                *out_is_remote = is_remote_session (self, connection, session_id, &error);
+
+                if (error != NULL) {
+                        g_debug ("GdmManager: Error while retrieving remoteness for session: %s",
+                                 error->message);
+                        g_clear_error (&error);
+                }
         }
 
         display = gdm_display_store_find (self->priv->display_store,
                                           lookup_by_session_id,
                                           (gpointer) session_id);
 
+        if (out_display != NULL) {
+                *out_display = display;
+        }
 out:
         g_free (session_id);
-
-        if (display != NULL) {
-                if (out_pid != NULL)
-                        *out_pid = pid;
-
-                if (out_uid != NULL)
-                        *out_uid = session_uid;
-        }
-        return display;
 }
 
 static gboolean
@@ -722,17 +914,17 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         const char       *sender;
         GError           *error = NULL;
         GDBusConnection  *connection;
-        GdmDisplay       *display;
+        GdmDisplay       *display = NULL;
         GdmSession       *session;
         const char       *address;
-        GPid              pid;
-        uid_t             uid, allowed_user;
+        GPid              pid = 0;
+        uid_t             uid = 0, allowed_user;
 
         g_debug ("GdmManager: trying to open new session");
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        display = get_display_and_details_for_bus_sender (self, connection, sender, &pid, &uid, NULL);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, &pid, &uid, NULL, NULL);
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -782,18 +974,18 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 {
         GdmManager       *self = GDM_MANAGER (manager);
         const char       *sender;
-        GdmDisplay       *display;
+        GdmDisplay       *display = NULL;
         GdmSession       *session;
         GDBusConnection  *connection;
-        GPid              pid;
-        uid_t             uid;
+        GPid              pid = 0;
+        uid_t             uid = 0;
         gboolean          is_login_screen = FALSE;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        display = get_display_and_details_for_bus_sender (self, connection, sender, &pid, &uid, &is_login_screen);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, &pid, &uid, &is_login_screen, NULL);
 
         if (is_login_screen) {
                 g_dbus_method_invocation_return_error_literal (invocation,
