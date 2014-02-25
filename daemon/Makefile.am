@@ -181,10 +181,6 @@ nodist_gdm_simple_slave_SOURCES = 	\
 	gdm-slave-glue.h		\
 	$(NULL)
 
-gdm_simple_slave_LDFLAGS =		\
-	$(PAM_LIBS)			\
-	$(NULL)
-
 gdm_simple_slave_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
@@ -192,6 +188,7 @@ gdm_simple_slave_LDADD = 			\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(SYSTEMD_LIBS) 			\
 	$(JOURNALD_LIBS) 			\
+	$(PAM_LIBS)			\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
@@ -278,11 +275,6 @@ gdm_session_worker_SOURCES += gdm-session-solaris-auditor.h     \
 	                      gdm-session-solaris-auditor.c
 endif
 
-gdm_session_worker_LDFLAGS =			\
-	$(XLIB_LIBS)				\
-	$(PAM_LIBS)				\
-	$(NULL)
-
 gdm_session_worker_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(DAEMON_LIBS)				\
@@ -290,6 +282,8 @@ gdm_session_worker_LDADD = 			\
 	$(JOURNALD_LIBS) 			\
 	$(LIBSELINUX_LIBS) 			\
 	$(EXTRA_DAEMON_LIBS)			\
+	$(XLIB_LIBS)				\
+	$(PAM_LIBS)				\
 	$(NULL)
 
 sbin_PROGRAMS = 			\
@@ -365,12 +359,6 @@ CONSOLE_KIT_SOURCES = 		\
 
 EXTRA_gdm_SOURCES += $(CONSOLE_KIT_SOURCES)
 
-# Note that these libs are in LDFLAGS because they should come before
-# everything else on the link line as they may override stuff
-gdm_LDFLAGS =				\
-	$(EXTRA_DAEMON_LIBS)			\
-	$(NULL)
-
 gdm_LDADD = \
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
@@ -379,6 +367,7 @@ gdm_LDADD = \
 	$(LIBWRAP_LIBS)                         \
 	$(SYSTEMD_LIBS)				\
 	$(JOURNALD_LIBS)				\
+	$(EXTRA_DAEMON_LIBS)			\
 	$(NULL)
 
 if WITH_CONSOLE_KIT
