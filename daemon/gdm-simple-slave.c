@@ -1761,8 +1761,6 @@ gdm_simple_slave_finalize (GObject *object)
 
         g_return_if_fail (slave->priv != NULL);
 
-        gdm_slave_stop (GDM_SLAVE (slave));
-
         g_hash_table_unref (slave->priv->open_reauthentication_requests);
 
         if (slave->priv->greeter_reset_id > 0) {

@@ -426,8 +426,6 @@ gdm_xdmcp_chooser_slave_finalize (GObject *object)
 
         g_return_if_fail (xdmcp_chooser_slave->priv != NULL);
 
-        gdm_slave_stop (GDM_SLAVE (xdmcp_chooser_slave));
-
         G_OBJECT_CLASS (gdm_xdmcp_chooser_slave_parent_class)->finalize (object);
 }
 

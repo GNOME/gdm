@@ -1938,8 +1938,6 @@ gdm_slave_finalize (GObject *object)
 
         g_return_if_fail (slave->priv != NULL);
 
-        gdm_slave_real_stop (slave);
-
         g_free (slave->priv->display_id);
         g_free (slave->priv->display_name);
         g_free (slave->priv->display_hostname);
