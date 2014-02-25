@@ -1246,6 +1246,9 @@ gdm_display_dispose (GObject *object)
 
         g_debug ("GdmDisplay: Disposing display");
 
+        g_assert (display->priv->status == GDM_DISPLAY_FINISHED ||
+                  display->priv->status == GDM_DISPLAY_FAILED);
+
         if (display->priv->slave != NULL) {
                 gdm_slave_stop (display->priv->slave);
                 g_object_unref (display->priv->slave);
