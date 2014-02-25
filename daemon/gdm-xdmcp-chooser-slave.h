@@ -49,7 +49,6 @@ typedef struct
 } GdmXdmcpChooserSlaveClass;
 
 GType               gdm_xdmcp_chooser_slave_get_type   (void);
-GdmSlave *          gdm_xdmcp_chooser_slave_new        (const char       *id);
 
 G_END_DECLS
 

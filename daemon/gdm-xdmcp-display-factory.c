@@ -2363,11 +2363,13 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 ARRAY8  authorization_name;
                                 ARRAY8  authorization_data;
                                 gint32  session_number;
-                                GArray *cookie;
+                                const char *x11_cookie;
+                                gsize x11_cookie_size;
                                 char   *name;
 
-                                cookie = NULL;
-                                gdm_display_get_x11_cookie (display, &cookie, NULL);
+                                x11_cookie = NULL;
+                                x11_cookie_size = 0;
+                                gdm_display_get_x11_cookie (display, &x11_cookie, &x11_cookie_size, NULL);
 
                                 name = NULL;
                                 gdm_display_get_x11_display_name (display, &name, NULL);
@@ -2375,12 +2377,12 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", name ? name : "(null)");
                                 g_free (name);
 
-                                g_debug ("GdmXdmcpDisplayFactory: cookie len %d", (int) cookie->len);
+                                g_debug ("GdmXdmcpDisplayFactory: cookie len %d", (int) x11_cookie_size);
 
                                 session_number = gdm_xdmcp_display_get_session_number (GDM_XDMCP_DISPLAY (display));
 
                                 /* the send accept will fail if cookie is null */
-                                g_assert (cookie != NULL);
+                                g_assert (x11_cookie != NULL);
 
                                 authentication_name.data   = NULL;
                                 authentication_name.length = 0;
@@ -2390,8 +2392,8 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 authorization_name.data     = (CARD8 *) "MIT-MAGIC-COOKIE-1";
                                 authorization_name.length   = strlen ((char *) authorization_name.data);
 
-                                authorization_data.data     = (CARD8 *) cookie->data;
-                                authorization_data.length   = cookie->len;
+                                authorization_data.data     = (CARD8 *) x11_cookie;
+                                authorization_data.length   = x11_cookie_size;
 
                                 /* the addrs are NOT copied */
                                 gdm_xdmcp_send_accept (factory,
@@ -2401,8 +2403,6 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                        &authentication_data,
                                                        &authorization_name,
                                                        &authorization_data);
-
-                                g_array_free (cookie, TRUE);
                         }
                 }
         } else {

@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
+#include "gdm-slave.h"
 
 G_BEGIN_DECLS
 
@@ -62,9 +63,6 @@ typedef struct
                                                GError    **error);
         gboolean (*remove_user_authorization) (GdmDisplay *display,
                                                const char *username,
-                                               GError    **error);
-        gboolean (*set_slave_bus_name)        (GdmDisplay *display,
-                                               const char *name,
                                                GError    **error);
         gboolean (*prepare)                   (GdmDisplay *display);
         gboolean (*manage)                    (GdmDisplay *display);
@@ -139,10 +137,10 @@ gboolean            gdm_display_is_initial                     (GdmDisplay  *dis
                                                                 gboolean    *initial,
                                                                 GError     **error);
 
-/* exported but protected */
-gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,
-                                                                GArray     **x11_cookie,
-                                                                GError    **error);
+gboolean            gdm_display_get_x11_cookie                 (GdmDisplay  *display,
+                                                                const char **x11_cookie,
+                                                                gsize       *x11_cookie_size,
+                                                                GError     **error);
 gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
                                                                 char      **filename,
                                                                 GError    **error);
@@ -153,9 +151,12 @@ gboolean            gdm_display_add_user_authorization         (GdmDisplay *disp
 gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
                                                                 const char *username,
                                                                 GError    **error);
-gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
-                                                                const char *name,
-                                                                GError    **error);
+
+void                gdm_display_set_up_greeter_session         (GdmDisplay  *display,
+                                                                char       **username);
+void                gdm_display_start_greeter_session          (GdmDisplay  *display);
+void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
+GdmSlave *          gdm_display_get_slave                      (GdmDisplay  *display);
 
 G_END_DECLS
 

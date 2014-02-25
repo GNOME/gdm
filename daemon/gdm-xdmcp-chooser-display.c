@@ -37,22 +37,10 @@
 
 #include "gdm-display.h"
 #include "gdm-xdmcp-chooser-display.h"
-#include "gdm-xdmcp-chooser-slave-glue.h"
+#include "gdm-xdmcp-chooser-slave.h"
 
 #include "gdm-common.h"
 #include "gdm-address.h"
-
-#define DEFAULT_SLAVE_COMMAND LIBEXECDIR"/gdm-xdmcp-chooser-slave"
-
-
-#define GDM_SLAVE_PATH "/org/gnome/DisplayManager/Slave"
-
-#define GDM_XDMCP_CHOOSER_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_XDMCP_CHOOSER_DISPLAY, GdmXdmcpChooserDisplayPrivate))
-
-struct GdmXdmcpChooserDisplayPrivate
-{
-        GdmDBusXdmcpChooserSlave *slave_proxy;
-};
 
 enum {
         HOSTNAME_SELECTED,
@@ -63,60 +51,18 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_xdmcp_chooser_display_class_init    (GdmXdmcpChooserDisplayClass *klass);
 static void     gdm_xdmcp_chooser_display_init          (GdmXdmcpChooserDisplay      *xdmcp_chooser_display);
-static void     gdm_xdmcp_chooser_display_finalize      (GObject                     *object);
-static gboolean gdm_xdmcp_chooser_display_finish (GdmDisplay *display);
+static gboolean gdm_xdmcp_chooser_display_prepare       (GdmDisplay *display);
+static gboolean gdm_xdmcp_chooser_display_finish        (GdmDisplay *display);
 
 G_DEFINE_TYPE (GdmXdmcpChooserDisplay, gdm_xdmcp_chooser_display, GDM_TYPE_XDMCP_DISPLAY)
 
 static void
-on_hostname_selected (GdmDBusXdmcpChooserSlave *proxy,
+on_hostname_selected (GdmXdmcpChooserSlave     *slave,
                       const char               *hostname,
                       GdmXdmcpChooserDisplay   *display)
 {
         g_debug ("GdmXdmcpChooserDisplay: hostname selected: %s", hostname);
         g_signal_emit (display, signals [HOSTNAME_SELECTED], 0, hostname);
-}
-
-static gboolean
-gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
-                                              const char *name,
-                                              GError    **error)
-{
-        GDBusConnection *connection;
-        GError          *local_error;
-        GdmXdmcpChooserDisplay *chooser_display;
-
-        chooser_display = GDM_XDMCP_CHOOSER_DISPLAY (display);
-        g_clear_object (&chooser_display->priv->slave_proxy);
-
-        local_error = NULL;
-        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
-        if (connection == NULL) {
-                g_critical ("error getting system bus: %s", local_error->message);
-                g_error_free (local_error);
-        }
-
-        g_debug ("GdmXdmcpChooserDisplay: creating proxy for slave on %s" , name);
-
-        chooser_display->priv->slave_proxy = GDM_DBUS_XDMCP_CHOOSER_SLAVE (
-                gdm_dbus_xdmcp_chooser_slave_proxy_new_sync (connection,
-                                                             G_DBUS_PROXY_FLAGS_NONE,
-                                                             name,
-                                                             GDM_SLAVE_PATH,
-                                                             NULL,
-                                                             &local_error));
-        if (chooser_display->priv->slave_proxy == NULL) {
-                g_warning ("Failed to connect to the slave object: %s", local_error->message);
-                g_error_free (local_error);
-                goto out;
-        }
-
-        g_signal_connect (chooser_display->priv->slave_proxy,
-                          "hostname-selected",
-                          G_CALLBACK (on_hostname_selected),
-                          display);
- out:
-        return GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->set_slave_bus_name (display, name, error);
 }
 
 static void
@@ -125,9 +71,7 @@ gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
-        object_class->finalize = gdm_xdmcp_chooser_display_finalize;
-
-        display_class->set_slave_bus_name = gdm_xdmcp_chooser_display_set_slave_bus_name;
+        display_class->prepare = gdm_xdmcp_chooser_display_prepare;
         display_class->finish = gdm_xdmcp_chooser_display_finish;
 
         signals [HOSTNAME_SELECTED] =
@@ -141,32 +85,27 @@ gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
-
-        g_type_class_add_private (klass, sizeof (GdmXdmcpChooserDisplayPrivate));
 }
 
 static void
 gdm_xdmcp_chooser_display_init (GdmXdmcpChooserDisplay *xdmcp_chooser_display)
 {
-
-        xdmcp_chooser_display->priv = GDM_XDMCP_CHOOSER_DISPLAY_GET_PRIVATE (xdmcp_chooser_display);
 }
 
-static void
-gdm_xdmcp_chooser_display_finalize (GObject *object)
+static gboolean
+gdm_xdmcp_chooser_display_prepare (GdmDisplay *display)
 {
-        GdmXdmcpChooserDisplay *chooser_display;
+        GdmXdmcpChooserSlave *slave;
 
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_XDMCP_CHOOSER_DISPLAY (object));
+        if (!GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->prepare (display))
+                return FALSE;
 
-        chooser_display = GDM_XDMCP_CHOOSER_DISPLAY (object);
+        slave = GDM_XDMCP_CHOOSER_SLAVE (gdm_display_get_slave (display));
 
-        g_return_if_fail (chooser_display->priv != NULL);
+        g_signal_connect (slave, "hostname-selected",
+                          G_CALLBACK (on_hostname_selected), display);
 
-        g_clear_object (&chooser_display->priv->slave_proxy);
-
-        G_OBJECT_CLASS (gdm_xdmcp_chooser_display_parent_class)->finalize (object);
+        return TRUE;
 }
 
 static gboolean
@@ -192,7 +131,7 @@ gdm_xdmcp_chooser_display_new (const char              *hostname,
 
         x11_display = g_strdup_printf ("%s:%d", hostname, number);
         object = g_object_new (GDM_TYPE_XDMCP_CHOOSER_DISPLAY,
-                               "slave-command", DEFAULT_SLAVE_COMMAND,
+                               "slave-type", GDM_TYPE_XDMCP_CHOOSER_SLAVE,
                                "remote-hostname", hostname,
                                "x11-display-number", number,
                                "x11-display-name", x11_display,

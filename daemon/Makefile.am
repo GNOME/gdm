@@ -33,8 +33,6 @@ AM_CPPFLAGS = \
 	$(NULL)
 
 BUILT_SOURCES =					\
-	gdm-slave-glue.h			\
-	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-display-glue.h			\
 	gdm-manager-glue.h			\
 	gdm-static-display-glue.h		\
@@ -100,20 +98,6 @@ gdm-session-worker-glue.c gdm-session-worker-glue.h : gdm-session-worker.xml Mak
 		--generate-c-code=gdm-session-worker-glue		\
 		$(srcdir)/gdm-session-worker.xml
 
-gdm-slave-glue.c gdm-slave-glue.h: gdm-slave.xml Makefile.am
-	$(AM_V_GEN)gdbus-codegen 					\
-		--c-namespace=GdmDBus					\
-		--interface-prefix=org.gnome.DisplayManager		\
-		--generate-c-code=gdm-slave-glue			\
-		$(srcdir)/gdm-slave.xml
-
-gdm-xdmcp-chooser-slave-glue.c gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser-slave.xml Makefile.am
-	$(AM_V_GEN)gdbus-codegen 					\
-		--c-namespace=GdmDBus					\
-		--interface-prefix=org.gnome.DisplayManager		\
-		--generate-c-code=gdm-xdmcp-chooser-slave-glue		\
-		$(srcdir)/gdm-xdmcp-chooser-slave.xml
-
 noinst_PROGRAMS = 		\
 	test-session-client	\
 	$(NULL)
@@ -134,107 +118,7 @@ test_session_client_LDADD =	\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
-	gdm-simple-slave		\
 	gdm-session-worker		\
-	$(NULL)
-
-if XDMCP_SUPPORT
-libexec_PROGRAMS += 			\
-	gdm-xdmcp-chooser-slave		\
-	$(NULL)
-endif
-
-gdm_simple_slave_SOURCES = 		\
-	simple-slave-main.c 		\
-	gdm-launch-environment.c	\
-	gdm-launch-environment.h	\
-	gdm-server.c			\
-	gdm-server.h			\
-	gdm-session.c			\
-	gdm-session.h			\
-	gdm-session-record.c		\
-	gdm-session-record.h		\
-	gdm-session-worker-common.c	\
-	gdm-session-worker-common.h	\
-	gdm-session-worker-job.c	\
-	gdm-session-worker-job.h	\
-	gdm-xerrors.h			\
-	gdm-xerrors.c			\
-	gdm-slave.c			\
-	gdm-slave.h			\
-	gdm-simple-slave.c		\
-	gdm-simple-slave.h		\
-	gdm-dbus-util.c			\
-	gdm-dbus-util.h			\
-	$(NULL)
-
-nodist_gdm_simple_slave_SOURCES = 	\
-	gdm-display-glue.c		\
-	gdm-display-glue.h		\
-	gdm-session-enum-types.c	\
-	gdm-session-enum-types.h	\
-	gdm-session-glue.c		\
-	gdm-session-glue.h		\
-	gdm-session-worker-glue.c	\
-	gdm-session-worker-glue.h	\
-	gdm-slave-glue.c		\
-	gdm-slave-glue.h		\
-	$(NULL)
-
-gdm_simple_slave_LDADD = 			\
-	$(top_builddir)/common/libgdmcommon.la	\
-	$(XLIB_LIBS)				\
-	$(DAEMON_LIBS)				\
-	$(EXTRA_DAEMON_LIBS)                    \
-	$(SYSTEMD_LIBS) 			\
-	$(JOURNALD_LIBS) 			\
-	$(PAM_LIBS)			\
-	$(NULL)
-
-gdm_xdmcp_chooser_slave_SOURCES = 		\
-	xdmcp-chooser-slave-main.c 		\
-	gdm-session.c				\
-	gdm-session.h				\
-	gdm-session-record.c			\
-	gdm-session-record.h			\
-	gdm-session-worker-common.c		\
-	gdm-session-worker-common.h		\
-	gdm-session-worker-job.c		\
-	gdm-session-worker-job.h		\
-	gdm-launch-environment.c		\
-	gdm-launch-environment.h		\
-	gdm-xerrors.h				\
-	gdm-xerrors.c				\
-	gdm-slave.c				\
-	gdm-slave.h				\
-	gdm-xdmcp-chooser-slave.c		\
-	gdm-xdmcp-chooser-slave.h		\
-	gdm-dbus-util.c				\
-	gdm-dbus-util.h				\
-	$(NULL)
-
-nodist_gdm_xdmcp_chooser_slave_SOURCES = 	\
-	gdm-session-glue.c			\
-	gdm-session-glue.h			\
-	gdm-session-worker-glue.c		\
-	gdm-session-worker-glue.h		\
-	gdm-session-enum-types.c		\
-	gdm-session-enum-types.h		\
-	gdm-display-glue.c			\
-	gdm-display-glue.h			\
-	gdm-slave-glue.c			\
-	gdm-slave-glue.h			\
-	gdm-xdmcp-chooser-slave-glue.c		\
-	gdm-xdmcp-chooser-slave-glue.h		\
-	$(NULL)
-
-gdm_xdmcp_chooser_slave_LDADD = 		\
-	$(XLIB_LIBS)				\
-	$(DAEMON_LIBS)				\
-	$(EXTRA_DAEMON_LIBS)                    \
-	$(SYSTEMD_LIBS) 			\
-	$(JOURNALD_LIBS) 			\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 gdm_session_worker_SOURCES = 			\
@@ -306,12 +190,28 @@ gdm_SOURCES = 			\
 	gdm-static-display.h		\
 	gdm-transient-display.c		\
 	gdm-transient-display.h		\
+	gdm-launch-environment.c	\
+	gdm-launch-environment.h	\
 	gdm-manager.c			\
 	gdm-manager.h			\
-	gdm-slave-job.c			\
-	gdm-slave-job.h			\
+	gdm-server.c			\
+	gdm-server.h			\
+	gdm-session.c			\
+	gdm-session.h			\
+	gdm-session-record.c		\
+	gdm-session-record.h		\
+	gdm-session-worker-common.c	\
+	gdm-session-worker-common.h	\
+	gdm-session-worker-job.c	\
+	gdm-session-worker-job.h	\
+	gdm-slave.c			\
+	gdm-slave.h			\
+	gdm-simple-slave.c		\
+	gdm-simple-slave.h		\
 	gdm-dbus-util.c			\
 	gdm-dbus-util.h			\
+	gdm-xerrors.c			\
+	gdm-xerrors.h			\
 	$(NULL)
 
 nodist_gdm_SOURCES = 			\
@@ -325,8 +225,12 @@ nodist_gdm_SOURCES = 			\
 	gdm-transient-display-glue.c		\
 	gdm-static-display-glue.h		\
 	gdm-static-display-glue.c		\
-	gdm-slave-glue.h			\
-	gdm-slave-glue.c			\
+	gdm-session-glue.h			\
+	gdm-session-glue.c			\
+	gdm-session-worker-glue.c		\
+	gdm-session-worker-glue.h		\
+	gdm-session-enum-types.c		\
+	gdm-session-enum-types.h		\
 	$(NULL)
 
 XDMCP_SOURCES =				\
@@ -338,16 +242,12 @@ XDMCP_SOURCES =				\
 	gdm-xdmcp-greeter-display.h	\
 	gdm-xdmcp-chooser-display.c	\
 	gdm-xdmcp-chooser-display.h	\
-	$(NULL)
-
-XDMCP_nodist_SOURCES = 			\
-	gdm-xdmcp-chooser-slave-glue.c	\
-	gdm-xdmcp-chooser-slave-glue.h	\
+	gdm-xdmcp-chooser-slave.c	\
+	gdm-xdmcp-chooser-slave.h	\
 	$(NULL)
 
 if XDMCP_SUPPORT
 gdm_SOURCES += $(XDMCP_SOURCES)
-nodist_gdm_SOURCES += $(XDMCP_nodist_SOURCES)
 endif
 
 EXTRA_gdm_SOURCES = 	\
@@ -381,10 +281,8 @@ CLEANFILES =					\
 	gdm-session-glue.c			\
 	gdm-session-worker-glue.c		\
 	gdm-session-enum-types.c		\
-	gdm-slave-glue.c			\
 	gdm-static-display-glue.c		\
 	gdm-transient-display-glue.c		\
-	gdm-xdmcp-chooser-slave-glue.c		\
 	$(BUILT_SOURCES)			\
 	$(NULL)
 

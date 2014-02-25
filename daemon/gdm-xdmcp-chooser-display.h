@@ -43,7 +43,6 @@ typedef struct GdmXdmcpChooserDisplayPrivate GdmXdmcpChooserDisplayPrivate;
 typedef struct
 {
         GdmXdmcpDisplay                parent;
-        GdmXdmcpChooserDisplayPrivate *priv;
 } GdmXdmcpChooserDisplay;
 
 typedef struct

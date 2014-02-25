@@ -41,14 +41,10 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#include "gdm-slave-job.h"
-#include "gdm-slave-glue.h"
+#include "gdm-simple-slave.h"
 #include "gdm-dbus-util.h"
 
 #define GDM_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY, GdmDisplayPrivate))
-
-#define GDM_SLAVE_PATH "/org/gnome/DisplayManager/Slave"
-#define DEFAULT_SLAVE_COMMAND LIBEXECDIR "/gdm-simple-slave"
 
 struct GdmDisplayPrivate
 {
@@ -62,7 +58,7 @@ struct GdmDisplayPrivate
         int                   status;
         time_t                creation_time;
         GTimer               *slave_timer;
-        char                 *slave_command;
+        GType                 slave_type;
 
         char                 *x11_cookie;
         gsize                 x11_cookie_size;
@@ -71,10 +67,7 @@ struct GdmDisplayPrivate
         gboolean              is_local;
         guint                 finish_idle_id;
 
-        GdmSlaveJob          *slave_job;
-        char                 *slave_bus_name;
-        GdmDBusSlave         *slave_proxy;
-        int                   slave_name_id;
+        GdmSlave             *slave;
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
 
@@ -96,7 +89,7 @@ enum {
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
-        PROP_SLAVE_COMMAND,
+        PROP_SLAVE_TYPE,
         PROP_IS_INITIAL
 };
 
@@ -104,6 +97,8 @@ static void     gdm_display_class_init  (GdmDisplayClass *klass);
 static void     gdm_display_init        (GdmDisplay      *display);
 static void     gdm_display_finalize    (GObject         *object);
 static void     queue_finish            (GdmDisplay      *display);
+static void     _gdm_display_set_status (GdmDisplay *display,
+                                         int         status);
 
 G_DEFINE_ABSTRACT_TYPE (GdmDisplay, gdm_display, G_TYPE_OBJECT)
 
@@ -289,79 +284,6 @@ gdm_display_add_user_authorization (GdmDisplay *display,
 }
 
 static void
-on_name_vanished (GDBusConnection *connection,
-                  const char      *name,
-                  gpointer         user_data)
-{
-        queue_finish (GDM_DISPLAY (user_data));
-}
-
-static void
-gdm_display_real_set_slave_bus_name_finish (GObject      *source_object,
-                                            GAsyncResult *res,
-                                            gpointer      user_data)
-{
-        GdmDisplay *display = user_data;
-
-        display->priv->slave_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_finish (res, NULL));
-        g_object_bind_property (G_OBJECT (display->priv->slave_proxy),
-                                "session-id",
-                                G_OBJECT (display),
-                                "session-id",
-                                G_BINDING_DEFAULT);
-}
-
-static gboolean
-gdm_display_real_set_slave_bus_name (GdmDisplay *display,
-                                     const char *name,
-                                     GError    **error)
-{
-        g_free (display->priv->slave_bus_name);
-        display->priv->slave_bus_name = g_strdup (name);
-
-        if (display->priv->slave_name_id > 0) {
-                g_bus_unwatch_name (display->priv->slave_name_id);
-        }
-
-        display->priv->slave_name_id = g_bus_watch_name_on_connection (display->priv->connection,
-                                                                       name,
-                                                                       G_BUS_NAME_WATCHER_FLAGS_NONE,
-                                                                       NULL, /* name appeared */
-                                                                       on_name_vanished,
-                                                                       g_object_ref (display),
-                                                                       NULL);
-
-        g_clear_object (&display->priv->slave_proxy);
-        gdm_dbus_slave_proxy_new (display->priv->connection,
-                                  G_DBUS_PROXY_FLAGS_NONE,
-                                  name,
-                                  GDM_SLAVE_PATH,
-                                  NULL,
-                                  gdm_display_real_set_slave_bus_name_finish,
-                                  display);
-
-        return TRUE;
-}
-
-gboolean
-gdm_display_set_slave_bus_name (GdmDisplay *display,
-                                const char *name,
-                                GError    **error)
-{
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_debug ("GdmDisplay: Setting slave bus name:%s on display %s", name, display->priv->x11_display_name);
-
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->set_slave_bus_name (display, name, error);
-        g_object_unref (display);
-
-        return ret;
-}
-
-static void
 gdm_display_real_get_timed_login_details (GdmDisplay *display,
                                           gboolean   *enabledp,
                                           char      **usernamep,
@@ -503,17 +425,19 @@ gdm_display_remove_user_authorization (GdmDisplay *display,
 }
 
 gboolean
-gdm_display_get_x11_cookie (GdmDisplay *display,
-                            GArray    **x11_cookie,
-                            GError    **error)
+gdm_display_get_x11_cookie (GdmDisplay  *display,
+                            const char **x11_cookie,
+                            gsize       *x11_cookie_size,
+                            GError     **error)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         if (x11_cookie != NULL) {
-                *x11_cookie = g_array_new (TRUE, FALSE, sizeof (char));
-                g_array_append_vals (*x11_cookie,
-                                     display->priv->x11_cookie,
-                                     display->priv->x11_cookie_size);
+                *x11_cookie = display->priv->x11_cookie;
+        }
+
+        if (x11_cookie_size != NULL) {
+                *x11_cookie_size = display->priv->x11_cookie_size;
         }
 
         return TRUE;
@@ -610,25 +534,11 @@ queue_finish (GdmDisplay *display)
 }
 
 static void
-slave_exited (GdmSlaveJob       *job,
-              int                code,
-              GdmDisplay        *display)
+on_slave_stopped (GdmSlave   *slave,
+                  GdmDisplay *display)
 {
-        g_debug ("GdmDisplay: Slave exited: %d", code);
-
         queue_finish (display);
 }
-
-static void
-slave_died (GdmSlaveJob       *job,
-            int                signum,
-            GdmDisplay        *display)
-{
-        g_debug ("GdmDisplay: Slave died: %d", signum);
-
-        queue_finish (display);
-}
-
 
 static void
 _gdm_display_set_status (GdmDisplay *display,
@@ -640,18 +550,19 @@ _gdm_display_set_status (GdmDisplay *display,
         }
 }
 
+static void
+on_slave_started (GdmSlave   *slave,
+                  GdmDisplay *display)
+{
+        _gdm_display_set_status (display, GDM_DISPLAY_MANAGED);
+}
+
 static gboolean
 gdm_display_real_prepare (GdmDisplay *display)
 {
-        char *command;
-        char *log_file;
-        char *log_path;
-
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         g_debug ("GdmDisplay: prepare display");
-
-        g_assert (display->priv->slave_job == NULL);
 
         if (!gdm_display_create_authority (display)) {
                 g_warning ("Unable to set up access control for display %d",
@@ -661,28 +572,22 @@ gdm_display_real_prepare (GdmDisplay *display)
 
         _gdm_display_set_status (display, GDM_DISPLAY_PREPARED);
 
-        display->priv->slave_job = gdm_slave_job_new ();
-        g_signal_connect (display->priv->slave_job,
-                          "exited",
-                          G_CALLBACK (slave_exited),
-                          display);
-        g_signal_connect (display->priv->slave_job,
-                          "died",
-                          G_CALLBACK (slave_died),
-                          display);
-
-        log_file = g_strdup_printf ("%s-slave.log", display->priv->x11_display_name);
-        log_path = g_build_filename (LOGDIR, log_file, NULL);
-        g_free (log_file);
-        gdm_slave_job_set_log_path (display->priv->slave_job, log_path);
-        g_free (log_path);
-
-        command = g_strdup_printf ("%s --display-id %s",
-                                   display->priv->slave_command,
-                                   display->priv->id);
-        gdm_slave_job_set_command (display->priv->slave_job, command);
-        g_free (command);
-
+        display->priv->slave = GDM_SLAVE (g_object_new (display->priv->slave_type,
+                                                        "display", display,
+                                                        NULL));
+        g_signal_connect_object (display->priv->slave, "started",
+                                 G_CALLBACK (on_slave_started),
+                                 display,
+                                 0);
+        g_signal_connect_object (display->priv->slave, "stopped",
+                                 G_CALLBACK (on_slave_stopped),
+                                 display,
+                                 0);
+        g_object_bind_property (G_OBJECT (display->priv->slave),
+                                "session-id",
+                                G_OBJECT (display),
+                                "session-id",
+                                G_BINDING_DEFAULT);
         return TRUE;
 }
 
@@ -719,11 +624,8 @@ gdm_display_real_manage (GdmDisplay *display)
                 }
         }
 
-        g_assert (display->priv->slave_job != NULL);
-
         g_timer_start (display->priv->slave_timer);
-
-        gdm_slave_job_start (display->priv->slave_job);
+        gdm_slave_start (display->priv->slave);
 
         return TRUE;
 }
@@ -783,11 +685,10 @@ gdm_display_real_unmanage (GdmDisplay *display)
 
         g_timer_stop (display->priv->slave_timer);
 
-        if (display->priv->slave_job != NULL) {
-                gdm_slave_job_stop (display->priv->slave_job);
-
-                g_object_unref (display->priv->slave_job);
-                display->priv->slave_job = NULL;
+        if (display->priv->slave != NULL) {
+                gdm_slave_stop (display->priv->slave);
+                g_object_unref (display->priv->slave);
+                display->priv->slave = NULL;
         }
 
         if (display->priv->user_access_file != NULL) {
@@ -808,11 +709,6 @@ gdm_display_real_unmanage (GdmDisplay *display)
                 _gdm_display_set_status (display, GDM_DISPLAY_FAILED);
         } else {
                 _gdm_display_set_status (display, GDM_DISPLAY_UNMANAGED);
-        }
-
-        if (display->priv->slave_name_id > 0) {
-                g_bus_unwatch_name (display->priv->slave_name_id);
-                display->priv->slave_name_id = 0;
         }
 
         return TRUE;
@@ -939,11 +835,10 @@ _gdm_display_set_is_local (GdmDisplay     *display,
 }
 
 static void
-_gdm_display_set_slave_command (GdmDisplay     *display,
-                                const char     *command)
+_gdm_display_set_slave_type (GdmDisplay     *display,
+                             GType           type)
 {
-        g_free (display->priv->slave_command);
-        display->priv->slave_command = g_strdup (command);
+        display->priv->slave_type = type;
 }
 
 static void
@@ -991,8 +886,8 @@ gdm_display_set_property (GObject        *object,
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
                 break;
-        case PROP_SLAVE_COMMAND:
-                _gdm_display_set_slave_command (self, g_value_get_string (value));
+        case PROP_SLAVE_TYPE:
+                _gdm_display_set_slave_type (self, g_value_get_gtype (value));
                 break;
         case PROP_IS_INITIAL:
                 _gdm_display_set_is_initial (self, g_value_get_boolean (value));
@@ -1045,8 +940,8 @@ gdm_display_get_property (GObject        *object,
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
                 break;
-        case PROP_SLAVE_COMMAND:
-                g_value_set_string (value, self->priv->slave_command);
+        case PROP_SLAVE_TYPE:
+                g_value_set_gtype (value, self->priv->slave_type);
                 break;
         case PROP_IS_INITIAL:
                 g_value_set_boolean (value, self->priv->is_initial);
@@ -1149,18 +1044,18 @@ handle_get_x11_cookie (GdmDBusDisplay        *skeleton,
                        GDBusMethodInvocation *invocation,
                        GdmDisplay            *display)
 {
-        GArray *cookie = NULL;
+        const char *x11_cookie;
+        gsize x11_cookie_size;
         GVariant *variant;
 
-        gdm_display_get_x11_cookie (display, &cookie, NULL);
+        gdm_display_get_x11_cookie (display, &x11_cookie, &x11_cookie_size, NULL);
 
         variant = g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE,
-                                             cookie->data,
-                                             cookie->len,
+                                             x11_cookie,
+                                             x11_cookie_size,
                                              sizeof (char));
         gdm_dbus_display_complete_get_x11_cookie (skeleton, invocation, variant);
 
-        g_array_unref (cookie);
         return TRUE;
 }
 
@@ -1217,41 +1112,6 @@ handle_is_initial (GdmDBusDisplay        *skeleton,
         gdm_display_is_initial (display, &is_initial, NULL);
 
         gdm_dbus_display_complete_is_initial (skeleton, invocation, is_initial);
-
-        return TRUE;
-}
-
-static gboolean
-handle_get_slave_bus_name (GdmDBusDisplay        *skeleton,
-                           GDBusMethodInvocation *invocation,
-                           GdmDisplay            *display)
-{
-        if (display->priv->slave_bus_name != NULL) {
-                gdm_dbus_display_complete_get_slave_bus_name (skeleton, invocation,
-                                                              display->priv->slave_bus_name);
-        } else {
-                g_dbus_method_invocation_return_dbus_error (invocation,
-                                                            "org.gnome.DisplayManager.NotReady",
-                                                            "Slave is not yet registered");
-        }
-
-        return TRUE;
-}
-
-static gboolean
-handle_set_slave_bus_name (GdmDBusDisplay        *skeleton,
-                           GDBusMethodInvocation *invocation,
-                           const char            *bus_name,
-                           GdmDisplay            *display)
-{
-        GError *error = NULL;
-
-        if (gdm_display_set_slave_bus_name (display, bus_name, &error)) {
-                gdm_dbus_display_complete_set_slave_bus_name (skeleton, invocation);
-        } else {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
-        }
 
         return TRUE;
 }
@@ -1332,10 +1192,6 @@ register_display (GdmDisplay *display)
                           G_CALLBACK (handle_is_local), display);
         g_signal_connect (display->priv->display_skeleton, "handle-is-initial",
                           G_CALLBACK (handle_is_initial), display);
-        g_signal_connect (display->priv->display_skeleton, "handle-get-slave-bus-name",
-                          G_CALLBACK (handle_get_slave_bus_name), display);
-        g_signal_connect (display->priv->display_skeleton, "handle-set-slave-bus-name",
-                          G_CALLBACK (handle_set_slave_bus_name), display);
         g_signal_connect (display->priv->display_skeleton, "handle-add-user-authorization",
                           G_CALLBACK (handle_add_user_authorization), display);
         g_signal_connect (display->priv->display_skeleton, "handle-remove-user-authorization",
@@ -1345,74 +1201,6 @@ register_display (GdmDisplay *display)
                                               G_DBUS_INTERFACE_SKELETON (display->priv->display_skeleton));
 
         return TRUE;
-}
-
-char *
-gdm_display_open_session_sync (GdmDisplay    *display,
-                               GPid           pid_of_caller,
-                               uid_t          uid_of_caller,
-                               GCancellable  *cancellable,
-                               GError       **error)
-{
-        char *address;
-        int ret;
-
-        if (display->priv->slave_proxy == NULL) {
-                g_set_error (error,
-                             G_DBUS_ERROR,
-                             G_DBUS_ERROR_ACCESS_DENIED,
-                             _("No session available yet"));
-                return NULL;
-        }
-
-        address = NULL;
-        ret = gdm_dbus_slave_call_open_session_sync (display->priv->slave_proxy,
-                                                     (int) pid_of_caller,
-                                                     (int) uid_of_caller,
-                                                     &address,
-                                                     cancellable,
-                                                     error);
-
-        if (!ret) {
-                return NULL;
-        }
-
-        return address;
-}
-
-char *
-gdm_display_open_reauthentication_channel_sync (GdmDisplay    *display,
-                                                const char    *username,
-                                                GPid           pid_of_caller,
-                                                uid_t          uid_of_caller,
-                                                GCancellable  *cancellable,
-                                                GError       **error)
-{
-        char *address;
-        int ret;
-
-        if (display->priv->slave_proxy == NULL) {
-                g_set_error (error,
-                             G_DBUS_ERROR,
-                             G_DBUS_ERROR_ACCESS_DENIED,
-                             _("No session available yet"));
-                return NULL;
-        }
-
-        address = NULL;
-        ret = gdm_dbus_slave_call_open_reauthentication_channel_sync (display->priv->slave_proxy,
-                                                                      username,
-                                                                      pid_of_caller,
-                                                                      uid_of_caller,
-                                                                      &address,
-                                                                      cancellable,
-                                                                      error);
-
-        if (!ret) {
-                return NULL;
-        }
-
-        return address;
 }
 
 /*
@@ -1458,16 +1246,10 @@ gdm_display_dispose (GObject *object)
 
         g_debug ("GdmDisplay: Disposing display");
 
-        if (display->priv->finish_idle_id > 0) {
-                g_source_remove (display->priv->finish_idle_id);
-                display->priv->finish_idle_id = 0;
-        }
-
-        if (display->priv->slave_job != NULL) {
-                gdm_slave_job_stop (display->priv->slave_job);
-
-                g_object_unref (display->priv->slave_job);
-                display->priv->slave_job = NULL;
+        if (display->priv->slave != NULL) {
+                gdm_slave_stop (display->priv->slave);
+                g_object_unref (display->priv->slave);
+                display->priv->slave = NULL;
         }
 
         if (display->priv->user_access_file != NULL) {
@@ -1480,11 +1262,6 @@ gdm_display_dispose (GObject *object)
                 gdm_display_access_file_close (display->priv->access_file);
                 g_object_unref (display->priv->access_file);
                 display->priv->access_file = NULL;
-        }
-
-        if (display->priv->slave_name_id > 0) {
-                g_bus_unwatch_name (display->priv->slave_name_id);
-                display->priv->slave_name_id = 0;
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
@@ -1504,7 +1281,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
         klass->create_authority = gdm_display_real_create_authority;
         klass->add_user_authorization = gdm_display_real_add_user_authorization;
         klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
-        klass->set_slave_bus_name = gdm_display_real_set_slave_bus_name;
         klass->get_timed_login_details = gdm_display_real_get_timed_login_details;
         klass->prepare = gdm_display_real_prepare;
         klass->manage = gdm_display_real_manage;
@@ -1586,12 +1362,12 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_object_class_install_property (object_class,
-                                         PROP_SLAVE_COMMAND,
-                                         g_param_spec_string ("slave-command",
-                                                              "slave command",
-                                                              "slave command",
-                                                              DEFAULT_SLAVE_COMMAND,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                         PROP_SLAVE_TYPE,
+                                         g_param_spec_gtype ("slave-type",
+                                                             "slave type",
+                                                             "slave type",
+                                                             GDM_TYPE_SIMPLE_SLAVE,
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_STATUS,
                                          g_param_spec_int ("status",
@@ -1633,8 +1409,6 @@ gdm_display_finalize (GObject *object)
         g_free (display->priv->remote_hostname);
         g_free (display->priv->x11_display_name);
         g_free (display->priv->x11_cookie);
-        g_free (display->priv->slave_command);
-        g_free (display->priv->slave_bus_name);
 
         g_clear_object (&display->priv->display_skeleton);
         g_clear_object (&display->priv->object_skeleton);
@@ -1659,4 +1433,29 @@ GDBusObjectSkeleton *
 gdm_display_get_object_skeleton (GdmDisplay *display)
 {
         return display->priv->object_skeleton;
+}
+
+void
+gdm_display_set_up_greeter_session (GdmDisplay  *display,
+                                    char       **username)
+{
+        gdm_slave_set_up_greeter_session (display->priv->slave, username);
+}
+
+void
+gdm_display_start_greeter_session (GdmDisplay *display)
+{
+        gdm_slave_start_greeter_session (display->priv->slave);
+}
+
+void
+gdm_display_stop_greeter_session (GdmDisplay *display)
+{
+        gdm_slave_stop_greeter_session (display->priv->slave);
+}
+
+GdmSlave *
+gdm_display_get_slave (GdmDisplay *display)
+{
+        return display->priv->slave;
 }
