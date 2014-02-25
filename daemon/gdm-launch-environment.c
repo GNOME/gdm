@@ -252,7 +252,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         g_free (system_data_dirs);
 
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (launch_environment->priv->x11_authority_file));
-        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (launch_environment->priv->x11_display_name));
 
         g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->priv->user_name));
         g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->priv->user_name));
