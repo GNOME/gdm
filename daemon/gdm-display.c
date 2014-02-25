@@ -686,6 +686,10 @@ gdm_display_real_unmanage (GdmDisplay *display)
         g_timer_stop (display->priv->slave_timer);
 
         if (display->priv->slave != NULL) {
+                g_signal_handlers_disconnect_by_func (display->priv->slave,
+                                                      G_CALLBACK (on_slave_started), display);
+                g_signal_handlers_disconnect_by_func (display->priv->slave,
+                                                      G_CALLBACK (on_slave_stopped), display);
                 gdm_slave_stop (display->priv->slave);
                 g_object_unref (display->priv->slave);
                 display->priv->slave = NULL;
