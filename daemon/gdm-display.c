@@ -1248,24 +1248,9 @@ gdm_display_dispose (GObject *object)
 
         g_assert (display->priv->status == GDM_DISPLAY_FINISHED ||
                   display->priv->status == GDM_DISPLAY_FAILED);
-
-        if (display->priv->slave != NULL) {
-                gdm_slave_stop (display->priv->slave);
-                g_object_unref (display->priv->slave);
-                display->priv->slave = NULL;
-        }
-
-        if (display->priv->user_access_file != NULL) {
-                gdm_display_access_file_close (display->priv->user_access_file);
-                g_object_unref (display->priv->user_access_file);
-                display->priv->user_access_file = NULL;
-        }
-
-        if (display->priv->access_file != NULL) {
-                gdm_display_access_file_close (display->priv->access_file);
-                g_object_unref (display->priv->access_file);
-                display->priv->access_file = NULL;
-        }
+        g_assert (display->priv->slave == NULL);
+        g_assert (display->priv->user_access_file == NULL);
+        g_assert (display->priv->access_file == NULL);
 
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
 }
