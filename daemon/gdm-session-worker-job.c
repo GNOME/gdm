@@ -36,6 +36,14 @@
 #include <sys/prctl.h>
 #endif
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
+#ifdef ENABLE_SYSTEMD_JOURNAL
+#include <systemd/sd-journal.h>
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
@@ -83,8 +91,36 @@ static void     gdm_session_worker_job_finalize (GObject         *object);
 G_DEFINE_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, G_TYPE_OBJECT)
 
 static void
+session_worker_job_setup_journal_fds (void)
+{
+#ifdef ENABLE_SYSTEMD_JOURNAL
+        if (sd_booted () > 0) {
+                const char *identifier = "gdm-session-worker";
+                int out, err;
+
+                out = sd_journal_stream_fd (identifier, LOG_INFO, FALSE);
+                if (out < 0)
+                        return;
+
+                err = sd_journal_stream_fd (identifier, LOG_WARNING, FALSE);
+                if (err < 0) {
+                        close (out);
+                        return;
+                }
+
+                VE_IGNORE_EINTR (dup2 (out, 1));
+                VE_IGNORE_EINTR (dup2 (err, 2));
+                return;
+        }
+#endif
+        return;
+}
+
+static void
 session_worker_job_child_setup (GdmSessionWorkerJob *session_worker_job)
 {
+        session_worker_job_setup_journal_fds ();
+
         /* Terminate the process when the parent dies */
 #ifdef HAVE_SYS_PRCTL_H
         prctl (PR_SET_PDEATHSIG, SIGTERM);
