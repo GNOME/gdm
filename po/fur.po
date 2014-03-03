@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-01-19 12:17+0000\n"
-"PO-Revision-Date: 2013-01-19 13:19+0100\n"
+"POT-Creation-Date: 2014-03-03 06:05+0000\n"
+"PO-Revision-Date: 2014-03-03 11:21+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: FRIULIAN <massimo.furlani@libero.it>\n"
 "Language: fur_IT\n"
@@ -18,104 +18,101 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:492
+#: ../common/gdm-common.c:519
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nol è un dispositîf a caratars"
+
+#: ../common/gdm-common.c:827 ../common/gdm-common.c:980
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Impussibil identificâ la session atuâl."
+
+#: ../common/gdm-common.c:834 ../libgdm/gdm-user-switching.c:351
+#, fuzzy, c-format
+#| msgid "unable to log session"
+msgid "User unable to switch sessions."
+msgstr "Impussibil cambiâ session."
+
+#: ../common/gdm-common.c:989 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Impussibil identificâ la postazion atuâl."
+
+#: ../common/gdm-common.c:999 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Il sisteme nol rive a capî se passâ a une schermade di acès esistent o creâ "
+"une gnove."
+
+#: ../common/gdm-common.c:1007 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Il sisteme nol rive a fâ partî une gnove schermade di acès."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "Impussibil cjatâ l'utent \"%s\" tal sisteme"
 
-#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#: ../daemon/gdm-display.c:1364 ../daemon/gdm-display.c:1398
 #, fuzzy, c-format
 #| msgid "no user account available"
 msgid "No session available yet"
 msgstr "nol è pussibil doprâ ancjemò nissun account user"
 
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
-#, fuzzy, c-format
-#| msgid "Unable to authorize user"
-msgid "Unable to look up UID of user %s"
-msgstr "Impussibil autorizâ l'utent"
-
-#: ../daemon/gdm-manager.c:291
-#, fuzzy
-#| msgid "no user account available"
-msgid "no sessions available"
-msgstr "nol è pussibil doprâ nissun account user"
-
-#: ../daemon/gdm-manager.c:352
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Nissune session di ri-autenticazion disponibil par %s"
-
-#: ../daemon/gdm-manager.c:406
-#, fuzzy, c-format
-#| msgid "unable to log session"
-msgid "Unable to find session for user %s"
-msgstr "impussibil loggasi ta session"
-
-#: ../daemon/gdm-manager.c:476
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Impussibil cjatâ la session juste par l'utent %s"
-
-#: ../daemon/gdm-manager.c:671
-#, fuzzy
-#| msgid "User %s doesn't exist"
-msgid "User doesn't own session"
-msgstr "L'utent %s nol esist"
-
-#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+#: ../daemon/gdm-manager.c:361 ../daemon/gdm-manager.c:406
 #, fuzzy
 #| msgid "no user account available"
 msgid "No session available"
 msgstr "nol è pussibil doprâ nissun account user"
 
-#: ../daemon/gdm-server.c:272
+#: ../daemon/gdm-server.c:289
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: Falît tal conetisi al visôr pari '%s'"
 
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-server.c:470
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Il server al veve di sedi inviât dal'utent %s ma chest utent nol esist"
 
-#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
+#: ../daemon/gdm-server.c:481 ../daemon/gdm-server.c:501
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Impussibil impostâ il grupid a %d"
 
-#: ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:487
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () falît par %s"
 
-#: ../daemon/gdm-server.c:474
+#: ../daemon/gdm-server.c:493
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No puès impostâ il ID utent a %d"
 
-#: ../daemon/gdm-server.c:521
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: no puès vierzi il file çoc par il visôr %s!"
 
-#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
-#: ../daemon/gdm-server.c:544
+#: ../daemon/gdm-server.c:592 ../daemon/gdm-server.c:598
+#: ../daemon/gdm-server.c:604
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Erôr configurant %s a %s"
 
-#: ../daemon/gdm-server.c:564
+#: ../daemon/gdm-server.c:624
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: La prioritât dal server a no puès sedi impostade a %d: %s"
 
-#: ../daemon/gdm-server.c:720
+#: ../daemon/gdm-server.c:772
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Al mancje il comant dal server par il visôr %s"
@@ -144,82 +141,38 @@ msgstr "Dispositîf Visôr"
 msgid "The display device"
 msgstr "Il dispositîf dal visôr"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1173
 msgid "Could not create authentication helper process"
 msgstr "Impussibil creâ il procès di jutori par l'autenticazion"
 
-#: ../daemon/gdm-session-worker.c:1033
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "Erôr tal tacâ la conversazion cul sisteme di autenticazion: %s"
+#: ../daemon/gdm-session-worker.c:836
+msgid "Your account was given a time limit that's now passed."
+msgstr "Il tô account al veve un timp limit che cumò al è passât."
 
-#: ../daemon/gdm-session-worker.c:1034
-msgid "general failure"
-msgstr "erôr gjenerâl"
+#: ../daemon/gdm-session-worker.c:843
+msgid "Sorry, that didn't work. Please try again."
+msgstr "Mi displâs, no je lade drete. Prove di gnûf"
 
-#: ../daemon/gdm-session-worker.c:1035
-msgid "out of memory"
-msgstr "fûr de memorie"
-
-#: ../daemon/gdm-session-worker.c:1036
-msgid "application programmer error"
-msgstr "erôr dal programatôr"
-
-#: ../daemon/gdm-session-worker.c:1037
-msgid "unknown error"
-msgstr "Erôr no cognossût"
-
-#: ../daemon/gdm-session-worker.c:1044
+#: ../daemon/gdm-session-worker.c:1071
 msgid "Username:"
 msgstr "Non utent:"
 
-#: ../daemon/gdm-session-worker.c:1050
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"erôr tal informâ il sisteme di autenticazion cuâl ch'al è il prompt preferît "
-"dal'utent: %s"
+#: ../daemon/gdm-session-worker.c:1205
+msgid "Your password has expired, please change it now."
+msgstr "La tô password a je scjadude, par plasê tu âs di cambiale cumò."
 
-#: ../daemon/gdm-session-worker.c:1064
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"erôr tal informâ il sisteme di autenticazion cuâl ch'al è il non dal host "
-"dal'utent: %s"
-
-#: ../daemon/gdm-session-worker.c:1081
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"erôr tal informâ il sisteme di autenticazion cuale che jè la console "
-"dal'utent: %s"
-
-#: ../daemon/gdm-session-worker.c:1105
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr ""
-"erôr tal informâ il sisteme di autenticazion cuale che jè la stringe dal "
-"visôr: %s"
-
-#: ../daemon/gdm-session-worker.c:1120
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"erôr tal informâ il sisteme di autenticazion cualis che son lis credenziâls "
-"xauth dal visôr: %s"
-
-#: ../daemon/gdm-session-worker.c:1458 ../daemon/gdm-session-worker.c:1475
+#: ../daemon/gdm-session-worker.c:1444 ../daemon/gdm-session-worker.c:1461
 #, c-format
 msgid "no user account available"
 msgstr "Nissun account utent disponibil"
 
-#: ../daemon/gdm-session-worker.c:1502
+#: ../daemon/gdm-session-worker.c:1488
 #, fuzzy
 #| msgid "Unable to authorize user"
 msgid "Unable to change to user"
 msgstr "Impussibil autorizâ l'utent"
 
-#: ../daemon/gdm-simple-slave.c:1330
+#: ../daemon/gdm-simple-slave.c:1520
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -232,109 +185,103 @@ msgstr ""
 "moment il visôr al vignarà disabilitât. Une volte justât il probleme, "
 "reinvie GDM."
 
-#: ../daemon/gdm-simple-slave.c:1371
+#: ../daemon/gdm-simple-slave.c:1561
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Al puès sedi clamât nome prime che l'utent al vedi fat l'acès."
 
-#: ../daemon/gdm-simple-slave.c:1381
+#: ../daemon/gdm-simple-slave.c:1571
 #, c-format
 msgid "Caller not GDM"
 msgstr "Clamadôr no GDM"
 
-#: ../daemon/gdm-simple-slave.c:1434
+#: ../daemon/gdm-simple-slave.c:1623
 msgid "User not logged in"
 msgstr "L'utent nol a eseguît l'acès"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
+#: ../daemon/gdm-xdmcp-chooser-slave.c:364
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "Par cumò nome un client ae volte al puès sedi tacât"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:605
 msgid "Could not create socket!"
 msgstr "No puès creâ socket!"
 
-#: ../daemon/main.c:126 ../daemon/main.c:139
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "No puès scrivi il file PID %s: forsit al è finît il spazi su disc: %s"
 
-#: ../daemon/main.c:189
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr ""
 
-#: ../daemon/main.c:195
-#, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Creazion falide di AuthDir %s: %s"
-
-#: ../daemon/main.c:201
+#: ../daemon/main.c:194
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Creazion falide di LogDir %s: %s"
 
-#: ../daemon/main.c:236
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "No rivi a cjatâ l'utent '%s' di GDM. O voi fûr!"
 
-#: ../daemon/main.c:242
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "L'user di GDM nol scugne jessi root. O voi fûr!"
 
-#: ../daemon/main.c:248
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "No rivi a cjatâ il grop '%s' di GDM. O voi fûr!"
 
-#: ../daemon/main.c:254
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Il grop di GDM nol scugne jessi root. O voi fûr!"
 
-#: ../daemon/main.c:362
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Fâs diventâ dutis lis avertencis fatai."
 
-#: ../daemon/main.c:363
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Jes dopo un pôc (par il debug)"
 
-#: ../daemon/main.c:364
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Stampe la version di GDM"
 
-#: ../daemon/main.c:375
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "GNOME Display Manager"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:423
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Dome root al puès inviâ GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:148
+#: ../daemon/session-worker-main.c:95
 #, fuzzy
 msgid "GNOME Display Manager Session Worker"
 msgstr "Cjamadôr di session dal Gjestôr di visôr di GNOME"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:118 ../daemon/xdmcp-chooser-slave-main.c:118
 msgid "Display ID"
 msgstr "Mostre ID"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:118 ../daemon/xdmcp-chooser-slave-main.c:118
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
+#: ../daemon/simple-slave-main.c:126 ../daemon/xdmcp-chooser-slave-main.c:126
 msgid "GNOME Display Manager Slave"
 msgstr "Sclâf dal gjestôr di visôr di GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Barcon di acès"
 
@@ -371,10 +318,25 @@ msgstr ""
 "doprale par eseguî l'acès."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#, fuzzy
+#| msgid "Whether or not to allow smartcard readers for login"
+msgid "Whether or not to allow passwords for login"
+msgstr "Specifiche se permeti o no l'acès cun i letôrs di smartcard"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"La videade di login a pues sedi configurade par gjavâ la pussibilitât di "
+"autenticâsi vie password e imponi al utent di doprâ une smartcard o un letôr "
+"di improntis."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Percors di une piçule figure insomp a le liste dai utents"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -384,7 +346,7 @@ msgstr ""
 "liste dai utents par dâ ai ministradôrs e âs distribuzions un mût par aplicâ "
 "il lôr brand."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -394,11 +356,11 @@ msgstr ""
 "insomp a le liste dai utents par dâ ai ministradôrs e âs distribuzions un "
 "mût par aplicâ il lôr brand."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Evite di mostrâ la liste dai utents"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -407,83 +369,42 @@ msgstr ""
 "eseguî l'acès. Cheste impostazion a puès sedi cambiade par no mostrâ la "
 "liste dai utents."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Abilite la vision de insegne"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Imposte a VÊR par viodi il test de insegne."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Test de insegne"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Test de insegne di mostrâ in tal barcon di acès."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Tapone il boton di reinviament"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Imposte a VÊR par taponâ il boton di reinviament in tal barcon di acès."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Numar massim di faliments di autenticazion"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
 "Il numar di voltis che un utent al puès cirî di autenticasi, prime di "
 "rindisi e tornâ ae selezion dal'utent."
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Impussibil creâ il visôr transitori:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Impussibil ativâ la session"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
-#: ../utils/gdmflexiserver.c:613
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Impussibil identificâ la session atuâl."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
-#, fuzzy, c-format
-#| msgid "unable to log session"
-msgid "User unable to switch sessions."
-msgstr "Impussibil cambiâ session."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Impussibil identificâ la postazion atuâl."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Il sisteme nol rive a capî se passâ a une schermade di acès esistent o creâ "
-"une gnove."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Il sisteme nol rive a fâ partî une gnove schermade di acès."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -503,384 +424,41 @@ msgstr "XMDCP: la version di XDMCP no je chê juste!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
 msgid "XDMCP: Unable to parse address"
-msgstr ""
+msgstr "XDMCP: Impussibil analizâ il recapit"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Autenticazion cun impronte digitâl"
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Impussibil creâ il visôr transitori:"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Acedi al sisteme cun il letôr di improntis"
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Impussibil ativâ la session"
 
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-#, fuzzy
-#| msgid "Authentication Dialog"
-msgid "Password Authentication"
-msgstr "Autenticazion vie Password"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Acedi al sisteme cun non utent e password"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Log In"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "ID dal slot"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Il slot dulà che a jè inseride la cjarte"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Serie dal slot"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "identificatôr de cjarte par slot"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "Non"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Modul"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "driver smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-#, fuzzy
-#| msgid "Authentication Dialog"
-msgid "Smartcard Authentication"
-msgstr "Autenticazion vie Smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Acedi al sisteme cun la smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Percors dal modul"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "percors dal driver de smartcard PKCS #11"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "ricevût erôr o siaradure de sorgint dal'event"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "il sisteme di sigurece NSS nol puès sedi fat partî"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "nol è stât cjatât nissun driver util pe smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "il driver de smartcard '%s' a nol puès sedi cjamât"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Autenticazion"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Acedi al sisteme"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Valôr"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "Percentuâl di timp completade"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Test inatîf"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr ""
-"Test di doprâ in te etichete se l'utent nol à ancjemò sielzût un element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Test atîf"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "Test di doprâ in te etichete se l'utent al à sielzût un element"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "Liste visibile"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Indiche se la liste dal seletôr a jè visibile"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-#, fuzzy
-#| msgid "%l:%M:%S %p"
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%l:%M:%S %p"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-#, fuzzy
-#| msgid "%l:%M %p"
-msgid "%a %b %e, %l:%M %p"
-msgstr "%l:%M %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-#, fuzzy
-#| msgid "%l:%M:%S %p"
-msgid "%a %l:%M:%S %p"
-msgstr "%l:%M:%S %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-#, fuzzy
-#| msgid "%l:%M %p"
-msgid "%a %l:%M %p"
-msgstr "%l:%M %p"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "Acès automatic..."
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "Anulament..."
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Selezione la lenghe e sclice Acêt"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Personalizade"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Session personalizade"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Nom dal computer"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Version"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Anule"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Sbloche"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Acêt"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "Sospent"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "Torne a inviâ"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "Stude"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "Timp mancjant no cognossût"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "Panel"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Test etichete"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "Il test di doprâ come etichete"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Non icone"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "L'icone di doprâ cun l'etichete"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Element predefinît"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "Il ID dal element predefinît"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Acès a distance (Conession a %s…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Acès a distance (Conettût a %s…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Acès a distance"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Session"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Durade"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Numar di seconts prime che il timer a si fermi"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Moment di inviament"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "Le ore di cuanche il tilmer al è stât inviât"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "Isal in esecuzion?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Indiche se il timer cumò al stâ lant indenant "
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "Acès come %s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-#, fuzzy
-msgctxt "user"
-msgid "Other…"
-msgstr "Altri..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Sielz un account diferent"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Ospit"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Acêt come ospit provisori"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Acès automatic"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Acedi automaticamentri al sisteme dopo vê selezionât lis opzions"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "Acès bielza eseguît"
-
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Nome il comant VERSION al è supuartât"
 
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr ""
 
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
-msgstr ""
+msgstr "Ignorât — tignût par compatibilitât"
 
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr ""
 
-#: ../utils/gdmflexiserver.c:71
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Version di cheste aplicazion"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:706
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Gnûf acès GDM"
-
-#: ../utils/gdmflexiserver.c:762
-msgid "Unable to start new display"
-msgstr "Impussibil fâ partî il gnûf visôr"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -890,6 +468,305 @@ msgstr "Screenshot fat"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fâs une figure dal visôr"
+
+#~| msgid "Unable to authorize user"
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Impussibil autorizâ l'utent"
+
+#~| msgid "no user account available"
+#~ msgid "no sessions available"
+#~ msgstr "nol è pussibil doprâ nissun account user"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Nissune session di ri-autenticazion disponibil par %s"
+
+#~| msgid "unable to log session"
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "impussibil loggasi ta session"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Impussibil cjatâ la session juste par l'utent %s"
+
+#~| msgid "User %s doesn't exist"
+#~ msgid "User doesn't own session"
+#~ msgstr "L'utent %s nol esist"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "Erôr tal tacâ la conversazion cul sisteme di autenticazion: %s"
+
+#~ msgid "general failure"
+#~ msgstr "erôr gjenerâl"
+
+#~ msgid "out of memory"
+#~ msgstr "fûr de memorie"
+
+#~ msgid "application programmer error"
+#~ msgstr "erôr dal programatôr"
+
+#~ msgid "unknown error"
+#~ msgstr "Erôr no cognossût"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "erôr tal informâ il sisteme di autenticazion cuâl ch'al è il prompt "
+#~ "preferît dal'utent: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr ""
+#~ "erôr tal informâ il sisteme di autenticazion cuâl ch'al è il non dal host "
+#~ "dal'utent: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr ""
+#~ "erôr tal informâ il sisteme di autenticazion cuale che jè la console "
+#~ "dal'utent: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr ""
+#~ "erôr tal informâ il sisteme di autenticazion cuale che jè la stringe dal "
+#~ "visôr: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr ""
+#~ "erôr tal informâ il sisteme di autenticazion cualis che son lis "
+#~ "credenziâls xauth dal visôr: %s"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "Creazion falide di AuthDir %s: %s"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "Autenticazion cun impronte digitâl"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "Acedi al sisteme cun il letôr di improntis"
+
+#~| msgid "Authentication Dialog"
+#~ msgid "Password Authentication"
+#~ msgstr "Autenticazion vie Password"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "Acedi al sisteme cun non utent e password"
+
+#~ msgid "Log In"
+#~ msgstr "Log In"
+
+#~ msgid "Slot ID"
+#~ msgstr "ID dal slot"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "Il slot dulà che a jè inseride la cjarte"
+
+#~ msgid "Slot Series"
+#~ msgstr "Serie dal slot"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "identificatôr de cjarte par slot"
+
+#~ msgid "name"
+#~ msgstr "Non"
+
+#~ msgid "Module"
+#~ msgstr "Modul"
+
+#~ msgid "smartcard driver"
+#~ msgstr "driver smartcard"
+
+#~| msgid "Authentication Dialog"
+#~ msgid "Smartcard Authentication"
+#~ msgstr "Autenticazion vie Smartcard"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "Acedi al sisteme cun la smartcard"
+
+#~ msgid "Module Path"
+#~ msgstr "Percors dal modul"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "percors dal driver de smartcard PKCS #11"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "ricevût erôr o siaradure de sorgint dal'event"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "il sisteme di sigurece NSS nol puès sedi fat partî"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "nol è stât cjatât nissun driver util pe smartcard"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "il driver de smartcard '%s' a nol puès sedi cjamât"
+
+#~ msgid "Authentication"
+#~ msgstr "Autenticazion"
+
+#~ msgid "Log into session"
+#~ msgstr "Acedi al sisteme"
+
+#~ msgid "Value"
+#~ msgstr "Valôr"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "Percentuâl di timp completade"
+
+#~ msgid "Inactive Text"
+#~ msgstr "Test inatîf"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr ""
+#~ "Test di doprâ in te etichete se l'utent nol à ancjemò sielzût un element"
+
+#~ msgid "Active Text"
+#~ msgstr "Test atîf"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr "Test di doprâ in te etichete se l'utent al à sielzût un element"
+
+#~ msgid "List Visible"
+#~ msgstr "Liste visibile"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "Indiche se la liste dal seletôr a jè visibile"
+
+#~| msgid "%l:%M:%S %p"
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%l:%M:%S %p"
+
+#~| msgid "%l:%M %p"
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%l:%M %p"
+
+#~| msgid "%l:%M:%S %p"
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%l:%M:%S %p"
+
+#~| msgid "%l:%M %p"
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%l:%M %p"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "Acès automatic..."
+
+#~ msgid "Cancelling…"
+#~ msgstr "Anulament..."
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "Selezione la lenghe e sclice Acêt"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "Personalizade"
+
+#~ msgid "Custom session"
+#~ msgstr "Session personalizade"
+
+#~ msgid "Computer Name"
+#~ msgstr "Nom dal computer"
+
+#~ msgid "Version"
+#~ msgstr "Version"
+
+#~ msgid "Cancel"
+#~ msgstr "Anule"
+
+#~ msgid "Unlock"
+#~ msgstr "Sbloche"
+
+#~ msgid "Login"
+#~ msgstr "Acêt"
+
+#~ msgid "Suspend"
+#~ msgstr "Sospent"
+
+#~ msgid "Restart"
+#~ msgstr "Torne a inviâ"
+
+#~ msgid "Shut Down"
+#~ msgstr "Stude"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "Timp mancjant no cognossût"
+
+#~ msgid "Panel"
+#~ msgstr "Panel"
+
+#~ msgid "Label Text"
+#~ msgstr "Test etichete"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "Il test di doprâ come etichete"
+
+#~ msgid "Icon name"
+#~ msgstr "Non icone"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "L'icone di doprâ cun l'etichete"
+
+#~ msgid "Default Item"
+#~ msgstr "Element predefinît"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "Il ID dal element predefinît"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "Acès a distance (Conession a %s…)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "Acès a distance (Conettût a %s…)"
+
+#~ msgid "Remote Login"
+#~ msgstr "Acès a distance"
+
+#~ msgid "Session"
+#~ msgstr "Session"
+
+#~ msgid "Duration"
+#~ msgstr "Durade"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "Numar di seconts prime che il timer a si fermi"
+
+#~ msgid "Start time"
+#~ msgstr "Moment di inviament"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "Le ore di cuanche il tilmer al è stât inviât"
+
+#~ msgid "Is it Running?"
+#~ msgstr "Isal in esecuzion?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "Indiche se il timer cumò al stâ lant indenant "
+
+#~ msgid "Log in as %s"
+#~ msgstr "Acès come %s"
+
+#, fuzzy
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "Altri..."
+
+#~ msgid "Choose a different account"
+#~ msgstr "Sielz un account diferent"
+
+#~ msgid "Guest"
+#~ msgstr "Ospit"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "Acêt come ospit provisori"
+
+#~ msgid "Automatic Login"
+#~ msgstr "Acès automatic"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "Acedi automaticamentri al sisteme dopo vê selezionât lis opzions"
+
+#~ msgid "Currently logged in"
+#~ msgstr "Acès bielza eseguît"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Impussibil fâ partî il gnûf visôr"
 
 #~ msgid "id"
 #~ msgstr "id"
