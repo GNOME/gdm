@@ -377,12 +377,16 @@ ai_flags_str (struct addrinfo *ai)
                 if (ai->ai_flags & AI_NUMERICSERV) {
                         g_string_append (str, "numserv ");
                 }
+#ifdef AI_V4MAPPEP
                 if (ai->ai_flags & AI_V4MAPPED) {
                         g_string_append (str, "v4mapped ");
                 }
+#endif
+#ifdef AI_ALL
                 if (ai->ai_flags & AI_ALL) {
                         g_string_append (str, "all ");
                 }
+#endif
         }
         return g_string_free (str, FALSE);
 }
@@ -1528,7 +1532,9 @@ create_address_from_request (ARRAY8      *req_addr,
         memset (&hints, 0, sizeof (hints));
         hints.ai_family = family;
         /* this should convert IPv4 address to IPv6 if needed */
+#ifdef AI_V4MAPPED
         hints.ai_flags = AI_V4MAPPED;
+#endif
         hints.ai_socktype = SOCK_DGRAM;
 
         if ((gaierr = getaddrinfo (host, serv, &hints, &ai_list)) != 0) {
@@ -2011,7 +2017,9 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
         memset (&hints, 0, sizeof (hints));
         hints.ai_family = gdm_address_get_family_type (address);
         /* this should convert IPv4 address to IPv6 if needed */
+#ifdef AI_V4MAPPED
         hints.ai_flags = AI_V4MAPPED;
+#endif
 
         xdmcp_port = g_strdup_printf ("%d", XDM_UDP_PORT);
         if ((gaierr = getaddrinfo (hostname, xdmcp_port, &hints, &ai_list)) != 0) {
