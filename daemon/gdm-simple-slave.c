@@ -246,43 +246,12 @@ out:
         g_free (gis_dir_path);
 }
 
-static gboolean
-run_script (GdmSimpleSlave *slave,
-            const char     *dir,
-            const char     *username)
-{
-        char *display_name;
-        char *display_hostname;
-        char *display_x11_authority_file;
-        gboolean display_is_local;
-        gboolean ret;
-
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      "display-hostname", &display_hostname,
-                      "display-is-local", &display_is_local,
-                      "display-x11-authority-file", &display_x11_authority_file,
-                      NULL);
-
-        ret = gdm_run_script (dir, username,
-                              display_name,
-                              display_is_local? NULL : display_hostname,
-                              display_x11_authority_file);
-
-        g_free (display_name);
-        g_free (display_hostname);
-        g_free (display_x11_authority_file);
-
-        return ret;
-}
-
 static void
 on_session_started (GdmSession       *session,
                     const char       *service_name,
                     int               pid,
                     GdmSimpleSlave   *slave)
 {
-        const char *username;
         const char *session_id;
 
         g_debug ("GdmSimpleSlave: session started %d", pid);
@@ -291,19 +260,6 @@ on_session_started (GdmSession       *session,
 
         session_id = gdm_session_get_session_id (session);
         g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
-
-        /* Run the PreSession script. gdmslave suspends until script has terminated */
-        username = gdm_session_get_username (slave->priv->session);
-        if (username != NULL) {
-                run_script (slave, GDMCONFDIR "/PreSession", username);
-        }
-
-        /* FIXME: should we do something here?
-         * Note that error return status from PreSession script should
-         * be ignored in the case of a X-GDM-BypassXsession session, which can
-         * be checked by calling:
-         * gdm_session_bypasses_xsession (session)
-         */
 }
 
 #ifdef  HAVE_LOGINDEVPERM
@@ -477,36 +433,6 @@ switch_to_and_unlock_session (GdmSimpleSlave  *slave,
 static void
 stop_greeter (GdmSimpleSlave *slave)
 {
-        const char *username;
-        gboolean script_successful;
-
-        g_debug ("GdmSimpleSlave: Stopping greeter");
-
-        if (slave->priv->greeter_environment == NULL) {
-                g_debug ("GdmSimpleSlave: No greeter running");
-                return;
-        }
-
-        /* Run the PostLogin script. gdmslave suspends until script has terminated */
-        username = NULL;
-        if (slave->priv->session != NULL) {
-                username = gdm_session_get_username (slave->priv->session);
-        }
-
-        if (username != NULL) {
-                script_successful = run_script (slave, GDMCONFDIR "/PostLogin", username);
-        } else {
-                script_successful = TRUE;
-        }
-
-        if (!script_successful) {
-                g_debug ("GdmSimpleSlave: PostLogin script unsuccessful");
-
-                slave->priv->start_session_id = 0;
-                queue_greeter_reset (slave);
-                return;
-        }
-
         gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (slave->priv->greeter_environment));
 }
 
@@ -1708,16 +1634,6 @@ gdm_simple_slave_stop (GdmSlave *slave)
                          (GDestroyNotify) g_free);
 
         if (self->priv->session_is_running) {
-                const char *username;
-
-                /* Run the PostSession script. gdmslave suspends until script
-                 * has terminated
-                 */
-                username = gdm_session_get_username (self->priv->session);
-                if (username != NULL) {
-                        run_script (self, GDMCONFDIR "/PostSession", username);
-                }
-
 #ifdef  HAVE_LOGINDEVPERM
                 gdm_simple_slave_revoke_console_permissions (self);
 #endif

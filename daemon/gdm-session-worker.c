@@ -1554,6 +1554,17 @@ register_ck_session (GdmSessionWorker *worker)
 #endif
 }
 
+static gboolean
+run_script (GdmSessionWorker *worker,
+            const char       *dir)
+{
+        return gdm_run_script (dir,
+                               worker->priv->username,
+                               worker->priv->x11_display_name,
+                               worker->priv->display_is_local? NULL : worker->priv->hostname,
+                               worker->priv->x11_authority_file);
+}
+
 static void
 session_worker_child_watch (GPid              pid,
                             int               status,
@@ -1579,6 +1590,8 @@ session_worker_child_watch (GPid              pid,
                                              status);
 
         worker->priv->child_pid = -1;
+
+        run_script (worker, GDMCONFDIR "/PostSession");
 }
 
 static void
@@ -1999,6 +2012,14 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
                 flags |= PAM_SILENT;
         }
 
+        if (!run_script (worker, GDMCONFDIR "/PostLogin")) {
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                             "Failed to execute PostLogin script");
+                goto out;
+        }
+
         error_code = pam_open_session (worker->priv->pam_handle, flags);
 
         if (error_code != PAM_SUCCESS) {
@@ -2015,6 +2036,14 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 #ifdef WITH_SYSTEMD
         session_id = gdm_session_worker_get_environment_variable (worker, "XDG_SESSION_ID");
 #endif
+
+        /* FIXME: should we do something here?
+         * Note that error return status from PreSession script should
+         * be ignored in the case of a X-GDM-BypassXsession session, which can
+         * be checked by calling:
+         * gdm_session_bypasses_xsession (session)
+         */
+        run_script (worker, GDMCONFDIR "/PreSession");
 
 #ifdef WITH_CONSOLE_KIT
         register_ck_session (worker);
