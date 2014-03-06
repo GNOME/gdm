@@ -102,9 +102,9 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
 static void     gdm_manager_finalize    (GObject         *object);
-static void create_session_for_display (GdmManager *manager,
-                                        GdmDisplay *display,
-                                        uid_t       allowed_user);
+static void create_seed_session_for_display (GdmManager *manager,
+                                             GdmDisplay *display,
+                                             uid_t       allowed_user);
 
 static gpointer manager_object = NULL;
 
@@ -604,13 +604,13 @@ get_display_for_user_session (GdmSession *session)
 }
 
 static GdmSession *
-get_user_session_for_display (GdmDisplay *display)
+get_seed_session_for_display (GdmDisplay *display)
 {
         if (display == NULL) {
                 return NULL;
         }
 
-        return g_object_get_data (G_OBJECT (display), "gdm-session");
+        return g_object_get_data (G_OBJECT (display), "gdm-seed-session");
 }
 
 static gboolean
@@ -642,7 +642,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        session = get_user_session_for_display (display);
+        session = get_seed_session_for_display (display);
 
         if (gdm_session_is_running (session)) {
                 error = g_error_new (G_DBUS_ERROR,
@@ -702,7 +702,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                 return TRUE;
         }
 
-        session = get_user_session_for_display (display);
+        session = get_seed_session_for_display (display);
 
         if (!gdm_session_is_running (session)) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -745,7 +745,7 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        create_session_for_display (manager, display, passwd_entry->pw_uid);
+        create_seed_session_for_display (manager, display, passwd_entry->pw_uid);
         g_free (allowed_user);
 
         gdm_display_start_greeter_session (display);
@@ -1404,9 +1404,9 @@ touch_marker_file (GdmManager *manager)
 }
 
 static void
-create_session_for_display (GdmManager *manager,
-                            GdmDisplay *display,
-                            uid_t       allowed_user)
+create_seed_session_for_display (GdmManager *manager,
+                                 GdmDisplay *display,
+                                 uid_t       allowed_user)
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
@@ -1490,7 +1490,7 @@ create_session_for_display (GdmManager *manager,
                           G_CALLBACK (on_user_session_died),
                           manager);
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
-        g_object_set_data_full (G_OBJECT (display), "gdm-session", g_object_ref (session), (GDestroyNotify) g_object_unref);
+        g_object_set_data_full (G_OBJECT (display), "gdm-seed-session", g_object_ref (session), (GDestroyNotify) g_object_unref);
 
         start_autologin_conversation_if_necessary (manager, display, session);
         touch_marker_file (manager);
