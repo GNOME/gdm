@@ -383,7 +383,7 @@ is_prog_in_path (const char *prog)
 }
 
 static GKeyFile *
-load_key_file_for_file (const char *file)
+load_key_file_for_file (const char *file, char **full_path)
 {
         GKeyFile   *key_file;
         GError     *error;
@@ -397,7 +397,7 @@ load_key_file_for_file (const char *file)
         res = g_key_file_load_from_dirs (key_file,
                                          file,
                                          get_system_session_dirs (),
-                                         NULL,
+                                         full_path,
                                          G_KEY_FILE_NONE,
                                          &error);
         if (! res) {
@@ -426,7 +426,7 @@ get_session_command_for_file (const char *file,
                 *command = NULL;
         }
 
-        key_file = load_key_file_for_file (file);
+        key_file = load_key_file_for_file (file, NULL);
         if (key_file == NULL) {
                 goto out;
         }
@@ -2655,6 +2655,41 @@ gdm_session_get_session_id (GdmSession *self)
         return g_strdup (conversation->session_id);
 }
 
+static char *
+get_session_filename (GdmSession *self)
+{
+        return g_strdup_printf ("%s.desktop", get_session_name (self));
+}
+
+static gboolean
+gdm_session_is_wayland_session (GdmSession *self)
+{
+        GKeyFile   *key_file;
+        gboolean    is_wayland_session = FALSE;
+        char       *filename;
+        char       *full_path = NULL;
+
+        g_return_val_if_fail (self != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+
+        filename = get_session_filename (self);
+
+        key_file = load_key_file_for_file (filename, &full_path);
+
+        if (key_file == NULL) {
+                goto out;
+        }
+
+        if (full_path != NULL && strstr (full_path, "/wayland-sessions/") != NULL) {
+                is_wayland_session = TRUE;
+        }
+
+out:
+        g_clear_pointer (&key_file, (GDestroyNotify) g_key_file_free);
+        g_free (filename);
+        return is_wayland_session;
+}
+
 gboolean
 gdm_session_bypasses_xsession (GdmSession *self)
 {
@@ -2667,9 +2702,9 @@ gdm_session_bypasses_xsession (GdmSession *self)
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
-        filename = g_strdup_printf ("%s.desktop", get_session_name (self));
+        filename = get_session_filename (self);
 
-        key_file = load_key_file_for_file (filename);
+        key_file = load_key_file_for_file (filename, NULL);
 
         error = NULL;
         res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", NULL);
