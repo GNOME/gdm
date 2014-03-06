@@ -139,44 +139,6 @@ gdm_slave_error_quark (void)
 }
 
 static void
-gdm_slave_whack_temp_auth_file (GdmSlave *slave)
-{
-#if 0
-        uid_t old;
-
-        old = geteuid ();
-        if (old != 0)
-                seteuid (0);
-        if (d->parent_temp_auth_file != NULL) {
-                VE_IGNORE_EINTR (g_unlink (d->parent_temp_auth_file));
-        }
-        g_free (d->parent_temp_auth_file);
-        d->parent_temp_auth_file = NULL;
-        if (old != 0)
-                seteuid (old);
-#endif
-}
-
-
-static void
-create_temp_auth_file (GdmSlave *slave)
-{
-#if 0
-        if (d->type == TYPE_FLEXI_XNEST &&
-            d->parent_auth_file != NULL) {
-                if (d->parent_temp_auth_file != NULL) {
-                        VE_IGNORE_EINTR (g_unlink (d->parent_temp_auth_file));
-                }
-                g_free (d->parent_temp_auth_file);
-                d->parent_temp_auth_file =
-                        copy_auth_file (d->server_uid,
-                                        gdm_daemon_config_get_gdmuid (),
-                                        d->parent_auth_file);
-        }
-#endif
-}
-
-static void
 listify_hash (const char *key,
               const char *value,
               GPtrArray  *env)
@@ -304,8 +266,6 @@ gdm_slave_run_script (GdmSlave   *slave,
                 return TRUE;
         }
 
-        create_temp_auth_file (slave);
-
         g_debug ("GdmSlave: Running process: %s", script);
         error = NULL;
         if (! g_shell_parse_argv (script, NULL, &argv, &error)) {
@@ -335,8 +295,6 @@ gdm_slave_run_script (GdmSlave   *slave,
                 g_warning ("GdmSlave: Unable to run script: %s", error->message);
                 g_error_free (error);
         }
-
-        gdm_slave_whack_temp_auth_file (slave);
 
         if (WIFEXITED (status)) {
                 g_debug ("GdmSlave: Process exit status: %d", WEXITSTATUS (status));
