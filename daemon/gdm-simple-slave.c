@@ -246,6 +246,36 @@ out:
         g_free (gis_dir_path);
 }
 
+static gboolean
+run_script (GdmSimpleSlave *slave,
+            const char     *dir,
+            const char     *username)
+{
+        char *display_name;
+        char *display_hostname;
+        char *display_x11_authority_file;
+        gboolean display_is_local;
+        gboolean ret;
+
+        g_object_get (slave,
+                      "display-name", &display_name,
+                      "display-hostname", &display_hostname,
+                      "display-is-local", &display_is_local,
+                      "display-x11-authority-file", &display_x11_authority_file,
+                      NULL);
+
+        ret = gdm_run_script (dir, username,
+                              display_name,
+                              display_is_local? NULL : display_hostname,
+                              display_x11_authority_file);
+
+        g_free (display_name);
+        g_free (display_hostname);
+        g_free (display_x11_authority_file);
+
+        return ret;
+}
+
 static void
 on_session_started (GdmSession       *session,
                     const char       *service_name,
@@ -265,7 +295,7 @@ on_session_started (GdmSession       *session,
         /* Run the PreSession script. gdmslave suspends until script has terminated */
         username = gdm_session_get_username (slave->priv->session);
         if (username != NULL) {
-                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
+                run_script (slave, GDMCONFDIR "/PreSession", username);
         }
 
         /* FIXME: should we do something here?
@@ -464,7 +494,7 @@ stop_greeter (GdmSimpleSlave *slave)
         }
 
         if (username != NULL) {
-                script_successful = gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", username);
+                script_successful = run_script (slave, GDMCONFDIR "/PostLogin", username);
         } else {
                 script_successful = TRUE;
         }
@@ -1220,7 +1250,7 @@ start_launch_environment (GdmSimpleSlave *slave,
         }
 
         /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
+        run_script (slave, GDMCONFDIR "/Init", GDM_USERNAME);
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->greeter_environment = create_environment (session_id,
@@ -1331,7 +1361,7 @@ setup_session (GdmSimpleSlave *slave)
                 start_initial_setup (slave);
         } else if (wants_autologin (slave)) {
                 /* Run the init script. gdmslave suspends until script has terminated */
-                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
+                run_script (slave, GDMCONFDIR "/Init", GDM_USERNAME);
         } else {
                 start_greeter (slave);
         }
@@ -1691,7 +1721,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
                  */
                 username = gdm_session_get_username (self->priv->session);
                 if (username != NULL) {
-                        gdm_slave_run_script (slave, GDMCONFDIR "/PostSession", username);
+                        run_script (self, GDMCONFDIR "/PostSession", username);
                 }
 
 #ifdef  HAVE_LOGINDEVPERM

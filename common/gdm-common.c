@@ -1056,3 +1056,178 @@ gdm_goto_login_session (GError **error)
         return goto_login_session_for_ck (connection, error);
 #endif
 }
+
+static void
+listify_hash (const char *key,
+              const char *value,
+              GPtrArray  *env)
+{
+        char *str;
+        str = g_strdup_printf ("%s=%s", key, value);
+        g_debug ("GdmSlave: script environment: %s", str);
+        g_ptr_array_add (env, str);
+}
+
+GPtrArray *
+gdm_get_script_environment (const char *username,
+                            const char *display_name,
+                            const char *display_hostname,
+                            const char *display_x11_authority_file)
+{
+        GPtrArray     *env;
+        GHashTable    *hash;
+        struct passwd *pwent;
+
+        env = g_ptr_array_new ();
+
+        /* create a hash table of current environment, then update keys has necessary */
+        hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+        /* modify environment here */
+        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup ("/"));
+        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
+        g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
+
+        if (username != NULL) {
+                g_hash_table_insert (hash, g_strdup ("LOGNAME"),
+                                     g_strdup (username));
+                g_hash_table_insert (hash, g_strdup ("USER"),
+                                     g_strdup (username));
+                g_hash_table_insert (hash, g_strdup ("USERNAME"),
+                                     g_strdup (username));
+
+                gdm_get_pwent_for_name (username, &pwent);
+                if (pwent != NULL) {
+                        if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
+                                g_hash_table_insert (hash, g_strdup ("HOME"),
+                                                     g_strdup (pwent->pw_dir));
+                                g_hash_table_insert (hash, g_strdup ("PWD"),
+                                                     g_strdup (pwent->pw_dir));
+                        }
+
+                        g_hash_table_insert (hash, g_strdup ("SHELL"),
+                                             g_strdup (pwent->pw_shell));
+                }
+        }
+
+        if (display_hostname) {
+                g_hash_table_insert (hash, g_strdup ("REMOTE_HOST"), g_strdup (display_hostname));
+        }
+
+        /* Runs as root */
+        g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (display_x11_authority_file));
+        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (display_name));
+        g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (GDM_SESSION_DEFAULT_PATH));
+        g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
+
+        g_hash_table_remove (hash, "MAIL");
+
+        g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
+        g_hash_table_destroy (hash);
+
+        g_ptr_array_add (env, NULL);
+
+        return env;
+}
+
+gboolean
+gdm_run_script (const char *dir,
+                const char *username,
+                const char *display_name,
+                const char *display_hostname,
+                const char *display_x11_authority_file)
+{
+        char      *script;
+        char     **argv;
+        gint       status;
+        GError    *error;
+        GPtrArray *env;
+        gboolean   res;
+        gboolean   ret;
+
+        ret = FALSE;
+
+        g_assert (dir != NULL);
+        g_assert (username != NULL);
+
+        script = g_build_filename (dir, display_name, NULL);
+        g_debug ("Trying script %s", script);
+        if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+               && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
+                g_debug ("script %s not found; skipping", script);
+                g_free (script);
+                script = NULL;
+        }
+
+        if (script == NULL
+            && display_hostname != NULL
+            && display_hostname[0] != '\0') {
+                script = g_build_filename (dir, display_hostname, NULL);
+                g_debug ("Trying script %s", script);
+                if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+                       && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
+                        g_debug ("script %s not found; skipping", script);
+                        g_free (script);
+                        script = NULL;
+                }
+        }
+
+        if (script == NULL) {
+                script = g_build_filename (dir, "Default", NULL);
+                g_debug ("Trying script %s", script);
+                if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+                       && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
+                        g_debug ("script %s not found; skipping", script);
+                        g_free (script);
+                        script = NULL;
+                }
+        }
+
+        if (script == NULL) {
+                g_debug ("no script found");
+                return TRUE;
+        }
+
+        g_debug ("Running process: %s", script);
+        error = NULL;
+        if (! g_shell_parse_argv (script, NULL, &argv, &error)) {
+                g_warning ("Could not parse command: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        env = gdm_get_script_environment (username,
+                                          display_name,
+                                          display_hostname,
+                                          display_x11_authority_file);
+
+        res = g_spawn_sync (NULL,
+                            argv,
+                            (char **)env->pdata,
+                            G_SPAWN_SEARCH_PATH,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            &status,
+                            &error);
+
+        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
+        g_ptr_array_free (env, TRUE);
+        g_strfreev (argv);
+
+        if (! res) {
+                g_warning ("Unable to run script: %s", error->message);
+                g_error_free (error);
+        }
+
+        if (WIFEXITED (status)) {
+                g_debug ("Process exit status: %d", WEXITSTATUS (status));
+                ret = WEXITSTATUS (status) == 0;
+        }
+
+ out:
+        g_free (script);
+
+        return ret;
+}

@@ -138,175 +138,6 @@ gdm_slave_error_quark (void)
         return ret;
 }
 
-static void
-listify_hash (const char *key,
-              const char *value,
-              GPtrArray  *env)
-{
-        char *str;
-        str = g_strdup_printf ("%s=%s", key, value);
-        g_debug ("GdmSlave: script environment: %s", str);
-        g_ptr_array_add (env, str);
-}
-
-static GPtrArray *
-get_script_environment (GdmSlave   *slave,
-                        const char *username)
-{
-        GPtrArray     *env;
-        GHashTable    *hash;
-        struct passwd *pwent;
-
-        env = g_ptr_array_new ();
-
-        /* create a hash table of current environment, then update keys has necessary */
-        hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-        /* modify environment here */
-        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup ("/"));
-        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
-        g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
-
-        if (username != NULL) {
-                g_hash_table_insert (hash, g_strdup ("LOGNAME"),
-                                     g_strdup (username));
-                g_hash_table_insert (hash, g_strdup ("USER"),
-                                     g_strdup (username));
-                g_hash_table_insert (hash, g_strdup ("USERNAME"),
-                                     g_strdup (username));
-
-                gdm_get_pwent_for_name (username, &pwent);
-                if (pwent != NULL) {
-                        if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
-                                g_hash_table_insert (hash, g_strdup ("HOME"),
-                                                     g_strdup (pwent->pw_dir));
-                                g_hash_table_insert (hash, g_strdup ("PWD"),
-                                                     g_strdup (pwent->pw_dir));
-                        }
-
-                        g_hash_table_insert (hash, g_strdup ("SHELL"),
-                                             g_strdup (pwent->pw_shell));
-                }
-        }
-
-        if (! slave->priv->display_is_local) {
-                g_hash_table_insert (hash, g_strdup ("REMOTE_HOST"), g_strdup (slave->priv->display_hostname));
-        }
-
-        /* Runs as root */
-        g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (slave->priv->display_x11_authority_file));
-        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (slave->priv->display_name));
-        g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (GDM_SESSION_DEFAULT_PATH));
-        g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
-
-        g_hash_table_remove (hash, "MAIL");
-
-
-        g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
-        g_hash_table_destroy (hash);
-
-        g_ptr_array_add (env, NULL);
-
-        return env;
-}
-
-gboolean
-gdm_slave_run_script (GdmSlave   *slave,
-                      const char *dir,
-                      const char *login)
-{
-        char      *script;
-        char     **argv;
-        gint       status;
-        GError    *error;
-        GPtrArray *env;
-        gboolean   res;
-        gboolean   ret;
-
-        ret = FALSE;
-
-        g_assert (dir != NULL);
-        g_assert (login != NULL);
-
-        script = g_build_filename (dir, slave->priv->display_name, NULL);
-        g_debug ("GdmSlave: Trying script %s", script);
-        if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
-               && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
-                g_debug ("GdmSlave: script %s not found; skipping", script);
-                g_free (script);
-                script = NULL;
-        }
-
-        if (script == NULL
-            && slave->priv->display_hostname != NULL
-            && slave->priv->display_hostname[0] != '\0') {
-                script = g_build_filename (dir, slave->priv->display_hostname, NULL);
-                g_debug ("GdmSlave: Trying script %s", script);
-                if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
-                       && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
-                        g_debug ("GdmSlave: script %s not found; skipping", script);
-                        g_free (script);
-                        script = NULL;
-                }
-        }
-
-        if (script == NULL) {
-                script = g_build_filename (dir, "Default", NULL);
-                g_debug ("GdmSlave: Trying script %s", script);
-                if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
-                       && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
-                        g_debug ("GdmSlave: script %s not found; skipping", script);
-                        g_free (script);
-                        script = NULL;
-                }
-        }
-
-        if (script == NULL) {
-                g_debug ("GdmSlave: no script found");
-                return TRUE;
-        }
-
-        g_debug ("GdmSlave: Running process: %s", script);
-        error = NULL;
-        if (! g_shell_parse_argv (script, NULL, &argv, &error)) {
-                g_warning ("Could not parse command: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        env = get_script_environment (slave, login);
-
-        res = g_spawn_sync (NULL,
-                            argv,
-                            (char **)env->pdata,
-                            G_SPAWN_SEARCH_PATH,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            &status,
-                            &error);
-
-        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
-        g_ptr_array_free (env, TRUE);
-        g_strfreev (argv);
-
-        if (! res) {
-                g_warning ("GdmSlave: Unable to run script: %s", error->message);
-                g_error_free (error);
-        }
-
-        if (WIFEXITED (status)) {
-                g_debug ("GdmSlave: Process exit status: %d", WEXITSTATUS (status));
-                ret = WEXITSTATUS (status) == 0;
-        }
-
- out:
-        g_free (script);
-
-        return ret;
-}
-
 static XRRScreenResources *
 get_screen_resources (Display *dpy)
 {
@@ -773,8 +604,7 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
 
 static char *
 gdm_slave_parse_enriched_login (GdmSlave   *slave,
-                                const char *username,
-                                const char *display_name)
+                                const char *username)
 {
         char     **argv;
         int        username_len;
@@ -817,7 +647,10 @@ gdm_slave_parse_enriched_login (GdmSlave   *slave,
         g_debug ("GdmSlave: running '%s' to acquire auto/timed username", command);
         g_free (command);
 
-        env = get_script_environment (slave, NULL);
+        env = gdm_get_script_environment (username,
+                                          slave->priv->display_name,
+                                          slave->priv->display_hostname,
+                                          slave->priv->display_x11_authority_file);
 
         error = NULL;
         std_output = NULL;
@@ -892,9 +725,7 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         }
 
         if (usernamep != NULL) {
-                *usernamep = gdm_slave_parse_enriched_login (slave,
-                                                             username,
-                                                             slave->priv->display_name);
+                *usernamep = gdm_slave_parse_enriched_login (slave, username);
         } else {
                 g_free (username);
 

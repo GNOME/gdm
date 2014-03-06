@@ -218,7 +218,10 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         }
 
         /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
+        gdm_run_script (GDMCONFDIR "/Init", GDM_USERNAME,
+                        display_name,
+                        display_hostname,
+                        auth_file);
 
         g_debug ("GdmXdmcpChooserSlave: Creating chooser on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->chooser_environment = create_chooser_session (display_name,

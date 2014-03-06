@@ -107,9 +107,6 @@ gboolean            gdm_slave_connect_to_x11_display (GdmSlave   *slave);
 
 void                gdm_slave_set_initial_cursor_position (GdmSlave *slave);
 
-gboolean            gdm_slave_run_script             (GdmSlave   *slave,
-                                                      const char *dir,
-                                                      const char *username);
 void                gdm_slave_export_interface       (GdmSlave               *slave,
                                                       GDBusInterfaceSkeleton *interface);
 G_END_DECLS

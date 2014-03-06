@@ -65,6 +65,17 @@ gboolean       gdm_string_hex_decode     (const GString *source,
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
 gboolean       gdm_goto_login_session    (GError **error);
+
+GPtrArray     *gdm_get_script_environment (const char *username,
+                                           const char *display_name,
+                                           const char *display_hostname,
+                                           const char *display_x11_authority_file);
+gboolean       gdm_run_script             (const char *dir,
+                                           const char *username,
+                                           const char *display_name,
+                                           const char *display_hostname,
+                                           const char *display_x11_authority_file);
+
 G_END_DECLS
 
 #endif /* _GDM_COMMON_H */
