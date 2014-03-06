@@ -183,6 +183,12 @@ static void
 gdm_server_ready (GdmServer *server)
 {
         g_debug ("GdmServer: Got USR1 from X server - emitting READY");
+
+        gdm_run_script (GDMCONFDIR "/Init", GDM_USERNAME,
+                        server->priv->display_name,
+                        NULL, /* hostname */
+                        server->priv->auth_file);
+
         g_signal_emit (server, signals[READY], 0);
 }
 
