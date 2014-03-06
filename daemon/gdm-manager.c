@@ -848,6 +848,7 @@ on_start_user_session (StartUserSessionOperation *operation)
 {
         gboolean migrated;
         gboolean fail_if_already_switched = TRUE;
+        GdmDisplay *display;
 
         g_debug ("GdmManager: start or jump to session");
 
@@ -865,15 +866,15 @@ on_start_user_session (StartUserSessionOperation *operation)
                    user switching. */
                 gdm_session_reset (operation->session);
                 destroy_start_user_session_operation (operation);
-        } else {
-                GdmDisplay *display;
-
-                display = get_display_for_user_session (operation->session);
-                gdm_display_stop_greeter_session (display);
-
-                start_user_session (operation->manager, operation);
+                goto out;
         }
 
+        display = get_display_for_user_session (operation->session);
+        gdm_display_stop_greeter_session (display);
+
+        start_user_session (operation->manager, operation);
+
+ out:
         return G_SOURCE_REMOVE;
 }
 
