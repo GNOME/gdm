@@ -2734,6 +2734,13 @@ out:
 GdmSessionDisplayMode
 gdm_session_get_display_mode (GdmSession *self)
 {
+        /* Wayland sessions are for now assumed to run in a
+         * mutter-launch-like environment, so we allocate
+         * a new VT for them. */
+        if (gdm_session_is_wayland_session (self)) {
+                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
+        }
+
         /* X sessions are for now ran in classic mode where
          * we reuse the existing greeter. */
         return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
