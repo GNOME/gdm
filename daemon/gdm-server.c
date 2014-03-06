@@ -252,47 +252,6 @@ gdm_server_launch_sigusr1_thread_if_needed (void)
         }
 }
 
-/* We keep a connection (parent_dsp) open with the parent X server
- * before running a proxy on it to prevent the X server resetting
- * as we open and close other connections.
- * Note that XDMCP servers, by default, reset when the seed X
- * connection closes whereas usually the X server only quits when
- * all X connections have closed.
- */
-#if 0
-static gboolean
-connect_to_parent (GdmServer *server)
-{
-        int maxtries;
-        int openretries;
-
-        g_debug ("GdmServer: Connecting to parent display \'%s\'",
-                   d->parent_disp);
-
-        d->parent_dsp = NULL;
-
-        maxtries = SERVER_IS_XDMCP (d) ? 10 : 2;
-
-        openretries = 0;
-        while (openretries < maxtries &&
-               d->parent_dsp == NULL) {
-                d->parent_dsp = XOpenDisplay (d->parent_disp);
-
-                if G_UNLIKELY (d->parent_dsp == NULL) {
-                        g_debug ("GdmServer: Sleeping %d on a retry", 1+openretries*2);
-                        gdm_sleep_no_signal (1+openretries*2);
-                        openretries++;
-                }
-        }
-
-        if (d->parent_dsp == NULL)
-                gdm_error (_("%s: failed to connect to parent display \'%s\'"),
-                           "gdm_server_start", d->parent_disp);
-
-        return d->parent_dsp != NULL;
-}
-#endif
-
 static void
 gdm_server_init_command (GdmServer *server)
 {
