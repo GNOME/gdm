@@ -270,6 +270,8 @@ gdm_server_init_command (GdmServer *server)
                 debug_options = "";
         }
 
+#define X_SERVER_ARG_FORMAT " -background none -verbose %s%s"
+
 #ifdef WITH_SYSTEMD
 
         /* This is a temporary hack to work around the fact that XOrg
@@ -308,13 +310,13 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
-        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -background none -verbose %s%s", verbosity, debug_options);
+        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
         return;
 
 fallback:
 #endif
 
-        server->priv->command = g_strdup_printf (X_SERVER " -background none -verbose %s%s", verbosity, debug_options);
+        server->priv->command = g_strdup_printf (X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
 }
 
 static gboolean
