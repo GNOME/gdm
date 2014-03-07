@@ -131,6 +131,7 @@ void              gdm_session_set_environment_variable    (GdmSession *session,
 void              gdm_session_send_environment            (GdmSession *self,
                                                            const char *service_name);
 void              gdm_session_reset                       (GdmSession *session);
+void              gdm_session_cancel                      (GdmSession *session);
 void              gdm_session_authenticate                (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_authorize                   (GdmSession *session,
@@ -154,8 +155,6 @@ void              gdm_session_select_session              (GdmSession *session,
                                                            const char *session_name);
 void              gdm_session_select_user                 (GdmSession *session,
                                                            const char *username);
-void              gdm_session_cancel                      (GdmSession *session);
-void              gdm_session_reset                       (GdmSession *session);
 void              gdm_session_request_timed_login         (GdmSession *session,
                                                            const char *username,
                                                            int         delay);
