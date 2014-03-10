@@ -10,22 +10,23 @@
 # Lele Long <schemacs@gmail.com>, 2011.
 # Cheng Lu <chenglu1990@gmail.com>, 2012.
 # YunQiang Su <wzssyqa@gmail.com>, 2011, 2012, 2013.
+# tuhaihe <1132321739qq@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-04-04 22:33+0000\n"
-"PO-Revision-Date: 2013-04-06 18:20+0800\n"
-"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2014-03-10 06:05+0000\n"
+"PO-Revision-Date: 2013-11-30 22:31+0800\n"
+"Last-Translator: tuhaihe <1132321739qq@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.5\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../common/gdm-common.c:518
 #, c-format
@@ -35,49 +36,21 @@ msgstr "/dev/urandom 不是字符设备"
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "无法在系统中找到用户 \"%s\""
+msgstr "无法在系统中找到用户“%s”"
 
-#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
 #, c-format
 msgid "No session available yet"
 msgstr "尚无可用会话"
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "无法查询用户 %s 的 UID"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "无可用会话"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "没有 %s 的可用于重新验证的会话"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "无法找到用户 %s 的会话"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "无法找到适合用户 %s 的会话"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "用户未拥有会话"
-
-#: ../daemon/gdm-manager.c:686 ../daemon/gdm-manager.c:773
+#: ../daemon/gdm-manager.c:367 ../daemon/gdm-manager.c:412
 msgid "No session available"
 msgstr "无可用的会话"
 
 #: ../daemon/gdm-server.c:234
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s：无法连接到父显示“%s”"
+msgstr "%s：无法连接到父显示屏“%s”"
 
 #: ../daemon/gdm-server.c:413
 #, c-format
@@ -102,18 +75,18 @@ msgstr "无法将用户 ID 设置为 %d"
 #: ../daemon/gdm-server.c:483
 #, c-format
 msgid "%s: Could not open log file for display %s!"
-msgstr "%s：无法打开日志文件显示 %s！"
+msgstr "%s：无法打开显示屏 %s 的日志文件！"
 
 #: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
 #: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Error setting %s to %s"
-msgstr "%s：将 %s 设置为 %s 出错"
+msgstr "%s：将 %s 设为 %s 出错"
 
 #: ../daemon/gdm-server.c:526
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s：服务器优先级无法设定为 %d：%s"
+msgstr "%s：服务器优先级无法设为 %d：%s"
 
 #: ../daemon/gdm-server.c:682
 #, c-format
@@ -126,7 +99,7 @@ msgstr "用户名"
 
 #: ../daemon/gdm-session-auditor.c:91
 msgid "The username"
-msgstr "该用户名"
+msgstr "用户名"
 
 #: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
@@ -144,92 +117,58 @@ msgstr "显示设备"
 msgid "The display device"
 msgstr "显示设备"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1161
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
-#: ../daemon/gdm-session-worker.c:1037
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "使用认证系统初始化会话出错 - %s"
+#: ../daemon/gdm-session-worker.c:835
+msgid "Your account was given a time limit that's now passed."
+msgstr "你的帐号设有时间限制，已超过限定时间。"
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "general failure"
-msgstr "一般性错误"
+#: ../daemon/gdm-session-worker.c:842
+msgid "Sorry, that didn't work. Please try again."
+msgstr "抱歉，没有奏效，请再试一次。"
 
-#: ../daemon/gdm-session-worker.c:1039
-msgid "out of memory"
-msgstr "内存耗尽"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "application programmer error"
-msgstr "应用程序编程错误"
-
-#: ../daemon/gdm-session-worker.c:1041
-msgid "unknown error"
-msgstr "未知错误"
-
-#: ../daemon/gdm-session-worker.c:1048
+#: ../daemon/gdm-session-worker.c:1074
 msgid "Username:"
 msgstr "用户名："
 
-#: ../daemon/gdm-session-worker.c:1054
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr "将首选用户名提示符通知验证系统时出错:%s"
+#: ../daemon/gdm-session-worker.c:1261
+msgid "Your password has expired, please change it now."
+msgstr "你的密码已过期，请立即修改。"
 
-#: ../daemon/gdm-session-worker.c:1068
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr "将用户主机名通知验证系统时出错:%s"
-
-#: ../daemon/gdm-session-worker.c:1085
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr "将用户终端通知验证系统时出错:%s"
-
-#: ../daemon/gdm-session-worker.c:1109
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "将显示字符串通知验证系统时出错:%s"
-
-#: ../daemon/gdm-session-worker.c:1124
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr "将显示 xauth 证书通知验证系统时发生错误:%s"
-
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
 #, c-format
 msgid "no user account available"
 msgstr "无可用用户帐户"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1544
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
-#: ../daemon/gdm-simple-slave.c:1315
+#: ../daemon/gdm-simple-slave.c:1531
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"由于一个内部错误无法启动 X 服务器(您的图形界面)。请与您的系统管理员联系或检查"
-"您的系统日志以便进行诊断。此时该显示将被禁用。请在问题更正以后重新启动 GDM。"
+"由于内部错误无法启动 X 服务器(您的图形界面)。请与系统管理员联系或检查系统日志"
+"以便进行诊断。在此期间该显示将被禁用。请在问题更正以后重新启动 GDM。"
 
-#: ../daemon/gdm-simple-slave.c:1356
+#: ../daemon/gdm-simple-slave.c:1572
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "只能在用户登录前被调用"
 
-#: ../daemon/gdm-simple-slave.c:1366
+#: ../daemon/gdm-simple-slave.c:1582
 #, c-format
 msgid "Caller not GDM"
 msgstr "调用者不是 GDM"
 
-#: ../daemon/gdm-simple-slave.c:1419
+#: ../daemon/gdm-simple-slave.c:1635
 msgid "User not logged in"
-msgstr "用户未已登录"
+msgstr "用户未登录"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
@@ -252,50 +191,45 @@ msgstr "无法创建单次运行标记目录 %s：%s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "闯将 AuthDir 失败 %s: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "闯将 LogDir 失败 %s: %s"
+msgstr "无法创建 LogDir %s: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "找不到 GDM 用户“%s”。中止！"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
-msgstr "GDM 用户不能为 root 。中止！"
+msgstr "GDM 用户不能为 root。中止！"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "找不到 GDM 组“%s”。中止！"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM 组不能为 root。中止！"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:327
 msgid "Make all warnings fatal"
-msgstr "置所有警告为致命错误"
+msgstr "设置所有警告为致命错误"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:328
 msgid "Exit after a time (for debugging)"
-msgstr "一段时间后退出 - 调试时使用"
+msgstr "一段时间后退出(用于调试)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:329
 msgid "Print GDM version"
 msgstr "打印 GDM 版本"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:340
 msgid "GNOME Display Manager"
 msgstr "GNOME 显示管理器"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:388
 msgid "Only the root user can run GDM"
 msgstr "只有 root 用户才能运行 GDM"
 
@@ -303,7 +237,7 @@ msgstr "只有 root 用户才能运行 GDM"
 #. of starting up a session
 #: ../daemon/session-worker-main.c:101
 msgid "GNOME Display Manager Session Worker"
-msgstr "GNOME 显示管理器会话工人进程"
+msgstr "GNOME 显示管理器会话工作进程"
 
 #: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
 msgid "Display ID"
@@ -318,7 +252,6 @@ msgid "GNOME Display Manager Slave"
 msgstr "GNOME 从属显示管理器"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "登录窗口"
 
@@ -338,7 +271,7 @@ msgstr "是否允许通过指纹阅读器登录"
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
-msgstr "此登录屏幕也可以允许已经登记了指纹的用户使用指纹登录。"
+msgstr "登录屏幕允许已登记指纹的用户使用指纹登录(可选)。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
@@ -348,86 +281,96 @@ msgstr "是否允许通过智能卡读卡器登录"
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
-msgstr "此登录屏幕也可以允许拥有智能卡的用户使用智能卡登录。"
+msgstr "登录屏幕允许拥有智能卡的用户使用智能卡登录(可选)。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow passwords for login"
+msgstr "是否允许通过密码登录"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr "登录屏幕可以设置为不允许密码登录，强制用户使用智能卡或者指纹识别登录。"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "用户列表上方小图片的路径"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"此登录屏幕也可以在用户列表的顶部显示一个小图像，以为管理员和分发者提供标识的"
-"方法。"
+"登录屏幕可以在用户列表的顶部显示一个小图像，允许网站管理员和发行版本展示标识"
+"(可选)。"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
-"备用模式登录屏幕也可以在用户列表的顶部显示一个小图像，为管理员和分发者提供添"
-"加标识的方法。"
+"备用模式登录屏幕可以在用户列表的顶部显示一个小图像，允许网站管理员和发行版本"
+"展示标识(可选)。"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "不显示用户列表"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr "登录屏幕通常会显示系统中可以登录的用户列表。这个选项可以禁用此功能。"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "启用横幅信息显示"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "设置为“真(true)”以显示横幅信息文字。"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "横幅信息文字"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "显示在登录窗口的文本横幅信息。"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
-msgid "Disable showing the restart buttons"
-msgstr "禁止显示重启动按钮"
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "设置为真将禁止在登录窗口中显示重启动按钮"
-
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Disable showing the restart buttons"
+msgstr "禁止显示重启按钮"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr "设置为 true，则禁止在登录窗口显示重启按钮。"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "允许的认证失败次数"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
-msgstr "放弃并返回用户选择前，允许用户尝试认证的次数。"
+msgstr "放弃并返回用户选择界面前，允许某个用户尝试认证的次数。"
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
-msgstr "无法建立过渡显示："
+msgstr "无法创建过渡显示界面："
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
 msgid "Unable to activate session: "
-msgstr "无法使会话生效："
+msgstr "无法激活会话："
 
 #: ../gui/libgdm/gdm-user-switching.c:344
 #: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
+#: ../utils/gdmflexiserver.c:600
 #, c-format
 msgid "Could not identify the current session."
 msgstr "无法识别当前会话。"
@@ -437,19 +380,19 @@ msgstr "无法识别当前会话。"
 msgid "User unable to switch sessions."
 msgstr "用户无法切换会话。"
 
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:609
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "无法识别当前位置。"
 
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:619
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr "系统无法确定是否应当切换到一个已经登录的屏幕还是启动一个新登录屏幕。"
 
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:627
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "系统无法启动新登录屏幕。"
@@ -474,339 +417,6 @@ msgstr "XMDCP：XDMCP 版本错误！"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP：无法解析地址"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "指纹认证"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "通过指纹登录会话"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "口令认证"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "通过用户名和密码登录会话"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "登录"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "插槽 ID"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "智能卡所在的插槽"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "插槽组"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "各插槽卡的标识符"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "名称"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "模块"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "智能卡驱动"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "智能卡认证"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "通过智能卡登录会话"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "模块路径"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "到智能卡 PKCS #11 驱动的路径"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "收到事件源的错误或挂起信号"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "无法初始化 NSS 安全系统"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "找不到合适的智能卡驱动"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "无法加载智能卡驱动“%s”"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "无法监测发来的智能卡事件 - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "在等候智能卡事件时遇到意外错误"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "认证"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "登录会话"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "值"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "完成时间的百分比"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "非活动文本"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "用户尚未选择任何条目前在标签中使用的文本"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "活动文本"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "用户选择一个条目时在标签中使用的文本"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "列表可见"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "选择器列表是否可见"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%m月%d日 %A %H:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%m月%d日 %A %H:%M"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%A %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%A %H:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "正在自动登录..."
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "正在取消..."
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "选择语言，单击“登录”"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "自定义"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "自定义会话"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "计算机名"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "版本"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "取消"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "解锁"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "登录"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "挂起"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "重新启动"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "关机"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "剩余时间未知"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "面板"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "标签文本"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "该文本将用作一个标签"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "图标名"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "该标签所共用的图标"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "默认项目"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "默认项目的 ID"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "远程登录(正在连接 %s...)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "远程登录(已连接至 %s)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "远程登录"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "会话"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "持续时间"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "多少秒直到计时器停止"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "启动时间"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "计时器开始时间"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "它正在运行中吗？"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "是否计时器正在运行"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "作为 %s 登录"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "其他..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "选择不同的帐户"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "来宾"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "作为临时来宾登录"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "自动登录"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "选定选项后自动登录到系统"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "当前已登录"
-
 #: ../utils/gdmflexiserver.c:65
 msgid "Only the VERSION command is supported"
 msgstr "只支持 VERSION 命令"
@@ -829,13 +439,13 @@ msgid "Version of this application"
 msgstr "该应用程序版本"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:693
 msgid "- New GDM login"
 msgstr "- 新 GDM 登录"
 
-#: ../utils/gdmflexiserver.c:763
+#: ../utils/gdmflexiserver.c:749
 msgid "Unable to start new display"
-msgstr "无法启动新显示(display)"
+msgstr "无法启动新显示会话"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -844,7 +454,287 @@ msgstr "已经截屏"
 #. Option parsing
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
-msgstr "抓取屏幕的一张截图"
+msgstr "截取屏幕"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "无法查询用户 %s 的 UID"
+
+#~ msgid "no sessions available"
+#~ msgstr "无可用会话"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "没有 %s 的可用于重新验证的会话"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "无法找到用户 %s 的会话"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "无法找到适合用户 %s 的会话"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "用户未拥有会话"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "闯将 AuthDir 失败 %s: %s"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "使用认证系统初始化会话出错 - %s"
+
+#~ msgid "general failure"
+#~ msgstr "一般性错误"
+
+#~ msgid "out of memory"
+#~ msgstr "内存耗尽"
+
+#~ msgid "application programmer error"
+#~ msgstr "应用程序编程错误"
+
+#~ msgid "unknown error"
+#~ msgstr "未知错误"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr "将首选用户名提示符通知验证系统时出错:%s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr "将用户主机名通知验证系统时出错:%s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr "将用户终端通知验证系统时出错:%s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr "将显示字符串通知验证系统时出错:%s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr "将显示 xauth 证书通知验证系统时发生错误:%s"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "指纹认证"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "通过指纹登录会话"
+
+#~ msgid "Password Authentication"
+#~ msgstr "口令认证"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "通过用户名和密码登录会话"
+
+#~ msgid "Log In"
+#~ msgstr "登录"
+
+#~ msgid "Slot ID"
+#~ msgstr "插槽 ID"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "智能卡所在的插槽"
+
+#~ msgid "Slot Series"
+#~ msgstr "插槽组"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "各插槽卡的标识符"
+
+#~ msgid "name"
+#~ msgstr "名称"
+
+#~ msgid "Module"
+#~ msgstr "模块"
+
+#~ msgid "smartcard driver"
+#~ msgstr "智能卡驱动"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "智能卡认证"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "通过智能卡登录会话"
+
+#~ msgid "Module Path"
+#~ msgstr "模块路径"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "到智能卡 PKCS #11 驱动的路径"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "收到事件源的错误或挂起信号"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "无法初始化 NSS 安全系统"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "找不到合适的智能卡驱动"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "无法加载智能卡驱动“%s”"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr "无法监测发来的智能卡事件 - %s"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr "在等候智能卡事件时遇到意外错误"
+
+#~ msgid "Authentication"
+#~ msgstr "认证"
+
+#~ msgid "Log into session"
+#~ msgstr "登录会话"
+
+#~ msgid "Value"
+#~ msgstr "值"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "完成时间的百分比"
+
+#~ msgid "Inactive Text"
+#~ msgstr "非活动文本"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr "用户尚未选择任何条目前在标签中使用的文本"
+
+#~ msgid "Active Text"
+#~ msgstr "活动文本"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr "用户选择一个条目时在标签中使用的文本"
+
+#~ msgid "List Visible"
+#~ msgstr "列表可见"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "选择器列表是否可见"
+
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%m月%d日 %A %H:%M:%S"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%m月%d日 %A %H:%M"
+
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%A %H:%M:%S"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%A %H:%M"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "正在自动登录..."
+
+#~ msgid "Cancelling…"
+#~ msgstr "正在取消..."
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "选择语言，单击“登录”"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "自定义"
+
+#~ msgid "Custom session"
+#~ msgstr "自定义会话"
+
+#~ msgid "Computer Name"
+#~ msgstr "计算机名"
+
+#~ msgid "Version"
+#~ msgstr "版本"
+
+#~ msgid "Cancel"
+#~ msgstr "取消"
+
+#~ msgid "Unlock"
+#~ msgstr "解锁"
+
+#~ msgid "Login"
+#~ msgstr "登录"
+
+#~ msgid "Suspend"
+#~ msgstr "挂起"
+
+#~ msgid "Restart"
+#~ msgstr "重新启动"
+
+#~ msgid "Shut Down"
+#~ msgstr "关机"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "剩余时间未知"
+
+#~ msgid "Panel"
+#~ msgstr "面板"
+
+#~ msgid "Label Text"
+#~ msgstr "标签文本"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "该文本将用作一个标签"
+
+#~ msgid "Icon name"
+#~ msgstr "图标名"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "该标签所共用的图标"
+
+#~ msgid "Default Item"
+#~ msgstr "默认项目"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "默认项目的 ID"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "远程登录(正在连接 %s...)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "远程登录(已连接至 %s)"
+
+#~ msgid "Remote Login"
+#~ msgstr "远程登录"
+
+#~ msgid "Session"
+#~ msgstr "会话"
+
+#~ msgid "Duration"
+#~ msgstr "持续时间"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "多少秒直到计时器停止"
+
+#~ msgid "Start time"
+#~ msgstr "启动时间"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "计时器开始时间"
+
+#~ msgid "Is it Running?"
+#~ msgstr "它正在运行中吗？"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "是否计时器正在运行"
+
+#~ msgid "Log in as %s"
+#~ msgstr "作为 %s 登录"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "其他..."
+
+#~ msgid "Choose a different account"
+#~ msgstr "选择不同的帐户"
+
+#~ msgid "Guest"
+#~ msgstr "来宾"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "作为临时来宾登录"
+
+#~ msgid "Automatic Login"
+#~ msgstr "自动登录"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "选定选项后自动登录到系统"
+
+#~ msgid "Currently logged in"
+#~ msgstr "当前已登录"
 
 #~ msgid "Logdir %s does not exist or isn't a directory."
 #~ msgstr "日志目录 %s 不存在或者不是目录。"
