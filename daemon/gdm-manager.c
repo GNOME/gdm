@@ -918,7 +918,8 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         GdmSession       *session;
         const char       *address;
         GPid              pid = 0;
-        uid_t             uid = 0, allowed_user;
+        uid_t             uid = (uid_t) -1;
+        uid_t             allowed_user;
 
         g_debug ("GdmManager: trying to open new session");
 
@@ -967,6 +968,169 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         return TRUE;
 }
 
+static void
+on_reauthentication_client_connected (GdmSession              *session,
+                                      GCredentials            *credentials,
+                                      GPid                     pid_of_client,
+                                      GdmManager              *self)
+{
+        g_debug ("GdmManager: client connected to reauthentication server");
+}
+
+static void
+on_reauthentication_client_disconnected (GdmSession              *session,
+                                         GCredentials            *credentials,
+                                         GPid                     pid_of_client,
+                                         GdmManager              *self)
+{
+        g_debug ("GdmManger: client disconnected from reauthentication server");
+        gdm_session_close (session);
+        g_object_unref (session);
+}
+
+static void
+on_reauthentication_cancelled (GdmSession *session,
+                               GdmManager *self)
+{
+        g_debug ("GdmManager: client cancelled reauthentication request");
+        gdm_session_close (session);
+        g_object_unref (session);
+}
+
+static void
+on_reauthentication_conversation_started (GdmSession *session,
+                                          const char *service_name,
+                                          GdmManager *self)
+{
+        g_debug ("GdmManager: reauthentication service '%s' started",
+                 service_name);
+}
+
+static void
+on_reauthentication_conversation_stopped (GdmSession *session,
+                                          const char *service_name,
+                                          GdmManager *self)
+{
+        g_debug ("GdmManager: reauthentication service '%s' stopped",
+                 service_name);
+}
+
+static void
+on_reauthentication_verification_complete (GdmSession *session,
+                                           const char *service_name,
+                                           GdmManager *self)
+{
+        const char *session_id;
+        session_id = g_object_get_data (G_OBJECT (session), "caller-session-id");
+        g_debug ("GdmManager: reauthenticated user in unmanaged session '%s' with service '%s'",
+                 session_id, service_name);
+        session_unlock (self, session_id);
+        gdm_session_close (session);
+        g_object_unref (session);
+}
+
+static void
+remove_session_weak_refs (GdmManager *self,
+                          GdmSession *session)
+{
+        g_object_weak_unref (G_OBJECT (self),
+                             (GWeakNotify)
+                             gdm_session_close,
+                             session);
+        g_object_weak_unref (G_OBJECT (self),
+                             (GWeakNotify)
+                             g_object_unref,
+                             session);
+}
+
+static void
+add_session_weak_refs (GdmManager *self,
+                       GdmSession *session)
+{
+        g_object_weak_ref (G_OBJECT (self),
+                           (GWeakNotify)
+                           gdm_session_close,
+                           session);
+        g_object_weak_ref (G_OBJECT (self),
+                           (GWeakNotify)
+                           g_object_unref,
+                           session);
+        g_object_weak_ref (G_OBJECT (session),
+                           (GWeakNotify)
+                           remove_session_weak_refs,
+                           self);
+}
+
+static char *
+open_temporary_reauthentication_channel (GdmManager            *self,
+                                         char                  *seat_id,
+                                         char                  *session_id,
+                                         GPid                   pid,
+                                         uid_t                  uid,
+                                         gboolean               is_remote)
+{
+        GdmSession *session;
+        char **environment;
+        const char *display, *auth_file;
+        const char *address;
+
+        /* Note we're just using a minimal environment here rather than the
+         * session's environment because the caller is unprivileged and the
+         * associated worker will be privileged */
+        environment = g_get_environ ();
+        display = "";
+        auth_file = "/dev/null";
+
+        session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
+                                   uid,
+                                   display,
+                                   NULL,
+                                   NULL,
+                                   seat_id,
+                                   auth_file,
+                                   is_remote == FALSE,
+                                   (const char * const *)
+                                   environment);
+        g_strfreev (environment);
+
+        g_object_set_data_full (G_OBJECT (session),
+                                "caller-session-id",
+                                g_strdup (session_id),
+                                (GDestroyNotify)
+                                g_free);
+
+        add_session_weak_refs (self, session);
+
+        g_signal_connect (session,
+                          "client-connected",
+                          G_CALLBACK (on_reauthentication_client_connected),
+                          self);
+        g_signal_connect (session,
+                          "client-disconnected",
+                          G_CALLBACK (on_reauthentication_client_disconnected),
+                          self);
+        g_signal_connect (session,
+                          "cancelled",
+                          G_CALLBACK (on_reauthentication_cancelled),
+                          self);
+        g_signal_connect (session,
+                          "conversation-started",
+                          G_CALLBACK (on_reauthentication_conversation_started),
+                          self);
+        g_signal_connect (session,
+                          "conversation-stopped",
+                          G_CALLBACK (on_reauthentication_conversation_stopped),
+                          self);
+        g_signal_connect (session,
+                          "verification-complete",
+                          G_CALLBACK (on_reauthentication_verification_complete),
+                          self);
+
+        address = gdm_session_get_server_address (session);
+
+        return g_strdup (address);
+}
+
 static gboolean
 gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager,
                                                   GDBusMethodInvocation *invocation,
@@ -977,15 +1141,18 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         GdmDisplay       *display = NULL;
         GdmSession       *session;
         GDBusConnection  *connection;
+        char             *seat_id = NULL;
+        char             *session_id = NULL;
         GPid              pid = 0;
-        uid_t             uid = 0;
+        uid_t             uid = (uid_t) -1;
         gboolean          is_login_screen = FALSE;
+        gboolean          is_remote = FALSE;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, &pid, &uid, &is_login_screen, NULL);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, &seat_id, &session_id, &pid, &uid, &is_login_screen, &is_remote);
 
         if (is_login_screen) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -995,7 +1162,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                 return TRUE;
         }
 
-        if (display == NULL) {
+        if (seat_id == NULL || session_id == NULL || pid == 0 || uid == (uid_t) -1) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
@@ -1006,20 +1173,24 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 
         session = get_seed_session_for_display (display);
 
-        if (!gdm_session_is_running (session)) {
-                g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_ACCESS_DENIED,
-                                                               _("No session available"));
-
-                return TRUE;
+        if (session != NULL && gdm_session_is_running (session)) {
+                gdm_session_start_reauthentication (session, pid, uid);
+                g_hash_table_insert (self->priv->open_reauthentication_requests,
+                                     GINT_TO_POINTER (pid),
+                                     invocation);
+        } else {
+                char *address;
+                address = open_temporary_reauthentication_channel (self,
+                                                                   seat_id,
+                                                                   session_id,
+                                                                   pid,
+                                                                   uid,
+                                                                   is_remote);
+                gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
+                                                                         invocation,
+                                                                         address);
+                g_free (address);
         }
-
-        gdm_session_start_reauthentication (session, pid, uid);
-
-        g_hash_table_insert (self->priv->open_reauthentication_requests,
-                             GINT_TO_POINTER (pid),
-                             invocation);
 
         return TRUE;
 }
