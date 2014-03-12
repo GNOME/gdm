@@ -2037,7 +2037,7 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
 #ifdef PAM_XAUTHDATA
         struct pam_xauth_data *pam_xauth;
 #endif
-        int                    error_code;
+        int                    error_code = PAM_SUCCESS;
         char                  *pam_tty;
 
         /* set TTY */
@@ -2061,36 +2061,39 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
 
 #ifdef PAM_XDISPLAY
         /* set XDISPLAY */
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, worker->priv->x11_display_name);
-
-        if (error_code != PAM_SUCCESS) {
-                g_debug ("error informing authentication system of display string %s: %s",
-                         worker->priv->x11_display_name,
-                         pam_strerror (worker->priv->pam_handle, error_code));
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", "");
-                goto out;
+        if (worker->priv->x11_display_name != NULL && worker->priv->x11_display_name[0] != '\0') {
+                error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, worker->priv->x11_display_name);
+                if (error_code != PAM_SUCCESS) {
+                        g_debug ("error informing authentication system of display string %s: %s",
+                                 worker->priv->x11_display_name,
+                                 pam_strerror (worker->priv->pam_handle, error_code));
+                        g_set_error (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                     "%s", "");
+                        goto out;
+                }
         }
 #endif
 #ifdef PAM_XAUTHDATA
         /* set XAUTHDATA */
         pam_xauth = _get_xauth_for_pam (worker->priv->x11_authority_file);
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
-        if (error_code != PAM_SUCCESS) {
-                g_debug ("error informing authentication system of display string %s: %s",
-                         worker->priv->x11_display_name,
-                         pam_strerror (worker->priv->pam_handle, error_code));
-                g_free (pam_xauth);
+        if (pam_xauth != NULL) {
+                error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
+                if (error_code != PAM_SUCCESS) {
+                        g_debug ("error informing authentication system of display string %s: %s",
+                                 worker->priv->x11_display_name,
+                                 pam_strerror (worker->priv->pam_handle, error_code));
+                        g_free (pam_xauth);
 
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", "");
-                goto out;
-        }
-        g_free (pam_xauth);
+                        g_set_error (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                     "%s", "");
+                        goto out;
+                }
+                g_free (pam_xauth);
+         }
 #endif
         return TRUE;
 out:
