@@ -470,34 +470,41 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                                                              launch_environment->priv->x11_display_is_local,
                                                              NULL);
 
-        g_signal_connect (launch_environment->priv->session,
-                          "conversation-started",
-                          G_CALLBACK (on_conversation_started),
-                          launch_environment);
-        g_signal_connect (launch_environment->priv->session,
-                          "conversation-stopped",
-                          G_CALLBACK (on_conversation_stopped),
-                          launch_environment);
-        g_signal_connect (launch_environment->priv->session,
-                          "setup-complete",
-                          G_CALLBACK (on_session_setup_complete),
-                          launch_environment);
-        g_signal_connect (launch_environment->priv->session,
-                          "session-opened",
-                          G_CALLBACK (on_session_opened),
-                          launch_environment);
-        g_signal_connect (launch_environment->priv->session,
-                          "session-started",
-                          G_CALLBACK (on_session_started),
-                          launch_environment);
-        g_signal_connect (launch_environment->priv->session,
-                          "session-exited",
-                          G_CALLBACK (on_session_exited),
-                          launch_environment);
-        g_signal_connect (launch_environment->priv->session,
-                          "session-died",
-                          G_CALLBACK (on_session_died),
-                          launch_environment);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "conversation-started",
+                                 G_CALLBACK (on_conversation_started),
+                                 launch_environment,
+                                 0);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "conversation-stopped",
+                                 G_CALLBACK (on_conversation_stopped),
+                                 launch_environment,
+                                 0);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "setup-complete",
+                                 G_CALLBACK (on_session_setup_complete),
+                                 launch_environment,
+                                 0);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "session-opened",
+                                 G_CALLBACK (on_session_opened),
+                                 launch_environment,
+                                 0);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "session-started",
+                                 G_CALLBACK (on_session_started),
+                                 launch_environment,
+                                 0);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "session-exited",
+                                 G_CALLBACK (on_session_exited),
+                                 launch_environment,
+                                 0);
+        g_signal_connect_object (launch_environment->priv->session,
+                                 "session-died",
+                                 G_CALLBACK (on_session_died),
+                                 launch_environment,
+                                 0);
 
         gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
 
