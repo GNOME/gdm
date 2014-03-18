@@ -928,6 +928,29 @@ on_session_opened (GdmSession       *session,
 }
 
 static void
+on_session_started (GdmSession      *session,
+                    const char      *service_name,
+                    GPid             pid,
+                    GdmManager      *manager)
+{
+        GdmDisplay *display;
+
+        g_debug ("GdmManager: session started %d", pid);
+
+        display = get_display_for_user_session (session);
+
+        if (display != NULL) {
+                GdmSlave *slave;
+                const char *session_id;
+
+                slave = gdm_display_get_slave (display);
+
+                session_id = gdm_session_get_session_id (session);
+                g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
+        }
+}
+
+static void
 remove_user_session (GdmManager *manager,
                      GdmSession *session)
 {
@@ -1452,6 +1475,10 @@ create_session_for_display (GdmManager *manager,
         g_signal_connect (session,
                           "session-opened",
                           G_CALLBACK (on_session_opened),
+                          manager);
+        g_signal_connect (session,
+                          "session-started",
+                          G_CALLBACK (on_session_started),
                           manager);
         g_signal_connect (session,
                           "session-exited",
