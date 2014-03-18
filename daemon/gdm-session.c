@@ -2702,6 +2702,10 @@ gdm_session_bypasses_xsession (GdmSession *self)
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
+        if (gdm_session_is_wayland_session (self)) {
+                return TRUE;
+        }
+
         filename = get_session_filename (self);
 
         key_file = load_key_file_for_file (filename, NULL);
