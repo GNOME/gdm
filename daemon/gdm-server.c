@@ -703,12 +703,16 @@ server_child_watch (GPid       pid,
                 g_signal_emit (server, signals [DIED], 0, num);
         }
 
-        active_servers = g_slist_remove (active_servers, server);
-
         g_spawn_close_pid (server->priv->pid);
         server->priv->pid = -1;
 
         g_object_unref (server);
+}
+
+static void
+prune_active_servers_list (GdmServer *server)
+{
+        active_servers = g_slist_remove (active_servers, server);
 }
 
 static gboolean
@@ -749,6 +753,11 @@ gdm_server_spawn (GdmServer    *server,
         g_free (freeme);
 
         active_servers = g_slist_append (active_servers, server);
+
+        g_object_weak_ref (G_OBJECT (server),
+                           (GWeakNotify)
+                           prune_active_servers_list,
+                           server);
 
         gdm_server_launch_sigusr1_thread_if_needed ();
 
