@@ -42,6 +42,23 @@ typedef enum
         GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE
 } GdmSessionVerificationMode;
 
+typedef enum {
+        /* We reuse the existing display server, e.g. X server
+         * in "classic" mode from the greeter for the first seat. */
+        GDM_SESSION_DISPLAY_MODE_REUSE_VT,
+
+        /* Doesn't know anything about VTs. Tries to set DRM
+         * master and will throw a tantrum if something bad
+         * happens. e.g. weston-launch or mutter-launch. */
+        GDM_SESSION_DISPLAY_MODE_NEW_VT,
+
+        /* Uses logind sessions to manage itself. We need to set an
+         * XDG_VTNR and it will switch to the correct VT on startup.
+         * e.g. mutter-wayland with logind integration, X server with
+         * logind integration. */
+        GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED,
+} GdmSessionDisplayMode;
+
 typedef struct
 {
         GObject            parent;
@@ -111,6 +128,7 @@ const char       *gdm_session_get_display_device          (GdmSession     *sessi
 const char       *gdm_session_get_display_seat_id         (GdmSession     *session);
 const char       *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
+GdmSessionDisplayMode gdm_session_get_display_mode  (GdmSession     *session);
 
 void              gdm_session_start_conversation          (GdmSession *session,
                                                            const char *service_name);

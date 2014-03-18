@@ -2691,6 +2691,14 @@ out:
         return bypasses_xsession;
 }
 
+GdmSessionDisplayMode
+gdm_session_get_display_mode (GdmSession *self)
+{
+        /* X sessions are for now ran in classic mode where
+         * we reuse the existing greeter. */
+        return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+}
+
 void
 gdm_session_select_program (GdmSession *self,
                             const char *text)
