@@ -363,7 +363,9 @@ get_system_session_dirs (void)
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
+#ifdef ENABLE_WAYLAND_SUPPORT
                 DATADIR "/wayland-sessions/",
+#endif
                 NULL
         };
 
@@ -2661,6 +2663,7 @@ get_session_filename (GdmSession *self)
         return g_strdup_printf ("%s.desktop", get_session_name (self));
 }
 
+#ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean
 gdm_session_is_wayland_session (GdmSession *self)
 {
@@ -2689,6 +2692,7 @@ out:
         g_free (filename);
         return is_wayland_session;
 }
+#endif
 
 gboolean
 gdm_session_bypasses_xsession (GdmSession *self)
@@ -2702,9 +2706,11 @@ gdm_session_bypasses_xsession (GdmSession *self)
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
+#ifdef ENABLE_WAYLAND_SUPPORT
         if (gdm_session_is_wayland_session (self)) {
                 return TRUE;
         }
+#endif
 
         filename = get_session_filename (self);
 
@@ -2734,12 +2740,14 @@ out:
 GdmSessionDisplayMode
 gdm_session_get_display_mode (GdmSession *self)
 {
+#ifdef ENABLE_WAYLAND_SUPPORT
         /* Wayland sessions are for now assumed to run in a
          * mutter-launch-like environment, so we allocate
          * a new VT for them. */
         if (gdm_session_is_wayland_session (self)) {
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         }
+#endif
 
         /* X sessions are for now ran in classic mode where
          * we reuse the existing greeter. */

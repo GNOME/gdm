@@ -193,7 +193,9 @@ collect_sessions (void)
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
+#ifdef ENABLE_WAYLAND_SUPPORT
                 DATADIR "/wayland-sessions/",
+#endif
                 NULL
         };
 

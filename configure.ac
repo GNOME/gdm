@@ -255,6 +255,12 @@ AC_ARG_ENABLE(systemd-journal,
             AS_HELP_STRING([--enable-systemd-journal],
                            [Add journald support @<:@default=auto@:>@]),
             [enable_systemd_journal=$enableval], [enable_systemd_journal=auto])
+AC_ARG_ENABLE(wayland-support,
+	      AS_HELP_STRING([--enable-wayland-support],
+                             [Enable support for wayland sessions  @<:@default=auto@:>@]),
+              [enable_wayland_support=$enableval],
+              [enable_wayland_support=auto])
+
 AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
                            [Add plymouth support @<:@default=auto@:>@]),
@@ -322,6 +328,8 @@ AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 dnl checks needed for Darwin compatibility to linux **environ.
 AC_CHECK_HEADERS(crt_externs.h)
 AC_CHECK_FUNCS(_NSGetEnviron)
+
+AC_CHECK_HEADERS(sys/vt.h)
 
 EXTRA_DAEMON_LIBS=""
 EXTRA_SLAVE_LIBS=""
@@ -931,6 +939,20 @@ if test "x$use_journald" != "xno" ; then
 fi
 AC_SUBST(JOURNALD_CFLAGS)
 AC_SUBST(JOURNALD_LIBS)
+
+if test "x$enable_wayland_support" = "xauto" ; then
+        use_wayland="$use_systemd";
+else
+        use_wayland="$enable_wayland_support"
+fi
+
+if test "x$use_wayland" != "xno" ; then
+        if test "x$have_systemd" = "xno"; then
+                AC_MSG_ERROR([wayland support explicitly required, but logind not found])
+        fi
+
+        AC_DEFINE(ENABLE_WAYLAND_SUPPORT, 1, [Define to enable wayland support])
+fi
 
 AC_PATH_PROG(SYSTEMD_X_SERVER, systemd-multi-seat-x, [/lib/systemd/systemd-multi-seat-x], [/lib/systemd:/usr/lib/systemd:$PATH])
 AC_SUBST(SYSTEMD_X_SERVER)
@@ -1631,6 +1653,7 @@ echo \
         systemd support:          ${use_systemd}
         systemd unit dir:         ${with_systemdsystemunitdir}
         plymouth support:         ${use_plymouth}
+        wayland support:          ${use_wayland}
         Build with RBAC:          ${msg_rbac_shutdown}
         Initial VT:               ${GDM_INITIAL_VT}
         Enable documentation:     ${enable_documentation}
