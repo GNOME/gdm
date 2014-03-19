@@ -72,6 +72,7 @@ struct GdmManagerPrivate
         GdmXdmcpDisplayFactory *xdmcp_factory;
 #endif
         GList                  *user_sessions;
+        GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
         gboolean                xdmcp_enabled;
         GCancellable           *cancellable;
@@ -969,6 +970,17 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
 }
 
 static void
+close_transient_session (GdmManager *self,
+                         GdmSession *session)
+{
+        GPid pid;
+        pid = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), "caller-pid"));
+        gdm_session_close (session);
+        g_hash_table_remove (self->priv->transient_sessions,
+                             GUINT_TO_POINTER (pid));
+}
+
+static void
 on_reauthentication_client_connected (GdmSession              *session,
                                       GCredentials            *credentials,
                                       GPid                     pid_of_client,
@@ -984,8 +996,7 @@ on_reauthentication_client_disconnected (GdmSession              *session,
                                          GdmManager              *self)
 {
         g_debug ("GdmManger: client disconnected from reauthentication server");
-        gdm_session_close (session);
-        g_object_unref (session);
+        close_transient_session (self, session);
 }
 
 static void
@@ -993,8 +1004,7 @@ on_reauthentication_cancelled (GdmSession *session,
                                GdmManager *self)
 {
         g_debug ("GdmManager: client cancelled reauthentication request");
-        gdm_session_close (session);
-        g_object_unref (session);
+        close_transient_session (self, session);
 }
 
 static void
@@ -1025,40 +1035,7 @@ on_reauthentication_verification_complete (GdmSession *session,
         g_debug ("GdmManager: reauthenticated user in unmanaged session '%s' with service '%s'",
                  session_id, service_name);
         session_unlock (self, session_id);
-        gdm_session_close (session);
-        g_object_unref (session);
-}
-
-static void
-remove_session_weak_refs (GdmManager *self,
-                          GdmSession *session)
-{
-        g_object_weak_unref (G_OBJECT (self),
-                             (GWeakNotify)
-                             gdm_session_close,
-                             session);
-        g_object_weak_unref (G_OBJECT (self),
-                             (GWeakNotify)
-                             g_object_unref,
-                             session);
-}
-
-static void
-add_session_weak_refs (GdmManager *self,
-                       GdmSession *session)
-{
-        g_object_weak_ref (G_OBJECT (self),
-                           (GWeakNotify)
-                           gdm_session_close,
-                           session);
-        g_object_weak_ref (G_OBJECT (self),
-                           (GWeakNotify)
-                           g_object_unref,
-                           session);
-        g_object_weak_ref (G_OBJECT (session),
-                           (GWeakNotify)
-                           remove_session_weak_refs,
-                           self);
+        close_transient_session (self, session);
 }
 
 static char *
@@ -1098,8 +1075,12 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                 g_strdup (session_id),
                                 (GDestroyNotify)
                                 g_free);
-
-        add_session_weak_refs (self, session);
+        g_object_set_data (G_OBJECT (session),
+                           "caller-pid",
+                           GUINT_TO_POINTER (pid));
+        g_hash_table_insert (self->priv->transient_sessions,
+                             GINT_TO_POINTER (pid),
+                             session);
 
         g_signal_connect (session,
                           "client-connected",
@@ -2314,6 +2295,12 @@ gdm_manager_init (GdmManager *manager)
                                                                                NULL,
                                                                                (GDestroyNotify)
                                                                                g_object_unref);
+        manager->priv->transient_sessions = g_hash_table_new_full (NULL,
+                                                                   NULL,
+                                                                   (GDestroyNotify)
+                                                                   NULL,
+                                                                   (GDestroyNotify)
+                                                                   g_object_unref);
         g_signal_connect (G_OBJECT (manager->priv->display_store),
                           "display-added",
                           G_CALLBACK (on_display_added),
@@ -2351,6 +2338,7 @@ gdm_manager_finalize (GObject *object)
 #endif
         g_clear_object (&manager->priv->local_factory);
         g_hash_table_unref (manager->priv->open_reauthentication_requests);
+        g_hash_table_unref (manager->priv->transient_sessions);
         g_list_free_full (manager->priv->user_sessions, (GDestroyNotify) g_object_unref);
         manager->priv->user_sessions = NULL;
 
