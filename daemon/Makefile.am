@@ -290,8 +290,6 @@ EXTRA_DIST = 				\
 	gdm-manager.xml			\
 	gdm-session-worker.xml		\
 	gdm-session.xml			\
-	gdm-slave.xml			\
-	gdm-xdmcp-chooser-slave.xml	\
 	gdm-display.xml			\
 	gdm-static-display.xml		\
 	gdm-transient-display.xml	\
