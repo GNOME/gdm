@@ -1806,12 +1806,14 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         error_code = PAM_SUCCESS;
 
+#ifdef ENABLE_WAYLAND_SUPPORT
         /* If we're in new vt mode, jump to the new vt now. There's no need to jump for
          * the other two modes: in the logind case, the session will activate itself when
          * ready, and in the reuse server case, we're already on the correct VT. */
         if (worker->priv->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
                 jump_to_vt (worker, worker->priv->session_vt);
         }
+#endif
 
         session_pid = fork ();
 
