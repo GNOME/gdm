@@ -1610,7 +1610,6 @@ on_session_client_connected (GdmSession      *session,
                              GdmManager      *manager)
 {
         GdmDisplay *display;
-        gboolean timed_login_enabled;
         char    *username;
         int      delay;
         gboolean enabled, display_is_local;
@@ -1625,10 +1624,10 @@ on_session_client_connected (GdmSession      *session,
 
         g_object_get (display, "is-local", &display_is_local, NULL);
 
-        timed_login_enabled = FALSE;
+        enabled = FALSE;
         gdm_display_get_timed_login_details (display, &enabled, &username, &delay, NULL);
 
-        if (! timed_login_enabled) {
+        if (! enabled) {
                 return;
         }
 
