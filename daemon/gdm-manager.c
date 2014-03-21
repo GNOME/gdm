@@ -106,6 +106,7 @@ static void     gdm_manager_finalize    (GObject         *object);
 static void create_seed_session_for_display (GdmManager *manager,
                                              GdmDisplay *display,
                                              uid_t       allowed_user);
+static void     touch_marker_file       (GdmManager *manager);
 
 static gpointer manager_object = NULL;
 
@@ -1203,6 +1204,7 @@ set_up_greeter_session (GdmManager *manager,
         g_free (allowed_user);
 
         gdm_display_start_greeter_session (display);
+        touch_marker_file (manager);
 }
 
 static void
@@ -1965,7 +1967,6 @@ create_seed_session_for_display (GdmManager *manager,
         g_object_set_data_full (G_OBJECT (display), "gdm-seed-session", g_object_ref (session), (GDestroyNotify) g_object_unref);
 
         start_autologin_conversation_if_necessary (manager, display, session);
-        touch_marker_file (manager);
 }
 
 static void
