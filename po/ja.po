@@ -13,14 +13,14 @@
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2009.
 # Hideki Yamane <henrich@debian.org>, 2011.
 # Noriko Mizumoto <noriko@fedoraproject.org>, 2012.
-# Jiro Matsuzawa <jmatsuzawa@gnome.org>, 2013.
+# Jiro Matsuzawa <jmatsuzawa@gnome.org>, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-18 02:17+0000\n"
-"PO-Revision-Date: 2013-09-19 12:15+0000\n"
+"POT-Creation-Date: 2014-03-23 06:08+0000\n"
+"PO-Revision-Date: 2014-03-24 12:15+0000\n"
 "Last-Translator: Jiro Matsuzawa <jmatsuzawa@gnome.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -29,95 +29,93 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:519
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom はキャラクターデバイスではありません"
+
+#: ../common/gdm-common.c:827 ../common/gdm-common.c:980
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "現在のセッションを取得できませんでした。"
+
+#: ../common/gdm-common.c:834 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "セッションを切り替えできません。"
+
+#: ../common/gdm-common.c:989 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "現在のシートを識別できませんでした。"
+
+#: ../common/gdm-common.c:999 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
+msgstr "既存のログイン画面に切り替えるか、新しいログイン画面を起動するのかを、システムが決定することができませんでした。"
+
+#: ../common/gdm-common.c:1007 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "新しいログイン画面を起動できません。"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "システムに \"%s\" というユーザーは見つかりませんでした"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "まだ利用できるセッションがありません"
-
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "%s というユーザーの UID を検索できません"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "利用できるセッションがありません"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "再認証用に利用可能な %s のセッションがありません"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "%s というユーザーのセッションが見つかりません"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "%s というユーザーに適切なセッションが見つかりません"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "ユーザーは独自のセッションを所有していません"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:936 ../daemon/gdm-manager.c:1151
 msgid "No session available"
 msgstr "利用できるセッションがありません"
 
-#: ../daemon/gdm-server.c:234
+#: ../daemon/gdm-manager.c:946
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: 親ディスプレイの '%s' に接続できませんでした"
+msgid "Can only be called before user is logged in"
+msgstr "ユーザーがログインする前にしか呼び出しできません"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:955
+#, c-format
+msgid "Caller not GDM"
+msgstr "呼び出し側が GDM ではありません"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "ユーザー %s としてサーバーを起動しようとしましたが、そのようなユーザーは存在しません"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "グループ ID を %d に設定できませんでした"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s に対する initgroups () の呼び出しに失敗しました"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "ユーザー ID を %d に設定できませんでした"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ディスプレイ (%s) のログファイルを開けません!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s を %s に設定する際にエラー"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: サーバーの優先度を %d にセットできませんでした: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ディスプレイ (%s) のサーバーコマンドが空です"
@@ -146,59 +144,40 @@ msgstr "ディスプレイのデバイス"
 msgid "The display device"
 msgstr "ディスプレイのデバイスです"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1176
 msgid "Could not create authentication helper process"
 msgstr "認証ヘルパーのプロセスを作成できませんでした"
 
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:844
 msgid "Your account was given a time limit that's now passed."
 msgstr "アカウントに設定されていた有効期限が切れました。"
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:851
 msgid "Sorry, that didn't work. Please try again."
-msgstr "残念ながら、認証できませんでした。再びやり直してください。"
+msgstr "認証に失敗しました。やり直してください。"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "ユーザー名:"
 
-#: ../daemon/gdm-session-worker.c:1261
+#: ../daemon/gdm-session-worker.c:1241
 msgid "Your password has expired, please change it now."
 msgstr "パスワードの有効期限が切れました。直ちに変更してください。"
 
-#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "利用できるアカウントがありません"
 
-#: ../daemon/gdm-session-worker.c:1544
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "ユーザーを変更できません"
 
-#: ../daemon/gdm-simple-slave.c:1527
+#: ../daemon/gdm-simple-slave.c:871
 msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "何らかの内部エラーが原因で、X サーバー(グラフィカル環境)を起動できませんでした。システム管理者に問い合わせるか、syslog の内容をチェックして調査してみてください。とりあえず、このディスプレイを無効にします。問題が解決したら GDM を再起動してください。"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "ユーザーがログインする前にしか呼び出しできません"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "呼び出し側が GDM ではありません"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "ユーザーはログインしていません"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "現在、一度に接続できるのは 1 クライアントのみです"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "ソケットを生成できませんでした"
 
@@ -235,44 +214,32 @@ msgstr "GDM グループ '%s' が見つからないので処理を中止しま�
 msgid "The GDM group should not be root. Aborting!"
 msgstr "root を GDM グループにしないでください; 処理を中止します!"
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "警告をすべて致命的にする"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "時間が経過したら終了する (デバッグ用)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "GDM のバージョンを表示する"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "GNOME ディスプレイマネージャー"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "root ユーザーのみが GDM を起動できます"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM セッションワーカー"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "ディスプレイ ID"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME ディスプレイマネージャー (スレーブ側)"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
 msgid "Login Window"
@@ -362,42 +329,6 @@ msgstr "許容できる認証失敗の回数です"
 msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
 msgstr "ユーザーが認証を試行できる回数です。この回数を失敗すると、ユーザー選択に戻ることになります。"
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "一時的なディスプレイを作成できません:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "セッションを開始することができません:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "現在のセッションを取得できませんでした。"
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "セッションを切り替えできません。"
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "現在のシートを識別できませんでした。"
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
-msgstr "既存のログイン画面に切り替えるか、新しいログイン画面を起動するのかを、システムが決定することができませんでした。"
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "新しいログイン画面を起動できません。"
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "システムの選択"
@@ -418,35 +349,39 @@ msgstr "XDMCP: XDMCP のバージョンが間違っています!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: アドレスを解析できません"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "一時的なディスプレイを作成できません:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "セッションを開始することができません:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "VERSION コマンドのみがサポートされています"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "無視しました - 下位互換のために残してあるだけです"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "デバッグ情報を出力する"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "バージョンを表示する"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- 新しい GDM のログイン"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "新しいディスプレイを起動できません"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -456,6 +391,48 @@ msgstr "スクリーンショットの撮影"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "画面のスクリーンショットを撮る"
+
+#~ msgid "No session available yet"
+#~ msgstr "まだ利用できるセッションがありません"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "%s というユーザーの UID を検索できません"
+
+#~ msgid "no sessions available"
+#~ msgstr "利用できるセッションがありません"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "再認証用に利用可能な %s のセッションがありません"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "%s というユーザーのセッションが見つかりません"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "%s というユーザーに適切なセッションが見つかりません"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "ユーザーは独自のセッションを所有していません"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: 親ディスプレイの '%s' に接続できませんでした"
+
+#~ msgid "User not logged in"
+#~ msgstr "ユーザーはログインしていません"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "現在、一度に接続できるのは 1 クライアントのみです"
+
+#~ msgid "Display ID"
+#~ msgstr "ディスプレイ ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "GNOME ディスプレイマネージャー (スレーブ側)"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "新しいディスプレイを起動できません"
 
 #~ msgid "Failed to create AuthDir %s: %s"
 #~ msgstr "認証ディレクトリ %s の作成に失敗しました: %s"
