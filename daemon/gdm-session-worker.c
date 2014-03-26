@@ -274,7 +274,7 @@ open_ck_session (GdmSessionWorker  *worker)
 
         g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(sv)"));
         g_variant_builder_add_parsed (&builder, "('unix-user', <%i>)", uid);
-        g_variant_builder_add_parsed (&builder, "('display-device', <%s>)", display_device);
+        g_variant_builder_add_parsed (&builder, "('x11-display-device', <%s>)", display_device);
         g_variant_builder_add_parsed (&builder, "('x11-display', <%s>)", display_name);
         g_variant_builder_add_parsed (&builder, "('remote-host-name', <%s>)", display_hostname);
         g_variant_builder_add_parsed (&builder, "('is-local', <%b>)", worker->priv->display_is_local);

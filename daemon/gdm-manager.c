@@ -430,7 +430,14 @@ activate_session_id_for_ck (GdmManager *manager,
                 g_debug ("GdmManager: ConsoleKit %s raised:\n %s\n\n",
                          g_dbus_error_get_remote_error (error), error->message);
                 g_error_free (error);
-                return FALSE;
+
+                /* It is very likely that the "error" just reported is
+                 * that the session is already active.  Unfortunately,
+                 * ConsoleKit doesn't use proper error codes and it
+                 * translates the error message, so we have no real way
+                 * to detect this case...
+                 */
+                return TRUE;
         }
 
         g_variant_unref (reply);
