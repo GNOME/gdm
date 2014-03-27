@@ -1151,7 +1151,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                 return TRUE;
         }
 
-        if (seat_id == NULL || session_id == NULL || pid == 0 || uid == (uid_t) -1) {
+        if (session_id == NULL || pid == 0 || uid == (uid_t) -1) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
