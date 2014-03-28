@@ -24,7 +24,6 @@
 #include <glib-object.h>
 
 #include "s-common-address.h"
-#include "s-common-utils.h"
 
 static gboolean no_fork = FALSE;
 static gboolean verbose = FALSE;
@@ -57,8 +56,7 @@ main (int argc, char **argv)
                 exit (1);
         }
 
-        r = srunner_create (suite_common_utils ());
-        srunner_add_suite (r, suite_common_address ());
+        r = srunner_create (suite_common_address ());
 
         if (no_fork) {
                 srunner_set_fork_status (r, CK_NOFORK);

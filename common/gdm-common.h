@@ -53,15 +53,6 @@ gboolean       gdm_clear_close_on_exec_flag (int fd);
 
 const char *   gdm_make_temp_dir         (char    *template);
 
-gboolean       gdm_string_hex_encode     (const GString *source,
-                                          int            start,
-                                          GString       *dest,
-                                          int            insert_at);
-gboolean       gdm_string_hex_decode     (const GString *source,
-                                          int            start,
-                                          int           *end_return,
-                                          GString       *dest,
-                                          int            insert_at);
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
 gboolean       gdm_goto_login_session    (GError **error);
