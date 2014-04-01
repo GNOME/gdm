@@ -90,10 +90,6 @@
 #define GDM_PASSWD_AUXILLARY_BUFFER_SIZE 1024
 #endif
 
-#ifndef GDM_SESSION_DEFAULT_PATH
-#define GDM_SESSION_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin"
-#endif
-
 #ifndef GDM_SESSION_ROOT_UID
 #define GDM_SESSION_ROOT_UID 0
 #endif
@@ -1507,13 +1503,10 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         /* Let's give the user a default PATH if he doesn't already have one
          */
         if (!gdm_session_worker_environment_variable_is_set (worker, "PATH")) {
-                if (strcmp (BINDIR, "/usr/bin") == 0) {
-                        gdm_session_worker_set_environment_variable (worker, "PATH",
-                                                                     GDM_SESSION_DEFAULT_PATH);
-                } else {
-                        gdm_session_worker_set_environment_variable (worker, "PATH",
-                                                                     BINDIR ":" GDM_SESSION_DEFAULT_PATH);
-                }
+                const char *path;
+
+                path = g_getenv ("PATH");
+                gdm_session_worker_set_environment_variable (worker, "PATH", path);
         }
 
         if (! _change_user (worker, uid, gid)) {
