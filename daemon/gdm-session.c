@@ -2242,6 +2242,32 @@ get_session_command (GdmSession *self)
         return command;
 }
 
+static gchar *
+get_session_desktop_names (GdmSession *self)
+{
+        gchar *filename;
+        GKeyFile *keyfile;
+        gchar *desktop_names = NULL;
+
+        filename = g_strdup_printf ("%s.desktop", get_session_name (self));
+        keyfile = load_key_file_for_file (filename, NULL);
+        if (keyfile != NULL) {
+              gchar **names;
+
+              names = g_key_file_get_string_list (keyfile, G_KEY_FILE_DESKTOP_GROUP,
+                                                  "DesktopNames", NULL, NULL);
+              if (names != NULL) {
+                      desktop_names = g_strjoinv (":", names);
+
+                      g_strfreev (names);
+              }
+        }
+
+        g_key_file_free (keyfile);
+        g_free (filename);
+        return desktop_names;
+}
+
 void
 gdm_session_set_environment_variable (GdmSession *self,
                                       const char *key,
@@ -2282,6 +2308,8 @@ set_up_session_language (GdmSession *self)
 static void
 set_up_session_environment (GdmSession *self)
 {
+        gchar *desktop_names;
+
         gdm_session_set_environment_variable (self,
                                               "GDMSESSION",
                                               get_session_name (self));
@@ -2291,6 +2319,11 @@ set_up_session_environment (GdmSession *self)
         gdm_session_set_environment_variable (self,
                                               "XDG_SESSION_DESKTOP",
                                               get_session_name (self));
+
+        desktop_names = get_session_desktop_names (self);
+        if (desktop_names != NULL) {
+                gdm_session_set_environment_variable (self, "XDG_CURRENT_DESKTOP", desktop_names);
+        }
 
         set_up_session_language (self);
 
@@ -2309,6 +2342,8 @@ set_up_session_environment (GdmSession *self)
                                                       "WINDOWPATH",
                                                       g_getenv ("WINDOWPATH"));
         }
+
+        g_free (desktop_names);
 }
 
 void
