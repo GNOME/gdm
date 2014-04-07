@@ -121,6 +121,8 @@ struct _GdmSessionPrivate
         GDBusServer         *worker_server;
         GDBusServer         *outside_server;
         GHashTable          *environment;
+
+        gboolean             is_program_session : 1;
 };
 
 enum {
@@ -157,6 +159,10 @@ enum {
         REAUTHENTICATED,
         LAST_SIGNAL
 };
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+static gboolean gdm_session_is_wayland_session (GdmSession *self);
+#endif
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
@@ -2123,6 +2129,8 @@ gdm_session_setup_for_program (GdmSession *self,
         g_return_if_fail (GDM_IS_SESSION (self));
 
         send_setup_for_program (self, service_name, username, log_file);
+
+        self->priv->is_program_session = TRUE;
 }
 
 void
@@ -2462,6 +2470,7 @@ gdm_session_start_session (GdmSession *self,
         GdmSessionConversation *conversation;
         char             *command;
         char             *program;
+        gboolean          is_x11 = TRUE;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (self->priv->session_conversation == NULL);
@@ -2477,10 +2486,20 @@ gdm_session_start_session (GdmSession *self,
         stop_all_other_conversations (self, conversation, FALSE);
 
         if (self->priv->selected_program == NULL) {
+                GdmSessionDisplayMode display_mode;
                 command = get_session_command (self);
+
+                display_mode = gdm_session_get_display_mode (self);
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+                is_x11 = !gdm_session_is_wayland_session (self);
+#endif
 
                 if (gdm_session_bypasses_xsession (self)) {
                         program = g_strdup (command);
+                } else if (is_x11 &&
+                           display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
+                        program = g_strdup_printf ("/usr/bin/xinit " GDMCONFDIR "/Xsession \"%s\" -- /usr/bin/Xorg :%u", command, g_random_int_range (G_MAXINT / 2, G_MAXINT));
                 } else {
                         program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
                 }
@@ -2781,6 +2800,10 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         }
 #endif
+
+        if (self->priv->is_program_session) {
+                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        }
 
         return GDM_SESSION_DISPLAY_MODE_NEW_VT;
 }
