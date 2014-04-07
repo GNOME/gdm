@@ -1594,6 +1594,11 @@ static gboolean
 run_script (GdmSessionWorker *worker,
             const char       *dir)
 {
+        /* scripts are for non-program sessions only */
+        if (worker->priv->is_program_session) {
+                return TRUE;
+        }
+
         return gdm_run_script (dir,
                                worker->priv->username,
                                worker->priv->x11_display_name,
