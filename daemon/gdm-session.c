@@ -2352,12 +2352,6 @@ set_up_session_environment (GdmSession *self)
                 }
         }
 
-        if (g_getenv ("WINDOWPATH") != NULL) {
-                gdm_session_set_environment_variable (self,
-                                                      "WINDOWPATH",
-                                                      g_getenv ("WINDOWPATH"));
-        }
-
         g_free (desktop_names);
 }
 
