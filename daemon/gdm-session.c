@@ -2784,9 +2784,7 @@ gdm_session_get_display_mode (GdmSession *self)
         }
 #endif
 
-        /* X sessions are for now ran in classic mode where
-         * we reuse the existing greeter. */
-        return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        return GDM_SESSION_DISPLAY_MODE_NEW_VT;
 }
 
 void
