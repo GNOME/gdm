@@ -121,6 +121,8 @@ struct _GdmSessionPrivate
         GDBusServer         *worker_server;
         GDBusServer         *outside_server;
         GHashTable          *environment;
+
+        gboolean             is_program_session : 1;
 };
 
 enum {
@@ -2140,6 +2142,8 @@ gdm_session_setup_for_program (GdmSession *self,
         g_return_if_fail (GDM_IS_SESSION (self));
 
         send_setup_for_program (self, service_name, username, log_file);
+
+        self->priv->is_program_session = TRUE;
 }
 
 void
@@ -2799,9 +2803,11 @@ gdm_session_get_display_mode (GdmSession *self)
         }
 #endif
 
-        /* X sessions are for now ran in classic mode where
-         * we reuse the existing greeter. */
-        return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        if (self->priv->is_program_session) {
+                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        }
+
+        return GDM_SESSION_DISPLAY_MODE_NEW_VT;
 }
 
 void
