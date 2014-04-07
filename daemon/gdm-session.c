@@ -2308,6 +2308,7 @@ set_up_session_language (GdmSession *self)
 static void
 set_up_session_environment (GdmSession *self)
 {
+        GdmSessionDisplayMode display_mode;
         gchar *desktop_names;
 
         gdm_session_set_environment_variable (self,
@@ -2327,14 +2328,17 @@ set_up_session_environment (GdmSession *self)
 
         set_up_session_language (self);
 
-        gdm_session_set_environment_variable (self,
-                                              "DISPLAY",
-                                              self->priv->display_name);
-
-        if (self->priv->user_x11_authority_file != NULL) {
+        display_mode = gdm_session_get_display_mode (self);
+        if (display_mode == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
                 gdm_session_set_environment_variable (self,
-                                                      "XAUTHORITY",
-                                                      self->priv->user_x11_authority_file);
+                                                      "DISPLAY",
+                                                      self->priv->display_name);
+
+                if (self->priv->user_x11_authority_file != NULL) {
+                        gdm_session_set_environment_variable (self,
+                                                              "XAUTHORITY",
+                                                              self->priv->user_x11_authority_file);
+                }
         }
 
         if (g_getenv ("WINDOWPATH") != NULL) {
