@@ -143,6 +143,7 @@ enum {
         SETUP_COMPLETE,
         CANCELLED,
         HOSTNAME_SELECTED,
+        CLIENT_REJECTED,
         CLIENT_CONNECTED,
         CLIENT_DISCONNECTED,
         CLIENT_READY_FOR_SESSION_TO_START,
@@ -1563,6 +1564,7 @@ allow_user_function (GDBusAuthObserver *observer,
                      GdmSession        *self)
 {
         uid_t client_uid;
+        GPid  pid_of_client;
 
         client_uid = g_credentials_get_unix_user (credentials, NULL);
         if (client_uid == self->priv->allowed_user) {
@@ -1570,6 +1572,15 @@ allow_user_function (GDBusAuthObserver *observer,
         }
 
         g_debug ("GdmSession: User not allowed");
+
+        pid_of_client = g_credentials_get_unix_pid (credentials, NULL);
+        g_signal_emit (G_OBJECT (self),
+                       signals [CLIENT_REJECTED],
+                       0,
+                       credentials,
+                       (guint)
+                       pid_of_client);
+
 
         return FALSE;
 }
@@ -3258,6 +3269,19 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+
+        signals [CLIENT_REJECTED] =
+                g_signal_new ("client-rejected",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClass, client_rejected),
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              2,
+                              G_TYPE_CREDENTIALS,
+                              G_TYPE_UINT);
 
         signals [CLIENT_CONNECTED] =
                 g_signal_new ("client-connected",

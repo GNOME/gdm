@@ -78,6 +78,7 @@ typedef struct
                                                     gboolean      client_is_ready);
 
         void (* cancelled)                   (GdmSession   *session);
+        void (* client_rejected)             (GdmSession   *session);
         void (* client_connected)            (GdmSession   *session);
         void (* client_disconnected)         (GdmSession   *session);
         void (* disconnected)                (GdmSession   *session);
