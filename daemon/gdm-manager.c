@@ -814,7 +814,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
         }
 
         if (out_uid != NULL) {
-                *out_uid = session_uid;
+                *out_uid = caller_uid;
         }
 
         if (caller_uid != session_uid) {
