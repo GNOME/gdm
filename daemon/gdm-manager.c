@@ -1008,6 +1008,47 @@ on_reauthentication_client_disconnected (GdmSession              *session,
 }
 
 static void
+on_reauthentication_client_rejected (GdmSession              *session,
+                                     GCredentials            *credentials,
+                                     GPid                     pid_of_client,
+                                     GdmManager              *self)
+{
+        GPid pid;
+
+        g_debug ("GdmManger: client with pid %ld rejected from reauthentication server", (long) pid_of_client);
+
+        if (gdm_session_client_is_connected (session)) {
+                /* we already have a client connected, ignore this rejected one */
+                return;
+        }
+
+        pid = (GPid) GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), "caller-pid"));
+
+        if (pid != pid_of_client) {
+                const char *session_id;
+                char *client_session_id;
+
+                /* rejected client isn't the process that started the
+                 * transient reauthentication session. If it's not even from the
+                 * same audit session, ignore it since it doesn't "own" the
+                 * reauthentication session
+                 */
+                client_session_id = get_session_id_for_pid (self->priv->connection,
+                                                            pid_of_client,
+                                                            NULL);
+                session_id = g_object_get_data (G_OBJECT (session), "caller-session-id");
+
+                if (g_strcmp0 (session_id, client_session_id) != 0) {
+                        return;
+                }
+        }
+
+        /* client was rejected, so clean up its session object
+         */
+        close_transient_session (self, session);
+}
+
+static void
 on_reauthentication_cancelled (GdmSession *session,
                                GdmManager *self)
 {
@@ -1097,6 +1138,10 @@ open_temporary_reauthentication_channel (GdmManager            *self,
         g_signal_connect (session,
                           "client-disconnected",
                           G_CALLBACK (on_reauthentication_client_disconnected),
+                          self);
+        g_signal_connect (session,
+                          "client-rejected",
+                          G_CALLBACK (on_reauthentication_client_rejected),
                           self);
         g_signal_connect (session,
                           "cancelled",
