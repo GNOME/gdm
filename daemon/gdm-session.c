@@ -340,6 +340,8 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         service_name = conversation->service_name;
 
         if (worked) {
+                GdmSessionDisplayMode mode;
+
                 switch (self->priv->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
                         if (self->priv->user_verifier_interface != NULL) {
@@ -351,6 +353,10 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
 
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
                 case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
+                        mode = gdm_session_get_display_mode (self);
+                        gdm_dbus_worker_call_set_session_display_mode (conversation->worker_proxy,
+                                                                       gdm_session_display_mode_to_string (mode),
+                                                                       NULL, NULL, NULL);
                         gdm_session_open_session (self, service_name);
                         break;
                 default:
@@ -2843,7 +2849,6 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
-        GdmSessionDisplayMode mode;
 
         g_free (self->priv->selected_session);
 
@@ -2852,8 +2857,6 @@ gdm_session_select_session (GdmSession *self,
         } else {
                 self->priv->selected_session = g_strdup (text);
         }
-
-        mode = gdm_session_get_display_mode (self);
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -2864,9 +2867,6 @@ gdm_session_select_session (GdmSession *self,
                 gdm_dbus_worker_call_set_session_name (conversation->worker_proxy,
                                                        get_session_name (self),
                                                        NULL, NULL, NULL);
-                gdm_dbus_worker_call_set_session_display_mode (conversation->worker_proxy,
-                                                               gdm_session_display_mode_to_string (mode),
-                                                               NULL, NULL, NULL);
         }
 }
 
