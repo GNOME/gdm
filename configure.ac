@@ -1343,7 +1343,7 @@ else
    GDM_PID_FILE=$GDM_RUN_DIR/gdm.pid
 fi
 
-AC_SUBST(GDM_PID_FILE)
+AS_AC_EXPAND(GDM_PID_FILE, "$GDM_PID_FILE")
 AC_DEFINE_UNQUOTED(GDM_PID_FILE, "$GDM_PID_FILE", [pid file])
 
 dnl ---------------------------------------------------------------------------
