@@ -2,7 +2,6 @@
 auth       required    pam_env.so
 auth       sufficient  pam_succeed_if.so user ingroup nopasswdlogin
 auth       include     system-auth
-account    required    pam_nologin.so
 account    include     system-auth
 password   include     system-auth
 session    optional    pam_keyinit.so force revoke
