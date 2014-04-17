@@ -1989,6 +1989,7 @@ set_up_for_new_vt (GdmSessionWorker *worker)
         int fd;
         char vt_string[256], tty_string[256];
         struct vt_stat vt_state = { 0 };
+        char *display;
         int session_vt = 0;
 
         fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
@@ -2035,6 +2036,19 @@ set_up_for_new_vt (GdmSessionWorker *worker)
         }
 
         pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+
+        /* HACK HACK HACK
+         * leave the FD open to prevent OPENQRY races, but make sure it's "unknown"
+         * so the login shell doesn't try to take a controlling interest in the tty
+         * change the ownership so the unprivileged Xorg can open it.
+         */
+        worker->priv->session_tty_fd = -1;
+        display = g_strdup_printf ("/run/user/%u/x11/%s.socket", worker->priv->uid, worker->priv->display_seat_id);
+        gdm_session_worker_set_environment_variable (worker,
+                                                     "DISPLAY",
+                                                     display);
+        pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, display);
+        g_free (display);
 
         return TRUE;
 
