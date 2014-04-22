@@ -2028,6 +2028,12 @@ set_up_for_new_vt (GdmSessionWorker *worker)
 
         g_snprintf (tty_string, 256, "/dev/tty%d", session_vt);
         worker->priv->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
+
+        if (worker->priv->session_tty_fd < 0) {
+                g_warning ("GdmSessionWorker: couln't open terminal %s for VT %s: %m", tty_string, vt_string);
+                goto fail;
+        }
+
         pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
 
         return TRUE;
