@@ -287,7 +287,7 @@ AC_ARG_WITH(default-path,
 if test x$withval != x; then
 	GDM_SESSION_DEFAULT_PATH="$withval"
 else
-	GDM_SESSION_DEFAULT_PATH="/usr/local/bin:/usr/bin:/bin"
+	GDM_SESSION_DEFAULT_PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 fi
 AC_SUBST(GDM_SESSION_DEFAULT_PATH)
 
