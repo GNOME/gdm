@@ -274,6 +274,23 @@ AC_ARG_WITH(at-spi-registryd-directory,
 AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
 AC_SUBST(AT_SPI_REGISTRYD_DIR)
 
+# Allow configuration of default PATH
+#
+withval=""
+AC_ARG_WITH(default-path,
+            AS_HELP_STRING([--with-default-path=<PATH>],
+	                   [PATH GDM will use as the user's default PATH]),
+            [if test x$withval != x; then
+               AC_MSG_RESULT("PATH ${withval} will be the default PATH.")
+             fi])
+
+if test x$withval != x; then
+	GDM_SESSION_DEFAULT_PATH="$withval"
+else
+	GDM_SESSION_DEFAULT_PATH="/usr/local/bin:/usr/bin:/bin"
+fi
+AC_SUBST(GDM_SESSION_DEFAULT_PATH)
+
 dnl
 dnl file that sets LANG
 dnl
