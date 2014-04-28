@@ -52,6 +52,7 @@
 
 #ifdef WITH_SYSTEMD
 #include <systemd/sd-daemon.h>
+#include <systemd/sd-login.h>
 #endif
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
@@ -1984,6 +1985,105 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
 #ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean
+validate_session (GdmSessionWorker *worker,
+                  const char       *session,
+                  const char       *requested_seat,
+                  const char       *requested_type,
+                  const char       *requested_state)
+{
+    int ret;
+    gboolean validated = FALSE;
+    char *state = NULL, *type = NULL, *seat = NULL;
+    uid_t uid;
+    unsigned int vt;
+
+    ret = sd_session_get_uid (session, &uid);
+
+    if (ret < 0 || uid != worker->priv->uid) {
+            goto out;
+    }
+
+    ret = sd_session_get_state (session, &state);
+
+    if (ret < 0 || state == NULL) {
+            goto out;
+    }
+
+    if (strcmp (state, requested_state) != 0) {
+            goto out;
+    }
+
+    ret = sd_session_get_type (session, &type);
+
+    if (ret < 0 || type == NULL) {
+            goto out;
+    }
+
+    if (strcmp (type, requested_type) != 0) {
+            goto out;
+    }
+
+    ret = sd_session_get_seat (session, &seat);
+
+    if (ret < 0 || seat == NULL) {
+            goto out;
+    }
+
+    if (strcmp (seat, requested_seat) != 0) {
+            goto out;
+    }
+
+    ret = sd_session_get_vt (session, &vt);
+
+    if (ret < 0 || vt <= 0) {
+            goto out;
+    }
+
+    validated = TRUE;
+
+out:
+    free (state);
+    free (type);
+    free (seat);
+    return validated;
+}
+
+static int
+find_vt_of_closing_session (GdmSessionWorker *worker)
+{
+        char **sessions = NULL;
+        unsigned int vt = 0;
+        int ret;
+        int i;
+
+        ret = sd_seat_get_sessions (worker->priv->display_seat_id, &sessions, NULL, NULL);
+
+        if (ret < 0 || sessions == NULL) {
+                goto out;
+        }
+
+        for (i = 0; sessions[i] != NULL; i++) {
+                if (vt == 0) {
+                        gboolean validated;
+                        validated = validate_session (worker, sessions[i], worker->priv->display_seat_id, "x11", "closing");
+
+                        if (validated) {
+                                ret = sd_session_get_vt (sessions[i], &vt);
+
+                                if (ret < 0) {
+                                        vt = 0;
+                                }
+                        }
+                }
+                free(sessions[i]);
+        }
+        free (sessions);
+
+out:
+        return (int) vt;
+}
+
+static gboolean
 set_up_for_new_vt (GdmSessionWorker *worker)
 {
         int fd;
@@ -2004,9 +2104,15 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                 goto fail;
         }
 
-        if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
-                g_debug ("GdmSessionWorker: couldn't open new VT: %m");
-                goto fail;
+        /* First adopt any pre-existing VT own by a session going down
+         */
+        session_vt = find_vt_of_closing_session (worker);
+
+        if (session_vt <= 0) {
+                if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
+                        g_debug ("GdmSessionWorker: couldn't open new VT: %m");
+                        goto fail;
+                }
         }
 
         worker->priv->login_vt = vt_state.v_active;
