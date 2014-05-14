@@ -532,16 +532,16 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
 {
         if (launch_environment->priv->pid > 1) {
                 gdm_signal_pid (-launch_environment->priv->pid, SIGTERM);
-        } else {
-                if (launch_environment->priv->session != NULL) {
-                        gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
-                        gdm_session_close (launch_environment->priv->session);
-
-                        g_clear_object (&launch_environment->priv->session);
-                }
-
-                g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
         }
+
+        if (launch_environment->priv->session != NULL) {
+                gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
+                gdm_session_close (launch_environment->priv->session);
+
+                g_clear_object (&launch_environment->priv->session);
+        }
+
+        g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
 
         return TRUE;
 }
