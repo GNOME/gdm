@@ -98,9 +98,6 @@ gdm_transient_display_finish (GdmDisplay *display)
 
         GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->finish (display);
 
-        /* we don't restart/remanage transient displays */
-        gdm_display_unmanage (display);
-
         return TRUE;
 }
 
