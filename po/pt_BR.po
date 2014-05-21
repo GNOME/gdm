@@ -1,5 +1,5 @@
 # Brazilian Portuguese translation of gdm.
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm package.
 # Jorge Godoy <godoy@conectiva.com.br>
 # E. A. Tacão <tacao@conectiva.com.br>
@@ -25,15 +25,15 @@
 # Adorilson Bezerra <adorilson@gmail.com>, 2011.
 # Jonh Wendell <jwendell@gnome.org>, 2012.
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2012, 2013.
-# Enrico Nicoletto <liverig@gmail.com>, 2013.
+# Enrico Nicoletto <liverig@gmail.com>, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-14 14:30+0000\n"
-"PO-Revision-Date: 2013-09-15 12:03-0300\n"
+"POT-Creation-Date: 2014-05-21 05:01+0000\n"
+"PO-Revision-Date: 2014-05-21 09:10-0300\n"
 "Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -41,99 +41,101 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.5\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom não é um dispositivo de caracteres"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Impossível identificar a sessão atual."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Usuário não consegue alternar sessões."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Não foi possível identificar a estação atual."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"O sistema não conseguiu deduzir se deve alternar para uma tela de login "
+"existente ou se é para abrir uma nova."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "O sistema não conseguiu abrir uma nova tela de login."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "não foi possível encontrar o usuário \"%s\" no sistema"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Nenhuma sessão disponível no momento"
-
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Não foi possível consultar o UID do usuário %s"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "não há sessões disponíveis"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Não há sessões para %s disponíveis para nova autenticação"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Não foi possível encontrar a sessão do usuário %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Não foi possível encontrar a sessão apropriada do usuário %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "O usuário não possui sessão"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
 msgid "No session available"
 msgstr "Nenhuma sessão disponível"
 
-#: ../daemon/gdm-server.c:234
+#: ../daemon/gdm-manager.c:953
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: falha ao conectar à tela pai \"%s\""
+msgid "Can only be called before user is logged in"
+msgstr "Somente pode ser chamado antes do usuário iniciar a sessão"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:962
+#, c-format
+msgid "Caller not GDM"
+msgstr "O solicitante não é GDM"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "O servidor deveria ter sido criado pelo usuário %s, mas tal usuário não "
 "existe"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Não foi possível definir o groupid para %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () falhou para %s"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Não foi possível definir o userid para %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Não foi possível abrir arquivo de registros para a tela %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Erro ao ajustar %s para %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Não foi possível definir a prioridade do servidor para %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comando de servidor vazio para a tela %s"
@@ -166,32 +168,32 @@ msgstr "O dispositivo de tela"
 msgid "Could not create authentication helper process"
 msgstr "Não foi possível criar o processo auxiliar de autenticação"
 
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:844
 msgid "Your account was given a time limit that's now passed."
 msgstr "Foi dada à sua conta um limite de tempo que acabou de passar."
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:851
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Desculpe, isto não funcionou. Por gentileza, tente novamente."
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "Nome de usuário:"
 
-#: ../daemon/gdm-session-worker.c:1261
+#: ../daemon/gdm-session-worker.c:1241
 msgid "Your password has expired, please change it now."
 msgstr "Sua senha expirou, por gentileza altere-a agora."
 
-#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "nenhuma conta de usuário disponível"
 
-#: ../daemon/gdm-session-worker.c:1544
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "Não foi possível mudar para o usuário"
 
-#: ../daemon/gdm-simple-slave.c:1527
+#: ../daemon/gdm-simple-slave.c:871
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -203,26 +205,7 @@ msgstr ""
 "seu syslog para um diagnóstico. Enquanto isso, esta tela será desabilitada. "
 "Por favor reinicie o GDM quando o problema for corrigido."
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Somente pode ser chamado antes do usuário iniciar a sessão"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "O solicitante não é GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "O usuário não iniciou a sessão"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "No exato momento, somente um cliente pode estar conectado por vez"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Não foi possível criar soquete!"
 
@@ -262,44 +245,32 @@ msgstr "Não foi possível localizar o grupo GDM \"%s\". Abortando!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "O grupo GDM não deveria ser o administrador. Abortando!"
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Considerar todos avisos como fatais"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Sair depois de um tempo (para depuração)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Imprimir a versão do GDM"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Gerenciador de exibição do GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Somente o usuário administrador pode executar o GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Processo da sessão do Gerenciador de exibição do GNOME"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "ID da tela"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Gerenciador de exibição secundário do GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
 msgid "Login Window"
@@ -430,46 +401,6 @@ msgstr ""
 "O número de vezes que um usuário possui permissão para tentar autenticar, "
 "antes de desistir e voltar para a seleção de usuário."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Não foi possível criar uma tela transitória:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Não foi possível ativar a sessão:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Impossível identificar a sessão atual."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Usuário não consegue alternar sessões."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Não foi possível identificar o assento atual."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"O sistema não conseguiu deduzir se deve alternar para uma tela de login "
-"existente ou se é para abrir uma nova."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "O sistema não conseguiu abrir uma nova tela de login."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Selecione o sistema"
@@ -490,35 +421,39 @@ msgstr "XDMCP: Versão incorreta do XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Não foi possível analisar o endereço"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Não foi possível criar uma tela transitória:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Não foi possível ativar a sessão:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Somente o comando VERSION é suportado"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "COMANDO"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Ignorado - mantido para compatibilidade"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Saída da depuração"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Versão deste aplicativo"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Novo início de sessão GDM"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "Não foi possível criar nova exibição"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -528,6 +463,48 @@ msgstr "Captura de tela obtida"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Captura uma foto da tela"
+
+#~ msgid "No session available yet"
+#~ msgstr "Nenhuma sessão disponível no momento"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Não foi possível consultar o UID do usuário %s"
+
+#~ msgid "no sessions available"
+#~ msgstr "não há sessões disponíveis"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Não há sessões para %s disponíveis para nova autenticação"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Não foi possível encontrar a sessão do usuário %s"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Não foi possível encontrar a sessão apropriada do usuário %s"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "O usuário não possui sessão"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: falha ao conectar à tela pai \"%s\""
+
+#~ msgid "User not logged in"
+#~ msgstr "O usuário não iniciou a sessão"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "No exato momento, somente um cliente pode estar conectado por vez"
+
+#~ msgid "Display ID"
+#~ msgstr "ID da tela"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "Gerenciador de exibição secundário do GNOME"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Não foi possível criar nova exibição"
 
 #~ msgid "Your account was given an expiration date that's now passed."
 #~ msgstr "Foi dada à sua conta uma data de expiração que acabou de passar."
