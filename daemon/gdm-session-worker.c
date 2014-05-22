@@ -1570,6 +1570,7 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
         return (const char * const *) pam_getenvlist (worker->priv->pam_handle);
 }
 
+#ifdef WITH_CONSOLE_KIT
 static void
 register_ck_session (GdmSessionWorker *worker)
 {
@@ -1579,7 +1580,6 @@ register_ck_session (GdmSessionWorker *worker)
         }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
         open_ck_session (worker);
 
         if (worker->priv->session_cookie != NULL) {
@@ -1587,8 +1587,8 @@ register_ck_session (GdmSessionWorker *worker)
                                                              "XDG_SESSION_COOKIE",
                                                              worker->priv->session_cookie);
         }
-#endif
 }
+#endif
 
 static gboolean
 run_script (GdmSessionWorker *worker,
