@@ -2157,7 +2157,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
                              "Failed to execute PostLogin script");
-                goto out;
+                return FALSE;
         }
 
         error_code = pam_open_session (worker->priv->pam_handle, flags);
