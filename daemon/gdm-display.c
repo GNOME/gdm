@@ -306,7 +306,7 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                                                                        G_BUS_NAME_WATCHER_FLAGS_NONE,
                                                                        NULL, /* name appeared */
                                                                        on_name_vanished,
-                                                                       g_object_ref (display),
+                                                                       display,
                                                                        NULL);
 
         g_clear_object (&display->priv->slave_bus_proxy);
