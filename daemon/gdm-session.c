@@ -2613,6 +2613,7 @@ gdm_session_request_timed_login (GdmSession *self,
                                  const char *username,
                                  int         delay)
 {
+        g_debug ("GdmSession: requesting timed login");
         if (self->priv->greeter_interface != NULL) {
                 gdm_dbus_greeter_emit_timed_login_requested (self->priv->greeter_interface,
                                                              username,

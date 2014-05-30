@@ -1577,6 +1577,7 @@ on_ready_to_request_timed_login (GdmSession         *session,
                                  GSimpleAsyncResult *result,
                                  gpointer           *user_data)
 {
+        g_debug ("GdmManager: ready to request timed login");
         int delay = GPOINTER_TO_INT (user_data);
         GCancellable *cancellable;
         char         *username;
@@ -1610,6 +1611,7 @@ on_ready_to_request_timed_login (GdmSession         *session,
 static gboolean
 on_wait_for_greeter_timeout (GSimpleAsyncResult *result)
 {
+        g_debug ("GdmManager: wait for greeter timeout");
         g_simple_async_result_complete (result);
 
         return FALSE;
@@ -1733,6 +1735,7 @@ on_session_client_connected (GdmSession      *session,
         }
 
         g_free (username);
+
 }
 
 static void
