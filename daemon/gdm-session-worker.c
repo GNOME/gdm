@@ -1944,6 +1944,12 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                  */
                 signal (SIGPIPE, SIG_DFL);
 
+                /*
+                 * Reset SIGUSR1 to default since it was blocked by the manager
+                 * process for the X server startup handshake
+                 */
+                signal (SIGUSR1, SIG_DFL);
+
                 gdm_session_execute (worker->priv->arguments[0],
                                      worker->priv->arguments,
                                      (char **)
