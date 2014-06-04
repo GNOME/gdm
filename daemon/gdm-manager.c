@@ -2287,6 +2287,18 @@ unexport_display (const char *id,
 }
 
 static void
+finish_display (const char *id,
+                GdmDisplay *display,
+                GdmManager *manager)
+{
+        if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED)
+                return;
+
+        gdm_display_unmanage (display);
+        gdm_display_finish (display);
+}
+
+static void
 gdm_manager_finalize (GObject *object)
 {
         GdmManager *manager;
@@ -2320,6 +2332,10 @@ gdm_manager_finalize (GObject *object)
                                            manager);
                 g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (manager));
         }
+
+        gdm_display_store_foreach (manager->priv->display_store,
+                                   (GdmDisplayStoreFunc) finish_display,
+                                   manager);
 
         gdm_display_store_clear (manager->priv->display_store);
 
