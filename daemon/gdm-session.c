@@ -88,6 +88,10 @@ struct _GdmSessionPrivate
         char                *selected_user;
         char                *user_x11_authority_file;
 
+        char                *timed_login_username;
+        int                  timed_login_delay;
+        GList               *pending_timed_login_invocations;
+
         GHashTable          *conversations;
 
         GdmSessionConversation *session_conversation;
@@ -1296,6 +1300,27 @@ gdm_session_handle_client_start_session_when_ready (GdmDBusGreeter        *greet
 }
 
 static gboolean
+gdm_session_handle_get_timed_login_details (GdmDBusGreeter        *greeter_interface,
+                                            GDBusMethodInvocation *invocation,
+                                            GdmSession            *self)
+{
+
+        if (self->priv->greeter_interface != NULL) {
+                gdm_dbus_greeter_complete_get_timed_login_details (greeter_interface,
+                                                                   invocation,
+                                                                   self->priv->timed_login_username != NULL,
+                                                                   self->priv->timed_login_username != NULL? self->priv->timed_login_username : "",
+                                                                   self->priv->timed_login_delay);
+                if (self->priv->timed_login_username != NULL) {
+                        gdm_dbus_greeter_emit_timed_login_requested (self->priv->greeter_interface,
+                                                                     self->priv->timed_login_username,
+                                                                     self->priv->timed_login_delay);
+                }
+        }
+        return TRUE;
+}
+
+static gboolean
 gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_interface,
                                             GDBusMethodInvocation *invocation,
                                             const char            *username,
@@ -1367,6 +1392,10 @@ export_greeter_interface (GdmSession      *self,
         g_signal_connect (greeter_interface,
                           "handle-start-session-when-ready",
                           G_CALLBACK (gdm_session_handle_client_start_session_when_ready),
+                          self);
+        g_signal_connect (greeter_interface,
+                          "handle-get-timed-login-details",
+                          G_CALLBACK (gdm_session_handle_get_timed_login_details),
                           self);
 
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (greeter_interface),
@@ -2609,16 +2638,13 @@ gdm_session_reset (GdmSession *self)
 }
 
 void
-gdm_session_request_timed_login (GdmSession *self,
-                                 const char *username,
-                                 int         delay)
+gdm_session_set_timed_login_details (GdmSession *self,
+                                     const char *username,
+                                     int         delay)
 {
-        g_debug ("GdmSession: requesting timed login");
-        if (self->priv->greeter_interface != NULL) {
-                gdm_dbus_greeter_emit_timed_login_requested (self->priv->greeter_interface,
-                                                             username,
-                                                             delay);
-        }
+        g_debug ("GdmSession: timed login details %s %d", username, delay);
+        self->priv->timed_login_username = g_strdup (username);
+        self->priv->timed_login_delay = delay;
 }
 
 gboolean

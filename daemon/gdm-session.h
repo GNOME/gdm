@@ -177,7 +177,7 @@ void              gdm_session_select_session              (GdmSession *session,
                                                            const char *session_name);
 void              gdm_session_select_user                 (GdmSession *session,
                                                            const char *username);
-void              gdm_session_request_timed_login         (GdmSession *session,
+void              gdm_session_set_timed_login_details     (GdmSession *session,
                                                            const char *username,
                                                            int         delay);
 gboolean          gdm_session_client_is_connected         (GdmSession *session);

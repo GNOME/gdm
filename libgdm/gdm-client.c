@@ -794,6 +794,26 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 }
 
 static void
+on_timed_login_details_got (GdmGreeter   *greeter,
+                            GAsyncResult *result)
+{
+    gdm_greeter_call_get_timed_login_details_finish (greeter, NULL, NULL, NULL, result, NULL);
+}
+
+static void
+query_for_timed_login_requested_signal (GdmGreeter *greeter)
+{
+        /* This just makes sure a timed-login-requested signal gets fired
+         * off if appropriate.
+         */
+        gdm_greeter_call_get_timed_login_details (greeter,
+                                                  NULL,
+                                                  (GAsyncReadyCallback)
+                                                  on_timed_login_details_got,
+                                                  NULL);
+}
+
+static void
 on_greeter_proxy_created (GObject            *source,
                           GAsyncResult       *result,
                           GSimpleAsyncResult *operation_result)
@@ -813,6 +833,8 @@ on_greeter_proxy_created (GObject            *source,
                                                    (GDestroyNotify)
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
+
+        query_for_timed_login_requested_signal (greeter);
 }
 
 static void
@@ -980,6 +1002,8 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                                    (GWeakNotify)
                                    g_clear_object,
                                    &client->priv->connection);
+
+                query_for_timed_login_requested_signal (client->priv->greeter);
         }
 
         return client->priv->greeter;

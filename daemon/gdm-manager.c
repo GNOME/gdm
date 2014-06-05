@@ -1573,51 +1573,6 @@ get_display_device (GdmManager *manager,
 }
 
 static void
-on_ready_to_request_timed_login (GdmSession         *session,
-                                 GSimpleAsyncResult *result,
-                                 gpointer           *user_data)
-{
-        g_debug ("GdmManager: ready to request timed login");
-        int delay = GPOINTER_TO_INT (user_data);
-        GCancellable *cancellable;
-        char         *username;
-
-        cancellable = g_object_get_data (G_OBJECT (result),
-                                         "cancellable");
-        if (g_cancellable_is_cancelled (cancellable)) {
-                return;
-        }
-
-        username = g_simple_async_result_get_source_tag (result);
-
-        gdm_session_request_timed_login (session, username, delay);
-
-        g_object_weak_unref (G_OBJECT (session),
-                             (GWeakNotify)
-                             g_cancellable_cancel,
-                             cancellable);
-        g_object_weak_unref (G_OBJECT (session),
-                             (GWeakNotify)
-                             g_object_unref,
-                             cancellable);
-        g_object_weak_unref (G_OBJECT (session),
-                             (GWeakNotify)
-                             g_free,
-                             username);
-
-        g_free (username);
-}
-
-static gboolean
-on_wait_for_greeter_timeout (GSimpleAsyncResult *result)
-{
-        g_debug ("GdmManager: wait for greeter timeout");
-        g_simple_async_result_complete (result);
-
-        return FALSE;
-}
-
-static void
 on_session_reauthenticated (GdmSession *session,
                             const char *service_name,
                             GdmManager *manager)
@@ -1685,53 +1640,8 @@ on_session_client_connected (GdmSession      *session,
                 return;
         }
 
-        /* temporary hack to fix timed login
-         * http://bugzilla.gnome.org/680348
-         */
         if (delay > 0) {
-                GSimpleAsyncResult *result;
-                GCancellable       *cancellable;
-                guint               timeout_id;
-                gpointer            source_tag;
-
-                delay = MAX (delay, 4);
-
-                cancellable = g_cancellable_new ();
-                source_tag = g_strdup (username);
-                result = g_simple_async_result_new (G_OBJECT (session),
-                                                    (GAsyncReadyCallback)
-                                                    on_ready_to_request_timed_login,
-                                                    GINT_TO_POINTER (delay),
-                                                    source_tag);
-                g_simple_async_result_set_check_cancellable (result, cancellable);
-                g_object_set_data (G_OBJECT (result),
-                                   "cancellable",
-                                   cancellable);
-
-                timeout_id = g_timeout_add_seconds_full (delay - 2,
-                                                         G_PRIORITY_DEFAULT,
-                                                         (GSourceFunc)
-                                                         on_wait_for_greeter_timeout,
-                                                         g_object_ref (result),
-                                                         (GDestroyNotify)
-                                                         g_object_unref);
-                g_cancellable_connect (cancellable,
-                                       G_CALLBACK (g_source_remove),
-                                       GINT_TO_POINTER (timeout_id),
-                                       NULL);
-
-                g_object_weak_ref (G_OBJECT (session),
-                                   (GWeakNotify)
-                                   g_cancellable_cancel,
-                                   cancellable);
-                g_object_weak_ref (G_OBJECT (session),
-                                   (GWeakNotify)
-                                   g_object_unref,
-                                   cancellable);
-                g_object_weak_ref (G_OBJECT (session),
-                                   (GWeakNotify)
-                                   g_free,
-                                   source_tag);
+                gdm_session_set_timed_login_details (session, username, delay);
         }
 
         g_free (username);

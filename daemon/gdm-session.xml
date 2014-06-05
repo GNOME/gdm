@@ -85,6 +85,11 @@
     <method name="BeginAutoLogin">
       <arg name="username" direction="in" type="s"/>
     </method>
+    <method name="GetTimedLoginDetails">
+      <arg name="enabled" direction="out" type="b"/>
+      <arg name="username" direction="out" type="s"/>
+      <arg name="delay" direction="out" type="i"/>
+    </method>
     <method name="StartSessionWhenReady">
       <arg name="service_name" direction="in" type="s"/>
       <arg name="should_start_session" direction="in" type="b"/>
