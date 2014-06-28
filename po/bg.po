@@ -1,10 +1,11 @@
 # Bulgarian translation of gdm po-file.
 # Copyright (C) 2002, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
-# Copyright (C) 2009, 2010, 2011, 2012 Free Software Foundation, Inc.
+# Copyright (C) 2009, 2010, 2011, 2012, 2014 Free Software Foundation, Inc.
 # Copyright (C) 2010 Krasimir Chonov <mk2616@abv.bg>.
 # Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>, 2002.
 # Yanko Kaneti <yaneti@declera.com>, 2002.
-# Alexander Shopov <ash@kambanaria.org>, 2002, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012.
+# Alexander Shopov <ash@kambanaria.org>, 2002, 2005, 2006, 2007, 2008, 2009.
+# Alexander Shopov <ash@kambanaria.org>, 2010, 2011, 2012, 2014.
 # Rostislav Raykov <zbrox@dir.bg>, 2004.
 # Krasimir Chonov <mk2616@abv.bg>, 2010.
 #
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-22 12:39+0300\n"
-"PO-Revision-Date: 2012-09-22 12:39+0300\n"
+"POT-Creation-Date: 2014-06-28 08:46+0300\n"
+"PO-Revision-Date: 2014-06-28 08:46+0300\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -23,96 +24,98 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gdm-common.c:492
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "„/dev/urandom“ не е знаково устройство"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Текущата сесия не може да бъде определена."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Потребителят не успя да смени сесията."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Правилната сесия не може да бъде определена."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Системата не може да реши дали да се превключи към съществуваща сесия или да "
+"се стартира нова."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Системата не може да стартира нова сесия."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "потребителят „%s“ не бе открит в системата"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
-#, c-format
-msgid "No session available yet"
-msgstr "Все още няма сесии"
-
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Идентификаторът на потребителя „%s“ не може да се открие"
-
-#: ../daemon/gdm-manager.c:291
-msgid "no sessions available"
-msgstr "няма налични сесии"
-
-#: ../daemon/gdm-manager.c:352
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Сесии на „%s“, пред които потребителят да се идентифицира, липсват"
-
-#: ../daemon/gdm-manager.c:406
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Сесии на потребителя „%s“ липсват"
-
-#: ../daemon/gdm-manager.c:476
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Липсват подходящи сесии за потребителя „%s“"
-
-#: ../daemon/gdm-manager.c:671
-msgid "User doesn't own session"
-msgstr "Потребителят не притежава сесии"
-
-#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
 msgid "No session available"
 msgstr "Сесии няма"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-manager.c:953
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: невъзможно е да направи връзка с родителския дисплей „\\%s“"
+msgid "Can only be called before user is logged in"
+msgstr "Може да се стартира само преди влизането на потребителя"
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-manager.c:962
+#, c-format
+msgid "Caller not GDM"
+msgstr "Викащата програма не е GDM"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Сървърът бе породен от потребителя %s, но такъв потребител не съществува"
 
-#: ../daemon/gdm-server.c:463 ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid не може да се зададе да е %d"
 
-#: ../daemon/gdm-server.c:469
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "неуспех на initgroups() за %s"
 
-#: ../daemon/gdm-server.c:475
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid не може да се зададе да е %d"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Не може да се отвори журналният файл за дисплей %s!"
 
-#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Грешка при задаване на %s да е %s"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Не може да се зададе %d като приоритет на сървър: %s"
 
-#: ../daemon/gdm-server.c:722
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Празна команда за дисплей %s"
@@ -141,82 +144,36 @@ msgstr "Устройство на дисплея"
 msgid "The display device"
 msgstr "Устройството на дисплея"
 
-#: ../daemon/gdm-session.c:1184
+#: ../daemon/gdm-session.c:1187
 msgid "Could not create authentication helper process"
 msgstr "Помощният процес за идентификация не може да бъде стартиран"
 
-#: ../daemon/gdm-session-worker.c:1029
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr ""
-"грешка при инициализиране на обмяната на съобщения със системата за "
-"идентификация — %s"
+#: ../daemon/gdm-session-worker.c:844
+msgid "Your account was given a time limit that's now passed."
+msgstr "Регистрацията ви е ограничена по време, а то е изтекло."
 
-#: ../daemon/gdm-session-worker.c:1030
-msgid "general failure"
-msgstr "обща грешка"
+#: ../daemon/gdm-session-worker.c:851
+msgid "Sorry, that didn't work. Please try again."
+msgstr "За съжаление това не сработи. Пробвайте наново."
 
-#: ../daemon/gdm-session-worker.c:1031
-msgid "out of memory"
-msgstr "паметта свърши"
-
-#: ../daemon/gdm-session-worker.c:1032
-msgid "application programmer error"
-msgstr "програмна грешка"
-
-#: ../daemon/gdm-session-worker.c:1033
-msgid "unknown error"
-msgstr "неизвестна грешка"
-
-#: ../daemon/gdm-session-worker.c:1040
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "Потребител:"
 
-#: ../daemon/gdm-session-worker.c:1046
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"грешка при информиране на системата за идентификация за предпочитаното име "
-"на потребител: %s"
+#: ../daemon/gdm-session-worker.c:1241
+msgid "Your password has expired, please change it now."
+msgstr "Времето на валидност на паролата ви изтече. Сменете я сега."
 
-#: ../daemon/gdm-session-worker.c:1060
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"грешка при информиране на системата за идентификация за името на компютъра "
-"на потребителя: %s"
-
-#: ../daemon/gdm-session-worker.c:1077
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"грешка при информиране на системата за идентификация за конзолата на "
-"потребителя: %s"
-
-#: ../daemon/gdm-session-worker.c:1101
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr ""
-"грешка при информиране на системата за идентификация за низа в променливата "
-"DISPLAY: %s"
-
-#: ../daemon/gdm-session-worker.c:1116
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"грешка при информиране на системата за идентификация за акредитацията от "
-"xauth: %s"
-
-#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "няма потребител"
 
-#: ../daemon/gdm-session-worker.c:1490
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "Потребителят не може да бъде сменен"
 
-#: ../daemon/gdm-simple-slave.c:1371
+#: ../daemon/gdm-simple-slave.c:871
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -228,134 +185,77 @@ msgstr ""
 "диагностика. Този дисплей ще бъде забранен. Рестартирайте GDM, когато "
 "проблемът е коригиран."
 
-#: ../daemon/gdm-simple-slave.c:1412
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Може да се стартира само преди влизането на потребителя"
-
-#: ../daemon/gdm-simple-slave.c:1422
-#, c-format
-msgid "Caller not GDM"
-msgstr "Викащата програма не е GDM"
-
-#: ../daemon/gdm-simple-slave.c:1475
-msgid "User not logged in"
-msgstr "Потребителят не е влязъл"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:370
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "В момента може да се свърже максимум един клиент"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Неуспех при създаването на гнездо!"
 
-#: ../daemon/main.c:126 ../daemon/main.c:139
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Невъзможно е да се запише файл с номер на процес %s, най-вероятно няма "
 "пространство на диска: %s"
 
-#: ../daemon/main.c:160
+#: ../daemon/main.c:188
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Папката с журналите %s не съществува или не е папка."
-
-#: ../daemon/main.c:176
-#, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Папката за упълномощаване %s не съществува. Програмата спира."
-
-#: ../daemon/main.c:180
-#, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Папката за упълномощаване %s не е папка. Програмата спира."
-
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+msgid "Failed to create ran once marker dir %s: %s"
 msgstr ""
-"Папката за упълномощаване %s не принадлежи на потребител %d, група %d. "
-"Програмата спира."
+"Неуспешно създаване на директория за обявяване но първоначално стартиране "
+"%s: %s"
 
-#: ../daemon/main.c:261
+#: ../daemon/main.c:194
 #, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr ""
-"Папката за упълномощаване %s е с грешни права %o. Трябва да са %o. "
-"Програмата спира."
+msgid "Failed to create LogDir %s: %s"
+msgstr "Неуспешно създаване на директорията за журнални съобщения %s: %s"
 
-#: ../daemon/main.c:298
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Не може да се открие потребителя на GDM „%s“. Програмата спира!"
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Потребителят на GDM не трябва да е „root“. Програмата спира!"
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Не може да се намери групата на GDM (%s). Програмата спира!"
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Групата на GDM не може да е „root“. Програмата спира!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Всички предупреждения да са фатални"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Спиране на програмата след период от време (за изчистване на грешки)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Показване на версията на GDM"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Мениджър на дисплеи на GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Само администраторът може да изпълни GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Програмата за сесии към мениджъра на дисплеи на GNOME"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
-msgid "Display ID"
-msgstr "Идентификатор на дисплей"
-
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
-msgid "ID"
-msgstr "ИДЕНТИФИКАТОР"
-
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
-msgid "GNOME Display Manager Slave"
-msgstr "Дъщерен процес на мениджъра на дисплеи на GNOME"
-
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Екран за идентификация"
-
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "Лупа на GNOME"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Увеличаване на части от екрана"
 
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
@@ -364,22 +264,6 @@ msgstr "GNOME Shell"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Управление и наслагване на прозорци"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "Екранна клавиатура на GNOME"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Включване на екранна клавиатура"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca — екранен четец"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Представяне на информация от екрана като говор или брайл"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -402,10 +286,23 @@ msgid ""
 msgstr "Входният екран може да позволи и влизане чрез чип карти."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow passwords for login"
+msgstr "Да се позволи ли влизане чрез пароли"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"Може да се забрани на входния екран да допуска идентификация с пароли. Това "
+"ще накара потребителите да се идентифицират с чип карта или пръстов "
+"отпечатък."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Път до изображението над списъка с потребителите"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -415,7 +312,7 @@ msgstr ""
 "е начин за системните администратори и дистрибуторите да предоставят "
 "специфичен облик на системата."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -425,11 +322,11 @@ msgstr ""
 "потребители. Това е начин за системните администратори и дистрибуторите да "
 "предоставят специфичен облик на системата."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Без показване на списъка с потребители"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -437,82 +334,43 @@ msgstr ""
 "Обичайно входният екран съдържа списък с наличните потребители. С тази "
 "настройка можете да предотвратите показването на списъка."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Включваме на показването на съобщение за поздрав"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Задайте да е истина, за да се показва съобщението за поздрав."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Съобщение за поздрав"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Текстът на съобщението за поздрав в прозореца за вход."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Бутонът за рестартиране да не се показва"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Задайте да е истина, за да не си показват бутоните за рестартиране в "
 "прозореца за вход."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Брой позволени неуспешни опити за идентификация"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
 "Брой неуспешни опити за идентификация, които един потребител може да се "
 "опита направи, преди отново да се покаже прозорецът за избор на потребител."
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Неуспех при създаването на нов дисплей: "
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Неуспех при задействане на сесия: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Текущата сесия не може да бъде определена."
-
-#: ../gui/libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Потребителят не успя да смени сесията."
-
-#: ../gui/libgdm/gdm-user-switching.c:492
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Правилната сесия не може да бъде определена."
-
-#: ../gui/libgdm/gdm-user-switching.c:502
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Системата не може да реши дали да се превключи към съществуваща сесия или да "
-"се стартира нова."
-
-#: ../gui/libgdm/gdm-user-switching.c:510
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Системата не може да стартира нова сесия."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -527,352 +385,46 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Неуспех при прочитането на заглавната част на XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Грешна версия на XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
+msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP: Адресът не може да се анализира"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Идентификация с пръстов отпечатък"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Влизане в сесията с пръстов отпечатък"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Идентификация с парола"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Влизане в сесията с име и парола"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Влизане"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Идентификатор на гнездо"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Гнездото, в които е картата"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Гнезда"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "Идентификатор на карта за слот"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "име"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Модул"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "Драйвер за чип карта"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Идентификация чрез чип карта"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Влизане в сесията с чип карта"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Път до модулите"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "Път до драйвера на чип картата за PKCS #11"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr "Получена е грешка или прекратяване на връзката от източника на събития"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "Системата за сигурност NSS не можа да бъде инициализирана"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "Не е открит подходящ драйвер за чип картата"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "Драйверът за чип карта „%s“ не може да бъде зареден"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "Не може да се следи за входящи събития от картата — %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "Неочаквана грешка при чакане за входящи събития от картата"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Идентификация"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Влизане в сесия"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "Стойност"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "процент от завършеното време"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "Неактивен текст"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr ""
-"Текст, който да се ползва за етикет, ако потребителят все още не е избрал "
-"елемент"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "Активен текст"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr ""
-"Текстът, който да се ползва в етикета, когато потребителят е избрал елемент"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "Видим списък"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "Дали списъкът за избор е видим"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%e %b, %a, %H:%M:%S"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%e %b, %a, %H:%M"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a, %H:%M:%S"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a, %H:%M"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "Автоматично влизане…"
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "Спиране…"
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "Изберете език и натиснете „Влизане“"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "Друга"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "Друга сесия"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Име на компютър"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "Версия"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "Спиране"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "Отключване"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "Влизане"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
-msgid "Suspend"
-msgstr "Приспиване"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
-msgid "Restart"
-msgstr "Рестартиране"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
-msgid "Shut Down"
-msgstr "Изключване"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
-msgid "Unknown time remaining"
-msgstr "Остава неизвестно време"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
-msgid "Panel"
-msgstr "Панел"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "Текст за етикета"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "Текст, който да се ползва за етикет"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "Име на икона"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "Иконата, която да се ползва с етикета"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "Стандартен елемент"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "Идентификаторът на стандартния елемент"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "Отдалечено влизане (свързване към „%s“…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "Отдалечено влизане (осъществена връзка към „%s“)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "Отдалечено влизане"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "Сесия"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "Продължителност"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "Време в секунди преди спирането на таймера"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "Начало"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "Времето на стартиране на таймера"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "Стартиран ли е?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "Дали в момента таймерът работи"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "Влизане като %s"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "Друг…"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "Изберете различен потребител"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "Гост"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "Вход като гост"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "Автоматично влизане"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "Автоматично влизане в системата след избор на настройки"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "В момента е влязъл"
-
-#: ../utils/gdm-screenshot.c:43
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Неуспех при създаването на нов дисплей: "
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Неуспех при задействане на сесия: "
+
+#: ../utils/gdmflexiserver.c:45
+msgid "Only the VERSION command is supported"
+msgstr "Поддържа се само командата „VERSION“"
+
+#: ../utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "КОМАНДА"
+
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
+msgid "Ignored — retained for compatibility"
+msgstr "Опцията се пренебрегва. Запазена е за съвместимост със старите версии"
+
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Съобщения за грешка"
+
+#: ../utils/gdmflexiserver.c:52
+msgid "Version of this application"
+msgstr "Версията на тази програма"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:137
+msgid "- New GDM login"
+msgstr "— ново влизане чрез GDM"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
