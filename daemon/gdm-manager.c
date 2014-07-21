@@ -1794,13 +1794,12 @@ on_session_reauthentication_started (GdmSession *session,
                                           source_tag);
 
         if (invocation != NULL) {
+                g_hash_table_steal (manager->priv->open_reauthentication_requests,
+                                    source_tag);
                 gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
                                                                          invocation,
                                                                          address);
         }
-
-        g_hash_table_remove (manager->priv->open_reauthentication_requests,
-                             source_tag);
 }
 
 static void
