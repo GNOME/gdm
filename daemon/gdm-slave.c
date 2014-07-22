@@ -250,6 +250,83 @@ gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddres
         host_entries[2].length    = sizeof (XServerInterpretedAddress);
 }
 
+static void
+gdm_slave_set_windowpath (GdmSlave *slave)
+{
+        /* setting WINDOWPATH for clients */
+        Atom prop;
+        Atom actualtype;
+        int actualformat;
+        unsigned long nitems;
+        unsigned long bytes_after;
+        unsigned char *buf;
+        const char *windowpath;
+        char *newwindowpath;
+        unsigned long num;
+        char nums[10];
+        int numn;
+
+        prop = XInternAtom (slave->priv->server_display, "XFree86_VT", False);
+        if (prop == None) {
+                g_debug ("no XFree86_VT atom\n");
+                return;
+        }
+        if (XGetWindowProperty (slave->priv->server_display,
+                DefaultRootWindow (slave->priv->server_display), prop, 0, 1,
+                False, AnyPropertyType, &actualtype, &actualformat,
+                &nitems, &bytes_after, &buf)) {
+                g_debug ("no XFree86_VT property\n");
+                return;
+        }
+
+        if (nitems != 1) {
+                g_debug ("%lu items in XFree86_VT property!\n", nitems);
+                XFree (buf);
+                return;
+        }
+
+        switch (actualtype) {
+        case XA_CARDINAL:
+        case XA_INTEGER:
+        case XA_WINDOW:
+                switch (actualformat) {
+                case  8:
+                        num = (*(uint8_t  *)(void *)buf);
+                        break;
+                case 16:
+                        num = (*(uint16_t *)(void *)buf);
+                        break;
+                case 32:
+                        num = (*(long *)(void *)buf);
+                        break;
+                default:
+                        g_debug ("format %d in XFree86_VT property!\n", actualformat);
+                        XFree (buf);
+                        return;
+                }
+                break;
+        default:
+                g_debug ("type %lx in XFree86_VT property!\n", actualtype);
+                XFree (buf);
+                return;
+        }
+        XFree (buf);
+
+        windowpath = getenv ("WINDOWPATH");
+        numn = snprintf (nums, sizeof (nums), "%lu", num);
+        if (!windowpath) {
+                newwindowpath = malloc (numn + 1);
+                sprintf (newwindowpath, "%s", nums);
+        } else {
+                newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
+                sprintf (newwindowpath, "%s:%s", windowpath, nums);
+        }
+
+        slave->priv->windowpath = newwindowpath;
+
+        g_setenv ("WINDOWPATH", newwindowpath, TRUE);
+}
+
 gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
@@ -299,6 +376,8 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 if (gdm_error_trap_pop ()) {
                         g_warning ("Failed to give slave programs access to the display. Trying to proceed.");
                 }
+
+                gdm_slave_set_windowpath (slave);
         } else {
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
