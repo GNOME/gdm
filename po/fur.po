@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-04 06:06+0000\n"
-"PO-Revision-Date: 2014-03-04 14:27+0100\n"
+"POT-Creation-Date: 2014-08-13 17:02+0000\n"
+"PO-Revision-Date: 2014-08-14 04:43+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: FRIULIAN <massimo.furlani@libero.it>\n"
 "Language: fur_IT\n"
@@ -18,29 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:519
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nol è un dispositîf a caratars"
 
-#: ../common/gdm-common.c:827 ../common/gdm-common.c:980
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
 #: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Impussibil identificâ la session atuâl."
 
-#: ../common/gdm-common.c:834 ../libgdm/gdm-user-switching.c:351
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
 #, fuzzy, c-format
 #| msgid "unable to log session"
 msgid "User unable to switch sessions."
 msgstr "Impussibil cambiâ session."
 
-#: ../common/gdm-common.c:989 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Impussibil identificâ la postazion atuâl."
 
-#: ../common/gdm-common.c:999 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -49,7 +49,7 @@ msgstr ""
 "Il sisteme nol rive a capî se passâ a une videade di acès esistent o creâ "
 "une gnove."
 
-#: ../common/gdm-common.c:1007 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Il sisteme nol rive a fâ partî une gnove videade di acès."
@@ -59,60 +59,59 @@ msgstr "Il sisteme nol rive a fâ partî une gnove videade di acès."
 msgid "could not find user \"%s\" on system"
 msgstr "Impussibil cjatâ l'utent \"%s\" tal sisteme"
 
-#: ../daemon/gdm-display.c:1364 ../daemon/gdm-display.c:1398
-#, fuzzy, c-format
-#| msgid "no user account available"
-msgid "No session available yet"
-msgstr "nol è pussibil doprâ ancjemò nissun account user"
-
-#: ../daemon/gdm-manager.c:361 ../daemon/gdm-manager.c:406
+#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
 #, fuzzy
 #| msgid "no user account available"
 msgid "No session available"
 msgstr "nol è pussibil doprâ nissun account user"
 
-#: ../daemon/gdm-server.c:289
+#: ../daemon/gdm-manager.c:953
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: Falît tal conetisi al visôr pari '%s'"
+msgid "Can only be called before user is logged in"
+msgstr "Al puès sedi clamât nome prime che l'utent al vedi fat l'acès."
 
-#: ../daemon/gdm-server.c:470
+#: ../daemon/gdm-manager.c:962
+#, c-format
+msgid "Caller not GDM"
+msgstr "Clamadôr no GDM"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Il server al veve di sedi inviât dal'utent %s ma chest utent nol esist"
 
-#: ../daemon/gdm-server.c:481 ../daemon/gdm-server.c:501
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Impussibil impostâ il grupid a %d"
 
-#: ../daemon/gdm-server.c:487
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () falît par %s"
 
-#: ../daemon/gdm-server.c:493
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No puès impostâ il ID utent a %d"
 
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: no puès vierzi il file çoc par il visôr %s!"
 
-#: ../daemon/gdm-server.c:592 ../daemon/gdm-server.c:598
-#: ../daemon/gdm-server.c:604
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Erôr configurant %s a %s"
 
-#: ../daemon/gdm-server.c:624
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: La prioritât dal server a no puès sedi impostade a %d: %s"
 
-#: ../daemon/gdm-server.c:772
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Al mancje il comant dal server par il visôr %s"
@@ -141,38 +140,38 @@ msgstr "Dispositîf Visôr"
 msgid "The display device"
 msgstr "Il dispositîf dal visôr"
 
-#: ../daemon/gdm-session.c:1173
+#: ../daemon/gdm-session.c:1187
 msgid "Could not create authentication helper process"
 msgstr "Impussibil creâ il procès di jutori par l'autenticazion"
 
-#: ../daemon/gdm-session-worker.c:836
+#: ../daemon/gdm-session-worker.c:844
 msgid "Your account was given a time limit that's now passed."
 msgstr "Il tô account al veve un timp limit che cumò al è passât."
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:851
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Mi displâs, no je lade drete. Prove di gnûf"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "Non utent:"
 
-#: ../daemon/gdm-session-worker.c:1205
+#: ../daemon/gdm-session-worker.c:1241
 msgid "Your password has expired, please change it now."
 msgstr "La tô password a je scjadude, par plasê tu âs di cambiale cumò."
 
-#: ../daemon/gdm-session-worker.c:1444 ../daemon/gdm-session-worker.c:1461
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "Nissun account utent disponibil"
 
-#: ../daemon/gdm-session-worker.c:1488
+#: ../daemon/gdm-session-worker.c:1524
 #, fuzzy
 #| msgid "Unable to authorize user"
 msgid "Unable to change to user"
 msgstr "Impussibil autorizâ l'utent"
 
-#: ../daemon/gdm-simple-slave.c:1520
+#: ../daemon/gdm-simple-slave.c:871
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -182,27 +181,8 @@ msgstr ""
 "Impussibil fâ partî il server X (l'ambient grafic) par cause di un erôr "
 "interni. Par plasê scrîf al to aministradôr di sisteme o controle il "
 "regjistri di sisteme (çoc di sisteme - syslog) par capî il probleme: pal "
-"moment il visôr al vignarà disabilitât. Une volte justât il probleme, "
-"reinvie GDM."
-
-#: ../daemon/gdm-simple-slave.c:1561
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Al puès sedi clamât nome prime che l'utent al vedi fat l'acès."
-
-#: ../daemon/gdm-simple-slave.c:1571
-#, c-format
-msgid "Caller not GDM"
-msgstr "Clamadôr no GDM"
-
-#: ../daemon/gdm-simple-slave.c:1623
-msgid "User not logged in"
-msgstr "L'utent nol a eseguît l'acès"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:364
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Par cumò nome un client ae volte al puès sedi tacât"
+"moment il visôr al vignarà disabilitât. Une volte justât il probleme, torne "
+"invie GDM."
 
 #: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
@@ -268,18 +248,6 @@ msgstr "Dome root al puès inviâ GDM"
 #, fuzzy
 msgid "GNOME Display Manager Session Worker"
 msgstr "Cjamadôr di session dal Gjestôr di visôr di GNOME"
-
-#: ../daemon/simple-slave-main.c:118 ../daemon/xdmcp-chooser-slave-main.c:118
-msgid "Display ID"
-msgstr "Mostre ID"
-
-#: ../daemon/simple-slave-main.c:118 ../daemon/xdmcp-chooser-slave-main.c:118
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:126 ../daemon/xdmcp-chooser-slave-main.c:126
-msgid "GNOME Display Manager Slave"
-msgstr "Sclâf dal gjestôr di visôr di GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
 msgid "Login Window"
@@ -468,6 +436,28 @@ msgstr "Screenshot fat"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fâs une figure dal visôr"
+
+#~| msgid "no user account available"
+#~ msgid "No session available yet"
+#~ msgstr "nol è pussibil doprâ ancjemò nissun account user"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: Falît tal conetisi al visôr pari '%s'"
+
+#~ msgid "User not logged in"
+#~ msgstr "L'utent nol a eseguît l'acès"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "Par cumò nome un client ae volte al puès sedi tacât"
+
+#~ msgid "Display ID"
+#~ msgstr "Mostre ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "Sclâf dal gjestôr di visôr di GNOME"
 
 #~| msgid "Unable to authorize user"
 #~ msgid "Unable to look up UID of user %s"
