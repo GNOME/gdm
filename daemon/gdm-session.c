@@ -1668,6 +1668,7 @@ free_conversation (GdmSessionConversation *conversation)
         g_free (conversation->service_name);
         g_free (conversation->starting_username);
         g_free (conversation->session_id);
+        g_clear_object (&conversation->worker_proxy);
         g_clear_object (&conversation->session);
         g_free (conversation);
 }
