@@ -1148,6 +1148,30 @@ export_worker_manager_interface (GdmSession      *self,
                                           NULL);
 }
 
+static void
+unexport_worker_manager_interface (GdmSession           *self,
+                                   GdmDBusWorkerManager *worker_manager_interface)
+{
+
+        g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (worker_manager_interface));
+
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (register_worker),
+                                              self);
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (gdm_session_handle_info_query),
+                                              self);
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (gdm_session_handle_secret_info_query),
+                                              self);
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (gdm_session_handle_info),
+                                              self);
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (gdm_session_handle_problem),
+                                              self);
+}
+
 static gboolean
 handle_connection_from_worker (GDBusServer      *server,
                                GDBusConnection  *connection,
@@ -1674,6 +1698,7 @@ free_conversation (GdmSessionConversation *conversation)
         g_free (conversation->service_name);
         g_free (conversation->starting_username);
         g_free (conversation->session_id);
+        g_clear_object (&conversation->worker_manager_interface);
         g_clear_object (&conversation->worker_proxy);
         g_clear_object (&conversation->session);
         g_free (conversation);
@@ -1842,6 +1867,12 @@ start_conversation (GdmSession *self,
 static void
 stop_conversation (GdmSessionConversation *conversation)
 {
+        GdmSession *self = conversation->session;
+
+        if (conversation->worker_manager_interface != NULL) {
+                unexport_worker_manager_interface (self, conversation->worker_manager_interface);
+        }
+
         if (conversation->worker_proxy != NULL) {
                 GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (conversation->worker_proxy));
                 g_dbus_connection_close_sync (connection, NULL, NULL);
@@ -1854,7 +1885,11 @@ stop_conversation (GdmSessionConversation *conversation)
 static void
 stop_conversation_now (GdmSessionConversation *conversation)
 {
-        g_clear_object (&conversation->worker_manager_interface);
+        GdmSession *self = conversation->session;
+
+        if (conversation->worker_manager_interface != NULL) {
+                unexport_worker_manager_interface (self, conversation->worker_manager_interface);
+        }
 
         if (conversation->worker_proxy != NULL) {
                 GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (conversation->worker_proxy));
