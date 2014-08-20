@@ -41,6 +41,7 @@ G_BEGIN_DECLS
 #define GDM_KEY_INCLUDE_ALL "greeter/IncludeAll"
 
 #define GDM_KEY_DISALLOW_TCP "security/DisallowTCP"
+#define GDM_KEY_ALLOW_REMOTE_AUTOLOGIN "security/AllowRemoteAutoLogin"
 
 #define GDM_KEY_XDMCP_ENABLE "xdmcp/Enable"
 #define GDM_KEY_SHOW_LOCAL_GREETER "xdmcp/ShowLocalGreeter"

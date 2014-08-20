@@ -41,6 +41,10 @@
 #include "gdm-common.h"
 #include "gdm-address.h"
 
+#include "gdm-settings.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
+
 #define GDM_XDMCP_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_XDMCP_DISPLAY, GdmXdmcpDisplayPrivate))
 
 struct GdmXdmcpDisplayPrivate
@@ -190,6 +194,14 @@ gdm_xdmcp_display_get_timed_login_details (GdmDisplay *display,
         *enabledp = FALSE;
         *usernamep = g_strdup ("");
         *delayp = 0;
+        gboolean allow_remote_autologin;
+
+        allow_remote_autologin = FALSE;
+        gdm_settings_direct_get_boolean (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, &allow_remote_autologin);
+
+        if ( allow_remote_autologin ) {
+                GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->get_timed_login_details (display, enabledp, usernamep, delayp);
+        }
 }
 
 static void
