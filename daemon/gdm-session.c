@@ -66,7 +66,6 @@ typedef struct
         GdmSessionWorkerJob   *job;
         GPid                   worker_pid;
         char                  *service_name;
-        GDBusConnection       *worker_connection;
         GDBusMethodInvocation *starting_invocation;
         char                  *starting_username;
         GDBusMethodInvocation *pending_invocation;
@@ -1057,12 +1056,15 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
 
         g_dbus_method_invocation_return_value (invocation, NULL);
 
-        conversation->worker_connection = connection;
         conversation->worker_proxy = gdm_dbus_worker_proxy_new_sync (connection,
                                                                      G_DBUS_PROXY_FLAGS_NONE,
                                                                      NULL,
                                                                      GDM_WORKER_DBUS_PATH,
                                                                      NULL, NULL);
+        /* drop the reference we stole from the pending connections list
+         * since the proxy owns the connection now */
+        g_object_unref (connection);
+
         g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (conversation->worker_proxy), G_MAXINT);
 
         g_signal_connect (conversation->worker_proxy,
@@ -1840,9 +1842,9 @@ start_conversation (GdmSession *self,
 static void
 stop_conversation (GdmSessionConversation *conversation)
 {
-        if (conversation->worker_connection != NULL) {
-                g_dbus_connection_close_sync (conversation->worker_connection, NULL, NULL);
-                g_clear_object (&conversation->worker_connection);
+        if (conversation->worker_proxy != NULL) {
+                GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (conversation->worker_proxy));
+                g_dbus_connection_close_sync (connection, NULL, NULL);
         }
 
         conversation->is_stopping = TRUE;
@@ -1854,9 +1856,9 @@ stop_conversation_now (GdmSessionConversation *conversation)
 {
         g_clear_object (&conversation->worker_manager_interface);
 
-        if (conversation->worker_connection != NULL) {
-                g_dbus_connection_close_sync (conversation->worker_connection, NULL, NULL);
-                g_clear_object (&conversation->worker_connection);
+        if (conversation->worker_proxy != NULL) {
+                GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (conversation->worker_proxy));
+                g_dbus_connection_close_sync (connection, NULL, NULL);
         }
 
         gdm_session_worker_job_stop_now (conversation->job);
