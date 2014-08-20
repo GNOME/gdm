@@ -1865,7 +1865,7 @@ start_conversation (GdmSession *self,
 }
 
 static void
-stop_conversation (GdmSessionConversation *conversation)
+close_conversation (GdmSessionConversation *conversation)
 {
         GdmSession *self = conversation->session;
 
@@ -1877,6 +1877,12 @@ stop_conversation (GdmSessionConversation *conversation)
                 GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (conversation->worker_proxy));
                 g_dbus_connection_close_sync (connection, NULL, NULL);
         }
+}
+
+static void
+stop_conversation (GdmSessionConversation *conversation)
+{
+        close_conversation (conversation);
 
         conversation->is_stopping = TRUE;
         gdm_session_worker_job_stop (conversation->job);
@@ -1885,16 +1891,7 @@ stop_conversation (GdmSessionConversation *conversation)
 static void
 stop_conversation_now (GdmSessionConversation *conversation)
 {
-        GdmSession *self = conversation->session;
-
-        if (conversation->worker_manager_interface != NULL) {
-                unexport_worker_manager_interface (self, conversation->worker_manager_interface);
-        }
-
-        if (conversation->worker_proxy != NULL) {
-                GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (conversation->worker_proxy));
-                g_dbus_connection_close_sync (connection, NULL, NULL);
-        }
+        close_conversation (conversation);
 
         gdm_session_worker_job_stop_now (conversation->job);
         g_clear_object (&conversation->job);
