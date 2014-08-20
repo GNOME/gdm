@@ -996,6 +996,18 @@ allow_worker_function (GDBusAuthObserver *observer,
         return FALSE;
 }
 
+static void
+on_worker_connection_closed (GDBusConnection *connection,
+                             gboolean         remote_peer_vanished,
+                             GError          *error,
+                             GdmSession      *self)
+{
+        self->priv->pending_worker_connections =
+            g_list_remove (self->priv->pending_worker_connections,
+                           connection);
+        g_object_unref (connection);
+}
+
 static gboolean
 register_worker (GdmDBusWorkerManager  *worker_manager_interface,
                  GDBusMethodInvocation *invocation,
@@ -1023,6 +1035,10 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
         self->priv->pending_worker_connections =
                 g_list_delete_link (self->priv->pending_worker_connections,
                                     connection_node);
+
+        g_signal_handlers_disconnect_by_func (connection,
+                                              G_CALLBACK (on_worker_connection_closed),
+                                              self);
 
         credentials = g_dbus_connection_get_peer_credentials (connection);
         pid = g_credentials_get_unix_pid (credentials, NULL);
@@ -1128,18 +1144,6 @@ export_worker_manager_interface (GdmSession      *self,
                                           connection,
                                           GDM_SESSION_DBUS_OBJECT_PATH,
                                           NULL);
-}
-
-static void
-on_worker_connection_closed (GDBusConnection *connection,
-                             gboolean         remote_peer_vanished,
-                             GError          *error,
-                             GdmSession      *self)
-{
-        self->priv->pending_worker_connections =
-            g_list_remove (self->priv->pending_worker_connections,
-                           connection);
-        g_object_unref (connection);
 }
 
 static gboolean
