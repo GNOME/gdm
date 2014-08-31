@@ -1836,6 +1836,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 char  *home_dir;
                 int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
                 gboolean has_journald = FALSE;
+                sigset_t mask;
 
                 /* Leak the TTY into the session as stdin so that it stays open
                  * without any races. */
@@ -1949,6 +1950,13 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                  * process for the X server startup handshake
                  */
                 signal (SIGUSR1, SIG_DFL);
+
+                /*
+                 * Reset signal mask to default since it was altered by the
+                 * manager process
+                 */
+                sigemptyset (&mask);
+                sigprocmask (SIG_SETMASK, &mask, NULL);
 
                 gdm_session_execute (worker->priv->arguments[0],
                                      worker->priv->arguments,
