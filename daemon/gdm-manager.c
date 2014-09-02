@@ -1808,9 +1808,9 @@ start_autologin_conversation_if_necessary (GdmManager *manager,
                                            GdmSession *session)
 {
         gboolean enabled;
-        int delay;
+        int delay = 0;
 
-        gdm_display_get_timed_login_details (display, &enabled, NULL, NULL, NULL);
+        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay, NULL);
 
         if (delay == 0 && g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
                 return;
