@@ -8,14 +8,14 @@
 # Rahul Bhalerao <rbhalera@redhat.com>, 2006.
 # Rahul Bhalerao <b.rahul.pm@gmail.com>, 2006.
 # Sandeep Shedmake <sshedmak@redhat.com>, 2008, 2009.
-# Sandeep Shedmake <sshedmak@redhat.com>, 2009, 2010, 2011, 2012, 2013.
+# Sandeep Shedmake <sshedmak@redhat.com>, 2009, 2010, 2011, 2012, 2013, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-12-27 20:33+0000\n"
-"PO-Revision-Date: 2013-03-22 15:42+0530\n"
+"POT-Creation-Date: 2014-09-12 05:01+0000\n"
+"PO-Revision-Date: 2014-09-12 19:29+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
 "Language: mr\n"
@@ -25,95 +25,98 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: ../common/gdm-common.c:492
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom अक्षर साधन नाही"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "वर्तमान सत्र ओळखू शकले नाही."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "वापरकर्ता सत्र बदलण्यास अशक्य."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "वर्तमान सिट ओळखणे अशक्य."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"सध्याचे प्रवेश पडद्याचा वापर करायचा किंवा नवीन प्रवेश पडदा सुरू करायचे, असे "
+"प्रणाली ओळखू "
+"शकत नाही."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "प्रणाली नवीन प्रवेश पडदा सुरू करण्यास अशक्य आहे."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "प्रणालीवरील वापरकर्ता \"%s\" आढळले नाही"
 
-#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
-#, c-format
-msgid "No session available yet"
-msgstr "अजूनही सत्र उपलब्ध नाही"
-
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "वापरकर्ता %sचे UID शोधणे अशक्य"
-
-#: ../daemon/gdm-manager.c:291
-msgid "no sessions available"
-msgstr "सत्र उपलब्ध नाही"
-
-#: ../daemon/gdm-manager.c:352
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "पुनः ओळखपटवण्याकरीता %s करीता सत्र उपलब्ध नाही"
-
-#: ../daemon/gdm-manager.c:406
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "वापरकर्ता %s करीता सत्र शोधणे अशक्य"
-
-#: ../daemon/gdm-manager.c:476
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "वापरकर्ता %s करीता योग्य सत्र शोधणे अशक्य"
-
-#: ../daemon/gdm-manager.c:671
-msgid "User doesn't own session"
-msgstr "वापरकर्ताकडे सत्रची मालकी नाही"
-
-#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
 msgid "No session available"
 msgstr "सत्र उपलब्ध नाही"
 
-#: ../daemon/gdm-server.c:272
+#: ../daemon/gdm-manager.c:953
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%1s: मुळ दृश्य '%2s' शी जुळवणी स्थापित करू शकले नाही"
+msgid "Can only be called before user is logged in"
+msgstr "वापरकर्त्याचा प्रवेश होण्यापूर्वीच त्यास कॉल केले जाईल"
 
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-manager.c:962
+#, c-format
+msgid "Caller not GDM"
+msgstr "कॉलर GDM नाही"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "सर्वर चालु करायचा होता पण %s वापरकर्ताच अस्तित्वात नाहीय़"
 
-#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid %d करीता निश्चित करू शकले नाही"
 
-#: ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s साठी initgroups() अयशस्वी झाले"
 
-#: ../daemon/gdm-server.c:474
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid ला %d हे मुल्य देता आले नाही"
 
-#: ../daemon/gdm-server.c:521
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: डिस्पले %s करीता लॉग फाइल उघडणे अशक्य!"
 
-#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
-#: ../daemon/gdm-server.c:544
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%1s: %2s ते %3s पर्यंत संयोजन करताना चुक झाली"
 
-#: ../daemon/gdm-server.c:564
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: सर्वर प्राधन्यता %d शी स्थापीत करू शकले नाही: %s"
 
-#: ../daemon/gdm-server.c:720
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%1s: %2s या प्रदर्शकासाठी दिलेली सर्वरची आज्ञा रिक्त आहे"
@@ -142,71 +145,36 @@ msgstr "दृश्य साधन"
 msgid "The display device"
 msgstr "दृश्य साधन"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1217
 msgid "Could not create authentication helper process"
 msgstr "ओळख पटवण्याची हेल्पर प्रोसेस् निर्माण करणे अशक्य"
 
-#: ../daemon/gdm-session-worker.c:1029
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "ओळख पटवा प्रणालीसह संभाषण प्रारंभ करतेवेळी त्रुटी - %s"
+#: ../daemon/gdm-session-worker.c:844
+msgid "Your account was given a time limit that's now passed."
+msgstr "तुमच्या खात्याला वेळ मर्यादा देण्यात आली होती जी आत्ता पार केली."
 
-#: ../daemon/gdm-session-worker.c:1030
-msgid "general failure"
-msgstr "सर्वसाधारण त्रुटी"
+#: ../daemon/gdm-session-worker.c:851
+msgid "Sorry, that didn't work. Please try again."
+msgstr "माफ करा, ते काम करत नाही. कृपया पुन्हा प्रयत्न करा."
 
-#: ../daemon/gdm-session-worker.c:1031
-msgid "out of memory"
-msgstr "स्मृती बाहेर"
-
-#: ../daemon/gdm-session-worker.c:1032
-msgid "application programmer error"
-msgstr "अनुप्रयोग प्रोग्रमकर्ता त्रुटी"
-
-#: ../daemon/gdm-session-worker.c:1033
-msgid "unknown error"
-msgstr "अपरिचित त्रुटी"
-
-#: ../daemon/gdm-session-worker.c:1040
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "वापरकर्त्याचे नाव:"
 
-#: ../daemon/gdm-session-worker.c:1046
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"शिफारसीय वापरकर्तानाव प्रॉमप्टमधील ओळख पटवा प्रणालीकरीता सांगतेवेळी त्रुटी: %s"
+#: ../daemon/gdm-session-worker.c:1241
+msgid "Your password has expired, please change it now."
+msgstr "तुमच्या पासवर्डची वेळ समाप्ति झाली, कृपया आत्ता बदलवा."
 
-#: ../daemon/gdm-session-worker.c:1060
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr "वापरकर्ताचे यजमाननावमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
-
-#: ../daemon/gdm-session-worker.c:1077
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr "वापरकर्ताचे कंसोलमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
-
-#: ../daemon/gdm-session-worker.c:1101
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "डिस्पले स्ट्रिंगमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
-
-#: ../daemon/gdm-session-worker.c:1116
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr "डिस्पले xauth श्रेयमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
-
-#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "वापरकर्ता खाते उपलब्ध नाही"
 
-#: ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "वापरकर्ता बदलविण्यास अपयशी"
 
-#: ../daemon/gdm-simple-slave.c:1330
+#: ../daemon/gdm-simple-slave.c:871
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -219,109 +187,71 @@ msgstr ""
 "खंडीत राहील. "
 "समस्या सुटल्यावर कृपया, GDM पुन्हा सुरू करा."
 
-#: ../daemon/gdm-simple-slave.c:1371
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "वापरकर्त्याचा प्रवेश होण्यापूर्वीच त्यास कॉल केले जाईल"
-
-#: ../daemon/gdm-simple-slave.c:1381
-#, c-format
-msgid "Caller not GDM"
-msgstr "कॉलर GDM नाही"
-
-#: ../daemon/gdm-simple-slave.c:1434
-msgid "User not logged in"
-msgstr "वापरकर्त्याने प्रवेश केला नाही"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "सध्या, एकाचवेळी फक्त एकाच क्लाएंटची जोडणी शक्य आहे"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "सॉकेट तयार करता आला नाही!"
 
-#: ../daemon/main.c:126 ../daemon/main.c:139
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID फाइल %s लिहणे अशक्य: संभाव्यतया डिस्कवर जागा कमी आहे: %s"
 
-#: ../daemon/main.c:189
+#: ../daemon/main.c:188
 #, c-format
-#| msgid "Unable to create transient display: "
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "मार्कर डिरेक्ट्री %s: %s निर्माण करण्यास अपयशी"
 
-#: ../daemon/main.c:195
-#, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "AuthDir %s: %s निर्माण करण्यास अपयशी"
-
-#: ../daemon/main.c:201
+#: ../daemon/main.c:194
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s: %s निर्माण करण्यास अपयशी"
 
-#: ../daemon/main.c:236
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM वापरकर्ता %s आढळले नाही. खंडीत करीत आहोत!"
 
-#: ../daemon/main.c:242
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM वापरकर्ता रूट नसावा . खंडीत करीत आहोत!"
 
-#: ../daemon/main.c:248
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM समुह '%s' आढळला नाही. खंडीत करीत आहोत !"
 
-#: ../daemon/main.c:254
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM समुह रूट नसावा. खंडीत करीत आहोत!"
 
-#: ../daemon/main.c:362
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "सर्व धोकादायक सावधानता सूचना चिन्हाकृत करा"
 
-#: ../daemon/main.c:363
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "ठराविक वेळनंतर बाहेर पडा (डिबगिंग करीता)"
 
-#: ../daemon/main.c:364
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "GDM आवृत्ती छापा"
 
-#: ../daemon/main.c:375
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "GNOME दृश्य व्यवस्थापक"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:423
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "फक्त रूट वापरकर्ता GDM चालवू शकतो"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:148
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME दृश्य व्यवस्थापन सत्र कार्यकर्ता"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
-msgid "Display ID"
-msgstr "प्रदर्शन ID"
-
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME डिस्पले मॅनेजर स्लेव्"
-
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "प्रवेश चौकट"
 
@@ -360,10 +290,24 @@ msgstr ""
 "देतो."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#| msgid "Whether or not to allow smartcard readers for login"
+msgid "Whether or not to allow passwords for login"
+msgstr "प्रवेशकरीता पासवर्डज स्वीकारायचे किंवा नाही"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"पासवर्ड ओळख पटवणे अस्वीकार करण्यासाठी प्रवेश स्क्रीनला संरचीत करणे शक्य आहे, "
+"ज्यामुळे वापरकर्त्याला स्मार्टकार्ड किंवा फिंगरप्रिंटद्वारे ओळख पटवण्याची "
+"सक्ती शक्य होते."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "वापरकर्ता सूचीच्या शीर्षकास लहान प्रतिमाकरीता मार्ग"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -373,7 +317,7 @@ msgstr ""
 "प्रवेश पडदा "
 "वैकल्पिकरित्या वापरकर्त्याच्या सूचीकरीता लहान प्रतिमा दाखवू शकतो."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -383,11 +327,11 @@ msgstr ""
 "प्रवेश पडदा "
 "वैकल्पिकरित्या वापरकर्त्याच्या सूचीकरीता लहान प्रतिमा दाखवू शकतो."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "वापरकर्ता सूची दाखवणे टाळा"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -396,36 +340,36 @@ msgstr ""
 "दाखवण्यापासून "
 "थांबवायचे असल्यास ह्या सेटिंगला बदलणे शक्य आहे."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "बॅनर संदेश दर्शविणे कार्यान्वीत करा"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "बॅनर संदेश पाठ्य दर्शविण्याकरीता true सेट करा."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "बॅनर संदेश मजकूर"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "प्रवेश पटलात दाखवण्याजोगी मजकूर बॅनर संदेश."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "पुन्हा सुरू करा बटन दर्शविणे अकार्यान्वीत करा"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "प्रवेश पटलात रिस्टार्ट बटने दाखवण्यापासून असुरू करण्यासाठी true सेट करा."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "अपयशी स्वीकार्य ओळख पटवण्याच्या पद्धतिंची संख्या"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -433,47 +377,6 @@ msgstr ""
 "वापरकर्ता नीवड त्याग करण्यापूर्वी व वापर करण्यापूर्वी, वापरकर्ताने ओळख "
 "पटवण्यासाठी "
 "स्वीकार्य संख्या."
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "ट्रांजिएंट डिस्पले निर्माण करणे अशक्य"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "सत्र सुरू करणे अशक्य: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
-#: ../utils/gdmflexiserver.c:613
-#, c-format
-msgid "Could not identify the current session."
-msgstr "वर्तमान सत्र ओळखू शकले नाही."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "वापरकर्ता सत्र बदलण्यास अशक्य."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "वर्तमान सिट ओळखणे अशक्य."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"सध्याचे प्रवेश पडद्याचा वापर करायचा किंवा नवीन प्रवेश पडदा सुरू करायचे, असे "
-"प्रणाली ओळखू "
-"शकत नाही."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "प्रणाली नवीन प्रवेश पडदा सुरू करण्यास अशक्य आहे."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -488,378 +391,46 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: XDMCP हेड्डर वाचू शकले नाही!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-#| msgid "XMDCP: Incorrect XDMCP version!"
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: अयोग्य XDMCP आवृत्ती!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-#| msgid "XMDCP: Unable to parse address"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: पत्ता वाचणे अशक्य"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "फिंगरप्रिंट ओळखपटवणे"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "फिंग्ररप्रिंटसह सत्रमध्ये प्रवेश करा"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "पासवर्ड देऊन ओळखपटवणे"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "वापरकर्तानाव व पासवर्डसह सत्रमध्ये प्रवेश करा"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "प्रवेश करा "
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "स्लॉट ID"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "स्लॉटमधील कार्ड"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "स्लॉट सिरिज्"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "प्रत्येक स्लॉटकरीता कार्ड आइडेंटिफायर"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "नाव"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "मॉड्युल"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "स्मार्टकार्ड ड्राइव्हर"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "स्मार्टकार्ड ओळखपटवणे"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "स्मार्टकार्डसह सत्रमध्ये प्रवेश करा"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "मॉड्युल मार्ग"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "स्मार्टकार्ड PKCS #11 ड्राइव्हरकरीता मार्ग"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "इव्हेंट स्रोतपासून त्रुटी किंवा हँग अप प्राप्त झाले"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS सेक्युरिटि सिस्टम सुरू करणे अशक्य"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "योग्य स्मार्टकार्ड ड्राइव्हर आढळले नाही"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "स्मार्टकार्ड ड्राइव्हर '%s' लोड करणे अशक्य"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "येणाऱ्या कार्ड घटनांकरीता - %s वॉच करणे अशक्य"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "स्मार्टकार्ड घटनांकरीता वाट पहाताना अनपेक्षीत त्रुटी आढळली"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "ओळख पटवणे"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "सत्रमध्ये प्रवेश करा"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "मुल्य"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "टक्केवारीतील पूर्णत्वाची वेळ"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "पाठ्य असक्रीयता"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "वापरकर्त्याने घटक निवडले नसल्यास लेबल मध्ये वापरण्याजोगी पाठ्य"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "सक्रीय पाठ्य"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr "वापरकर्त्याने घटक निवडले असल्यास लेबल मध्ये वापरण्याजोगी पाठ्य"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "सूची दृष्यास्पद आहे"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "नीवड सूची पहण्याजोगी आहे का"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a %b %e, %l:%M:%S %p"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a %b %e, %l:%M %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a %l:%M:%S %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "स्वयं प्रवेश करत आहे…"
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "रद्द करत आहे…"
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "भाषा निवडा व दाखल करा वर क्लिक करा"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "पसंतीचे"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "पसंतीचे सत्र"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "संगणकाचे नाव"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "आवृत्ती"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "रद्द करा"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "कुलूपबंद अशक्य करा"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "प्रवेश करा"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "अकार्यक्षम"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "पुन्हा सुरू करा"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "बंद करा"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "अपरिचीत उर्वरित वेळ"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "पटल"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "लेबल पाठ्य"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "पाठ्य म्हणून वापरायचे ते लेबल"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "चिन्ह नाव"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "लेबलसह वापरण्याजोगी चिन्ह"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "पूर्वनिर्धारीत घटक"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "पूर्वनिर्धारीत घटकाचे id"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "दूरस्त प्रवेश (%s शी जुळवणी करीत आहे…)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "दूरस्त प्रवेश (%s शी जुळवणी करीत आहे)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "दूरस्त प्रवेश"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "सत्र"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "अवधी"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "टाइमर थांबे पर्यंत सेकंदचे क्रमांक"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "आरंभ वेळ"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "टाइमर ज्यावेळी सुरू केले ती वेळ"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "चालू आहे का?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "वर्तमानक्षणी टाइमर टिक करत आहे का"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "%s म्हणून प्रवेश करा"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "इतर…"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "इतर खाते निवडा"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "पाहुणा"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "तात्पुर्ते अतिथी म्हणून प्रवेश करा"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "स्वयं प्रवेश"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "पर्यान नीवडल्यानंतर स्वयंरित्या प्रणालीमध्ये प्रवेश करा"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "सद्या दाखल केले"
-
-#: ../utils/gdmflexiserver.c:64
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "ट्रांजिएंट डिस्पले निर्माण करणे अशक्य"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "सत्र सुरू करणे अशक्य: "
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "फक्त VERSION आदेश समर्थीत आहे"
 
-#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "दुर्लक्षीत — सहत्वताकरीता जपून ठेवले"
 
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "डीबगींग ऑउटपुट"
 
-#: ../utils/gdmflexiserver.c:71
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "या अनुप्रयोगाची आवृत्ती"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:706
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- नवीन GDM प्रवेश"
-
-#: ../utils/gdmflexiserver.c:762
-#| msgid "Unable to create transient display: "
-msgid "Unable to start new display"
-msgstr "नवीन डिस्पले सुरू करणे अशक्य"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -869,6 +440,312 @@ msgstr "स्क्रीनशॉट घेतले"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "पडद्याचे चित्र घ्या"
+
+#~ msgid "No session available yet"
+#~ msgstr "अजूनही सत्र उपलब्ध नाही"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "वापरकर्ता %sचे UID शोधणे अशक्य"
+
+#~ msgid "no sessions available"
+#~ msgstr "सत्र उपलब्ध नाही"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "पुनः ओळखपटवण्याकरीता %s करीता सत्र उपलब्ध नाही"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "वापरकर्ता %s करीता सत्र शोधणे अशक्य"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "वापरकर्ता %s करीता योग्य सत्र शोधणे अशक्य"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "वापरकर्ताकडे सत्रची मालकी नाही"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%1s: मुळ दृश्य '%2s' शी जुळवणी स्थापित करू शकले नाही"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "ओळख पटवा प्रणालीसह संभाषण प्रारंभ करतेवेळी त्रुटी - %s"
+
+#~ msgid "general failure"
+#~ msgstr "सर्वसाधारण त्रुटी"
+
+#~ msgid "out of memory"
+#~ msgstr "स्मृती बाहेर"
+
+#~ msgid "application programmer error"
+#~ msgstr "अनुप्रयोग प्रोग्रमकर्ता त्रुटी"
+
+#~ msgid "unknown error"
+#~ msgstr "अपरिचित त्रुटी"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "शिफारसीय वापरकर्तानाव प्रॉमप्टमधील ओळख पटवा प्रणालीकरीता सांगतेवेळी त्रुटी: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr "वापरकर्ताचे यजमाननावमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr "वापरकर्ताचे कंसोलमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr "डिस्पले स्ट्रिंगमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr "डिस्पले xauth श्रेयमधील ओळख पटवा प्रणालीला कळवतेवेळी त्रुटी: %s"
+
+#~ msgid "User not logged in"
+#~ msgstr "वापरकर्त्याने प्रवेश केला नाही"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "सध्या, एकाचवेळी फक्त एकाच क्लाएंटची जोडणी शक्य आहे"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "AuthDir %s: %s निर्माण करण्यास अपयशी"
+
+#~ msgid "Display ID"
+#~ msgstr "प्रदर्शन ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "GNOME डिस्पले मॅनेजर स्लेव्"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "फिंगरप्रिंट ओळखपटवणे"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "फिंग्ररप्रिंटसह सत्रमध्ये प्रवेश करा"
+
+#~ msgid "Password Authentication"
+#~ msgstr "पासवर्ड देऊन ओळखपटवणे"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "वापरकर्तानाव व पासवर्डसह सत्रमध्ये प्रवेश करा"
+
+#~ msgid "Log In"
+#~ msgstr "प्रवेश करा "
+
+#~ msgid "Slot ID"
+#~ msgstr "स्लॉट ID"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "स्लॉटमधील कार्ड"
+
+#~ msgid "Slot Series"
+#~ msgstr "स्लॉट सिरिज्"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "प्रत्येक स्लॉटकरीता कार्ड आइडेंटिफायर"
+
+#~ msgid "name"
+#~ msgstr "नाव"
+
+#~ msgid "Module"
+#~ msgstr "मॉड्युल"
+
+#~ msgid "smartcard driver"
+#~ msgstr "स्मार्टकार्ड ड्राइव्हर"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "स्मार्टकार्ड ओळखपटवणे"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "स्मार्टकार्डसह सत्रमध्ये प्रवेश करा"
+
+#~ msgid "Module Path"
+#~ msgstr "मॉड्युल मार्ग"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "स्मार्टकार्ड PKCS #11 ड्राइव्हरकरीता मार्ग"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "इव्हेंट स्रोतपासून त्रुटी किंवा हँग अप प्राप्त झाले"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "NSS सेक्युरिटि सिस्टम सुरू करणे अशक्य"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "योग्य स्मार्टकार्ड ड्राइव्हर आढळले नाही"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "स्मार्टकार्ड ड्राइव्हर '%s' लोड करणे अशक्य"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr "येणाऱ्या कार्ड घटनांकरीता - %s वॉच करणे अशक्य"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr "स्मार्टकार्ड घटनांकरीता वाट पहाताना अनपेक्षीत त्रुटी आढळली"
+
+#~ msgid "Authentication"
+#~ msgstr "ओळख पटवणे"
+
+#~ msgid "Log into session"
+#~ msgstr "सत्रमध्ये प्रवेश करा"
+
+#~ msgid "Value"
+#~ msgstr "मुल्य"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "टक्केवारीतील पूर्णत्वाची वेळ"
+
+#~ msgid "Inactive Text"
+#~ msgstr "पाठ्य असक्रीयता"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr "वापरकर्त्याने घटक निवडले नसल्यास लेबल मध्ये वापरण्याजोगी पाठ्य"
+
+#~ msgid "Active Text"
+#~ msgstr "सक्रीय पाठ्य"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr "वापरकर्त्याने घटक निवडले असल्यास लेबल मध्ये वापरण्याजोगी पाठ्य"
+
+#~ msgid "List Visible"
+#~ msgstr "सूची दृष्यास्पद आहे"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "नीवड सूची पहण्याजोगी आहे का"
+
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%a %b %e, %l:%M:%S %p"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%a %b %e, %l:%M %p"
+
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%a %l:%M:%S %p"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%a %l:%M %p"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "स्वयं प्रवेश करत आहे…"
+
+#~ msgid "Cancelling…"
+#~ msgstr "रद्द करत आहे…"
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "भाषा निवडा व दाखल करा वर क्लिक करा"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "पसंतीचे"
+
+#~ msgid "Custom session"
+#~ msgstr "पसंतीचे सत्र"
+
+#~ msgid "Computer Name"
+#~ msgstr "संगणकाचे नाव"
+
+#~ msgid "Version"
+#~ msgstr "आवृत्ती"
+
+#~ msgid "Cancel"
+#~ msgstr "रद्द करा"
+
+#~ msgid "Unlock"
+#~ msgstr "कुलूपबंद अशक्य करा"
+
+#~ msgid "Login"
+#~ msgstr "प्रवेश करा"
+
+#~ msgid "Suspend"
+#~ msgstr "अकार्यक्षम"
+
+#~ msgid "Restart"
+#~ msgstr "पुन्हा सुरू करा"
+
+#~ msgid "Shut Down"
+#~ msgstr "बंद करा"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "अपरिचीत उर्वरित वेळ"
+
+#~ msgid "Panel"
+#~ msgstr "पटल"
+
+#~ msgid "Label Text"
+#~ msgstr "लेबल पाठ्य"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "पाठ्य म्हणून वापरायचे ते लेबल"
+
+#~ msgid "Icon name"
+#~ msgstr "चिन्ह नाव"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "लेबलसह वापरण्याजोगी चिन्ह"
+
+#~ msgid "Default Item"
+#~ msgstr "पूर्वनिर्धारीत घटक"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "पूर्वनिर्धारीत घटकाचे id"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "दूरस्त प्रवेश (%s शी जुळवणी करीत आहे…)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "दूरस्त प्रवेश (%s शी जुळवणी करीत आहे)"
+
+#~ msgid "Remote Login"
+#~ msgstr "दूरस्त प्रवेश"
+
+#~ msgid "Session"
+#~ msgstr "सत्र"
+
+#~ msgid "Duration"
+#~ msgstr "अवधी"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "टाइमर थांबे पर्यंत सेकंदचे क्रमांक"
+
+#~ msgid "Start time"
+#~ msgstr "आरंभ वेळ"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "टाइमर ज्यावेळी सुरू केले ती वेळ"
+
+#~ msgid "Is it Running?"
+#~ msgstr "चालू आहे का?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "वर्तमानक्षणी टाइमर टिक करत आहे का"
+
+#~ msgid "Log in as %s"
+#~ msgstr "%s म्हणून प्रवेश करा"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "इतर…"
+
+#~ msgid "Choose a different account"
+#~ msgstr "इतर खाते निवडा"
+
+#~ msgid "Guest"
+#~ msgstr "पाहुणा"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "तात्पुर्ते अतिथी म्हणून प्रवेश करा"
+
+#~ msgid "Automatic Login"
+#~ msgstr "स्वयं प्रवेश"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "पर्यान नीवडल्यानंतर स्वयंरित्या प्रणालीमध्ये प्रवेश करा"
+
+#~ msgid "Currently logged in"
+#~ msgstr "सद्या दाखल केले"
+
+#~| msgid "Unable to create transient display: "
+#~ msgid "Unable to start new display"
+#~ msgstr "नवीन डिस्पले सुरू करणे अशक्य"
 
 #~ msgid "User %s doesn't exist"
 #~ msgstr "वापरकर्ता %s अस्तित्वात नाही"
