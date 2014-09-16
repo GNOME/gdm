@@ -313,10 +313,8 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
 
         settings->priv->user = act_user_manager_get_user (settings->priv->user_manager,
                                                           username);
-        if (old_user != NULL) {
-                g_object_unref (old_user);
-                old_user = NULL;
-        }
+
+        g_clear_object (&old_user);
 
         if (!act_user_is_loaded (settings->priv->user)) {
                 g_signal_connect (settings->priv->user,
