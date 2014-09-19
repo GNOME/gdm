@@ -14,49 +14,51 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.gnome-2-14.ne\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-17 20:39+0000\n"
-"PO-Revision-Date: 2014-09-17 17:22-0500\n"
+"POT-Creation-Date: 2014-09-18 05:03+0000\n"
+"PO-Revision-Date: 2014-09-19 06:58+0400\n"
 "Last-Translator: Pawan Chitrakar <chautari@gmail.com>\n"
-"Language-Team: Nepali <info@mpp.org.np>\n"
+"Language-Team: Nepali Translation Team <chautari@gmail.com>\n"
 "Language: ne\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.9\n"
 "Plural-Forms: nplurals=2;plural=(n!=1);\n"
+"X-Poedit-Language: Nepali\n"
+"X-Poedit-Country: NEPAL\n"
 
-#: ../common/gdm-common.c:519
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom चारित्रिक यन्त्र होईन "
 
-#: ../common/gdm-common.c:827
-#: ../common/gdm-common.c:980
+#: ../common/gdm-common.c:619
+#: ../common/gdm-common.c:772
 #: ../libgdm/gdm-user-switching.c:344
 #: ../libgdm/gdm-user-switching.c:514
 #, c-format
 msgid "Could not identify the current session."
 msgstr "हालको सेसन पहिचान गर्न सकिएन"
 
-#: ../common/gdm-common.c:834
+#: ../common/gdm-common.c:626
 #: ../libgdm/gdm-user-switching.c:351
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "प्रयोगकर्ता सत्र परिवर्तन गर्न असक्षम"
 
-#: ../common/gdm-common.c:989
+#: ../common/gdm-common.c:781
 #: ../libgdm/gdm-user-switching.c:523
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "हालको सिट पहिचान गर्न सकिएन"
 
-#: ../common/gdm-common.c:999
+#: ../common/gdm-common.c:791
 #: ../libgdm/gdm-user-switching.c:533
 #, fuzzy, c-format
 msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
 msgstr "हालको लगईन "
 
-#: ../common/gdm-common.c:1007
+#: ../common/gdm-common.c:799
 #: ../libgdm/gdm-user-switching.c:541
 #, c-format
 msgid "The system is unable to start up a new login screen."
@@ -67,21 +69,20 @@ msgstr "प्रणालीबाट नया लगईन पर्दा �
 msgid "could not find user \"%s\" on system"
 msgstr "यो प्रणालीमा  \"%s\" प्रयोगकर्ता भेटाउन सकिएन"
 
-#: ../daemon/gdm-manager.c:640
-#: ../daemon/gdm-manager.c:700
-#: ../daemon/gdm-manager.c:711
+#: ../daemon/gdm-manager.c:943
+#: ../daemon/gdm-manager.c:1203
 msgid "No session available"
 msgstr "सेसन उपलब्ध छैन"
 
-#: ../daemon/gdm-manager.c:650
+#: ../daemon/gdm-manager.c:953
 #, c-format
 msgid "Can only be called before user is logged in"
-msgstr ""
+msgstr "प्रयोगकर्ता लगईन गर्न अगाडि मात्रै चलाउन मिल्छ"
 
-#: ../daemon/gdm-manager.c:659
-#, fuzzy, c-format
+#: ../daemon/gdm-manager.c:962
+#, c-format
 msgid "Caller not GDM"
-msgstr "GDM संस्करण मुद्रण गर्नुहोस्"
+msgstr "Caller not GDM"
 
 #: ../daemon/gdm-server.c:437
 #, c-format
@@ -96,9 +97,8 @@ msgstr " %d मा समूह आइ डी सेट सकिएन"
 
 #: ../daemon/gdm-server.c:454
 #, c-format
-#| msgid "%s: initgroups () failed for %s"
 msgid "initgroups () failed for %s"
-msgstr ""
+msgstr "%s को लागि सुरुसमुह () असफल"
 
 #: ../daemon/gdm-server.c:460
 #, c-format
@@ -122,7 +122,7 @@ msgstr "%s: %s देखि %sमा सेट गर्दा त्रुट�
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: सर्भरको प्राथमिकताहरू %d मा सेट हुन सक्दैन: %s"
 
-#: ../daemon/gdm-server.c:739
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s प्रदर्शनका लागि खाली सर्भर आदेश ।"
@@ -151,35 +151,34 @@ msgstr " प्रदर्शन यन्त्र"
 msgid "The display device"
 msgstr "प्रदर्शन यन्त्र"
 
-#: ../daemon/gdm-session.c:1173
-#, fuzzy
+#: ../daemon/gdm-session.c:1217
 #| msgid "%s: Could not read Authentication Names"
 msgid "Could not create authentication helper process"
-msgstr "%s: प्रमाणीकरण गरिएको नामहरू पढ्न सकेन"
+msgstr "प्रमाणीकरण मद्दत प्रकिय बनाउन सकिएन"
 
-#: ../daemon/gdm-session-worker.c:836
+#: ../daemon/gdm-session-worker.c:844
 msgid "Your account was given a time limit that's now passed."
 msgstr "खाताको लागि तोकिएको समय समाप्त भयो"
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:851
 msgid "Sorry, that didn't work. Please try again."
 msgstr "त्यो कार्य भएन : पुन प्रयास गर्नुस "
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "प्रयोगकर्ता नाम:"
 
-#: ../daemon/gdm-session-worker.c:1205
+#: ../daemon/gdm-session-worker.c:1241
 msgid "Your password has expired, please change it now."
 msgstr "तपाईको पासवर्डको अवधि समाप्त भयो , नया परिनत गर्नुस्"
 
-#: ../daemon/gdm-session-worker.c:1444
-#: ../daemon/gdm-session-worker.c:1461
+#: ../daemon/gdm-session-worker.c:1480
+#: ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "प्रयोगकर्ता खाता उपलब्ध छैन"
 
-#: ../daemon/gdm-session-worker.c:1488
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "प्रयोगकर्ता परिवर्तन गर्न असक्षम"
 
@@ -196,7 +195,7 @@ msgstr "सकेट सिर्जना गर्न असफल"
 
 #: ../daemon/main.c:125
 #: ../daemon/main.c:138
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID फाइल %s लेख्न सकिदैन, सम्भवत डिस्क खाली स्थान बाट बाहिर छ ।  त्रुटि: %s"
@@ -204,7 +203,7 @@ msgstr "PID फाइल %s लेख्न सकिदैन, सम्भव�
 #: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
+msgstr "एक फेरमात्र चलाउने फोल्डर %s असफल : %s"
 
 #: ../daemon/main.c:194
 #, c-format
@@ -213,7 +212,6 @@ msgstr "%s;%s लगडाइरेक्टरी सिर्जना गर�
 
 #: ../daemon/main.c:229
 #, c-format
-#| msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM प्रयोगकर्ता (%s) लाई फेला पार्न सकिदैन । परित्याग हुँदैछ !"
 
@@ -223,7 +221,6 @@ msgstr "GDM प्रयोगकर्ता रुट हुनुहुँद
 
 #: ../daemon/main.c:241
 #, c-format
-#| msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM समूह '%s' फेला पार्न सकेन । परित्याग हुँदैछ !"
 
@@ -236,9 +233,8 @@ msgid "Make all warnings fatal"
 msgstr "सबै चेतावनीहरू घातक बनाउनुहोस्"
 
 #: ../daemon/main.c:325
-#, fuzzy
 msgid "Exit after a time (for debugging)"
-msgstr "चयन गरिएका किताबहरू लोड गरेपछि तुरुन्त निस्कनुहोस्"
+msgstr "केहि समय पछि निस्कनुहोस् (डिबग लागि)"
 
 #: ../daemon/main.c:326
 msgid "Print GDM version"
@@ -268,13 +264,12 @@ msgid "GNOME Shell"
 msgstr "जिनोम पात्रो"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
-#, fuzzy
 msgid "Window management and compositing"
-msgstr "सञ्झ्याल प्रबन्ध र अनुप्रयोग सुरुआत "
+msgstr "सञ्झ्याल प्रबन्धक र क्मपोजिटिङ्ग "
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr ""
+msgstr "औठाछाप बाट लगईन गर्न दिने वा नदिने"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
 msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
@@ -282,11 +277,11 @@ msgstr "ओँठाछाप दर्ता भएको प्रयोगक
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
-msgstr ""
+msgstr "स्मर्तकार्डबाट लगईन गर्न दिने या नदिने"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
-msgstr ""
+msgstr "स्मार्टकार्डबाट लगईन गर्न प्रयोगकर्तालाई अनुमति प्रदान गर्नुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
@@ -298,7 +293,7 @@ msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
-msgstr ""
+msgstr "प्रयोगकर्ता सुचिको माथि सानो छवि "
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
@@ -318,34 +313,32 @@ msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
-msgstr ""
+msgstr "ब्यानर सन्देश देखाउने सक्षम बनाउनुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
-msgstr ""
+msgstr "ब्यानर सन्देश पाठ देखाउने "
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:14
-#, fuzzy
 msgid "Banner message text"
-msgstr "पाठ सन्देश भाग सिमा"
+msgstr "सन्देश पाठ ब्यानर"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
-msgstr ""
+msgstr "ब्यानर पाठ सन्देश लगईन सञ्झ्यालमा देखाउनुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
-msgstr ""
+msgstr "फेरि सुरु बटन नदेखाउनुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
+msgstr "लगईन सञ्झ्यालमा फेरि सुरु गर्ने बटन नदेखाउनुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
-#, fuzzy
 #| msgid "Authentication failure!\n"
 msgid "Number of allowed authentication failures"
-msgstr "प्रमाणिकरण असफल "
+msgstr "प्रमाणिकरण असफल कतिपटक गर्न दिनुहुन्छ"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
@@ -372,10 +365,9 @@ msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ठेगपदवर्णन गर्न अक्षम"
 
 #: ../libgdm/gdm-user-switching.c:72
-#, fuzzy
 #| msgid "%s: failed to connect to parent display '%s'"
 msgid "Unable to create transient display: "
-msgstr "क्याल्कुलेटर पटल भेट्टाउन सकिएन ।"
+msgstr "पर्दा बनाउन असफल"
 
 #: ../libgdm/gdm-user-switching.c:183
 #: ../libgdm/gdm-user-switching.c:395
@@ -383,9 +375,8 @@ msgid "Unable to activate session: "
 msgstr "सेसन सक्रिय गर्न अक्षम"
 
 #: ../utils/gdmflexiserver.c:45
-#, fuzzy
 msgid "Only the VERSION command is supported"
-msgstr ""
+msgstr "खालि VERSION आदेशमात्रै चलाउनमिल्छ"
 
 #: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
@@ -395,9 +386,8 @@ msgstr "COMMAND"
 #: ../utils/gdmflexiserver.c:47
 #: ../utils/gdmflexiserver.c:49
 #: ../utils/gdmflexiserver.c:50
-#, fuzzy
 msgid "Ignored — retained for compatibility"
-msgstr "अनुकूलता"
+msgstr "बेवास्ता - अनुकूलता को लागि"
 
 #: ../utils/gdmflexiserver.c:48
 #: ../utils/gdm-screenshot.c:43
