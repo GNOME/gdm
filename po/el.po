@@ -27,124 +27,126 @@
 # Michael Kotsarinis <mk73628@gmail.com>, 2011.
 # Ioannis Zampoukas <ioza1964@yahoo.gr>, 2011, 2012.
 # Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>, 2012, 2013.
-# Efstathios Iosifidis <iosifidis@opensuse.org>, 2013.
+# Efstathios Iosifidis <iosifidis@opensuse.org>, 2013, 2014.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&ke"
-"ywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-10-16 14:48+0000\n"
-"PO-Revision-Date: 2013-10-22 09:49+0300\n"
-"Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
-"Language-Team: team@gnome.gr\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-08-03 05:02+0000\n"
+"PO-Revision-Date: 2014-08-18 22:56+0300\n"
+"Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
+"Language-Team: Ελληνικά <opensuse-translation-el@opensuse.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Gtranslator 2.91.6\n"
 "X-Project-Style: gnome\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "Το /dev/urandom δεν είναι μια συσκευή χαρακτήρων"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Αδυναμία αναγνώρισης της παρούσας συνεδρίας."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Αδυναμία χρήστη να εναλλάξει συνεδρίες."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Αδυναμία αναγνώρισης της παρούσας έδρας."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Το σύστημα δεν είναι δυνατό να καθορίσει αν θα μεταβείτε σε μια υπάρχουσα "
+"οθόνη σύνδεσης ή θα ξεκινήσει μια νέα οθόνη σύνδεσης."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Το σύστημα δεν είναι δυνατό να εκκινήσει μια νέα οθόνη σύνδεσης."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "αδυναμία εύρεσης του χρήστη \"%s\" στο σύστημα"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Ακόμη καμία διαθέσιμη συνεδρία"
-
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Αδυναμία εύρεσης UID του χρήστη %s"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "καθόλου διαθέσιμες συνεδρίες"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Καθόλου διαθέσιμες συνεδρίες %s για επαναπιστοποίηση"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Αδυναμία εύρεσης συνεδρίας για το χρήστη %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Αδυναμία εύρεσης κατάλληλης συνεδρίας για το χρήστη %s"
-
-#
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Ο χρήστης δεν κατέχει τη συνεδρία"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
 msgid "No session available"
 msgstr "Καμία διαθέσιμη συνεδρία"
 
-#: ../daemon/gdm-server.c:234
+#: ../daemon/gdm-manager.c:953
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: αδυναμία σύνδεσης στη μητρική οθόνη '%s'"
+msgid "Can only be called before user is logged in"
+msgstr "Μπορεί μόνο να κληθεί πριν συνδεθεί ο χρήστης"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:962
+#, c-format
+msgid "Caller not GDM"
+msgstr "Ο καλών δεν είναι GDM"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
-"Ο εξυπηρετητής Χ έπρεπε να προέλθει από το χρήστη %s αλλά αυτός ο χρήστης "
-"δεν υπάρχει"
+"Ο διακομιστής έπρεπε να προέλθει από το χρήστη %s αλλά αυτός ο χρήστης δεν "
+"υπάρχει"
 
 #
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
 
 #
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Το initgroups () απέτυχε για το %s"
 
 #
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
 
 #
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
-msgstr "%s: Αποτυχία ανοίγματος αρχείου καταγραφών για οθόνη %s!"
+msgstr "%s: Αποτυχία ανοίγματος αρχείου καταγραφών για εμφάνιση %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Σφάλμα ρύθμισης %s σε %s"
 
 #
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s: Η προτεραιότητα του εξυπηρετητή δεν μπορεί να ορισθεί σε %d: %s"
+msgstr "%s: Η προτεραιότητα του διακομιστή δεν μπορεί να ορισθεί σε %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
-msgstr "%s: Κενή εντολή εξυπηρετητή για οθόνη %s"
+msgstr "%s: Κενή εντολή διακομιστή για εμφάνιση %s"
 
 #: ../daemon/gdm-session-auditor.c:90
 msgid "Username"
@@ -156,11 +158,11 @@ msgstr "Το όνομα χρήστη"
 
 #: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
-msgstr "Όνομα συστήματος"
+msgstr "Όνομα κεντρικού υπολογιστή"
 
 #: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
-msgstr "Το όνομα συστήματος"
+msgstr "Το όνομα κεντρικού υπολογιστή"
 
 #: ../daemon/gdm-session-auditor.c:101
 msgid "Display Device"
@@ -171,69 +173,51 @@ msgid "The display device"
 msgstr "Η συσκευή απεικόνισης"
 
 #
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1187
 msgid "Could not create authentication helper process"
 msgstr "Αδυναμία δημιουργίας διεργασίας βοηθού πιστοποίησης"
 
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:844
 msgid "Your account was given a time limit that's now passed."
 msgstr "Έχει περάσει το χρονικό όριο που δώθηκε στον λογαριασμό σας."
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:851
 msgid "Sorry, that didn't work. Please try again."
-msgstr "Συγνώμη, αυτό δεν λειτούργησε. Παρακαλώ προσπαθήστε ξανά."
+msgstr "Συγνώμη, αυτό δεν λειτούργησε. Παρακαλούμε προσπαθήστε ξανά."
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "Όνομα χρήστη:"
 
-#: ../daemon/gdm-session-worker.c:1261
+#: ../daemon/gdm-session-worker.c:1241
 msgid "Your password has expired, please change it now."
 msgstr ""
-"Το συνθηματικό σας έχει λήξει. Παρακαλώ αλλάξτε το συνθηματικό σας τώρα."
+"Ο κωδικός πρόσβασής σας έχει λήξει. Παρακαλούμε αλλάξτε τον κωδικό πρόσβασης "
+"τώρα."
 
-#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "δεν υπάρχει διαθέσιμος λογαριασμός χρήστη"
 
-#: ../daemon/gdm-session-worker.c:1544
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "Αδυναμία αλλαγής σε χρήστη"
 
-#: ../daemon/gdm-simple-slave.c:1527
+#: ../daemon/gdm-simple-slave.c:871
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"Αδυναμία εκκίνησης του εξυπηρετητή Χ (το γραφικό περιβάλλον σας) λόγω "
-"κάποιου εσωτερικού σφάλματος. Επικοινωνήστε με το διαχειριστή του συστήματος "
-"ή ελέγξτε το syslog για διάγνωση. Στο μεταξύ αυτή η οθόνη θα "
-"απενεργοποιηθεί. Επανεκκινήστε το GDM όταν διορθωθεί το πρόβλημα."
-
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Μπορεί μόνο να κληθεί πριν συνδεθεί ο χρήστης"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Caller όχι GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Ο χρήστης δεν είναι συνδεδεμένος"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Προς το παρόν, μόνο ένας πελάτης μπορεί να συνδεθεί ταυτόχρονα"
+"Αδυναμία εκκίνησης του διακομιστή Χ (το γραφικό περιβάλλον σας) λόγω κάποιου "
+"εσωτερικού σφάλματος. Επικοινωνήστε με το διαχειριστή του συστήματος ή "
+"ελέγξτε το syslog για διάγνωση. Στο μεταξύ αυτή η οθόνη θα απενεργοποιηθεί. "
+"Επανεκκινήστε το GDM όταν διορθωθεί το πρόβλημα."
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Αποτυχία δημιουργίας υποδοχής!"
 
@@ -276,45 +260,33 @@ msgstr "Δε βρέθηκε η ομάδα GDM '%s'. Διακοπή!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Η ομάδα GDM δε πρέπει να είναι διαχειριστής. Διακοπή!"
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Να γίνουν όλες οι προειδοποιήσεις μοιραίες"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Έξοδος μετά από ένα χρονικό διάστημα (για αποσφαλμάτωση)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:326
 msgid "Print GDM version"
-msgstr "Εκτύπωση έκδοσης GDM"
+msgstr "Εμφάνιση έκδοσης GDM"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
-msgstr "Διαχειριστής Επιφάνειας Εργασίας GNOME"
+msgstr "Διαχειριστής οθόνης GNOME"
 
 #
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Μόνο ο διαχειριστής μπορεί να εκτελέσει το GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
-msgstr "Session Worker Διαχειριστή Επιφάνειας Εργασίας GNOME"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Αναγνωριστικό οθόνης"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ΤΑΥΤΟΤΗΤΑ"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Slave Διαχειριστής επιφάνειας εργασίας GNOME"
+msgstr "Βοηθός εκκίνησης συνεδρίας διαχειριστή οθόνης GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
 msgid "Login Window"
@@ -322,11 +294,11 @@ msgstr "Παράθυρο εισόδου"
 
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
-msgstr "GNOME Shell"
+msgstr "Κέλυφος GNOME"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
-msgstr "Διαχείριση παραθύρου και σύνθεσης"
+msgstr "Διαχείριση και σύνθεση παραθύρων"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -338,8 +310,8 @@ msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"Η οθόνη σύνδεσης μπορεί προαιρετικά να επιτρέπει στους χρήστες που έχουν "
-"εγγράψει τα δακτυλικά τους αποτυπώματα να συνδεθούν με τη χρήση αυτών των "
+"Η οθόνη σύνδεσης μπορεί προαιρετικά να επιτρέπει στους χρήστες, που έχουν "
+"εγγράψει τα δακτυλικά τους αποτυπώματα, να συνδεθούν με τη χρήση αυτών των "
 "αποτυπωμάτων."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
@@ -351,12 +323,12 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"Η οθόνη σύνδεσης μπορεί προαιρετικά να επιτρέπει στους χρήστες που έχουν "
-"έξυπνες κάρτες να συνδεθούν με τη χρήση αυτών των έξυπνων καρτών."
+"Η οθόνη σύνδεσης μπορεί προαιρετικά να επιτρέπει στους χρήστες, που έχουν "
+"έξυπνες κάρτες, να συνδεθούν με τη χρήση αυτών των έξυπνων καρτών."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
-msgstr "Το αν θα επιτραπούν ή όχι συνθηματικά για εισαγωγή"
+msgstr "Το αν θα επιτραπούν ή όχι κωδικοί πρόσβασης για εισαγωγή"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
@@ -364,8 +336,8 @@ msgid ""
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
 "Η οθόνη εισαγωγής μπορεί να ρυθμιστεί ώστε να μην επιτρέπει την πιστοποίηση "
-"με συνθηματικό, εξαναγκάζοντας τον χρήστη να χρησιμοποιήσει την πιστοποίηση "
-"με έξυπνη κάρτα ή με δακτυλικό αποτύπωμα."
+"με κωδικό πρόσβασης, εξαναγκάζοντας τον χρήστη να χρησιμοποιήσει την "
+"πιστοποίηση με έξυπνη κάρτα ή με δακτυλικό αποτύπωμα."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -378,8 +350,8 @@ msgid ""
 "branding."
 msgstr ""
 "Η οθόνη σύνδεσης μπορεί να δείξει προαιρετικά μια μικρή εικόνα στην κορυφή "
-"της λίστας των χρηστών της για να παρέχει στους διαχειριστές τοποθεσιών και "
-"στις διανομές έναν τρόπο για την παροχή λογοτύπου."
+"της λίστας των χρηστών της, για να παρέχει στους διαχειριστές τοποθεσιών και "
+"στις διανομές έναν τρόπο να παρέχουν επωνυμία."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
@@ -388,7 +360,7 @@ msgid ""
 "provide branding."
 msgstr ""
 "Η οθόνη σύνδεσης υποχώρησης προαιρετικά μπορεί να εμφανίσει μια μικρή εικόνα "
-"στο επάνω μέρος της λίστας χρηστών για να παρέχει στους διαχειριστές "
+"στο επάνω μέρος της λίστας χρηστών, για να παρέχει στους διαχειριστές "
 "τοποθεσιών και διανομών ένα τρόπο να παρέχουν επωνυμία."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
@@ -401,24 +373,26 @@ msgid ""
 "setting can be toggled to disable showing the user list."
 msgstr ""
 "Η οθόνη σύνδεσης συνήθως προβάλλει μια λίστα των διαθέσιμων χρηστών του "
-"συστήματος. Αυτή η ρύθμιση μπορεί να κάνει εναλλαγή της προβολής της λίστας "
-"χρηστών."
+"συστήματος. Αυτή η ρύθμιση μπορεί να εναλλάσσεται για να απενεργοποιήσετε "
+"την εμφάνιση της λίστας χρηστών."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
-msgstr "Ενεργοποίηση προβολής του κειμένου του banner"
+msgstr "Ενεργοποίηση προβολής του διαφημιστικού κειμένου"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
-msgstr "Ορίζεται σε αληθές ώστε να εμφανίζεται το μήνυμα κειμένου του banner."
+msgstr ""
+"Ορίζεται σε αληθές ώστε να εμφανίζεται το κείμενο του διαφημιστικού "
+"μηνύματος."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
-msgstr "Μήνυμα κειμένου"
+msgstr "Κείμενο διαφημιστικού μηνύματος"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
-msgstr "Κείμενο μηνύματος που θα προβάλλεται στο παράθυρο εισόδου."
+msgstr "Διαφημιστικό μήνυμα κειμένου που θα προβάλλεται στο παράθυρο εισόδου."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
@@ -441,46 +415,6 @@ msgid ""
 msgstr ""
 "Πόσες φορές ένας χρήστης επιτρέπεται να πιστοποιηθεί, προτού τα παρατήσει "
 "και επιστρέψει στην επιλογή του χρήστη."
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Αδυναμία δημιουργίας παροδικής προβολής: "
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Αδυναμία ενεργοποίησης συνεδρίας: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:600
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Αδυναμία αναγνώρισης της παρούσας συνεδρίας."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Αδυναμία χρήστη να αλλάξει συνεδρίες."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:609
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Αδυναμία αναγνώρισης της παρούσας έδρας."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:619
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Το σύστημα δεν είναι δυνατό να καθορίσει αν θα μεταβείτε σε μια υπάρχουσα "
-"οθόνη σύνδεσης ή να ξεκινήσει μια νέα οθόνη σύνδεσης."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:627
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Το σύστημα δεν είναι δυνατό να ξεκινήσει μια νέα οθόνη σύνδεσης."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -505,35 +439,39 @@ msgstr "XDMCP: Εσφαλμένη έκδοση XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Αδυναμία ανάλυσης διεύθυνσης"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Αδυναμία δημιουργίας παροδικής εμφάνισης: "
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Αδυναμία ενεργοποίησης συνεδρίας: "
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Υποστηρίζεται μόνο η εντολή VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "ΕΝΤΟΛΗ"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Αγνοημένο - υπάρχει για λόγους συμβατότητας"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Έξοδος αποσφαλμάτωσης"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Έκδοση αυτής της εφαρμογής"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:693
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Νέα σύνδεση GDM"
-
-#: ../utils/gdmflexiserver.c:749
-msgid "Unable to start new display"
-msgstr "Αδυναμία έναρξης νέας εμφάνισης"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -544,332 +482,20 @@ msgstr "Έγινε λήψη στιγμιότυπου οθόνης"
 msgid "Take a picture of the screen"
 msgstr "Λήψη φωτογραφίας της οθόνης"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "σφάλμα έναρξης συναλλαγής με το σύστημα πιστοποίησης:- %s"
+#~ msgid "No session available yet"
+#~ msgstr "Ακόμη καμία διαθέσιμη συνεδρία"
 
-#~ msgid "general failure"
-#~ msgstr "γενική αποτυχία"
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Αδυναμία εύρεσης UID του χρήστη %s"
 
-#~ msgid "out of memory"
-#~ msgstr "ανεπάρκεια μνήμης"
+#~ msgid "no sessions available"
+#~ msgstr "καθόλου διαθέσιμες συνεδρίες"
 
-#~ msgid "application programmer error"
-#~ msgstr "σφάλμα προγραμματιστή εφαρμογής"
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Καθόλου διαθέσιμες συνεδρίες %s για επαναπιστοποίηση"
 
-#~ msgid "unknown error"
-#~ msgstr "άγνωστο σφάλμα"
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Αδυναμία εύρεσης συνεδρίας για το χρήστη %s"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για το προτιμώμενο τίτλο "
-#~ "στο όνομα χρήστη: %s"
-
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για το όνομα του "
-#~ "υπολογιστή του χρήστη: %s"
-
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για την κονσόλα του "
-#~ "χρήστη: %s"
-
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για φράση εισόδου: %s"
-
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για την εμφάνιση "
-#~ "πιστοποίησης xauth: %s"
-
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "Αποτυχία δημιουργίας AuthDir %s: %s"
-
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Έλεγχος ταυτότητας δακτυλικού αποτυπώματος"
-
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Σύνδεση σε συνεδρία με δακτυλικά αποτυπώματα"
-
-#~ msgid "Password Authentication"
-#~ msgstr "Έλεγχος ταυτότητας με κωδικό πρόσβασης"
-
-#~ msgid "Log into session with username and password"
-#~ msgstr "Σύνδεση σε συνεδρία με το όνομα χρήστη και τον κωδικό πρόσβασης"
-
-#~ msgid "Log In"
-#~ msgstr "Σύνδεση"
-
-#~ msgid "Slot ID"
-#~ msgstr "ID υποδοχής κάρτας"
-
-#~ msgid "The slot the card is in"
-#~ msgstr "Η υποδοχή στην οποία βρίσκεται η κάρτα"
-
-#~ msgid "Slot Series"
-#~ msgstr "Σειρά υποδοχής"
-
-#~ msgid "per-slot card identifier"
-#~ msgstr "αναγνωριστικό κάρτας ανά υποδοχή"
-
-#~ msgid "name"
-#~ msgstr "όνομα"
-
-#~ msgid "Module"
-#~ msgstr "Άρθρωμα"
-
-#~ msgid "smartcard driver"
-#~ msgstr "οδηγός έξυπνης κάρτας"
-
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Έλεγχος ταυτότητας με έξυπνη κάρτα"
-
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Σύνδεση σε συνεδρία με έξυπνη κάρτα"
-
-#~ msgid "Module Path"
-#~ msgstr "Διαδρομή αρθρώματος"
-
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "διαδρομή για τον οδηγό έξυπνης κάρτας PKCS #11"
-
-#~ msgid "received error or hang up from event source"
-#~ msgstr "ελήφθη σφάλμα ή έγινε αποσύνδεση από την πηγή του γεγονότος"
-
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "Αδυναμία αρχικοποίησης του συστήματος ασφαλείας NSS"
-
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "δεν βρέθηκε κατάλληλος οδηγός έξυπνης κάρτας"
-
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "αδυναμία φόρτωσης του οδηγού έξυπνης κάρτας «%s»"
-
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "αδυναμία παρακολούθησης εισερχομένων γεγονότων κάρτας - %s"
-
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr ""
-#~ "συνέβη ένα μη αναμενόμενο σφάλμα κατά την αναμονή γεγονότων έξυπνης κάρτας"
-
-#~ msgid "Authentication"
-#~ msgstr "Πιστοποίηση"
-
-#~ msgid "Log into session"
-#~ msgstr "Σύνδεση σε συνεδρία"
-
-#~ msgid "Value"
-#~ msgstr "Τιμή"
-
-#~ msgid "percentage of time complete"
-#~ msgstr "ποσοστό χρόνου που πέρασε"
-
-#~ msgid "Inactive Text"
-#~ msgstr "Ανενεργό κείμενο"
-
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "Το κείμενο που θα χρησιμοποιείται στην ταμπέλα αν ο χρήστης δεν έχει "
-#~ "επιλέξει ακόμα ένα αντικείμενο"
-
-#~ msgid "Active Text"
-#~ msgstr "Ενεργό κείμενο"
-
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr ""
-#~ "Το κείμενο που θα χρησιμοποιείται στην ταμπέλα αν ο χρήστης έχει επιλέξει "
-#~ "ένα αντικείμενο"
-
-#~ msgid "List Visible"
-#~ msgstr "Ορατή λίστα"
-
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Αν η λίστα επιλογής είναι ορατή"
-
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %e %b, %l:%M:%S %p"
-
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %e %b, %l:%M %p"
-
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %l:%M:%S %p"
-
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %l:%M %p"
-
-#~ msgid "Automatically logging in…"
-#~ msgstr "Αυτόματη είσοδος σε…"
-
-#
-#~ msgid "Cancelling…"
-#~ msgstr "Ακύρωση…"
-
-#~ msgid "Select language and click Log In"
-#~ msgstr "Επιλέξτε γλώσσα και πατήστε Είσοδος"
-
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Προσαρμοσμένη"
-
-#~ msgid "Custom session"
-#~ msgstr "Προσαρμοσμένη συνεδρία"
-
-#~ msgid "Computer Name"
-#~ msgstr "Όνομα υπολογιστή"
-
-#
-#~ msgid "Version"
-#~ msgstr "Έκδοση"
-
-#~ msgid "Cancel"
-#~ msgstr "Ακύρωση"
-
-#~ msgid "Unlock"
-#~ msgstr "Ξεκλείδωμα"
-
-#~ msgid "Login"
-#~ msgstr "Είσοδος"
-
-#~ msgid "Suspend"
-#~ msgstr "Αναστολή"
-
-#
-#~ msgid "Restart"
-#~ msgstr "Επανεκκίνηση"
-
-#~ msgid "Shut Down"
-#~ msgstr "Τερματισμός"
-
-#~ msgid "Unknown time remaining"
-#~ msgstr "Απομένει άγνωστος χρόνος"
-
-#~ msgid "Panel"
-#~ msgstr "Πίνακας εφαρμογών"
-
-#~ msgid "Label Text"
-#~ msgstr "Κείμενο ετικέτας"
-
-#~ msgid "The text to use as a label"
-#~ msgstr "Το κείμενο που θα χρησιμοποιηθεί ως ετικέτα"
-
-#~ msgid "Icon name"
-#~ msgstr "Όνομα εικονιδίου"
-
-#~ msgid "The icon to use with the label"
-#~ msgstr "Το εικονίδιο που θα χρησιμοποιηθεί με την ετικέτα"
-
-#~ msgid "Default Item"
-#~ msgstr "Προεπιλεγμένο αντικείμενο"
-
-#~ msgid "The ID of the default item"
-#~ msgstr "Η ταυτότητα του προεπιλεγμένου αντικειμένου"
-
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Απομακρυσμένη σύνδεση (Σύνδεση σε %s…)"
-
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Απομακρυσμένη σύνεση (Σύνδεση σε %s)"
-
-#~ msgid "Remote Login"
-#~ msgstr "Απομακρυσμένη είσοδος"
-
-#
-#~ msgid "Session"
-#~ msgstr "Συνεδρία"
-
-#~ msgid "Duration"
-#~ msgstr "Διάρκεια"
-
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Αριθμός δευτερολέπτων έως το σταμάτημα του χρονομέτρου"
-
-#~ msgid "Start time"
-#~ msgstr "Ώρα εκκίνησης"
-
-#~ msgid "Time the timer was started"
-#~ msgstr "Ώρα εκκίνησης χρονομέτρου"
-
-#~ msgid "Is it Running?"
-#~ msgstr "Εκτελείται τώρα;"
-
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Εάν ακούγονται οι χτύποι του χρονομέτρου"
-
-#~ msgid "Log in as %s"
-#~ msgstr "Είσοδος ως %s"
-
-#
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Άλλος…"
-
-#~ msgid "Choose a different account"
-#~ msgstr "Επιλέξτε ένα διαφορετικό λογαριασμό"
-
-#~ msgid "Guest"
-#~ msgstr "Προσωρινός χρήστης"
-
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Είσοδος ως προσωρινός χρήστης"
-
-#~ msgid "Automatic Login"
-#~ msgstr "Αυτόματη είσοδος"
-
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "Αυτόματη είσοδος στο σύστημα μετά από την ολοκλήρωση των επιλογών"
-
-#~ msgid "Currently logged in"
-#~ msgstr "Ήδη συνδεδεμένος σε"
-
-#
-#~ msgid "User %s doesn't exist"
-#~ msgstr "Ο χρήστης %s δεν υπάρχει"
-
-#
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "Η ομάδα %s δεν υπάρχει"
-
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "Logdir %s δεν υπάρχει ή δεν είναι κατάλογος."
-
-#
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "Ο κατάλογος Authdir %s δεν υπάρχει. Διακοπή."
-
-#
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "Το %s (για Authdir) δεν είναι κατάλογος. Διακοπή."
-
-#
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr "Ο κατάλογος Authdir %s δεν ανήκει στο χρήση %d, ομάδα %d. Διακοπή."
-
-#
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr ""
-#~ "Ο κατάλογος Authdir %s έχει λάθος δικαιώματα %o. Έπρεπε %o. Διακοπή."
-
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "Μεγεθυντής οθόνης GNOME"
-
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Μεγέθυνση τμημάτων της οθόνης"
-
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "Πληκτρολόγιο οθόνης GNOME"
-
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Ενεργοποίηση πληκτρολογίου οθόνης"
-
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Ενεργοποίηση εφαρμογής ανάγνωσης οθόνης Orca"
-
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "Παρούσα πληροφορία στην οθόνη με μορφή ομιλίας ή μπράιγ"
-
-#~ msgid "Unable to initialize login system"
-#~ msgstr "Αδυναμία αρχικοποίησης του συστήματος εισόδου"
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Αδυναμία εύρεσης κατάλληλης συνεδρίας για το χρήστη %s"
