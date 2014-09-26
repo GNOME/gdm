@@ -2,92 +2,124 @@
 # Bengali India Translation of the GDM2 po file
 # Copyright (C) 1998, 99, 2000, 01, 02, 03, 2005, 2006, 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm2 package.
-# 
+#
 # Progga <abulfazl@juniv.edu>, 2003.
 # Indranil Das Gupta <indradg@bengalinux.org>, 2004.
 # Mahay Alam Khan <makl10n@yahoo.com>, 2005.
 # Samia Niamatullah <mailsamia2001@yahoo.com>, 2005.
 # Runa Bhattacharjee <runa@bengalinux.org>, 2005.
 # Runa Bhattacharjee <runab@redhat.com>, 2008, 2009, 2010, 2011, 2012.
-# sray <sray@redhat.com>, 2013. #zanata
+# sray <sray@redhat.com>, 2013, 2014. #zanata.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-13 15:37+0530\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-09-26 05:07+0000\n"
+"PO-Revision-Date: 2014-09-26 11:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Bengali (India) <kde-i18n-doc@kde.org>\n"
+"Language: bn-IN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2013-10-03 05:29-0400\n"
-"Last-Translator: sray <sray@redhat.com>\n"
-"Language-Team: Bengali (India) <anubad@lists.ankur.org.in>\n"
-"Language: bn-IN\n"
 "Plural-Forms: nplurals=2; plural=(n!= 1);\n"
-"X-Generator: Zanata 3.1.2\n"
+"X-Generator: Lokalize 1.5\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ক্যারেক্টার ডিভাইস নয়"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "বর্তমান সেশান সনাক্ত করা যায়নি।"
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "ব্যবহারকারী দ্বারা সেশান পরিবর্তন করা যায়নি।"
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "বর্তমান সিট সনাক্ত করা যায়নি।"
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"কোনো উপস্থিত লগ-ইনে পরিবর্তন করা হবে নাকি নতুন লগ-ইন পর্দা আরম্ভ করা হবে তা "
+"সিস্টেম দ্বারা নির্ধারণ করা যায়নি।"
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "সিস্টেম দ্বারা নতুন লগ-ইন পর্দা প্রস্তুত করা যায়নি।"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "সিস্টেমের মধ্যে \"%s\" নামক ব্যবহারকারী পাওয়া যায়নি"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "কোনো সেশান বর্তমানে উপলব্ধ নেই"
-
-#: ../daemon/gdm-manager.c:366 ../daemon/gdm-manager.c:411
+#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
 msgid "No session available"
 msgstr "কোনো সেশান উপলব্ধ নেই"
 
-#: ../daemon/gdm-server.c:234
+#: ../daemon/gdm-manager.c:953
 #, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: ঊর্ধ্বতন ডিসপ্লে '%s'-র সাথে সংযোগ করতে ব্যর্থ"
+msgid "Can only be called before user is logged in"
+msgstr "ব্যবহারকারী লগ-ইন করার পূর্বেই শুধুমাত্র কল করা যাবে"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:962
+#, c-format
+msgid "Caller not GDM"
+msgstr "GDM দ্বারা কল করা হয়নি"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "ব্যবহারকারী %s দ্বারা সার্ভার স্পন হওয়া উচিত, কিন্তু সংশ্লিষ্ট ব্যবহারকারী "
-"বর্তমানে উপস্থিত নেই"
+"বর্তমানে "
+"উপস্থিত নেই"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid-র মান %d রূপে নির্ধারণ করতে ব্যর্থ"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s-র জন্য initgroups () বিফল"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid-র মান %d রূপে ধার্য করা যায়নি"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ডিসপ্লে %s-র জন্য লগ-ফাইল খুলতে ব্যর্থ!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s-র মান %s রূপে ধার্য করতে ব্যর্থ"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: সার্ভারের অগ্রাধিকারের মাত্রা %d রূপে নির্ধারণ করতে ব্যর্থ: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ডিসপ্লে %s-র জন্য ফাঁকা সার্ভার কমান্ড উল্লিখিত"
@@ -116,75 +148,36 @@ msgstr "ডিসপ্লে ডিভাইস"
 msgid "The display device"
 msgstr "ডিসপ্লে ডিভাইস"
 
-#: ../daemon/gdm-session.c:1191
+#: ../daemon/gdm-session.c:1217
 msgid "Could not create authentication helper process"
 msgstr "অনুমোদন সহায়ক প্রসেস প্রস্তুত করা যায়নি"
 
-#: ../daemon/gdm-session-worker.c:1036
-#, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "অনুমোদন ব্যবস্থার সাথে আলাপন আরম্ভ করতে সমস্যা - %s"
+#: ../daemon/gdm-session-worker.c:844
+msgid "Your account was given a time limit that's now passed."
+msgstr "অাপনার অ্যাকাউন্টের জন্য দেওয়া সময়সীমা এখন উত্তীর্ণ হয়ে গেছে।"
 
-#: ../daemon/gdm-session-worker.c:1037
-msgid "general failure"
-msgstr "সাধারণ বিফলতা"
+#: ../daemon/gdm-session-worker.c:851
+msgid "Sorry, that didn't work. Please try again."
+msgstr "দুঃখিত, এটি কাজে অাসেনি। দয়া করে অাবার চেষ্টা করুন।"
 
-#: ../daemon/gdm-session-worker.c:1038
-msgid "out of memory"
-msgstr "পর্যাপ্ত মেমরি অনুপস্থিত"
-
-#: ../daemon/gdm-session-worker.c:1039
-msgid "application programmer error"
-msgstr "অ্যাপ্লিকেশন প্রোগ্রামার সংক্রান্ত ত্রুটি"
-
-#: ../daemon/gdm-session-worker.c:1040
-msgid "unknown error"
-msgstr "অজানা সমস্যা"
-
-#: ../daemon/gdm-session-worker.c:1047
+#: ../daemon/gdm-session-worker.c:1107
 msgid "Username:"
 msgstr "ব্যবহারকারী অ্যাকাউন্টের নাম:"
 
-#: ../daemon/gdm-session-worker.c:1053
-#, c-format
-msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"পছন্দসই ব্যবহারকারীর নামের প্রমপ্ট সংক্রান্ত তথ্য অনুমোদন ব্যবস্থাকে  জানাতে "
-"সমস্যা হয়েছে: %s"
+#: ../daemon/gdm-session-worker.c:1241
+msgid "Your password has expired, please change it now."
+msgstr "অাপনার পাসওয়ার্ডের মেয়াদ শেষ হয়ে গেছে, দয়া করে এটি এখন পরিবর্তন করুন।"
 
-#: ../daemon/gdm-session-worker.c:1067
-#, c-format
-msgid "error informing authentication system of user's hostname: %s"
-msgstr ""
-"অনুমোদন ব্যবস্থাকে ব্যবহারকারীর হোস্ট-নেম সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
-
-#: ../daemon/gdm-session-worker.c:1084
-#, c-format
-msgid "error informing authentication system of user's console: %s"
-msgstr ""
-"অনুমোদন ব্যবস্থাকে ব্যবহারকারীর কনসোল সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
-
-#: ../daemon/gdm-session-worker.c:1108
-#, c-format
-msgid "error informing authentication system of display string: %s"
-msgstr "অনুমোদন ব্যবস্থাকে ডিসপ্লে স্ট্রিং সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
-
-#: ../daemon/gdm-session-worker.c:1123
-#, c-format
-msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"অনুমোদন ব্যবস্থাকে ডিসপ্লের xauth পরিচয় সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
-
-#: ../daemon/gdm-session-worker.c:1461 ../daemon/gdm-session-worker.c:1478
+#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
 #, c-format
 msgid "no user account available"
 msgstr "কোনো ব্যবহারকারীর অ্যাকাউন্ট উপলব্ধ নেই"
 
-#: ../daemon/gdm-session-worker.c:1505
+#: ../daemon/gdm-session-worker.c:1524
 msgid "Unable to change to user"
 msgstr "চিহ্নিত ব্যবহারকারীর অ্যাকাউন্টে পরিবর্তন করা যায়নি"
 
-#: ../daemon/gdm-simple-slave.c:1531
+#: ../daemon/gdm-simple-slave.c:871
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -192,30 +185,13 @@ msgid ""
 "when the problem is corrected."
 msgstr ""
 "অভ্যন্তরীণ ত্রুটির ফলে X সার্ভার (গ্রাফিক্যাল পরিবেশ) আরম্ভ করতে ব্যর্থ। "
-"সমস্যা সনাক্ত করার জন্য আপনার সিস্টেম অ্যাডমিনিস্ট্রেটরের সাথে যোগাযোগ করুন "
-"অথবা syslog পরীক্ষা করুন। বর্তমানে এই ডিসপ্লে নিষ্ক্রিয় করা হবে।  সমস্যা "
-"সমাধান হলে GDM পুনরায় আরম্ভ করুন।"
+"সমস্যা সনাক্ত "
+"করার জন্য আপনার সিস্টেম অ্যাডমিনিস্ট্রেটরের সাথে যোগাযোগ করুন অথবা syslog "
+"পরীক্ষা "
+"করুন। বর্তমানে এই ডিসপ্লে নিষ্ক্রিয় করা হবে।  সমস্যা সমাধান হলে GDM পুনরায় "
+"আরম্ভ করুন।"
 
-#: ../daemon/gdm-simple-slave.c:1572
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "ব্যবহারকারী লগ-ইন করার পূর্বেই শুধুমাত্র কল করা যাবে"
-
-#: ../daemon/gdm-simple-slave.c:1582
-#, c-format
-msgid "Caller not GDM"
-msgstr "GDM দ্বারা কল করা হয়নি"
-
-#: ../daemon/gdm-simple-slave.c:1635
-msgid "User not logged in"
-msgstr "ব্যবহারকারী লগ-ইন করেননি"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "বর্তমানে, একবারে শুধুমাত্র একটি ক্লায়েন্ট সংযুক্ত করা যাবে"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "সকেট নির্মাণ করতে ব্যর্থ!"
 
@@ -231,73 +207,55 @@ msgstr "ran once marker dir %s: %s তৈরি করা যায়নি"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "AuthDir %s: %s তৈরি করা যায়নি"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s: %s তৈরি করা যায়নি"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "'%s' নামক GDM ব্যবহারকারী সনাক্ত করতে ব্যর্থ। কর্ম বাতিল করা হচ্ছে!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM ব্যবহারকারী root হওয়া উচিত নয়। কর্ম বাতিল করা হচ্ছে!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "'%s' নামক GDM দল পাওয়া যায়নি। কর্ম বাতিল করা হচ্ছে!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM দল root হওয়া উচিত নয়। কর্ম বাতিল করা হচ্ছে!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "সকল সতর্কবাণীরকে গুরুতর ধার্য করা হবে"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "সুনির্দিষ্ট সময়ের পরে প্রস্থান করা হবে (ডিবাগ করার জন্য)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "GDM-র সংস্করণ প্রিন্ট করা হবে"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "GNOME Display Manager"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "শুধুমাত্র root দ্বারা GDM সঞ্চালিত হবে"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "ডিসপ্লে ID"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME Display Manager Slave"
-
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "লগ-ইন উইন্ডো"
 
@@ -319,8 +277,9 @@ msgid ""
 "fingerprints to log in using those prints."
 msgstr ""
 "লগ-ইন পর্দায় বর্তমানে ফিংগারপ্রিন্ট রিডারের মাধ্যমে লগ-ইন করার সুবিধা উপলব্ধ "
-"করা হয় ও ঐচ্ছিকরূপে ব্যবহারকারীর তাদের আঙ্গুলের ছাপ  সংরক্ষণ করে সেগুলি "
-"ব্যবহার করতে পারবেন।"
+"করা হয় "
+"ও ঐচ্ছিকরূপে ব্যবহারকারীর তাদের আঙ্গুলের ছাপ  সংরক্ষণ করে সেগুলি ব্যবহার করতে "
+"পারবেন।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
@@ -331,8 +290,8 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"লগ-ইন পর্দায় বর্তমানে স্মার্ট-কাডের মাধ্যমে লগ-ইন করার সুবিধা উপলব্ধ করা হয় "
-"ও ঐচ্ছিকরূপে ব্যবহারকারীর তাদের স্মার্ট-কার্ড প্রয়োগ করতে পারবেন।"
+"লগ-ইন পর্দায় বর্তমানে স্মার্ট-কাডের মাধ্যমে লগ-ইন করার সুবিধা উপলব্ধ করা হয় ও "
+"ঐচ্ছিকরূপে ব্যবহারকারীর তাদের স্মার্ট-কার্ড প্রয়োগ করতে পারবেন।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
@@ -344,8 +303,7 @@ msgid ""
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
 "পাসওয়ার্ড প্রমাণীকরণ অননুমোদিত করতে লগিন স্ক্রীন কনফিগার করা যেতে পারে, যা "
-"ব্যবহারকারীদের smartcard বা ফিঙ্গারপ্রিন্ট প্রমাণীকরণ ব্যবহার করতে বাধ্য "
-"করবে।"
+"ব্যবহারকারীদের smartcard বা ফিঙ্গারপ্রিন্ট প্রমাণীকরণ ব্যবহার করতে বাধ্য করবে।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -357,9 +315,11 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"লগ-ইন পর্দায় ব্যবহারকারীদের নামের তালিকার উপরে প্রয়োজনে একটি ছোট ছবি "
-"প্রদর্শন করা যাবে। এর সাহায্যে সাইট অ্যাডমিনিস্ট্রেটর ও ডিস্ট্রিবিউশন তাদের "
-"ব্র্যান্ডের নিদর্শন অন্তর্ভুক্ত করতে পারবে।"
+"লগ-ইন পর্দায় ব্যবহারকারীদের নামের তালিকার উপরে প্রয়োজনে একটি ছোট ছবি প্রদর্শন "
+"করা "
+"যাবে। এর সাহায্যে সাইট অ্যাডমিনিস্ট্রেটর ও ডিস্ট্রিবিউশন তাদের ব্র্যান্ডের "
+"নিদর্শন "
+"অন্তর্ভুক্ত করতে পারবে।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
@@ -368,8 +328,10 @@ msgid ""
 "provide branding."
 msgstr ""
 "ফল-ব্যাক পর্দায় ব্যবহারকারীদের নামের তালিকার উপরে প্রয়োজনে একটি ছোট ছবি "
-"প্রদর্শন করা যাবে। এর সাহায্যে সাইট অ্যাডমিনিস্ট্রেটর ও ডিস্ট্রিবিউশন তাদের "
-"ব্র্যান্ডের নিদর্শন অন্তর্ভুক্ত করতে পারবে।"
+"প্রদর্শন "
+"করা যাবে। এর সাহায্যে সাইট অ্যাডমিনিস্ট্রেটর ও ডিস্ট্রিবিউশন তাদের "
+"ব্র্যান্ডের নিদর্শন "
+"অন্তর্ভুক্ত করতে পারবে।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -381,7 +343,8 @@ msgid ""
 "setting can be toggled to disable showing the user list."
 msgstr ""
 "লগ-ইন পর্দায় সাধারণত উপলব্ধ ব্যবহারকারী অ্যাকাউন্টের তালিকা প্রদর্শন করা হয়। "
-"এই তালিকা আড়াল অথবা প্রদর্শন করার জন্য বৈশিষ্ট্যের মান টগল করা যাবে।"
+"এই "
+"তালিকা আড়াল অথবা প্রদর্শন করার জন্য বৈশিষ্ট্যের মান টগল করা যাবে।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
@@ -405,11 +368,11 @@ msgid "Disable showing the restart buttons"
 msgstr "পুনরারম্ভ চিহ্নকারী বাটনের প্রদর্শন নিষ্ক্রিয় করুন"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
-msgid ""
-"Set to true to disable showing the restart buttons in the login window."
+msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "লগ-ইন উইন্ডোর মধ্যে পুনরারম্ভ চিহ্নকারী বাটন প্রদর্শন না করার জন্য মান true "
-"(সত্য) নির্ধারণ করুন।"
+"(সত্য) "
+"নির্ধারণ করুন।"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
@@ -421,47 +384,8 @@ msgid ""
 "giving up and going back to user selection."
 msgstr ""
 "অনুমোদনের ব্যর্থ প্রচেষ্টার সর্বোচ্চ সংখ্যা, যার পরে ব্যবহারকারী নির্বাচন "
-"পর্দায় প্রত্যাবর্তন করা হবে।"
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "পরিবর্তনশীল প্রদর্শন প্রস্তুত করতে ব্যর্থ: "
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "সেশান আরম্ভ করতে ব্যর্থ: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "বর্তমান সেশান সনাক্ত করা যায়নি।"
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "ব্যবহারকারী দ্বারা সেশান পরিবর্তন করা যায়নি।"
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "বর্তমান সিট সনাক্ত করা যায়নি।"
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"কোনো উপস্থিত লগ-ইনে পরিবর্তন করা হবে নাকি নতুন লগ-ইন পর্দা আরম্ভ করা হবে তা "
-"সিস্টেম দ্বারা নির্ধারণ করা যায়নি।"
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "সিস্টেম দ্বারা নতুন লগ-ইন পর্দা প্রস্তুত করা যায়নি।"
+"পর্দায় "
+"প্রত্যাবর্তন করা হবে।"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -483,373 +407,39 @@ msgstr "XDMCP: ভুল XDMCP সংস্করণ!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ঠিকানা পার্জ করা যায়নি"
 
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "ফিংগারপ্রিন্ট সহযোগে অনুমোদন"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "ফিংগারপ্রিন্ট সহযোগে সেশানের মধ্যে লগ-ইন করুন"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "পাসওয়ার্ড সহযোগে অনুমোদন"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "ব্যবহারকারীর নাম ও পাসওয়ার্ড সহযোগে সেশানের মধ্যে লগ-ইন করুন"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "লগ-ইন করুন"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "স্লটের ID"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "কার্ডটি যে স্লটের মধ্যে রয়েছে"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "স্লটের ক্রমিক"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "প্রতি-স্লোট কার্ডের সনাক্তচিহ্ন"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "নাম"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "মডিউল"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "স্মার্ট-কার্ড ড্রাইভার"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "স্মার্ট-কার্ড অনুমোদন ব্যবস্থা"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "স্মার্ট-কার্ড বিনা সেশানের মধ্যে লগ-ইন করুন"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "মডিউলের পাথ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "স্মার্ট-কার্ড PKCS #11 ড্রাইভারের পাথ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
-msgid "received error or hang up from event source"
-msgstr "ঘটনার উৎস থেকে ত্রুটি অথবা সংযোগ বিচ্ছিন্ন হওয়ার সংকেত পাওয়া গিয়েছে"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:625
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS নিরাপত্তা ব্যবস্থা আরম্ভ করা যায়নি"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:753
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "কোনো প্রযোজ্য স্মার্ট-কার্ড ড্রাইভার পাওয়া যায়নি"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:767
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "'%s' স্মার্ট-কার্ড ড্রাইভার লোড করা যায়নি"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:839
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "কার্ড সংক্রান্ত আগত ইভেন্টের জন্য লক্ষ্য রাখা হয়নি - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1206
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-"স্মার্ট-কার্ড সংক্রান্ত ইভেন্টের অপেক্ষাকালে অপ্রত্যাশিত সমস্যা দেখা দিয়েছে"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "অনুমোদন"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "সেশানের লগ-ইন করুন"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
-msgid "Value"
-msgstr "মান"
-
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
-msgid "percentage of time complete"
-msgstr "সমাপ্ত সময়ের শতাংশ"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
-msgid "Inactive Text"
-msgstr "নিষ্ক্রিয়তা চিহ্নকারী টেক্সট"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
-msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr ""
-"ব্যবহারকারীরা দ্বারা কোনো বস্তু নির্বাচিত না হলে, লেবেলের জন্য ব্যবহারযোগ্য "
-"টেক্সট"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
-msgid "Active Text"
-msgstr "সক্রিয়তা চিহ্নকারী টেক্সট"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
-msgid "The text to use in the label if the user has picked an item"
-msgstr ""
-"ব্যবহারকারীরা দ্বারা কোনো বস্তু নির্বাচিত হলে, লেবেলের জন্য ব্যবহারযোগ্য "
-"টেক্সট"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-msgid "List Visible"
-msgstr "দৃশ্যমান তালিকা"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-msgid "Whether the chooser list is visible"
-msgstr "নির্বাচনযোগ্য তালিকা প্রদর্শিত হবে কি না"
-
-#. translators: This is the time format to use when both
-#. * the date and time with seconds are being shown together.
-#. 
-#: ../gui/simple-greeter/gdm-clock-widget.c:70
-msgid "%a %b %e, %l:%M:%S %p"
-msgstr "%a %b %e, %l:%M:%S %p"
-
-#. translators: This is the time format to use when both
-#. * the date and time without seconds are being shown together.
-#. 
-#: ../gui/simple-greeter/gdm-clock-widget.c:76
-msgid "%a %b %e, %l:%M %p"
-msgstr "%a %b %e, %l:%M %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time with seconds.
-#. 
-#: ../gui/simple-greeter/gdm-clock-widget.c:83
-msgid "%a %l:%M:%S %p"
-msgstr "%a %l:%M:%S %p"
-
-#. translators: This is the time format to use when there is
-#. * no date, just weekday and time without seconds.
-#. 
-#: ../gui/simple-greeter/gdm-clock-widget.c:92
-msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
-msgid "Automatically logging in…"
-msgstr "স্বয়ংক্রিয় লগ-ইন..."
-
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
-msgid "Cancelling…"
-msgstr "বাতিল করা হচ্ছে..."
-
-#. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
-msgid "Select language and click Log In"
-msgstr "ভাষা নির্বাচন করে লগ-ইন করুন ক্লিক করুন"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
-msgctxt "customsession"
-msgid "Custom"
-msgstr "স্বনির্ধারিত"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
-msgid "Custom session"
-msgstr "স্বনির্ধারিত সেশান"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "কম্পিউটারের নাম"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Version"
-msgstr "সংস্করণ"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Cancel"
-msgstr "বাতিল"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Unlock"
-msgstr "আন-লক করুন"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Login"
-msgstr "লগ-ইন করুন"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
-msgid "Suspend"
-msgstr "স্থগিত করুন"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:960
-msgid "Restart"
-msgstr "পুনরায় আরম্ভ করুন"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:964
-msgid "Shut Down"
-msgstr "বন্ধ করুন"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
-msgid "Unknown time remaining"
-msgstr "অবশিষ্ট সময় অজানা"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
-msgid "Panel"
-msgstr "প্যানেল"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:505
-msgid "Label Text"
-msgstr "লেবেলে ব্যবহৃত টেক্সট"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:506
-msgid "The text to use as a label"
-msgstr "লেবেলে ব্যবহৃত টেক্সট"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:513
-msgid "Icon name"
-msgstr "আইকনের নাম"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:514
-msgid "The icon to use with the label"
-msgstr "লেবেলের সাথে ব্যবহারযোগ্য আইকন"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:522
-msgid "Default Item"
-msgstr "ডিফল্ট বস্তু"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:523
-msgid "The ID of the default item"
-msgstr "ডিফল্ট বস্তুর ID"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, c-format
-msgid "Remote Login (Connecting to %s…)"
-msgstr "দূরবর্তী লগ-ইন (%s-র সাথে সংযোগ স্থাপন করা হচ্ছে...)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:202
-#, c-format
-msgid "Remote Login (Connected to %s)"
-msgstr "দূরবর্তী লগ-ইন (%s-র সাথে সংযুক্ত)"
-
-#: ../gui/simple-greeter/gdm-remote-login-window.c:281
-msgid "Remote Login"
-msgstr "দূরবর্তী লগ-ইন"
-
-#: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "Session"
-msgstr "সেশান"
-
-#: ../gui/simple-greeter/gdm-timer.c:147
-msgid "Duration"
-msgstr "অবকাল"
-
-#: ../gui/simple-greeter/gdm-timer.c:148
-msgid "Number of seconds until timer stops"
-msgstr "টাইম বন্ধ হওয়ার পূর্বে অতিবাহিত সেকেন্ড সংখ্যা"
-
-#: ../gui/simple-greeter/gdm-timer.c:155
-msgid "Start time"
-msgstr "আরম্ভের সময়"
-
-#: ../gui/simple-greeter/gdm-timer.c:156
-msgid "Time the timer was started"
-msgstr "টাইমার আরম্ভের সময়"
-
-#: ../gui/simple-greeter/gdm-timer.c:163
-msgid "Is it Running?"
-msgstr "চলছে কি?"
-
-#: ../gui/simple-greeter/gdm-timer.c:164
-msgid "Whether the timer is currently ticking"
-msgstr "টাইমার বর্তমানে গণনা করছে কি না"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
-#, c-format
-msgid "Log in as %s"
-msgstr "%s পরিচয়ে লগ-ইন করুন"
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#. 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
-msgctxt "user"
-msgid "Other…"
-msgstr "অন্যান্য..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-msgid "Choose a different account"
-msgstr "ভিন্ন অ্যাকউন্ট নির্বাচন করুন"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
-msgid "Guest"
-msgstr "অতিথি"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
-msgid "Log in as a temporary guest"
-msgstr "অস্থায়ী অতিথি অ্যাকাউন্ট সহযোগে লগ-ইন করুন"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
-msgid "Automatic Login"
-msgstr "স্বয়ংক্রিয় লগ-ইন"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
-msgid "Automatically log into the system after selecting options"
-msgstr "বিকল্প নির্বাচনের পরে স্বয়ংক্রিয়রূপে সিস্টেমে লগ-ইন করুন"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
-msgid "Currently logged in"
-msgstr "বর্তমানে লগ-ইন করা হয়েছে"
-
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "পরিবর্তনশীল প্রদর্শন প্রস্তুত করতে ব্যর্থ: "
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "সেশান আরম্ভ করতে ব্যর্থ: "
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "শুধুমাত্র VERSION কম্যান্ড সমর্থিত"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "উপেক্ষিত — সুসংগততার জন্য ধরে রাখা"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "ডিবাগ সংক্রান্ত আউটপুট"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "এই অ্যাপ্লিকেশনের সংস্করণ"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- নতুন GDM লগিন"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "নতুন প্রদর্শন শুরু করা যায়নি"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -859,3 +449,293 @@ msgstr "পর্দার ছবি গ্রহণ করা হয়েছে"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "পর্দার একটি ছবি নিন"
+
+#~ msgid "No session available yet"
+#~ msgstr "কোনো সেশান বর্তমানে উপলব্ধ নেই"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: ঊর্ধ্বতন ডিসপ্লে '%s'-র সাথে সংযোগ করতে ব্যর্থ"
+
+#~ msgid "error initiating conversation with authentication system - %s"
+#~ msgstr "অনুমোদন ব্যবস্থার সাথে আলাপন আরম্ভ করতে সমস্যা - %s"
+
+#~ msgid "general failure"
+#~ msgstr "সাধারণ বিফলতা"
+
+#~ msgid "out of memory"
+#~ msgstr "পর্যাপ্ত মেমরি অনুপস্থিত"
+
+#~ msgid "application programmer error"
+#~ msgstr "অ্যাপ্লিকেশন প্রোগ্রামার সংক্রান্ত ত্রুটি"
+
+#~ msgid "unknown error"
+#~ msgstr "অজানা সমস্যা"
+
+#~ msgid ""
+#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgstr ""
+#~ "পছন্দসই ব্যবহারকারীর নামের প্রমপ্ট সংক্রান্ত তথ্য অনুমোদন ব্যবস্থাকে  জানাতে সমস্যা "
+#~ "হয়েছে: %s"
+
+#~ msgid "error informing authentication system of user's hostname: %s"
+#~ msgstr "অনুমোদন ব্যবস্থাকে ব্যবহারকারীর হোস্ট-নেম সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
+
+#~ msgid "error informing authentication system of user's console: %s"
+#~ msgstr "অনুমোদন ব্যবস্থাকে ব্যবহারকারীর কনসোল সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
+
+#~ msgid "error informing authentication system of display string: %s"
+#~ msgstr "অনুমোদন ব্যবস্থাকে ডিসপ্লে স্ট্রিং সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
+
+#~ msgid ""
+#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgstr "অনুমোদন ব্যবস্থাকে ডিসপ্লের xauth পরিচয় সংক্রান্ত তথ্য জানাতে সমস্যা: %s"
+
+#~ msgid "User not logged in"
+#~ msgstr "ব্যবহারকারী লগ-ইন করেননি"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "বর্তমানে, একবারে শুধুমাত্র একটি ক্লায়েন্ট সংযুক্ত করা যাবে"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "AuthDir %s: %s তৈরি করা যায়নি"
+
+#~ msgid "Display ID"
+#~ msgstr "ডিসপ্লে ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "GNOME Display Manager Slave"
+
+#~ msgid "Fingerprint Authentication"
+#~ msgstr "ফিংগারপ্রিন্ট সহযোগে অনুমোদন"
+
+#~ msgid "Log into session with fingerprint"
+#~ msgstr "ফিংগারপ্রিন্ট সহযোগে সেশানের মধ্যে লগ-ইন করুন"
+
+#~ msgid "Password Authentication"
+#~ msgstr "পাসওয়ার্ড সহযোগে অনুমোদন"
+
+#~ msgid "Log into session with username and password"
+#~ msgstr "ব্যবহারকারীর নাম ও পাসওয়ার্ড সহযোগে সেশানের মধ্যে লগ-ইন করুন"
+
+#~ msgid "Log In"
+#~ msgstr "লগ-ইন করুন"
+
+#~ msgid "Slot ID"
+#~ msgstr "স্লটের ID"
+
+#~ msgid "The slot the card is in"
+#~ msgstr "কার্ডটি যে স্লটের মধ্যে রয়েছে"
+
+#~ msgid "Slot Series"
+#~ msgstr "স্লটের ক্রমিক"
+
+#~ msgid "per-slot card identifier"
+#~ msgstr "প্রতি-স্লোট কার্ডের সনাক্তচিহ্ন"
+
+#~ msgid "name"
+#~ msgstr "নাম"
+
+#~ msgid "Module"
+#~ msgstr "মডিউল"
+
+#~ msgid "smartcard driver"
+#~ msgstr "স্মার্ট-কার্ড ড্রাইভার"
+
+#~ msgid "Smartcard Authentication"
+#~ msgstr "স্মার্ট-কার্ড অনুমোদন ব্যবস্থা"
+
+#~ msgid "Log into session with smartcard"
+#~ msgstr "স্মার্ট-কার্ড বিনা সেশানের মধ্যে লগ-ইন করুন"
+
+#~ msgid "Module Path"
+#~ msgstr "মডিউলের পাথ"
+
+#~ msgid "path to smartcard PKCS #11 driver"
+#~ msgstr "স্মার্ট-কার্ড PKCS #11 ড্রাইভারের পাথ"
+
+#~ msgid "received error or hang up from event source"
+#~ msgstr "ঘটনার উৎস থেকে ত্রুটি অথবা সংযোগ বিচ্ছিন্ন হওয়ার সংকেত পাওয়া গিয়েছে"
+
+#~ msgid "NSS security system could not be initialized"
+#~ msgstr "NSS নিরাপত্তা ব্যবস্থা আরম্ভ করা যায়নি"
+
+#~ msgid "no suitable smartcard driver could be found"
+#~ msgstr "কোনো প্রযোজ্য স্মার্ট-কার্ড ড্রাইভার পাওয়া যায়নি"
+
+#~ msgid "smartcard driver '%s' could not be loaded"
+#~ msgstr "'%s' স্মার্ট-কার্ড ড্রাইভার লোড করা যায়নি"
+
+#~ msgid "could not watch for incoming card events - %s"
+#~ msgstr "কার্ড সংক্রান্ত আগত ইভেন্টের জন্য লক্ষ্য রাখা হয়নি - %s"
+
+#~ msgid "encountered unexpected error while waiting for smartcard events"
+#~ msgstr "স্মার্ট-কার্ড সংক্রান্ত ইভেন্টের অপেক্ষাকালে অপ্রত্যাশিত সমস্যা দেখা দিয়েছে"
+
+#~ msgid "Authentication"
+#~ msgstr "অনুমোদন"
+
+#~ msgid "Log into session"
+#~ msgstr "সেশানের লগ-ইন করুন"
+
+#~ msgid "Value"
+#~ msgstr "মান"
+
+#~ msgid "percentage of time complete"
+#~ msgstr "সমাপ্ত সময়ের শতাংশ"
+
+#~ msgid "Inactive Text"
+#~ msgstr "নিষ্ক্রিয়তা চিহ্নকারী টেক্সট"
+
+#~ msgid "The text to use in the label if the user hasn't picked an item yet"
+#~ msgstr ""
+#~ "ব্যবহারকারীরা দ্বারা কোনো বস্তু নির্বাচিত না হলে, লেবেলের জন্য ব্যবহারযোগ্য টেক্সট"
+
+#~ msgid "Active Text"
+#~ msgstr "সক্রিয়তা চিহ্নকারী টেক্সট"
+
+#~ msgid "The text to use in the label if the user has picked an item"
+#~ msgstr ""
+#~ "ব্যবহারকারীরা দ্বারা কোনো বস্তু নির্বাচিত হলে, লেবেলের জন্য ব্যবহারযোগ্য টেক্সট"
+
+#~ msgid "List Visible"
+#~ msgstr "দৃশ্যমান তালিকা"
+
+#~ msgid "Whether the chooser list is visible"
+#~ msgstr "নির্বাচনযোগ্য তালিকা প্রদর্শিত হবে কি না"
+
+#~ msgid "%a %b %e, %l:%M:%S %p"
+#~ msgstr "%a %b %e, %l:%M:%S %p"
+
+#~ msgid "%a %b %e, %l:%M %p"
+#~ msgstr "%a %b %e, %l:%M %p"
+
+#~ msgid "%a %l:%M:%S %p"
+#~ msgstr "%a %l:%M:%S %p"
+
+#~ msgid "%a %l:%M %p"
+#~ msgstr "%a %l:%M %p"
+
+#~ msgid "Automatically logging in…"
+#~ msgstr "স্বয়ংক্রিয় লগ-ইন..."
+
+#~ msgid "Cancelling…"
+#~ msgstr "বাতিল করা হচ্ছে..."
+
+#~ msgid "Select language and click Log In"
+#~ msgstr "ভাষা নির্বাচন করে লগ-ইন করুন ক্লিক করুন"
+
+#~ msgctxt "customsession"
+#~ msgid "Custom"
+#~ msgstr "স্বনির্ধারিত"
+
+#~ msgid "Custom session"
+#~ msgstr "স্বনির্ধারিত সেশান"
+
+#~ msgid "Computer Name"
+#~ msgstr "কম্পিউটারের নাম"
+
+#~ msgid "Version"
+#~ msgstr "সংস্করণ"
+
+#~ msgid "Cancel"
+#~ msgstr "বাতিল"
+
+#~ msgid "Unlock"
+#~ msgstr "আন-লক করুন"
+
+#~ msgid "Login"
+#~ msgstr "লগ-ইন করুন"
+
+#~ msgid "Suspend"
+#~ msgstr "স্থগিত করুন"
+
+#~ msgid "Restart"
+#~ msgstr "পুনরায় আরম্ভ করুন"
+
+#~ msgid "Shut Down"
+#~ msgstr "বন্ধ করুন"
+
+#~ msgid "Unknown time remaining"
+#~ msgstr "অবশিষ্ট সময় অজানা"
+
+#~ msgid "Panel"
+#~ msgstr "প্যানেল"
+
+#~ msgid "Label Text"
+#~ msgstr "লেবেলে ব্যবহৃত টেক্সট"
+
+#~ msgid "The text to use as a label"
+#~ msgstr "লেবেলে ব্যবহৃত টেক্সট"
+
+#~ msgid "Icon name"
+#~ msgstr "আইকনের নাম"
+
+#~ msgid "The icon to use with the label"
+#~ msgstr "লেবেলের সাথে ব্যবহারযোগ্য আইকন"
+
+#~ msgid "Default Item"
+#~ msgstr "ডিফল্ট বস্তু"
+
+#~ msgid "The ID of the default item"
+#~ msgstr "ডিফল্ট বস্তুর ID"
+
+#~ msgid "Remote Login (Connecting to %s…)"
+#~ msgstr "দূরবর্তী লগ-ইন (%s-র সাথে সংযোগ স্থাপন করা হচ্ছে...)"
+
+#~ msgid "Remote Login (Connected to %s)"
+#~ msgstr "দূরবর্তী লগ-ইন (%s-র সাথে সংযুক্ত)"
+
+#~ msgid "Remote Login"
+#~ msgstr "দূরবর্তী লগ-ইন"
+
+#~ msgid "Session"
+#~ msgstr "সেশান"
+
+#~ msgid "Duration"
+#~ msgstr "অবকাল"
+
+#~ msgid "Number of seconds until timer stops"
+#~ msgstr "টাইম বন্ধ হওয়ার পূর্বে অতিবাহিত সেকেন্ড সংখ্যা"
+
+#~ msgid "Start time"
+#~ msgstr "আরম্ভের সময়"
+
+#~ msgid "Time the timer was started"
+#~ msgstr "টাইমার আরম্ভের সময়"
+
+#~ msgid "Is it Running?"
+#~ msgstr "চলছে কি?"
+
+#~ msgid "Whether the timer is currently ticking"
+#~ msgstr "টাইমার বর্তমানে গণনা করছে কি না"
+
+#~ msgid "Log in as %s"
+#~ msgstr "%s পরিচয়ে লগ-ইন করুন"
+
+#~ msgctxt "user"
+#~ msgid "Other…"
+#~ msgstr "অন্যান্য..."
+
+#~ msgid "Choose a different account"
+#~ msgstr "ভিন্ন অ্যাকউন্ট নির্বাচন করুন"
+
+#~ msgid "Guest"
+#~ msgstr "অতিথি"
+
+#~ msgid "Log in as a temporary guest"
+#~ msgstr "অস্থায়ী অতিথি অ্যাকাউন্ট সহযোগে লগ-ইন করুন"
+
+#~ msgid "Automatic Login"
+#~ msgstr "স্বয়ংক্রিয় লগ-ইন"
+
+#~ msgid "Automatically log into the system after selecting options"
+#~ msgstr "বিকল্প নির্বাচনের পরে স্বয়ংক্রিয়রূপে সিস্টেমে লগ-ইন করুন"
+
+#~ msgid "Currently logged in"
+#~ msgstr "বর্তমানে লগ-ইন করা হয়েছে"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "নতুন প্রদর্শন শুরু করা যায়নি"
