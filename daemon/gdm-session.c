@@ -1871,6 +1871,7 @@ close_conversation (GdmSessionConversation *conversation)
 
         if (conversation->worker_manager_interface != NULL) {
                 unexport_worker_manager_interface (self, conversation->worker_manager_interface);
+                g_clear_object (&conversation->worker_manager_interface);
         }
 
         if (conversation->worker_proxy != NULL) {
