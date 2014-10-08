@@ -195,12 +195,13 @@ if test x$enable_split_authentication = xyes; then
 fi
 
 AC_ARG_WITH(default-pam-config,
-	    AS_HELP_STRING([--with-default-pam-config: One of redhat, openembedded, exherbo, lfs, none @<:@default=auto@:>@]))
+	    AS_HELP_STRING([--with-default-pam-config: One of redhat, openembedded, exherbo, lfs, arch, none @<:@default=auto@:>@]))
 dnl If not given, try autodetecting from release files (see NetworkManager source) 
 if test x$with_default_pam_config = x; then
 	AC_CHECK_FILE(/etc/redhat-release,with_default_pam_config="redhat")
 	AC_CHECK_FILE(/etc/fedora-release,with_default_pam_config="redhat")
 	AC_CHECK_FILE(/etc/exherbo-release,with_default_pam_config="exherbo")
+	AC_CHECK_FILE(/etc/arch-release,with_default_pam_config="arch")
 	AC_CHECK_FILE(/etc/lfs-release,with_default_pam_config="lfs")
 	dnl If not autodetected, default to none
 	if test x$with_default_pam_config = x; then
@@ -208,7 +209,7 @@ if test x$with_default_pam_config = x; then
 	fi
 fi
 case x$with_default_pam_config in
-     xredhat|xopenembedded|xexherbo|xlfs|xnone) ;;
+     xredhat|xopenembedded|xexherbo|xlfs|xarch|xnone) ;;
      *)
        AC_MSG_ERROR([Invalid --with-default-pam-config ${with_default_pam_config}])
        exit 1
@@ -218,6 +219,7 @@ AM_CONDITIONAL(ENABLE_REDHAT_PAM_CONFIG, test x$with_default_pam_config = xredha
 AM_CONDITIONAL(ENABLE_OPENEMBEDDED_PAM_CONFIG, test x$with_default_pam_config = xopenembedded)
 AM_CONDITIONAL(ENABLE_EXHERBO_PAM_CONFIG, test x$with_default_pam_config = xexherbo)
 AM_CONDITIONAL(ENABLE_LFS_PAM_CONFIG, test x$with_default_pam_config = xlfs)
+AM_CONDITIONAL(ENABLE_ARCH_PAM_CONFIG, test x$with_default_pam_config = xarch)
 
 AC_ARG_ENABLE(console-helper,
 	      AS_HELP_STRING([--enable-console-helper],
