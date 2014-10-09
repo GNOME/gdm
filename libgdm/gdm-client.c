@@ -169,15 +169,17 @@ on_user_verifier_proxy_created (GObject            *source,
 }
 
 static void
-on_reauthentication_channel_connected (GDBusConnection    *connection,
+on_reauthentication_channel_connected (GObject            *source_object,
                                        GAsyncResult       *result,
                                        GSimpleAsyncResult *operation_result)
 {
+        GDBusConnection *connection;
         GCancellable *cancellable;
         GError       *error;
 
         error = NULL;
-        if (!g_dbus_connection_new_for_address_finish (result, &error)) {
+        connection = g_dbus_connection_new_for_address_finish (result, &error);
+        if (!connection) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 g_object_unref (operation_result);
@@ -193,6 +195,7 @@ on_reauthentication_channel_connected (GDBusConnection    *connection,
                                      (GAsyncReadyCallback)
                                      on_user_verifier_proxy_created,
                                      operation_result);
+        g_object_unref (connection);
 }
 
 static void
@@ -311,15 +314,16 @@ gdm_client_open_connection_sync (GdmClient      *client,
 }
 
 static void
-on_connected (GDBusConnection    *connection,
+on_connected (GObject            *source_object,
               GAsyncResult       *result,
               GSimpleAsyncResult *operation_result)
 {
+        GDBusConnection *connection;
         GError *error;
 
         error = NULL;
-        if (!g_dbus_connection_new_for_address_finish (result,
-                                                       &error)) {
+        connection = g_dbus_connection_new_for_address_finish (result, &error);
+        if (!connection) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 g_object_unref (operation_result);
@@ -332,6 +336,7 @@ on_connected (GDBusConnection    *connection,
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
         g_object_unref (operation_result);
+        g_object_unref (connection);
 }
 
 static void
