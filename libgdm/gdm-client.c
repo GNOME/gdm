@@ -105,6 +105,7 @@ on_got_manager (GdmManager          *manager,
 
         g_simple_async_result_complete_in_idle (operation_result);
         g_object_unref (operation_result);
+        g_object_unref (client);
 }
 
 static void
@@ -352,6 +353,7 @@ on_session_opened (GdmManager         *manager,
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 g_object_unref (operation_result);
+                g_object_unref (client);
                 return;
         }
 
@@ -363,6 +365,7 @@ on_session_opened (GdmManager         *manager,
                                            (GAsyncReadyCallback)
                                            on_connected,
                                            operation_result);
+        g_object_unref (client);
 }
 
 static void
