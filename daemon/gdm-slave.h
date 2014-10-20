@@ -83,8 +83,6 @@ gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
 
 gboolean            gdm_slave_connect_to_x11_display (GdmSlave   *slave);
 
-void                gdm_slave_set_initial_cursor_position (GdmSlave *slave);
-
 void                gdm_slave_set_up_greeter_session (GdmSlave  *slave,
                                                       char     **username);
 void                gdm_slave_start_greeter_session  (GdmSlave  *slave);

@@ -408,9 +408,6 @@ plymouth_quit_without_transition (GdmSimpleSlave *slave)
 static void
 setup_server (GdmSimpleSlave *slave)
 {
-        /* Put cursor out of the way on first head */
-        gdm_slave_set_initial_cursor_position (GDM_SLAVE (slave));
-
 #ifdef WITH_PLYMOUTH
         /* Plymouth is waiting for the go-ahead to exit */
         if (slave->priv->plymouth_is_running) {
