@@ -122,27 +122,6 @@ gdm_slave_error_quark (void)
         return ret;
 }
 
-static XRRScreenResources *
-get_screen_resources (Display *dpy)
-{
-        int major = 0, minor = 0;
-
-        if (!XRRQueryVersion(dpy, &major, &minor)) {
-                return NULL;
-        }
-
-        if (major > 1) {
-                return NULL;
-        }
-
-        if (minor >= 3) {
-                return XRRGetScreenResourcesCurrent (dpy,
-                                                     DefaultRootWindow (dpy));
-        }
-
-        return XRRGetScreenResources (dpy, DefaultRootWindow (dpy));
-}
-
 static void
 determine_initial_cursor_position (GdmSlave *slave,
                                    int      *x,
@@ -161,7 +140,8 @@ determine_initial_cursor_position (GdmSlave *slave,
                                  DefaultScreen (slave->priv->server_display));
 
         gdm_error_trap_push ();
-        resources = get_screen_resources (slave->priv->server_display);
+        resources = XRRGetScreenResources (slave->priv->server_display,
+                                           DefaultRootWindow (slave->priv->server_display));
         primary_output = XRRGetOutputPrimary (slave->priv->server_display,
                                               DefaultRootWindow (slave->priv->server_display));
         gdm_error_trap_pop ();
