@@ -2399,18 +2399,6 @@ do_setup (GdmSessionWorker *worker)
                 g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
         }
         worker->priv->pending_invocation = NULL;
-
-        /* These singal handlers should be disconnected after the loading,
-         * so that gdm_session_settings_set_* APIs don't cause the emitting
-         * of Saved*NameRead D-Bus signals any more.
-         */
-        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
-                                              G_CALLBACK (on_saved_session_name_read),
-                                              worker);
-
-        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
-                                              G_CALLBACK (on_saved_language_name_read),
-                                              worker);
 }
 
 static void
@@ -2503,6 +2491,18 @@ on_settings_is_loaded_changed (GdmSessionSettings *user_settings,
         if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
                 return;
         }
+
+        /* These singal handlers should be disconnected after the loading,
+         * so that gdm_session_settings_set_* APIs don't cause the emitting
+         * of Saved*NameRead D-Bus signals any more.
+         */
+        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
+                                              G_CALLBACK (on_saved_session_name_read),
+                                              worker);
+
+        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
+                                              G_CALLBACK (on_saved_language_name_read),
+                                              worker);
 
         if (worker->priv->state == GDM_SESSION_WORKER_STATE_NONE) {
                 g_debug ("GdmSessionWorker: queuing setup for user: %s %s",
@@ -2773,6 +2773,15 @@ gdm_session_worker_handle_setup (GdmDBusWorker         *object,
         worker->priv->display_is_local = display_is_local;
         worker->priv->username = NULL;
 
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::language-name",
+                                  G_CALLBACK (on_saved_language_name_read),
+                                  worker);
+
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::session-name",
+                                  G_CALLBACK (on_saved_session_name_read),
+                                  worker);
         return TRUE;
 }
 
