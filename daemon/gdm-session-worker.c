@@ -2492,7 +2492,7 @@ on_settings_is_loaded_changed (GdmSessionSettings *user_settings,
                 return;
         }
 
-        /* These singal handlers should be disconnected after the loading,
+        /* These signal handlers should be disconnected after the loading,
          * so that gdm_session_settings_set_* APIs don't cause the emitting
          * of Saved*NameRead D-Bus signals any more.
          */
