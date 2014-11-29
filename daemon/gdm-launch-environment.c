@@ -220,8 +220,8 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 "LANG", "LANGUAGE", "LC_CTYPE", "LC_NUMERIC", "LC_TIME",
                 "LC_COLLATE", "LC_MONETARY", "LC_MESSAGES", "LC_PAPER",
                 "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE", "LC_MEASUREMENT",
-                "LC_IDENTIFICATION", "LC_ALL", "WINDOWPATH",
-                NULL
+                "LC_IDENTIFICATION", "LC_ALL", "WINDOWPATH", "XCURSOR_PATH",
+                "XDG_CONFIG_DIRS", NULL
         };
         char *system_data_dirs;
         int i;
