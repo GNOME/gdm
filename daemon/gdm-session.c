@@ -162,6 +162,7 @@ enum {
         LAST_SIGNAL
 };
 
+static gboolean gdm_session_is_wayland_session (GdmSession *self);
 static guint signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
@@ -2454,6 +2455,24 @@ send_display_mode (GdmSession *self,
                                                        NULL, NULL, NULL);
 }
 
+static void
+send_session_type (GdmSession *self,
+                   GdmSessionConversation *conversation)
+{
+        const char *session_type = "x11";
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        if (gdm_session_is_wayland_session (self)) {
+                session_type = "wayland";
+        }
+#endif
+
+        gdm_dbus_worker_call_set_environment_variable (conversation->worker_proxy,
+                                                       "XDG_SESSION_TYPE",
+                                                       session_type,
+                                                       NULL, NULL, NULL);
+}
+
 void
 gdm_session_open_session (GdmSession *self,
                           const char *service_name)
@@ -2466,6 +2485,7 @@ gdm_session_open_session (GdmSession *self,
 
         if (conversation != NULL) {
                 send_display_mode (self, conversation);
+                send_session_type (self, conversation);
 
                 gdm_dbus_worker_call_open (conversation->worker_proxy,
                                            NULL,
