@@ -162,7 +162,6 @@ enum {
         LAST_SIGNAL
 };
 
-static gboolean gdm_session_is_wayland_session (GdmSession *self);
 static guint signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
@@ -2396,7 +2395,6 @@ static void
 set_up_session_environment (GdmSession *self)
 {
         GdmSessionDisplayMode display_mode;
-        const char *session_type = "x11";
         gchar *desktop_names;
         const char *locale;
 
@@ -2440,16 +2438,6 @@ set_up_session_environment (GdmSession *self)
                                                               self->priv->user_x11_authority_file);
                 }
         }
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-        if (gdm_session_is_wayland_session (self)) {
-                session_type = "wayland";
-        }
-#endif
-
-        gdm_session_set_environment_variable (self,
-                                              "XDG_SESSION_TYPE",
-                                              session_type);
 
         if (g_getenv ("WINDOWPATH") != NULL) {
                 gdm_session_set_environment_variable (self,
