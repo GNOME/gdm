@@ -338,8 +338,6 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         service_name = conversation->service_name;
 
         if (worked) {
-                GdmSessionDisplayMode mode;
-
                 switch (self->priv->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
                         if (self->priv->user_verifier_interface != NULL) {
@@ -351,10 +349,6 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
 
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
                 case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
-                        mode = gdm_session_get_display_mode (self);
-                        gdm_dbus_worker_call_set_session_display_mode (conversation->worker_proxy,
-                                                                       gdm_session_display_mode_to_string (mode),
-                                                                       NULL, NULL, NULL);
                         gdm_session_open_session (self, service_name);
                         break;
                 default:
@@ -2448,6 +2442,18 @@ set_up_session_environment (GdmSession *self)
         g_free (desktop_names);
 }
 
+static void
+send_display_mode (GdmSession *self,
+                   GdmSessionConversation *conversation)
+{
+        GdmSessionDisplayMode mode;
+
+        mode = gdm_session_get_display_mode (self);
+        gdm_dbus_worker_call_set_session_display_mode (conversation->worker_proxy,
+                                                       gdm_session_display_mode_to_string (mode),
+                                                       NULL, NULL, NULL);
+}
+
 void
 gdm_session_open_session (GdmSession *self,
                           const char *service_name)
@@ -2459,6 +2465,8 @@ gdm_session_open_session (GdmSession *self,
         conversation = find_conversation_by_name (self, service_name);
 
         if (conversation != NULL) {
+                send_display_mode (self, conversation);
+
                 gdm_dbus_worker_call_open (conversation->worker_proxy,
                                            NULL,
                                            (GAsyncReadyCallback) on_opened, conversation);
