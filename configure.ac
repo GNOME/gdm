@@ -972,7 +972,7 @@ PKG_CHECK_MODULES(PLYMOUTH,
 
 if test "x$with_plymouth" = "xauto" ; then
         if test x$have_plymouth = xno ; then
-                use_plymouth=$use_systemd
+                use_plymouth=no
         else
                 use_plymouth=yes
         fi
@@ -982,7 +982,7 @@ fi
 
 if test "x$use_plymouth" != "xno" ; then
         if test "x$have_plymouth" = "xno"; then
-                AC_MSG_ERROR([Plymouth support required, but plymouth not found])
+                AC_MSG_ERROR([Plymouth support explicitly required, but plymouth not found])
         fi
 
         AC_DEFINE(WITH_PLYMOUTH, 1, [Define to enable plymouth support])
