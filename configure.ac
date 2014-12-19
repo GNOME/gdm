@@ -980,15 +980,18 @@ else
         use_plymouth="$with_plymouth"
 fi
 
+PLYMOUTH_QUIT_SERVICE=""
 if test "x$use_plymouth" != "xno" ; then
         if test "x$have_plymouth" = "xno"; then
                 AC_MSG_ERROR([Plymouth support explicitly required, but plymouth not found])
         fi
 
         AC_DEFINE(WITH_PLYMOUTH, 1, [Define to enable plymouth support])
+        PLYMOUTH_QUIT_SERVICE="plymouth-quit.service"
 fi
 AC_SUBST(PLYMOUTH_CFLAGS)
 AC_SUBST(PLYMOUTH_LIBS)
+AC_SUBST(PLYMOUTH_QUIT_SERVICE)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for D-Bus

@@ -1,7 +1,7 @@
 [Unit]
 Description=GNOME Display Manager
-Conflicts=getty@tty@GDM_INITIAL_VT@.service plymouth-quit.service
-After=systemd-user-sessions.service getty@tty@GDM_INITIAL_VT@.service plymouth-quit.service
+Conflicts=getty@tty@GDM_INITIAL_VT@.service @PLYMOUTH_QUIT_SERVICE@
+After=systemd-user-sessions.service getty@tty@GDM_INITIAL_VT@.service @PLYMOUTH_QUIT_SERVICE@
 
 [Service]
 ExecStart=@sbindir@/gdm

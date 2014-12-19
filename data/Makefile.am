@@ -197,6 +197,8 @@ gdm.service: $(srcdir)/gdm.service.in
 	$(AM_V_GEN)sed \
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		-e 's,[@]GDM_INITIAL_VT[@],$(GDM_INITIAL_VT),g' \
+		-e 's,[@]PLYMOUTH_QUIT_SERVICE[@],$(PLYMOUTH_QUIT_SERVICE),g' \
+		-e 's, *$$,,g' \
 		< $< > $@
 systemdsystemunit += gdm.service
 CLEANFILES += gdm.service
