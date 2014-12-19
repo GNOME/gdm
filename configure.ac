@@ -263,8 +263,8 @@ AC_ARG_ENABLE(wayland-support,
 
 AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
-                           [Add plymouth support @<:@default=auto@:>@]),
-            [with_plymouth=$withval], [with_plymouth=auto])
+                           [Add plymouth support @<:@default=yes@:>@]),,
+                           [with_plymouth=yes])
 
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],
