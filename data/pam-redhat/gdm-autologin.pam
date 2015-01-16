@@ -1,6 +1,7 @@
  #%PAM-1.0
 auth       required    pam_env.so
 auth       required    pam_permit.so
+auth       include     postlogin
 account    required    pam_nologin.so
 account    include     system-auth
 password   include     system-auth
@@ -12,3 +13,4 @@ session    required    pam_selinux.so open
 session    optional    pam_keyinit.so force revoke
 session    required    pam_namespace.so
 session    include     system-auth
+session    include     postlogin

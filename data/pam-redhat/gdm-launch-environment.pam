@@ -1,7 +1,9 @@
 #%PAM-1.0
 auth       required    pam_env.so
 auth       required    pam_permit.so
+auth       include     postlogin
 account    include     system-auth
 password   include     system-auth
 session    optional    pam_keyinit.so force revoke
 session    include     system-auth
+session    include     postlogin
