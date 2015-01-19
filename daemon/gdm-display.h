@@ -56,18 +56,7 @@ typedef struct
         GObjectClass   parent_class;
 
         /* methods */
-        gboolean (*create_authority)          (GdmDisplay *display);
-        gboolean (*add_user_authorization)    (GdmDisplay *display,
-                                               const char *username,
-                                               char      **filename,
-                                               GError    **error);
-        gboolean (*remove_user_authorization) (GdmDisplay *display,
-                                               const char *username,
-                                               GError    **error);
         gboolean (*prepare)                   (GdmDisplay *display);
-        gboolean (*manage)                    (GdmDisplay *display);
-        gboolean (*finish)                    (GdmDisplay *display);
-        gboolean (*unmanage)                  (GdmDisplay *display);
         void     (*get_timed_login_details)   (GdmDisplay *display,
                                                gboolean   *enabled,
                                                char      **username,
