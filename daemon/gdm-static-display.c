@@ -54,43 +54,6 @@ static void     gdm_static_display_init         (GdmStaticDisplay      *static_d
 G_DEFINE_TYPE (GdmStaticDisplay, gdm_static_display, GDM_TYPE_DISPLAY)
 
 static gboolean
-gdm_static_display_create_authority (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->create_authority (display);
-
-        return TRUE;
-}
-
-static gboolean
-gdm_static_display_add_user_authorization (GdmDisplay *display,
-                                           const char *username,
-                                           char      **filename,
-                                           GError    **error)
-{
-        return GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->add_user_authorization (display, username, filename, error);
-}
-
-static gboolean
-gdm_static_display_remove_user_authorization (GdmDisplay *display,
-                                              const char *username,
-                                              GError    **error)
-{
-        return GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->remove_user_authorization (display, username, error);
-}
-
-static gboolean
-gdm_static_display_manage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->manage (display);
-
-        return TRUE;
-}
-
-static gboolean
 gdm_static_display_finish (GdmDisplay *display)
 {
         int status;
@@ -107,16 +70,6 @@ gdm_static_display_finish (GdmDisplay *display)
         if (status != GDM_DISPLAY_FAILED) {
                 gdm_display_manage (display);
         }
-
-        return TRUE;
-}
-
-static gboolean
-gdm_static_display_unmanage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->unmanage (display);
 
         return TRUE;
 }
@@ -159,12 +112,7 @@ gdm_static_display_class_init (GdmStaticDisplayClass *klass)
         object_class->constructor = gdm_static_display_constructor;
         object_class->finalize = gdm_static_display_finalize;
 
-        display_class->create_authority = gdm_static_display_create_authority;
-        display_class->add_user_authorization = gdm_static_display_add_user_authorization;
-        display_class->remove_user_authorization = gdm_static_display_remove_user_authorization;
-        display_class->manage = gdm_static_display_manage;
         display_class->finish = gdm_static_display_finish;
-        display_class->unmanage = gdm_static_display_unmanage;
 
         g_type_class_add_private (klass, sizeof (GdmStaticDisplayPrivate));
 }
