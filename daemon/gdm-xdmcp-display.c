@@ -198,3 +198,26 @@ gdm_xdmcp_display_init (GdmXdmcpDisplay *xdmcp_display)
 
         xdmcp_display->priv = GDM_XDMCP_DISPLAY_GET_PRIVATE (xdmcp_display);
 }
+
+GdmDisplay *
+gdm_xdmcp_display_new (const char *hostname,
+                       int         number,
+                       GdmAddress *address,
+                       gint32      session_number)
+{
+        GObject *object;
+        char    *x11_display;
+
+        x11_display = g_strdup_printf ("%s:%d", hostname, number);
+        object = g_object_new (GDM_TYPE_XDMCP_DISPLAY,
+                               "remote-hostname", hostname,
+                               "x11-display-number", number,
+                               "x11-display-name", x11_display,
+                               "is-local", FALSE,
+                               "remote-address", address,
+                               "session-number", session_number,
+                               NULL);
+        g_free (x11_display);
+
+        return GDM_DISPLAY (object);
+}
