@@ -54,63 +54,6 @@ static void     gdm_transient_display_init         (GdmTransientDisplay      *di
 
 G_DEFINE_TYPE (GdmTransientDisplay, gdm_transient_display, GDM_TYPE_DISPLAY)
 
-static gboolean
-gdm_transient_display_create_authority (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->create_authority (display);
-
-        return TRUE;
-}
-
-static gboolean
-gdm_transient_display_add_user_authorization (GdmDisplay *display,
-                                              const char *username,
-                                              char      **filename,
-                                              GError    **error)
-{
-        return GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->add_user_authorization (display, username, filename, error);
-}
-
-static gboolean
-gdm_transient_display_remove_user_authorization (GdmDisplay *display,
-                                                 const char *username,
-                                                 GError    **error)
-{
-        return GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->remove_user_authorization (display, username, error);
-}
-
-static gboolean
-gdm_transient_display_manage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->manage (display);
-
-        return TRUE;
-}
-
-static gboolean
-gdm_transient_display_finish (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->finish (display);
-
-        return TRUE;
-}
-
-static gboolean
-gdm_transient_display_unmanage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_transient_display_parent_class)->unmanage (display);
-
-        return TRUE;
-}
-
 static void
 gdm_transient_display_get_timed_login_details (GdmDisplay *display,
                                                gboolean   *enabledp,
@@ -160,12 +103,6 @@ gdm_transient_display_class_init (GdmTransientDisplayClass *klass)
         object_class->constructor = gdm_transient_display_constructor;
         object_class->finalize = gdm_transient_display_finalize;
 
-        display_class->create_authority = gdm_transient_display_create_authority;
-        display_class->add_user_authorization = gdm_transient_display_add_user_authorization;
-        display_class->remove_user_authorization = gdm_transient_display_remove_user_authorization;
-        display_class->manage = gdm_transient_display_manage;
-        display_class->finish = gdm_transient_display_finish;
-        display_class->unmanage = gdm_transient_display_unmanage;
         display_class->get_timed_login_details = gdm_transient_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmTransientDisplayPrivate));
