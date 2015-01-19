@@ -57,6 +57,10 @@ GType                     gdm_xdmcp_display_get_type                 (void);
 gint32                    gdm_xdmcp_display_get_session_number       (GdmXdmcpDisplay         *display);
 GdmAddress              * gdm_xdmcp_display_get_remote_address       (GdmXdmcpDisplay         *display);
 
+GdmDisplay              * gdm_xdmcp_display_new                      (const char              *hostname,
+                                                                      int                      number,
+                                                                      GdmAddress              *address,
+                                                                      gint32                   session_number);
 
 G_END_DECLS
 

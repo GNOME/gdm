@@ -53,7 +53,6 @@
 #include <X11/Xdmcp.h>
 
 #include "gdm-common.h"
-#include "gdm-xdmcp-greeter-display.h"
 #include "gdm-xdmcp-chooser-display.h"
 #include "gdm-display-factory.h"
 #include "gdm-xdmcp-display-factory.h"
@@ -2111,10 +2110,10 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                                                          get_next_session_serial (factory));
                 g_signal_connect (display, "hostname-selected", G_CALLBACK (on_hostname_selected), factory);
         } else {
-                display = gdm_xdmcp_greeter_display_new (hostname,
-                                                         displaynum,
-                                                         address,
-                                                         get_next_session_serial (factory));
+                display = gdm_xdmcp_display_new (hostname,
+                                                 displaynum,
+                                                 address,
+                                                 get_next_session_serial (factory));
         }
 
         if (display == NULL) {
