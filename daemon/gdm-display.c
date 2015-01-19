@@ -154,8 +154,8 @@ _create_access_file_for_user (GdmDisplay  *display,
         return access_file;
 }
 
-static gboolean
-gdm_display_real_create_authority (GdmDisplay *display)
+gboolean
+gdm_display_create_authority (GdmDisplay *display)
 {
         GdmDisplayAccessFile *access_file;
         GError               *error;
@@ -196,28 +196,18 @@ gdm_display_real_create_authority (GdmDisplay *display)
 }
 
 gboolean
-gdm_display_create_authority (GdmDisplay *display)
-{
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->create_authority (display);
-        g_object_unref (display);
-
-        return ret;
-}
-
-static gboolean
-gdm_display_real_add_user_authorization (GdmDisplay *display,
-                                         const char *username,
-                                         char      **filename,
-                                         GError    **error)
+gdm_display_add_user_authorization (GdmDisplay *display,
+                                    const char *username,
+                                    char      **filename,
+                                    GError    **error)
 {
         GdmDisplayAccessFile *access_file;
         GError               *access_file_error;
         gboolean              res;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        g_debug ("GdmDisplay: Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
@@ -262,25 +252,6 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
         g_debug ("GdmDisplay: Added user authorization for %s: %s", username, *filename);
 
         return TRUE;
-}
-
-gboolean
-gdm_display_add_user_authorization (GdmDisplay *display,
-                                    const char *username,
-                                    char      **filename,
-                                    GError    **error)
-{
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_debug ("GdmDisplay: Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
-
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->add_user_authorization (display, username, filename, error);
-        g_object_unref (display);
-
-        return ret;
 }
 
 static void
@@ -396,32 +367,18 @@ gdm_display_get_timed_login_details (GdmDisplay *display,
         return TRUE;
 }
 
-static gboolean
-gdm_display_real_remove_user_authorization (GdmDisplay *display,
-                                            const char *username,
-                                            GError    **error)
-{
-        gdm_display_access_file_close (display->priv->user_access_file);
-
-        return TRUE;
-}
-
 gboolean
 gdm_display_remove_user_authorization (GdmDisplay *display,
                                        const char *username,
                                        GError    **error)
 {
-        gboolean ret;
-
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         g_debug ("GdmDisplay: Removing authorization for user:%s on display %s", username, display->priv->x11_display_name);
 
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->remove_user_authorization (display, username, error);
-        g_object_unref (display);
+        gdm_display_access_file_close (display->priv->user_access_file);
 
-        return ret;
+        return TRUE;
 }
 
 gboolean
@@ -607,14 +564,14 @@ gdm_display_prepare (GdmDisplay *display)
         return ret;
 }
 
-static gboolean
-gdm_display_real_manage (GdmDisplay *display)
+gboolean
+gdm_display_manage (GdmDisplay *display)
 {
         gboolean res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("GdmDisplay: manage display");
+        g_debug ("GdmDisplay: Managing display: %s", display->priv->id);
 
         /* If not explicitly prepared, do it now */
         if (display->priv->status == GDM_DISPLAY_UNMANAGED) {
@@ -631,23 +588,7 @@ gdm_display_real_manage (GdmDisplay *display)
 }
 
 gboolean
-gdm_display_manage (GdmDisplay *display)
-{
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_debug ("GdmDisplay: Managing display: %s", display->priv->id);
-
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
-        g_object_unref (display);
-
-        return ret;
-}
-
-static gboolean
-gdm_display_real_finish (GdmDisplay *display)
+gdm_display_finish (GdmDisplay *display)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
@@ -659,23 +600,7 @@ gdm_display_real_finish (GdmDisplay *display)
 }
 
 gboolean
-gdm_display_finish (GdmDisplay *display)
-{
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_debug ("GdmDisplay: Finishing display: %s", display->priv->id);
-
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->finish (display);
-        g_object_unref (display);
-
-        return ret;
-}
-
-static gboolean
-gdm_display_real_unmanage (GdmDisplay *display)
+gdm_display_unmanage (GdmDisplay *display)
 {
         gdouble elapsed;
 
@@ -716,22 +641,6 @@ gdm_display_real_unmanage (GdmDisplay *display)
         }
 
         return TRUE;
-}
-
-gboolean
-gdm_display_unmanage (GdmDisplay *display)
-{
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_debug ("GdmDisplay: Unmanaging display");
-
-        g_object_ref (display);
-        ret = GDM_DISPLAY_GET_CLASS (display)->unmanage (display);
-        g_object_unref (display);
-
-        return ret;
 }
 
 gboolean
@@ -1270,14 +1179,8 @@ gdm_display_class_init (GdmDisplayClass *klass)
         object_class->dispose = gdm_display_dispose;
         object_class->finalize = gdm_display_finalize;
 
-        klass->create_authority = gdm_display_real_create_authority;
-        klass->add_user_authorization = gdm_display_real_add_user_authorization;
-        klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
         klass->get_timed_login_details = gdm_display_real_get_timed_login_details;
         klass->prepare = gdm_display_real_prepare;
-        klass->manage = gdm_display_real_manage;
-        klass->finish = gdm_display_real_finish;
-        klass->unmanage = gdm_display_real_unmanage;
 
         g_object_class_install_property (object_class,
                                          PROP_ID,
