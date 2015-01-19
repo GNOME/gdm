@@ -112,6 +112,7 @@ test_session_client_LDADD =	\
 libexec_PROGRAMS = 			\
 	gdm-session-worker		\
 	gdm-wayland-session		\
+	gdm-x-session			\
 	$(NULL)
 
 gdm_session_worker_SOURCES = 			\
@@ -153,6 +154,20 @@ gdm_wayland_session_SOURCES =	\
 	gdm-manager-glue.h	\
 	gdm-manager-glue.c	\
 	gdm-wayland-session.c	\
+	$(NULL)
+
+gdm_x_session_LDADD =		\
+	$(top_builddir)/common/libgdmcommon.la	\
+	$(GTK_LIBS)		\
+	$(COMMON_LIBS)		\
+	$(SYSTEMD_LIBS)         \
+	$(XLIB_LIBS)		\
+	$(NULL)
+
+gdm_x_session_SOURCES =	\
+	gdm-manager-glue.h	\
+	gdm-manager-glue.c	\
+	gdm-x-session.c	\
 	$(NULL)
 
 if HAVE_LIBAUDIT

@@ -7,6 +7,8 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/common				\
 	-I$(top_builddir)/common			\
+	-DDATADIR=\"$(datadir)\"			\
+	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\" 		\
 	-DGDM_SCREENSHOT_DIR=\""$(GDM_SCREENSHOT_DIR)"\"\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
@@ -29,9 +31,6 @@ bin_PROGRAMS = \
 	gdm-screenshot		\
 	$(NULL)
 
-gdmflexiserver_SOURCES =	\
-	gdmflexiserver.c	\
-	$(NULL)
 gdmflexiserver_LDADD =		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(GTK_LIBS)		\
