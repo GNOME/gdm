@@ -238,8 +238,6 @@ XDMCP_SOURCES =				\
 	gdm-xdmcp-display-factory.h	\
 	gdm-xdmcp-display.c		\
 	gdm-xdmcp-display.h		\
-	gdm-xdmcp-greeter-display.c	\
-	gdm-xdmcp-greeter-display.h	\
 	gdm-xdmcp-chooser-display.c	\
 	gdm-xdmcp-chooser-display.h	\
 	gdm-xdmcp-chooser-slave.c	\
