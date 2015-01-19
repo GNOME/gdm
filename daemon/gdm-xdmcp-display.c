@@ -61,7 +61,6 @@ enum {
 
 static void     gdm_xdmcp_display_class_init    (GdmXdmcpDisplayClass *klass);
 static void     gdm_xdmcp_display_init          (GdmXdmcpDisplay      *xdmcp_display);
-static void     gdm_xdmcp_display_finalize      (GObject              *object);
 
 G_DEFINE_ABSTRACT_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM_TYPE_DISPLAY)
 
@@ -79,50 +78,6 @@ gdm_xdmcp_display_get_remote_address (GdmXdmcpDisplay *display)
         g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), NULL);
 
         return display->priv->remote_address;
-}
-
-static gboolean
-gdm_xdmcp_display_create_authority (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->create_authority (display);
-}
-
-static gboolean
-gdm_xdmcp_display_add_user_authorization (GdmDisplay *display,
-                                          const char *username,
-                                          char      **filename,
-                                          GError    **error)
-{
-        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->add_user_authorization (display, username, filename, error);
-}
-
-static gboolean
-gdm_xdmcp_display_remove_user_authorization (GdmDisplay *display,
-                                             const char *username,
-                                             GError    **error)
-{
-        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->remove_user_authorization (display, username, error);
-}
-
-static gboolean
-gdm_xdmcp_display_manage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->manage (display);
-
-        return TRUE;
-}
-
-static gboolean
-gdm_xdmcp_display_unmanage (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->unmanage (display);
-        return TRUE;
 }
 
 static void
@@ -212,13 +167,7 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 
         object_class->get_property = gdm_xdmcp_display_get_property;
         object_class->set_property = gdm_xdmcp_display_set_property;
-        object_class->finalize = gdm_xdmcp_display_finalize;
 
-        display_class->create_authority = gdm_xdmcp_display_create_authority;
-        display_class->add_user_authorization = gdm_xdmcp_display_add_user_authorization;
-        display_class->remove_user_authorization = gdm_xdmcp_display_remove_user_authorization;
-        display_class->manage = gdm_xdmcp_display_manage;
-        display_class->unmanage = gdm_xdmcp_display_unmanage;
         display_class->get_timed_login_details = gdm_xdmcp_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
@@ -248,19 +197,4 @@ gdm_xdmcp_display_init (GdmXdmcpDisplay *xdmcp_display)
 {
 
         xdmcp_display->priv = GDM_XDMCP_DISPLAY_GET_PRIVATE (xdmcp_display);
-}
-
-static void
-gdm_xdmcp_display_finalize (GObject *object)
-{
-        GdmXdmcpDisplay *xdmcp_display;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_XDMCP_DISPLAY (object));
-
-        xdmcp_display = GDM_XDMCP_DISPLAY (object);
-
-        g_return_if_fail (xdmcp_display->priv != NULL);
-
-        G_OBJECT_CLASS (gdm_xdmcp_display_parent_class)->finalize (object);
 }
