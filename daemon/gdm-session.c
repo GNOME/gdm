@@ -54,6 +54,9 @@
 #include "gdm-session-worker-glue.h"
 #include "gdm-common.h"
 
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
+
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
 #define GDM_SESSION_DBUS_OBJECT_PATH "/org/gnome/DisplayManager/Session"
 
@@ -2560,12 +2563,43 @@ gdm_session_start_session (GdmSession *self,
         stop_all_other_conversations (self, conversation, FALSE);
 
         if (self->priv->selected_program == NULL) {
+                GdmSessionDisplayMode display_mode;
+                gboolean              is_x11 = TRUE;
+                gboolean              run_launcher = FALSE;
+                gboolean              allow_remote_connections = FALSE;
+                gboolean              run_xsession_script;
+
                 command = get_session_command (self);
 
-                if (gdm_session_bypasses_xsession (self)) {
-                        program = g_strdup (command);
+                display_mode = gdm_session_get_display_mode (self);
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+                is_x11 = !gdm_session_is_wayland_session (self);
+#endif
+
+                if (is_x11 && display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED) {
+                        run_launcher = TRUE;
+                }
+
+                run_xsession_script = !gdm_session_bypasses_xsession (self);
+
+                if (self->priv->display_is_local) {
+                        gboolean disallow_tcp = TRUE;
+                        gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disallow_tcp);
+                        allow_remote_connections = !disallow_tcp;
                 } else {
+                        allow_remote_connections = TRUE;
+                }
+
+                if (run_launcher) {
+                        program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s %s\"%s\"",
+                                                   run_xsession_script? "--run-script " : "",
+                                                   allow_remote_connections? "--allow-remote-connections " : "",
+                                                   command);
+                } else if (run_xsession_script) {
                         program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+                } else {
+                        program = g_strdup (command);
                 }
 
                 g_free (command);
