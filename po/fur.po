@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-08-13 17:02+0000\n"
-"PO-Revision-Date: 2014-08-14 04:43+0100\n"
+"POT-Creation-Date: 2015-01-20 17:53+0000\n"
+"PO-Revision-Date: 2015-01-20 23:19+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: FRIULIAN <massimo.furlani@libero.it>\n"
 "Language: fur_IT\n"
@@ -30,10 +30,10 @@ msgid "Could not identify the current session."
 msgstr "Impussibil identificâ la session atuâl."
 
 #: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, fuzzy, c-format
+#, c-format
 #| msgid "unable to log session"
 msgid "User unable to switch sessions."
-msgstr "Impussibil cambiâ session."
+msgstr "Utent no abilitât a cambiâ session."
 
 #: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
 #, c-format
@@ -60,10 +60,9 @@ msgid "could not find user \"%s\" on system"
 msgstr "Impussibil cjatâ l'utent \"%s\" tal sisteme"
 
 #: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
-#, fuzzy
 #| msgid "no user account available"
 msgid "No session available"
-msgstr "nol è pussibil doprâ nissun account user"
+msgstr "Nissune session disponibil"
 
 #: ../daemon/gdm-manager.c:953
 #, c-format
@@ -140,7 +139,7 @@ msgstr "Dispositîf Visôr"
 msgid "The display device"
 msgstr "Il dispositîf dal visôr"
 
-#: ../daemon/gdm-session.c:1187
+#: ../daemon/gdm-session.c:1212
 msgid "Could not create authentication helper process"
 msgstr "Impussibil creâ il procès di jutori par l'autenticazion"
 
@@ -166,12 +165,11 @@ msgid "no user account available"
 msgstr "Nissun account utent disponibil"
 
 #: ../daemon/gdm-session-worker.c:1524
-#, fuzzy
 #| msgid "Unable to authorize user"
 msgid "Unable to change to user"
-msgstr "Impussibil autorizâ l'utent"
+msgstr "Impussibil cambiâ utent"
 
-#: ../daemon/gdm-simple-slave.c:871
+#: ../daemon/gdm-simple-slave.c:868
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -197,6 +195,7 @@ msgstr "No puès scrivi il file PID %s: forsit al è finît il spazi su disc: %s
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr ""
+"Falît tal creâ le cartele simboliche %s che a indiche l'inviament ugnul: %s"
 
 #: ../daemon/main.c:194
 #, c-format
@@ -245,13 +244,8 @@ msgstr "Dome root al puès inviâ GDM"
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
 #: ../daemon/session-worker-main.c:95
-#, fuzzy
 msgid "GNOME Display Manager Session Worker"
-msgstr "Cjamadôr di session dal Gjestôr di visôr di GNOME"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Barcon di acès"
+msgstr "Lavoradôr di session dal Gjestôr di visôr di GNOME"
 
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
@@ -286,10 +280,9 @@ msgstr ""
 "doprale par eseguî l'acès."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#, fuzzy
 #| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
-msgstr "Specifiche se permeti o no l'acès cun i letôrs di smartcard"
+msgstr "Specifiche se permeti o no lis password par l'acès"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
@@ -408,7 +401,7 @@ msgstr "Nome il comant VERSION al è supuartât"
 
 #: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
-msgstr ""
+msgstr "COMANT"
 
 #: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
 #: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
@@ -417,7 +410,7 @@ msgstr "Ignorât — tignût par compatibilitât"
 
 #: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
-msgstr ""
+msgstr "Abilite l'output di debug"
 
 #: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
@@ -436,6 +429,9 @@ msgstr "Screenshot fat"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fâs une figure dal visôr"
+
+#~ msgid "Login Window"
+#~ msgstr "Barcon di acès"
 
 #~| msgid "no user account available"
 #~ msgid "No session available yet"
