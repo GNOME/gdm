@@ -124,6 +124,8 @@ struct _GdmSessionPrivate
         GDBusServer         *worker_server;
         GDBusServer         *outside_server;
         GHashTable          *environment;
+
+        gboolean             is_program_session : 1;
 };
 
 enum {
@@ -2194,6 +2196,7 @@ gdm_session_setup_for_user (GdmSession *self,
 
         gdm_session_select_user (self, username);
 
+        self->priv->is_program_session = FALSE;
         send_setup_for_user (self, service_name);
         gdm_session_defaults_changed (self);
 }
@@ -2207,6 +2210,7 @@ gdm_session_setup_for_program (GdmSession *self,
 
         g_return_if_fail (GDM_IS_SESSION (self));
 
+        self->priv->is_program_session = TRUE;
         send_setup_for_program (self, service_name, username, log_file);
 }
 
@@ -2915,6 +2919,14 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         }
 #endif
+
+        /* The X session used for the login screen uses the
+         * X server started up by the slave, so it should be
+         * reuse VT
+         */
+        if (self->priv->is_program_session) {
+                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        }
 
         /* X sessions are for now ran in classic mode where
          * we reuse the existing greeter. */
