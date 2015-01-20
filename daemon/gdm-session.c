@@ -2895,6 +2895,13 @@ gdm_session_get_display_mode (GdmSession *self)
         }
 #endif
 
+        /* Non-seat0 sessions share their X server with their login screen
+         * for now.
+         */
+        if (g_strcmp0 (self->priv->display_seat_id, "seat0") != 0) {
+                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        }
+
         /* The X session used for the login screen uses the
          * X server started up by the slave, so it should be
          * reuse VT
@@ -2903,9 +2910,10 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
         }
 
-        /* X sessions are for now ran in classic mode where
-         * we reuse the existing greeter. */
-        return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        /* user based X sessions start on a new VT now and are managed
+         * by logind
+         */
+        return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
 }
 
 void
