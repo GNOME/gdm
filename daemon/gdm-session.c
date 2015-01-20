@@ -164,7 +164,9 @@ enum {
         LAST_SIGNAL
 };
 
+#ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
+#endif
 static guint signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
