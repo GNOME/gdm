@@ -1188,14 +1188,6 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         connection = g_dbus_method_invocation_get_connection (invocation);
         get_display_and_details_for_bus_sender (self, connection, sender, &display, &seat_id, &session_id, &pid, &uid, &is_login_screen, &is_remote);
 
-        if (is_login_screen) {
-                g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_ACCESS_DENIED,
-                                                               "Login screen not allow to open reauthentication channel");
-                return TRUE;
-        }
-
         if (session_id == NULL || pid == 0 || uid == (uid_t) -1) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
@@ -1205,13 +1197,26 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                 return TRUE;
         }
 
-        session = get_seed_session_for_display (display);
+        if (is_login_screen) {
+                session = find_session_for_user_on_seat (self,
+                                                         username,
+                                                         seat_id,
+                                                         NULL);
+        } else {
+                session = get_seed_session_for_display (display);
+        }
 
         if (session != NULL && gdm_session_is_running (session)) {
                 gdm_session_start_reauthentication (session, pid, uid);
                 g_hash_table_insert (self->priv->open_reauthentication_requests,
                                      GINT_TO_POINTER (pid),
                                      invocation);
+        } else if (is_login_screen) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Login screen only allowed to open reauthentication channels for running sessions");
+                return TRUE;
         } else {
                 char *address;
                 address = open_temporary_reauthentication_channel (self,
