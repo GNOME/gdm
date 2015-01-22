@@ -134,7 +134,7 @@ const char       *gdm_session_get_session_id              (GdmSession     *sessi
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
 GdmSessionDisplayMode gdm_session_get_display_mode  (GdmSession     *session);
 
-void              gdm_session_start_conversation          (GdmSession *session,
+gboolean          gdm_session_start_conversation          (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_stop_conversation           (GdmSession *session,
                                                            const char *service_name);

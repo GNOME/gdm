@@ -1199,11 +1199,14 @@ begin_verification_conversation (GdmSession            *self,
                                  GDBusMethodInvocation *invocation,
                                  const char            *service_name)
 {
-        GdmSessionConversation *conversation;
+        GdmSessionConversation *conversation = NULL;
+        gboolean conversation_started;
 
-        gdm_session_start_conversation (self, service_name);
+        conversation_started = gdm_session_start_conversation (self, service_name);
 
-        conversation = find_conversation_by_name (self, service_name);
+        if (conversation_started) {
+                conversation = find_conversation_by_name (self, service_name);
+        }
 
         if (conversation == NULL) {
                 g_dbus_method_invocation_return_error (invocation,
@@ -1893,13 +1896,13 @@ stop_conversation_now (GdmSessionConversation *conversation)
         g_clear_object (&conversation->job);
 }
 
-void
+gboolean
 gdm_session_start_conversation (GdmSession *self,
                                 const char *service_name)
 {
         GdmSessionConversation *conversation;
 
-        g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         conversation = g_hash_table_lookup (self->priv->conversations,
                                             service_name);
@@ -1907,7 +1910,7 @@ gdm_session_start_conversation (GdmSession *self,
         if (conversation != NULL) {
                 if (!conversation->is_stopping) {
                         g_warning ("GdmSession: conversation %s started more than once", service_name);
-                        return;
+                        return FALSE;
                 }
                 g_debug ("GdmSession: stopping old conversation %s", service_name);
                 gdm_session_worker_job_stop_now (conversation->job);
@@ -1921,6 +1924,7 @@ gdm_session_start_conversation (GdmSession *self,
 
         g_hash_table_insert (self->priv->conversations,
                              g_strdup (service_name), conversation);
+        return TRUE;
 }
 
 void
