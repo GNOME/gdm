@@ -2546,6 +2546,9 @@ gdm_session_start_session (GdmSession *self,
                            const char *service_name)
 {
         GdmSessionConversation *conversation;
+        GdmSessionDisplayMode   display_mode;
+        gboolean                is_x11 = TRUE;
+        gboolean                run_launcher = FALSE;
         char             *command;
         char             *program;
 
@@ -2562,24 +2565,20 @@ gdm_session_start_session (GdmSession *self,
 
         stop_all_other_conversations (self, conversation, FALSE);
 
+        display_mode = gdm_session_get_display_mode (self);
+#ifdef ENABLE_WAYLAND_SUPPORT
+        is_x11 = !gdm_session_is_wayland_session (self);
+#endif
+
+        if (is_x11 && display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED) {
+                run_launcher = TRUE;
+        }
+
         if (self->priv->selected_program == NULL) {
-                GdmSessionDisplayMode display_mode;
-                gboolean              is_x11 = TRUE;
-                gboolean              run_launcher = FALSE;
                 gboolean              allow_remote_connections = FALSE;
                 gboolean              run_xsession_script;
 
                 command = get_session_command (self);
-
-                display_mode = gdm_session_get_display_mode (self);
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-                is_x11 = !gdm_session_is_wayland_session (self);
-#endif
-
-                if (is_x11 && display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED) {
-                        run_launcher = TRUE;
-                }
 
                 run_xsession_script = !gdm_session_bypasses_xsession (self);
 
@@ -2604,7 +2603,12 @@ gdm_session_start_session (GdmSession *self,
 
                 g_free (command);
         } else {
-                program = g_strdup (self->priv->selected_program);
+                if (run_launcher) {
+                        program = g_strdup_printf (LIBEXECDIR "/gdm-x-session \"%s\"",
+                                                   self->priv->selected_program);
+                } else {
+                        program = g_strdup (self->priv->selected_program);
+                }
         }
 
         set_up_session_environment (self);
@@ -2901,7 +2905,7 @@ gdm_session_get_display_mode (GdmSession *self)
          * reuse VT
          */
         if (self->priv->is_program_session) {
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+                return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
         }
 
         /* user based X sessions start on a new VT now and are managed

@@ -178,6 +178,8 @@ gdm_SOURCES = 			\
 	gdm-local-display-factory.h	\
 	gdm-display.c			\
 	gdm-display.h			\
+	gdm-legacy-display.c		\
+	gdm-legacy-display.h		\
 	gdm-local-display.c		\
 	gdm-local-display.h		\
 	gdm-launch-environment.c	\

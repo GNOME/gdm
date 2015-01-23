@@ -1481,17 +1481,22 @@ on_display_status_changed (GdmDisplay *display,
                            GdmManager *manager)
 {
         int         status;
+        int         display_number = -1;
 #ifdef WITH_PLYMOUTH
         gboolean    display_is_local = FALSE;
         gboolean    quit_plymouth = FALSE;
 
-        g_object_get (display, "is-local", &display_is_local, NULL);
+        g_object_get (display,
+                      "is-local", &display_is_local,
+                      "x11-display-number", &display_number,
+                      NULL);
         quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
 #endif
 
         status = gdm_display_get_status (display);
 
         switch (status) {
+                case GDM_DISPLAY_PREPARED:
                 case GDM_DISPLAY_MANAGED:
 #ifdef WITH_PLYMOUTH
                         if (quit_plymouth) {
@@ -1499,7 +1504,10 @@ on_display_status_changed (GdmDisplay *display,
                                 manager->priv->plymouth_is_running = FALSE;
                         }
 #endif
-                        set_up_greeter_session (manager, display);
+                        if ((display_number == -1 && status == GDM_DISPLAY_PREPARED) ||
+                            (display_number != -1 && status == GDM_DISPLAY_MANAGED)) {
+                                set_up_greeter_session (manager, display);
+                        }
                         break;
                 case GDM_DISPLAY_FAILED:
                 case GDM_DISPLAY_UNMANAGED:

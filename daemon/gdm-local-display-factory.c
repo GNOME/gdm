@@ -36,6 +36,7 @@
 
 #include "gdm-display-store.h"
 #include "gdm-local-display.h"
+#include "gdm-legacy-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
@@ -218,19 +219,26 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                                                     GError                **error)
 {
         gboolean         ret;
-        GdmDisplay      *display;
-        guint32          num;
+        GdmDisplay      *display = NULL;
         const char      *seat_id;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
         ret = FALSE;
 
-        num = take_next_display_number (factory);
+        g_debug ("GdmLocalDisplayFactory: Creating transient display");
 
-        g_debug ("GdmLocalDisplayFactory: Creating transient display %d", num);
+#ifdef WITH_SYSTEMD
+        display = gdm_local_display_new ();
+#endif
 
-        display = gdm_local_display_new (num);
+        if (display == NULL) {
+                guint32 num;
+
+                num = take_next_display_number (factory);
+
+                display = gdm_legacy_display_new (num);
+        }
 
         seat_id = get_seat_of_transient_display (factory);
         g_object_set (display,
@@ -355,8 +363,7 @@ create_display (GdmLocalDisplayFactory *factory,
                 gboolean                initial)
 {
         GdmDisplayStore *store;
-        GdmDisplay      *display;
-        guint32          num;
+        GdmDisplay      *display = NULL;
 
         /* Ensure we don't create the same display more than once */
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
@@ -367,9 +374,20 @@ create_display (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
-        num = take_next_display_number (factory);
 
-        display = gdm_local_display_new (num);
+#ifdef WITH_SYSTEMD
+        if (g_strcmp0 (seat_id, "seat0") == 0) {
+                display = gdm_local_display_new ();
+        }
+#endif
+
+        if (display == NULL) {
+                guint32 num;
+
+                num = take_next_display_number (factory);
+
+                display = gdm_legacy_display_new (num);
+        }
 
         g_object_set (display, "seat-id", seat_id, NULL);
         g_object_set (display, "is-initial", initial, NULL);
