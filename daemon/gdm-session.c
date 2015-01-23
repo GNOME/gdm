@@ -2610,7 +2610,17 @@ gdm_session_start_session (GdmSession *self,
 
                 g_free (command);
         } else {
-                program = g_strdup (self->priv->selected_program);
+                if (run_launcher) {
+                        if (is_x11) {
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session \"%s\"",
+                                                           self->priv->selected_program);
+                        } else {
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session \"%s\"",
+                                                           self->priv->selected_program);
+                        }
+                } else {
+                        program = g_strdup (self->priv->selected_program);
+                }
         }
 
         set_up_session_environment (self);
@@ -2902,12 +2912,11 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
         }
 
-        /* The X session used for the login screen uses the
-         * X server started up by the slave, so it should be
-         * reuse VT
+        /* The X session used for the login screen now is run
+         * within the login session and managed by logind
          */
         if (self->priv->is_program_session) {
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+                return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
         }
 
         /* user based X sessions start on a new VT now and are managed

@@ -41,7 +41,6 @@
 #include "gdm-launch-environment.h"
 #include "gdm-local-display.h"
 #include "gdm-local-display-glue.h"
-#include "gdm-server.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
@@ -50,8 +49,6 @@
 struct GdmLocalDisplayPrivate
 {
         GdmDBusLocalDisplay *skeleton;
-
-        GdmServer           *server;
 };
 
 static void     gdm_local_display_class_init   (GdmLocalDisplayClass *klass);
@@ -84,7 +81,6 @@ gdm_local_display_finalize (GObject *object)
         GdmLocalDisplay *display = GDM_LOCAL_DISPLAY (object);
 
         g_clear_object (&display->priv->skeleton);
-        g_clear_object (&display->priv->server);
 
         G_OBJECT_CLASS (gdm_local_display_parent_class)->finalize (object);
 }
@@ -94,29 +90,26 @@ gdm_local_display_prepare (GdmDisplay *display)
 {
         GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
         GdmLaunchEnvironment *launch_environment;
-        char          *display_name;
         char          *seat_id;
         gboolean       doing_initial_setup = FALSE;
 
-        display_name = NULL;
         seat_id = NULL;
 
         g_object_get (self,
-                      "x11-display-name", &display_name,
                       "seat-id", &seat_id,
                       "doing-initial-setup", &doing_initial_setup,
                       NULL);
 
         if (!doing_initial_setup) {
-                launch_environment = gdm_create_greeter_launch_environment (display_name,
+                launch_environment = gdm_create_greeter_launch_environment (NULL,
                                                                             seat_id,
                                                                             NULL,
                                                                             TRUE);
         } else {
-                launch_environment = gdm_create_initial_setup_launch_environment (display_name,
-                                                                            seat_id,
-                                                                            NULL,
-                                                                            TRUE);
+                launch_environment = gdm_create_initial_setup_launch_environment (NULL,
+                                                                                seat_id,
+                                                                                NULL,
+                                                                                TRUE);
         }
 
         g_object_set (self, "launch-environment", launch_environment, NULL);
@@ -126,103 +119,11 @@ gdm_local_display_prepare (GdmDisplay *display)
 }
 
 static void
-on_server_ready (GdmServer       *server,
-                 GdmLocalDisplay *self)
-{
-        gboolean ret;
-
-        ret = gdm_display_connect (GDM_DISPLAY (self));
-
-        if (!ret) {
-                g_debug ("GdmDisplay: could not connect to display");
-                gdm_display_unmanage (GDM_DISPLAY (self));
-        } else {
-                g_debug ("GdmDisplay: connected to display");
-                g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
-        }
-}
-
-static void
-on_server_exited (GdmServer  *server,
-                  int         exit_code,
-                  GdmDisplay *self)
-{
-        g_debug ("GdmDisplay: server exited with code %d\n", exit_code);
-
-        gdm_display_unmanage (GDM_DISPLAY (self));
-}
-
-static void
-on_server_died (GdmServer  *server,
-                int         signal_number,
-                GdmDisplay *self)
-{
-        g_debug ("GdmDisplay: server died with signal %d, (%s)",
-                 signal_number,
-                 g_strsignal (signal_number));
-
-        gdm_display_unmanage (GDM_DISPLAY (self));
-}
-
-static void
 gdm_local_display_manage (GdmDisplay *display)
 {
         GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
-        char            *display_name;
-        char            *auth_file;
-        char            *seat_id;
-        gboolean         is_initial;
-        gboolean         res;
-        gboolean         disable_tcp;
 
-        g_object_get (G_OBJECT (self),
-                      "x11-display-name", &display_name,
-                      "x11-authority-file", &auth_file,
-                      "seat-id", &seat_id,
-                      "is-initial", &is_initial,
-                      NULL);
-
-        self->priv->server = gdm_server_new (display_name, seat_id, auth_file, is_initial);
-
-        g_free (display_name);
-        g_free (auth_file);
-        g_free (seat_id);
-
-        disable_tcp = TRUE;
-        if (gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disable_tcp)) {
-                g_object_set (self->priv->server,
-                              "disable-tcp", disable_tcp,
-                              NULL);
-        }
-
-        g_signal_connect (self->priv->server,
-                          "exited",
-                          G_CALLBACK (on_server_exited),
-                          self);
-        g_signal_connect (self->priv->server,
-                          "died",
-                          G_CALLBACK (on_server_died),
-                          self);
-        g_signal_connect (self->priv->server,
-                          "ready",
-                          G_CALLBACK (on_server_ready),
-                          self);
-
-        res = gdm_server_start (self->priv->server);
-        if (! res) {
-                g_warning (_("Could not start the X "
-                             "server (your graphical environment) "
-                             "due to an internal error. "
-                             "Please contact your system administrator "
-                             "or check your syslog to diagnose. "
-                             "In the meantime this display will be "
-                             "disabled.  Please restart GDM when "
-                             "the problem is corrected."));
-                gdm_display_unmanage (GDM_DISPLAY (self));
-        }
-
-        g_debug ("GdmDisplay: Started X server");
-
+        g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
 }
 
 static void
@@ -248,17 +149,11 @@ gdm_local_display_init (GdmLocalDisplay *local_display)
 }
 
 GdmDisplay *
-gdm_local_display_new (int display_number)
+gdm_local_display_new (void)
 {
         GObject *object;
-        char    *x11_display;
 
-        x11_display = g_strdup_printf (":%d", display_number);
-        object = g_object_new (GDM_TYPE_LOCAL_DISPLAY,
-                               "x11-display-number", display_number,
-                               "x11-display-name", x11_display,
-                               NULL);
-        g_free (x11_display);
+        object = g_object_new (GDM_TYPE_LOCAL_DISPLAY, NULL);
 
         return GDM_DISPLAY (object);
 }
