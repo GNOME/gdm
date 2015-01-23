@@ -1847,6 +1847,13 @@ touch_ran_once_marker_file (GdmManager *manager)
 }
 
 static void
+clean_seed_session (GdmSession *session)
+{
+        g_object_set_data (G_OBJECT (session), "gdm-display", NULL);
+        g_object_unref (session);
+}
+
+static void
 create_seed_session_for_display (GdmManager *manager,
                                  GdmDisplay *display,
                                  uid_t       allowed_user)
@@ -1933,7 +1940,7 @@ create_seed_session_for_display (GdmManager *manager,
                           G_CALLBACK (on_user_session_died),
                           manager);
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
-        g_object_set_data_full (G_OBJECT (display), "gdm-seed-session", g_object_ref (session), (GDestroyNotify) g_object_unref);
+        g_object_set_data_full (G_OBJECT (display), "gdm-seed-session", g_object_ref (session), (GDestroyNotify) clean_seed_session);
 
         start_autologin_conversation_if_necessary (manager, display, session);
 }
