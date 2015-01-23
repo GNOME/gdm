@@ -19,39 +19,39 @@
  */
 
 
-#ifndef __GDM_LOCAL_DISPLAY_H
-#define __GDM_LOCAL_DISPLAY_H
+#ifndef __GDM_LEGACY_DISPLAY_H
+#define __GDM_LEGACY_DISPLAY_H
 
 #include <glib-object.h>
 #include "gdm-display.h"
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_LOCAL_DISPLAY         (gdm_local_display_get_type ())
-#define GDM_LOCAL_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplay))
-#define GDM_LOCAL_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayClass))
-#define GDM_IS_LOCAL_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LOCAL_DISPLAY))
-#define GDM_IS_LOCAL_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LOCAL_DISPLAY))
-#define GDM_LOCAL_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayClass))
+#define GDM_TYPE_LEGACY_DISPLAY         (gdm_legacy_display_get_type ())
+#define GDM_LEGACY_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplay))
+#define GDM_LEGACY_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplayClass))
+#define GDM_IS_LEGACY_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LEGACY_DISPLAY))
+#define GDM_IS_LEGACY_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LEGACY_DISPLAY))
+#define GDM_LEGACY_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplayClass))
 
-typedef struct GdmLocalDisplayPrivate GdmLocalDisplayPrivate;
+typedef struct GdmLegacyDisplayPrivate GdmLegacyDisplayPrivate;
 
 typedef struct
 {
         GdmDisplay               parent;
-        GdmLocalDisplayPrivate *priv;
-} GdmLocalDisplay;
+        GdmLegacyDisplayPrivate *priv;
+} GdmLegacyDisplay;
 
 typedef struct
 {
         GdmDisplayClass   parent_class;
 
-} GdmLocalDisplayClass;
+} GdmLegacyDisplayClass;
 
-GType               gdm_local_display_get_type                (void);
-GdmDisplay *        gdm_local_display_new                     (void);
+GType               gdm_legacy_display_get_type                (void);
+GdmDisplay *        gdm_legacy_display_new                     (int display_number);
 
 
 G_END_DECLS
 
-#endif /* __GDM_LOCAL_DISPLAY_H */
+#endif /* __GDM_LEGACY_DISPLAY_H */

@@ -36,6 +36,7 @@
 
 #include "gdm-display-store.h"
 #include "gdm-local-display.h"
+#include "gdm-legacy-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
@@ -218,19 +219,28 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                                                     GError                **error)
 {
         gboolean         ret;
-        GdmDisplay      *display;
-        guint32          num;
+        GdmDisplay      *display = NULL;
         const char      *seat_id;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
         ret = FALSE;
 
-        num = take_next_display_number (factory);
+        g_debug ("GdmLocalDisplayFactory: Creating transient display");
 
-        g_debug ("GdmLocalDisplayFactory: Creating transient display %d", num);
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING() > 0) {
+                display = gdm_local_display_new ();
+        }
+#endif
 
-        display = gdm_local_display_new (num);
+        if (display == NULL) {
+                guint32 num;
+
+                num = take_next_display_number (factory);
+
+                display = gdm_legacy_display_new (num);
+        }
 
         seat_id = get_seat_of_transient_display (factory);
         g_object_set (display,
@@ -268,14 +278,18 @@ on_display_status_changed (GdmDisplay             *display,
         int              num;
         char            *seat_id = NULL;
         gboolean         is_initial = TRUE;
+        gboolean         is_local = TRUE;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        g_object_get (display, "seat-id", &seat_id, NULL);
-        g_object_get (display, "is-initial", &is_initial, NULL);
+        g_object_get (display,
+                      "seat-id", &seat_id,
+                      "is-initial", &is_initial,
+                      "is-local", &is_local,
+                      NULL);
 
         status = gdm_display_get_status (display);
 
@@ -290,7 +304,7 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
 
                 /* Create a new equivalent display if it was static */
-                if (GDM_IS_LOCAL_DISPLAY (display)) {
+                if (is_local) {
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
@@ -303,7 +317,7 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
 
                 /* Create a new equivalent display if it was static */
-                if (GDM_IS_LOCAL_DISPLAY (display)) {
+                if (is_local) {
 
                         factory->priv->num_failures++;
 
@@ -355,8 +369,7 @@ create_display (GdmLocalDisplayFactory *factory,
                 gboolean                initial)
 {
         GdmDisplayStore *store;
-        GdmDisplay      *display;
-        guint32          num;
+        GdmDisplay      *display = NULL;
 
         /* Ensure we don't create the same display more than once */
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
@@ -367,9 +380,20 @@ create_display (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
-        num = take_next_display_number (factory);
 
-        display = gdm_local_display_new (num);
+#ifdef WITH_SYSTEMD
+        if (g_strcmp0 (seat_id, "seat0") == 0) {
+                display = gdm_local_display_new ();
+        }
+#endif
+
+        if (display == NULL) {
+                guint32 num;
+
+                num = take_next_display_number (factory);
+
+                display = gdm_legacy_display_new (num);
+        }
 
         g_object_set (display, "seat-id", seat_id, NULL);
         g_object_set (display, "is-initial", initial, NULL);
