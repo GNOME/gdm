@@ -448,8 +448,6 @@ on_name_acquired (GDBusConnection *bus,
 
         g_debug ("Successfully connected to D-Bus");
 
-        gdm_manager_start (manager);
-
         show_local_greeter = TRUE;
         gdm_settings_direct_get_boolean (GDM_KEY_SHOW_LOCAL_GREETER, &show_local_greeter);
         gdm_manager_set_show_local_greeter (manager, show_local_greeter);
@@ -457,6 +455,8 @@ on_name_acquired (GDBusConnection *bus,
         xdmcp_enabled = FALSE;
         gdm_settings_direct_get_boolean (GDM_KEY_XDMCP_ENABLE, &xdmcp_enabled);
         gdm_manager_set_xdmcp_enabled (manager, xdmcp_enabled);
+
+        gdm_manager_start (manager);
 }
 
 static void
