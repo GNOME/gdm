@@ -73,9 +73,12 @@ struct GdmDisplayPrivate
         GdmDBusDisplay       *display_skeleton;
         GDBusObjectSkeleton  *object_skeleton;
 
+        GDBusProxy           *accountsservice_proxy;
+
         guint                 is_local : 1;
         guint                 is_initial : 1;
         guint                 allow_timed_login : 1;
+        guint                 have_existing_user_accounts : 1;
 };
 
 enum {
@@ -93,6 +96,7 @@ enum {
         PROP_SLAVE_TYPE,
         PROP_IS_INITIAL,
         PROP_ALLOW_TIMED_LOGIN,
+        PROP_HAVE_EXISTING_USER_ACCOUNTS
 };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
@@ -522,6 +526,58 @@ gdm_display_real_prepare (GdmDisplay *self)
         return TRUE;
 }
 
+static void
+on_list_cached_users_complete (GObject       *proxy,
+                               GAsyncResult  *result,
+                               GdmDisplay    *self)
+{
+        GVariant *call_result;
+        GVariant *user_list;
+
+        call_result = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), result, NULL);
+
+        if (!call_result) {
+                self->priv->have_existing_user_accounts = FALSE;
+        } else {
+                g_variant_get (call_result, "(@ao)", &user_list);
+                self->priv->have_existing_user_accounts = g_variant_n_children (user_list) > 0;
+                g_variant_unref (user_list);
+                g_variant_unref (call_result);
+        }
+
+        gdm_slave_start (self->priv->slave);
+}
+
+static void
+on_accountsservice_ready (GObject        *object,
+                          GAsyncResult   *result,
+                          GdmDisplay     *self)
+{
+        GError *local_error = NULL;
+
+        self->priv->accountsservice_proxy = g_dbus_proxy_new_for_bus_finish (result, &local_error);
+        if (!self->priv->accountsservice_proxy) {
+                g_error ("Failed to contact accountsservice: %s", local_error->message);
+        }
+
+        g_dbus_proxy_call (self->priv->accountsservice_proxy, "ListCachedUsers", NULL, 0, -1, NULL,
+                           (GAsyncReadyCallback)
+                           on_list_cached_users_complete, self);
+}
+
+static void
+look_for_existing_users_and_manage (GdmDisplay *self)
+{
+        g_dbus_proxy_new (self->priv->connection,
+                          0, NULL,
+                          "org.freedesktop.Accounts",
+                          "/org/freedesktop/Accounts",
+                          "org.freedesktop.Accounts",
+                          NULL,
+                          (GAsyncReadyCallback)
+                          on_accountsservice_ready, self);
+}
+
 gboolean
 gdm_display_prepare (GdmDisplay *self)
 {
@@ -556,8 +612,7 @@ gdm_display_manage (GdmDisplay *self)
         }
 
         g_timer_start (self->priv->slave_timer);
-
-        gdm_slave_start (self->priv->slave);
+        look_for_existing_users_and_manage (self);
 
         return TRUE;
 }
@@ -843,6 +898,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_IS_INITIAL:
                 g_value_set_boolean (value, self->priv->is_initial);
+                break;
+        case PROP_HAVE_EXISTING_USER_ACCOUNTS:
+                g_value_set_boolean (value, self->priv->have_existing_user_accounts);
                 break;
         case PROP_ALLOW_TIMED_LOGIN:
                 g_value_set_boolean (value, self->priv->allow_timed_login);
@@ -1249,7 +1307,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
+        g_object_class_install_property (object_class,
+                                         PROP_HAVE_EXISTING_USER_ACCOUNTS,
+                                         g_param_spec_boolean ("have-existing-user-accounts",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_SLAVE_TYPE,
                                          g_param_spec_gtype ("slave-type",
@@ -1302,6 +1366,7 @@ gdm_display_finalize (GObject *object)
         g_clear_object (&self->priv->display_skeleton);
         g_clear_object (&self->priv->object_skeleton);
         g_clear_object (&self->priv->connection);
+        g_clear_object (&self->priv->accountsservice_proxy);
 
         if (self->priv->access_file != NULL) {
                 g_object_unref (self->priv->access_file);
