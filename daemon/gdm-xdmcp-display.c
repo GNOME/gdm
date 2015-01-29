@@ -36,6 +36,7 @@
 #include <glib-object.h>
 
 #include "gdm-display.h"
+#include "gdm-launch-environment.h"
 #include "gdm-xdmcp-display.h"
 
 #include "gdm-common.h"
@@ -140,13 +141,49 @@ gdm_xdmcp_display_get_property (GObject    *object,
         }
 }
 
+static gboolean
+gdm_xdmcp_display_prepare (GdmDisplay *display)
+{
+        GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
+        GdmLaunchEnvironment *launch_environment;
+        char          *display_name;
+        char          *seat_id;
+        char          *hostname;
+
+        launch_environment = NULL;
+        display_name = NULL;
+        seat_id = NULL;
+        hostname = NULL;
+
+        g_object_get (self,
+                      "x11-display-name", &display_name,
+                      "seat-id", &seat_id,
+                      "remote-hostname", &hostname,
+                      "launch-environment", &launch_environment,
+                      NULL);
+
+        if (launch_environment == NULL) {
+                launch_environment = gdm_create_greeter_launch_environment (display_name,
+                                                                            seat_id,
+                                                                            hostname,
+                                                                            FALSE);
+                g_object_set (self, "launch-environment", launch_environment, NULL);
+                g_object_unref (launch_environment);
+        }
+
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->prepare (display);
+}
+
 static void
 gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
         object_class->get_property = gdm_xdmcp_display_get_property;
         object_class->set_property = gdm_xdmcp_display_set_property;
+
+        display_class->prepare = gdm_xdmcp_display_prepare;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
 

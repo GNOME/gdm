@@ -697,25 +697,6 @@ gdm_slave_get_property (GObject    *object,
         }
 }
 
-void
-gdm_slave_set_up_greeter_session (GdmSlave  *slave,
-                                  char     **username)
-{
-        GDM_SLAVE_GET_CLASS (slave)->set_up_greeter_session (slave, username);
-}
-
-void
-gdm_slave_start_greeter_session (GdmSlave *slave)
-{
-        GDM_SLAVE_GET_CLASS (slave)->start_greeter_session (slave);
-}
-
-void
-gdm_slave_stop_greeter_session (GdmSlave *slave)
-{
-        GDM_SLAVE_GET_CLASS (slave)->stop_greeter_session (slave);
-}
-
 static void
 gdm_slave_class_init (GdmSlaveClass *klass)
 {
