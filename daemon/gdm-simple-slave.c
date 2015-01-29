@@ -81,7 +81,6 @@ enum {
 
 static void     gdm_simple_slave_class_init     (GdmSimpleSlaveClass *klass);
 static void     gdm_simple_slave_init           (GdmSimpleSlave      *simple_slave);
-static void     gdm_simple_slave_finalize       (GObject             *object);
 
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
@@ -239,10 +238,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
 static void
 gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
 {
-        GObjectClass  *object_class = G_OBJECT_CLASS (klass);
         GdmSlaveClass *slave_class = GDM_SLAVE_CLASS (klass);
-
-        object_class->finalize = gdm_simple_slave_finalize;
 
         slave_class->start = gdm_simple_slave_start;
         slave_class->stop = gdm_simple_slave_stop;
@@ -257,19 +253,4 @@ gdm_simple_slave_init (GdmSimpleSlave *slave)
 #ifdef  HAVE_LOGINDEVPERM
         slave->priv->use_logindevperm = FALSE;
 #endif
-}
-
-static void
-gdm_simple_slave_finalize (GObject *object)
-{
-        GdmSimpleSlave *slave;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_SIMPLE_SLAVE (object));
-
-        slave = GDM_SIMPLE_SLAVE (object);
-
-        g_return_if_fail (slave->priv != NULL);
-
-        G_OBJECT_CLASS (gdm_simple_slave_parent_class)->finalize (object);
 }
