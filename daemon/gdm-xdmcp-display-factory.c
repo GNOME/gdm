@@ -55,6 +55,7 @@
 #include "gdm-common.h"
 #include "gdm-xdmcp-chooser-display.h"
 #include "gdm-display-factory.h"
+#include "gdm-launch-environment.h"
 #include "gdm-xdmcp-display-factory.h"
 #include "gdm-display-store.h"
 #include "gdm-settings-direct.h"
@@ -2046,14 +2047,34 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
 }
 
 static void
+on_client_disconnected (GdmDisplay *display)
+{
+        if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED)
+                return;
+
+        gdm_display_unmanage (display);
+        gdm_display_finish (display);
+}
+
+static void
 on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
                            GdmXdmcpDisplayFactory *factory)
 {
         int              status;
         GdmDisplayStore *store;
+        GdmLaunchEnvironment *launch_environment;
+        GdmSession *session;
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        launch_environment = NULL;
+        g_object_get (display, "launch-environment", &launch_environment, NULL);
+
+        session = NULL;
+        if (launch_environment != NULL) {
+                session = gdm_launch_environment_get_session (launch_environment);
+        }
 
         status = gdm_display_get_status (display);
 
@@ -2066,10 +2087,25 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
                 break;
         case GDM_DISPLAY_UNMANAGED:
+                if (session != NULL) {
+                        g_signal_handlers_disconnect_by_func (G_OBJECT (session),
+                                                              G_CALLBACK (on_client_disconnected),
+                                                              display);
+                }
                 break;
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
+                if (session != NULL) {
+                        g_signal_connect_object (G_OBJECT (session),
+                                                 "client-disconnected",
+                                                 G_CALLBACK (on_client_disconnected),
+                                                 display, 0);
+                        g_signal_connect_object (G_OBJECT (session),
+                                                 "disconnected",
+                                                 G_CALLBACK (on_client_disconnected),
+                                                 display, 0);
+                }
                 break;
         default:
                 g_assert_not_reached ();
