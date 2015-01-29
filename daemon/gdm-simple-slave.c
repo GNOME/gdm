@@ -76,15 +76,9 @@ struct GdmSimpleSlavePrivate
 
         GdmServer         *server;
 
-        GDBusProxy        *accountsservice_proxy;
-        guint              have_existing_user_accounts : 1;
-        guint              accountsservice_ready : 1;
-        guint              waiting_to_connect_to_display : 1;
-
 #ifdef  HAVE_LOGINDEVPERM
         gboolean           use_logindevperm;
 #endif
-        guint              doing_initial_setup : 1;
 };
 
 enum {
@@ -191,21 +185,10 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 }
 
 static void
-connect_to_display_when_accountsservice_ready (GdmSimpleSlave *slave)
-{
-        if (slave->priv->accountsservice_ready) {
-                slave->priv->waiting_to_connect_to_display = FALSE;
-                g_idle_add ((GSourceFunc)idle_connect_to_display, slave);
-        } else {
-                slave->priv->waiting_to_connect_to_display = TRUE;
-        }
-}
-
-static void
 on_server_ready (GdmServer      *server,
                  GdmSimpleSlave *slave)
 {
-        connect_to_display_when_accountsservice_ready (slave);
+        g_idle_add ((GSourceFunc)idle_connect_to_display, slave);
 }
 
 static void
@@ -229,49 +212,6 @@ on_server_died (GdmServer      *server,
 
         gdm_slave_stop (GDM_SLAVE (slave));
 }
-
-static void
-on_list_cached_users_complete (GObject       *proxy,
-                               GAsyncResult  *result,
-                               gpointer       user_data)
-{
-        GdmSimpleSlave *slave = GDM_SIMPLE_SLAVE (user_data);
-        GVariant *call_result = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), result, NULL);
-        GVariant *user_list;
-
-        if (!call_result) {
-                slave->priv->have_existing_user_accounts = FALSE;
-        } else {
-                g_variant_get (call_result, "(@ao)", &user_list);
-                slave->priv->have_existing_user_accounts = g_variant_n_children (user_list) > 0;
-                g_variant_unref (user_list);
-                g_variant_unref (call_result);
-        }
-
-        slave->priv->accountsservice_ready = TRUE;
-
-        if (slave->priv->waiting_to_connect_to_display) {
-                connect_to_display_when_accountsservice_ready (slave);
-        }
-}
-
-static void
-on_accountsservice_ready (GObject       *object,
-                          GAsyncResult  *result,
-                          gpointer       user_data)
-{
-        GdmSimpleSlave *slave = GDM_SIMPLE_SLAVE (user_data);
-        GError *local_error = NULL;
-
-        slave->priv->accountsservice_proxy = g_dbus_proxy_new_for_bus_finish (result, &local_error);
-        if (!slave->priv->accountsservice_proxy) {
-                g_error ("Failed to contact accountsservice: %s", local_error->message);
-        } 
-
-        g_dbus_proxy_call (slave->priv->accountsservice_proxy, "ListCachedUsers", NULL, 0, -1, NULL,
-                           on_list_cached_users_complete, slave);
-}
-                          
 
 static gboolean
 gdm_simple_slave_run (GdmSimpleSlave *slave)
@@ -317,14 +257,6 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                                   "ready",
                                   G_CALLBACK (on_server_ready),
                                   slave);
-
-                g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-                                          0, NULL,
-                                          "org.freedesktop.Accounts",
-                                          "/org/freedesktop/Accounts",
-                                          "org.freedesktop.Accounts",
-                                          NULL,
-                                          on_accountsservice_ready, slave);
 
                 res = gdm_server_start (slave->priv->server);
                 if (! res) {
@@ -373,8 +305,6 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 gdm_server_stop (self->priv->server);
                 g_clear_object (&self->priv->server);
         }
-
-        g_clear_object (&self->priv->accountsservice_proxy);
 
         return TRUE;
 }
