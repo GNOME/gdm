@@ -29,10 +29,6 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-#ifdef  HAVE_LOGINDEVPERM
-#include <libdevinfo.h>
-#endif  /* HAVE_LOGINDEVPERM */
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -250,7 +246,4 @@ static void
 gdm_simple_slave_init (GdmSimpleSlave *slave)
 {
         slave->priv = GDM_SIMPLE_SLAVE_GET_PRIVATE (slave);
-#ifdef  HAVE_LOGINDEVPERM
-        slave->priv->use_logindevperm = FALSE;
-#endif
 }
