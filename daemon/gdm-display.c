@@ -64,7 +64,6 @@ struct GdmDisplayPrivate
         gsize                 x11_cookie_size;
         GdmDisplayAccessFile *access_file;
 
-        gboolean              is_local;
         guint                 finish_idle_id;
 
         GdmSlave             *slave;
@@ -74,8 +73,9 @@ struct GdmDisplayPrivate
         GdmDBusDisplay       *display_skeleton;
         GDBusObjectSkeleton  *object_skeleton;
 
-        gboolean              is_initial;
-        gboolean              allow_timed_login;
+        guint                 is_local : 1;
+        guint                 is_initial : 1;
+        guint                 allow_timed_login : 1;
 };
 
 enum {
