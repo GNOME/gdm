@@ -47,8 +47,12 @@
 
 #include "gdm-session-enum-types.h"
 #include "gdm-launch-environment.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
+#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+#define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 
 extern char **environ;
 
@@ -890,3 +894,105 @@ gdm_launch_environment_finalize (GObject *object)
 
         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
 }
+
+static GdmLaunchEnvironment *
+create_gnome_session_environment (const char *session_id,
+                                  const char *user_name,
+                                  const char *display_name,
+                                  const char *seat_id,
+                                  const char *display_hostname,
+                                  gboolean    display_is_local)
+{
+        gboolean debug = FALSE;
+        char *command;
+        GdmLaunchEnvironment *launch_environment;
+        char **argv;
+        GPtrArray *args;
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+
+        args = g_ptr_array_new ();
+        g_ptr_array_add (args, BINDIR "/gnome-session");
+
+        g_ptr_array_add (args, "--autostart");
+        g_ptr_array_add (args, DATADIR "/gdm/greeter/autostart");
+
+        if (debug) {
+                g_ptr_array_add (args, "--debug");
+        }
+
+        if (session_id != NULL) {
+                g_ptr_array_add (args, " --session");
+                g_ptr_array_add (args, (char *) session_id);
+        }
+
+        g_ptr_array_add (args, NULL);
+
+        argv = (char **) g_ptr_array_free (args, FALSE);
+        command = g_strjoinv (" ", argv);
+        g_free (argv);
+
+        launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                                           "command", command,
+                                           "user-name", user_name,
+                                           "x11-display-name", display_name,
+                                           "x11-display-seat-id", seat_id,
+                                           "x11-display-hostname", display_hostname,
+                                           "x11-display-is-local", display_is_local,
+                                           "runtime-dir", GDM_SCREENSHOT_DIR,
+                                           NULL);
+
+        g_free (command);
+        return launch_environment;
+}
+
+GdmLaunchEnvironment *
+gdm_create_greeter_launch_environment (const char *display_name,
+                                       const char *seat_id,
+                                       const char *display_hostname,
+                                       gboolean    display_is_local)
+{
+        return create_gnome_session_environment (NULL,
+                                                 GDM_USERNAME,
+                                                 display_name,
+                                                 seat_id,
+                                                 display_hostname,
+                                                 display_is_local);
+}
+
+GdmLaunchEnvironment *
+gdm_create_initial_setup_launch_environment (const char *display_name,
+                                             const char *seat_id,
+                                             const char *display_hostname,
+                                             gboolean    display_is_local)
+{
+        return create_gnome_session_environment ("gnome-initial-setup",
+                                                 INITIAL_SETUP_USERNAME,
+                                                 display_name,
+                                                 seat_id,
+                                                 display_hostname,
+                                                 display_is_local);
+}
+
+GdmLaunchEnvironment *
+gdm_create_chooser_launch_environment (const char *display_name,
+                                       const char *seat_id,
+                                       const char *display_hostname)
+
+{
+        GdmLaunchEnvironment *launch_environment;
+
+        launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                                           "command", LIBEXECDIR "/gdm-simple-chooser",
+                                           "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
+                                           "user-name", GDM_USERNAME,
+                                           "x11-display-name", display_name,
+                                           "x11-display-seat-id", seat_id,
+                                           "x11-display-hostname", display_hostname,
+                                           "x11-display-is-local", FALSE,
+                                           "runtime-dir", GDM_SCREENSHOT_DIR,
+                                           NULL);
+
+        return launch_environment;
+}
+
