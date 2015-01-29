@@ -38,6 +38,7 @@
 
 #include "gdm-common.h"
 #include "gdm-display.h"
+#include "gdm-launch-environment.h"
 #include "gdm-local-display.h"
 #include "gdm-local-display-glue.h"
 
@@ -82,13 +83,52 @@ gdm_local_display_finalize (GObject *object)
         G_OBJECT_CLASS (gdm_local_display_parent_class)->finalize (object);
 }
 
+static gboolean
+gdm_local_display_prepare (GdmDisplay *display)
+{
+        GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
+        GdmLaunchEnvironment *launch_environment;
+        char          *display_name;
+        char          *seat_id;
+        gboolean       doing_initial_setup = FALSE;
+
+        display_name = NULL;
+        seat_id = NULL;
+
+        g_object_get (self,
+                      "x11-display-name", &display_name,
+                      "seat-id", &seat_id,
+                      "doing-initial-setup", &doing_initial_setup,
+                      NULL);
+
+        if (!doing_initial_setup) {
+                launch_environment = gdm_create_greeter_launch_environment (display_name,
+                                                                            seat_id,
+                                                                            NULL,
+                                                                            TRUE);
+        } else {
+                launch_environment = gdm_create_initial_setup_launch_environment (display_name,
+                                                                            seat_id,
+                                                                            NULL,
+                                                                            TRUE);
+        }
+
+        g_object_set (self, "launch-environment", launch_environment, NULL);
+        g_object_unref (launch_environment);
+
+        return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
+}
+
 static void
 gdm_local_display_class_init (GdmLocalDisplayClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
+        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
         object_class->constructor = gdm_local_display_constructor;
         object_class->finalize = gdm_local_display_finalize;
+
+        display_class->prepare = gdm_local_display_prepare;
 
         g_type_class_add_private (klass, sizeof (GdmLocalDisplayPrivate));
 }

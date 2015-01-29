@@ -36,6 +36,7 @@
 #include <glib-object.h>
 
 #include "gdm-display.h"
+#include "gdm-launch-environment.h"
 #include "gdm-xdmcp-chooser-display.h"
 #include "gdm-xdmcp-chooser-slave.h"
 
@@ -56,7 +57,7 @@ static gboolean gdm_xdmcp_chooser_display_prepare       (GdmDisplay *display);
 G_DEFINE_TYPE (GdmXdmcpChooserDisplay, gdm_xdmcp_chooser_display, GDM_TYPE_XDMCP_DISPLAY)
 
 static void
-on_hostname_selected (GdmXdmcpChooserSlave     *slave,
+on_hostname_selected (GdmLaunchEnvironment     *launch_environment,
                       const char               *hostname,
                       GdmXdmcpChooserDisplay   *display)
 {
@@ -93,17 +94,33 @@ gdm_xdmcp_chooser_display_init (GdmXdmcpChooserDisplay *xdmcp_chooser_display)
 static gboolean
 gdm_xdmcp_chooser_display_prepare (GdmDisplay *display)
 {
-        GdmXdmcpChooserSlave *slave;
+        GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
+        GdmLaunchEnvironment *launch_environment;
+        char          *display_name;
+        char          *seat_id;
+        char          *hostname;
 
-        if (!GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->prepare (display))
-                return FALSE;
+        launch_environment = NULL;
+        display_name = NULL;
+        seat_id = NULL;
+        hostname = NULL;
 
-        slave = GDM_XDMCP_CHOOSER_SLAVE (gdm_display_get_slave (display));
+        g_object_get (self,
+                      "x11-display-name", &display_name,
+                      "seat-id", &seat_id,
+                      "remote-hostname", &hostname,
+                      NULL);
 
-        g_signal_connect (slave, "hostname-selected",
+        launch_environment = gdm_create_chooser_launch_environment (display_name,
+                                                                    seat_id,
+                                                                    hostname);
+        g_object_set (self, "launch-environment", launch_environment, NULL);
+        g_object_unref (launch_environment);
+
+        g_signal_connect (launch_environment, "hostname-selected",
                           G_CALLBACK (on_hostname_selected), display);
 
-        return TRUE;
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->prepare (display);
 }
 
 GdmDisplay *

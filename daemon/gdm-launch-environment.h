@@ -68,6 +68,18 @@ gboolean              gdm_launch_environment_stop               (GdmLaunchEnviro
 GdmSession *          gdm_launch_environment_get_session        (GdmLaunchEnvironment *launch_environment);
 char *                gdm_launch_environment_get_session_id     (GdmLaunchEnvironment *launch_environment);
 
+GdmLaunchEnvironment *gdm_create_greeter_launch_environment (const char *display_name,
+                                                             const char *seat_id,
+                                                             const char *display_hostname,
+                                                             gboolean    display_is_local);
+GdmLaunchEnvironment *gdm_create_initial_setup_launch_environment (const char *display_name,
+                                                                   const char *seat_id,
+                                                                   const char *display_hostname,
+                                                                   gboolean    display_is_local);
+GdmLaunchEnvironment *gdm_create_chooser_launch_environment (const char *display_name,
+                                                             const char *seat_id,
+                                                             const char *display_hostname);
+
 G_END_DECLS
 
 #endif /* __GDM_LAUNCH_ENVIRONMENT_H */
