@@ -78,7 +78,6 @@ struct GdmManagerPrivate
         GCancellable           *cancellable;
 
         gboolean                started;
-        gboolean                wait_for_go;
         gboolean                show_local_greeter;
 
         GDBusProxy               *bus_proxy;
@@ -2065,13 +2064,13 @@ gdm_manager_start (GdmManager *manager)
 {
         g_debug ("GdmManager: GDM starting to manage displays");
 
-        if (! manager->priv->wait_for_go && (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter)) {
+        if (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
         }
 
 #ifdef HAVE_LIBXDMCP
         /* Accept remote connections */
-        if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
+        if (manager->priv->xdmcp_enabled) {
                 if (manager->priv->xdmcp_factory != NULL) {
                         g_debug ("GdmManager: Accepting XDMCP connections...");
                         gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
@@ -2080,29 +2079,6 @@ gdm_manager_start (GdmManager *manager)
 #endif
 
         manager->priv->started = TRUE;
-}
-
-void
-gdm_manager_set_wait_for_go (GdmManager *manager,
-                             gboolean    wait_for_go)
-{
-        if (manager->priv->wait_for_go != wait_for_go) {
-                manager->priv->wait_for_go = wait_for_go;
-
-                if (! wait_for_go) {
-                        /* we got a go */
-                        if (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter) {
-                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
-                        }
-
-#ifdef HAVE_LIBXDMCP
-                        if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
-                                g_debug ("GdmManager: Accepting XDMCP connections...");
-                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
-                        }
-#endif
-                }
-        }
 }
 
 static gboolean
