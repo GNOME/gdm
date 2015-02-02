@@ -83,6 +83,10 @@ struct GdmManagerPrivate
         GDBusProxy               *bus_proxy;
         GDBusConnection          *connection;
         GDBusObjectManagerServer *object_manager;
+
+#ifdef  WITH_PLYMOUTH
+        guint                     plymouth_is_running : 1;
+#endif
 };
 
 enum {
@@ -116,6 +120,72 @@ G_DEFINE_TYPE_WITH_CODE (GdmManager,
                          GDM_DBUS_TYPE_MANAGER_SKELETON,
                          G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_MANAGER,
                                                 manager_interface_init));
+
+#ifdef WITH_PLYMOUTH
+static gboolean
+plymouth_is_running (void)
+{
+        int      status;
+        gboolean res;
+        GError  *error;
+
+        error = NULL;
+        res = g_spawn_command_line_sync ("/bin/plymouth --ping",
+                                         NULL, NULL, &status, &error);
+        if (! res) {
+                g_debug ("Could not ping plymouth: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        return WIFEXITED (status) && WEXITSTATUS (status) == 0;
+}
+
+static void
+plymouth_prepare_for_transition (void)
+{
+        gboolean res;
+        GError  *error;
+
+        error = NULL;
+        res = g_spawn_command_line_sync ("/bin/plymouth deactivate",
+                                         NULL, NULL, NULL, &error);
+        if (! res) {
+                g_warning ("Could not deactivate plymouth: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static void
+plymouth_quit_with_transition (void)
+{
+        gboolean res;
+        GError  *error;
+
+        error = NULL;
+        res = g_spawn_command_line_sync ("/bin/plymouth quit --retain-splash",
+                                         NULL, NULL, NULL, &error);
+        if (! res) {
+                g_warning ("Could not quit plymouth: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static void
+plymouth_quit_without_transition (void)
+{
+        gboolean res;
+        GError  *error;
+
+        error = NULL;
+        res = g_spawn_command_line_sync ("/bin/plymouth quit",
+                                         NULL, NULL, NULL, &error);
+        if (! res) {
+                g_warning ("Could not quit plymouth: %s", error->message);
+                g_error_free (error);
+        }
+}
+#endif
 
 #ifdef WITH_SYSTEMD
 static char *
@@ -1298,16 +1368,35 @@ on_display_status_changed (GdmDisplay *display,
                            GdmManager *manager)
 {
         int         status;
+#ifdef WITH_PLYMOUTH
+        gboolean    display_is_local = FALSE;
+        gboolean    quit_plymouth = FALSE;
+
+        g_object_get (display, "is-local", &display_is_local, NULL);
+        quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
+#endif
 
         status = gdm_display_get_status (display);
 
         switch (status) {
                 case GDM_DISPLAY_MANAGED:
+#ifdef WITH_PLYMOUTH
+                        if (quit_plymouth) {
+                                plymouth_quit_with_transition ();
+                                manager->priv->plymouth_is_running = FALSE;
+                        }
+#endif
                         set_up_greeter_session (manager, display);
                         break;
                 case GDM_DISPLAY_FAILED:
                 case GDM_DISPLAY_UNMANAGED:
                 case GDM_DISPLAY_FINISHED:
+#ifdef WITH_PLYMOUTH
+                        if (quit_plymouth) {
+                                plymouth_quit_without_transition ();
+                                manager->priv->plymouth_is_running = FALSE;
+                        }
+#endif
                         break;
                 default:
                         break;
@@ -2064,6 +2153,13 @@ gdm_manager_start (GdmManager *manager)
 {
         g_debug ("GdmManager: GDM starting to manage displays");
 
+#ifdef WITH_PLYMOUTH
+        manager->priv->plymouth_is_running = plymouth_is_running ();
+
+        if (manager->priv->plymouth_is_running) {
+                plymouth_prepare_for_transition ();
+        }
+#endif
         if (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
         }
