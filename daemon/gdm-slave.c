@@ -565,8 +565,6 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
                                    int        *delayp)
 {
         struct passwd *pwent;
-        GError        *error;
-        gboolean       res;
         gboolean       enabled;
         char          *username;
         int            delay;
@@ -577,18 +575,12 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
 
         g_debug ("GdmSlave: Requesting timed login details");
 
-        error = NULL;
-        res = gdm_display_get_timed_login_details (slave->priv->display,
-                                                   &enabled,
-                                                   &username,
-                                                   &delay,
-                                                   &error);
-        if (! res) {
-                g_warning ("Failed to get timed login details: %s", error->message);
-                g_error_free (error);
-        } else {
-                g_debug ("GdmSlave: Got timed login details: %d %s %d", enabled, username, delay);
-        }
+        gdm_display_get_timed_login_details (slave->priv->display,
+                                             &enabled,
+                                             &username,
+                                             &delay);
+
+        g_debug ("GdmSlave: Got timed login details: %d %s %d", enabled, username, delay);
 
         if (usernamep != NULL) {
                 *usernamep = gdm_slave_parse_enriched_login (slave, username);
@@ -627,7 +619,7 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
                 g_debug ("Invalid NULL username for auto/timed login");
         }
 
-        return res;
+        return TRUE;
 }
 
 static void

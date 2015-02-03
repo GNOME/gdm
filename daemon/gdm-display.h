@@ -57,10 +57,6 @@ typedef struct
 
         /* methods */
         gboolean (*prepare)                   (GdmDisplay *display);
-        void     (*get_timed_login_details)   (GdmDisplay *display,
-                                               gboolean   *enabled,
-                                               char      **username,
-                                               int        *delay);
 } GdmDisplayClass;
 
 typedef enum
