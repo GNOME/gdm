@@ -142,6 +142,8 @@ void                gdm_display_start_greeter_session          (GdmDisplay  *dis
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
 GdmSlave *          gdm_display_get_slave                      (GdmDisplay  *display);
 
+gboolean            gdm_display_connect                        (GdmDisplay *self);
+
 G_END_DECLS
 
 #endif /* __GDM_DISPLAY_H */

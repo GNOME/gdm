@@ -63,8 +63,6 @@ struct GdmSlavePrivate
         guint            output_watch_id;
         guint            error_watch_id;
 
-        Display         *server_display;
-
         char            *session_id;
 
         GdmDisplay      *display;
@@ -76,7 +74,6 @@ struct GdmSlavePrivate
         gboolean         display_is_local;
         char            *display_seat_id;
         char            *display_x11_authority_file;
-        char            *windowpath;
         GBytes          *display_x11_cookie;
         gboolean         display_is_initial;
 };
@@ -121,166 +118,12 @@ gdm_slave_error_quark (void)
         return ret;
 }
 
-static void
-gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddress *si_entries)
-{
-        si_entries[0].type        = "localuser";
-        si_entries[0].typelength  = strlen ("localuser");
-        si_entries[1].type        = "localuser";
-        si_entries[1].typelength  = strlen ("localuser");
-        si_entries[2].type        = "localuser";
-        si_entries[2].typelength  = strlen ("localuser");
-
-        si_entries[0].value       = "root";
-        si_entries[0].valuelength = strlen ("root");
-        si_entries[1].value       = GDM_USERNAME;
-        si_entries[1].valuelength = strlen (GDM_USERNAME);
-        si_entries[2].value       = "gnome-initial-setup";
-        si_entries[2].valuelength = strlen ("gnome-initial-setup");
-
-        host_entries[0].family    = FamilyServerInterpreted;
-        host_entries[0].address   = (char *) &si_entries[0];
-        host_entries[0].length    = sizeof (XServerInterpretedAddress);
-        host_entries[1].family    = FamilyServerInterpreted;
-        host_entries[1].address   = (char *) &si_entries[1];
-        host_entries[1].length    = sizeof (XServerInterpretedAddress);
-        host_entries[2].family    = FamilyServerInterpreted;
-        host_entries[2].address   = (char *) &si_entries[2];
-        host_entries[2].length    = sizeof (XServerInterpretedAddress);
-}
-
-static void
-gdm_slave_set_windowpath (GdmSlave *slave)
-{
-        /* setting WINDOWPATH for clients */
-        Atom prop;
-        Atom actualtype;
-        int actualformat;
-        unsigned long nitems;
-        unsigned long bytes_after;
-        unsigned char *buf;
-        const char *windowpath;
-        char *newwindowpath;
-        unsigned long num;
-        char nums[10];
-        int numn;
-
-        prop = XInternAtom (slave->priv->server_display, "XFree86_VT", False);
-        if (prop == None) {
-                g_debug ("no XFree86_VT atom\n");
-                return;
-        }
-        if (XGetWindowProperty (slave->priv->server_display,
-                DefaultRootWindow (slave->priv->server_display), prop, 0, 1,
-                False, AnyPropertyType, &actualtype, &actualformat,
-                &nitems, &bytes_after, &buf)) {
-                g_debug ("no XFree86_VT property\n");
-                return;
-        }
-
-        if (nitems != 1) {
-                g_debug ("%lu items in XFree86_VT property!\n", nitems);
-                XFree (buf);
-                return;
-        }
-
-        switch (actualtype) {
-        case XA_CARDINAL:
-        case XA_INTEGER:
-        case XA_WINDOW:
-                switch (actualformat) {
-                case  8:
-                        num = (*(uint8_t  *)(void *)buf);
-                        break;
-                case 16:
-                        num = (*(uint16_t *)(void *)buf);
-                        break;
-                case 32:
-                        num = (*(long *)(void *)buf);
-                        break;
-                default:
-                        g_debug ("format %d in XFree86_VT property!\n", actualformat);
-                        XFree (buf);
-                        return;
-                }
-                break;
-        default:
-                g_debug ("type %lx in XFree86_VT property!\n", actualtype);
-                XFree (buf);
-                return;
-        }
-        XFree (buf);
-
-        windowpath = getenv ("WINDOWPATH");
-        numn = snprintf (nums, sizeof (nums), "%lu", num);
-        if (!windowpath) {
-                newwindowpath = malloc (numn + 1);
-                sprintf (newwindowpath, "%s", nums);
-        } else {
-                newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
-                sprintf (newwindowpath, "%s:%s", windowpath, nums);
-        }
-
-        slave->priv->windowpath = newwindowpath;
-
-        g_setenv ("WINDOWPATH", newwindowpath, TRUE);
-}
-
 gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
         gboolean ret;
 
-        ret = FALSE;
-
-        /* We keep our own (windowless) connection (dsp) open to avoid the
-         * X server resetting due to lack of active connections. */
-
-        g_debug ("GdmSlave: Server is ready - opening display %s", slave->priv->display_name);
-
-        /* Give slave access to the display independent of current hostname */
-        if (slave->priv->display_x11_cookie != NULL) {
-                XSetAuthorization ("MIT-MAGIC-COOKIE-1",
-                                   strlen ("MIT-MAGIC-COOKIE-1"),
-                                   (gpointer)
-                                   g_bytes_get_data (slave->priv->display_x11_cookie, NULL),
-                                   g_bytes_get_size (slave->priv->display_x11_cookie));
-        }
-
-        slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
-
-        if (slave->priv->server_display == NULL) {
-                g_warning ("Unable to connect to display %s", slave->priv->display_name);
-                ret = FALSE;
-        } else if (slave->priv->display_is_local) {
-                XServerInterpretedAddress si_entries[3];
-                XHostAddress              host_entries[3];
-                int                       i;
-
-                g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
-                ret = TRUE;
-
-                /* Give programs run by the slave and greeter access to the
-                 * display independent of current hostname
-                 */
-                gdm_slave_setup_xhost_auth (host_entries, si_entries);
-
-                gdm_error_trap_push ();
-
-                for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
-                        XAddHost (slave->priv->server_display, &host_entries[i]);
-                }
-
-                XSync (slave->priv->server_display, False);
-                if (gdm_error_trap_pop ()) {
-                        g_warning ("Failed to give slave programs access to the display. Trying to proceed.");
-                }
-
-                gdm_slave_set_windowpath (slave);
-        } else {
-                g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
-                ret = TRUE;
-        }
+        ret = gdm_display_connect (slave->priv->display);
 
         if (ret) {
                 g_signal_emit (slave, signals [STARTED], 0);
@@ -421,9 +264,6 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                                   const char *username,
                                   char      **filenamep)
 {
-        XServerInterpretedAddress si_entries[3];
-        XHostAddress              host_entries[3];
-        int                       i;
         gboolean                  res;
         GError                   *error;
         char                     *filename;
@@ -453,19 +293,6 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                 *filenamep = g_strdup (filename);
         }
         g_free (filename);
-
-        /* Remove access for the programs run by slave and greeter now that the
-         * user session is starting.
-         */
-        gdm_slave_setup_xhost_auth (host_entries, si_entries);
-        gdm_error_trap_push ();
-        for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
-                XRemoveHost (slave->priv->server_display, &host_entries[i]);
-        }
-        XSync (slave->priv->server_display, False);
-        if (gdm_error_trap_pop ()) {
-                g_warning ("Failed to remove slave program access to the display. Trying to proceed.");
-        }
 
         return res;
 }
