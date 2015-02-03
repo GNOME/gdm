@@ -1248,6 +1248,7 @@ set_up_greeter_session (GdmManager *manager,
         if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
                 g_warning ("GdmManager: couldn't look up username %s",
                            allowed_user);
+                gdm_display_unmanage (display);
                 gdm_display_finish (display);
                 return;
         }
