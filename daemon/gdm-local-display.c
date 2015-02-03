@@ -38,33 +38,33 @@
 
 #include "gdm-common.h"
 #include "gdm-display.h"
-#include "gdm-static-display.h"
-#include "gdm-static-display-glue.h"
+#include "gdm-local-display.h"
+#include "gdm-local-display-glue.h"
 
-#define GDM_STATIC_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplayPrivate))
+#define GDM_LOCAL_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayPrivate))
 
-struct GdmStaticDisplayPrivate
+struct GdmLocalDisplayPrivate
 {
-        GdmDBusStaticDisplay *skeleton;
+        GdmDBusLocalDisplay *skeleton;
 };
 
-static void     gdm_static_display_class_init   (GdmStaticDisplayClass *klass);
-static void     gdm_static_display_init         (GdmStaticDisplay      *static_display);
+static void     gdm_local_display_class_init   (GdmLocalDisplayClass *klass);
+static void     gdm_local_display_init         (GdmLocalDisplay      *local_display);
 
-G_DEFINE_TYPE (GdmStaticDisplay, gdm_static_display, GDM_TYPE_DISPLAY)
+G_DEFINE_TYPE (GdmLocalDisplay, gdm_local_display, GDM_TYPE_DISPLAY)
 
 static GObject *
-gdm_static_display_constructor (GType                  type,
-                                   guint                  n_construct_properties,
-                                   GObjectConstructParam *construct_properties)
+gdm_local_display_constructor (GType                  type,
+                               guint                  n_construct_properties,
+                               GObjectConstructParam *construct_properties)
 {
-        GdmStaticDisplay      *display;
+        GdmLocalDisplay      *display;
 
-        display = GDM_STATIC_DISPLAY (G_OBJECT_CLASS (gdm_static_display_parent_class)->constructor (type,
-                                                                                                           n_construct_properties,
-                                                                                                           construct_properties));
+        display = GDM_LOCAL_DISPLAY (G_OBJECT_CLASS (gdm_local_display_parent_class)->constructor (type,
+                                                                                                   n_construct_properties,
+                                                                                                   construct_properties));
 
-        display->priv->skeleton = GDM_DBUS_STATIC_DISPLAY (gdm_dbus_static_display_skeleton_new ());
+        display->priv->skeleton = GDM_DBUS_LOCAL_DISPLAY (gdm_dbus_local_display_skeleton_new ());
 
         g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
                                               G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
@@ -73,41 +73,41 @@ gdm_static_display_constructor (GType                  type,
 }
 
 static void
-gdm_static_display_finalize (GObject *object)
+gdm_local_display_finalize (GObject *object)
 {
-        GdmStaticDisplay *display = GDM_STATIC_DISPLAY (object);
+        GdmLocalDisplay *display = GDM_LOCAL_DISPLAY (object);
 
         g_clear_object (&display->priv->skeleton);
 
-        G_OBJECT_CLASS (gdm_static_display_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_local_display_parent_class)->finalize (object);
 }
 
 static void
-gdm_static_display_class_init (GdmStaticDisplayClass *klass)
+gdm_local_display_class_init (GdmLocalDisplayClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->constructor = gdm_static_display_constructor;
-        object_class->finalize = gdm_static_display_finalize;
+        object_class->constructor = gdm_local_display_constructor;
+        object_class->finalize = gdm_local_display_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmStaticDisplayPrivate));
+        g_type_class_add_private (klass, sizeof (GdmLocalDisplayPrivate));
 }
 
 static void
-gdm_static_display_init (GdmStaticDisplay *static_display)
+gdm_local_display_init (GdmLocalDisplay *local_display)
 {
 
-        static_display->priv = GDM_STATIC_DISPLAY_GET_PRIVATE (static_display);
+        local_display->priv = GDM_LOCAL_DISPLAY_GET_PRIVATE (local_display);
 }
 
 GdmDisplay *
-gdm_static_display_new (int display_number)
+gdm_local_display_new (int display_number)
 {
         GObject *object;
         char    *x11_display;
 
         x11_display = g_strdup_printf (":%d", display_number);
-        object = g_object_new (GDM_TYPE_STATIC_DISPLAY,
+        object = g_object_new (GDM_TYPE_LOCAL_DISPLAY,
                                "x11-display-number", display_number,
                                "x11-display-name", x11_display,
                                NULL);

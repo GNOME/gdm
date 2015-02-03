@@ -19,39 +19,39 @@
  */
 
 
-#ifndef __GDM_STATIC_DISPLAY_H
-#define __GDM_STATIC_DISPLAY_H
+#ifndef __GDM_LOCAL_DISPLAY_H
+#define __GDM_LOCAL_DISPLAY_H
 
 #include <glib-object.h>
 #include "gdm-display.h"
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_STATIC_DISPLAY         (gdm_static_display_get_type ())
-#define GDM_STATIC_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplay))
-#define GDM_STATIC_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplayClass))
-#define GDM_IS_STATIC_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_STATIC_DISPLAY))
-#define GDM_IS_STATIC_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_STATIC_DISPLAY))
-#define GDM_STATIC_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplayClass))
+#define GDM_TYPE_LOCAL_DISPLAY         (gdm_local_display_get_type ())
+#define GDM_LOCAL_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplay))
+#define GDM_LOCAL_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayClass))
+#define GDM_IS_LOCAL_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LOCAL_DISPLAY))
+#define GDM_IS_LOCAL_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LOCAL_DISPLAY))
+#define GDM_LOCAL_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayClass))
 
-typedef struct GdmStaticDisplayPrivate GdmStaticDisplayPrivate;
+typedef struct GdmLocalDisplayPrivate GdmLocalDisplayPrivate;
 
 typedef struct
 {
         GdmDisplay               parent;
-        GdmStaticDisplayPrivate *priv;
-} GdmStaticDisplay;
+        GdmLocalDisplayPrivate *priv;
+} GdmLocalDisplay;
 
 typedef struct
 {
         GdmDisplayClass   parent_class;
 
-} GdmStaticDisplayClass;
+} GdmLocalDisplayClass;
 
-GType               gdm_static_display_get_type                (void);
-GdmDisplay *        gdm_static_display_new                     (int display_number);
+GType               gdm_local_display_get_type                (void);
+GdmDisplay *        gdm_local_display_new                     (int display_number);
 
 
 G_END_DECLS
 
-#endif /* __GDM_STATIC_DISPLAY_H */
+#endif /* __GDM_LOCAL_DISPLAY_H */
