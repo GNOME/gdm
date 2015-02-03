@@ -141,34 +141,12 @@ gdm_xdmcp_display_get_property (GObject    *object,
 }
 
 static void
-gdm_xdmcp_display_get_timed_login_details (GdmDisplay *display,
-                                           gboolean   *enabledp,
-                                           char      **usernamep,
-                                           int        *delayp)
-{
-        *enabledp = FALSE;
-        *usernamep = g_strdup ("");
-        *delayp = 0;
-        gboolean allow_remote_autologin;
-
-        allow_remote_autologin = FALSE;
-        gdm_settings_direct_get_boolean (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, &allow_remote_autologin);
-
-        if ( allow_remote_autologin ) {
-                GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->get_timed_login_details (display, enabledp, usernamep, delayp);
-        }
-}
-
-static void
 gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
-        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
         object_class->get_property = gdm_xdmcp_display_get_property;
         object_class->set_property = gdm_xdmcp_display_set_property;
-
-        display_class->get_timed_login_details = gdm_xdmcp_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
 
@@ -196,7 +174,14 @@ static void
 gdm_xdmcp_display_init (GdmXdmcpDisplay *xdmcp_display)
 {
 
+        gboolean allow_remote_autologin;
+
         xdmcp_display->priv = GDM_XDMCP_DISPLAY_GET_PRIVATE (xdmcp_display);
+
+        allow_remote_autologin = FALSE;
+        gdm_settings_direct_get_boolean (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, &allow_remote_autologin);
+
+        g_object_set (G_OBJECT (xdmcp_display), "allow-timed-login", allow_remote_autologin, NULL);
 }
 
 GdmDisplay *
