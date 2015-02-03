@@ -35,8 +35,7 @@ AM_CPPFLAGS = \
 BUILT_SOURCES =					\
 	gdm-display-glue.h			\
 	gdm-manager-glue.h			\
-	gdm-static-display-glue.h		\
-	gdm-transient-display-glue.h		\
+	gdm-local-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
 	gdm-session-glue.h			\
 	gdm-session-worker-glue.h		\
@@ -56,19 +55,12 @@ gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
 		--generate-c-code=gdm-display-glue			\
 		$(srcdir)/gdm-display.xml
 
-gdm-transient-display-glue.c gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
+gdm-local-display-glue.c gdm-local-display-glue.h: gdm-local-display.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
 		--c-namespace=GdmDBus					\
 		--interface-prefix=org.gnome.DisplayManager		\
-		--generate-c-code=gdm-transient-display-glue		\
-		$(srcdir)/gdm-transient-display.xml
-
-gdm-static-display-glue.c gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
-	$(AM_V_GEN)gdbus-codegen 					\
-		--c-namespace=GdmDBus					\
-		--interface-prefix=org.gnome.DisplayManager		\
-		--generate-c-code=gdm-static-display-glue		\
-		$(srcdir)/gdm-static-display.xml
+		--generate-c-code=gdm-local-display-glue		\
+		$(srcdir)/gdm-local-display.xml
 
 gdm-local-display-factory-glue.c gdm-local-display-factory-glue.h : gdm-local-display-factory.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -186,10 +178,8 @@ gdm_SOURCES = 			\
 	gdm-local-display-factory.h	\
 	gdm-display.c			\
 	gdm-display.h			\
-	gdm-static-display.c		\
-	gdm-static-display.h		\
-	gdm-transient-display.c		\
-	gdm-transient-display.h		\
+	gdm-local-display.c		\
+	gdm-local-display.h		\
 	gdm-launch-environment.c	\
 	gdm-launch-environment.h	\
 	gdm-manager.c			\
@@ -221,10 +211,8 @@ nodist_gdm_SOURCES = 			\
 	gdm-local-display-factory-glue.c	\
 	gdm-manager-glue.h			\
 	gdm-manager-glue.c			\
-	gdm-transient-display-glue.h		\
-	gdm-transient-display-glue.c		\
-	gdm-static-display-glue.h		\
-	gdm-static-display-glue.c		\
+	gdm-local-display-glue.h		\
+	gdm-local-display-glue.c		\
 	gdm-session-glue.h			\
 	gdm-session-glue.c			\
 	gdm-session-worker-glue.c		\
@@ -279,8 +267,7 @@ CLEANFILES =					\
 	gdm-session-glue.c			\
 	gdm-session-worker-glue.c		\
 	gdm-session-enum-types.c		\
-	gdm-static-display-glue.c		\
-	gdm-transient-display-glue.c		\
+	gdm-local-display-glue.c		\
 	$(BUILT_SOURCES)			\
 	$(NULL)
 
@@ -289,8 +276,7 @@ EXTRA_DIST = 				\
 	gdm-session-worker.xml		\
 	gdm-session.xml			\
 	gdm-display.xml			\
-	gdm-static-display.xml		\
-	gdm-transient-display.xml	\
+	gdm-local-display.xml		\
 	gdm-local-display-factory.xml	\
 	gdm-session-enum-types.c.in	\
 	gdm-session-enum-types.h.in	\
