@@ -928,12 +928,6 @@ _gdm_display_set_launch_environment (GdmDisplay           *self,
         g_clear_object (&self->priv->launch_environment);
 
         self->priv->launch_environment = g_object_ref (launch_environment);
-
-        g_object_bind_property (launch_environment,
-                                "session-id",
-                                self,
-                                "session-id",
-                                G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -1575,8 +1569,7 @@ on_launch_environment_session_opened (GdmLaunchEnvironment *launch_environment,
 
         g_debug ("GdmDisplay: Greeter session opened");
         session_id = gdm_launch_environment_get_session_id (launch_environment);
-
-        g_object_set (GDM_SLAVE (self), "session-id", session_id, NULL);
+        _gdm_display_set_session_id (self, session_id);
         g_free (session_id);
 }
 
