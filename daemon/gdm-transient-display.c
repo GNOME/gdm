@@ -54,17 +54,6 @@ static void     gdm_transient_display_init         (GdmTransientDisplay      *di
 
 G_DEFINE_TYPE (GdmTransientDisplay, gdm_transient_display, GDM_TYPE_DISPLAY)
 
-static void
-gdm_transient_display_get_timed_login_details (GdmDisplay *display,
-                                               gboolean   *enabledp,
-                                               char      **usernamep,
-                                               int        *delayp)
-{
-        *enabledp = FALSE;
-        *usernamep = g_strdup ("");
-        *delayp = 0;
-}
-
 static GObject *
 gdm_transient_display_constructor (GType                  type,
                                    guint                  n_construct_properties,
@@ -98,12 +87,9 @@ static void
 gdm_transient_display_class_init (GdmTransientDisplayClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
-        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
         object_class->constructor = gdm_transient_display_constructor;
         object_class->finalize = gdm_transient_display_finalize;
-
-        display_class->get_timed_login_details = gdm_transient_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmTransientDisplayPrivate));
 }
@@ -125,6 +111,7 @@ gdm_transient_display_new (int display_number)
         object = g_object_new (GDM_TYPE_TRANSIENT_DISPLAY,
                                "x11-display-number", display_number,
                                "x11-display-name", x11_display,
+                               "allow-timed-login", FALSE,
                                NULL);
         g_free (x11_display);
 
