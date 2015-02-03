@@ -52,6 +52,7 @@ struct GdmXdmcpDisplayPrivate
 {
         GdmAddress             *remote_address;
         gint32                  session_number;
+        guint                   connection_attempts;
 };
 
 enum {
@@ -59,6 +60,8 @@ enum {
         PROP_REMOTE_ADDRESS,
         PROP_SESSION_NUMBER,
 };
+
+#define MAX_CONNECT_ATTEMPTS  10
 
 static void     gdm_xdmcp_display_class_init    (GdmXdmcpDisplayClass *klass);
 static void     gdm_xdmcp_display_init          (GdmXdmcpDisplay      *xdmcp_display);
@@ -174,6 +177,37 @@ gdm_xdmcp_display_prepare (GdmDisplay *display)
         return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->prepare (display);
 }
 
+static gboolean
+idle_connect_to_display (GdmXdmcpDisplay *self)
+{
+        gboolean res;
+
+        self->priv->connection_attempts++;
+
+        res = gdm_display_connect (GDM_DISPLAY (self));
+        if (res) {
+        } else {
+                if (self->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
+                        g_warning ("Unable to connect to display after %d tries - bailing out", self->priv->connection_attempts);
+                        gdm_display_unmanage (GDM_DISPLAY (self));
+                        return FALSE;
+                }
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
+static void
+gdm_xdmcp_display_manage (GdmDisplay *display)
+{
+        GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
+
+        g_timeout_add (500, (GSourceFunc)idle_connect_to_display, self);
+
+        GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->manage (display);
+}
+
 static void
 gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 {
@@ -184,6 +218,7 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
         object_class->set_property = gdm_xdmcp_display_set_property;
 
         display_class->prepare = gdm_xdmcp_display_prepare;
+        display_class->manage = gdm_xdmcp_display_manage;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
 
