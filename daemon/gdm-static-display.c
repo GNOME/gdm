@@ -53,27 +53,6 @@ static void     gdm_static_display_init         (GdmStaticDisplay      *static_d
 
 G_DEFINE_TYPE (GdmStaticDisplay, gdm_static_display, GDM_TYPE_DISPLAY)
 
-static gboolean
-gdm_static_display_finish (GdmDisplay *display)
-{
-        int status;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        /* Don't call parent's finish since we don't ever
-           want to be put in the FINISHED state */
-
-        /* restart static displays */
-        gdm_display_unmanage (display);
-
-        status = gdm_display_get_status (display);
-        if (status != GDM_DISPLAY_FAILED) {
-                gdm_display_manage (display);
-        }
-
-        return TRUE;
-}
-
 static GObject *
 gdm_static_display_constructor (GType                  type,
                                    guint                  n_construct_properties,
@@ -107,12 +86,9 @@ static void
 gdm_static_display_class_init (GdmStaticDisplayClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
-        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
         object_class->constructor = gdm_static_display_constructor;
         object_class->finalize = gdm_static_display_finalize;
-
-        display_class->finish = gdm_static_display_finish;
 
         g_type_class_add_private (klass, sizeof (GdmStaticDisplayPrivate));
 }
