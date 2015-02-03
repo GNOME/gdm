@@ -35,8 +35,7 @@
 #include "gdm-local-display-factory-glue.h"
 
 #include "gdm-display-store.h"
-#include "gdm-static-display.h"
-#include "gdm-transient-display.h"
+#include "gdm-local-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
@@ -235,10 +234,13 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         g_debug ("GdmLocalDisplayFactory: Creating transient display %d", num);
 
-        display = gdm_transient_display_new (num);
+        display = gdm_local_display_new (num);
 
         seat_id = get_seat_of_transient_display (factory);
-        g_object_set (display, "seat-id", seat_id, NULL);
+        g_object_set (display,
+                      "seat-id", seat_id,
+                      "allow-timed-login", FALSE,
+                      NULL);
 
         store_display (factory, num, display);
 
@@ -291,7 +293,7 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
 
                 /* Create a new equivalent display if it was static */
-                if (GDM_IS_STATIC_DISPLAY (display)) {
+                if (GDM_IS_LOCAL_DISPLAY (display)) {
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
@@ -304,7 +306,7 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
 
                 /* Create a new equivalent display if it was static */
-                if (GDM_IS_STATIC_DISPLAY (display)) {
+                if (GDM_IS_LOCAL_DISPLAY (display)) {
 
                         factory->priv->num_failures++;
 
@@ -370,7 +372,7 @@ create_display (GdmLocalDisplayFactory *factory,
 
         num = take_next_display_number (factory);
 
-        display = gdm_static_display_new (num);
+        display = gdm_local_display_new (num);
 
         g_object_set (display, "seat-id", seat_id, NULL);
         g_object_set (display, "is-initial", initial, NULL);
