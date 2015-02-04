@@ -56,7 +56,8 @@ typedef struct
         GObjectClass   parent_class;
 
         /* methods */
-        gboolean (*prepare)                   (GdmDisplay *display);
+        gboolean (*prepare)       (GdmDisplay *display);
+        void     (* start_server) (GdmDisplay *self);
 } GdmDisplayClass;
 
 typedef enum

@@ -625,6 +625,12 @@ on_slave_started (GdmSlave   *slave,
         _gdm_display_set_status (self, GDM_DISPLAY_MANAGED);
 }
 
+static void
+gdm_display_real_start_server (GdmDisplay *self)
+{
+        gdm_slave_start (self->priv->slave);
+}
+
 static gboolean
 gdm_display_real_prepare (GdmDisplay *self)
 {
@@ -655,6 +661,12 @@ gdm_display_real_prepare (GdmDisplay *self)
 }
 
 static void
+gdm_display_start_server (GdmDisplay *self)
+{
+        GDM_DISPLAY_GET_CLASS (self)->start_server (self);
+}
+
+static void
 on_list_cached_users_complete (GObject       *proxy,
                                GAsyncResult  *result,
                                GdmDisplay    *self)
@@ -673,7 +685,7 @@ on_list_cached_users_complete (GObject       *proxy,
                 g_variant_unref (call_result);
         }
 
-        gdm_slave_start (self->priv->slave);
+        gdm_display_start_server (self);
 }
 
 static void
@@ -1377,6 +1389,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
         object_class->finalize = gdm_display_finalize;
 
         klass->prepare = gdm_display_real_prepare;
+        klass->start_server = gdm_display_real_start_server;
 
         g_object_class_install_property (object_class,
                                          PROP_ID,
