@@ -37,6 +37,7 @@
 #include "gdm-display.h"
 #include "gdm-display-glue.h"
 #include "gdm-display-access-file.h"
+#include "gdm-launch-environment.h"
 
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
@@ -75,6 +76,9 @@ struct GdmDisplayPrivate
 
         GDBusProxy           *accountsservice_proxy;
 
+        /* this spawns and controls the greeter session */
+        GdmLaunchEnvironment *launch_environment;
+
         guint                 is_local : 1;
         guint                 is_initial : 1;
         guint                 allow_timed_login : 1;
@@ -94,6 +98,7 @@ enum {
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
         PROP_SLAVE_TYPE,
+        PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
         PROP_ALLOW_TIMED_LOGIN,
         PROP_HAVE_EXISTING_USER_ACCOUNTS
@@ -785,6 +790,15 @@ _gdm_display_set_slave_type (GdmDisplay     *self,
 }
 
 static void
+_gdm_display_set_launch_environment (GdmDisplay           *self,
+                                     GdmLaunchEnvironment *launch_environment)
+{
+        g_clear_object (&self->priv->launch_environment);
+
+        self->priv->launch_environment = g_object_ref (launch_environment);
+}
+
+static void
 _gdm_display_set_is_initial (GdmDisplay     *self,
                              gboolean        initial)
 {
@@ -842,6 +856,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_SLAVE_TYPE:
                 _gdm_display_set_slave_type (self, g_value_get_gtype (value));
                 break;
+        case PROP_LAUNCH_ENVIRONMENT:
+                _gdm_display_set_launch_environment (self, g_value_get_object (value));
+                break;
         case PROP_IS_INITIAL:
                 _gdm_display_set_is_initial (self, g_value_get_boolean (value));
                 break;
@@ -895,6 +912,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SLAVE_TYPE:
                 g_value_set_gtype (value, self->priv->slave_type);
+                break;
+        case PROP_LAUNCH_ENVIRONMENT:
+                g_value_set_object (value, self->priv->launch_environment);
                 break;
         case PROP_IS_INITIAL:
                 g_value_set_boolean (value, self->priv->is_initial);
@@ -1205,6 +1225,8 @@ gdm_display_dispose (GObject *object)
 
         g_debug ("GdmDisplay: Disposing display");
 
+        g_clear_object (&self->priv->launch_environment);
+
         g_assert (self->priv->status == GDM_DISPLAY_FINISHED ||
                   self->priv->status == GDM_DISPLAY_FAILED);
         g_assert (self->priv->slave == NULL);
@@ -1314,6 +1336,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                FALSE,
                                                                G_PARAM_READABLE));
+        g_object_class_install_property (object_class,
+                                         PROP_LAUNCH_ENVIRONMENT,
+                                         g_param_spec_object ("launch-environment",
+                                                              NULL,
+                                                              NULL,
+                                                              GDM_TYPE_LAUNCH_ENVIRONMENT,
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_SLAVE_TYPE,
                                          g_param_spec_gtype ("slave-type",
