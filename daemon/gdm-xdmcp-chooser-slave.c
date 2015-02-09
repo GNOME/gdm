@@ -171,14 +171,12 @@ setup_server (GdmXdmcpChooserSlave *slave)
 
 static GdmLaunchEnvironment *
 create_chooser_session (const char *display_name,
-                        const char *display_device,
                         const char *display_hostname)
 {
         return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                              "command", LIBEXECDIR "/gdm-simple-chooser",
                              "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
                              "x11-display-name", display_name,
-                             "x11-display-device", display_device,
                              "x11-display-hostname", display_hostname,
                              NULL);
 }
@@ -187,7 +185,6 @@ static void
 run_chooser (GdmXdmcpChooserSlave *slave)
 {
         char          *display_name;
-        char          *display_device;
         char          *display_hostname;
         char          *auth_file;
         gboolean       res;
@@ -197,7 +194,6 @@ run_chooser (GdmXdmcpChooserSlave *slave)
 
         display_name = NULL;
         auth_file = NULL;
-        display_device = NULL;
         display_hostname = NULL;
 
         g_object_get (slave,
@@ -225,10 +221,9 @@ run_chooser (GdmXdmcpChooserSlave *slave)
                         display_hostname,
                         auth_file);
 
-        g_debug ("GdmXdmcpChooserSlave: Creating chooser on %s %s %s", display_name, display_device, display_hostname);
+        g_debug ("GdmXdmcpChooserSlave: Creating chooser on %s %s", display_name, display_hostname);
         slave->priv->chooser_environment = create_chooser_session (display_name,
-                                                       display_device,
-                                                       display_hostname);
+                                                                   display_hostname);
         g_signal_connect (slave->priv->chooser_environment,
                           "opened",
                           G_CALLBACK (on_chooser_session_opened),
@@ -274,7 +269,6 @@ run_chooser (GdmXdmcpChooserSlave *slave)
                           G_CALLBACK (on_chooser_connected),
                           slave);
         g_free (display_name);
-        g_free (display_device);
         g_free (display_hostname);
         g_free (auth_file);
 }
