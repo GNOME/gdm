@@ -1241,14 +1241,36 @@ manager_interface_init (GdmDBusManagerIface *interface)
         interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
 }
 
+static gboolean
+display_should_autologin (GdmManager *manager,
+                          GdmDisplay *display)
+{
+        gboolean enabled = FALSE;
+        int delay = 0;
+
+        if (g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
+                return FALSE;
+        }
+
+        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay, NULL);
+        return enabled && delay == 0;
+}
+
 static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
         char *allowed_user;
         struct passwd *passwd_entry;
+        gboolean will_autologin;
 
-        gdm_display_set_up_greeter_session (display, &allowed_user);
+        will_autologin = display_should_autologin (manager, display);
+
+        if (!will_autologin) {
+                 gdm_display_set_up_greeter_session (display, &allowed_user);
+        } else {
+                 allowed_user = g_strdup ("root");
+        }
 
         if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
                 g_warning ("GdmManager: couldn't look up username %s",
@@ -1261,7 +1283,10 @@ set_up_greeter_session (GdmManager *manager,
         create_seed_session_for_display (manager, display, passwd_entry->pw_uid);
         g_free (allowed_user);
 
-        gdm_display_start_greeter_session (display);
+        if (!will_autologin) {
+                gdm_display_start_greeter_session (display);
+        }
+
         touch_ran_once_marker_file (manager);
 }
 
