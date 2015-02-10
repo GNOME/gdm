@@ -585,21 +585,6 @@ start_initial_setup (GdmSimpleSlave *slave)
 }
 
 static gboolean
-wants_autologin (GdmSimpleSlave *slave)
-{
-        gboolean enabled = FALSE;
-        int delay = 0;
-        /* FIXME: handle wait-for-go */
-
-        if (g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
-                return FALSE;
-        }
-
-        gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
-        return enabled && delay == 0;
-}
-
-static gboolean
 wants_initial_setup (GdmSimpleSlave *slave)
 {
         gboolean enabled = FALSE;
@@ -640,8 +625,6 @@ gdm_simple_slave_set_up_greeter_session (GdmSlave  *slave,
 
         if (wants_initial_setup (self)) {
                 *username = g_strdup (INITIAL_SETUP_USERNAME);
-        } else if (wants_autologin (self)) {
-                *username = g_strdup ("root");
         } else {
                 *username = g_strdup (GDM_USERNAME);
         }
@@ -682,7 +665,7 @@ gdm_simple_slave_start_greeter_session (GdmSlave *slave)
 {
         if (wants_initial_setup (GDM_SIMPLE_SLAVE (slave))) {
                 start_initial_setup (GDM_SIMPLE_SLAVE (slave));
-        } else if (!wants_autologin (GDM_SIMPLE_SLAVE (slave))) {
+        } else {
                 start_greeter (GDM_SIMPLE_SLAVE (slave));
         }
 }
