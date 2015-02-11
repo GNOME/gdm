@@ -2128,10 +2128,10 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                 goto out;
         }
 
-        g_signal_connect (display,
-                          "notify::status",
-                          G_CALLBACK (on_display_status_changed),
-                          factory);
+        g_signal_connect_after (display,
+                                "notify::status",
+                                G_CALLBACK (on_display_status_changed),
+                                factory);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
