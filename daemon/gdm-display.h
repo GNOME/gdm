@@ -117,11 +117,10 @@ gboolean            gdm_display_get_seat_id                    (GdmDisplay *disp
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
                                                                 gboolean   *local,
                                                                 GError    **error);
-gboolean            gdm_display_get_timed_login_details        (GdmDisplay *display,
+void                gdm_display_get_timed_login_details        (GdmDisplay *display,
                                                                 gboolean   *enabled,
                                                                 char      **username,
-                                                                int        *delay,
-                                                                GError    **error);
+                                                                int        *delay);
 gboolean            gdm_display_is_initial                     (GdmDisplay  *display,
                                                                 gboolean    *initial,
                                                                 GError     **error);

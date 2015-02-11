@@ -329,18 +329,15 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
         }
 }
 
-gboolean
+void
 gdm_display_get_timed_login_details (GdmDisplay *display,
                                      gboolean   *out_enabled,
                                      char      **out_username,
-                                     int        *out_delay,
-                                     GError    **error)
+                                     int        *out_delay)
 {
         gboolean enabled;
         char *username;
         int delay;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         GDM_DISPLAY_GET_CLASS (display)->get_timed_login_details (display, &enabled, &username, &delay);
 
@@ -363,8 +360,6 @@ gdm_display_get_timed_login_details (GdmDisplay *display,
         if (out_delay) {
                 *out_delay = delay;
         }
-
-        return TRUE;
 }
 
 gboolean
@@ -925,7 +920,7 @@ handle_get_timed_login_details (GdmDBusDisplay        *skeleton,
         char *username;
         int delay;
 
-        gdm_display_get_timed_login_details (display, &enabled, &username, &delay, NULL);
+        gdm_display_get_timed_login_details (display, &enabled, &username, &delay);
 
         gdm_dbus_display_complete_get_timed_login_details (skeleton,
                                                            invocation,
