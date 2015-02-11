@@ -194,10 +194,6 @@ gdm_SOURCES = 			\
 	gdm-session-worker-common.h	\
 	gdm-session-worker-job.c	\
 	gdm-session-worker-job.h	\
-	gdm-slave.c			\
-	gdm-slave.h			\
-	gdm-simple-slave.c		\
-	gdm-simple-slave.h		\
 	gdm-dbus-util.c			\
 	gdm-dbus-util.h			\
 	gdm-xerrors.c			\
@@ -228,8 +224,6 @@ XDMCP_SOURCES =				\
 	gdm-xdmcp-display.h		\
 	gdm-xdmcp-chooser-display.c	\
 	gdm-xdmcp-chooser-display.h	\
-	gdm-xdmcp-chooser-slave.c	\
-	gdm-xdmcp-chooser-slave.h	\
 	$(NULL)
 
 if XDMCP_SUPPORT

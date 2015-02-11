@@ -24,7 +24,6 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include "gdm-slave.h"
 
 G_BEGIN_DECLS
 
@@ -141,7 +140,6 @@ void                gdm_display_set_up_greeter_session         (GdmDisplay  *dis
                                                                 char       **username);
 void                gdm_display_start_greeter_session          (GdmDisplay  *display);
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
-GdmSlave *          gdm_display_get_slave                      (GdmDisplay  *display);
 
 gboolean            gdm_display_connect                        (GdmDisplay *self);
 
