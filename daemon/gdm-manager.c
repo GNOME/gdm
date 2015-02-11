@@ -1582,21 +1582,7 @@ on_session_started (GdmSession      *session,
                     GPid             pid,
                     GdmManager      *manager)
 {
-        GdmDisplay *display;
-
         g_debug ("GdmManager: session started %d", pid);
-
-        display = get_display_for_user_session (session);
-
-        if (display != NULL) {
-                GdmSlave *slave;
-                const char *session_id;
-
-                slave = gdm_display_get_slave (display);
-
-                session_id = gdm_session_get_session_id (session);
-                g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
-        }
 }
 
 static void
