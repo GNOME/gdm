@@ -38,7 +38,6 @@
 #include "gdm-display.h"
 #include "gdm-launch-environment.h"
 #include "gdm-xdmcp-chooser-display.h"
-#include "gdm-xdmcp-chooser-slave.h"
 
 #include "gdm-common.h"
 #include "gdm-address.h"
@@ -134,7 +133,6 @@ gdm_xdmcp_chooser_display_new (const char              *hostname,
 
         x11_display = g_strdup_printf ("%s:%d", hostname, number);
         object = g_object_new (GDM_TYPE_XDMCP_CHOOSER_DISPLAY,
-                               "slave-type", GDM_TYPE_XDMCP_CHOOSER_SLAVE,
                                "remote-hostname", hostname,
                                "x11-display-number", number,
                                "x11-display-name", x11_display,
