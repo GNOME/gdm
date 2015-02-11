@@ -47,8 +47,6 @@
 #include "gdm-settings-keys.h"
 
 #include "gdm-launch-environment.h"
-#include "gdm-simple-slave.h"
-#include "gdm-xdmcp-chooser-slave.h"
 #include "gdm-dbus-util.h"
 #include "gdm-xerrors.h"
 
@@ -68,8 +66,7 @@ struct GdmDisplayPrivate
         char                 *x11_display_name;
         int                   status;
         time_t                creation_time;
-        GTimer               *slave_timer;
-        GType                 slave_type;
+        GTimer               *server_timer;
 
         char                 *x11_cookie;
         gsize                 x11_cookie_size;
@@ -79,7 +76,6 @@ struct GdmDisplayPrivate
 
         Display              *x11_display;
 
-        GdmSlave             *slave;
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
 
@@ -110,7 +106,6 @@ enum {
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
-        PROP_SLAVE_TYPE,
         PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
         PROP_ALLOW_TIMED_LOGIN,
@@ -378,7 +373,7 @@ gdm_display_add_user_authorization (GdmDisplay *self,
         self->priv->user_access_file = access_file;
 
         g_debug ("GdmDisplay: Added user authorization for %s: %s", username, *filename);
-        /* Remove access for the programs run by slave and greeter now that the
+        /* Remove access for the programs run by greeter now that the
          * user session is starting.
          */
         setup_xhost_auth (host_entries, si_entries);
@@ -388,7 +383,7 @@ gdm_display_add_user_authorization (GdmDisplay *self,
         }
         XSync (self->priv->x11_display, False);
         if (gdm_error_trap_pop ()) {
-                g_warning ("Failed to remove slave program access to the display. Trying to proceed.");
+                g_warning ("Failed to remove greeter program access to the display. Trying to proceed.");
         }
 
         return TRUE;
@@ -603,13 +598,6 @@ queue_finish (GdmDisplay *self)
 }
 
 static void
-on_slave_stopped (GdmSlave   *slave,
-                  GdmDisplay *self)
-{
-        queue_finish (self);
-}
-
-static void
 _gdm_display_set_status (GdmDisplay *self,
                          int         status)
 {
@@ -620,16 +608,9 @@ _gdm_display_set_status (GdmDisplay *self,
 }
 
 static void
-on_slave_started (GdmSlave   *slave,
-                  GdmDisplay *self)
-{
-        _gdm_display_set_status (self, GDM_DISPLAY_MANAGED);
-}
-
-static void
 gdm_display_real_manage (GdmDisplay *self)
 {
-        gdm_slave_start (self->priv->slave);
+        _gdm_display_set_status (self, GDM_DISPLAY_MANAGED);
 }
 
 static gboolean
@@ -647,17 +628,6 @@ gdm_display_real_prepare (GdmDisplay *self)
 
         _gdm_display_set_status (self, GDM_DISPLAY_PREPARED);
 
-        self->priv->slave = GDM_SLAVE (g_object_new (self->priv->slave_type,
-                                                     "display", self,
-                                                     NULL));
-        g_signal_connect_object (self->priv->slave, "started",
-                                 G_CALLBACK (on_slave_started),
-                                 self,
-                                 0);
-        g_signal_connect_object (self->priv->slave, "stopped",
-                                 G_CALLBACK (on_slave_stopped),
-                                 self,
-                                 0);
         return TRUE;
 }
 
@@ -748,7 +718,7 @@ gdm_display_manage (GdmDisplay *self)
                 }
         }
 
-        g_timer_start (self->priv->slave_timer);
+        g_timer_start (self->priv->server_timer);
         look_for_existing_users_and_manage (self);
 
         return TRUE;
@@ -775,17 +745,7 @@ gdm_display_unmanage (GdmDisplay *self)
 
         g_debug ("GdmDisplay: unmanage display");
 
-        g_timer_stop (self->priv->slave_timer);
-
-        if (self->priv->slave != NULL) {
-                g_signal_handlers_disconnect_by_func (self->priv->slave,
-                                                      G_CALLBACK (on_slave_started), self);
-                g_signal_handlers_disconnect_by_func (self->priv->slave,
-                                                      G_CALLBACK (on_slave_stopped), self);
-                gdm_slave_stop (self->priv->slave);
-                g_object_unref (self->priv->slave);
-                self->priv->slave = NULL;
-        }
+        g_timer_stop (self->priv->server_timer);
 
         if (self->priv->user_access_file != NULL) {
                 gdm_display_access_file_close (self->priv->user_access_file);
@@ -799,7 +759,7 @@ gdm_display_unmanage (GdmDisplay *self)
                 self->priv->access_file = NULL;
         }
 
-        elapsed = g_timer_elapsed (self->priv->slave_timer, NULL);
+        elapsed = g_timer_elapsed (self->priv->server_timer, NULL);
         if (elapsed < 3) {
                 g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
                 _gdm_display_set_status (self, GDM_DISPLAY_FAILED);
@@ -915,13 +875,6 @@ _gdm_display_set_is_local (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_slave_type (GdmDisplay     *self,
-                             GType           type)
-{
-        self->priv->slave_type = type;
-}
-
-static void
 _gdm_display_set_launch_environment (GdmDisplay           *self,
                                      GdmLaunchEnvironment *launch_environment)
 {
@@ -985,9 +938,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_ALLOW_TIMED_LOGIN:
                 _gdm_display_set_allow_timed_login (self, g_value_get_boolean (value));
                 break;
-        case PROP_SLAVE_TYPE:
-                _gdm_display_set_slave_type (self, g_value_get_gtype (value));
-                break;
         case PROP_LAUNCH_ENVIRONMENT:
                 _gdm_display_set_launch_environment (self, g_value_get_object (value));
                 break;
@@ -1041,9 +991,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
-                break;
-        case PROP_SLAVE_TYPE:
-                g_value_set_gtype (value, self->priv->slave_type);
                 break;
         case PROP_LAUNCH_ENVIRONMENT:
                 g_value_set_object (value, self->priv->launch_environment);
@@ -1364,7 +1311,6 @@ gdm_display_dispose (GObject *object)
 
         g_assert (self->priv->status == GDM_DISPLAY_FINISHED ||
                   self->priv->status == GDM_DISPLAY_FAILED);
-        g_assert (self->priv->slave == NULL);
         g_assert (self->priv->user_access_file == NULL);
         g_assert (self->priv->access_file == NULL);
 
@@ -1487,13 +1433,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               GDM_TYPE_LAUNCH_ENVIRONMENT,
                                                               G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
-                                         PROP_SLAVE_TYPE,
-                                         g_param_spec_gtype ("slave-type",
-                                                             "slave type",
-                                                             "slave type",
-                                                             GDM_TYPE_SIMPLE_SLAVE,
-                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
                                          PROP_STATUS,
                                          g_param_spec_int ("status",
                                                            "status",
@@ -1513,7 +1452,7 @@ gdm_display_init (GdmDisplay *self)
         self->priv = GDM_DISPLAY_GET_PRIVATE (self);
 
         self->priv->creation_time = time (NULL);
-        self->priv->slave_timer = g_timer_new ();
+        self->priv->server_timer = g_timer_new ();
 }
 
 static void
@@ -1548,8 +1487,8 @@ gdm_display_finalize (GObject *object)
                 g_object_unref (self->priv->user_access_file);
         }
 
-        if (self->priv->slave_timer != NULL) {
-                g_timer_destroy (self->priv->slave_timer);
+        if (self->priv->server_timer != NULL) {
+                g_timer_destroy (self->priv->server_timer);
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
@@ -1581,13 +1520,25 @@ on_launch_environment_session_started (GdmLaunchEnvironment *launch_environment,
 }
 
 static void
+self_destruct (GdmDisplay *self)
+{
+        g_object_ref (self);
+        if (gdm_display_get_status (self) == GDM_DISPLAY_MANAGED) {
+                gdm_display_unmanage (self);
+        }
+
+        if (gdm_display_get_status (self) != GDM_DISPLAY_FINISHED) {
+                queue_finish (self);
+        }
+        g_object_unref (self);
+}
+
+static void
 on_launch_environment_session_stopped (GdmLaunchEnvironment *launch_environment,
                                        GdmDisplay           *self)
 {
         g_debug ("GdmDisplay: Greeter stopped");
-        gdm_slave_stop (self->priv->slave);
-
-        g_clear_object (&self->priv->launch_environment);
+        self_destruct (self);
 }
 
 static void
@@ -1596,7 +1547,7 @@ on_launch_environment_session_exited (GdmLaunchEnvironment *launch_environment,
                                       GdmDisplay           *self)
 {
         g_debug ("GdmDisplay: Greeter exited: %d", code);
-        gdm_slave_stop (self->priv->slave);
+        self_destruct (self);
 }
 
 static void
@@ -1605,7 +1556,7 @@ on_launch_environment_session_died (GdmLaunchEnvironment *launch_environment,
                                     GdmDisplay           *self)
 {
         g_debug ("GdmDisplay: Greeter died: %d", signal);
-        gdm_slave_stop (self->priv->slave);
+        self_destruct (self);
 }
 
 static gboolean
@@ -1769,6 +1720,22 @@ void
 gdm_display_stop_greeter_session (GdmDisplay *self)
 {
         if (self->priv->launch_environment != NULL) {
+
+                g_signal_handlers_disconnect_by_func (self->priv->launch_environment,
+                                                      G_CALLBACK (on_launch_environment_session_opened),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (self->priv->launch_environment,
+                                                      G_CALLBACK (on_launch_environment_session_started),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (self->priv->launch_environment,
+                                                      G_CALLBACK (on_launch_environment_session_stopped),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (self->priv->launch_environment,
+                                                      G_CALLBACK (on_launch_environment_session_exited),
+                                                      self);
+                g_signal_handlers_disconnect_by_func (self->priv->launch_environment,
+                                                      G_CALLBACK (on_launch_environment_session_died),
+                                                      self);
                 gdm_launch_environment_stop (self->priv->launch_environment);
                 g_clear_object (&self->priv->launch_environment);
         }
@@ -1776,12 +1743,6 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
         if (self->priv->doing_initial_setup) {
                 chown_initial_setup_home_dir ();
         }
-}
-
-GdmSlave *
-gdm_display_get_slave (GdmDisplay *self)
-{
-        return self->priv->slave;
 }
 
 static void
