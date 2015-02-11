@@ -1321,7 +1321,7 @@ display_should_autologin (GdmManager *manager,
                 return FALSE;
         }
 
-        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay, NULL);
+        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay);
         return enabled && delay == 0;
 }
 
@@ -1753,7 +1753,7 @@ on_session_client_connected (GdmSession      *session,
         g_object_get (display, "is-local", &display_is_local, NULL);
 
         enabled = FALSE;
-        gdm_display_get_timed_login_details (display, &enabled, &username, &delay, NULL);
+        gdm_display_get_timed_login_details (display, &enabled, &username, &delay);
 
         if (! enabled) {
                 return;
@@ -1873,7 +1873,7 @@ on_session_conversation_started (GdmSession *session,
         }
 
         enabled = FALSE;
-        gdm_display_get_timed_login_details (display, &enabled, &username, &delay, NULL);
+        gdm_display_get_timed_login_details (display, &enabled, &username, &delay);
         if (! enabled) {
                 return;
         }
@@ -1929,7 +1929,7 @@ start_autologin_conversation_if_necessary (GdmManager *manager,
         gboolean enabled;
         int delay = 0;
 
-        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay, NULL);
+        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay);
 
         if (delay == 0 && g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
                 return;
