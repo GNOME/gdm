@@ -985,6 +985,39 @@ get_seed_session_for_display (GdmDisplay *display)
 }
 
 static gboolean
+gdm_manager_handle_register_x11_display (GdmDBusManager        *manager,
+                                         GDBusMethodInvocation *invocation,
+                                         const char            *display_name)
+{
+        GdmManager       *self = GDM_MANAGER (manager);
+        const char       *sender;
+        GDBusConnection  *connection;
+        GdmDisplay       *display = NULL;
+
+        g_debug ("GdmManager: trying to register new display");
+
+        sender = g_dbus_method_invocation_get_sender (invocation);
+        connection = g_dbus_method_invocation_get_connection (invocation);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, NULL, NULL, NULL, NULL);
+
+        if (display == NULL) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("No display available"));
+
+                return TRUE;
+        }
+
+        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
+
+        gdm_dbus_manager_complete_register_x11_display (GDM_DBUS_MANAGER (manager),
+                                                        invocation);
+
+        return TRUE;
+}
+
+static gboolean
 gdm_manager_handle_open_session (GdmDBusManager        *manager,
                                  GDBusMethodInvocation *invocation)
 {
@@ -1309,6 +1342,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 static void
 manager_interface_init (GdmDBusManagerIface *interface)
 {
+        interface->handle_register_x11_display = gdm_manager_handle_register_x11_display;
         interface->handle_open_session = gdm_manager_handle_open_session;
         interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
 }
