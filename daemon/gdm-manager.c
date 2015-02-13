@@ -921,7 +921,6 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
 {
         GdmManager       *self = GDM_MANAGER (manager);
         const char       *sender;
-        GError           *error = NULL;
         GDBusConnection  *connection;
         GdmDisplay       *display = NULL;
         GdmSession       *session;
@@ -948,26 +947,30 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         session = get_seed_session_for_display (display);
 
         if (gdm_session_is_running (session)) {
-                error = g_error_new (G_DBUS_ERROR,
-                                     G_DBUS_ERROR_ACCESS_DENIED,
-                                     _("Can only be called before user is logged in"));
-                return FALSE;
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("Can only be called before user is logged in"));
+                return TRUE;
         }
 
         allowed_user = gdm_session_get_allowed_user (session);
 
         if (uid != allowed_user) {
-                error = g_error_new (G_DBUS_ERROR,
-                                     G_DBUS_ERROR_ACCESS_DENIED,
-                                     _("Caller not GDM"));
-                return FALSE;
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("Caller not GDM"));
+                return TRUE;
         }
 
         address = gdm_session_get_server_address (session);
 
         if (address == NULL) {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("Unable to open private communication channel"));
                 return TRUE;
         }
 
