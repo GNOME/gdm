@@ -607,12 +607,6 @@ _gdm_display_set_status (GdmDisplay *self,
         }
 }
 
-static void
-gdm_display_real_manage (GdmDisplay *self)
-{
-        _gdm_display_set_status (self, GDM_DISPLAY_MANAGED);
-}
-
 static gboolean
 gdm_display_real_prepare (GdmDisplay *self)
 {
@@ -1338,7 +1332,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
         object_class->finalize = gdm_display_finalize;
 
         klass->prepare = gdm_display_real_prepare;
-        klass->manage = gdm_display_real_manage;
 
         g_object_class_install_property (object_class,
                                          PROP_ID,
