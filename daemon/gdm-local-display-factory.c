@@ -177,7 +177,6 @@ on_display_disposed (GdmLocalDisplayFactory *factory,
 
 static void
 store_display (GdmLocalDisplayFactory *factory,
-               guint32                 num,
                GdmDisplay             *display)
 {
         GdmDisplayStore *store;
@@ -189,9 +188,6 @@ store_display (GdmLocalDisplayFactory *factory,
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
-
-        /* now fill our reserved spot */
-        g_hash_table_insert (factory->priv->used_display_numbers, GUINT_TO_POINTER (num), NULL);
 }
 
 static const char *
@@ -242,7 +238,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                       "allow-timed-login", FALSE,
                       NULL);
 
-        store_display (factory, num, display);
+        store_display (factory, display);
 
         if (! gdm_display_manage (display)) {
                 display = NULL;
@@ -377,7 +373,7 @@ create_display (GdmLocalDisplayFactory *factory,
         g_object_set (display, "seat-id", seat_id, NULL);
         g_object_set (display, "is-initial", initial, NULL);
 
-        store_display (factory, num, display);
+        store_display (factory, display);
 
         /* let store own the ref */
         g_object_unref (display);
