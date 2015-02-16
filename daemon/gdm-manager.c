@@ -1593,10 +1593,10 @@ start_user_session_if_ready (GdmManager *manager,
 }
 
 static void
-on_session_opened (GdmSession       *session,
-                   const char       *service_name,
-                   const char       *session_id,
-                   GdmManager       *manager)
+on_user_session_opened (GdmSession       *session,
+                        const char       *service_name,
+                        const char       *session_id,
+                        GdmManager       *manager)
 {
         manager->priv->user_sessions = g_list_append (manager->priv->user_sessions,
                                                       g_object_ref (session));
@@ -1611,10 +1611,10 @@ on_session_opened (GdmSession       *session,
 }
 
 static void
-on_session_started (GdmSession      *session,
-                    const char      *service_name,
-                    GPid             pid,
-                    GdmManager      *manager)
+on_user_session_started (GdmSession      *session,
+                         const char      *service_name,
+                         GPid             pid,
+                         GdmManager      *manager)
 {
         g_debug ("GdmManager: session started %d", pid);
 }
@@ -2062,11 +2062,11 @@ create_seed_session_for_display (GdmManager *manager,
                           manager);
         g_signal_connect (session,
                           "session-opened",
-                          G_CALLBACK (on_session_opened),
+                          G_CALLBACK (on_user_session_opened),
                           manager);
         g_signal_connect (session,
                           "session-started",
-                          G_CALLBACK (on_session_started),
+                          G_CALLBACK (on_user_session_started),
                           manager);
         g_signal_connect (session,
                           "session-exited",
