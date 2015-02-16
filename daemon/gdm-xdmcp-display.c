@@ -205,7 +205,7 @@ gdm_xdmcp_display_manage (GdmDisplay *display)
 
         g_timeout_add (500, (GSourceFunc)idle_connect_to_display, self);
 
-        GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->manage (display);
+        g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
 }
 
 static void
