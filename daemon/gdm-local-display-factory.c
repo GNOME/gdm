@@ -271,7 +271,6 @@ on_display_status_changed (GdmDisplay             *display,
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
-        g_assert (num != -1);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
@@ -285,7 +284,9 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_FINISHED:
                 /* remove the display number from factory->priv->used_display_numbers
                    so that it may be reused */
-                g_hash_table_remove (factory->priv->used_display_numbers, GUINT_TO_POINTER (num));
+                if (num != -1) {
+                        g_hash_table_remove (factory->priv->used_display_numbers, GUINT_TO_POINTER (num));
+                }
                 gdm_display_store_remove (store, display);
 
                 /* Create a new equivalent display if it was static */
