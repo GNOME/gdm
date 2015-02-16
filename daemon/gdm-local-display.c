@@ -119,14 +119,6 @@ gdm_local_display_prepare (GdmDisplay *display)
 }
 
 static void
-gdm_local_display_manage (GdmDisplay *display)
-{
-        GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
-
-        g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
-}
-
-static void
 gdm_local_display_class_init (GdmLocalDisplayClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -136,7 +128,6 @@ gdm_local_display_class_init (GdmLocalDisplayClass *klass)
         object_class->finalize = gdm_local_display_finalize;
 
         display_class->prepare = gdm_local_display_prepare;
-        display_class->manage = gdm_local_display_manage;
 
         g_type_class_add_private (klass, sizeof (GdmLocalDisplayPrivate));
 }
