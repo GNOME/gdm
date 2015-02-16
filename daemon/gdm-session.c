@@ -49,7 +49,6 @@
 
 #include "gdm-session.h"
 #include "gdm-session-enum-types.h"
-#include "gdm-session-record.h"
 #include "gdm-session-worker-common.h"
 #include "gdm-session-worker-job.h"
 #include "gdm-session-worker-glue.h"
@@ -190,51 +189,6 @@ find_conversation_by_name (GdmSession *self,
 }
 
 static void
-on_session_started (GdmSession *self,
-                    const char *service_name)
-{
-        GdmSessionConversation *conversation;
-
-        conversation = find_conversation_by_name (self, service_name);
-        if (conversation != NULL) {
-                gdm_session_record_login (conversation->worker_pid,
-                                          self->priv->selected_user,
-                                          self->priv->display_hostname,
-                                          self->priv->display_name,
-                                          self->priv->display_device);
-        }
-}
-
-static void
-on_session_start_failed (GdmSession *self,
-                         const char *service_name,
-                         const char *message)
-{
-        GdmSessionConversation *conversation;
-
-        conversation = find_conversation_by_name (self, service_name);
-        if (conversation != NULL) {
-                gdm_session_record_login (conversation->worker_pid,
-                                          self->priv->selected_user,
-                                          self->priv->display_hostname,
-                                          self->priv->display_name,
-                                          self->priv->display_device);
-        }
-}
-
-static void
-on_session_exited (GdmSession *self,
-                   int        exit_code)
-{
-
-        gdm_session_record_logout (self->priv->session_pid,
-                                   self->priv->selected_user,
-                                   self->priv->display_hostname,
-                                   self->priv->display_name,
-                                   self->priv->display_device);
-}
-
-static void
 report_and_stop_conversation (GdmSession *self,
                               const char *service_name,
                               GError     *error)
@@ -289,13 +243,6 @@ on_authenticate_cb (GdmDBusWorker *proxy,
                                0,
                                service_name,
                                conversation->worker_pid);
-
-                gdm_session_record_failed (conversation->worker_pid,
-                                           self->priv->selected_user,
-                                           self->priv->display_hostname,
-                                           self->priv->display_name,
-                                           self->priv->display_device);
-
                 report_and_stop_conversation (self, service_name, error);
         }
 }
@@ -1720,19 +1667,6 @@ gdm_session_init (GdmSession *self)
                                                   GDM_TYPE_SESSION,
                                                   GdmSessionPrivate);
 
-        g_signal_connect (self,
-                          "session-started",
-                          G_CALLBACK (on_session_started),
-                          NULL);
-        g_signal_connect (self,
-                          "session-start-failed",
-                          G_CALLBACK (on_session_start_failed),
-                          NULL);
-        g_signal_connect (self,
-                          "session-exited",
-                          G_CALLBACK (on_session_exited),
-                          NULL);
-
         self->priv->conversations = g_hash_table_new_full (g_str_hash,
                                                            g_str_equal,
                                                            (GDestroyNotify) g_free,
@@ -2659,14 +2593,6 @@ stop_all_conversations (GdmSession *self)
 static void
 do_reset (GdmSession *self)
 {
-        if (self->priv->session_conversation != NULL) {
-                gdm_session_record_logout (self->priv->session_pid,
-                                           self->priv->selected_user,
-                                           self->priv->display_hostname,
-                                           self->priv->display_name,
-                                           self->priv->display_device);
-        }
-
         stop_all_conversations (self);
 
         g_list_free_full (self->priv->pending_worker_connections, g_object_unref);
