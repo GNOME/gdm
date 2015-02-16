@@ -84,6 +84,9 @@ typedef struct
         void (* disconnected)                (GdmSession   *session);
         void (* verification_complete)       (GdmSession   *session,
                                               const char   *service_name);
+        void (* authentication_failed)       (GdmSession   *session,
+                                              const char   *service_name,
+                                              GPid          worker_pid);
         void (* session_opened)              (GdmSession   *session,
                                               const char   *service_name,
                                               const char   *session_id);
