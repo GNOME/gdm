@@ -28,7 +28,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef WITH_SYSTEMD
 #include <sys/ioctl.h>
 #include <sys/vt.h>
 #endif
@@ -956,7 +956,7 @@ gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
         worker->priv->auditor = NULL;
 }
 
-#ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef WITH_SYSTEMD
 static void
 jump_to_vt (GdmSessionWorker  *worker,
             int                vt_number)
@@ -1004,7 +1004,7 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         gdm_session_worker_stop_auditor (worker);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef WITH_SYSTEMD
         if (worker->priv->login_vt != worker->priv->session_vt) {
                 jump_to_vt (worker, worker->priv->login_vt);
         }
@@ -1811,7 +1811,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         error_code = PAM_SUCCESS;
 
-#ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef WITH_SYSTEMD
         /* If we're in new vt mode, jump to the new vt now. There's no need to jump for
          * the other two modes: in the logind case, the session will activate itself when
          * ready, and in the reuse server case, we're already on the correct VT. */
@@ -2003,7 +2003,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         return TRUE;
 }
 
-#ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef WITH_SYSTEMD
 static gboolean
 set_up_for_new_vt (GdmSessionWorker *worker)
 {
@@ -2146,7 +2146,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
                         return FALSE;
                 }
                 break;
-#ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef WITH_SYSTEMD
         case GDM_SESSION_DISPLAY_MODE_NEW_VT:
         case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:
                 if (!set_up_for_new_vt (worker)) {
