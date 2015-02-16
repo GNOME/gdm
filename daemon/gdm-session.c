@@ -153,6 +153,7 @@ enum {
         CLIENT_DISCONNECTED,
         CLIENT_READY_FOR_SESSION_TO_START,
         DISCONNECTED,
+        AUTHENTICATION_FAILED,
         VERIFICATION_COMPLETE,
         SESSION_OPENED,
         SESSION_STARTED,
@@ -283,6 +284,12 @@ on_authenticate_cb (GdmDBusWorker *proxy,
         if (worked) {
                 gdm_session_authorize (self, service_name);
         } else {
+                g_signal_emit (self,
+                               signals[AUTHENTICATION_FAILED],
+                               0,
+                               service_name,
+                               conversation->worker_pid);
+
                 gdm_session_record_failed (conversation->worker_pid,
                                            self->priv->selected_user,
                                            self->priv->display_hostname,
@@ -3296,6 +3303,19 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
+
+        signals [AUTHENTICATION_FAILED] =
+                g_signal_new ("authentication-failed",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClass, authentication_failed),
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              2,
+                              G_TYPE_STRING,
+                              G_TYPE_INT);
         signals [VERIFICATION_COMPLETE] =
                 g_signal_new ("verification-complete",
                               GDM_TYPE_SESSION,
