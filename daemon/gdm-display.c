@@ -1273,21 +1273,15 @@ gdm_display_constructor (GType                  type,
                          GObjectConstructParam *construct_properties)
 {
         GdmDisplay      *self;
-        char            *canonical_display_name;
         gboolean         res;
 
         self = GDM_DISPLAY (G_OBJECT_CLASS (gdm_display_parent_class)->constructor (type,
                                                                                     n_construct_properties,
                                                                                     construct_properties));
 
-        canonical_display_name = g_strdelimit (g_strdup (self->priv->x11_display_name),
-                                               ":" G_STR_DELIMITERS, '_');
-
         g_free (self->priv->id);
-        self->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Displays/%s",
-                                             canonical_display_name);
-
-        g_free (canonical_display_name);
+        self->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Displays/%lu",
+                                          (gulong) self);
 
         res = register_display (self);
         if (! res) {
