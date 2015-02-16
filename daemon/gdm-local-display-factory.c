@@ -52,7 +52,7 @@ struct GdmLocalDisplayFactoryPrivate
 {
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
-        GHashTable      *displays;
+        GHashTable      *used_display_numbers;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
@@ -131,7 +131,7 @@ take_next_display_number (GdmLocalDisplayFactory *factory)
         ret = 0;
         list = NULL;
 
-        g_hash_table_foreach (factory->priv->displays, (GHFunc)listify_hash, &list);
+        g_hash_table_foreach (factory->priv->used_display_numbers, (GHFunc)listify_hash, &list);
         if (list == NULL) {
                 goto out;
         }
@@ -163,7 +163,7 @@ take_next_display_number (GdmLocalDisplayFactory *factory)
 
         /* now reserve this number */
         g_debug ("GdmLocalDisplayFactory: Reserving X display: %u", ret);
-        g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (ret), NULL);
+        g_hash_table_insert (factory->priv->used_display_numbers, GUINT_TO_POINTER (ret), NULL);
 
         return ret;
 }
@@ -191,7 +191,7 @@ store_display (GdmLocalDisplayFactory *factory,
         gdm_display_store_add (store, display);
 
         /* now fill our reserved spot */
-        g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
+        g_hash_table_insert (factory->priv->used_display_numbers, GUINT_TO_POINTER (num), NULL);
 }
 
 static const char *
@@ -287,9 +287,9 @@ on_display_status_changed (GdmDisplay             *display,
         g_debug ("GdmLocalDisplayFactory: display status changed: %d", status);
         switch (status) {
         case GDM_DISPLAY_FINISHED:
-                /* remove the display number from factory->priv->displays
+                /* remove the display number from factory->priv->used_display_numbers
                    so that it may be reused */
-                g_hash_table_remove (factory->priv->displays, GUINT_TO_POINTER (num));
+                g_hash_table_remove (factory->priv->used_display_numbers, GUINT_TO_POINTER (num));
                 gdm_display_store_remove (store, display);
 
                 /* Create a new equivalent display if it was static */
@@ -301,7 +301,7 @@ on_display_status_changed (GdmDisplay             *display,
                 }
                 break;
         case GDM_DISPLAY_FAILED:
-                /* leave the display number in factory->priv->displays
+                /* leave the display number in factory->priv->used_display_numbers
                    so that it doesn't get reused */
                 gdm_display_store_remove (store, display);
 
@@ -397,7 +397,7 @@ delete_display (GdmLocalDisplayFactory *factory,
 
         GdmDisplayStore *store;
 
-        g_debug ("GdmLocalDisplayFactory: Removing displays on seat %s", seat_id);
+        g_debug ("GdmLocalDisplayFactory: Removing used_display_numbers on seat %s", seat_id);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_foreach_remove (store, lookup_by_seat_id, (gpointer) seat_id);
@@ -668,7 +668,7 @@ gdm_local_display_factory_init (GdmLocalDisplayFactory *factory)
 {
         factory->priv = GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE (factory);
 
-        factory->priv->displays = g_hash_table_new (NULL, NULL);
+        factory->priv->used_display_numbers = g_hash_table_new (NULL, NULL);
 }
 
 static void
@@ -686,7 +686,7 @@ gdm_local_display_factory_finalize (GObject *object)
         g_clear_object (&factory->priv->connection);
         g_clear_object (&factory->priv->skeleton);
 
-        g_hash_table_destroy (factory->priv->displays);
+        g_hash_table_destroy (factory->priv->used_display_numbers);
 
 #ifdef WITH_SYSTEMD
         gdm_local_display_factory_stop_monitor (factory);
