@@ -3603,3 +3603,9 @@ gdm_session_display_mode_to_string (GdmSessionDisplayMode mode)
         g_warning ("Unknown GdmSessionDisplayMode %d", mode);
         return "";
 }
+
+GPid
+gdm_session_get_pid (GdmSession *session)
+{
+        return session->priv->session_pid;
+}
