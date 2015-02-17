@@ -32,7 +32,6 @@ bin_PROGRAMS = \
 gdmflexiserver_SOURCES =	\
 	gdmflexiserver.c	\
 	$(NULL)
-
 gdmflexiserver_LDADD =		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(GTK_LIBS)		\
