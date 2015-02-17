@@ -113,9 +113,9 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
 static void     gdm_manager_finalize    (GObject         *object);
-static void create_seed_session_for_display (GdmManager *manager,
-                                             GdmDisplay *display,
-                                             uid_t       allowed_user);
+static void     create_embryonic_user_session_for_display (GdmManager *manager,
+                                                           GdmDisplay *display,
+                                                           uid_t       allowed_user);
 static void     touch_ran_once_marker_file  (GdmManager *manager);
 
 static gpointer manager_object = NULL;
@@ -982,13 +982,13 @@ get_display_for_user_session (GdmSession *session)
 }
 
 static GdmSession *
-get_seed_session_for_display (GdmDisplay *display)
+get_embryonic_user_session_for_display (GdmDisplay *display)
 {
         if (display == NULL) {
                 return NULL;
         }
 
-        return g_object_get_data (G_OBJECT (display), "gdm-seed-session");
+        return g_object_get_data (G_OBJECT (display), "gdm-embryonic-user-session");
 }
 
 static gboolean
@@ -1076,7 +1076,7 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        session = get_seed_session_for_display (display);
+        session = get_embryonic_user_session_for_display (display);
 
         if (session != NULL) {
                 GPid pid;
@@ -1125,7 +1125,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        session = get_seed_session_for_display (display);
+        session = get_embryonic_user_session_for_display (display);
 
         if (gdm_session_is_running (session)) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -1387,7 +1387,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                                          seat_id,
                                                          NULL);
         } else {
-                session = get_seed_session_for_display (display);
+                session = get_embryonic_user_session_for_display (display);
         }
 
         if (session != NULL && gdm_session_is_running (session)) {
@@ -1465,7 +1465,7 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        create_seed_session_for_display (manager, display, passwd_entry->pw_uid);
+        create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
         g_free (allowed_user);
 
         if (!will_autologin) {
@@ -1617,20 +1617,20 @@ on_start_user_session (StartUserSessionOperation *operation)
         if (gdm_session_get_display_mode (operation->session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
                 /* In this case, the greeter's display is morphing into
                  * the user session display. Kill the greeter on this session
-                 * and let the seed session follow the same display. */
+                 * and let the user session follow the same display. */
                 gdm_display_stop_greeter_session (display);
         } else {
                 uid_t allowed_uid;
 
                 g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
 
-                /* The seed session is going to follow the session worker
+                /* The user session is going to follow the session worker
                  * into the new display. Untie it from this display and
-                 * create a new seed session for us. */
+                 * create a new embryonic session for a future user login. */
                 allowed_uid = gdm_session_get_allowed_user (operation->session);
-                g_object_set_data (G_OBJECT (display), "gdm-seed-session", NULL);
+                g_object_set_data (G_OBJECT (display), "gdm-embryonic-user-session", NULL);
                 g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
-                create_seed_session_for_display (operation->manager, display, allowed_uid);
+                create_embryonic_user_session_for_display (operation->manager, display, allowed_uid);
         }
 
         start_user_session (operation->manager, operation);
@@ -2081,14 +2081,14 @@ touch_ran_once_marker_file (GdmManager *manager)
 }
 
 static void
-clean_seed_session (GdmSession *session)
+clean_embryonic_user_session (GdmSession *session)
 {
         g_object_set_data (G_OBJECT (session), "gdm-display", NULL);
         g_object_unref (session);
 }
 
 static void
-create_seed_session_for_display (GdmManager *manager,
+create_embryonic_user_session_for_display (GdmManager *manager,
                                  GdmDisplay *display,
                                  uid_t       allowed_user)
 {
@@ -2178,7 +2178,11 @@ create_seed_session_for_display (GdmManager *manager,
                           G_CALLBACK (on_user_session_died),
                           manager);
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
-        g_object_set_data_full (G_OBJECT (display), "gdm-seed-session", g_object_ref (session), (GDestroyNotify) clean_seed_session);
+        g_object_set_data_full (G_OBJECT (display),
+                                "gdm-embryonic-user-session",
+                                g_object_ref (session),
+                                (GDestroyNotify)
+                                clean_embryonic_user_session);
 
         start_autologin_conversation_if_necessary (manager, display, session);
 }
