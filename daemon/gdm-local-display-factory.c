@@ -74,6 +74,7 @@ static void     gdm_local_display_factory_finalize      (GObject                
 
 static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory,
                                                          const char                  *seat_id,
+                                                         const char                  *session_type,
                                                          gboolean                    initial_display);
 
 static void     on_display_status_changed               (GdmDisplay                  *display,
@@ -277,6 +278,7 @@ on_display_status_changed (GdmDisplay             *display,
         GdmDisplayStore *store;
         int              num;
         char            *seat_id = NULL;
+        char            *session_type = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
 
@@ -289,6 +291,7 @@ on_display_status_changed (GdmDisplay             *display,
                       "seat-id", &seat_id,
                       "is-initial", &is_initial,
                       "is-local", &is_local,
+                      "session-type", &session_type,
                       NULL);
 
         status = gdm_display_get_status (display);
@@ -308,7 +311,7 @@ on_display_status_changed (GdmDisplay             *display,
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
-                        create_display (factory, seat_id, is_initial);
+                        create_display (factory, seat_id, session_type, is_initial);
                 }
                 break;
         case GDM_DISPLAY_FAILED:
@@ -327,7 +330,14 @@ on_display_status_changed (GdmDisplay             *display,
                                 /* FIXME: should monitor hardware changes to
                                    try again when seats change */
                         } else {
-                                create_display (factory, seat_id, is_initial);
+#ifdef ENABLE_WAYLAND_SUPPORT
+                                if (g_strcmp0 (session_type, "wayland") == 0) {
+                                        g_free (session_type);
+                                        session_type = NULL;
+                                }
+
+#endif
+                                create_display (factory, seat_id, session_type, is_initial);
                         }
                 }
                 break;
@@ -343,6 +353,7 @@ on_display_status_changed (GdmDisplay             *display,
         }
 
         g_free (seat_id);
+        g_free (session_type);
 }
 
 static gboolean
@@ -366,6 +377,7 @@ lookup_by_seat_id (const char *id,
 static GdmDisplay *
 create_display (GdmLocalDisplayFactory *factory,
                 const char             *seat_id,
+                const char             *session_type,
                 gboolean                initial)
 {
         GdmDisplayStore *store;
@@ -384,6 +396,9 @@ create_display (GdmLocalDisplayFactory *factory,
 #ifdef WITH_SYSTEMD
         if (g_strcmp0 (seat_id, "seat0") == 0) {
                 display = gdm_local_display_new ();
+                if (session_type != NULL) {
+                        g_object_set (G_OBJECT (display), "session-type", session_type, NULL);
+                }
         }
 #endif
 
@@ -454,14 +469,18 @@ static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *fa
 
         while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL)) {
                 gboolean is_initial;
+                const char *session_type = NULL;
 
                 if (g_strcmp0 (seat, "seat0") == 0) {
                         is_initial = TRUE;
+#ifdef ENABLE_WAYLAND_SUPPORT
+                        session_type = "wayland";
+#endif
                 } else {
                         is_initial = FALSE;
                 }
 
-                create_display (factory, seat, is_initial);
+                create_display (factory, seat, session_type, is_initial);
         }
 
         g_variant_unref (result);
@@ -481,7 +500,7 @@ on_seat_new (GDBusConnection *connection,
         const char *seat;
 
         g_variant_get (parameters, "(&s&o)", &seat, NULL);
-        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, FALSE);
+        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, NULL, FALSE);
 }
 
 static void
@@ -557,7 +576,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 #endif
 
         /* On ConsoleKit just create Seat1, and that's it. */
-        display = create_display (factory, CK_SEAT1_PATH, TRUE);
+        display = create_display (factory, CK_SEAT1_PATH, NULL, TRUE);
 
         return display != NULL;
 }
