@@ -111,6 +111,7 @@ test_session_client_LDADD =	\
 
 libexec_PROGRAMS = 			\
 	gdm-session-worker		\
+	gdm-wayland-session		\
 	$(NULL)
 
 gdm_session_worker_SOURCES = 			\
@@ -139,6 +140,19 @@ nodist_gdm_session_worker_SOURCES =		\
 	gdm-session-worker-glue.h		\
 	gdm-session-enum-types.c		\
 	gdm-session-enum-types.h		\
+	$(NULL)
+
+gdm_wayland_session_LDADD =		\
+	$(top_builddir)/common/libgdmcommon.la	\
+	$(GTK_LIBS)		\
+	$(COMMON_LIBS)		\
+	$(SYSTEMD_LIBS)         \
+	$(NULL)
+
+gdm_wayland_session_SOURCES =	\
+	gdm-manager-glue.h	\
+	gdm-manager-glue.c	\
+	gdm-wayland-session.c	\
 	$(NULL)
 
 if HAVE_LIBAUDIT
