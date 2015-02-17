@@ -92,13 +92,19 @@ gdm_local_display_prepare (GdmDisplay *display)
         GdmLaunchEnvironment *launch_environment;
         char          *seat_id;
         gboolean       doing_initial_setup = FALSE;
+        gboolean       is_for_greeter = FALSE;
 
         seat_id = NULL;
 
         g_object_get (self,
                       "seat-id", &seat_id,
                       "doing-initial-setup", &doing_initial_setup,
+                      "is-for-greeter", &is_for_greeter,
                       NULL);
+
+        if (!is_for_greeter) {
+                goto out;
+        }
 
         if (!doing_initial_setup) {
                 launch_environment = gdm_create_greeter_launch_environment (NULL,
@@ -115,6 +121,7 @@ gdm_local_display_prepare (GdmDisplay *display)
         g_object_set (self, "launch-environment", launch_environment, NULL);
         g_object_unref (launch_environment);
 
+out:
         return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
 }
 

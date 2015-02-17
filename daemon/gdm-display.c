@@ -89,6 +89,7 @@ struct GdmDisplayPrivate
 
         guint                 is_local : 1;
         guint                 is_initial : 1;
+        guint                 is_for_greeter : 1;
         guint                 allow_timed_login : 1;
         guint                 have_existing_user_accounts : 1;
         guint                 doing_initial_setup : 1;
@@ -108,6 +109,7 @@ enum {
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
+        PROP_IS_FOR_GREETER,
         PROP_ALLOW_TIMED_LOGIN,
         PROP_HAVE_EXISTING_USER_ACCOUNTS,
         PROP_DOING_INITIAL_SETUP,
@@ -713,7 +715,10 @@ gdm_display_manage (GdmDisplay *self)
         }
 
         g_timer_start (self->priv->server_timer);
-        look_for_existing_users_and_manage (self);
+
+        if (self->priv->is_for_greeter) {
+                look_for_existing_users_and_manage (self);
+        }
 
         return TRUE;
 }
@@ -885,6 +890,13 @@ _gdm_display_set_is_initial (GdmDisplay     *self,
 }
 
 static void
+_gdm_display_set_is_for_greeter (GdmDisplay *self,
+                                 gboolean    for_greeter)
+{
+        self->priv->is_for_greeter = for_greeter;
+}
+
+static void
 _gdm_display_set_allow_timed_login (GdmDisplay     *self,
                                     gboolean        allow_timed_login)
 {
@@ -937,6 +949,9 @@ gdm_display_set_property (GObject        *object,
                 break;
         case PROP_IS_INITIAL:
                 _gdm_display_set_is_initial (self, g_value_get_boolean (value));
+                break;
+        case PROP_IS_FOR_GREETER:
+                _gdm_display_set_is_for_greeter (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -991,6 +1006,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_IS_INITIAL:
                 g_value_set_boolean (value, self->priv->is_initial);
+                break;
+        case PROP_IS_FOR_GREETER:
+                g_value_set_boolean (value, self->priv->is_for_greeter);
                 break;
         case PROP_HAVE_EXISTING_USER_ACCOUNTS:
                 g_value_set_boolean (value, self->priv->have_existing_user_accounts);
@@ -1248,6 +1266,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
+                                         PROP_IS_FOR_GREETER,
+                                         g_param_spec_boolean ("is-for-greeter",
+                                                               NULL,
+                                                               NULL,
+                                                               TRUE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
                                          PROP_ALLOW_TIMED_LOGIN,
                                          g_param_spec_boolean ("allow-timed-login",
                                                                NULL,
@@ -1470,6 +1495,8 @@ void
 gdm_display_set_up_greeter_session (GdmDisplay  *self,
                                     char       **username)
 {
+        g_return_if_fail (self->priv->is_for_greeter);
+
         self->priv->doing_initial_setup = wants_initial_setup (self);
 
         if (self->priv->doing_initial_setup) {
@@ -1487,6 +1514,8 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         char          *seat_id;
         char          *hostname;
         char          *auth_file;
+
+        g_return_if_fail (self->priv->is_for_greeter);
 
         g_debug ("GdmDisplay: Running greeter");
 
