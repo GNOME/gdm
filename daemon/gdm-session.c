@@ -127,7 +127,7 @@ struct _GdmSessionPrivate
         GDBusServer         *outside_server;
         GHashTable          *environment;
 
-        gboolean             is_program_session : 1;
+        guint32              is_program_session : 1;
 };
 
 enum {
