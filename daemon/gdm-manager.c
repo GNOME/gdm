@@ -1454,6 +1454,7 @@ set_up_greeter_session (GdmManager *manager,
         if (!will_autologin) {
                  gdm_display_set_up_greeter_session (display, &allowed_user);
         } else {
+                 g_object_set (G_OBJECT (display), "session-class", "user", NULL);
                  allowed_user = g_strdup ("root");
         }
 
@@ -1627,6 +1628,7 @@ on_start_user_session (StartUserSessionOperation *operation)
                  * the user session display. Kill the greeter on this session
                  * and let the user session follow the same display. */
                 gdm_display_stop_greeter_session (display);
+                g_object_set (G_OBJECT (display), "session-class", "user", NULL);
         } else {
                 uid_t allowed_uid;
 

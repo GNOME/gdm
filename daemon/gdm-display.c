@@ -60,6 +60,7 @@ struct GdmDisplayPrivate
         char                 *id;
         char                 *seat_id;
         char                 *session_id;
+        char                 *session_class;
 
         char                 *remote_hostname;
         int                   x11_display_number;
@@ -100,6 +101,7 @@ enum {
         PROP_STATUS,
         PROP_SEAT_ID,
         PROP_SESSION_ID,
+        PROP_SESSION_CLASS,
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
@@ -713,7 +715,10 @@ gdm_display_manage (GdmDisplay *self)
         }
 
         g_timer_start (self->priv->server_timer);
-        look_for_existing_users_and_manage (self);
+
+        if (g_strcmp0 (self->priv->session_class, "greeter") == 0) {
+                look_for_existing_users_and_manage (self);
+        }
 
         return TRUE;
 }
@@ -836,6 +841,14 @@ _gdm_display_set_session_id (GdmDisplay     *self,
 }
 
 static void
+_gdm_display_set_session_class (GdmDisplay *self,
+                                const char *session_class)
+{
+        g_free (self->priv->session_class);
+        self->priv->session_class = g_strdup (session_class);
+}
+
+static void
 _gdm_display_set_remote_hostname (GdmDisplay     *self,
                                   const char     *hostname)
 {
@@ -919,6 +932,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_SESSION_ID:
                 _gdm_display_set_session_id (self, g_value_get_string (value));
                 break;
+        case PROP_SESSION_CLASS:
+                _gdm_display_set_session_class (self, g_value_get_string (value));
+                break;
         case PROP_REMOTE_HOSTNAME:
                 _gdm_display_set_remote_hostname (self, g_value_get_string (value));
                 break;
@@ -971,6 +987,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SESSION_ID:
                 g_value_set_string (value, self->priv->session_id);
+                break;
+        case PROP_SESSION_CLASS:
+                g_value_set_string (value, self->priv->session_class);
                 break;
         case PROP_REMOTE_HOSTNAME:
                 g_value_set_string (value, self->priv->remote_hostname);
@@ -1250,6 +1269,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
+                                         PROP_SESSION_CLASS,
+                                         g_param_spec_string ("session-class",
+                                                              NULL,
+                                                              NULL,
+                                                              "greeter",
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
                                          PROP_IS_INITIAL,
                                          g_param_spec_boolean ("is-initial",
                                                                NULL,
@@ -1344,6 +1370,7 @@ gdm_display_finalize (GObject *object)
         g_debug ("GdmDisplay: Finalizing display: %s", self->priv->id);
         g_free (self->priv->id);
         g_free (self->priv->seat_id);
+        g_free (self->priv->session_class);
         g_free (self->priv->remote_hostname);
         g_free (self->priv->x11_display_name);
         g_free (self->priv->x11_cookie);
@@ -1479,6 +1506,8 @@ void
 gdm_display_set_up_greeter_session (GdmDisplay  *self,
                                     char       **username)
 {
+        g_return_if_fail (g_strcmp0 (self->priv->session_class, "greeter") == 0);
+
         self->priv->doing_initial_setup = wants_initial_setup (self);
 
         if (self->priv->doing_initial_setup) {
@@ -1496,6 +1525,8 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         char          *seat_id;
         char          *hostname;
         char          *auth_file;
+
+        g_return_if_fail (g_strcmp0 (self->priv->session_class, "greeter") == 0);
 
         g_debug ("GdmDisplay: Running greeter");
 
