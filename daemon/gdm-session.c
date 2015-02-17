@@ -2954,12 +2954,7 @@ gdm_session_select_session (GdmSession *self,
         gpointer key, value;
 
         g_free (self->priv->selected_session);
-
-        if (strcmp (text, "__previous") == 0) {
-                self->priv->selected_session = NULL;
-        } else {
-                self->priv->selected_session = g_strdup (text);
-        }
+        self->priv->selected_session = g_strdup (text);
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
