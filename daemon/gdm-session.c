@@ -110,6 +110,7 @@ struct _GdmSessionPrivate
         GPid                 session_pid;
 
         /* object lifetime scope */
+        char                *session_type;
         char                *display_name;
         char                *display_hostname;
         char                *display_device;
@@ -139,6 +140,7 @@ enum {
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_IS_INITIAL,
+        PROP_SESSION_TYPE,
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE,
@@ -172,6 +174,8 @@ enum {
 #ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
 #endif
+static void set_session_type (GdmSession *self,
+                              const char *session_type);
 static guint signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
@@ -2418,17 +2422,9 @@ static void
 send_session_type (GdmSession *self,
                    GdmSessionConversation *conversation)
 {
-        const char *session_type = "x11";
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-        if (gdm_session_is_wayland_session (self)) {
-                session_type = "wayland";
-        }
-#endif
-
         gdm_dbus_worker_call_set_environment_variable (conversation->worker_proxy,
                                                        "XDG_SESSION_TYPE",
-                                                       session_type,
+                                                       self->priv->session_type? : "x11",
                                                        NULL, NULL, NULL);
 }
 
@@ -2574,7 +2570,7 @@ gdm_session_start_session (GdmSession *self,
         display_mode = gdm_session_get_display_mode (self);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        is_x11 = !gdm_session_is_wayland_session (self);
+        is_x11 = g_strcmp0 (self->priv->session_type, "wayland") != 0;
 #endif
 
         if (display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED ||
@@ -2905,7 +2901,7 @@ gdm_session_get_display_mode (GdmSession *self)
         /* Wayland sessions are for now assumed to run in a
          * mutter-launch-like environment, so we allocate
          * a new VT for them. */
-        if (gdm_session_is_wayland_session (self)) {
+        if (g_strcmp0 (self->priv->session_type, "wayland") == 0) {
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         }
 #endif
@@ -2965,9 +2961,17 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
+        gboolean is_wayland_session = FALSE;
 
         g_free (self->priv->selected_session);
         self->priv->selected_session = g_strdup (text);
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        is_wayland_session = gdm_session_is_wayland_session (self);
+        if (is_wayland_session) {
+                set_session_type (self, "wayland");
+        }
+#endif
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -3069,6 +3073,14 @@ set_conversation_environment (GdmSession  *self,
 }
 
 static void
+set_session_type (GdmSession *self,
+                  const char *session_type)
+{
+        g_free (self->priv->session_type);
+        self->priv->session_type = g_strdup (session_type);
+}
+
+static void
 gdm_session_set_property (GObject      *object,
                           guint         prop_id,
                           const GValue *value,
@@ -3079,6 +3091,9 @@ gdm_session_set_property (GObject      *object,
         self = GDM_SESSION (object);
 
         switch (prop_id) {
+        case PROP_SESSION_TYPE:
+                set_session_type (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_NAME:
                 set_display_name (self, g_value_get_string (value));
                 break;
@@ -3129,6 +3144,9 @@ gdm_session_get_property (GObject    *object,
         self = GDM_SESSION (object);
 
         switch (prop_id) {
+        case PROP_SESSION_TYPE:
+                g_value_set_string (value, self->priv->session_type);
+                break;
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
@@ -3512,6 +3530,13 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                "conversation environment",
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+        g_object_class_install_property (object_class,
+                                         PROP_SESSION_TYPE,
+                                         g_param_spec_string ("session-type",
+                                                              NULL,
+                                                              NULL,
+                                                              NULL,
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
                                          g_param_spec_string ("display-name",
