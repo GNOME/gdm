@@ -128,6 +128,7 @@ struct _GdmSessionPrivate
         GHashTable          *environment;
 
         guint32              is_program_session : 1;
+        guint32              display_is_initial : 1;
 };
 
 enum {
@@ -137,6 +138,7 @@ enum {
         PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
+        PROP_DISPLAY_IS_INITIAL,
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE,
@@ -1987,6 +1989,7 @@ send_setup (GdmSession *self,
                                             display_seat_id,
                                             display_hostname,
                                             self->priv->display_is_local,
+                                            self->priv->display_is_initial,
                                             NULL,
                                             (GAsyncReadyCallback) on_setup_complete_cb,
                                             conversation);
@@ -2052,6 +2055,7 @@ send_setup_for_user (GdmSession *self,
                                                      display_seat_id,
                                                      display_hostname,
                                                      self->priv->display_is_local,
+                                                     self->priv->display_is_initial,
                                                      NULL,
                                                      (GAsyncReadyCallback) on_setup_complete_cb,
                                                      conversation);
@@ -2112,6 +2116,7 @@ send_setup_for_program (GdmSession *self,
                                                         display_seat_id,
                                                         display_hostname,
                                                         self->priv->display_is_local,
+                                                        self->priv->display_is_initial,
                                                         log_file,
                                                         NULL,
                                                         (GAsyncReadyCallback) on_setup_complete_cb,
@@ -3035,6 +3040,13 @@ set_display_is_local (GdmSession *self,
 }
 
 static void
+set_display_is_initial (GdmSession *self,
+                        gboolean    is_initial)
+{
+        self->priv->display_is_initial = is_initial;
+}
+
+static void
 set_verification_mode (GdmSession                 *self,
                        GdmSessionVerificationMode  verification_mode)
 {
@@ -3088,6 +3100,9 @@ gdm_session_set_property (GObject      *object,
         case PROP_DISPLAY_IS_LOCAL:
                 set_display_is_local (self, g_value_get_boolean (value));
                 break;
+        case PROP_DISPLAY_IS_INITIAL:
+                set_display_is_initial (self, g_value_get_boolean (value));
+                break;
         case PROP_VERIFICATION_MODE:
                 set_verification_mode (self, g_value_get_enum (value));
                 break;
@@ -3134,6 +3149,9 @@ gdm_session_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
+                break;
+        case PROP_DISPLAY_IS_INITIAL:
+                g_value_set_boolean (value, self->priv->display_is_initial);
                 break;
         case PROP_VERIFICATION_MODE:
                 g_value_set_enum (value, self->priv->verification_mode);
@@ -3515,6 +3533,13 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                "display is local",
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_IS_INITIAL,
+                                         g_param_spec_boolean ("display-is-initial",
+                                                               "display is initial",
+                                                               "display is initial",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("display-x11-authority-file",

@@ -1491,6 +1491,7 @@ gdm_display_set_up_greeter_session (GdmDisplay  *self,
 void
 gdm_display_start_greeter_session (GdmDisplay *self)
 {
+        GdmSession    *session;
         char          *display_name;
         char          *seat_id;
         char          *hostname;
@@ -1537,6 +1538,11 @@ gdm_display_start_greeter_session (GdmDisplay *self)
                       NULL);
 
         gdm_launch_environment_start (self->priv->launch_environment);
+
+        session = gdm_launch_environment_get_session (self->priv->launch_environment);
+        g_object_set (G_OBJECT (session),
+                      "display-is-initial", self->priv->is_initial,
+                      NULL);
 
         g_free (display_name);
         g_free (seat_id);
