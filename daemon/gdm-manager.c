@@ -45,6 +45,7 @@
 #include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
+#include "gdm-local-display.h"
 #include "gdm-local-display-factory.h"
 #include "gdm-session.h"
 #include "gdm-session-record.h"
@@ -1600,6 +1601,24 @@ start_user_session (GdmManager *manager,
         destroy_start_user_session_operation (operation);
 }
 
+static void
+create_display_for_user_session (GdmManager *self,
+                                 GdmSession *session,
+                                 const char *session_id)
+{
+        GdmDisplay *display;
+
+        display = gdm_local_display_new ();
+
+        g_object_set (G_OBJECT (display),
+                      "is-for-greeter", FALSE,
+                      "session-id", session_id,
+                      NULL);
+        gdm_display_store_add (self->priv->display_store,
+                               display);
+        g_object_set_data (G_OBJECT (session), "gdm-display", display);
+}
+
 static gboolean
 on_start_user_session (StartUserSessionOperation *operation)
 {
@@ -1635,6 +1654,7 @@ on_start_user_session (StartUserSessionOperation *operation)
                 gdm_display_stop_greeter_session (display);
                 g_object_set (G_OBJECT (display), "is-for-greeter", FALSE, NULL);
         } else {
+                const char *session_id;
                 uid_t allowed_uid;
 
                 g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
@@ -1646,6 +1666,13 @@ on_start_user_session (StartUserSessionOperation *operation)
                 g_object_set_data (G_OBJECT (display), "gdm-embryonic-user-session", NULL);
                 g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
                 create_embryonic_user_session_for_display (operation->manager, display, allowed_uid);
+
+                /* Give the user session a new display object for bookkeeping purposes */
+                session_id = gdm_session_get_conversation_session_id (operation->session,
+                                                                      operation->service_name);
+                create_display_for_user_session (operation->manager,
+                                                 operation->session,
+                                                 session_id);
         }
 
         start_user_session (operation->manager, operation);
