@@ -14,6 +14,7 @@ edit = sed \
 desktopdir = $(pkgdatadir)/greeter/applications
 desktop_in_files = 							\
 	gnome-shell.desktop.in						\
+	gnome-shell-wayland.desktop.in					\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 	       mime-dummy-handler.desktop				\
