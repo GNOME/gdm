@@ -808,15 +808,6 @@ gdm_server_start (GdmServer *server)
         /* Hardcode the VT for the initial X server, but nothing else */
         if (server->priv->is_initial) {
                 vtarg = "vt" GDM_INITIAL_VT;
-
-#ifdef WITH_SYSTEMD
-                /* undo the hardcoding if we are an auxillary seat */
-                if (LOGIND_RUNNING()) {
-                     if (strcmp (server->priv->display_seat_id, "seat0") != 0) {
-                         vtarg = NULL;
-                     }
-                }
-#endif
         }
 
         /* fork X server process */
