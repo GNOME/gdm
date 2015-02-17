@@ -2025,9 +2025,13 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                 goto fail;
         }
 
-        if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
-                g_debug ("GdmSessionWorker: couldn't open new VT: %m");
-                goto fail;
+        if (worker->priv->display_is_initial) {
+                session_vt = atoi (GDM_INITIAL_VT);
+        } else {
+                if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
+                        g_debug ("GdmSessionWorker: couldn't open new VT: %m");
+                        goto fail;
+                }
         }
 
         worker->priv->login_vt = vt_state.v_active;
