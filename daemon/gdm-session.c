@@ -129,6 +129,9 @@ struct _GdmSessionPrivate
 
         guint32              is_program_session : 1;
         guint32              display_is_initial : 1;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        guint32              display_is_wayland : 1;
+#endif
 };
 
 enum {
@@ -139,6 +142,9 @@ enum {
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_IS_INITIAL,
+#ifdef ENABLE_WAYLAND_SUPPORT
+        PROP_DISPLAY_IS_WAYLAND,
+#endif
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE,
@@ -171,6 +177,8 @@ enum {
 
 #ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
+static void set_display_is_wayland (GdmSession *self,
+                                    gboolean    is_wayland);
 #endif
 static guint signals [LAST_SIGNAL] = { 0, };
 
@@ -2421,7 +2429,7 @@ send_session_type (GdmSession *self,
         const char *session_type = "x11";
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        if (gdm_session_is_wayland_session (self)) {
+        if (self->priv->display_is_wayland) {
                 session_type = "wayland";
         }
 #endif
@@ -2574,7 +2582,7 @@ gdm_session_start_session (GdmSession *self,
         display_mode = gdm_session_get_display_mode (self);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        is_x11 = !gdm_session_is_wayland_session (self);
+        is_x11 = !self->priv->display_is_wayland;
 #endif
 
         if (display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED ||
@@ -2905,7 +2913,7 @@ gdm_session_get_display_mode (GdmSession *self)
         /* Wayland sessions are for now assumed to run in a
          * mutter-launch-like environment, so we allocate
          * a new VT for them. */
-        if (gdm_session_is_wayland_session (self)) {
+        if (self->priv->display_is_wayland) {
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         }
 #endif
@@ -2965,9 +2973,15 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
+        gboolean is_wayland_session;
 
         g_free (self->priv->selected_session);
         self->priv->selected_session = g_strdup (text);
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        is_wayland_session = gdm_session_is_wayland_session (self);
+        set_display_is_wayland (self, is_wayland_session);
+#endif
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -3046,6 +3060,15 @@ set_display_is_initial (GdmSession *self,
         self->priv->display_is_initial = is_initial;
 }
 
+#ifdef ENABLE_WAYLAND_SUPPORT
+static void
+set_display_is_wayland (GdmSession *self,
+                        gboolean    is_wayland)
+{
+        self->priv->display_is_wayland = is_wayland;
+}
+#endif
+
 static void
 set_verification_mode (GdmSession                 *self,
                        GdmSessionVerificationMode  verification_mode)
@@ -3103,6 +3126,11 @@ gdm_session_set_property (GObject      *object,
         case PROP_DISPLAY_IS_INITIAL:
                 set_display_is_initial (self, g_value_get_boolean (value));
                 break;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        case PROP_DISPLAY_IS_WAYLAND:
+                set_display_is_wayland (self, g_value_get_boolean (value));
+                break;
+#endif
         case PROP_VERIFICATION_MODE:
                 set_verification_mode (self, g_value_get_enum (value));
                 break;
@@ -3153,6 +3181,11 @@ gdm_session_get_property (GObject    *object,
         case PROP_DISPLAY_IS_INITIAL:
                 g_value_set_boolean (value, self->priv->display_is_initial);
                 break;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        case PROP_DISPLAY_IS_WAYLAND:
+                g_value_set_boolean (value, self->priv->display_is_wayland);
+                break;
+#endif
         case PROP_VERIFICATION_MODE:
                 g_value_set_enum (value, self->priv->verification_mode);
                 break;
@@ -3540,6 +3573,15 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                "display is initial",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+#ifdef ENABLE_WAYLAND_SUPPORT
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_IS_WAYLAND,
+                                         g_param_spec_boolean ("display-is-wayland",
+                                                               "display is wayland",
+                                                               "display is wayland",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+#endif
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("display-x11-authority-file",
