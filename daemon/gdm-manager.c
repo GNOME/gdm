@@ -2102,6 +2102,7 @@ create_seed_session_for_display (GdmManager *manager,
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
+        gboolean    display_is_initial = FALSE;
         char       *display_name = NULL;
         char       *display_device = NULL;
         char       *remote_hostname = NULL;
@@ -2113,6 +2114,7 @@ create_seed_session_for_display (GdmManager *manager,
                       "id", &display_id,
                       "x11-display-name", &display_name,
                       "is-local", &display_is_local,
+                      "is-initial", &display_is_initial,
                       "remote-hostname", &remote_hostname,
                       "x11-authority-file", &display_auth_file,
                       "seat-id", &display_seat_id,
@@ -2132,6 +2134,8 @@ create_seed_session_for_display (GdmManager *manager,
         g_free (remote_hostname);
         g_free (display_auth_file);
         g_free (display_seat_id);
+
+        g_object_set (G_OBJECT (session), "display-is-initial", display_is_initial, NULL);
 
         g_signal_connect (session,
                           "reauthentication-started",
