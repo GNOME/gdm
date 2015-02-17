@@ -1064,62 +1064,6 @@ handle_get_seat_id (GdmDBusDisplay        *skeleton,
 }
 
 static gboolean
-handle_get_timed_login_details (GdmDBusDisplay        *skeleton,
-                                GDBusMethodInvocation *invocation,
-                                GdmDisplay            *self)
-{
-        gboolean enabled;
-        char *username;
-        int delay;
-
-        gdm_display_get_timed_login_details (self, &enabled, &username, &delay);
-
-        gdm_dbus_display_complete_get_timed_login_details (skeleton,
-                                                           invocation,
-                                                           enabled,
-                                                           username ? username : "",
-                                                           delay);
-
-        g_free (username);
-        return TRUE;
-}
-
-static gboolean
-handle_get_x11_authority_file (GdmDBusDisplay        *skeleton,
-                               GDBusMethodInvocation *invocation,
-                               GdmDisplay            *self)
-{
-        char *file;
-
-        gdm_display_get_x11_authority_file (self, &file, NULL);
-
-        gdm_dbus_display_complete_get_x11_authority_file (skeleton, invocation, file);
-
-        g_free (file);
-        return TRUE;
-}
-
-static gboolean
-handle_get_x11_cookie (GdmDBusDisplay        *skeleton,
-                       GDBusMethodInvocation *invocation,
-                       GdmDisplay            *self)
-{
-        const char *x11_cookie;
-        gsize x11_cookie_size;
-        GVariant *variant;
-
-        gdm_display_get_x11_cookie (self, &x11_cookie, &x11_cookie_size, NULL);
-
-        variant = g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE,
-                                             x11_cookie,
-                                             x11_cookie_size,
-                                             sizeof (char));
-        gdm_dbus_display_complete_get_x11_cookie (skeleton, invocation, variant);
-
-        return TRUE;
-}
-
-static gboolean
 handle_get_x11_display_name (GdmDBusDisplay        *skeleton,
                              GDBusMethodInvocation *invocation,
                              GdmDisplay            *self)
@@ -1131,20 +1075,6 @@ handle_get_x11_display_name (GdmDBusDisplay        *skeleton,
         gdm_dbus_display_complete_get_x11_display_name (skeleton, invocation, name);
 
         g_free (name);
-        return TRUE;
-}
-
-static gboolean
-handle_get_x11_display_number (GdmDBusDisplay        *skeleton,
-                               GDBusMethodInvocation *invocation,
-                               GdmDisplay            *self)
-{
-        int name;
-
-        gdm_display_get_x11_display_number (self, &name, NULL);
-
-        gdm_dbus_display_complete_get_x11_display_number (skeleton, invocation, name);
-
         return TRUE;
 }
 
@@ -1177,46 +1107,6 @@ handle_is_initial (GdmDBusDisplay        *skeleton,
 }
 
 static gboolean
-handle_add_user_authorization (GdmDBusDisplay        *skeleton,
-                               GDBusMethodInvocation *invocation,
-                               const char            *username,
-                               GdmDisplay            *self)
-{
-        char *filename;
-        GError *error = NULL;
-
-        if (gdm_display_add_user_authorization (self, username, &filename, &error)) {
-                gdm_dbus_display_complete_add_user_authorization (skeleton,
-                                                                  invocation,
-                                                                  filename);
-                g_free (filename);
-        } else {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
-        }
-
-        return TRUE;
-}
-
-static gboolean
-handle_remove_user_authorization (GdmDBusDisplay        *skeleton,
-                                  GDBusMethodInvocation *invocation,
-                                  const char            *username,
-                                  GdmDisplay            *self)
-{
-        GError *error = NULL;
-
-        if (gdm_display_remove_user_authorization (self, username, &error)) {
-                gdm_dbus_display_complete_remove_user_authorization (skeleton, invocation);
-        } else {
-                g_dbus_method_invocation_return_gerror (invocation, error);
-                g_error_free (error);
-        }
-
-        return TRUE;
-}
-
-static gboolean
 register_display (GdmDisplay *self)
 {
         GError *error = NULL;
@@ -1238,24 +1128,12 @@ register_display (GdmDisplay *self)
                           G_CALLBACK (handle_get_remote_hostname), self);
         g_signal_connect (self->priv->display_skeleton, "handle-get-seat-id",
                           G_CALLBACK (handle_get_seat_id), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-timed-login-details",
-                          G_CALLBACK (handle_get_timed_login_details), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-x11-authority-file",
-                          G_CALLBACK (handle_get_x11_authority_file), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-x11-cookie",
-                          G_CALLBACK (handle_get_x11_cookie), self);
         g_signal_connect (self->priv->display_skeleton, "handle-get-x11-display-name",
                           G_CALLBACK (handle_get_x11_display_name), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-x11-display-number",
-                          G_CALLBACK (handle_get_x11_display_number), self);
         g_signal_connect (self->priv->display_skeleton, "handle-is-local",
                           G_CALLBACK (handle_is_local), self);
         g_signal_connect (self->priv->display_skeleton, "handle-is-initial",
                           G_CALLBACK (handle_is_initial), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-add-user-authorization",
-                          G_CALLBACK (handle_add_user_authorization), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-remove-user-authorization",
-                          G_CALLBACK (handle_remove_user_authorization), self);
 
         g_dbus_object_skeleton_add_interface (self->priv->object_skeleton,
                                               G_DBUS_INTERFACE_SKELETON (self->priv->display_skeleton));
