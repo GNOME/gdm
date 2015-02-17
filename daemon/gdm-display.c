@@ -107,6 +107,7 @@ enum {
         PROP_X11_DISPLAY_NAME,
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
+        PROP_IS_CONNECTED,
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
@@ -1005,6 +1006,9 @@ gdm_display_get_property (GObject        *object,
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
                 break;
+        case PROP_IS_CONNECTED:
+                g_value_set_boolean (value, self->priv->x11_display != NULL);
+                break;
         case PROP_LAUNCH_ENVIRONMENT:
                 g_value_set_object (value, self->priv->launch_environment);
                 break;
@@ -1306,6 +1310,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_IS_CONNECTED,
+                                         g_param_spec_boolean ("is-connected",
+                                                               NULL,
+                                                               NULL,
+                                                               TRUE,
+                                                               G_PARAM_READABLE));
         g_object_class_install_property (object_class,
                                          PROP_HAVE_EXISTING_USER_ACCOUNTS,
                                          g_param_spec_boolean ("have-existing-user-accounts",
@@ -1780,6 +1791,10 @@ gdm_display_connect (GdmDisplay *self)
         } else {
                 g_debug ("GdmDisplay: Connected to display %s", self->priv->x11_display_name);
                 ret = TRUE;
+        }
+
+        if (ret == TRUE) {
+                g_object_notify (G_OBJECT (self), "is-connected");
         }
 
         return ret;

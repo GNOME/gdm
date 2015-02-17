@@ -1581,21 +1581,26 @@ start_user_session (GdmManager *manager,
         if (display != NULL) {
                 char *auth_file;
                 const char *username;
+                gboolean is_connected = FALSE;
 
-                auth_file = NULL;
-                username = gdm_session_get_username (operation->session);
-                gdm_display_add_user_authorization (display,
-                                                    username,
-                                                    &auth_file,
-                                                    NULL);
+                g_object_get (G_OBJECT (display), "is-connected", &is_connected, NULL);
 
-                g_assert (auth_file != NULL);
+                if (is_connected) {
+                        auth_file = NULL;
+                        username = gdm_session_get_username (operation->session);
+                        gdm_display_add_user_authorization (display,
+                                                            username,
+                                                            &auth_file,
+                                                            NULL);
 
-                g_object_set (operation->session,
-                              "user-x11-authority-file", auth_file,
-                              NULL);
+                        g_assert (auth_file != NULL);
 
-                g_free (auth_file);
+                        g_object_set (operation->session,
+                                      "user-x11-authority-file", auth_file,
+                                      NULL);
+
+                        g_free (auth_file);
+                }
         }
 
         gdm_session_start_session (operation->session,
