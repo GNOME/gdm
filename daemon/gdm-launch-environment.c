@@ -50,7 +50,6 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 
@@ -621,7 +620,7 @@ _gdm_launch_environment_set_command (GdmLaunchEnvironment *launch_environment,
                                      const char           *name)
 {
         g_free (launch_environment->priv->command);
-        launch_environment->priv->command = g_strdup_printf ("%s %s", DBUS_LAUNCH_COMMAND, name);
+        launch_environment->priv->command = g_strdup (name);
 }
 
 static void
