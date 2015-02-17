@@ -505,6 +505,13 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 
         gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
         gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
+
+        /* HACK
+         */
+        if (strstr (launch_environment->priv->command, "wayland") != NULL) {
+                g_object_set (G_OBJECT (launch_environment->priv->session), "display-is-wayland", TRUE, NULL);
+        }
+
         res = TRUE;
  out:
         if (local_error) {
@@ -942,6 +949,7 @@ create_gnome_session_environment (const char *session_id,
                                            NULL);
 
         g_free (command);
+
         return launch_environment;
 }
 
@@ -951,7 +959,7 @@ gdm_create_greeter_launch_environment (const char *display_name,
                                        const char *display_hostname,
                                        gboolean    display_is_local)
 {
-        return create_gnome_session_environment (NULL,
+        return create_gnome_session_environment ("gnome-wayland",
                                                  GDM_USERNAME,
                                                  display_name,
                                                  seat_id,
