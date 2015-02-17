@@ -448,8 +448,17 @@ static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *fa
         array = g_variant_get_child_value (result, 0);
         g_variant_iter_init (&iter, array);
 
-        while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL))
-                create_display (factory, seat, TRUE);
+        while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL)) {
+                gboolean is_initial;
+
+                if (g_strcmp0 (seat, "seat0") == 0) {
+                        is_initial = TRUE;
+                } else {
+                        is_initial = FALSE;
+                }
+
+                create_display (factory, seat, is_initial);
+        }
 
         g_variant_unref (result);
         g_variant_unref (array);
