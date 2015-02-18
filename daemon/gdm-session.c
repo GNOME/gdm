@@ -2815,7 +2815,7 @@ gdm_session_get_session_id (GdmSession *self)
                 return NULL;
         }
 
-        return g_strdup (conversation->session_id);
+        return conversation->session_id;
 }
 
 static char *
