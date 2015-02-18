@@ -92,6 +92,7 @@ gdm_local_display_prepare (GdmDisplay *display)
         GdmLaunchEnvironment *launch_environment;
         char          *seat_id;
         char          *session_class;
+        char          *session_type;
         gboolean       doing_initial_setup = FALSE;
 
         seat_id = NULL;
@@ -100,6 +101,7 @@ gdm_local_display_prepare (GdmDisplay *display)
                       "seat-id", &seat_id,
                       "doing-initial-setup", &doing_initial_setup,
                       "session-class", &session_class,
+                      "session-type", &session_type,
                       NULL);
 
         if (g_strcmp0 (session_class, "greeter") != 0) {
@@ -109,7 +111,7 @@ gdm_local_display_prepare (GdmDisplay *display)
         if (!doing_initial_setup) {
                 launch_environment = gdm_create_greeter_launch_environment (NULL,
                                                                             seat_id,
-                                                                            NULL,
+                                                                            session_type,
                                                                             NULL,
                                                                             TRUE);
         } else {
@@ -125,6 +127,7 @@ gdm_local_display_prepare (GdmDisplay *display)
 out:
         g_free (seat_id);
         g_free (session_class);
+        g_free (session_type);
         return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
 }
 
