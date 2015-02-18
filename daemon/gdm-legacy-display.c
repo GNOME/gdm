@@ -122,6 +122,12 @@ gdm_legacy_display_prepare (GdmDisplay *display)
         g_object_set (self, "launch-environment", launch_environment, NULL);
         g_object_unref (launch_environment);
 
+        if (!gdm_display_create_authority (display)) {
+                g_warning ("Unable to set up access control for display %s",
+                           display_name);
+                return FALSE;
+        }
+
         return GDM_DISPLAY_CLASS (gdm_legacy_display_parent_class)->prepare (display);
 }
 

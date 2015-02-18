@@ -174,6 +174,12 @@ gdm_xdmcp_display_prepare (GdmDisplay *display)
                 g_object_unref (launch_environment);
         }
 
+        if (!gdm_display_create_authority (display)) {
+                g_warning ("Unable to set up access control for display %s",
+                           display_name);
+                return FALSE;
+        }
+
         return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->prepare (display);
 }
 

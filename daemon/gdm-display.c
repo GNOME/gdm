@@ -616,12 +616,6 @@ gdm_display_real_prepare (GdmDisplay *self)
 
         g_debug ("GdmDisplay: prepare display");
 
-        if (!gdm_display_create_authority (self)) {
-                g_warning ("Unable to set up access control for display %d",
-                           self->priv->x11_display_number);
-                return FALSE;
-        }
-
         _gdm_display_set_status (self, GDM_DISPLAY_PREPARED);
 
         return TRUE;
@@ -1005,7 +999,8 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_X11_AUTHORITY_FILE:
                 g_value_take_string (value,
-                                     gdm_display_access_file_get_path (self->priv->access_file));
+                                     self->priv->access_file?
+                                     gdm_display_access_file_get_path (self->priv->access_file) : NULL);
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
@@ -1524,7 +1519,7 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         char          *display_name;
         char          *seat_id;
         char          *hostname;
-        char          *auth_file;
+        char          *auth_file = NULL;
 
         g_return_if_fail (g_strcmp0 (self->priv->session_class, "greeter") == 0);
 
@@ -1539,7 +1534,9 @@ gdm_display_start_greeter_session (GdmDisplay *self)
                       "seat-id", &seat_id,
                       "remote-hostname", &hostname,
                       NULL);
-        auth_file = gdm_display_access_file_get_path (self->priv->access_file);
+        if (self->priv->access_file != NULL) {
+                auth_file = gdm_display_access_file_get_path (self->priv->access_file);
+        }
 
         g_debug ("GdmDisplay: Creating greeter for %s %s", display_name, hostname);
 
@@ -1564,9 +1561,11 @@ gdm_display_start_greeter_session (GdmDisplay *self)
                                  G_CALLBACK (on_launch_environment_session_died),
                                  self, 0);
 
-        g_object_set (self->priv->launch_environment,
-                      "x11-authority-file", auth_file,
-                      NULL);
+        if (auth_file != NULL) {
+                g_object_set (self->priv->launch_environment,
+                              "x11-authority-file", auth_file,
+                              NULL);
+        }
 
         gdm_launch_environment_start (self->priv->launch_environment);
 
