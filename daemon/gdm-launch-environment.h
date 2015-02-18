@@ -70,6 +70,7 @@ char *                gdm_launch_environment_get_session_id     (GdmLaunchEnviro
 
 GdmLaunchEnvironment *gdm_create_greeter_launch_environment (const char *display_name,
                                                              const char *seat_id,
+                                                             const char *session_type,
                                                              const char *display_hostname,
                                                              gboolean    display_is_local);
 GdmLaunchEnvironment *gdm_create_initial_setup_launch_environment (const char *display_name,

@@ -110,6 +110,7 @@ gdm_local_display_prepare (GdmDisplay *display)
                 launch_environment = gdm_create_greeter_launch_environment (NULL,
                                                                             seat_id,
                                                                             NULL,
+                                                                            NULL,
                                                                             TRUE);
         } else {
                 launch_environment = gdm_create_initial_setup_launch_environment (NULL,

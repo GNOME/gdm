@@ -111,6 +111,7 @@ gdm_legacy_display_prepare (GdmDisplay *display)
                 launch_environment = gdm_create_greeter_launch_environment (display_name,
                                                                             seat_id,
                                                                             NULL,
+                                                                            NULL,
                                                                             TRUE);
         } else {
                 launch_environment = gdm_create_initial_setup_launch_environment (display_name,

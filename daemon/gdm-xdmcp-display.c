@@ -168,6 +168,7 @@ gdm_xdmcp_display_prepare (GdmDisplay *display)
         if (launch_environment == NULL) {
                 launch_environment = gdm_create_greeter_launch_environment (display_name,
                                                                             seat_id,
+                                                                            NULL,
                                                                             hostname,
                                                                             FALSE);
                 g_object_set (self, "launch-environment", launch_environment, NULL);

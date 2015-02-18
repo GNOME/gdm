@@ -69,6 +69,7 @@ struct GdmLaunchEnvironmentPrivate
         char           *runtime_dir;
 
         char           *session_id;
+        char           *session_type;
         char           *x11_display_name;
         char           *x11_display_seat_id;
         char           *x11_display_device;
@@ -80,6 +81,7 @@ struct GdmLaunchEnvironmentPrivate
 enum {
         PROP_0,
         PROP_VERIFICATION_MODE,
+        PROP_SESSION_TYPE,
         PROP_X11_DISPLAY_NAME,
         PROP_X11_DISPLAY_SEAT_ID,
         PROP_X11_DISPLAY_DEVICE,
@@ -505,6 +507,14 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 
         gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
         gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
+
+        if (launch_environment->priv->session_type != NULL) {
+                g_object_set (G_OBJECT (launch_environment->priv->session),
+                              "session-type",
+                              launch_environment->priv->session_type,
+                              NULL);
+        }
+
         res = TRUE;
  out:
         if (local_error) {
@@ -550,6 +560,14 @@ _gdm_launch_environment_set_verification_mode (GdmLaunchEnvironment           *l
                                                GdmSessionVerificationMode      verification_mode)
 {
         launch_environment->priv->verification_mode = verification_mode;
+}
+
+static void
+_gdm_launch_environment_set_session_type (GdmLaunchEnvironment *launch_environment,
+                                          const char           *session_type)
+{
+        g_free (launch_environment->priv->session_type);
+        launch_environment->priv->session_type = g_strdup (session_type);
 }
 
 static void
@@ -637,6 +655,9 @@ gdm_launch_environment_set_property (GObject      *object,
         case PROP_VERIFICATION_MODE:
                 _gdm_launch_environment_set_verification_mode (self, g_value_get_enum (value));
                 break;
+        case PROP_SESSION_TYPE:
+                _gdm_launch_environment_set_session_type (self, g_value_get_string (value));
+                break;
         case PROP_X11_DISPLAY_NAME:
                 _gdm_launch_environment_set_x11_display_name (self, g_value_get_string (value));
                 break;
@@ -683,6 +704,9 @@ gdm_launch_environment_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_VERIFICATION_MODE:
                 g_value_set_enum (value, self->priv->verification_mode);
+                break;
+        case PROP_SESSION_TYPE:
+                g_value_set_string (value, self->priv->session_type);
                 break;
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->x11_display_name);
@@ -736,6 +760,13 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                             GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                             GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_SESSION_TYPE,
+                                         g_param_spec_string ("session-type",
+                                                              NULL,
+                                                              NULL,
+                                                              NULL,
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_NAME,
                                          g_param_spec_string ("x11-display-name",
@@ -890,6 +921,7 @@ gdm_launch_environment_finalize (GObject *object)
         g_free (launch_environment->priv->x11_display_hostname);
         g_free (launch_environment->priv->x11_authority_file);
         g_free (launch_environment->priv->session_id);
+        g_free (launch_environment->priv->session_type);
 
         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
 }
@@ -899,6 +931,7 @@ create_gnome_session_environment (const char *session_id,
                                   const char *user_name,
                                   const char *display_name,
                                   const char *seat_id,
+                                  const char *session_type,
                                   const char *display_hostname,
                                   gboolean    display_is_local)
 {
@@ -934,6 +967,7 @@ create_gnome_session_environment (const char *session_id,
         launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                                            "command", command,
                                            "user-name", user_name,
+                                           "session-type", session_type,
                                            "x11-display-name", display_name,
                                            "x11-display-seat-id", seat_id,
                                            "x11-display-hostname", display_hostname,
@@ -948,13 +982,22 @@ create_gnome_session_environment (const char *session_id,
 GdmLaunchEnvironment *
 gdm_create_greeter_launch_environment (const char *display_name,
                                        const char *seat_id,
+                                       const char *session_type,
                                        const char *display_hostname,
                                        gboolean    display_is_local)
 {
-        return create_gnome_session_environment (NULL,
+        const char *session_name = NULL;
+
+        if (g_strcmp0 (session_type, "wayland") == 0)
+                session_name = "gnome-wayland";
+        else if (g_strcmp0 (session_type, "x11") == 0)
+                session_name = "gnome";
+
+        return create_gnome_session_environment (session_name,
                                                  GDM_USERNAME,
                                                  display_name,
                                                  seat_id,
+                                                 session_type,
                                                  display_hostname,
                                                  display_is_local);
 }
@@ -969,6 +1012,7 @@ gdm_create_initial_setup_launch_environment (const char *display_name,
                                                  INITIAL_SETUP_USERNAME,
                                                  display_name,
                                                  seat_id,
+                                                 NULL,
                                                  display_hostname,
                                                  display_is_local);
 }
