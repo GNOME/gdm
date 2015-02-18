@@ -2814,6 +2814,23 @@ gdm_session_get_session_id (GdmSession *self)
         return conversation->session_id;
 }
 
+const char *
+gdm_session_get_conversation_session_id (GdmSession *self,
+                                         const char *service_name)
+{
+        GdmSessionConversation *conversation;
+
+        g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
+
+        conversation = find_conversation_by_name (self, service_name);
+
+        if (conversation == NULL) {
+                return NULL;
+        }
+
+        return conversation->session_id;
+}
+
 static char *
 get_session_filename (GdmSession *self)
 {
