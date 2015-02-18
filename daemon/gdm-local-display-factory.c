@@ -34,6 +34,8 @@
 #include "gdm-local-display-factory.h"
 #include "gdm-local-display-factory-glue.h"
 
+#include "gdm-settings-keys.h"
+#include "gdm-settings-direct.h"
 #include "gdm-display-store.h"
 #include "gdm-local-display.h"
 #include "gdm-legacy-display.h"
@@ -474,7 +476,12 @@ static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *fa
                 if (g_strcmp0 (seat, "seat0") == 0) {
                         is_initial = TRUE;
 #ifdef ENABLE_WAYLAND_SUPPORT
-                        session_type = "wayland";
+                        gboolean wayland_enabled = FALSE;
+                        if (gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &wayland_enabled)) {
+                                if (wayland_enabled) {
+                                        session_type = "wayland";
+                                }
+                        }
 #endif
                 } else {
                         is_initial = FALSE;
