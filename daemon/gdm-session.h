@@ -141,6 +141,8 @@ gboolean          gdm_session_start_conversation          (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_stop_conversation           (GdmSession *session,
                                                            const char *service_name);
+const char       *gdm_session_get_conversation_session_id (GdmSession *session,
+                                                           const char *service_name);
 void              gdm_session_setup                       (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_setup_for_user              (GdmSession *session,
