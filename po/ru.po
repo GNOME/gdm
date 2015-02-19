@@ -2,7 +2,6 @@
 # Russian translation of gdm
 # Copyright (C) 1999-2009, 2010 Free Software Foundation, Inc.
 #
-#
 # Sergey Panov <sipan@mit.edu>, 1999.
 # Valek Filippov  <frob@df.ru>, 2000-2002.
 # Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2003.
@@ -11,18 +10,18 @@
 # Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011.
 # Alexander Saprykin <xelfium@gmail.com>, 2009, 2010.
 # Maxim Petrov <maximpetov@yahoo.com>, 2011.
-# Yuri Myasoedov <omerta13@yandex.ru>, 2012, 2013.
 # Stas Solovey <whats_up@tut.by>, 2011, 2012, 2013.
+# Yuri Myasoedov <ymyasoedov@yandex.ru>, 2012, 2013, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-28 13:17+0000\n"
-"PO-Revision-Date: 2013-08-05 01:06+0300\n"
-"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
-"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"POT-Creation-Date: 2015-02-19 06:06+0000\n"
+"PO-Revision-Date: 2015-02-19 09:54+0300\n"
+"Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
+"Language-Team: русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,97 +30,118 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не является символьным устройством"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Не удалось идентифицировать текущий сеанс."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Пользователь не может переключать сеансы."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Не удалось идентифицировать текущее рабочее место."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Системе не удалось найти для переключения экран входа в систему или "
+"запустить новый экран входа."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Системе не удалось запустить новый экран входа в систему."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "не удалось найти в системе пользователя «%s»"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Сеанс пока что недоступен"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Не удалось запустить X-сервер (графическое окружение) из-за внутренней "
+"ошибки. Свяжитесь со своим системным администратором или проверьте системный "
+"журнал. В настоящее время этот дисплей будет отключен. Перезапустите GDM, "
+"когда проблема будет устранена."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Не удалось найти UID пользователя %s"
+#: ../daemon/gdm-manager.c:1075
+#| msgid "No session available"
+msgid "No display available"
+msgstr "Дисплей недоступен"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "нет доступных сеансов"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Для пользователя %s нет доступных сеансов для повторной аутентификации"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Не удалось найти сеанс пользователя %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Не удалось найти соответствующий сеанс для пользователя %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Пользователь не владеет сеансом"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
 msgid "No session available"
 msgstr "Сеанс недоступен"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: не удалось подсоединиться к родительскому дисплею «%s»"
+#: ../daemon/gdm-manager.c:1135
+msgid "Can only be called before user is logged in"
+msgstr "Может быть вызван до того, как пользователь вошёл в систему"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1145
+msgid "Caller not GDM"
+msgstr "Другой вызывающий компонент (не GDM)"
+
+#: ../daemon/gdm-manager.c:1155
+msgid "Unable to open private communication channel"
+msgstr "Невозможно открыть приватный коммуникационный канал"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Сервер был запущен с идентификатором (uid) %s, но такой пользователь не "
 "существует"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Не удалось установить идентификатор группы в %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "сбой функции initgroups () для %s"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Не удалось установить идентификатор пользователя в %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не удалось открыть файл журнала для дисплея %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: ошибка установки %s в %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: не удалось установить приоритет сервера в %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: пустая команда сервера для дисплея %s"
@@ -150,69 +170,56 @@ msgstr "Устройство дисплея"
 msgid "The display device"
 msgstr "Устройство дисплея"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1182
 msgid "Could not create authentication helper process"
 msgstr "Не удалось создать вспомогательный процесс аутентификации"
 
-#: ../daemon/gdm-session-worker.c:824
+#: ../daemon/gdm-session-worker.c:845
 msgid "Your account was given a time limit that's now passed."
 msgstr "Время действия учётной записи истекло."
 
-#: ../daemon/gdm-session-worker.c:831
+#: ../daemon/gdm-session-worker.c:852
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Не сработало. Попробуйте ещё раз."
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1108
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: ../daemon/gdm-session-worker.c:1250
+#: ../daemon/gdm-session-worker.c:1242
 msgid "Your password has expired, please change it now."
 msgstr "Срок действия пароля истёк. Нужно его сейчас изменить."
 
-#: ../daemon/gdm-session-worker.c:1489 ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
 #, c-format
 msgid "no user account available"
 msgstr "учётная запись пользователя недоступна"
 
-#: ../daemon/gdm-session-worker.c:1533
+#: ../daemon/gdm-session-worker.c:1525
 msgid "Unable to change to user"
 msgstr "Не удалось сменить пользователя"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Не удалось запустить X-сервер (графическое окружение) из-за внутренней "
-"ошибки. Свяжитесь со своим системным администратором или проверьте системный "
-"журнал. В настоящее время этот дисплей будет отключен. Перезапустите GDM, "
-"когда проблема будет устранена."
+#: ../daemon/gdm-wayland-session.c:378
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Модуль GDM для запуска сеанса Wayland"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Может быть вызван до того, как пользователь вошёл в систему"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Другой вызывающий компонент (не GDM)"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Пользователь не вошёл в систему"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "На данный момент только один клиент может быть подключён одновременно"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Не удалось создать сокет!"
+
+#: ../daemon/gdm-x-session.c:675
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Запустить программу через сценарий-обёртку /etc/gdm/Xsession"
+
+#: ../daemon/gdm-x-session.c:676
+msgid "Listen on TCP socket"
+msgstr "Прослушивать TCP-сокет"
+
+#: ../daemon/gdm-x-session.c:687
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Модуль GDM для запуска сеанса X"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -251,54 +258,40 @@ msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 "Группа GDM не должна быть суперпользовательской. Аварийное завершение работы!"
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Сделать все предупреждения фатальными"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Выйти через определённое время (для отладки)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Вывести версию GDM"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Менеджер дисплеев среды GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Только суперпользователь может запустить GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM (Менеджер дисплеев среды GNOME) не запущен"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Идентификатор дисплея"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "Идентификатор"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME Display Manager (ведомый)"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Окно входа в систему"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Управление окнами и компоновкой"
 
@@ -418,46 +411,6 @@ msgstr ""
 "подлинности после которых будет выполнен возврат к экрану выбора "
 "пользователя."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Не удалось создать переходный экран: "
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Не удалось активировать сеанс:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Не удалось идентифицировать текущий сеанс."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Пользователь не может переключать сеансы."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Не удалось идентифицировать текущее рабочее место."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Системе не удалось найти для переключения экран входа в систему или "
-"запустить новый экран входа."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Системе не удалось запустить новый экран входа в систему."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Выберите систему"
@@ -478,35 +431,39 @@ msgstr "XDMCP: неверная версия XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: не удалось разобрать адрес"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Не удалось создать переходный экран: "
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Не удалось активировать сеанс:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Поддерживается только команда VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Игнорируется — осталось для совместимости"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Отладочный вывод"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Версия этого приложения"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "— вход в систему через GDM"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "Не удалось запустить новый дисплей"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -516,335 +473,3 @@ msgstr "Снимок экрана готов"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Сделать снимок экрана"
-
-#~ msgid "Your account was given an expiration date that's now passed."
-#~ msgstr "Срок действия учётной записи истёк."
-
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "Не удалось создать каталог аутентификации %s: %s"
-
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "ошибка установки связи с системой аутентификации: %s"
-
-#~ msgid "general failure"
-#~ msgstr "общий сбой"
-
-#~ msgid "out of memory"
-#~ msgstr "недостаточно памяти"
-
-#~ msgid "application programmer error"
-#~ msgstr "программная ошибка приложения"
-
-#~ msgid "unknown error"
-#~ msgstr "неизвестная ошибка"
-
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "ошибка извещения системы аутентификации о предпочтительном формате имени "
-#~ "пользователя: %s"
-
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "ошибка извещения системы аутентификации об имени узла пользователя: %s"
-
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "ошибка извещения системы аутентификации о консоли пользователя: %s"
-
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "ошибка извещения системы аутентификации о строке дисплея: %s"
-
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "ошибка извещения системы аутентификации о мандате xauth для дисплея: %s"
-
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Аутентификация по отпечатку пальца"
-
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Вход в систему после проверки отпечатка пальца"
-
-#~ msgid "Password Authentication"
-#~ msgstr "Аутентификация по паролю"
-
-#~ msgid "Log into session with username and password"
-#~ msgstr "Вход в систему после указания имени и пароля"
-
-#~ msgid "Log In"
-#~ msgstr "Войти в систему"
-
-#~ msgid "Slot ID"
-#~ msgstr "Идентификатор слота"
-
-#~ msgid "The slot the card is in"
-#~ msgstr "Карта в слоте"
-
-#~ msgid "Slot Series"
-#~ msgstr "Группа слотов"
-
-#~ msgid "per-slot card identifier"
-#~ msgstr "идентификатор карты относительно слота"
-
-#~ msgid "name"
-#~ msgstr "имя"
-
-#~ msgid "Module"
-#~ msgstr "Модуль"
-
-#~ msgid "smartcard driver"
-#~ msgstr "драйвер смарт-карты"
-
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Аутентификация по смарт-карте"
-
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Вход в систему после проверки смарт-карты"
-
-#~ msgid "Module Path"
-#~ msgstr "Путь к модулю"
-
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "путь к драйверу PKCS #11 для смарт-карты"
-
-#~ msgid "received error or hang up from event source"
-#~ msgstr "получена ошибка или сброс из источника событий"
-
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "невозможно инициализировать систему безопасности NSS"
-
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "не найден подходящий драйвер смарт-карты"
-
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "невозможно загрузить драйвер смарт-карты «%s»"
-
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "невозможно отслеживать поступающие от карты события — %s"
-
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "при ожидании событий от смарт-карты произошла неожиданная ошибка"
-
-#~ msgid "Authentication"
-#~ msgstr "Аутентификация"
-
-#~ msgid "Log into session"
-#~ msgstr "Войти в сеанс"
-
-#~ msgid "Value"
-#~ msgstr "Значение"
-
-#~ msgid "percentage of time complete"
-#~ msgstr "процент затраченного времени"
-
-#~ msgid "Inactive Text"
-#~ msgstr "Неактивный текст"
-
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "Текст, используемый в качестве ярлыка, если пользователь ещё не выделил "
-#~ "элемент"
-
-#~ msgid "Active Text"
-#~ msgstr "Активный текст"
-
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr ""
-#~ "Текст, используемый в качестве ярлыка, если пользователь выделил элемент"
-
-#~ msgid "List Visible"
-#~ msgstr "Показывать список"
-
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Показывает список выбора для удалённого подключения"
-
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %H:%M:%S"
-
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %H:%M"
-
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %H:%M:%S"
-
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %H:%M"
-
-#~ msgid "Automatically logging in…"
-#~ msgstr "Автоматический вход в систему…"
-
-#~ msgid "Cancelling…"
-#~ msgstr "Отмена…"
-
-#~ msgid "Select language and click Log In"
-#~ msgstr "Выберите язык и нажмите «Войти в систему»"
-
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Другой"
-
-#~ msgid "Custom session"
-#~ msgstr "Другой сеанс"
-
-#~ msgid "Computer Name"
-#~ msgstr "Имя компьютера"
-
-#~ msgid "Version"
-#~ msgstr "Версия"
-
-#~ msgid "Cancel"
-#~ msgstr "Отмена"
-
-#~ msgid "Unlock"
-#~ msgstr "Разблокировать"
-
-#~ msgid "Login"
-#~ msgstr "Войти в систему"
-
-#~ msgid "Suspend"
-#~ msgstr "Спящий режим"
-
-#~ msgid "Restart"
-#~ msgstr "Перезапустить"
-
-#~ msgid "Shut Down"
-#~ msgstr "Выключить"
-
-#~ msgid "Unknown time remaining"
-#~ msgstr "Оставшееся время неизвестно"
-
-#~ msgid "Panel"
-#~ msgstr "Панель"
-
-#~ msgid "Label Text"
-#~ msgstr "Текст ярлыка"
-
-#~ msgid "The text to use as a label"
-#~ msgstr "Текст, используемый в качестве ярлыка"
-
-#~ msgid "Icon name"
-#~ msgstr "Имя значка"
-
-#~ msgid "The icon to use with the label"
-#~ msgstr "Значок, используемый с ярлыком"
-
-#~ msgid "Default Item"
-#~ msgstr "Элемент по умолчанию"
-
-#~ msgid "The ID of the default item"
-#~ msgstr "Идентификатор элемента по умолчанию"
-
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Удалённый вход (подключение к %s…)"
-
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Удалённый вход (подключён к %s)"
-
-#~ msgid "Remote Login"
-#~ msgstr "Удалённый вход"
-
-#~ msgid "Session"
-#~ msgstr "Сеанс"
-
-#~ msgid "Duration"
-#~ msgstr "Продолжительность"
-
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Количество секунд до остановки таймера"
-
-#~ msgid "Start time"
-#~ msgstr "Время запуска"
-
-#~ msgid "Time the timer was started"
-#~ msgstr "Время запуска таймера"
-
-#~ msgid "Is it Running?"
-#~ msgstr "Работает ли сейчас?"
-
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Работает ли таймер в текущий момент"
-
-#~ msgid "Log in as %s"
-#~ msgstr "Войти в систему как %s"
-
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Другой пользователь…"
-
-#~ msgid "Choose a different account"
-#~ msgstr "Выберите другую учётную запись"
-
-#~ msgid "Guest"
-#~ msgstr "Гость"
-
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Зарегистрироваться в системе как временный гость"
-
-#~ msgid "Automatic Login"
-#~ msgstr "Автоматический вход"
-
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "Автоматически входить в систему после выбора параметров"
-
-#~ msgid "Currently logged in"
-#~ msgstr "Уже зарегистрирован в системе"
-
-#~ msgid "User %s doesn't exist"
-#~ msgstr "Пользователь %s не существует"
-
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "Группа %s не существует"
-
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "Каталог для журналов «%s» не существует или не является каталогом."
-
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr ""
-#~ "Каталог с файлами для проверки подлинности «%s» не существует. Аварийное "
-#~ "завершение работы."
-
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr ""
-#~ "Путь «%s», где должны находиться файлы для проверки подлинности, не "
-#~ "является каталогом. Аварийное завершение работы."
-
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr ""
-#~ "Каталог с файлами для проверки подлинности «%s» не принадлежит "
-#~ "пользователю  %d, группе %d. Аварийное завершение работы."
-
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr ""
-#~ "Каталог с файлами для проверки подлинности «%s» имеет неверные права %o. "
-#~ "Должно быть %o. Аварийное завершение работы."
-
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "Экранная лупа среды GNOME"
-
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Увеличить части экрана"
-
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "Экранная клавиатура среды GNOME"
-
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Использовать экранную клавиатуру"
-
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Программа чтения экрана Orca"
-
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr ""
-#~ "Озвучивает информацию, имеющуюся на экране, или выводит её на экран Брайля"
-
-#~ msgid "Unable to initialize login system"
-#~ msgstr "Не удалось инициализировать систему входа"
-
-#~ msgid "Unable to authenticate user"
-#~ msgstr "Не удалось аутентифицировать пользователя"
-
-#~ msgid "Unable to establish credentials"
-#~ msgstr "Не удалось установить мандаты"
-
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr "Системе не удалось найти для переключения экран входа в систему."
