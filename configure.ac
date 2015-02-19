@@ -241,7 +241,7 @@ AC_ARG_WITH(tcp-wrappers,
 AC_ARG_WITH(console-kit,
             AS_HELP_STRING([--with-console-kit],
                            [Add ConsoleKit support @<:@default=auto@:>@]),,
-            with_console_kit=auto)
+            with_console_kit=no)
 
 AC_ARG_WITH(systemd,
             AS_HELP_STRING([--with-systemd],
@@ -1643,3 +1643,15 @@ echo \
         Initial VT:               ${GDM_INITIAL_VT}
         Enable documentation:     ${enable_documentation}
 "
+
+if test x"${use_console_kit}" = x"yes"; then
+        echo \
+"       WARNING:
+        ConsoleKit support is deprecated and is going to be removed before
+        the next major release.  More details, and patches to add back in
+        ConsoleKit support can be found here:
+
+                https://wiki.gnome.org/wiki/Projects/ConsoleKit
+"
+fi
+
