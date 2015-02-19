@@ -593,5 +593,7 @@ gdm_goto_login_session_sync (GCancellable  *cancellable,
 
         g_object_unref (connection);
         return retval;
+#else
+        return FALSE;
 #endif
 }

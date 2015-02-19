@@ -846,6 +846,8 @@ gdm_goto_login_session (GError **error)
 
 #ifdef WITH_CONSOLE_KIT
         return goto_login_session_for_ck (connection, error);
+#else
+        return FALSE;
 #endif
 }
 
