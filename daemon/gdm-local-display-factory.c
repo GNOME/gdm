@@ -477,7 +477,7 @@ static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *fa
                         is_initial = TRUE;
 #ifdef ENABLE_WAYLAND_SUPPORT
                         gboolean wayland_enabled = FALSE;
-                        if (gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &wayland_enabled)) {
+                        if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
                                 if (wayland_enabled) {
                                         session_type = "wayland";
                                 }
