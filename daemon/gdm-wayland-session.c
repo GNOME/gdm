@@ -37,7 +37,6 @@
 #include <gio/gunixinputstream.h>
 
 #define BUS_ADDRESS_FILENO (STDERR_FILENO + 1)
-#define DBUS_DAEMON BINDIR "/dbus-daemon"
 
 typedef struct
 {
@@ -119,7 +118,7 @@ spawn_bus (State        *state,
 
         bus_address_fd_string = g_strdup_printf ("%d", BUS_ADDRESS_FILENO);
 
-        g_ptr_array_add (arguments, DBUS_DAEMON);
+        g_ptr_array_add (arguments, "dbus-daemon");
 
         g_ptr_array_add (arguments, "--print-address");
         g_ptr_array_add (arguments, bus_address_fd_string);
