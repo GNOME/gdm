@@ -2107,7 +2107,7 @@ send_setup_for_program (GdmSession *self,
                 display_x11_authority_file = "";
         }
 
-        g_debug ("GdmSession: Beginning setup for session for program with log '%s', using PAM service %s", log_file, service_name);
+        g_debug ("GdmSession: Beginning setup for session for program using PAM service %s", service_name);
 
         conversation = find_conversation_by_name (self, service_name);
         if (conversation != NULL) {
