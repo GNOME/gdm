@@ -2297,7 +2297,6 @@ gdm_session_worker_handle_set_environment_variable (GdmDBusWorker         *objec
                                                     const char            *value)
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
-        g_debug ("GdmSessionWorker: set env: %s = %s", key, value);
         gdm_session_worker_set_environment_variable (worker, key, value);
         gdm_dbus_worker_complete_set_environment_variable (object, invocation);
         return TRUE;
