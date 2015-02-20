@@ -134,7 +134,7 @@ spawn_bus (State        *state,
         g_ptr_array_free (arguments, TRUE);
 
         if (subprocess == NULL) {
-                g_debug ("could not start X server: %s", error->message);
+                g_debug ("could not start dbus-daemon: %s", error->message);
                 goto out;
         }
 
