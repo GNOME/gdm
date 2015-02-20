@@ -90,14 +90,14 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
-        GPtrArray           *arguments;
-        GSubprocessLauncher *launcher;
-        GSubprocess         *subprocess;
-        GInputStream        *input_stream;
-        GDataInputStream    *data_stream;
+        GPtrArray           *arguments = NULL;
+        GSubprocessLauncher *launcher = NULL;
+        GSubprocess         *subprocess = NULL;
+        GInputStream        *input_stream = NULL;
+        GDataInputStream    *data_stream = NULL;
         GError              *error = NULL;
-        char                *bus_address_fd_string;
-        char                *bus_address;
+        char                *bus_address_fd_string = NULL;
+        char                *bus_address = NULL;
         gsize                bus_address_size;
 
         gboolean  is_running = FALSE;
@@ -214,12 +214,12 @@ static gboolean
 spawn_session (State        *state,
                GCancellable *cancellable)
 {
-        GSubprocessLauncher *launcher;
+        GSubprocessLauncher *launcher = NULL;
         GSubprocess         *subprocess = NULL;
         GError              *error = NULL;
         gboolean             is_running = FALSE;
         int                  ret;
-        char               **argv;
+        char               **argv = NULL;
 
         g_debug ("Running wayland session");
 
@@ -287,7 +287,7 @@ static gboolean
 register_display (State        *state,
                   GCancellable *cancellable)
 {
-        GdmDBusManager  *manager;
+        GdmDBusManager  *manager = NULL;
         GError          *error = NULL;
         gboolean         registered = FALSE;
         GVariantBuilder  details;
@@ -358,8 +358,8 @@ int
 main (int    argc,
       char **argv)
 {
-        State           *state;
-        GOptionContext  *context;
+        State           *state = NULL;
+        GOptionContext  *context = NULL;
         static char    **args = NULL;
         gboolean         debug = FALSE;
         gboolean         ret;
