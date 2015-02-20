@@ -195,11 +195,11 @@ spawn_x_server (State        *state,
                 gboolean      allow_remote_connections,
                 GCancellable *cancellable)
 {
-        GPtrArray           *arguments;
-        GSubprocessLauncher *launcher;
-        GSubprocess         *subprocess;
-        GInputStream        *input_stream;
-        GDataInputStream    *data_stream;
+        GPtrArray           *arguments = NULL;
+        GSubprocessLauncher *launcher = NULL;
+        GSubprocess         *subprocess = NULL;
+        GInputStream        *input_stream = NULL;
+        GDataInputStream    *data_stream = NULL;
         GError              *error = NULL;
 
         char     *auth_file;
@@ -363,14 +363,14 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
-        GPtrArray           *arguments;
-        GSubprocessLauncher *launcher;
-        GSubprocess         *subprocess;
-        GInputStream        *input_stream;
-        GDataInputStream    *data_stream;
+        GPtrArray           *arguments = NULL;
+        GSubprocessLauncher *launcher = NULL;
+        GSubprocess         *subprocess = NULL;
+        GInputStream        *input_stream = NULL;
+        GDataInputStream    *data_stream = NULL;
         GError              *error = NULL;
         char                *bus_address_fd_string;
-        char                *bus_address;
+        char                *bus_address = NULL;
         gsize                bus_address_size;
 
         gboolean  is_running = FALSE;
@@ -489,8 +489,8 @@ spawn_session (State        *state,
                gboolean      run_script,
                GCancellable *cancellable)
 {
-        GSubprocessLauncher *launcher;
-        GSubprocess         *subprocess;
+        GSubprocessLauncher *launcher = NULL;
+        GSubprocess         *subprocess = NULL;
         GError              *error = NULL;
         gboolean             is_running = FALSE;
         const char          *vt;
@@ -588,7 +588,7 @@ static gboolean
 register_display (State        *state,
                   GCancellable *cancellable)
 {
-        GdmDBusManager  *manager;
+        GdmDBusManager  *manager = NULL;
         GError          *error = NULL;
         gboolean         registered = FALSE;
         GVariantBuilder  details;
@@ -663,8 +663,8 @@ int
 main (int    argc,
       char **argv)
 {
-        State           *state;
-        GOptionContext  *context;
+        State           *state = NULL;
+        GOptionContext  *context = NULL;
         static char    **args = NULL;
         static gboolean  run_script = FALSE;
         static gboolean  allow_remote_connections = FALSE;
