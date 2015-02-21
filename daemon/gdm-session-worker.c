@@ -1632,7 +1632,7 @@ session_worker_child_watch (GPid              pid,
                                              status);
 
         worker->priv->child_pid = -1;
-
+        worker->priv->child_watch_id = 0;
         run_script (worker, GDMCONFDIR "/PostSession");
 }
 
