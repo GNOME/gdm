@@ -222,7 +222,6 @@ spawn_x_server (State        *state,
 
         arguments = g_ptr_array_new ();
         launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDIN_INHERIT);
-        g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
         g_subprocess_launcher_take_fd (launcher, pipe_fds[1], DISPLAY_FILENO);
 
         if (g_getenv ("XDG_VTNR") != NULL) {
@@ -499,6 +498,7 @@ spawn_session (State        *state,
 
         g_subprocess_launcher_setenv (launcher, "DISPLAY", state->display_name, TRUE);
         g_subprocess_launcher_setenv (launcher, "XAUTHORITY", state->auth_file, TRUE);
+        g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
 
         vt = g_getenv ("XDG_VTNR");
 
