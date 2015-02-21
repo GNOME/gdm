@@ -124,6 +124,7 @@ static void     gdm_display_finalize    (GObject         *object);
 static void     queue_finish            (GdmDisplay      *self);
 static void     _gdm_display_set_status (GdmDisplay *self,
                                          int         status);
+static gboolean wants_initial_setup (GdmDisplay *self);
 G_DEFINE_ABSTRACT_TYPE (GdmDisplay, gdm_display, G_TYPE_OBJECT)
 
 static gboolean
@@ -678,6 +679,8 @@ gdm_display_prepare (GdmDisplay *self)
          * asynchronously
          */
         look_for_existing_users_sync (self);
+
+        self->priv->doing_initial_setup = wants_initial_setup (self);
 
         g_object_ref (self);
         ret = GDM_DISPLAY_GET_CLASS (self)->prepare (self);
@@ -1530,8 +1533,6 @@ gdm_display_set_up_greeter_session (GdmDisplay  *self,
                                     char       **username)
 {
         g_return_if_fail (g_strcmp0 (self->priv->session_class, "greeter") == 0);
-
-        self->priv->doing_initial_setup = wants_initial_setup (self);
 
         if (self->priv->doing_initial_setup) {
                 *username = g_strdup (INITIAL_SETUP_USERNAME);
