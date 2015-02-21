@@ -94,6 +94,7 @@ gdm_local_display_prepare (GdmDisplay *display)
         char          *session_class;
         char          *session_type;
         gboolean       doing_initial_setup = FALSE;
+        gboolean       failed = FALSE;
 
         seat_id = NULL;
 
@@ -105,6 +106,13 @@ gdm_local_display_prepare (GdmDisplay *display)
                       NULL);
 
         if (g_strcmp0 (session_class, "greeter") != 0) {
+                goto out;
+        }
+
+        g_debug ("doing initial setup? %s", doing_initial_setup? "yes" : "no");
+        if (doing_initial_setup && g_strcmp0 (session_type, "wayland") == 0) {
+                g_debug ("initial setup doesn't have a wayland session, failing back to X11");
+                failed = TRUE;
                 goto out;
         }
 
@@ -128,6 +136,10 @@ out:
         g_free (seat_id);
         g_free (session_class);
         g_free (session_type);
+
+        if (failed) {
+                return FALSE;
+        }
         return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
 }
 
