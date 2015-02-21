@@ -10,10 +10,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-25 16:02+0000\n"
-"PO-Revision-Date: 2013-08-26 21:13+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-02-21 05:57+0000\n"
+"PO-Revision-Date: 2015-02-21 09:07+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -21,102 +20,110 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.7.4\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nie je znakové zariadenie"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772 ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Nepodarilo sa identifikovať aktuálnu reláciu."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Používateľovi sa nepodarilo prepnúť relácie."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Nepodarilo sa rozpoznať aktuálne sedenie."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
+msgstr "Systém nie je schopný zistiť, či má prepnúť na existujúcu prihlasovaciu obrazovku alebo spustiť novú prihlasovaciu obrazovku."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Systém nie je schopný spustiť novú prihlasovaciu obrazovku."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "používateľ „%s“ sa v systéme nenašiel"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Zatiaľ nie je dostupná žiadna relácia"
-
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Nepodarilo sa nájsť UID používateľa %s"
-
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "nie sú dostupné žiadne relácie"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your "
+"syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr ""
-"Na opakované overenie totožnosti používateľa %s nie sú dostupné žiadne "
-"relácie"
+"Kvôli vnútornej chybe sa nepodarilo spustiť X server (vaše grafické prostredie). Prosím, kontaktujte správcu vášho systému, alebo skontrolujte "
+"súbor so systémovým záznamom. Zatiaľ bude tento displej zakázaný. Po oprave problému reštartujte GDM."
 
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Nepodarilo sa nájsť reláciu pre používateľa %s"
+#: ../daemon/gdm-manager.c:1075
+msgid "No display available"
+msgstr "Nie je dostupný žiadny displej"
 
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Nepodarilo sa nájsť príslušnú reláciu pre používateľa %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Používateľ nevlastní žiadnu reláciu"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
 msgid "No session available"
 msgstr "Nie je dostupná žiadna relácia"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: zlyhalo pripojenie na rodičovský displej „%s“"
+#: ../daemon/gdm-manager.c:1135
+msgid "Can only be called before user is logged in"
+msgstr "Môže byť volaný iba pred prihlásením používateľa"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1145
+msgid "Caller not GDM"
+msgstr "Volajúci nie je GDM"
+
+#: ../daemon/gdm-manager.c:1155
+msgid "Unable to open private communication channel"
+msgstr "Nepodarilo sa otvoriť súkromný komunikačný kanál"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server mal byť spustený používateľom %s, taký ale neexistuje"
 
 # PK: prekladat alebo neprekladat? identifikator skupiny
 # DK: kludne moze byt prelozeny-neni obmedzenie na pocet znakov ako napr. v tabulke kde je lepsie nechat ID
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nepodarilo sa nastaviť identifikátor skupiny na %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () zlyhalo pre %s"
 
 #  PK: prekladat alebo neprekladat? identifikator pouzivatela
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nepodarilo sa nastaviť identifikátor používateľa na %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nepodarilo sa otvoriť súbor so záznamom pre displej %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565 ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Chyba pri nastavovaní %s na %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Priorita servera nemohla byť nastavená na %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Prázdny príkaz servera pre displej %s"
@@ -145,75 +152,61 @@ msgstr "Zariadenie displeja"
 msgid "The display device"
 msgstr "Zariadenie pre displej"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1182
 msgid "Could not create authentication helper process"
 msgstr "Nepodarilo sa vytvoriť proces pomocníka pre overenie totožnosti"
 
-#: ../daemon/gdm-session-worker.c:824
+#: ../daemon/gdm-session-worker.c:845
 msgid "Your account was given a time limit that's now passed."
 msgstr "Vášmu účtu bol pridelený časový limit, ktorý práve teraz vypršal."
 
-#: ../daemon/gdm-session-worker.c:831
+#: ../daemon/gdm-session-worker.c:852
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Prepáčte, toto nefungovalo. Prosím, skúste to znovu."
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1108
 msgid "Username:"
 msgstr "Používateľské meno:"
 
-#: ../daemon/gdm-session-worker.c:1250
+#: ../daemon/gdm-session-worker.c:1242
 msgid "Your password has expired, please change it now."
 msgstr "Vaše heslo vypršalo, prosím, zmeňte ho teraz."
 
-#: ../daemon/gdm-session-worker.c:1489 ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
 #, c-format
 msgid "no user account available"
 msgstr "nie je k dispozícií žiaden používateľský účet"
 
-#: ../daemon/gdm-session-worker.c:1533
+#: ../daemon/gdm-session-worker.c:1525
 msgid "Unable to change to user"
 msgstr "Nepodarilo sa zmeniť na používateľa"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Kvôli vnútornej chybe sa nepodarilo spustiť X server (vaše grafické "
-"prostredie). Prosím, kontaktujte správcu vášho systému, alebo skontrolujte "
-"súbor so systémovým záznamom. Zatiaľ bude tento displej zakázaný. Po oprave "
-"problému reštartujte GDM."
+# PM: to znie šialene, čo takto Správca relácií pre...
+#: ../daemon/gdm-wayland-session.c:377
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Spúšťač relácie Wayland pre Správcu prihlásenia GNOME"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Môže byť volaný iba pred prihlásením používateľa"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Volajúci nie je GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Používateľ nie je prihlásený"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Teraz môže byť naraz prihlásený iba jeden klient"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Nepodarilo sa vytvoriť soket!"
+
+#: ../daemon/gdm-x-session.c:673
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:674
+msgid "Listen on TCP socket"
+msgstr ""
+
+# PM: to znie šialene, čo takto Správca relácií pre...
+#: ../daemon/gdm-x-session.c:685
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Spúšťač relácie X pre Správcu prihlásenia GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr ""
-"Nedá sa zapísať súbor PID %s: možno nie je dostatok miesta na disku: %s"
+msgstr "Nedá sa zapísať súbor PID %s: možno nie je dostatok miesta na disku: %s"
 
 #: ../daemon/main.c:188
 #, c-format
@@ -222,85 +215,62 @@ msgstr "Zlyhalo vytváranie priečinku jedného spustenia %s: %s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Zlyhalo vytváranie AuthDir %s: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Zlyhalo vytváranie LogDir %s: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Nie je možné nájsť používateľa procesu GDM „%s“. Prerušuje sa!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Používateľ GDM by nemal byť root. Prerušuje sa!"
 
 # PK: inde prerusuje sa
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Nie je možné nájsť skupinu procesu GDM „%s“. Prerušuje sa!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Skupina pre GDM by nemala byť root. Prerušuje sa!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Označí všetky upozornenia ako kritické"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Skončí po nejakom čase (pre ladenie)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Vypíše verziu GDM"
 
 # PŠ: je to názov toho programu - Správca prihlásenia. Vždy sa tak volal...
-#: ../daemon/main.c:346
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Správca prihlásenia GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Len používateľ root môže spúšťať GDM"
 
 # PM: to znie šialene, čo takto Správca relácií pre...
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Správca relácií pre Správcu prihlásenia GNOME"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Identifikátor displeja"
-
-# PK: ma to byt velkym?
-# DK: podla mna nema
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "IDENTIFIKÁTOR"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Klient Správcu prihlásenia GNOME"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Prihlasovacie okno"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell.desktop.in.h:1 ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
-#: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell.desktop.in.h:2 ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Správa a kompozícia okien"
 
@@ -309,26 +279,16 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Určuje, či povoliť alebo zakázať snímač odtlačku prsta pre prihlásenie"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid ""
-"The login screen can optionally allow users who have enrolled their "
-"fingerprints to log in using those prints."
-msgstr ""
-"Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov na "
-"základe odtlačku prstov, ktoré majú nasnímané pre prihlásenie."
+msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
+msgstr "Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov na základe odtlačku prstov, ktoré majú nasnímané pre prihlásenie."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
-msgstr ""
-"Určuje, či povoliť alebo zakázať čítačky čipových kariet smartcard pre "
-"prihlásenie"
+msgstr "Určuje, či povoliť alebo zakázať čítačky čipových kariet smartcard pre prihlásenie"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid ""
-"The login screen can optionally allow users who have smartcards to log in "
-"using those smartcards."
-msgstr ""
-"Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov "
-"pomocou čipových kariet smartcard."
+msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
+msgstr "Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov pomocou čipových kariet smartcard."
 
 # DK: "smartcard" = čipová karta SmartCard
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
@@ -336,13 +296,10 @@ msgid "Whether or not to allow passwords for login"
 msgstr "Určuje, či povoliť alebo zakázať heslá na prihlásenie"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid ""
-"The login screen can be configured to disallow password authentication, "
-"forcing the user to use smartcard or fingerprint authentication."
+msgid "The login screen can be configured to disallow password authentication, forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"Prihlasovacia obrazovka môže byť konfigurovaná tak, aby nepovolila overenie "
-"totožnosti pomocou hesla a prinútila tak používateľa použiť overenie "
-"totožnosti pomocou čipovej karty smartcard alebo odtlačku prsta."
+"Prihlasovacia obrazovka môže byť konfigurovaná tak, aby nepovolila overenie totožnosti pomocou hesla a prinútila tak používateľa použiť "
+"overenie totožnosti pomocou čipovej karty smartcard alebo odtlačku prsta."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -350,35 +307,29 @@ msgstr "Cesta k malému obrázku navrchu zoznamu používateľov"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to "
+"provide branding."
 msgstr ""
-"Prihlasovacia obrazovka môže voliteľne zobraziť obrázok navrchu zoznamu "
-"používateľov a poskytnúť tak miesto pre prezentáciu správcov a distribúcií."
+"Prihlasovacia obrazovka môže voliteľne zobraziť obrázok navrchu zoznamu používateľov a poskytnúť tak miesto pre prezentáciu správcov a "
+"distribúcií."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way "
+"to provide branding."
 msgstr ""
-"Núdzová prihlasovacia obrazovka môže voliteľne zobraziť malý obrázok navrchu "
-"zoznamu používateľov a poskytnúť tak miesto pre prezentáciu správcov a "
-"distribúcií."
+"Núdzová prihlasovacia obrazovka môže voliteľne zobraziť malý obrázok navrchu zoznamu používateľov a poskytnúť tak miesto pre prezentáciu "
+"správcov a distribúcií."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Zabrániť zobrazeniu zoznamu používateľov"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:11
-msgid ""
-"The login screen normally shows a list of available users to log in as. This "
-"setting can be toggled to disable showing the user list."
+msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
 msgstr ""
-"Prihlasovacia obrazovka obvykle zobrazuje zoznam dostupných prihlásiteľných "
-"používateľov. Týmto nastavením môže byť zobrazenie zoznamu používateľov "
-"zakázané."
+"Prihlasovacia obrazovka obvykle zobrazuje zoznam dostupných prihlásiteľných používateľov. Týmto nastavením môže byť zobrazenie zoznamu "
+"používateľov zakázané."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
@@ -404,61 +355,15 @@ msgstr "Zakázať zobrazenie tlačidiel reštartu"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Nastavte na true, ak chcete v prihlasovacej obrazovke zakázať zobrazovanie "
-"tlačidiel na reštartovanie."
+msgstr "Nastavte na true, ak chcete v prihlasovacej obrazovke zakázať zobrazovanie tlačidiel na reštartovanie."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Počet povolených zlyhaní overení totožnosti"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
-msgid ""
-"The number of times a user is allowed to attempt authentication, before "
-"giving up and going back to user selection."
-msgstr ""
-"Počet overení totožnosti, o ktoré sa môže používateľ pokúsiť pred návratom k "
-"výberu používateľa."
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Nepodarilo sa vytvoriť prechodovú obrazovku: "
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Nepodarilo sa aktivovať reláciu: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Nepodarilo sa identifikovať aktuálnu reláciu."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Používateľovi sa nepodarilo prepnúť relácie."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Nepodarilo sa rozpoznať aktuálne sedenie."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Systém nie je schopný zistiť, či má prepnúť na existujúcu prihlasovaciu "
-"obrazovku alebo spustiť novú prihlasovaciu obrazovku."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Systém nie je schopný spustiť novú prihlasovaciu obrazovku."
+msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
+msgstr "Počet overení totožnosti, o ktoré sa môže používateľ pokúsiť pred návratom k výberu používateľa."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -481,35 +386,38 @@ msgstr "XDMCP: Nesprávna verzia XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Nepodarilo sa analyzovať adresu"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Nepodarilo sa vytvoriť prechodovú obrazovku: "
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Nepodarilo sa aktivovať reláciu: "
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Podporovaný je len príkaz VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "PRÍKAZ"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47 ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Ignorované — ponechané kvôli kompatibilite"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Výstup pre ladenie"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Verzia tejto aplikácie"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Nové prihlásenie GDM"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "Nepodarilo sa spustiť nový displej"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -521,13 +429,61 @@ msgstr "Obrazovka zosnímaná"
 msgid "Take a picture of the screen"
 msgstr "Vytvorí snímku obrazovky"
 
+#~ msgid "No session available yet"
+#~ msgstr "Zatiaľ nie je dostupná žiadna relácia"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Nepodarilo sa nájsť UID používateľa %s"
+
+#~ msgid "no sessions available"
+#~ msgstr "nie sú dostupné žiadne relácie"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Na opakované overenie totožnosti používateľa %s nie sú dostupné žiadne relácie"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Nepodarilo sa nájsť reláciu pre používateľa %s"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Nepodarilo sa nájsť príslušnú reláciu pre používateľa %s"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Používateľ nevlastní žiadnu reláciu"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: zlyhalo pripojenie na rodičovský displej „%s“"
+
+#~ msgid "User not logged in"
+#~ msgstr "Používateľ nie je prihlásený"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "Teraz môže byť naraz prihlásený iba jeden klient"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "Zlyhalo vytváranie AuthDir %s: %s"
+
+#~ msgid "Display ID"
+#~ msgstr "Identifikátor displeja"
+
+# PK: ma to byt velkym?
+# DK: podla mna nema
+#~ msgid "ID"
+#~ msgstr "IDENTIFIKÁTOR"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "Klient Správcu prihlásenia GNOME"
+
+#~ msgid "Login Window"
+#~ msgstr "Prihlasovacie okno"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Nepodarilo sa spustiť nový displej"
+
 #~ msgid "Your account was given an expiration date that's now passed."
-#~ msgstr ""
-#~ "Vášmu účtu bol pridelený dátum vypršania, ktorý práve teraz vypršal."
+#~ msgstr "Vášmu účtu bol pridelený dátum vypršania, ktorý práve teraz vypršal."
 
 #~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr ""
-#~ "chyba pri započatí konverzácie so systémom overovania totožnosti - %s"
+#~ msgstr "chyba pri započatí konverzácie so systémom overovania totožnosti - %s"
 
 #~ msgid "general failure"
 #~ msgstr "všeobecné zlyhanie"
@@ -541,31 +497,20 @@ msgstr "Vytvorí snímku obrazovky"
 #~ msgid "unknown error"
 #~ msgstr "neznáma chyba"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "chyba pri informovaní systému overovania totožnosti o výzve pre zadanie "
-#~ "používateľského mena: %s"
+#~ msgid "error informing authentication system of preferred username prompt: %s"
+#~ msgstr "chyba pri informovaní systému overovania totožnosti o výzve pre zadanie používateľského mena: %s"
 
 #~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "chyba pri informovaní systému overovania totožnosti o používateľovom "
-#~ "názve hostiteľského systému: %s"
+#~ msgstr "chyba pri informovaní systému overovania totožnosti o používateľovom názve hostiteľského systému: %s"
 
 #~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "chyba pri informovaní systému overovania totožnosti o používateľovej "
-#~ "konzole: %s"
+#~ msgstr "chyba pri informovaní systému overovania totožnosti o používateľovej konzole: %s"
 
 #~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "chyba pri informovaní systému overovania totožnosti o reťazci displeja: %s"
+#~ msgstr "chyba pri informovaní systému overovania totožnosti o reťazci displeja: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "chyba pri informovaní systému overovania totožnosti o xauth povereniach "
-#~ "displeja: %s"
+#~ msgid "error informing authentication system of display xauth credentials: %s"
+#~ msgstr "chyba pri informovaní systému overovania totožnosti o xauth povereniach displeja: %s"
 
 #~ msgid "Fingerprint Authentication"
 #~ msgstr "Overenie totožnosti pomocou odtlačku prsta"
