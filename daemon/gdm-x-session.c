@@ -385,6 +385,10 @@ spawn_bus (State        *state,
 
         arguments = g_ptr_array_new ();
         launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_NONE);
+
+        g_subprocess_launcher_setenv (launcher, "DISPLAY", state->display_name, TRUE);
+        g_subprocess_launcher_setenv (launcher, "XAUTHORITY", state->auth_file, TRUE);
+
         g_subprocess_launcher_take_fd (launcher, pipe_fds[1], BUS_ADDRESS_FILENO);
 
         bus_address_fd_string = g_strdup_printf ("%d", BUS_ADDRESS_FILENO);
