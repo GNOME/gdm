@@ -9,15 +9,15 @@
 # Gintautas Miliauskas <gintautas@miliauskas.lt>, 2008,2009.
 # Rimas Kudelis <rq@akl.lt>, 2010.
 # Algimantas Margevičius <gymka@mail.ru>, 2011.
-# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013.
+# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-11 16:53+0000\n"
-"PO-Revision-Date: 2013-08-11 20:01+0300\n"
+"POT-Creation-Date: 2015-02-23 17:54+0000\n"
+"PO-Revision-Date: 2015-02-23 22:49+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -29,96 +29,117 @@ msgstr ""
 "X-Generator: Gtranslator 2.91.6\n"
 "X-Project-Style: gnome\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nėra simbolių įrenginys"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Nepavyko identifikuoti esamo seanso."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Naudotojas negali keisti seansų."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Nepavyko identifikuoti esamo seanso."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Sistemai nepavyksta nustatyti, ar persijungti į esamą prisijungimo ekraną, "
+"ar paleisti naują prisijungimo ekraną."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Sistemai nepavyksta paleisti naujo prosijungimo ekrano."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "nepavyko sistemoje rasti naudotojo „%s“"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Nar nėra prieinamų seansų"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Nepavyko paleisti X serverio (Jūsų grafinės aplinkos) dėl vidinės klaidos. "
+"Susisiekite su sistemos administratoriumi arba patikrinkite syslog, jei "
+"norite diagnozuoti problemą. Kol kas šis ekranas bus išjungtas.  Kai "
+"išspręsite problemą, paleiskite GDM iš naujo."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Nepavyko ieškoti naudotojo %s UID"
+#: ../daemon/gdm-manager.c:1075
+#| msgid "No session available"
+msgid "No display available"
+msgstr "Nėra galimų vaizduoklių"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "nėra prieinamų seansų"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Nėra %s prieinamų seansų pakartotiniam tapatybės patvirtinimui"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Nepavyko rasti naudotojo %s seanso"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Nepavyko rasti naudotojui %s tinkamo seanso"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Seansas nepriklauso naudotojui "
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
 msgid "No session available"
 msgstr "Nėra prieinamų seansų"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: nepavyko prisijungti motininio ekrano „%s“"
+#: ../daemon/gdm-manager.c:1135
+msgid "Can only be called before user is logged in"
+msgstr "Gali būti kviečiamas tik prieš naudotojui prisijungiant"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1145
+msgid "Caller not GDM"
+msgstr "Kvietėjas ne GDM"
+
+#: ../daemon/gdm-manager.c:1155
+msgid "Unable to open private communication channel"
+msgstr "Nepavyko atverti privataus komunikacijos kanalo"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Serveris turėjo būti sukurtas naudotojo %s, bet toks naudotojas neegzistuoja"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nepavyko pakeisti groupid į %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() %s nepavyko"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nepavyko pakeisti userid į %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nepavyko atverti ekrano %s žurnalo failo!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Klaida nustatant %s į %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Serverio prioriteto nepavyko nustatyti į %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tuščia serverio komanda ekranui %s"
@@ -147,69 +168,56 @@ msgstr "Vaizdavimo įrenginys"
 msgid "The display device"
 msgstr "Vaizdavimo įrenginys"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1182
 msgid "Could not create authentication helper process"
 msgstr "Nepavyko sukurti tapatybės patvirtinimo pagalbinio proceso"
 
-#: ../daemon/gdm-session-worker.c:825
+#: ../daemon/gdm-session-worker.c:845
 msgid "Your account was given a time limit that's now passed."
 msgstr "Jūsų paskyrai buvo suteiktas laiko limitas, kuris dabar baigėsi."
 
-#: ../daemon/gdm-session-worker.c:832
+#: ../daemon/gdm-session-worker.c:852
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Atleiskite, tai nesuveikė. Bandykite dar kartą."
 
-#: ../daemon/gdm-session-worker.c:1064
+#: ../daemon/gdm-session-worker.c:1108
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: ../daemon/gdm-session-worker.c:1251
+#: ../daemon/gdm-session-worker.c:1242
 msgid "Your password has expired, please change it now."
 msgstr "Jūsų slaptažodžio galiojimas baigėsi, pakeiskite jį."
 
-#: ../daemon/gdm-session-worker.c:1490 ../daemon/gdm-session-worker.c:1507
+#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
 #, c-format
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: ../daemon/gdm-session-worker.c:1534
+#: ../daemon/gdm-session-worker.c:1525
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Nepavyko paleisti X serverio (Jūsų grafinės aplinkos) dėl vidinės klaidos. "
-"Susisiekite su sistemos administratoriumi arba patikrinkite syslog, jei "
-"norite diagnozuoti problemą. Kol kas šis ekranas bus išjungtas.  Kai "
-"išspręsite problemą, paleiskite GDM iš naujo."
+#: ../daemon/gdm-wayland-session.c:377
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME ekrano valdyklės Wayland seanso paleidėjas"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Gali būti kviečiamas tik prieš naudotojui prisijungiant"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Kvietėjas ne GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Naudotojas neprisijungė"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Šiuo metu tik vienas klientas gali būti prisijungęs vienu metu"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Nepavyko sukurti lizdo!"
+
+#: ../daemon/gdm-x-session.c:677
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Paleisti programą per /etc/gdm/Xsession tarpinį scenarijų"
+
+#: ../daemon/gdm-x-session.c:678
+msgid "Listen on TCP socket"
+msgstr "Klausytis TCP lizdo"
+
+#: ../daemon/gdm-x-session.c:689
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME ekrano valdyklės X seanso paleidėjas"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -223,80 +231,61 @@ msgstr "Nepavyko sukurti vykdymo žymeklio katalogo %s: %s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Nepavyko sukurti AuthDir %s: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Nepavyko sukurti LogDir %s: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Nepavyko rasti GDM naudotojo „%s“. Nutraukiama!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM naudotojas neturėtų būti root. Nutraukiama!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Nepavyko rasti GDM grupės „%s“. Nutraukiama!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM grupė neturėtų būti root. Nutraukiama!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Padaryti visus įspėjimus kritinius"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Išeiti praėjus šiek tiek laiko (derinimui)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Rodyti GDM versiją"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "GNOME ekrano valdyklė"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Tik root naudotojas gali paleisti GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ekrano valdyklės seanso darbininkas"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Ekrano ID"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME ekrano valdyklės šalutinis modulis"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Prisijungimo langas"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME apvalkalas"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Langų valdymas ir komponavimas"
 
@@ -411,46 +400,6 @@ msgstr ""
 "Skaičius kartų, kiek naudotojui leidžiama mėginti patvirtinti tapatybę prieš "
 "grįžtant į naudotojų pasirinkimą."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Nepavyko sukurti pereinamojo ekrano:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Nepavyko aktyvuoti seanso:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Nepavyko identifikuoti esamo seanso."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Naudotojas negali keisti seansų."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Nepavyko identifikuoti esamo seanso."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Sistemai nepavyksta nustatyti, ar persijungti į esamą prisijungimo ekraną, "
-"ar paleisti naują prisijungimo ekraną."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Sistemai nepavyksta paleisti naujo prosijungimo ekrano."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Pasirinkite sistemą"
@@ -471,35 +420,39 @@ msgstr "XDMCP: Neteisinga XDMCP versija!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Nepavyko perskaityti adreso"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Nepavyko sukurti pereinamojo ekrano:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Nepavyko aktyvuoti seanso:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Palaikoma tik komanda VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "KOMANDA"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Nepaisoma — palikta dėl suderinamumo"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Derinimo išvestis"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Šios programos versija"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Naujas GDM prisijungimas"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "Nepavyko paleisti naujo vaizduoklio"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -510,3 +463,50 @@ msgstr "Ekranvaizdis įrašytas"
 msgid "Take a picture of the screen"
 msgstr "Įrašyti ekranvaizdį"
 
+#~ msgid "No session available yet"
+#~ msgstr "Nar nėra prieinamų seansų"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Nepavyko ieškoti naudotojo %s UID"
+
+#~ msgid "no sessions available"
+#~ msgstr "nėra prieinamų seansų"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Nėra %s prieinamų seansų pakartotiniam tapatybės patvirtinimui"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Nepavyko rasti naudotojo %s seanso"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Nepavyko rasti naudotojui %s tinkamo seanso"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Seansas nepriklauso naudotojui "
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: nepavyko prisijungti motininio ekrano „%s“"
+
+#~ msgid "User not logged in"
+#~ msgstr "Naudotojas neprisijungė"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "Šiuo metu tik vienas klientas gali būti prisijungęs vienu metu"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "Nepavyko sukurti AuthDir %s: %s"
+
+#~ msgid "Display ID"
+#~ msgstr "Ekrano ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "GNOME ekrano valdyklės šalutinis modulis"
+
+#~ msgid "Login Window"
+#~ msgstr "Prisijungimo langas"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Nepavyko paleisti naujo vaizduoklio"
