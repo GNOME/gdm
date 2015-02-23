@@ -32,16 +32,16 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-05-21 05:01+0000\n"
-"PO-Revision-Date: 2014-05-21 09:10-0300\n"
-"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
+"POT-Creation-Date: 2015-02-23 17:54+0000\n"
+"PO-Revision-Date: 2015-02-23 16:21-0300\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.7.4\n"
 
 #: ../common/gdm-common.c:311
 #, c-format
@@ -83,19 +83,37 @@ msgstr "O sistema não conseguiu abrir uma nova tela de login."
 msgid "could not find user \"%s\" on system"
 msgstr "não foi possível encontrar o usuário \"%s\" no sistema"
 
-#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Não foi possível iniciar o servidor X (seu ambiente gráfico) devido a algum "
+"erro interno. Por favor, contate o administrador de sistemas ou verifique o "
+"seu syslog para um diagnóstico. Enquanto isso, esta tela será desabilitada. "
+"Por favor reinicie o GDM quando o problema for corrigido."
+
+#: ../daemon/gdm-manager.c:1075
+msgid "No display available"
+msgstr "Nenhuma exibição disponível"
+
+#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
 msgid "No session available"
 msgstr "Nenhuma sessão disponível"
 
-#: ../daemon/gdm-manager.c:953
-#, c-format
+#: ../daemon/gdm-manager.c:1135
 msgid "Can only be called before user is logged in"
 msgstr "Somente pode ser chamado antes do usuário iniciar a sessão"
 
-#: ../daemon/gdm-manager.c:962
-#, c-format
+#: ../daemon/gdm-manager.c:1145
 msgid "Caller not GDM"
 msgstr "O solicitante não é GDM"
+
+#: ../daemon/gdm-manager.c:1155
+msgid "Unable to open private communication channel"
+msgstr "Não foi possível abrir canal de comunicação privada"
 
 #: ../daemon/gdm-server.c:437
 #, c-format
@@ -164,50 +182,54 @@ msgstr "Dispositivo de exibição"
 msgid "The display device"
 msgstr "O dispositivo de tela"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1182
 msgid "Could not create authentication helper process"
 msgstr "Não foi possível criar o processo auxiliar de autenticação"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:845
 msgid "Your account was given a time limit that's now passed."
 msgstr "Foi dada à sua conta um limite de tempo que acabou de passar."
 
-#: ../daemon/gdm-session-worker.c:851
+#: ../daemon/gdm-session-worker.c:852
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Desculpe, isto não funcionou. Por gentileza, tente novamente."
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1108
 msgid "Username:"
 msgstr "Nome de usuário:"
 
-#: ../daemon/gdm-session-worker.c:1241
+#: ../daemon/gdm-session-worker.c:1242
 msgid "Your password has expired, please change it now."
 msgstr "Sua senha expirou, por gentileza altere-a agora."
 
-#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
+#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
 #, c-format
 msgid "no user account available"
 msgstr "nenhuma conta de usuário disponível"
 
-#: ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1525
 msgid "Unable to change to user"
 msgstr "Não foi possível mudar para o usuário"
 
-#: ../daemon/gdm-simple-slave.c:871
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Não foi possível iniciar o servidor X (seu ambiente gráfico) devido a algum "
-"erro interno. Por favor, contate o administrador de sistemas ou verifique o "
-"seu syslog para um diagnóstico. Enquanto isso, esta tela será desabilitada. "
-"Por favor reinicie o GDM quando o problema for corrigido."
+#: ../daemon/gdm-wayland-session.c:377
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Lançador de sessão Wayland do gerenciador de exibição do GNOME"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Não foi possível criar soquete!"
+
+#: ../daemon/gdm-x-session.c:677
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Executar programa por meio de script wrapper /etc/gdm/Xsession"
+
+#: ../daemon/gdm-x-session.c:678
+msgid "Listen on TCP socket"
+msgstr "Ouvir no socket TCP"
+
+#: ../daemon/gdm-x-session.c:689
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Lançador de sessão X do gerenciador de exibição do GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -272,15 +294,13 @@ msgstr "Somente o usuário administrador pode executar o GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "Processo da sessão do Gerenciador de exibição do GNOME"
 
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Janela de início de sessão"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Gerenciador de janelas e de composição"
 
@@ -463,6 +483,9 @@ msgstr "Captura de tela obtida"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Captura uma foto da tela"
+
+#~ msgid "Login Window"
+#~ msgstr "Janela de início de sessão"
 
 #~ msgid "No session available yet"
 #~ msgstr "Nenhuma sessão disponível no momento"
