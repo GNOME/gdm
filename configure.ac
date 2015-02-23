@@ -1651,7 +1651,7 @@ if test x"${use_console_kit}" = x"yes"; then
         the next major release.  More details, and patches to add back in
         ConsoleKit support can be found here:
 
-                https://wiki.gnome.org/wiki/Projects/ConsoleKit
+                https://wiki.gnome.org/Projects/ConsoleKit
 "
 fi
 
