@@ -1836,7 +1836,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 const char * const * environment;
                 char  *home_dir;
                 int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
-                gboolean has_journald = FALSE;
+                gboolean has_journald = FALSE, needs_controlling_terminal = FALSE;
                 sigset_t mask;
 
                 /* Leak the TTY into the session as stdin so that it stays open
@@ -1845,6 +1845,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         dup2 (worker->priv->session_tty_fd, STDIN_FILENO);
                         close (worker->priv->session_tty_fd);
                         worker->priv->session_tty_fd = -1;
+                        needs_controlling_terminal = TRUE;
                 } else {
                         stdin_fd = open ("/dev/null", O_RDWR);
                         dup2 (stdin_fd, STDIN_FILENO);
@@ -1877,6 +1878,14 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                                  (guint) getpid (), g_strerror (errno));
                         _exit (2);
                 }
+
+#ifdef WITH_SYSTEMD
+                /* Take control of the tty
+                 */
+                if (needs_controlling_terminal) {
+                        ioctl (STDIN_FILENO, TIOCSCTTY, 0);
+                }
+#endif
 
                 environment = gdm_session_worker_get_environment (worker);
 
