@@ -4,114 +4,132 @@
 # Maxim Dziumanenko <dziumanenko@gmail.com>, 2002-2006
 # Oleksandr Kovalenko <alx.kovalenko@gmail.com>, 2009
 # wanderlust <wanderlust@ukr.net>, 2009.
-# Korostil Daniel <ted.korostiled@gmail.com>, 2011, 2012.
-# Re. <ted.korostiled@gmail.com>, 2012.
-# Daniel Korostil <ted.korostiled@gmail.com>, 2013.
+# Daniel Korostil <ted.korostiled@gmail.com>, 2013, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.90.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-21 11:24+0300\n"
-"PO-Revision-Date: 2013-09-21 11:28+0300\n"
+"POT-Creation-Date: 2015-02-24 22:16+0200\n"
+"PO-Revision-Date: 2015-02-24 22:27+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: linux.org.ua\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Virtaal 0.7.1\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не є символьним пристроєм"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Неможливо розпізнати поточний сеанс."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Користувач не може перемкнути сеанс."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Неможливо розпізнати поточне місце."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Система не може визначити, чи перемкнутись на наявний вхідний екран чи "
+"запустити новий. "
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Система не може запустити новий вхідний екран."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "неможливо знайти користувача «%s» у системі"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Поки що немає доступного сеансу"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Не вдалось запустити сервер X (ваше графічне середовище) через внутрішню "
+"помилку. Будь ласка, зверніться до системного адміністратора або перегляньте "
+"системний журнал. Через деякий час цей дисплей буде вимкнено. Будь ласка, "
+"перезавантажте GDM, коли проблема буде вирішено."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Неможливо віднайти UID користувача %s"
+#: ../daemon/gdm-manager.c:1075
+msgid "No display available"
+msgstr "Немає доступного екрана"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "немає доступного сеансу"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Немає доступного сеансу %s для повторного розпізнавання"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Неможливо знайти сеанс для користувача %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Неможливо знайти відповідний сеанс для користувача %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Користувач не володіє сеансом"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
 msgid "No session available"
 msgstr "Немає доступного сеансу"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: не вдалось з'єднатись з батьківським екраном «%s»"
+#: ../daemon/gdm-manager.c:1135
+msgid "Can only be called before user is logged in"
+msgstr "Можна тільки викликатись перед входом користувача"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1145
+msgid "Caller not GDM"
+msgstr "Викликач не GDM"
+
+#: ../daemon/gdm-manager.c:1155
+msgid "Unable to open private communication channel"
+msgstr "Неможливо відкрити закритий канал зв'язку"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Сервер запущено користувачем %s, але цього користувача не існує"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Не вдалось встановити groupid для %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Помилка initgroups() для %s"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Не вдалось встановити userid для %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не вдалось відкрити файл журналу для екрана %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: помилка налаштування %s для %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Пріоритет сервера неможливо вказати для %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: порожня команда програми сервера для екрана %s"
@@ -140,69 +158,54 @@ msgstr "Пристрій показу"
 msgid "The display device"
 msgstr "Пристрій показу"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1182
 msgid "Could not create authentication helper process"
 msgstr "Неможливо створити дію з помічника розпізнавання"
 
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:845
 msgid "Your account was given a time limit that's now passed."
 msgstr "Ваш обліковий запис має часове обмеження, яке вже вичерпано."
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:852
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Вибачте, це не працює. Спробуйте ще."
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1108
 msgid "Username:"
 msgstr "Користувач:"
 
-#: ../daemon/gdm-session-worker.c:1261
+#: ../daemon/gdm-session-worker.c:1242
 msgid "Your password has expired, please change it now."
 msgstr "Ваш пароль застарів, змініть його."
 
-#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
+#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
 #, c-format
 msgid "no user account available"
 msgstr "недоступний обліковий запис користувача"
 
-#: ../daemon/gdm-session-worker.c:1544
+#: ../daemon/gdm-session-worker.c:1525
 msgid "Unable to change to user"
 msgstr "Неможливо змінити користувача"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Не вдалось запустити сервер X (ваше графічне середовище) через внутрішню "
-"помилку. Будь ласка, зверніться до системного адміністратора або перегляньте "
-"системний журнал. Через деякий час цей дисплей буде вимкнено. Будь ласка, "
-"перезавантажте GDM, коли проблема буде вирішено."
+#: ../daemon/gdm-wayland-session.c:377
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Пускач сеансу Wayland GNOME"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Можна тільки викликатись перед входом користувача"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Викликач не GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Користувач не увійшов"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Наразі, тільки один клієнт можна з'єднати за раз"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Не вдалось створити гніздо!"
+
+#: ../daemon/gdm-x-session.c:677
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Запустити програму через скрипт у /etc/gdm/Xsession"
+
+#: ../daemon/gdm-x-session.c:678
+msgid "Listen on TCP socket"
+msgstr "Чекати на сокет TCP"
+
+#: ../daemon/gdm-x-session.c:689
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Пускач сеансу X GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -237,54 +240,40 @@ msgstr "Не знайдено групу GDM «%s». Скасування!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Група GDM не повинна бути групою root. Скасування!"
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Зробити всі попередження критичними"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Вийти через деякий час (для зневадження)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Показати версію GDM"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Менеджер стільниці GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Лише адміністратор (root) може запускати GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Менеджер роботи стільничого сеансу GNOME"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Ідентифікатор екрана"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "Ідентифікатор"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Підлеглий менеджер стільниці GNOME"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Вікно входу в систему"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Керування і компонування вікон"
 
@@ -399,46 +388,6 @@ msgstr ""
 "Кількість разів, які дозволяють користувачу для спроби розпізнатись, перед "
 "невдачею та переходом назад до вибирання. користувача."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Неможливо створити змінний екран:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Неможливо ввімкнути сеанс:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:600
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Неможливо розпізнати поточний сеанс."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Користувач не може перемкнути сеанс."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:609
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Неможливо розпізнати поточне місце."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:619
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Система не може визначити, чи перемкнутись на наявний вхідний екран чи "
-"запустити новий. "
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:627
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Система не може запустити новий вхідний екран."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Виберіть систему"
@@ -459,35 +408,39 @@ msgstr "XDMCP: неправильна версія XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: неможливо розібрати адресу"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Неможливо створити змінний екран:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Неможливо ввімкнути сеанс:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Підтримується лише команда VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Пропущено — збережено для сумісності"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Вивід зневадження"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Версія цієї програми"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:693
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "— Новий вхід GDM"
-
-#: ../utils/gdmflexiserver.c:749
-msgid "Unable to start new display"
-msgstr "Неможливо запустити новий екран"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -497,6 +450,51 @@ msgstr "Знімок екрана зроблено"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Зробити знімок екрана"
+
+#~ msgid "No session available yet"
+#~ msgstr "Поки що немає доступного сеансу"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Неможливо віднайти UID користувача %s"
+
+#~ msgid "no sessions available"
+#~ msgstr "немає доступного сеансу"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Немає доступного сеансу %s для повторного розпізнавання"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Неможливо знайти сеанс для користувача %s"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Неможливо знайти відповідний сеанс для користувача %s"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Користувач не володіє сеансом"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: не вдалось з'єднатись з батьківським екраном «%s»"
+
+#~ msgid "User not logged in"
+#~ msgstr "Користувач не увійшов"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "Наразі, тільки один клієнт можна з'єднати за раз"
+
+#~ msgid "Display ID"
+#~ msgstr "Ідентифікатор екрана"
+
+#~ msgid "ID"
+#~ msgstr "Ідентифікатор"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "Підлеглий менеджер стільниці GNOME"
+
+#~ msgid "Login Window"
+#~ msgstr "Вікно входу в систему"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Неможливо запустити новий екран"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr "помилка початкового обміну з системою автентифікації —  %s"
