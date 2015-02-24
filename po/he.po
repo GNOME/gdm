@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-31 10:28+0300\n"
-"PO-Revision-Date: 2013-07-31 10:31+0200\n"
-"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"POT-Creation-Date: 2015-02-24 12:09+0200\n"
+"PO-Revision-Date: 2015-02-24 12:10+0200\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
@@ -19,95 +19,114 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom is not a character device"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Could not identify the current session."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "User unable to switch sessions."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "לא ניתן לזהות את המושב הנוכחי."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"המערכת לא הצליחה לוודא האם לעבור למסך כניסה קיים או להפעיל מסך כניסה חדש."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "המערכת לא הצליחה לפעיל מסך כניסה חדש."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "לא ניתן לאתר את המשתמש „%s“ במערכת"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "אין עדיין הפעלות זמינות"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "לא ניתן לחפש את מזהה המשתמש %s"
+#: ../daemon/gdm-manager.c:1075
+msgid "No display available"
+msgstr "אין תצוגה זמינה"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "אין הפעלות זמינות"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "אין הפעלות עבור %s הזמינות לאימות מחדש"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "לא ניתן למצוא את ההפעלה של המשתמש %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "לא ניתן למצוא את ההפעלה המתאימה עבור המשתמש %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "למשתמש אין בעלות על הפעלה"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
 msgid "No session available"
 msgstr "אין הפעלה זמינה"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: failed to connect to parent display '%s'"
+#: ../daemon/gdm-manager.c:1135
+msgid "Can only be called before user is logged in"
+msgstr "ניתן לקרוא לזה רק לפני שהמשתמש נכנס"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1145
+msgid "Caller not GDM"
+msgstr "הקורא אינו GDM"
+
+#: ../daemon/gdm-manager.c:1155
+msgid "Unable to open private communication channel"
+msgstr "לא ניתן לפתוח ערוץ התקשרות פרטי"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Couldn't set groupid to %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () failed for %s"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Couldn't set userid to %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Could not open log file for display %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Error setting %s to %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server priority couldn't be set to %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
@@ -136,73 +155,54 @@ msgstr "התקן תצוגה"
 msgid "The display device"
 msgstr "התקן התצוגה"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1182
 msgid "Could not create authentication helper process"
 msgstr "לא ניתן ליצור תהליך מסייע אימות"
 
-#: ../daemon/gdm-session-worker.c:825
+#: ../daemon/gdm-session-worker.c:845
 msgid "Your account was given a time limit that's now passed."
 msgstr "לחשבון שלך ניתנה מגבלת זמן שנכון לעכשיו חלפה."
 
-#: ../daemon/gdm-session-worker.c:828
-msgid "Your account was given an expiration date that's now passed."
-msgstr "לחשבון שלך ניתן תאריך תפוגה שנכון לעכשיו חלף."
-
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:852
 msgid "Sorry, that didn't work. Please try again."
 msgstr "פעולה זו לא צלחה. נא לנסות שוב, עמך הסליחה."
 
-#: ../daemon/gdm-session-worker.c:1067
+#: ../daemon/gdm-session-worker.c:1108
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: ../daemon/gdm-session-worker.c:1254
+#: ../daemon/gdm-session-worker.c:1242
 msgid "Your password has expired, please change it now."
 msgstr "תוקף הססמה שלך פג, נא לשנות אותה כעת."
 
-#: ../daemon/gdm-session-worker.c:1493 ../daemon/gdm-session-worker.c:1510
+#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
 #, c-format
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: ../daemon/gdm-session-worker.c:1537
+#: ../daemon/gdm-session-worker.c:1525
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
+#: ../daemon/gdm-wayland-session.c:377
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME Display Manager Wayland Session Launcher"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "ניתן לקרוא לזה רק לפני שהמשתמש נכנס"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "הקורא אינו GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "המשתמש לא נכנס"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "נכון לעכשיו, ניתן לחבר לקוח אחד בלבד בכל פעם"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Could not create socket!"
+
+#: ../daemon/gdm-x-session.c:677
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Run program through /etc/gdm/Xsession wrapper script"
+
+#: ../daemon/gdm-x-session.c:678
+msgid "Listen on TCP socket"
+msgstr "Listen on TCP socket"
+
+#: ../daemon/gdm-x-session.c:689
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME Display Manager X Session Launcher"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -216,80 +216,61 @@ msgstr "לא ניתן ליצור ספריית סימון להרצה חד־פעמ
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "יצירת ה־AuthDir %s נכשלה: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "יצירת ה־LogDir %s נכשלה: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Can't find the GDM user '%s'. Aborting!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "The GDM user should not be root. Aborting!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Can't find the GDM group '%s'. Aborting!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "The GDM group should not be root. Aborting!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Make all warnings fatal"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Exit after a time (for debugging)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Print GDM version"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "GNOME Display Manager"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Only the root user can run GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Display ID"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME Display Manager Slave"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "חלון התחברות"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "ניהול ועיצוב חלונות"
 
@@ -402,45 +383,6 @@ msgstr ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "לא ניתן ליצור תצוגה חולפת:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "לא ניתן לגשת את ההפעלה:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Could not identify the current session."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "User unable to switch sessions."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "לא ניתן לזהות את המושב הנוכחי."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"המערכת לא הצליחה לוודא האם לעבור למסך כניסה קיים או להפעיל מסך כניסה חדש."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "המערכת לא הצליחה לפעיל מסך כניסה חדש."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "בחירת מערכת"
@@ -461,35 +403,39 @@ msgstr "XDMCP: גרסת XDMCP שגויה!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: לא ניתן לנתח את הכתובת"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "לא ניתן ליצור תצוגה חולפת:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "לא ניתן לגשת את ההפעלה:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Only the VERSION command is supported"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Ignored — retained for compatibility"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Debugging output"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Version of this application"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- New GDM login"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "לא ניתן להתחיל תצוגה חדשה"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -499,6 +445,57 @@ msgstr "המסך צולם"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "צילום המסך"
+
+#~ msgid "No session available yet"
+#~ msgstr "אין עדיין הפעלות זמינות"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "לא ניתן לחפש את מזהה המשתמש %s"
+
+#~ msgid "no sessions available"
+#~ msgstr "אין הפעלות זמינות"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "אין הפעלות עבור %s הזמינות לאימות מחדש"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "לא ניתן למצוא את ההפעלה של המשתמש %s"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "לא ניתן למצוא את ההפעלה המתאימה עבור המשתמש %s"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "למשתמש אין בעלות על הפעלה"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: failed to connect to parent display '%s'"
+
+#~ msgid "Your account was given an expiration date that's now passed."
+#~ msgstr "לחשבון שלך ניתן תאריך תפוגה שנכון לעכשיו חלף."
+
+#~ msgid "User not logged in"
+#~ msgstr "המשתמש לא נכנס"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "נכון לעכשיו, ניתן לחבר לקוח אחד בלבד בכל פעם"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "יצירת ה־AuthDir %s נכשלה: %s"
+
+#~ msgid "Display ID"
+#~ msgstr "Display ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "GNOME Display Manager Slave"
+
+#~ msgid "Login Window"
+#~ msgstr "חלון התחברות"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "לא ניתן להתחיל תצוגה חדשה"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr "error initiating conversation with authentication system - %s"
