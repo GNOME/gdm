@@ -66,6 +66,14 @@
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
+typedef struct
+{
+        GdmManager *manager;
+        GdmSession *session;
+        char *service_name;
+        guint idle_id;
+} StartUserSessionOperation;
+
 struct GdmManagerPrivate
 {
         GdmDisplayStore        *display_store;
@@ -117,6 +125,9 @@ static void     gdm_manager_finalize    (GObject         *object);
 static void     create_embryonic_user_session_for_display (GdmManager *manager,
                                                            GdmDisplay *display,
                                                            uid_t       allowed_user);
+
+static void     start_user_session (GdmManager                *manager,
+                                    StartUserSessionOperation *operation);
 static void     touch_ran_once_marker_file  (GdmManager *manager);
 
 static gpointer manager_object = NULL;
@@ -1550,14 +1561,6 @@ on_display_removed (GdmDisplayStore *display_store,
                 g_signal_emit (manager, signals[DISPLAY_REMOVED], 0, id);
         }
 }
-
-typedef struct
-{
-        GdmManager *manager;
-        GdmSession *session;
-        char *service_name;
-        guint idle_id;
-} StartUserSessionOperation;
 
 static void
 destroy_start_user_session_operation (StartUserSessionOperation *operation)
