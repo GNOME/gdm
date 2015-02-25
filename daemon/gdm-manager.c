@@ -2651,10 +2651,8 @@ finish_display (const char *id,
                 GdmDisplay *display,
                 GdmManager *manager)
 {
-        if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED)
-                return;
-
-        gdm_display_unmanage (display);
+        if (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED)
+                gdm_display_unmanage (display);
         gdm_display_finish (display);
 }
 
