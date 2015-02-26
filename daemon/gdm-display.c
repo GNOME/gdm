@@ -1215,10 +1215,10 @@ gdm_display_dispose (GObject *object)
         }
         g_clear_object (&self->priv->launch_environment);
 
-        g_assert (self->priv->status == GDM_DISPLAY_FINISHED ||
-                  self->priv->status == GDM_DISPLAY_FAILED);
-        g_assert (self->priv->user_access_file == NULL);
-        g_assert (self->priv->access_file == NULL);
+        g_warn_if_fail (self->priv->status == GDM_DISPLAY_PREPARED);
+        g_warn_if_fail (self->priv->status == GDM_DISPLAY_MANAGED);
+        g_warn_if_fail (self->priv->user_access_file == NULL);
+        g_warn_if_fail (self->priv->access_file == NULL);
 
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
 }
