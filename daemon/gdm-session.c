@@ -365,8 +365,6 @@ load_key_file_for_file (const char *file, char **full_path)
 
         key_file = g_key_file_new ();
 
-        g_debug ("GdmSession: looking for session file '%s'", file);
-
         error = NULL;
         res = g_key_file_load_from_dirs (key_file,
                                          file,
@@ -400,6 +398,7 @@ get_session_command_for_file (const char *file,
                 *command = NULL;
         }
 
+        g_debug ("GdmSession: getting session command for file '%s'", file);
         key_file = load_key_file_for_file (file, NULL);
         if (key_file == NULL) {
                 goto out;
@@ -2294,6 +2293,7 @@ get_session_desktop_names (GdmSession *self)
         gchar *desktop_names = NULL;
 
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
+        g_debug ("GdmSession: getting desktop names for file '%s'", filename);
         keyfile = load_key_file_for_file (filename, NULL);
         if (keyfile != NULL) {
               gchar **names;
@@ -2866,6 +2866,7 @@ gdm_session_is_wayland_session (GdmSession *self)
         if (full_path != NULL && strstr (full_path, "/wayland-sessions/") != NULL) {
                 is_wayland_session = TRUE;
         }
+        g_debug ("GdmSession: checking if file '%s' is wayland session: %s", filename, is_wayland_session? "yes" : "no");
 
 out:
         g_clear_pointer (&key_file, (GDestroyNotify) g_key_file_free);
@@ -2881,14 +2882,15 @@ gdm_session_bypasses_xsession (GdmSession *self)
         GKeyFile   *key_file;
         gboolean    res;
         gboolean    bypasses_xsession = FALSE;
-        char       *filename;
+        char       *filename = NULL;
 
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
         if (gdm_session_is_wayland_session (self)) {
-                return TRUE;
+                bypasses_xsession = TRUE;
+                goto out;
         }
 #endif
 
@@ -2907,12 +2909,12 @@ gdm_session_bypasses_xsession (GdmSession *self)
                         g_error_free (error);
                         goto out;
                 }
-                if (bypasses_xsession) {
-                        g_debug ("GdmSession: Session %s bypasses Xsession wrapper script", filename);
-                }
         }
 
 out:
+        if (bypasses_xsession) {
+                g_debug ("GdmSession: Session %s bypasses Xsession wrapper script", filename);
+        }
         g_free (filename);
         return bypasses_xsession;
 }
