@@ -1549,12 +1549,6 @@ on_display_status_changed (GdmDisplay *display,
         switch (status) {
                 case GDM_DISPLAY_PREPARED:
                 case GDM_DISPLAY_MANAGED:
-#ifdef WITH_PLYMOUTH
-                        if (quit_plymouth) {
-                                plymouth_quit_with_transition ();
-                                manager->priv->plymouth_is_running = FALSE;
-                        }
-#endif
                         if ((display_number == -1 && status == GDM_DISPLAY_PREPARED) ||
                             (display_number != -1 && status == GDM_DISPLAY_MANAGED)) {
                                 char *session_class;
@@ -1568,6 +1562,12 @@ on_display_status_changed (GdmDisplay *display,
                         }
 
                         if (status == GDM_DISPLAY_MANAGED) {
+#ifdef WITH_PLYMOUTH
+                                if (quit_plymouth) {
+                                        plymouth_quit_with_transition ();
+                                        manager->priv->plymouth_is_running = FALSE;
+                                }
+#endif
                                 maybe_start_pending_initial_login (manager, display);
                         }
                         break;
