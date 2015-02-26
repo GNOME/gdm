@@ -2999,6 +2999,8 @@ gdm_session_select_session (GdmSession *self,
         is_wayland_session = gdm_session_is_wayland_session (self);
         if (is_wayland_session) {
                 set_session_type (self, "wayland");
+        } else {
+                set_session_type (self, NULL);
         }
 #endif
 
