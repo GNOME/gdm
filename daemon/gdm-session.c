@@ -2968,6 +2968,8 @@ gdm_session_select_session_type (GdmSession *self,
         GHashTableIter iter;
         gpointer key, value;
 
+        g_debug ("GdmSession: selecting session type '%s'", text);
+
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
                 GdmSessionConversation *conversation;
@@ -2987,6 +2989,8 @@ gdm_session_select_session (GdmSession *self,
         GHashTableIter iter;
         gpointer key, value;
         gboolean is_wayland_session = FALSE;
+
+        g_debug ("GdmSession: selecting session '%s'", text);
 
         g_free (self->priv->selected_session);
         self->priv->selected_session = g_strdup (text);
@@ -3101,6 +3105,8 @@ static void
 set_session_type (GdmSession *self,
                   const char *session_type)
 {
+
+        g_debug ("GdmSession: setting session to type '%s'", session_type? session_type : "");
         g_free (self->priv->session_type);
         self->priv->session_type = g_strdup (session_type);
 }
