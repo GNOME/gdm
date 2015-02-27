@@ -1912,19 +1912,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         stderr_fd = dup (stdout_fd);
                 }
 
-#ifdef HAVE_LOGINCAP
-                if (setusercontext (NULL, passwd_entry, passwd_entry->pw_uid, LOGIN_SETALL) < 0) {
-                        g_debug ("GdmSessionWorker: setusercontext() failed for user %s: %s",
-                                 passwd_entry->pw_name, g_strerror (errno));
-                        _exit (1);
-                }	
-#else
-                if (setuid (worker->priv->uid) < 0) {
-                        g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
-                        _exit (1);
-                }
-#endif
-
                 if (setsid () < 0) {
                         g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group: %s",
                                  (guint) getpid (), g_strerror (errno));
@@ -1938,6 +1925,19 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         if (ioctl (STDIN_FILENO, TIOCSCTTY, 0) < 0) {
                                 g_debug ("GdmSessionWorker: could not take control of tty: %m");
                         }
+                }
+#endif
+
+#ifdef HAVE_LOGINCAP
+                if (setusercontext (NULL, passwd_entry, passwd_entry->pw_uid, LOGIN_SETALL) < 0) {
+                        g_debug ("GdmSessionWorker: setusercontext() failed for user %s: %s",
+                                 passwd_entry->pw_name, g_strerror (errno));
+                        _exit (1);
+                }
+#else
+                if (setuid (worker->priv->uid) < 0) {
+                        g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
+                        _exit (1);
                 }
 #endif
 
