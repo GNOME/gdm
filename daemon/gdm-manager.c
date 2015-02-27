@@ -2216,8 +2216,8 @@ clean_embryonic_user_session (GdmSession *session)
 
 static void
 create_embryonic_user_session_for_display (GdmManager *manager,
-                                 GdmDisplay *display,
-                                 uid_t       allowed_user)
+                                           GdmDisplay *display,
+                                           uid_t       allowed_user)
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
