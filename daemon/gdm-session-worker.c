@@ -31,6 +31,7 @@
 #ifdef WITH_SYSTEMD
 #include <sys/ioctl.h>
 #include <sys/vt.h>
+#include <sys/kd.h>
 #endif
 #include <errno.h>
 #include <grp.h>
@@ -104,6 +105,9 @@
 
 #define MAX_FILE_SIZE     65536
 #define MAX_LOGS          5
+
+#define RELEASE_DISPLAY_SIGNAL SIGUSR1
+#define ACQUIRE_DISPLAY_SIGNAL SIGUSR2
 
 enum {
         GDM_SESSION_WORKER_STATE_NONE = 0,
@@ -959,12 +963,51 @@ gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
 
 #ifdef WITH_SYSTEMD
 static void
-jump_to_vt (GdmSessionWorker  *worker,
-            int                vt_number)
+on_release_display (int signal)
 {
         int fd;
 
         fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+        ioctl(fd, VT_RELDISP, 1);
+        close(fd);
+}
+
+static void
+on_acquire_display (int signal)
+{
+        int fd;
+
+        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+        ioctl(fd, VT_RELDISP, VT_ACKACQ);
+        close(fd);
+}
+
+static void
+jump_to_vt (GdmSessionWorker  *worker,
+            int                vt_number)
+{
+        int fd;
+        gboolean just_opened_tty = FALSE;
+
+        if (worker->priv->session_tty_fd != -1) {
+                struct vt_mode setmode_request = { 0 };
+
+                fd = worker->priv->session_tty_fd;
+
+                ioctl (fd, KDSETMODE, KD_GRAPHICS);
+
+                setmode_request.mode = VT_PROCESS;
+                setmode_request.relsig = RELEASE_DISPLAY_SIGNAL;
+                setmode_request.acqsig = ACQUIRE_DISPLAY_SIGNAL;
+                ioctl (fd, VT_SETMODE, &setmode_request);
+
+                signal (RELEASE_DISPLAY_SIGNAL, on_release_display);
+                signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
+        } else {
+                fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+                just_opened_tty = TRUE;
+        }
+
         if (ioctl (fd, VT_ACTIVATE, vt_number) < 0) {
                 g_debug ("GdmSessionWorker: couldn't initiate jump to VT %d: %m",
                          vt_number);
@@ -972,7 +1015,10 @@ jump_to_vt (GdmSessionWorker  *worker,
                 g_debug ("GdmSessionWorker: couldn't finalize jump to VT %d: %m",
                          vt_number);
         }
-        close(fd);
+
+        if (just_opened_tty) {
+                close(fd);
+        }
 }
 #endif
 
