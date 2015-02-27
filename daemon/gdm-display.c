@@ -1215,8 +1215,8 @@ gdm_display_dispose (GObject *object)
         }
         g_clear_object (&self->priv->launch_environment);
 
-        g_warn_if_fail (self->priv->status == GDM_DISPLAY_PREPARED);
-        g_warn_if_fail (self->priv->status == GDM_DISPLAY_MANAGED);
+        g_warn_if_fail (self->priv->status != GDM_DISPLAY_PREPARED);
+        g_warn_if_fail (self->priv->status != GDM_DISPLAY_MANAGED);
         g_warn_if_fail (self->priv->user_access_file == NULL);
         g_warn_if_fail (self->priv->access_file == NULL);
 
