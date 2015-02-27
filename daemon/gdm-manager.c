@@ -1505,6 +1505,7 @@ set_up_greeter_session (GdmManager *manager,
                  gdm_display_set_up_greeter_session (display, &allowed_user);
         } else {
                  g_object_set (G_OBJECT (display), "session-class", "user", NULL);
+                 g_object_set (G_OBJECT (display), "session-type", NULL, NULL);
                  allowed_user = g_strdup ("root");
         }
 
