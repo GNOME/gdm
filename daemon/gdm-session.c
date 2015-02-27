@@ -2922,6 +2922,11 @@ out:
 GdmSessionDisplayMode
 gdm_session_get_display_mode (GdmSession *self)
 {
+        g_debug ("GdmSession: type %s, program? %s, seat %s",
+                 self->priv->session_type,
+                 self->priv->is_program_session? "yes" : "no",
+                 self->priv->display_seat_id);
+
 #ifdef ENABLE_WAYLAND_SUPPORT
         /* Wayland sessions are for now assumed to run in a
          * mutter-launch-like environment, so we allocate
