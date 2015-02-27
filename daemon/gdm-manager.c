@@ -2182,6 +2182,8 @@ start_autologin_conversation_if_necessary (GdmManager *manager,
                 return;
         }
 
+        g_object_set (G_OBJECT (session), "display-is-initial", TRUE, NULL);
+
         g_debug ("GdmManager: Starting automatic login conversation");
         gdm_session_start_conversation (session, "gdm-autologin");
 }

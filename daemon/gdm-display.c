@@ -404,7 +404,7 @@ gdm_display_get_timed_login_details (GdmDisplay *self,
         gboolean res;
         gboolean enabled;
         int      delay;
-        char    *username;
+        char    *username = NULL;
 
         enabled = FALSE;
         username = NULL;
@@ -473,11 +473,16 @@ gdm_display_get_timed_login_details (GdmDisplay *self,
                 *delayp = delay;
         }
 
-        g_debug ("GdmDisplay: Got timed login details for display %s: %d '%s' %d",
-                 self->priv->x11_display_name,
-                 enabled,
-                 username,
-                 delay);
+        if (enabled) {
+                g_debug ("GdmDisplay: Got timed login details for display %s: %d %s %d",
+                         self->priv->x11_display_name,
+                         enabled,
+                         username,
+                         delay);
+        } else {
+                g_debug ("GdmDisplay: Got timed login details for display %s: 0",
+                         self->priv->x11_display_name);
+        }
 }
 
 gboolean
