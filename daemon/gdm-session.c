@@ -2945,10 +2945,11 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
         }
 
-        /* user based X sessions start on a new VT now and are managed
-         * by logind
+        /* user based X sessions need us to allocate a VT for them
+         * and jump to it up front, because the X servers logind support
+         * currently relies on X running in the foreground VT.
          */
-        return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
+        return GDM_SESSION_DISPLAY_MODE_NEW_VT;
 }
 
 void
