@@ -989,17 +989,23 @@ jump_to_vt (GdmSessionWorker  *worker,
         int fd;
         gboolean just_opened_tty = FALSE;
 
+        g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
         if (worker->priv->session_tty_fd != -1) {
                 struct vt_mode setmode_request = { 0 };
 
                 fd = worker->priv->session_tty_fd;
 
-                ioctl (fd, KDSETMODE, KD_GRAPHICS);
+                g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
+                if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
+                        g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
+                }
 
                 setmode_request.mode = VT_PROCESS;
                 setmode_request.relsig = RELEASE_DISPLAY_SIGNAL;
                 setmode_request.acqsig = ACQUIRE_DISPLAY_SIGNAL;
-                ioctl (fd, VT_SETMODE, &setmode_request);
+                if (ioctl (fd, VT_SETMODE, &setmode_request) < 0) {
+                        g_debug ("GdmSessionWorker: couldn't manage VTs manually: %m");
+                }
 
                 signal (RELEASE_DISPLAY_SIGNAL, on_release_display);
                 signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
@@ -1929,7 +1935,9 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 /* Take control of the tty
                  */
                 if (needs_controlling_terminal) {
-                        ioctl (STDIN_FILENO, TIOCSCTTY, 0);
+                        if (ioctl (STDIN_FILENO, TIOCSCTTY, 0) < 0) {
+                                g_debug ("GdmSessionWorker: could not take control of tty: %m");
+                        }
                 }
 #endif
 
