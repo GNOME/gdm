@@ -1000,14 +1000,50 @@ handle_terminal_vt_switches (GdmSessionWorker *worker,
         signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
 }
 
+static gboolean
+fix_terminal_vt_mode (GdmSessionWorker  *worker,
+                      int                tty_fd)
+{
+        struct vt_mode getmode_reply = { 0 };
+        int kernel_display_mode = 0;
+        gboolean mode_fixed = FALSE;
+
+        if (ioctl (tty_fd, VT_GETMODE, &getmode_reply) < 0) {
+                g_debug ("GdmSessionWorker: couldn't query VT mode: %m");
+        }
+
+        if (getmode_reply.mode != VT_AUTO) {
+                goto out;
+        }
+
+        if (ioctl (tty_fd, KDGETMODE, &kernel_display_mode) < 0) {
+                g_debug ("GdmSessionWorker: couldn't query kernel display mode: %m");
+        }
+
+        if (kernel_display_mode == KD_TEXT) {
+                goto out;
+        }
+
+        /* VT is in the anti-social state of VT_AUTO + KD_GRAPHICS,
+         * fix it.
+         */
+        handle_terminal_vt_switches (worker, tty_fd);
+        mode_fixed = TRUE;
+out:
+        return mode_fixed;
+}
+
 static void
 jump_to_vt (GdmSessionWorker  *worker,
             int                vt_number)
 {
         int fd;
-        gboolean just_opened_tty = FALSE;
+        int active_vt_tty_fd;
+        gboolean mode_fixed = FALSE;
 
         g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
+        active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+
         if (worker->priv->session_tty_fd != -1) {
 
                 fd = worker->priv->session_tty_fd;
@@ -1019,9 +1055,15 @@ jump_to_vt (GdmSessionWorker  *worker,
 
                 handle_terminal_vt_switches (worker, fd);
 
+                /* It's possible that the current VT was left in a broken
+                 * combination of states (KD_GRAPHICS with VT_AUTO), that
+                 * can't be switched away from.  This call makes sure things
+                 * are set in a way that VT_ACTIVATE should work and
+                 * VT_WAITACTIVE shouldn't hang.
+                 */
+                mode_fixed = fix_terminal_vt_mode (worker, active_vt_tty_fd);
         } else {
-                fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
-                just_opened_tty = TRUE;
+                fd = active_vt_tty_fd;
         }
 
         if (ioctl (fd, VT_ACTIVATE, vt_number) < 0) {
@@ -1032,9 +1074,7 @@ jump_to_vt (GdmSessionWorker  *worker,
                          vt_number);
         }
 
-        if (just_opened_tty) {
-                close(fd);
-        }
+        close (active_vt_tty_fd);
 }
 #endif
 
