@@ -995,16 +995,6 @@ jump_to_vt (GdmSessionWorker  *worker,
 
                 fd = worker->priv->session_tty_fd;
 
-                /* FIXME: I don't think this is quite right.
-                 * If the current VT is KD_TEXT/VT_AUTO mode, setting
-                 * KD_GRAPHICS here can cause deadlocks.
-                 *
-                 * We probably need to set the current vt to VT_PROCESS
-                 * mode, (in addition to the new vt)  only if it's in
-                 * KD_TEXT mode.
-                 *
-                 * This is yucky, we really should get the display managers to use logind
-                 */
                 g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
                 if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
                         g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
