@@ -983,6 +983,24 @@ on_acquire_display (int signal)
 }
 
 static void
+handle_terminal_vt_switches (GdmSessionWorker *worker,
+                             int               tty_fd)
+{
+        struct vt_mode setmode_request = { 0 };
+
+        setmode_request.mode = VT_PROCESS;
+        setmode_request.relsig = RELEASE_DISPLAY_SIGNAL;
+        setmode_request.acqsig = ACQUIRE_DISPLAY_SIGNAL;
+
+        if (ioctl (tty_fd, VT_SETMODE, &setmode_request) < 0) {
+                g_debug ("GdmSessionWorker: couldn't manage VTs manually: %m");
+        }
+
+        signal (RELEASE_DISPLAY_SIGNAL, on_release_display);
+        signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
+}
+
+static void
 jump_to_vt (GdmSessionWorker  *worker,
             int                vt_number)
 {
@@ -991,7 +1009,6 @@ jump_to_vt (GdmSessionWorker  *worker,
 
         g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
         if (worker->priv->session_tty_fd != -1) {
-                struct vt_mode setmode_request = { 0 };
 
                 fd = worker->priv->session_tty_fd;
 
@@ -1000,15 +1017,8 @@ jump_to_vt (GdmSessionWorker  *worker,
                         g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
                 }
 
-                setmode_request.mode = VT_PROCESS;
-                setmode_request.relsig = RELEASE_DISPLAY_SIGNAL;
-                setmode_request.acqsig = ACQUIRE_DISPLAY_SIGNAL;
-                if (ioctl (fd, VT_SETMODE, &setmode_request) < 0) {
-                        g_debug ("GdmSessionWorker: couldn't manage VTs manually: %m");
-                }
+                handle_terminal_vt_switches (worker, fd);
 
-                signal (RELEASE_DISPLAY_SIGNAL, on_release_display);
-                signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
         } else {
                 fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
                 just_opened_tty = TRUE;
