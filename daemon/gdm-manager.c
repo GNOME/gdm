@@ -66,6 +66,8 @@
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
+#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+
 typedef struct
 {
         GdmManager *manager;
@@ -1491,22 +1493,39 @@ maybe_start_pending_initial_login (GdmManager *manager,
         g_free (user_session_seat_id);
 }
 
+static const char *
+get_username_for_greeter_display (GdmManager *manager,
+                                  GdmDisplay *display)
+{
+        gboolean doing_initial_setup = FALSE;
+
+        g_object_get (G_OBJECT (display),
+                      "doing-initial-setup", &doing_initial_setup,
+                      NULL);
+
+        if (doing_initial_setup) {
+                return INITIAL_SETUP_USERNAME;
+        } else {
+                return GDM_USERNAME;
+        }
+}
+
 static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
-        char *allowed_user;
+        const char *allowed_user;
         struct passwd *passwd_entry;
         gboolean will_autologin;
 
         will_autologin = display_should_autologin (manager, display);
 
         if (!will_autologin) {
-                 gdm_display_set_up_greeter_session (display, &allowed_user);
+                 allowed_user = get_username_for_greeter_display (manager, display);
         } else {
                  g_object_set (G_OBJECT (display), "session-class", "user", NULL);
                  g_object_set (G_OBJECT (display), "session-type", NULL, NULL);
-                 allowed_user = g_strdup ("root");
+                 allowed_user = "root";
         }
 
         if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
@@ -1518,7 +1537,6 @@ set_up_greeter_session (GdmManager *manager,
         }
 
         create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
-        g_free (allowed_user);
 
         if (!will_autologin) {
                 gdm_display_start_greeter_session (display);

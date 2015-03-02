@@ -1534,19 +1534,6 @@ wants_initial_setup (GdmDisplay *self)
 }
 
 void
-gdm_display_set_up_greeter_session (GdmDisplay  *self,
-                                    char       **username)
-{
-        g_return_if_fail (g_strcmp0 (self->priv->session_class, "greeter") == 0);
-
-        if (self->priv->doing_initial_setup) {
-                *username = g_strdup (INITIAL_SETUP_USERNAME);
-        } else {
-                *username = g_strdup (GDM_USERNAME);
-        }
-}
-
-void
 gdm_display_start_greeter_session (GdmDisplay *self)
 {
         GdmSession    *session;

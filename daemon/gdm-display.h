@@ -135,9 +135,6 @@ gboolean            gdm_display_add_user_authorization         (GdmDisplay *disp
 gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
                                                                 const char *username,
                                                                 GError    **error);
-
-void                gdm_display_set_up_greeter_session         (GdmDisplay  *display,
-                                                                char       **username);
 void                gdm_display_start_greeter_session          (GdmDisplay  *display);
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
 
