@@ -1000,7 +1000,7 @@ handle_terminal_vt_switches (GdmSessionWorker *worker,
         signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
 }
 
-static gboolean
+static void
 fix_terminal_vt_mode (GdmSessionWorker  *worker,
                       int                tty_fd)
 {
@@ -1030,7 +1030,8 @@ fix_terminal_vt_mode (GdmSessionWorker  *worker,
         handle_terminal_vt_switches (worker, tty_fd);
         mode_fixed = TRUE;
 out:
-        return mode_fixed;
+        g_debug ("GdmSessionWorker: VT mode did %sneed to be fixed",
+                 mode_fixed? "" : "not ");
 }
 
 static void
@@ -1039,13 +1040,11 @@ jump_to_vt (GdmSessionWorker  *worker,
 {
         int fd;
         int active_vt_tty_fd;
-        gboolean mode_fixed = FALSE;
 
         g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
         active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
 
         if (worker->priv->session_tty_fd != -1) {
-
                 fd = worker->priv->session_tty_fd;
 
                 g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
@@ -1061,7 +1060,7 @@ jump_to_vt (GdmSessionWorker  *worker,
                  * are set in a way that VT_ACTIVATE should work and
                  * VT_WAITACTIVE shouldn't hang.
                  */
-                mode_fixed = fix_terminal_vt_mode (worker, active_vt_tty_fd);
+                fix_terminal_vt_mode (worker, active_vt_tty_fd);
         } else {
                 fd = active_vt_tty_fd;
         }
