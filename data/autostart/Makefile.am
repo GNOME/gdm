@@ -5,10 +5,8 @@ NULL =
 
 desktopdir = $(pkgdatadir)/greeter/autostart
 desktop_in_files =							\
-	caribou-autostart.desktop.in					\
 	$(NULL)
 desktop_DATA = orca-autostart.desktop					\
-	       $(desktop_in_files:.desktop.in=.desktop)			\
 	       $(NULL)
 
 EXTRA_DIST =								\
@@ -17,7 +15,6 @@ EXTRA_DIST =								\
 	$(NULL)
 
 DISTCLEANFILES =							\
-	$(desktop_in_files:.desktop.in=.desktop)			\
 	$(NULL)
 
 MAINTAINERCLEANFILES =                  				\
