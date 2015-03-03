@@ -5,15 +5,15 @@
 # Urban Borštnik <urban@cmm.ki.si>, 2000-2001.
 # Andraž Tori <andraz.tori1@guest.arnes.si>, 2001-2002.
 # Matjaž Horvat <m@owca.info>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2007-2013.
+# Matej Urbančič <mateju@svn.gnome.org>, 2007-2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-14 12:21+0000\n"
-"PO-Revision-Date: 2013-08-17 16:53+0100\n"
+"POT-Creation-Date: 2015-03-03 18:47+0000\n"
+"PO-Revision-Date: 2015-03-03 21:31+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -25,97 +25,117 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ni znakovna naprava"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Ni mogoče določiti trenutne seje."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Ni mogoče preklopiti seje."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Ni mogoče določiti trenutne seje."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Ni mogoče določiti ali naj se ustvari nov prijavni zaslon ali naj se sistem "
+"preklopi na obstoječe prijavni zaslon."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Ni mogoče začeti novega prijavnega zaslona."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "v sistemu ni mogoče najti uporabnika \"%s\""
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Seja še ni na voljo"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje "
+"napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski "
+"dnevnik. V vmesnem času bo ta zaslon izključen. Poskusite s ponovnim zagonom "
+"GDM, ko bo problem odpravljen."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Ni mogoče določiti UID uporabnika %s"
+#: ../daemon/gdm-manager.c:1090
+msgid "No display available"
+msgstr "Na voljo ni nobenega zaslona"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "na voljo ni nobene seje"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Ni mogoče najti seje uporabnika %s za overitev prijave"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Ni mogoče najti seje uporabnika %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Ni mogoče najti ustrezne seje za uporabnika %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Uporabnik ni lastnik seje"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1139 ../daemon/gdm-manager.c:1395
 msgid "No session available"
 msgstr "Na voljo ni nobene seje"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: povezava z zaslonom '%s' ni uspela"
+#: ../daemon/gdm-manager.c:1150
+msgid "Can only be called before user is logged in"
+msgstr "Program je lahko klical le pred prijavo uporabnika"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1160
+msgid "Caller not GDM"
+msgstr "Klicalnik ni GDM"
+
+#: ../daemon/gdm-manager.c:1170
+msgid "Unable to open private communication channel"
+msgstr "Ni mogoče odpreti zasebnega kanala za sporočanje"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Strežnik bi moral biti oživljen preko uporabnika %s, vendar ta uporabnik ne "
 "obstaja"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Ni mogoče nastaviti groupid na %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgrougs() ni uspel za %s"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Ni mogoče nastaviti userid na %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Ni mogoče odpreti dnevniške datoteke za prikaz %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: napaka med nastavljanjem %s na %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: prednosti strežnika ni mogoče nastaviti na %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: prazen ukaz strežnika za zaslon %s"
@@ -144,69 +164,54 @@ msgstr "Naprava zaslona"
 msgid "The display device"
 msgstr "Naprava za prikazovanje"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1181
 msgid "Could not create authentication helper process"
 msgstr "Ni mogoče ustvariti opravila pomočnika overitve prijave"
 
-#: ../daemon/gdm-session-worker.c:825
+#: ../daemon/gdm-session-worker.c:849
 msgid "Your account was given a time limit that's now passed."
 msgstr "Računu je določen dovoljen čas, ki je sedaj pretekel."
 
-#: ../daemon/gdm-session-worker.c:832
+#: ../daemon/gdm-session-worker.c:856
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Dejanje je spodletelo. Poskusite znova."
 
-#: ../daemon/gdm-session-worker.c:1064
+#: ../daemon/gdm-session-worker.c:1209
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: ../daemon/gdm-session-worker.c:1251
+#: ../daemon/gdm-session-worker.c:1343
 msgid "Your password has expired, please change it now."
 msgstr "Trenutno geslo je preteklo. Spremenite ga takoj."
 
-#: ../daemon/gdm-session-worker.c:1490 ../daemon/gdm-session-worker.c:1507
+#: ../daemon/gdm-session-worker.c:1582 ../daemon/gdm-session-worker.c:1599
 #, c-format
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: ../daemon/gdm-session-worker.c:1534
+#: ../daemon/gdm-session-worker.c:1626
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje "
-"napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski "
-"dnevnik. V vmesnem času bo ta zaslon izključen. Poskusite s ponovnim zagonom "
-"GDM, ko bo problem odpravljen."
+#: ../daemon/gdm-wayland-session.c:377
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Zaganjalnik seje Wayland za zaslon GNOME"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Program je lahko klical le pred prijavo uporabnika"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Klicalnik ni GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Uporabnik ni prijavljen"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Trenutno je lahko povezan le en odjemalec sočasno"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Ni mogoče ustvariti vtiča!"
+
+#: ../daemon/gdm-x-session.c:677
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Zaženi program preko skripta zavijalnika /etc/gdm/Xsession"
+
+#: ../daemon/gdm-x-session.c:678
+msgid "Listen on TCP socket"
+msgstr "Poslušaj vtič TCP"
+
+#: ../daemon/gdm-x-session.c:689
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Zaganjalnik seje X za zaslon GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -220,81 +225,62 @@ msgstr "Ni mogoče ustvariti mape oznake enkratnega zagona %s: %s"
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Napaka med ustvarjanjem programske mape %s: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Napaka med ustvarjanjem dnevniške mape %s: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Ni mogoče najti uporabnika GDM '%s'. Dejanje je prekinjeno!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Uporabnika GDM ni mogoče določiti kot skrbnika. Dejanje je prekinjeno!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Ni mogoče najti skupine GDM '%s'. Dejanje je prekinjeno!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 "Skupine GDM ni mogoče določiti kot skrbniške skupine. Dejanje je prekinjeno!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Izpiši vsa opozorila kot usodna"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Končaj po določenem času (za razhroščevanje)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Izpiši različico GDM"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Upravljalnik zaslona GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Samo skrbnik ima dovoljenje zagnati GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Seja upravljalnika zaslona GNOME."
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "ID zaslona"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Podenota upravljalnika namizja GNOME"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Prijavno okno"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "Gnome lupina"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Upravljanje oken in zaganjanje programov"
 
@@ -408,46 +394,6 @@ msgstr ""
 "Število dovoljenih spodletelih overitev, preden se program konča in se vrne "
 "na izbor uporabnika."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Ni mogoče ustvariti pogovornega okna:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Ni mogoče začeti seje:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Ni mogoče določiti trenutne seje."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Ni mogoče preklopiti seje."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Ni mogoče določiti trenutne seje."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Ni mogoče določiti ali naj se ustvari nov prijavni zaslon ali naj se sistem "
-"preklopi na obstoječe prijavni zaslon."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Ni mogoče začeti novega prijavnega zaslona."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Izbrani sistem"
@@ -468,35 +414,39 @@ msgstr "XDMCP: nepravilna različica XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ni mogoče razčleniti naslova"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Ni mogoče ustvariti pogovornega okna:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Ni mogoče začeti seje:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Podprt je le ukaz VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "UKAZ"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Prezrto - ohranjeno zaradi združljivosti"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Izpis razhroščevanja"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Različica programa"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- nova prijava GDM"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "Ni mogoče zagnati novega zaslona"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -506,6 +456,54 @@ msgstr "Zaslonska slika je zajeta"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Zajemanje zaslonske slike"
+
+#~ msgid "No session available yet"
+#~ msgstr "Seja še ni na voljo"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Ni mogoče določiti UID uporabnika %s"
+
+#~ msgid "no sessions available"
+#~ msgstr "na voljo ni nobene seje"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Ni mogoče najti seje uporabnika %s za overitev prijave"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Ni mogoče najti seje uporabnika %s"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Ni mogoče najti ustrezne seje za uporabnika %s"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Uporabnik ni lastnik seje"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: povezava z zaslonom '%s' ni uspela"
+
+#~ msgid "User not logged in"
+#~ msgstr "Uporabnik ni prijavljen"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "Trenutno je lahko povezan le en odjemalec sočasno"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "Napaka med ustvarjanjem programske mape %s: %s"
+
+#~ msgid "Display ID"
+#~ msgstr "ID zaslona"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "Podenota upravljalnika namizja GNOME"
+
+#~ msgid "Login Window"
+#~ msgstr "Prijavno okno"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Ni mogoče zagnati novega zaslona"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr "napaka začenjanja povezave s sistemom pooblastitve - %s"
