@@ -1052,8 +1052,6 @@ jump_to_vt (GdmSessionWorker  *worker,
                         g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
                 }
 
-                handle_terminal_vt_switches (worker, fd);
-
                 /* It's possible that the current VT was left in a broken
                  * combination of states (KD_GRAPHICS with VT_AUTO), that
                  * can't be switched away from.  This call makes sure things
@@ -1064,6 +1062,8 @@ jump_to_vt (GdmSessionWorker  *worker,
         } else {
                 fd = active_vt_tty_fd;
         }
+
+        handle_terminal_vt_switches (worker, fd);
 
         if (ioctl (fd, VT_ACTIVATE, vt_number) < 0) {
                 g_debug ("GdmSessionWorker: couldn't initiate jump to VT %d: %m",
