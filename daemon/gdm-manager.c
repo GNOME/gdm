@@ -102,7 +102,7 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
-static void     gdm_manager_finalize    (GObject         *object);
+static void     gdm_manager_dispose     (GObject         *object);
 static void create_seed_session_for_display (GdmManager *manager,
                                              GdmDisplay *display,
                                              uid_t       allowed_user);
@@ -2213,7 +2213,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
         object_class->get_property = gdm_manager_get_property;
         object_class->set_property = gdm_manager_set_property;
         object_class->constructor = gdm_manager_constructor;
-        object_class->finalize = gdm_manager_finalize;
+        object_class->dispose = gdm_manager_dispose;
 
         signals [DISPLAY_ADDED] =
                 g_signal_new ("display-added",
@@ -2298,7 +2298,7 @@ finish_display (const char *id,
 }
 
 static void
-gdm_manager_finalize (GObject *object)
+gdm_manager_dispose (GObject *object)
 {
         GdmManager *manager;
 
@@ -2345,7 +2345,7 @@ gdm_manager_finalize (GObject *object)
 
         g_object_unref (manager->priv->display_store);
 
-        G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_manager_parent_class)->dispose (object);
 }
 
 GdmManager *
