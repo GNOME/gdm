@@ -3348,6 +3348,11 @@ gdm_session_worker_finalize (GObject *object)
 
         gdm_session_worker_unwatch_child (worker);
 
+        if (worker->priv->child_pid > 0) {
+                gdm_signal_pid (worker->priv->child_pid, SIGTERM);
+                gdm_wait_on_pid (worker->priv->child_pid);
+        }
+
         g_object_unref (worker->priv->user_settings);
         g_free (worker->priv->service);
         g_free (worker->priv->x11_display_name);
