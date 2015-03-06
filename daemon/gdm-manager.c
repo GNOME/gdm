@@ -2194,10 +2194,12 @@ start_autologin_conversation_if_necessary (GdmManager *manager,
         gdm_display_get_timed_login_details (display, &enabled, NULL, &delay);
 
         if (delay == 0 && g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
+                g_debug ("GdmManager: not starting automatic login conversation because we already did autologin once");
                 return;
         }
 
         if (!enabled) {
+                g_debug ("GdmManager: not starting automatic login conversation because autologin is not enabled");
                 return;
         }
 
@@ -2212,6 +2214,8 @@ static void
 touch_ran_once_marker_file (GdmManager *manager)
 {
         int fd;
+
+        g_debug ("GdmManager: touching marker file %s", GDM_RAN_ONCE_MARKER_FILE);
 
         fd = g_creat (GDM_RAN_ONCE_MARKER_FILE, 0644);
 
