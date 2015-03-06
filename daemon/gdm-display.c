@@ -821,6 +821,7 @@ static void
 _gdm_display_set_id (GdmDisplay     *self,
                      const char     *id)
 {
+        g_debug ("GdmDisplay: id: %s", id);
         g_free (self->priv->id);
         self->priv->id = g_strdup (id);
 }
@@ -829,6 +830,7 @@ static void
 _gdm_display_set_seat_id (GdmDisplay     *self,
                           const char     *seat_id)
 {
+        g_debug ("GdmDisplay: seat id: %s", seat_id);
         g_free (self->priv->seat_id);
         self->priv->seat_id = g_strdup (seat_id);
 }
@@ -837,6 +839,7 @@ static void
 _gdm_display_set_session_id (GdmDisplay     *self,
                              const char     *session_id)
 {
+        g_debug ("GdmDisplay: session id: %s", session_id);
         g_free (self->priv->session_id);
         self->priv->session_id = g_strdup (session_id);
 }
@@ -845,6 +848,7 @@ static void
 _gdm_display_set_session_class (GdmDisplay *self,
                                 const char *session_class)
 {
+        g_debug ("GdmDisplay: session class: %s", session_class);
         g_free (self->priv->session_class);
         self->priv->session_class = g_strdup (session_class);
 }
@@ -853,6 +857,7 @@ static void
 _gdm_display_set_session_type (GdmDisplay *self,
                                const char *session_type)
 {
+        g_debug ("GdmDisplay: session type: %s", session_type);
         g_free (self->priv->session_type);
         self->priv->session_type = g_strdup (session_type);
 }
@@ -892,6 +897,7 @@ static void
 _gdm_display_set_is_local (GdmDisplay     *self,
                            gboolean        is_local)
 {
+        g_debug ("GdmDisplay: local: %s", is_local? "yes" : "no");
         self->priv->is_local = is_local;
 }
 
@@ -908,6 +914,7 @@ static void
 _gdm_display_set_is_initial (GdmDisplay     *self,
                              gboolean        initial)
 {
+        g_debug ("GdmDisplay: initial: %s", initial? "yes" : "no");
         self->priv->is_initial = initial;
 }
 
@@ -915,6 +922,7 @@ static void
 _gdm_display_set_allow_timed_login (GdmDisplay     *self,
                                     gboolean        allow_timed_login)
 {
+        g_debug ("GdmDisplay: allow timed login: %s", allow_timed_login? "yes" : "no");
         self->priv->allow_timed_login = allow_timed_login;
 }
 
