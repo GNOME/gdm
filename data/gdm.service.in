@@ -1,7 +1,19 @@
 [Unit]
 Description=GNOME Display Manager
-Conflicts=getty@tty@GDM_INITIAL_VT@.service plymouth-quit.service
-After=systemd-user-sessions.service getty@tty@GDM_INITIAL_VT@.service plymouth-quit.service
+
+# replaces the getty
+Conflicts=getty@tty@GDM_INITIAL_VT@.service
+After=getty@tty@GDM_INITIAL_VT@.service
+
+# replaces plymouth-quit since it quits plymouth on its own
+Conflicts=plymouth-quit.service
+After=plymouth-quit.service
+
+# Needs all the dependencies of the services it's replacing
+# pulled from getty@.service and plymouth-quit.service
+# (except for plymouth-quit-wait.service since it waits until
+# plymouth is quit, which we do)
+After=rc-local.service plymouth-start.service systemd-user-sessions.service
 
 # GDM takes responsibility for stopping plymouth, so if it fails
 # for any reason, make sure plymouth still stops
