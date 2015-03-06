@@ -321,6 +321,7 @@ gdm_settings_desktop_backend_init (GdmSettingsDesktopBackend *backend)
 {
         gboolean res;
         GError  *error;
+        char *contents;
 
         backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
 
@@ -334,6 +335,13 @@ gdm_settings_desktop_backend_init (GdmSettingsDesktopBackend *backend)
                                          &error);
         if (! res) {
                 g_warning ("Unable to load file '%s': %s", backend->priv->filename, error->message);
+        }
+
+        contents = g_key_file_to_data (backend->priv->key_file, NULL, NULL);
+
+        if (contents != NULL) {
+                g_debug ("GdmSettings: %s is:\n%s\n", backend->priv->filename, contents);
+                g_free (contents);
         }
 }
 
