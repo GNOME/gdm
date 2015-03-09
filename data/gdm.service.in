@@ -12,6 +12,7 @@ After=@PLYMOUTH_QUIT_SERVICE@
 # Needs all the dependencies of the services it's replacing
 # pulled from getty@.service and @PLYMOUTH_QUIT_SERVICE@
 After=rc-local.service plymouth-start.service plymouth-quit-wait.service systemd-user-sessions.service
+
 [Service]
 ExecStart=@sbindir@/gdm
 Restart=always
