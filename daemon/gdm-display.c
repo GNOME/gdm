@@ -461,18 +461,6 @@ gdm_display_get_timed_login_details (GdmDisplay *self,
         }
 
  out:
-        if (enabledp != NULL) {
-                *enabledp = enabled;
-        }
-        if (usernamep != NULL) {
-                *usernamep = username;
-        } else {
-                g_free (username);
-        }
-        if (delayp != NULL) {
-                *delayp = delay;
-        }
-
         if (enabled) {
                 g_debug ("GdmDisplay: Got timed login details for display %s (seat %s): %d %s %d",
                          self->priv->x11_display_name? self->priv->x11_display_name : "",
@@ -484,6 +472,18 @@ gdm_display_get_timed_login_details (GdmDisplay *self,
                 g_debug ("GdmDisplay: Got timed login details for display %s (seat %s): 0",
                          self->priv->x11_display_name? self->priv->x11_display_name : "",
                          self->priv->seat_id);
+        }
+
+        if (enabledp != NULL) {
+                *enabledp = enabled;
+        }
+        if (usernamep != NULL) {
+                *usernamep = username;
+        } else {
+                g_free (username);
+        }
+        if (delayp != NULL) {
+                *delayp = delay;
         }
 }
 
