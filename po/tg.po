@@ -1,113 +1,134 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Victor Ibragimov <victor.ibragimov@gmail.com>, 2013.
+# Victor Ibragimov <victor.ibragimov@gmail.com>, 2013,2014, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Tajik Gnome\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-07-30 13:56+0000\n"
-"PO-Revision-Date: 2013-07-30 22:28-0000\n"
+"POT-Creation-Date: 2015-03-09 17:56+0000\n"
+"PO-Revision-Date: 2015-03-10 10:05+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: \n"
-"Language: Tajik\n"
+"Language: tg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.5\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:311
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom дастгоҳи аломатӣ намебошад"
+
+#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
+#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Ҷаласаи ҷорӣ муайян нашудааст."
+
+#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Корбар наметавонад ҷаласаҳоро қатъу васл кунад."
+
+#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Ҷои ҷорӣ муайян нашудааст."
+
+#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Система наметавонад муайян кунад, ки ба экрани мавҷудбудаи воридшавӣ табдил "
+"диҳад, ё ки экрани нави воридшавиро оғоз кунад."
+
+#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Система экрани вуруди навро оғоз карда наметавонад."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "корбари \"%s\" дар система ёфт нашудааст"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "Ягон ҷаласа то ҳол дастрас нест"
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"X-сервер (муҳити графикии шумо) аз сабаби хатогии дохилӣ оғоз карда нашуд. "
+"Лутфан, бо маъмури системаи худ дар тамос шавед, ё ки барои ташхис сабти "
+"рӯйдодҳои системаи худро санҷед. Дар айни ҳол дисплей ғайрифаъол карда "
+"мешавад. Лутфан, баъд аз ислоҳ кардани мушкилӣ GDM-ро бозоғозӣ кунед."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Намоиш додани UID барои корбари %s имконнопазир аст"
+#: ../daemon/gdm-manager.c:1090
+#| msgid "No session available"
+msgid "No display available"
+msgstr "Ягон дисплей дастрас нест"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "ягон ҷаласа дастрас нест"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Барои санҷиши ҳаққонияти нави %s ягон ҷаласа дастрас нест"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Ягон ҷаласа барои корбари %s ёфт нашуд"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Ягон ҷаласаи мувофиқ барои корбари %s ёфт нашуд"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "Қорбар соҳиби ин ҷаласа намебошад"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:1139 ../daemon/gdm-manager.c:1395
 msgid "No session available"
 msgstr "Ягон ҷаласа дастрас нест"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: ба дисплйеи асосии \"%s\" пайваст нашуд"
+#: ../daemon/gdm-manager.c:1150
+msgid "Can only be called before user is logged in"
+msgstr "Танҳо пеш аз ворид шудани корбар метавонад дархост шавад"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:1160
+msgid "Caller not GDM"
+msgstr "Дархосткунанда GDM намебошад"
+
+#: ../daemon/gdm-manager.c:1170
+msgid "Unable to open private communication channel"
+msgstr "Шабакаи алоқаи шахсӣ кушода намешавад"
+
+#: ../daemon/gdm-server.c:437
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Сервер бояд бо корбари %s ба вуҷуд меомад, аммо он корбар вуҷуд надорад"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Рамзи гурӯҳ ба %d танзим нашудааст"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () барои %s бо нокомӣ дучор шуд"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:460
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Рамзи корбар ба %d танзим нашудааст"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Барои намоиш додани %s файли қайди рӯйдодҳо кушода нашуд!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:571
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Хатои танзими %s ба %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:591
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Аввалияти сервер ба %d таъин карда нашуд: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:743
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Фармони холии сервер барои дисплейи %s"
@@ -136,74 +157,56 @@ msgstr "Дастгоҳи дисплей"
 msgid "The display device"
 msgstr "Дастгоҳи намоишӣ"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1181
 msgid "Could not create authentication helper process"
 msgstr "Раванди ёрирасони санҷиши ҳаққоният эҷод карда нашуд"
 
-#: ../daemon/gdm-session-worker.c:825
+#: ../daemon/gdm-session-worker.c:849
 msgid "Your account was given a time limit that's now passed."
 msgstr "Мӯҳлати ҳисоби шумо ба анҷом расид."
 
-#: ../daemon/gdm-session-worker.c:828
-msgid "Your account was given an expiration date that's now passed."
-msgstr "Мӯҳлати истифодаи ҳисоби шумо ба анҷом расид."
-
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:856
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Мутаассифона, амали шумо иҷро нашуд. Лутфан, амалро такрор кунед."
 
-#: ../daemon/gdm-session-worker.c:1067
+#: ../daemon/gdm-session-worker.c:1209
 msgid "Username:"
 msgstr "Номи корбар:"
 
-#: ../daemon/gdm-session-worker.c:1254
+#: ../daemon/gdm-session-worker.c:1343
 msgid "Your password has expired, please change it now."
 msgstr "Мӯҳлати пароли шумо ба анҷом расид, лутфан онро тағйир диҳед."
 
-#: ../daemon/gdm-session-worker.c:1493 ../daemon/gdm-session-worker.c:1510
+#: ../daemon/gdm-session-worker.c:1582 ../daemon/gdm-session-worker.c:1599
 #, c-format
 msgid "no user account available"
 msgstr "ягон ҳисоби корбар дастрас нест"
 
-#: ../daemon/gdm-session-worker.c:1537
+#: ../daemon/gdm-session-worker.c:1626
 msgid "Unable to change to user"
 msgstr "Тағйир додани корбар имконнопазир аст"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"X-сервер (муҳити графикии шумо) аз сабаби хатогии дохилӣ оғоз карда нашуд. "
-"Лутфан, бо маъмури системаи худ дар тамос шавед, ё ки барои ташхис сабти "
-"рӯйдодҳои системаи худро санҷед. Дар айни ҳол дисплей ғайрифаъол карда "
-"мешавад. Лутфан, баъд аз ислоҳ кардани мушкилӣ GDM-ро бозоғозӣ кунед."
+#: ../daemon/gdm-wayland-session.c:377
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Оғозкунандаи ҷаласаи Wayland-и мудири дисплейи GNOME"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Танҳо пеш аз ворид шудани корбар метавонад дархост шавад"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "Дархосткунанда GDM намебошад"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "Корбар ворид шашудааст"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr ""
-"Дар айни ҳол, дар як маротиба танҳо як муштарӣ метавонад пайваст шуда бошад"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Бастагоҳ эҷод нашудааст!"
+
+#: ../daemon/gdm-x-session.c:677
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Иҷро кардани барнома тавассути скрипти печондани /etc/gdm/Xsession"
+
+#: ../daemon/gdm-x-session.c:678
+msgid "Listen on TCP socket"
+msgstr "Дархости бастагоҳи TCP"
+
+#: ../daemon/gdm-x-session.c:689
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Оғозкунандаи ҷаласаи X-и мудири дисплейҳои GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -218,80 +221,61 @@ msgstr "Директорияи маркери иҷрошавии яквақта�
 
 #: ../daemon/main.c:194
 #, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Директорияи санҷиши ҳаққонияти %s эҷод карда нашуд: %s"
-
-#: ../daemon/main.c:200
-#, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Директорияи сабти рӯйдодҳои %s эҷод карда нашуд: %s"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Корбари \"%s\"-и GDM ёфт нашуд. Қатъ карда шудааст!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Корбари GDM бояд root набошад. Қатъ карда шудааст!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Гурӯҳи \"%s\"-и GDM ёфт нашуд. Қатъ карда шудааст!"
 
-#: ../daemon/main.c:253
+#: ../daemon/main.c:247
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Гурӯҳи GDM бояд root набошад. Қатъ карда шудааст!"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:324
 msgid "Make all warnings fatal"
 msgstr "Намоиш додани ҳамаи огоҳиҳо"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:325
 msgid "Exit after a time (for debugging)"
 msgstr "Баромадан баъд аз муддати вақт (барои ислоҳи хатоҳо)"
 
-#: ../daemon/main.c:335
+#: ../daemon/main.c:326
 msgid "Print GDM version"
 msgstr "Намоиш додани версияи GDM"
 
-#: ../daemon/main.c:346
+#: ../daemon/main.c:339
 msgid "GNOME Display Manager"
 msgstr "Мудири дисплейи GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:394
+#: ../daemon/main.c:387
 msgid "Only the root user can run GDM"
 msgstr "Танҳо корбари root метавонад GDM-ро иҷро кунад"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Коргари ҷаласаи Мудири дисплейҳои GNOME"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Рамзи дисплей"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "Рамзи ID"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Коргари иловагии Мудири дисплейҳои GNOME"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Равзанаи воридшавӣ"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "Восити GNOME"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Идоракунӣ ва таркиб сохтани равзанаҳо"
 
@@ -407,46 +391,6 @@ msgstr ""
 "Миқдори маротибаҳое, ки корбар метавонад санҷиши ҳаққониятро кӯшиш кунад, "
 "пеш аз қатъ кардан ва бозгашт ба интихоби корбар."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "Эҷод кардани дисплейи зудгузар имконнопазир аст:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "Фаъол кардани ҷаласа имконнопазир аст: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Ҷаласаи ҷорӣ муайян нашудааст."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Корбар наметавонад ҷаласаҳоро қатъу васл кунад."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Ҷои ҷорӣ муайян нашудааст."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Система наметавонад муайян кунад, ки ба экрани мавҷудбудаи воридшавӣ табдил "
-"диҳад, ё ки экрани нави воридшавиро оғоз кунад."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Система экрани вуруди навро оғоз карда наметавонад."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Интихоб кардани система"
@@ -467,35 +411,39 @@ msgstr "XDMCP: Версияи XDMCP нодуруст аст!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Таҷзияи суроғаи имконнопазир аст"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Эҷод кардани дисплейи зудгузар имконнопазир аст:"
+
+#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Фаъол кардани ҷаласа имконнопазир аст: "
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Танҳо фармони VERSION дастгирӣ мешавад"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "ФАРМОН"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Нодидагузаронидашуда — барои мувофиқат нигоҳ дошта шудааст"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Натиҷаи ислоҳи хатоҳо"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Версияи ин барнома"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Даромадгоҳи GDM-и нав"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "Оғоз кардани дисплейи нав имконнопазир аст"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -505,6 +453,59 @@ msgstr "Сурати экрани гирифташуда"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Гирифтани сурати экран"
+
+#~ msgid "No session available yet"
+#~ msgstr "Ягон ҷаласа то ҳол дастрас нест"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Намоиш додани UID барои корбари %s имконнопазир аст"
+
+#~ msgid "no sessions available"
+#~ msgstr "ягон ҷаласа дастрас нест"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Барои санҷиши ҳаққонияти нави %s ягон ҷаласа дастрас нест"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Ягон ҷаласа барои корбари %s ёфт нашуд"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Ягон ҷаласаи мувофиқ барои корбари %s ёфт нашуд"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Қорбар соҳиби ин ҷаласа намебошад"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: ба дисплйеи асосии \"%s\" пайваст нашуд"
+
+#~ msgid "Your account was given an expiration date that's now passed."
+#~ msgstr "Мӯҳлати истифодаи ҳисоби шумо ба анҷом расид."
+
+#~ msgid "User not logged in"
+#~ msgstr "Корбар ворид шашудааст"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr ""
+#~ "Дар айни ҳол, дар як маротиба танҳо як муштарӣ метавонад пайваст шуда "
+#~ "бошад"
+
+#~ msgid "Failed to create AuthDir %s: %s"
+#~ msgstr "Директорияи санҷиши ҳаққонияти %s эҷод карда нашуд: %s"
+
+#~ msgid "Display ID"
+#~ msgstr "Рамзи дисплей"
+
+#~ msgid "ID"
+#~ msgstr "Рамзи ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "Коргари иловагии Мудири дисплейҳои GNOME"
+
+#~ msgid "Login Window"
+#~ msgstr "Равзанаи воридшавӣ"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Оғоз кардани дисплейи нав имконнопазир аст"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr ""
