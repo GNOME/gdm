@@ -3,6 +3,10 @@ Description=GNOME Display Manager
 Conflicts=getty@tty@GDM_INITIAL_VT@.service plymouth-quit.service
 After=systemd-user-sessions.service getty@tty@GDM_INITIAL_VT@.service plymouth-quit.service
 
+# GDM takes responsibility for stopping plymouth, so if it fails
+# for any reason, make sure plymouth still stops
+OnFailure=plymouth-quit.service
+
 [Service]
 ExecStart=@sbindir@/gdm
 Restart=always
