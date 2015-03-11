@@ -15,6 +15,10 @@ After=@PLYMOUTH_QUIT_SERVICE@
 # plymouth is quit, which we do)
 After=rc-local.service plymouth-start.service systemd-user-sessions.service
 
+# GDM takes responsibility for stopping plymouth, so if it fails
+# for any reason, make sure plymouth still stops
+OnFailure=plymouth-quit.service
+
 [Service]
 ExecStart=@sbindir@/gdm
 Restart=always
