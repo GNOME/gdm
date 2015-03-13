@@ -768,6 +768,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 *response_text = NULL;
         }
 
+
         gdm_session_worker_update_username (worker);
 
         g_debug ("GdmSessionWorker: received pam message of type %u with payload '%s'",
