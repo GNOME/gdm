@@ -982,11 +982,12 @@ on_acquire_display (int signal)
         close(fd);
 }
 
-static void
+static gboolean
 handle_terminal_vt_switches (GdmSessionWorker *worker,
                              int               tty_fd)
 {
         struct vt_mode setmode_request = { 0 };
+        gboolean succeeded = TRUE;
 
         setmode_request.mode = VT_PROCESS;
         setmode_request.relsig = RELEASE_DISPLAY_SIGNAL;
@@ -994,10 +995,13 @@ handle_terminal_vt_switches (GdmSessionWorker *worker,
 
         if (ioctl (tty_fd, VT_SETMODE, &setmode_request) < 0) {
                 g_debug ("GdmSessionWorker: couldn't manage VTs manually: %m");
+                succeeded = FALSE;
         }
 
         signal (RELEASE_DISPLAY_SIGNAL, on_release_display);
         signal (ACQUIRE_DISPLAY_SIGNAL, on_acquire_display);
+
+        return succeeded;
 }
 
 static void
@@ -1007,9 +1011,11 @@ fix_terminal_vt_mode (GdmSessionWorker  *worker,
         struct vt_mode getmode_reply = { 0 };
         int kernel_display_mode = 0;
         gboolean mode_fixed = FALSE;
+        gboolean succeeded = TRUE;
 
         if (ioctl (tty_fd, VT_GETMODE, &getmode_reply) < 0) {
                 g_debug ("GdmSessionWorker: couldn't query VT mode: %m");
+                succeeded = FALSE;
         }
 
         if (getmode_reply.mode != VT_AUTO) {
@@ -1018,6 +1024,7 @@ fix_terminal_vt_mode (GdmSessionWorker  *worker,
 
         if (ioctl (tty_fd, KDGETMODE, &kernel_display_mode) < 0) {
                 g_debug ("GdmSessionWorker: couldn't query kernel display mode: %m");
+                succeeded = FALSE;
         }
 
         if (kernel_display_mode == KD_TEXT) {
@@ -1027,9 +1034,14 @@ fix_terminal_vt_mode (GdmSessionWorker  *worker,
         /* VT is in the anti-social state of VT_AUTO + KD_GRAPHICS,
          * fix it.
          */
-        handle_terminal_vt_switches (worker, tty_fd);
+        succeeded = handle_terminal_vt_switches (worker, tty_fd);
         mode_fixed = TRUE;
 out:
+        if (!succeeded) {
+                g_error ("GdmSessionWorker: couldn't set up terminal, aborting...");
+                return;
+        }
+
         g_debug ("GdmSessionWorker: VT mode did %sneed to be fixed",
                  mode_fixed? "" : "not ");
 }
