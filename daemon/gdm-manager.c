@@ -1512,23 +1512,35 @@ get_username_for_greeter_display (GdmManager *manager,
 }
 
 static void
+set_up_automatic_login_session (GdmManager *manager,
+                                GdmDisplay *display)
+{
+        GdmSession *session;
+        gboolean is_initial;
+
+        g_object_set (G_OBJECT (display), "session-class", "user", NULL);
+        g_object_set (G_OBJECT (display), "session-type", NULL, NULL);
+
+        /* 0 is root user; since the daemon talks to the session object
+         * directly, itself, for automatic login
+         */
+        session = create_embryonic_user_session_for_display (manager, display, 0);
+
+        g_object_get (G_OBJECT (display), "is-initial", &is_initial, NULL);
+        g_object_set (G_OBJECT (session), "display-is-initial", is_initial, NULL);
+
+        g_debug ("GdmManager: Starting automatic login conversation");
+        gdm_session_start_conversation (session, "gdm-autologin");
+}
+
+static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
         const char *allowed_user;
         struct passwd *passwd_entry;
-        gboolean will_autologin;
-        GdmSession *session;
 
-        will_autologin = display_should_autologin (manager, display);
-
-        if (!will_autologin) {
-                 allowed_user = get_username_for_greeter_display (manager, display);
-        } else {
-                 g_object_set (G_OBJECT (display), "session-class", "user", NULL);
-                 g_object_set (G_OBJECT (display), "session-type", NULL, NULL);
-                 allowed_user = "root";
-        }
+        allowed_user = get_username_for_greeter_display (manager, display);
 
         if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
                 g_warning ("GdmManager: couldn't look up username %s",
@@ -1538,20 +1550,8 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        session = create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
-
-        if (!will_autologin) {
-                gdm_display_start_greeter_session (display);
-        } else {
-                gboolean is_initial;
-
-                g_debug ("GdmManager: Starting automatic login conversation");
-
-                g_object_get (G_OBJECT (display), "is-initial", &is_initial, NULL);
-                g_object_set (G_OBJECT (session), "display-is-initial", is_initial, NULL);
-
-                gdm_session_start_conversation (session, "gdm-autologin");
-        }
+        create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
+        gdm_display_start_greeter_session (display);
 }
 
 static void
@@ -1585,7 +1585,15 @@ on_display_status_changed (GdmDisplay *display,
                                               "session-class", &session_class,
                                               NULL);
                                 if (g_strcmp0 (session_class, "greeter") == 0) {
-                                        set_up_greeter_session (manager, display);
+                                        gboolean will_autologin;
+
+                                        will_autologin = display_should_autologin (manager, display);
+
+                                        if (will_autologin) {
+                                                set_up_automatic_login_session (manager, display);
+                                        } else {
+                                                set_up_greeter_session (manager, display);
+                                        }
                                 }
                         }
 
