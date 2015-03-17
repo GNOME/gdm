@@ -101,6 +101,7 @@ struct GdmManagerPrivate
 #ifdef  WITH_PLYMOUTH
         guint                     plymouth_is_running : 1;
 #endif
+        guint                     ran_once : 1;
 };
 
 enum {
@@ -132,7 +133,6 @@ static void     create_embryonic_user_session_for_display (GdmManager *manager,
 
 static void     start_user_session (GdmManager                *manager,
                                     StartUserSessionOperation *operation);
-static void     touch_ran_once_marker_file  (GdmManager *manager);
 
 static gpointer manager_object = NULL;
 
@@ -1449,7 +1449,7 @@ display_should_autologin (GdmManager *manager,
         gboolean enabled = FALSE;
         int delay = 0;
 
-        if (g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
+        if (manager->priv->ran_once) {
                 return FALSE;
         }
 
@@ -1587,7 +1587,7 @@ on_display_status_changed (GdmDisplay *display,
 #endif
                                 maybe_start_pending_initial_login (manager, display);
 
-                                touch_ran_once_marker_file (manager);
+                                manager->priv->ran_once = TRUE;
                         }
                         break;
                 case GDM_DISPLAY_FAILED:
@@ -2192,7 +2192,7 @@ start_autologin_conversation_if_necessary (GdmManager *manager,
 
         gdm_display_get_timed_login_details (display, &enabled, NULL, &delay);
 
-        if (delay == 0 && g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
+        if (delay == 0 && manager->priv->ran_once) {
                 g_debug ("GdmManager: not starting automatic login conversation because we already did autologin once");
                 return;
         }
@@ -2211,24 +2211,6 @@ start_autologin_conversation_if_necessary (GdmManager *manager,
         gdm_session_start_conversation (session, "gdm-autologin");
 }
 
-static void
-touch_ran_once_marker_file (GdmManager *manager)
-{
-        int fd;
-
-        g_debug ("GdmManager: touching marker file %s", GDM_RAN_ONCE_MARKER_FILE);
-
-        fd = g_creat (GDM_RAN_ONCE_MARKER_FILE, 0644);
-
-        if (fd < 0 && errno != EEXIST) {
-                g_warning ("could not create %s to mark run, this may cause auto login "
-                           "to repeat: %m", GDM_RAN_ONCE_MARKER_FILE);
-                return;
-        }
-
-        fsync (fd);
-        close (fd);
-}
 
 static void
 clean_embryonic_user_session (GdmSession *session)

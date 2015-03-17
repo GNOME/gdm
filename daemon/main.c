@@ -144,12 +144,6 @@ write_pid (void)
         atexit (delete_pid);
 }
 
-static void
-delete_first_run_marker (void)
-{
-        g_unlink (GDM_RAN_ONCE_MARKER_FILE);
-}
-
 static gboolean
 ensure_dir_with_perms (const char *path,
                        uid_t       uid,
@@ -394,9 +388,6 @@ main (int    argc,
         /* pid file */
         delete_pid ();
         write_pid ();
-
-        /* clean up any stale ran once marker file that may be lingering */
-        delete_first_run_marker ();
 
         g_chdir ("/");
 
