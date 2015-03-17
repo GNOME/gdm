@@ -127,9 +127,10 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
 static void     gdm_manager_dispose     (GObject         *object);
-static void     create_embryonic_user_session_for_display (GdmManager *manager,
-                                                           GdmDisplay *display,
-                                                           uid_t       allowed_user);
+
+static GdmSession *create_embryonic_user_session_for_display (GdmManager *manager,
+                                                              GdmDisplay *display,
+                                                              uid_t       allowed_user);
 
 static void     start_user_session (GdmManager                *manager,
                                     StartUserSessionOperation *operation);
@@ -1517,6 +1518,7 @@ set_up_greeter_session (GdmManager *manager,
         const char *allowed_user;
         struct passwd *passwd_entry;
         gboolean will_autologin;
+        GdmSession *session;
 
         will_autologin = display_should_autologin (manager, display);
 
@@ -1536,10 +1538,19 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
+        session = create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
 
         if (!will_autologin) {
                 gdm_display_start_greeter_session (display);
+        } else {
+                gboolean is_initial;
+
+                g_debug ("GdmManager: Starting automatic login conversation");
+
+                g_object_get (G_OBJECT (display), "is-initial", &is_initial, NULL);
+                g_object_set (G_OBJECT (session), "display-is-initial", is_initial, NULL);
+
+                gdm_session_start_conversation (session, "gdm-autologin");
         }
 }
 
@@ -2182,44 +2193,13 @@ on_session_reauthentication_started (GdmSession *session,
 }
 
 static void
-start_autologin_conversation_if_necessary (GdmManager *manager,
-                                           GdmDisplay *display,
-                                           GdmSession *session)
-{
-        gboolean enabled;
-        int delay = 0;
-        gboolean is_initial = FALSE;
-
-        gdm_display_get_timed_login_details (display, &enabled, NULL, &delay);
-
-        if (delay == 0 && manager->priv->ran_once) {
-                g_debug ("GdmManager: not starting automatic login conversation because we already did autologin once");
-                return;
-        }
-
-        if (!enabled) {
-                g_debug ("GdmManager: not starting automatic login conversation because autologin is not enabled");
-                return;
-        }
-
-        if (delay == 0) {
-                g_object_get (G_OBJECT (display), "is-initial", &is_initial, NULL);
-                g_object_set (G_OBJECT (session), "display-is-initial", is_initial, NULL);
-        }
-
-        g_debug ("GdmManager: Starting automatic login conversation");
-        gdm_session_start_conversation (session, "gdm-autologin");
-}
-
-
-static void
 clean_embryonic_user_session (GdmSession *session)
 {
         g_object_set_data (G_OBJECT (session), "gdm-display", NULL);
         g_object_unref (session);
 }
 
-static void
+static GdmSession *
 create_embryonic_user_session_for_display (GdmManager *manager,
                                            GdmDisplay *display,
                                            uid_t       allowed_user)
@@ -2315,8 +2295,7 @@ create_embryonic_user_session_for_display (GdmManager *manager,
                                 g_object_ref (session),
                                 (GDestroyNotify)
                                 clean_embryonic_user_session);
-
-        start_autologin_conversation_if_necessary (manager, display, session);
+        return session;
 }
 
 static void
