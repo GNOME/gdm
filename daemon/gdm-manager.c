@@ -2019,7 +2019,7 @@ on_session_client_connected (GdmSession      *session,
         GdmDisplay *display;
         char    *username;
         int      delay;
-        gboolean enabled, display_is_local;
+        gboolean enabled;
 
         g_debug ("GdmManager: client connected");
 
@@ -2028,8 +2028,6 @@ on_session_client_connected (GdmSession      *session,
         if (display == NULL) {
                 return;
         }
-
-        g_object_get (display, "is-local", &display_is_local, NULL);
 
         enabled = FALSE;
         gdm_display_get_timed_login_details (display, &enabled, &username, &delay);
