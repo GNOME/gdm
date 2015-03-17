@@ -1541,8 +1541,6 @@ set_up_greeter_session (GdmManager *manager,
         if (!will_autologin) {
                 gdm_display_start_greeter_session (display);
         }
-
-        touch_ran_once_marker_file (manager);
 }
 
 static void
@@ -1588,6 +1586,8 @@ on_display_status_changed (GdmDisplay *display,
                                 }
 #endif
                                 maybe_start_pending_initial_login (manager, display);
+
+                                touch_ran_once_marker_file (manager);
                         }
                         break;
                 case GDM_DISPLAY_FAILED:
