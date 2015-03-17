@@ -1680,6 +1680,19 @@ set_up_greeter_session (GdmManager *manager,
 }
 
 static void
+greeter_display_started (GdmManager *manager,
+                         GdmDisplay *display)
+{
+        if (manager->priv->ran_once) {
+                return;
+        }
+
+        maybe_start_pending_initial_login (manager, display);
+
+        manager->priv->ran_once = TRUE;
+}
+
+static void
 on_display_status_changed (GdmDisplay *display,
                            GParamSpec *arg1,
                            GdmManager *manager)
@@ -1729,9 +1742,7 @@ on_display_status_changed (GdmDisplay *display,
                                         manager->priv->plymouth_is_running = FALSE;
                                 }
 #endif
-                                maybe_start_pending_initial_login (manager, display);
-
-                                manager->priv->ran_once = TRUE;
+                                greeter_display_started (manager, display);
                         }
                         break;
                 case GDM_DISPLAY_FAILED:
