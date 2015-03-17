@@ -1600,7 +1600,6 @@ on_display_status_changed (GdmDisplay *display,
                         }
 #endif
 
-
                         maybe_start_pending_initial_login (manager, display);
                         break;
                 default:
