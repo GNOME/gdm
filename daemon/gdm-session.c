@@ -3124,7 +3124,7 @@ set_session_type (GdmSession *self,
                   const char *session_type)
 {
 
-        if (g_strcmp0 (session_type, session_type) != 0) {
+        if (g_strcmp0 (self->priv->session_type, session_type) != 0) {
                 g_debug ("GdmSession: setting session to type '%s'", session_type? session_type : "");
                 g_free (self->priv->session_type);
                 self->priv->session_type = g_strdup (session_type);
