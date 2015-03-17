@@ -1445,17 +1445,37 @@ manager_interface_init (GdmDBusManagerIface *interface)
         interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
 }
 
-static void
+static gboolean
+display_is_on_seat0 (GdmDisplay *display)
+{
+        gboolean is_on_seat0 = TRUE;
+
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                char *seat_id = NULL;
+
+                g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
+
+                if (g_strcmp0 (seat_id, "seat0") != 0) {
+                        is_on_seat0 = FALSE;
+                }
+
+                g_free (seat_id);
+        }
+#endif
+        return is_on_seat0;
+}
+
+static gboolean
 get_timed_login_details_for_display (GdmManager *manager,
                                      GdmDisplay *display,
-                                     gboolean   *enabledp,
                                      char      **usernamep,
                                      int        *delayp)
 {
         gboolean res;
         gboolean enabled;
         gboolean allow_timed_login = FALSE;
-        char    *seat_id;
+
         int      delay;
         char    *username = NULL;
 
@@ -1469,18 +1489,66 @@ get_timed_login_details_for_display (GdmManager *manager,
                 goto out;
         }
 
-        g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
-
-#ifdef WITH_SYSTEMD
-        /* FIXME: More careful thought needs to happen before we
-         * can support auto/timed login on auxilliary seats
-         */
-        if (LOGIND_RUNNING()) {
-                if (g_strcmp0 (seat_id, "seat0") != 0) {
-                        goto out;
-                }
+        if (display_is_on_seat0 (display)) {
+                goto out;
         }
-#endif
+
+        res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
+        if (res && ! enabled) {
+                goto out;
+        }
+
+        res = gdm_settings_direct_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
+        if (res && (username == NULL || username[0] == '\0')) {
+                g_clear_pointer (&username, g_free);
+                goto out;
+        }
+
+        delay = 0;
+        res = gdm_settings_direct_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
+
+        if (res && delay <= 0) {
+                /* we don't allow the timed login to have a zero delay */
+                delay = 10;
+        }
+
+ out:
+        if (enabled) {
+                g_debug ("GdmDisplay: Got timed login details for display: %d %s %d",
+                         enabled,
+                         username,
+                         delay);
+        } else {
+                g_debug ("GdmDisplay: Got timed login details for display: 0");
+        }
+
+        if (usernamep != NULL) {
+                *usernamep = username;
+        } else {
+                g_free (username);
+        }
+        if (delayp != NULL) {
+                *delayp = delay;
+        }
+
+        return enabled;
+}
+
+static gboolean
+get_automatic_login_details_for_display (GdmManager *manager,
+                                         GdmDisplay *display,
+                                         char      **usernamep)
+{
+        gboolean res;
+        gboolean enabled;
+        char    *username = NULL;
+
+        enabled = FALSE;
+        username = NULL;
+
+        if (!display_is_on_seat0 (display)) {
+                goto out;
+        }
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
         if (res && enabled) {
@@ -1495,52 +1563,22 @@ get_timed_login_details_for_display (GdmManager *manager,
         username = NULL;
         enabled = FALSE;
 
-        res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
-        if (res && ! enabled) {
-                goto out;
-        }
-
-        res = gdm_settings_direct_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
-        if (res && (username == NULL || username[0] == '\0')) {
-                enabled = FALSE;
-                g_free (username);
-                username = NULL;
-                goto out;
-        }
-
-        delay = 0;
-        res = gdm_settings_direct_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
-
-        if (res && delay <= 0) {
-                /* we don't allow the timed login to have a zero delay */
-                delay = 10;
-        }
-
  out:
         if (enabled) {
-                g_debug ("GdmDisplay: Got timed login details for display (seat %s): %d %s %d",
-                         seat_id,
+                g_debug ("GdmDisplay: Got automatic login details for display: %d %s",
                          enabled,
-                         username,
-                         delay);
+                         username);
         } else {
-                g_debug ("GdmDisplay: Got timed login details for display (seat %s): 0",
-                         seat_id);
+                g_debug ("GdmDisplay: Got automatic login details for display: 0");
         }
 
-        g_free (seat_id);
-
-        if (enabledp != NULL) {
-                *enabledp = enabled;
-        }
         if (usernamep != NULL) {
                 *usernamep = username;
         } else {
                 g_free (username);
         }
-        if (delayp != NULL) {
-                *delayp = delay;
-        }
+
+        return enabled;
 }
 
 static gboolean
@@ -1548,14 +1586,14 @@ display_should_autologin (GdmManager *manager,
                           GdmDisplay *display)
 {
         gboolean enabled = FALSE;
-        int delay = 0;
 
         if (manager->priv->ran_once) {
                 return FALSE;
         }
 
-        get_timed_login_details_for_display (manager, display, &enabled, NULL, &delay);
-        return enabled && delay == 0;
+        enabled = get_automatic_login_details_for_display (manager, display, NULL);
+
+        return enabled;
 }
 
 static void
@@ -2129,16 +2167,13 @@ on_session_client_connected (GdmSession      *session,
                 return;
         }
 
-        enabled = FALSE;
-        get_timed_login_details_for_display (manager, display, &enabled, &username, &delay);
+        enabled = get_timed_login_details_for_display (manager, display, &username, &delay);
 
         if (! enabled) {
                 return;
         }
 
-        if (delay > 0) {
-                gdm_session_set_timed_login_details (session, username, delay);
-        }
+        gdm_session_set_timed_login_details (session, username, delay);
 
         g_free (username);
 
@@ -2234,7 +2269,6 @@ on_session_conversation_started (GdmSession *session,
         GdmDisplay *display;
         gboolean    enabled;
         char       *username;
-        int         delay;
 
         g_debug ("GdmManager: session conversation started for service %s", service_name);
 
@@ -2249,19 +2283,17 @@ on_session_conversation_started (GdmSession *session,
                 return;
         }
 
-        enabled = FALSE;
-        get_timed_login_details_for_display (manager, display, &enabled, &username, &delay);
+        enabled = get_automatic_login_details_for_display (manager, display, &username);
 
         if (! enabled) {
                 return;
         }
 
-        if (delay == 0) {
-                g_debug ("GdmManager: begin auto login for user '%s'", username);
-                /* service_name will be "gdm-autologin"
-                 */
-                gdm_session_setup_for_user (session, service_name, username);
-        }
+        g_debug ("GdmManager: begin auto login for user '%s'", username);
+
+        /* service_name will be "gdm-autologin"
+         */
+        gdm_session_setup_for_user (session, service_name, username);
 
         g_free (username);
 }
