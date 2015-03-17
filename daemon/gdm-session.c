@@ -174,6 +174,7 @@ enum {
 #ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
 #endif
+static void update_session_type (GdmSession *self);
 static void set_session_type (GdmSession *self,
                               const char *session_type);
 static guint signals [LAST_SIGNAL] = { 0, };
@@ -904,6 +905,8 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                     get_default_session_name (self)) != 0) {
                 g_free (self->priv->saved_session);
                 self->priv->saved_session = g_strdup (session_name);
+
+                update_session_type (self);
 
                 if (self->priv->greeter_interface != NULL) {
                         gdm_dbus_greeter_emit_default_session_name_changed (self->priv->greeter_interface,
@@ -2875,6 +2878,21 @@ out:
 }
 #endif
 
+static void
+update_session_type (GdmSession *self)
+{
+#ifdef ENABLE_WAYLAND_SUPPORT
+        gboolean is_wayland_session;
+
+        is_wayland_session = gdm_session_is_wayland_session (self);
+        if (is_wayland_session) {
+                set_session_type (self, "wayland");
+        } else {
+                set_session_type (self, NULL);
+        }
+#endif
+}
+
 gboolean
 gdm_session_bypasses_xsession (GdmSession *self)
 {
@@ -2994,21 +3012,13 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
-        gboolean is_wayland_session = FALSE;
 
         g_debug ("GdmSession: selecting session '%s'", text);
 
         g_free (self->priv->selected_session);
         self->priv->selected_session = g_strdup (text);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
-        is_wayland_session = gdm_session_is_wayland_session (self);
-        if (is_wayland_session) {
-                set_session_type (self, "wayland");
-        } else {
-                set_session_type (self, NULL);
-        }
-#endif
+        update_session_type (self);
 
         g_hash_table_iter_init (&iter, self->priv->conversations);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -3114,9 +3124,11 @@ set_session_type (GdmSession *self,
                   const char *session_type)
 {
 
-        g_debug ("GdmSession: setting session to type '%s'", session_type? session_type : "");
-        g_free (self->priv->session_type);
-        self->priv->session_type = g_strdup (session_type);
+        if (g_strcmp0 (session_type, session_type) != 0) {
+                g_debug ("GdmSession: setting session to type '%s'", session_type? session_type : "");
+                g_free (self->priv->session_type);
+                self->priv->session_type = g_strdup (session_type);
+        }
 }
 
 static void
