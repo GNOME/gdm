@@ -1467,14 +1467,12 @@ display_is_on_seat0 (GdmDisplay *display)
 }
 
 static gboolean
-get_timed_login_details_for_display (GdmManager *manager,
-                                     GdmDisplay *display,
-                                     char      **usernamep,
-                                     int        *delayp)
+get_timed_login_details (GdmManager *manager,
+                         char      **usernamep,
+                         int        *delayp)
 {
         gboolean res;
         gboolean enabled;
-        gboolean allow_timed_login = FALSE;
 
         int      delay;
         char    *username = NULL;
@@ -1482,16 +1480,6 @@ get_timed_login_details_for_display (GdmManager *manager,
         enabled = FALSE;
         username = NULL;
         delay = 0;
-
-        g_object_get (G_OBJECT (display), "allow-timed-login", &allow_timed_login, NULL);
-
-        if (!allow_timed_login) {
-                goto out;
-        }
-
-        if (display_is_on_seat0 (display)) {
-                goto out;
-        }
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
         if (res && ! enabled) {
@@ -1535,9 +1523,8 @@ get_timed_login_details_for_display (GdmManager *manager,
 }
 
 static gboolean
-get_automatic_login_details_for_display (GdmManager *manager,
-                                         GdmDisplay *display,
-                                         char      **usernamep)
+get_automatic_login_details (GdmManager *manager,
+                             char      **usernamep)
 {
         gboolean res;
         gboolean enabled;
@@ -1545,10 +1532,6 @@ get_automatic_login_details_for_display (GdmManager *manager,
 
         enabled = FALSE;
         username = NULL;
-
-        if (!display_is_on_seat0 (display)) {
-                goto out;
-        }
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
         if (res && enabled) {
@@ -1591,7 +1574,11 @@ display_should_autologin (GdmManager *manager,
                 return FALSE;
         }
 
-        enabled = get_automatic_login_details_for_display (manager, display, NULL);
+        if (!display_is_on_seat0 (display)) {
+                return FALSE;
+        }
+
+        enabled = get_automatic_login_details (manager, NULL);
 
         return enabled;
 }
@@ -2158,6 +2145,7 @@ on_session_client_connected (GdmSession      *session,
         char    *username;
         int      delay;
         gboolean enabled;
+        gboolean allow_timed_login = FALSE;
 
         g_debug ("GdmManager: client connected");
 
@@ -2167,7 +2155,17 @@ on_session_client_connected (GdmSession      *session,
                 return;
         }
 
-        enabled = get_timed_login_details_for_display (manager, display, &username, &delay);
+        if (!display_is_on_seat0 (display)) {
+                return;
+        }
+
+        g_object_get (G_OBJECT (display), "allow-timed-login", &allow_timed_login, NULL);
+
+        if (!allow_timed_login) {
+                return;
+        }
+
+        enabled = get_timed_login_details (manager, &username, &delay);
 
         if (! enabled) {
                 return;
@@ -2283,7 +2281,11 @@ on_session_conversation_started (GdmSession *session,
                 return;
         }
 
-        enabled = get_automatic_login_details_for_display (manager, display, &username);
+        if (!display_is_on_seat0 (display)) {
+                return;
+        }
+
+        enabled = get_automatic_login_details (manager, &username);
 
         if (! enabled) {
                 return;
