@@ -2965,7 +2965,7 @@ gdm_session_get_display_mode (GdmSession *self)
          * within the login session and managed by logind
          */
         if (self->priv->is_program_session) {
-                return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
+                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         }
 
         /* user based X sessions need us to allocate a VT for them
