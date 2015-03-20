@@ -189,7 +189,7 @@ plymouth_quit_with_transition (void)
         GError  *error;
 
         error = NULL;
-        res = g_spawn_command_line_async ("/bin/plymouth quit --retain-splash", &error);
+        res = g_spawn_command_line_async ("sleep 2; /bin/plymouth quit --retain-splash", &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
