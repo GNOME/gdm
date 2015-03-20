@@ -197,14 +197,18 @@ store_display (GdmLocalDisplayFactory *factory,
 static const char *
 get_seat_of_transient_display (GdmLocalDisplayFactory *factory)
 {
-        const char *seat_id;
+        const char *seat_id = NULL;
 
         /* FIXME: don't hardcode seat */
 #ifdef WITH_SYSTEMD
-        seat_id = SYSTEMD_SEAT0_PATH;
-#else
-        seat_id = CK_SEAT1_PATH;
+        if (LOGIND_RUNNING() > 0) {
+                seat_id = SYSTEMD_SEAT0_PATH;
+        }
 #endif
+
+        if (seat_id == NULL) {
+                seat_id = CK_SEAT1_PATH;
+        }
 
         return seat_id;
 }
