@@ -7,14 +7,13 @@
 # Michael MORONI < >, 2009, 2011.
 # Daniel PUENTES <blatberk@openmailbox.org>, 2015.
 # Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2009, 2010, 2011, 2013, 2015.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-01-31 17:53+0000\n"
-"PO-Revision-Date: 2015-02-01 16:32+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&ke"
+"ywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-03-27 14:15+0000\n"
+"PO-Revision-Date: 2015-03-27 23:23+0200\n"
 "Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
 "Language-Team: Esperanto <gnome-l10n-eo@lists.launchpad.net>\n"
 "Language: eo\n"
@@ -22,7 +21,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Project-Style: gnome\n"
 
 #: ../common/gdm-common.c:311
 #, c-format
@@ -64,19 +64,37 @@ msgstr "La sistemo ne povas startigi novan ensalut-ekranon."
 msgid "could not find user \"%s\" on system"
 msgstr "ne eblis trovi uzanton \"%s\" sur la sistemo"
 
-#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1195
+#: ../daemon/gdm-legacy-display.c:220
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Ne eblis starti la X-servilon (via grafika fasado) dum interna eraro. "
+"Bonvolu kontakti vian sistemaadministranton aŭ kontroli vian "
+"sistemprotokolan dosieron por serĉi la problemon. Intertempe la ekrano estos "
+"elŝaltita. Bonvole relanĉu GDM-on se la problemo estas  korektita."
+
+#: ../daemon/gdm-manager.c:1093
+msgid "No display available"
+msgstr "Neniu ekrano disponeblas"
+
+#: ../daemon/gdm-manager.c:1142 ../daemon/gdm-manager.c:1398
 msgid "No session available"
 msgstr "Neniu seanco disponeblas"
 
-#: ../daemon/gdm-manager.c:953
-#, c-format
+#: ../daemon/gdm-manager.c:1153
 msgid "Can only be called before user is logged in"
 msgstr "Nur estas vokeble antaŭ uzanto estas ensalutita"
 
-#: ../daemon/gdm-manager.c:962
-#, c-format
+#: ../daemon/gdm-manager.c:1163
 msgid "Caller not GDM"
 msgstr "Alia vokanto, ne GDM"
+
+#: ../daemon/gdm-manager.c:1173
+msgid "Unable to open private communication channel"
+msgstr "Ne eblas malfermi privatan komunikadan kanalon"
 
 #: ../daemon/gdm-server.c:437
 #, c-format
@@ -143,102 +161,109 @@ msgstr "Vidigilo"
 msgid "The display device"
 msgstr "La vidigilo"
 
-#: ../daemon/gdm-session.c:1212
+#: ../daemon/gdm-session.c:1184
 msgid "Could not create authentication helper process"
 msgstr "Ne eblis krei aŭtentokontrolilan procezon"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:849
 msgid "Your account was given a time limit that's now passed."
 msgstr "Al via konto estis donita tempolimo kiu nun pasis."
 
-#: ../daemon/gdm-session-worker.c:851
+#: ../daemon/gdm-session-worker.c:856
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Pardonu, tio ne funkciis. Bonvole provu denove."
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1221
 msgid "Username:"
 msgstr "Uzantonomo:"
 
-#: ../daemon/gdm-session-worker.c:1241
+#: ../daemon/gdm-session-worker.c:1355
 msgid "Your password has expired, please change it now."
 msgstr "Via pasvorto senvalidiĝis, bonvole ŝanĝu ĝin."
 
-#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
+#: ../daemon/gdm-session-worker.c:1594 ../daemon/gdm-session-worker.c:1611
 #, c-format
 msgid "no user account available"
 msgstr "neniu uzanto-konto estas disponebla"
 
-#: ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1638
 msgid "Unable to change to user"
 msgstr "Ne eblas ŝanĝi al unzanto"
 
-#: ../daemon/gdm-simple-slave.c:868
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Ne eblis starti la X-servilon (via grafika fasado) dum interna eraro. "
-"Bonvolu kontakti vian sistemaadministranton aŭ kontroli vian "
-"sistemprotokolan dosieron por serĉi la problemon. Intertempe la ekrano estos "
-"elŝaltita. Bonvole relanĉu GDM-on se la problemo estas  korektita."
+#: ../daemon/gdm-wayland-session.c:377
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Wayland-seanco-lanĉilo de la GNOME-Ekrano-administrilo"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Ne eblas kreii kontaktoskatolon!"
+
+#: ../daemon/gdm-x-session.c:678
+#, fuzzy
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Ruli programon tra la /etc/gdm/Xsession pasiga skripto"
+
+#: ../daemon/gdm-x-session.c:679
+msgid "Listen on TCP socket"
+msgstr "Aŭskulti en TCP-konektilo"
+
+#: ../daemon/gdm-x-session.c:690
+#| msgid "GNOME Display Manager Session Worker"
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "X-seanco-lanĉilo de la GNOME-Ekrano-administrilo"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Ne eblas konservi PID-dosieron %s: eble mankas diskoloko: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Malsukcesis krei dosierujon %s por \"unufoje rulanta\": %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "Malsukcesis krei na LogDir '%s': %s"
+msgstr "Malsukcesis krei na LogDir %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Ne eblas trovi GDM-uzanton '%s'. Eliras!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "La GDM-uzanto ne estu radiko. Eliras!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Ne eblas trovi la GDM-grupon '%s'. Eliras!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "La GDM-grupo ne estu radiko. Eliras!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Fari ĉiujn avertojn fatalaj"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Eliri post iom da tempo (por sencimigo)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Presi GDM-version"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Ekranadministrilo de GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Nur la uzanto \"root\" rajtas lanĉi GDM-on"
 
@@ -246,13 +271,15 @@ msgstr "Nur la uzanto \"root\" rajtas lanĉi GDM-on"
 #. of starting up a session
 #: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
-msgstr "GDM (Gnome Ekran-mastrumilo) seancolaborilo"
+msgstr "GDM (GNOME Ekran-mastrumilo) seancolaborilo"
 
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME-ŝelo"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Fenestra administrado kaj kunmetado"
 
@@ -388,7 +415,7 @@ msgstr "XMDCP: Ne eblis analizi adreson"
 
 #: ../libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
-msgstr "Ne eblas krei nedaŭran ekranon:"
+msgstr "Ne eblas krei nedaŭran ekranon: "
 
 #: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
 msgid "Unable to activate session: "
