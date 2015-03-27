@@ -222,6 +222,7 @@ spawn_x_server (State        *state,
 
         arguments = g_ptr_array_new ();
         launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDIN_INHERIT);
+        g_subprocess_launcher_setenv (launcher, "XORG_RUN_AS_USER_OK", "1", TRUE);
         g_subprocess_launcher_take_fd (launcher, pipe_fds[1], DISPLAY_FILENO);
 
         if (g_getenv ("XDG_VTNR") != NULL) {
