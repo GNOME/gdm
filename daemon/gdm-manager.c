@@ -2313,8 +2313,12 @@ gdm_manager_dispose (GObject *object)
         g_clear_object (&manager->priv->xdmcp_factory);
 #endif
         g_clear_object (&manager->priv->local_factory);
-        g_hash_table_unref (manager->priv->open_reauthentication_requests);
-        g_hash_table_unref (manager->priv->transient_sessions);
+        g_clear_pointer (&manager->priv->open_reauthentication_requests,
+                         (GDestroyNotify)
+                         g_hash_table_unref);
+        g_clear_pointer (&manager->priv->transient_sessions,
+                         (GDestroyNotify)
+                         g_hash_table_unref);
 
         g_list_foreach (manager->priv->user_sessions,
                         (GFunc) gdm_session_close,
@@ -2346,8 +2350,7 @@ gdm_manager_dispose (GObject *object)
 
         g_clear_object (&manager->priv->connection);
         g_clear_object (&manager->priv->object_manager);
-
-        g_object_unref (manager->priv->display_store);
+        g_clear_object (&manager->priv->display_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->dispose (object);
 }
