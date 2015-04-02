@@ -836,6 +836,48 @@ get_seat_id_for_session_id (GDBusConnection  *connection,
         return NULL;
 }
 
+#ifdef WITH_SYSTEMD
+static char *
+get_tty_for_systemd_session_id (const char  *session_id,
+                                GError     **error)
+{
+        int ret;
+        char *tty, *out_tty;
+
+        ret = sd_session_get_tty (session_id, &tty);
+
+        if (ret == -ENOENT) {
+                out_tty = NULL;
+        } else if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting tty for session id %s from systemd: %s",
+                             session_id,
+                             g_strerror (-ret));
+                out_tty = NULL;
+        } else {
+                out_tty = g_strdup (tty);
+                free (tty);
+        }
+
+        return out_tty;
+}
+#endif
+
+static char *
+get_tty_for_session_id (const char  *session_id,
+                        GError     **error)
+{
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                return get_tty_for_systemd_session_id (session_id, error);
+        }
+#endif
+
+        return NULL;
+}
+
 static void
 get_display_and_details_for_bus_sender (GdmManager       *self,
                                         GDBusConnection  *connection,
@@ -843,6 +885,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                                         GdmDisplay      **out_display,
                                         char            **out_seat_id,
                                         char            **out_session_id,
+                                        char            **out_tty,
                                         GPid             *out_pid,
                                         uid_t            *out_uid,
                                         gboolean         *out_is_login_screen,
@@ -932,6 +975,16 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
 
                 if (error != NULL) {
                         g_debug ("GdmManager: Error while retrieving remoteness for session: %s",
+                                 error->message);
+                        g_clear_error (&error);
+                }
+        }
+
+        if (out_tty != NULL) {
+                *out_tty = get_tty_for_session_id (session_id, &error);
+
+                if (error != NULL) {
+                        g_debug ("GdmManager: Error while retrieving tty for session: %s",
                                  error->message);
                         g_clear_error (&error);
                 }
@@ -1112,7 +1165,7 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, NULL, NULL, NULL, NULL);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -1171,7 +1224,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, &pid, &uid, NULL, NULL);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, NULL, &pid, &uid, NULL, NULL);
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -1427,7 +1480,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        get_display_and_details_for_bus_sender (self, connection, sender, &display, &seat_id, &session_id, &pid, &uid, &is_login_screen, &is_remote);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, &seat_id, &session_id, NULL, &pid, &uid, &is_login_screen, &is_remote);
 
         if (session_id == NULL || pid == 0 || uid == (uid_t) -1) {
                 g_dbus_method_invocation_return_error_literal (invocation,
