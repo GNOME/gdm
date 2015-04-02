@@ -1085,7 +1085,7 @@ add_session_record (GdmManager    *manager,
                       "display-device", &display_device,
                       NULL);
 
-        if (display_name == NULL) {
+        if (display_name == NULL && display_device == NULL) {
                 goto out;
         }
 

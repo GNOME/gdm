@@ -205,6 +205,9 @@ gdm_session_record_login (GPid                  session_pid,
         UTMP        session_record = { 0 };
         UTMP       *u;
 
+        if (x11_display_name == NULL)
+                x11_display_name = display_device;
+
         record_set_username (&session_record, user_name);
 
         g_debug ("Writing login record");
