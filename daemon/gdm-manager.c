@@ -1159,13 +1159,14 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
         GVariantIter     iter;
         char            *key = NULL;
         char            *value = NULL;
-        const char      *x11_display_name = NULL;
+        char            *x11_display_name = NULL;
+        char            *tty = NULL;
 
         g_debug ("GdmManager: trying to register new display");
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
-        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, &tty, NULL, NULL, NULL, NULL);
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -1190,6 +1191,11 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                 if (x11_display_name != NULL)
                         g_object_set (G_OBJECT (session), "display-name", x11_display_name, NULL);
 
+                /* FIXME: this should happen in gdm-session.c when the session is opened
+                 */
+                if (tty != NULL)
+                        g_object_set (G_OBJECT (session), "display-device", tty, NULL);
+
                 pid = gdm_session_get_pid (session);
 
                 if (pid > 0) {
@@ -1203,6 +1209,7 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                                                     invocation);
 
         g_clear_pointer (&x11_display_name, g_free);
+        g_clear_pointer (&tty, g_free);
         return TRUE;
 }
 
