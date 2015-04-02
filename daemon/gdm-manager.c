@@ -1103,6 +1103,10 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
         GDBusConnection *connection;
         GdmDisplay      *display = NULL;
         GdmSession      *session;
+        GVariantIter     iter;
+        char            *key = NULL;
+        char            *value = NULL;
+        const char      *x11_display_name = NULL;
 
         g_debug ("GdmManager: trying to register new display");
 
@@ -1119,10 +1123,19 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                 return TRUE;
         }
 
+        g_variant_iter_init (&iter, details);
+        while (g_variant_iter_loop (&iter, "{ss}", &key, &value)) {
+                if (g_strcmp0 (key, "x11-display-name") == 0)
+                        x11_display_name = value;
+        }
+
         session = get_user_session_for_display (self, display);
 
         if (session != NULL) {
                 GPid pid;
+
+                if (x11_display_name != NULL)
+                        g_object_set (G_OBJECT (session), "display-name", x11_display_name, NULL);
 
                 pid = gdm_session_get_pid (session);
 
