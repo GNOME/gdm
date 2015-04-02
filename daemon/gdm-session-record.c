@@ -279,6 +279,9 @@ gdm_session_record_logout (GPid                  session_pid,
         UTMP        session_record = { 0 };
         UTMP       *u;
 
+        if (x11_display_name == NULL)
+                x11_display_name = display_device;
+
         g_debug ("Writing logout record");
 
 #if defined(HAVE_UT_UT_TYPE)
@@ -349,6 +352,9 @@ gdm_session_record_failed (GPid                  session_pid,
                            const char           *display_device)
 {
         UTMP        session_record = { 0 };
+
+        if (x11_display_name == NULL)
+                x11_display_name = display_device;
 
         record_set_username (&session_record, user_name);
 
