@@ -1069,6 +1069,30 @@ out:
         return recorded;
 }
 
+static GdmSession *
+get_user_session_for_display (GdmManager *self,
+                              GdmDisplay *display)
+{
+        GList *node;
+
+        for (node = self->priv->user_sessions;
+             node != NULL;
+             node = node->next) {
+                GdmSession *session = node->data;
+                GdmDisplay *candidate_display;
+                GList *next_node = node->next;
+
+                candidate_display = get_display_for_user_session (session);
+
+                if (candidate_display == display)
+                        return session;
+
+                node = next_node;
+        }
+
+        return NULL;
+}
+
 static gboolean
 gdm_manager_handle_register_display (GdmDBusManager        *manager,
                                      GDBusMethodInvocation *invocation,
@@ -1095,7 +1119,7 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        session = get_embryonic_user_session_for_display (display);
+        session = get_user_session_for_display (self, display);
 
         if (session != NULL) {
                 GPid pid;
@@ -1112,6 +1136,7 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
         gdm_dbus_manager_complete_register_display (GDM_DBUS_MANAGER (manager),
                                                     invocation);
 
+        g_clear_pointer (&x11_display_name, g_free);
         return TRUE;
 }
 
