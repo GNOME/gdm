@@ -1803,10 +1803,11 @@ on_display_status_changed (GdmDisplay *display,
 
         g_object_get (display,
                       "is-local", &display_is_local,
-                      "x11-display-number", &display_number,
                       NULL);
         quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
 #endif
+
+        g_object_get (display, "x11-display-number", &display_number, NULL);
 
         status = gdm_display_get_status (display);
 
