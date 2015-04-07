@@ -144,6 +144,21 @@ on_server_ready (GdmServer       *server,
                 g_debug ("GdmDisplay: could not connect to display");
                 gdm_display_unmanage (GDM_DISPLAY (self));
         } else {
+                GdmLaunchEnvironment *launch_environment;
+                char *display_device;
+
+                display_device = gdm_server_get_display_device (server);
+
+                g_object_get (G_OBJECT (self),
+                              "launch-environment", &launch_environment,
+                              NULL);
+                g_object_set (G_OBJECT (launch_environment),
+                              "x11-display-device",
+                              display_device,
+                              NULL);
+                g_clear_pointer(&display_device, g_free);
+                g_clear_object (&launch_environment);
+
                 g_debug ("GdmDisplay: connected to display");
                 g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
         }

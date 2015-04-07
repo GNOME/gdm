@@ -795,7 +795,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                               "device",
                                                               "device",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("x11-display-is-local",
