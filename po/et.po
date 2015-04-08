@@ -9,15 +9,15 @@
 # Tõivo Leedjärv <toivo linux ee>, 2002, 2003.
 # Ivar Smolin <okul linux ee>, 2005–2011.
 # Priit Laes <amd store20 com>, 2005.
-# Mattias Põldaru <mahfiaz@gmail.com>, 2009, 2010, 2011, 2012, 2013.
+# Mattias Põldaru <mahfiaz@gmail.com>, 2009-2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GDM MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-10 17:18+0000\n"
-"PO-Revision-Date: 2013-09-10 22:23+0300\n"
+"POT-Creation-Date: 2015-03-15 05:53+0000\n"
+"PO-Revision-Date: 2015-03-15 01:42+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -32,41 +32,58 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom pole märkseade"
 
 #, c-format
+msgid "Could not identify the current session."
+msgstr "Praegust seanssi pole võimalik tuvastada."
+
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Kasutajal pole võimalik seansse vahetada"
+
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Praegust olekut pole võimalik tuvastada."
+
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Süsteem ei suuda otsustada, kas hüpata olemasolevale sisselogimiskuvale või "
+"käivitada uus."
+
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Süsteem ei suuda käivitada uut sisselogimiskuva."
+
+#, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "kasutajat \"%s\" pole võimalik süsteemist leida"
 
-#, c-format
-msgid "No session available yet"
-msgstr "Ühtegi seannsi pole veel saadaval"
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"X-serverit (graafilist kasutajakeskkonda) pole võimalik mingi vea tõttu "
+"käivitada. Palun võta ühendust oma süsteemihalduriga või uuri veale "
+"jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
+"Probleemide kõrvaldamise järel palun taaskäivita GDM."
 
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "Kasutaja %s UID-d ei leitud"
-
-msgid "no sessions available"
-msgstr "seansse pole saadaval"
-
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "Uuesti autentimiseks pole %s jaoks saadaval ühtegi seanssi"
-
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "Kasutaja %s jaoks ei leitud seanssi"
-
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "Kasutaja %s jaoks ei leitud sobivat seanssi"
-
-msgid "User doesn't own session"
-msgstr "Kasutajal pole seanssi"
+msgid "No display available"
+msgstr "Ühtegi kuva pole saadaval"
 
 msgid "No session available"
 msgstr "Seanss pole saadaval"
 
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: tõrge ühendumisel vanemkuvaga '%s'"
+msgid "Can only be called before user is logged in"
+msgstr "Seda saab kutsuda ainult enne kasutaja sisselogimist"
+
+msgid "Caller not GDM"
+msgstr "Väljakutsuja pole GDM"
+
+msgid "Unable to open private communication channel"
+msgstr "Pole võimalik avada privaatset sidekanalit"
 
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
@@ -142,34 +159,20 @@ msgstr "kasutajakonto pole saadaval"
 msgid "Unable to change to user"
 msgstr "Kasutajat pole võimalik vahetada"
 
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"X-serverit (graafilist kasutajakeskkonda) pole võimalik mingi vea tõttu "
-"käivitada. Palun võta ühendust oma süsteemihalduriga või uuri veale "
-"jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
-"Probleemide kõrvaldamise järel palun taaskäivita GDM."
-
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Seda saab kutsuda ainult enne kasutaja sisselogimist"
-
-#, c-format
-msgid "Caller not GDM"
-msgstr "Väljakutsuja pole GDM"
-
-msgid "User not logged in"
-msgstr "Kasutaja pole sisselogitud"
-
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Praegu saab ainult üks klient korraga ühenduda"
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME'i kuvahalduri Waylandi seansi käivitaja"
 
 msgid "Could not create socket!"
 msgstr "Soklit pole võimalik luua!"
+
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "Programmi käivitamine /etc/gdm/Xsession skripti kaudu"
+
+msgid "Listen on TCP socket"
+msgstr "TCP pordi kuulamine"
+
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME'i kuvahalduri X-i seansi käivitaja"
 
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
@@ -219,18 +222,6 @@ msgstr "Ainult juurkasutaja tohib GDM-i käivitada"
 #. of starting up a session
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME'i kuvahalduri sessioonitööline"
-
-msgid "Display ID"
-msgstr "Kuva ID"
-
-msgid "ID"
-msgstr "ID"
-
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME'i kuvahalduri ori"
-
-msgid "Login Window"
-msgstr "Sisselogimisaken"
 
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
@@ -328,36 +319,6 @@ msgstr ""
 "Mitu korda tohib kasutaja autentimine nurjuda, enne kui loobutakse ning "
 "naasetakse kasutaja valiku juurde."
 
-msgid "Unable to create transient display: "
-msgstr "Lühiajalist kuva pole võimalik luua:"
-
-msgid "Unable to activate session: "
-msgstr "Seanssi pole võimalik aktiveerida:"
-
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Praegust seanssi pole võimalik tuvastada."
-
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Kasutajal pole võimalik seansse vahetada"
-
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Praegust olekut pole võimalik tuvastada."
-
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Süsteem ei suuda otsustada, kas hüpata olemasolevale sisselogimiskuvale või "
-"käivitada uus."
-
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Süsteem ei suuda käivitada uut sisselogimiskuva."
-
 msgid "Select System"
 msgstr "Süsteemi valimine"
 
@@ -372,6 +333,12 @@ msgstr "XDMCP: Vale XDMCP versioon!"
 
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Aadressi pole võimalik analüüsida"
+
+msgid "Unable to create transient display: "
+msgstr "Lühiajalist kuva pole võimalik luua:"
+
+msgid "Unable to activate session: "
+msgstr "Seanssi pole võimalik aktiveerida:"
 
 msgid "Only the VERSION command is supported"
 msgstr "Ainult VERSION käsk on toetatud"
@@ -392,15 +359,57 @@ msgstr "Selle rakenduse versioon"
 msgid "- New GDM login"
 msgstr "- uus GDM sisselogimisaken"
 
-msgid "Unable to start new display"
-msgstr "Uut kuva pole võimalik luua"
-
 msgid "Screenshot taken"
 msgstr "Ekraanipilt on tehtud"
 
 #. Option parsing
 msgid "Take a picture of the screen"
 msgstr "Ekraani pildistamine"
+
+#~ msgid "No session available yet"
+#~ msgstr "Ühtegi seannsi pole veel saadaval"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "Kasutaja %s UID-d ei leitud"
+
+#~ msgid "no sessions available"
+#~ msgstr "seansse pole saadaval"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "Uuesti autentimiseks pole %s jaoks saadaval ühtegi seanssi"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "Kasutaja %s jaoks ei leitud seanssi"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "Kasutaja %s jaoks ei leitud sobivat seanssi"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "Kasutajal pole seanssi"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: tõrge ühendumisel vanemkuvaga '%s'"
+
+#~ msgid "User not logged in"
+#~ msgstr "Kasutaja pole sisselogitud"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "Praegu saab ainult üks klient korraga ühenduda"
+
+#~ msgid "Display ID"
+#~ msgstr "Kuva ID"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr "GNOME'i kuvahalduri ori"
+
+#~ msgid "Login Window"
+#~ msgstr "Sisselogimisaken"
+
+#~ msgid "Unable to start new display"
+#~ msgstr "Uut kuva pole võimalik luua"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr "viga autentimissüsteemiga suhtluse alustamisel - %s"
