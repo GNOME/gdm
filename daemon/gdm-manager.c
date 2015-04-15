@@ -1178,9 +1178,11 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
         }
 
         g_variant_iter_init (&iter, details);
-        while (g_variant_iter_loop (&iter, "{ss}", &key, &value)) {
-                if (g_strcmp0 (key, "x11-display-name") == 0)
-                        x11_display_name = value;
+        while (g_variant_iter_loop (&iter, "{&s&s}", &key, &value)) {
+                if (g_strcmp0 (key, "x11-display-name") == 0) {
+                        x11_display_name = g_strdup (value);
+                        break;
+                }
         }
 
         session = get_user_session_for_display (self, display);
