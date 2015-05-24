@@ -1126,11 +1126,10 @@ static GdmSession *
 get_user_session_for_display (GdmManager *self,
                               GdmDisplay *display)
 {
-        GList *node;
 
-        for (node = self->priv->user_sessions;
-             node != NULL;
-             node = node->next) {
+        GList *node = self->priv->user_sessions;
+
+        while (node != NULL) {
                 GdmSession *session = node->data;
                 GdmDisplay *candidate_display;
                 GList *next_node = node->next;
