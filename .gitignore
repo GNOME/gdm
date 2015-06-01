@@ -30,6 +30,8 @@ gdm.conf
 gdm.conf-custom
 gdm-display-glue.h
 gdm-display-glue.c
+gdm-local-display-glue.h
+gdm-local-display-glue.c
 gdm-local-display-factory-glue.h
 gdm-local-display-factory-glue.c
 gdm-manager-glue.c
@@ -98,10 +100,10 @@ config.h.in
 config.sub
 configure
 daemon/gdm
-daemon/gdm-factory-slave
 daemon/gdm-session-worker
-daemon/gdm-simple-slave
 daemon/gdm-xdmcp-chooser-slave
+daemon/gdm-wayland-session
+daemon/gdm-x-session
 daemon/test-session-client
 daemon/test-external-greeter
 daemon/gdm-session-enum-types.c
@@ -109,6 +111,7 @@ daemon/gdm-session-enum-types.h
 data/gdm.schemas.in
 data/applications/gnome-mag.desktop
 data/applications/gnome-shell.desktop
+data/applications/gnome-shell-wayland.desktop
 data/applications/gok.desktop
 data/applications/orca-screen-reader.desktop
 data/autostart/caribou-autostart.desktop
