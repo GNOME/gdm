@@ -178,6 +178,12 @@ AC_SUBST(dmconfdir)
 dnl ---------------------------------------------------------------------------
 dnl - Configure arguments
 dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(enable-gdm-xsession,
+              AS_HELP_STRING([--enable-gdm-xsession],
+                             [Enable installing the gdm Xsession file @<:@default=no@:>@]),,
+              enable_gdm_xsession=no)
+AM_CONDITIONAL(ENABLE_GDM_XSESSION, test x$enable_gdm_xsession = xyes)
+
 AC_ARG_ENABLE(split-authentication,
 	      AS_HELP_STRING([--enable-split-authentication],
                              [Enable multiple simultaneous PAM conversations during login @<:@default=yes@:>@]),,
@@ -1642,6 +1648,7 @@ echo \
         Build with RBAC:          ${msg_rbac_shutdown}
         Initial VT:               ${GDM_INITIAL_VT}
         Enable documentation:     ${enable_documentation}
+        Install GDM's Xsession:   ${enable_gdm_xsession}
 "
 
 if test x"${use_console_kit}" = x"yes"; then
