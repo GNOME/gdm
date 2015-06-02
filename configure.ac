@@ -178,7 +178,7 @@ AC_SUBST(dmconfdir)
 dnl ---------------------------------------------------------------------------
 dnl - Configure arguments
 dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(enable-gdm-xsession,
+AC_ARG_ENABLE(gdm-xsession,
               AS_HELP_STRING([--enable-gdm-xsession],
                              [Enable installing the gdm Xsession file @<:@default=no@:>@]),,
               enable_gdm_xsession=no)
