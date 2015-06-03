@@ -95,6 +95,7 @@ spawn_bus (State        *state,
         GInputStream        *input_stream = NULL;
         GDataInputStream    *data_stream = NULL;
         GError              *error = NULL;
+        const char          *bus_env = NULL;
         char                *bus_address_fd_string = NULL;
         char                *bus_address = NULL;
         gsize                bus_address_size;
@@ -104,6 +105,13 @@ spawn_bus (State        *state,
         int       pipe_fds[2];
 
         g_debug ("Running session message bus");
+
+        bus_env = g_getenv ("DBUS_SESSION_BUS_ADDRESS");
+        if (bus_env != NULL) {
+                g_debug ("session message bus already running, not starting another one");
+                state->bus_address = g_strdup (bus_env);
+                return TRUE;
+        }
 
         ret = g_unix_open_pipe (pipe_fds, FD_CLOEXEC, &error);
 
