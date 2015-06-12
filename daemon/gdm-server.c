@@ -124,41 +124,6 @@ static void     gdm_server_finalize     (GObject        *object);
 
 G_DEFINE_TYPE (GdmServer, gdm_server, G_TYPE_OBJECT)
 
-static char *
-_gdm_server_query_ck_for_display_device (GdmServer *server)
-{
-        char    *out;
-        char    *command;
-        int      status;
-        gboolean res;
-        GError  *error;
-
-        g_return_val_if_fail (GDM_IS_SERVER (server), NULL);
-
-        error = NULL;
-        command = g_strdup_printf (CONSOLEKIT_DIR "/ck-get-x11-display-device --display %s",
-                                   server->priv->display_name);
-
-        g_debug ("GdmServer: Running helper %s", command);
-        out = NULL;
-        res = g_spawn_command_line_sync (command,
-                                         &out,
-                                         NULL,
-                                         &status,
-                                         &error);
-        if (! res) {
-                g_warning ("Could not run helper: %s", error->message);
-                g_error_free (error);
-        } else {
-                out = g_strstrip (out);
-                g_debug ("GdmServer: Got tty: '%s'", out);
-        }
-
-        g_free (command);
-
-        return out;
-}
-
 char *
 gdm_server_get_display_device (GdmServer *server)
 {
@@ -170,9 +135,6 @@ gdm_server_get_display_device (GdmServer *server)
 #endif
 
         if (server->priv->display_device == NULL) {
-                server->priv->display_device =
-                    _gdm_server_query_ck_for_display_device (server);
-
                 g_object_notify (G_OBJECT (server), "display-device");
         }
 

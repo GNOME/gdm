@@ -59,15 +59,6 @@
 #define GDM_MANAGER_PATH          GDM_DBUS_PATH "/Manager"
 #define GDM_MANAGER_DISPLAYS_PATH GDM_DBUS_PATH "/Displays"
 
-#define CK_NAME      "org.freedesktop.ConsoleKit"
-#define CK_PATH      "/org/freedesktop/ConsoleKit"
-#define CK_INTERFACE "org.freedesktop.ConsoleKit"
-
-#define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
-#define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
-#define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
-#define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
-
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 
 typedef struct
@@ -243,36 +234,6 @@ get_session_id_for_pid_systemd (pid_t    pid,
 }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-static char *
-get_session_id_for_pid_consolekit (GDBusConnection  *connection,
-                                   pid_t             pid,
-                                   GError          **error)
-{
-        GVariant *reply;
-        char *retval;
-
-        reply = g_dbus_connection_call_sync (connection,
-                                             "org.freedesktop.ConsoleKit",
-                                             "/org/freedesktop/ConsoleKit/Manager",
-                                             "org.freedesktop.ConsoleKit.Manager",
-                                             "GetSessionForUnixProcess",
-                                             g_variant_new ("(u)", pid),
-                                             G_VARIANT_TYPE ("(o)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL, error);
-        if (reply == NULL) {
-                return NULL;
-        }
-
-        g_variant_get (reply, "(o)", &retval);
-        g_variant_unref (reply);
-
-        return retval;
-}
-#endif
-
 static char *
 get_session_id_for_pid (GDBusConnection  *connection,
                         pid_t             pid,
@@ -282,10 +243,6 @@ get_session_id_for_pid (GDBusConnection  *connection,
         if (LOGIND_RUNNING()) {
                 return get_session_id_for_pid_systemd (pid, error);
         }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return get_session_id_for_pid_consolekit (connection, pid, error);
 #endif
 
         return NULL;
@@ -314,40 +271,6 @@ get_uid_for_systemd_session_id (const char  *session_id,
 }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-get_uid_for_consolekit_session_id (GDBusConnection  *connection,
-                                   const char       *session_id,
-                                   uid_t            *out_uid,
-                                   GError          **error)
-{
-        GVariant *reply;
-        guint32 uid;
-
-        reply = g_dbus_connection_call_sync (connection,
-                                             "org.freedesktop.ConsoleKit",
-                                             session_id,
-                                             "org.freedesktop.ConsoleKit.Session",
-                                             "GetUnixUser",
-                                             NULL,
-                                             G_VARIANT_TYPE ("(u)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             error);
-        if (reply == NULL) {
-                return FALSE;
-        }
-
-        g_variant_get (reply, "(u)", &uid);
-        g_variant_unref (reply);
-
-        *out_uid = (uid_t) uid;
-
-        return TRUE;
-}
-#endif
-
 static gboolean
 get_uid_for_session_id (GDBusConnection  *connection,
                         const char       *session_id,
@@ -358,10 +281,6 @@ get_uid_for_session_id (GDBusConnection  *connection,
         if (LOGIND_RUNNING()) {
                 return get_uid_for_systemd_session_id (session_id, uid, error);
         }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return get_uid_for_consolekit_session_id (connection, session_id, uid, error);
 #endif
 
         return FALSE;
@@ -378,45 +297,6 @@ lookup_by_session_id (const char *id,
         current = gdm_display_get_session_id (display);
         return g_strcmp0 (current, looking_for) == 0;
 }
-
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-is_consolekit_login_session (GdmManager       *self,
-                             GDBusConnection  *connection,
-                             const char       *session_id,
-                             GError          **error)
-{
-        GVariant *reply;
-        char *session_type = NULL;
-
-        reply = g_dbus_connection_call_sync (connection,
-                                             "org.freedesktop.ConsoleKit",
-                                             session_id,
-                                             "org.freedesktop.ConsoleKit.Session",
-                                             "GetSessionType",
-                                             NULL,
-                                             G_VARIANT_TYPE ("(s)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             error);
-        if (reply == NULL) {
-                return FALSE;
-        }
-
-        g_variant_get (reply, "(s)", &session_type);
-        g_variant_unref (reply);
-
-        if (g_strcmp0 (session_type, "LoginWindow") != 0) {
-                g_free (session_type);
-
-                return FALSE;
-        }
-
-        g_free (session_type);
-        return TRUE;
-}
-#endif
 
 #ifdef WITH_SYSTEMD
 static gboolean
@@ -461,10 +341,6 @@ is_login_session (GdmManager       *self,
         }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-        return is_consolekit_login_session (self, connection, session_id, error);
-#endif
-
         return FALSE;
 }
 
@@ -501,46 +377,6 @@ activate_session_id_for_systemd (GdmManager   *manager,
 }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-activate_session_id_for_ck (GdmManager *manager,
-                            const char *seat_id,
-                            const char *session_id)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (manager->priv->connection,
-                                             CK_NAME,
-                                             seat_id,
-                                             "org.freedesktop.ConsoleKit.Seat",
-                                             "ActivateSession",
-                                             g_variant_new ("(o)", session_id),
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmManager: ConsoleKit %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-
-                /* It is very likely that the "error" just reported is
-                 * that the session is already active.  Unfortunately,
-                 * ConsoleKit doesn't use proper error codes and it
-                 * translates the error message, so we have no real way
-                 * to detect this case...
-                 */
-                return TRUE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-#endif
-
 static gboolean
 activate_session_id (GdmManager *manager,
                      const char *seat_id,
@@ -553,11 +389,7 @@ activate_session_id (GdmManager *manager,
         }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-        return activate_session_id_for_ck (manager, seat_id, session_id);
-#else
         return FALSE;
-#endif
 }
 
 #ifdef WITH_SYSTEMD
@@ -592,38 +424,6 @@ session_unlock_for_systemd (GdmManager *manager,
 }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-session_unlock_for_ck (GdmManager *manager,
-                       const char *ssid)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (manager->priv->connection,
-                                             CK_NAME,
-                                             ssid,
-                                             CK_SESSION_INTERFACE,
-                                             "Unlock",
-                                             NULL, /* parameters */
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmManager: ConsoleKit %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-#endif
-
 static gboolean
 session_unlock (GdmManager *manager,
                 const char *ssid)
@@ -637,11 +437,7 @@ session_unlock (GdmManager *manager,
         }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-        return session_unlock_for_ck (manager, ssid);
-#else
         return TRUE;
-#endif
 }
 
 static GdmSession *
@@ -673,38 +469,6 @@ find_session_for_user_on_seat (GdmManager *manager,
 
         return NULL;
 }
-
-#ifdef WITH_CONSOLE_KIT
-static gboolean
-is_consolekit_remote_session (GdmManager       *self,
-                             GDBusConnection  *connection,
-                             const char       *session_id,
-                             GError          **error)
-{
-        GVariant *reply;
-        gboolean is_remote;
-
-        reply = g_dbus_connection_call_sync (connection,
-                                             "org.freedesktop.ConsoleKit",
-                                             session_id,
-                                             "org.freedesktop.ConsoleKit.Session",
-                                             "IsLocal",
-                                             NULL,
-                                             G_VARIANT_TYPE ("(b)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             error);
-        if (reply == NULL) {
-                return FALSE;
-        }
-
-        g_variant_get (reply, "(b)", &is_remote);
-        g_variant_unref (reply);
-
-        return is_remote;
-}
-#endif
 
 #ifdef WITH_SYSTEMD
 static gboolean
@@ -750,10 +514,6 @@ is_remote_session (GdmManager       *self,
         }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-        return is_consolekit_remote_session (self, connection, session_id, error);
-#endif
-
         return FALSE;
 }
 
@@ -787,37 +547,6 @@ get_seat_id_for_systemd_session_id (const char  *session_id,
 }
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-static char *
-get_seat_id_for_consolekit_session_id (GDBusConnection  *connection,
-                                       const char       *session_id,
-                                       GError          **error)
-{
-        GVariant *reply;
-        char *retval;
-
-        reply = g_dbus_connection_call_sync (connection,
-                                             "org.freedesktop.ConsoleKit",
-                                             session_id,
-                                             "org.freedesktop.ConsoleKit.Session",
-                                             "GetSeatId",
-                                             NULL,
-                                             G_VARIANT_TYPE ("(o)"),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             error);
-        if (reply == NULL) {
-                return NULL;
-        }
-
-        g_variant_get (reply, "(o)", &retval);
-        g_variant_unref (reply);
-
-        return retval;
-}
-#endif
-
 static char *
 get_seat_id_for_session_id (GDBusConnection  *connection,
                             const char       *session_id,
@@ -827,10 +556,6 @@ get_seat_id_for_session_id (GDBusConnection  *connection,
         if (LOGIND_RUNNING()) {
                 return get_seat_id_for_systemd_session_id (session_id, error);
         }
-#endif
-
-#ifdef WITH_CONSOLE_KIT
-        return get_seat_id_for_consolekit_session_id (connection, session_id, error);
 #endif
 
         return NULL;
@@ -2156,46 +1881,6 @@ on_user_session_died (GdmSession *session,
 }
 
 static char *
-query_ck_for_display_device (GdmManager *manager,
-                             GdmDisplay *display)
-{
-        char    *out;
-        char    *command;
-        char    *display_name = NULL;
-        int      status;
-        gboolean res;
-        GError  *error;
-
-        g_object_get (G_OBJECT (display),
-                      "x11-display-name", &display_name,
-                      NULL);
-
-        error = NULL;
-        command = g_strdup_printf (CONSOLEKIT_DIR "/ck-get-x11-display-device --display %s",
-                                   display_name);
-        g_free (display_name);
-
-        g_debug ("GdmManager: Running helper %s", command);
-        out = NULL;
-        res = g_spawn_command_line_sync (command,
-                                         &out,
-                                         NULL,
-                                         &status,
-                                         &error);
-        if (! res) {
-                g_warning ("GdmManager: Could not run helper %s: %s", command, error->message);
-                g_error_free (error);
-        } else {
-                out = g_strstrip (out);
-                g_debug ("GdmManager: Got tty: '%s'", out);
-        }
-
-        g_free (command);
-
-        return out;
-}
-
-static char *
 get_display_device (GdmManager *manager,
                     GdmDisplay *display)
 {
@@ -2205,8 +1890,6 @@ get_display_device (GdmManager *manager,
                 return NULL;
         }
 #endif
-
-        return query_ck_for_display_device (manager, display);
 }
 
 static void

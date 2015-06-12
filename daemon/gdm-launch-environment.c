@@ -282,9 +282,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 char *seat_id;
 
                 seat_id = launch_environment->priv->x11_display_seat_id;
-                if (g_str_has_prefix (seat_id, "/org/freedesktop/ConsoleKit/")) {
-                        seat_id += strlen ("/org/freedesktop/ConsoleKit/");
-                }
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
         }

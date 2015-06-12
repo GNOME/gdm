@@ -42,7 +42,6 @@
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
-#define CK_SEAT1_PATH                       "/org/freedesktop/ConsoleKit/Seat1"
 #define SYSTEMD_SEAT0_PATH                  "seat0"
 
 #define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
@@ -205,10 +204,6 @@ get_seat_of_transient_display (GdmLocalDisplayFactory *factory)
                 seat_id = SYSTEMD_SEAT0_PATH;
         }
 #endif
-
-        if (seat_id == NULL) {
-                seat_id = CK_SEAT1_PATH;
-        }
 
         return seat_id;
 }
@@ -575,7 +570,6 @@ static gboolean
 gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
-        GdmDisplay             *display;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -586,10 +580,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
         }
 #endif
 
-        /* On ConsoleKit just create Seat1, and that's it. */
-        display = create_display (factory, CK_SEAT1_PATH, NULL, TRUE);
-
-        return display != NULL;
+        return FALSE;
 }
 
 static gboolean

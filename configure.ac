@@ -244,10 +244,6 @@ AC_ARG_WITH(tcp-wrappers,
                            [Use TCP Wrappers @<:@default=auto@:>@]),,
             with_tcp_wrappers=auto)
 
-AC_ARG_WITH(console-kit,
-            AS_HELP_STRING([--with-console-kit],
-                           [Add ConsoleKit support @<:@default=auto@:>@]),,
-            with_console_kit=no)
 
 AC_ARG_WITH(systemd,
             AS_HELP_STRING([--with-systemd],
@@ -878,18 +874,6 @@ AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
 
 dnl ---------------------------------------------------------------------------
-dnl - Check for ConsoleKit support
-dnl ---------------------------------------------------------------------------
-
-use_console_kit=no
-if test "x$with_console_kit" != "xno" ; then
-	use_console_kit=yes
-	AC_DEFINE(WITH_CONSOLE_KIT, 1, [Define to enable ConsoleKit support])
-fi
-AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
-AC_SUBST(WITH_CONSOLE_KIT)
-
-dnl ---------------------------------------------------------------------------
 dnl - Check for systemd support
 dnl ---------------------------------------------------------------------------
 
@@ -1120,14 +1104,6 @@ fi
 
 AC_SUBST(GDM_CUSTOM_CONF)
 AC_SUBST(GDM_OLD_CONF, '${gdmconfdir}/gdm.conf')
-
-AC_ARG_WITH(consolekit-directory,
-              [AC_HELP_STRING([--with-consolekit-directory],
-                              [Specify the directory of ck-get-x11-display-device @<:@default=libexecdir@:>@])],,
-                              [with_consolekit_directory="\${libexecdir}"])
-
-CONSOLEKIT_DIR=$with_consolekit_directory
-AC_SUBST(CONSOLEKIT_DIR)
 
 AC_ARG_WITH(gnome-settings-daemon-directory,
               [AC_HELP_STRING([--with-gnome-settings-daemon-directory],
@@ -1610,7 +1586,6 @@ echo "
         dmconfdir:                ${dmconfdir}
         localstatedir:            ${localstatedir}
         datadir:                  ${datadir}
-	consolekit location:      ${with_consolekit_directory}
 	gnome-settings-daemon location: ${with_gnome_settings_daemon_directory}
 	gnome-session-check-accel location: ${with_check_accelerated_directory}
 	source code location:	  ${srcdir}
@@ -1640,7 +1615,6 @@ echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${use_selinux}
-        ConsoleKit support:       ${use_console_kit}
         systemd support:          ${use_systemd}
         systemd unit dir:         ${with_systemdsystemunitdir}
         plymouth support:         ${use_plymouth}
@@ -1650,15 +1624,3 @@ echo \
         Enable documentation:     ${enable_documentation}
         Install GDM's Xsession:   ${enable_gdm_xsession}
 "
-
-if test x"${use_console_kit}" = x"yes"; then
-        echo \
-"       WARNING:
-        ConsoleKit support is deprecated and is going to be removed before
-        the next major release.  More details, and patches to add back in
-        ConsoleKit support can be found here:
-
-                https://wiki.gnome.org/Projects/ConsoleKit
-"
-fi
-
