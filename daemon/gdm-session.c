@@ -2945,10 +2945,6 @@ gdm_session_get_display_mode (GdmSession *self)
                  self->priv->is_program_session? "yes" : "no",
                  self->priv->display_seat_id);
 
-        if (!LOGIND_RUNNING()) {
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
-        }
-
 #ifdef ENABLE_WAYLAND_SUPPORT
         /* Wayland sessions are for now assumed to run in a
          * mutter-launch-like environment, so we allocate

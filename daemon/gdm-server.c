@@ -43,9 +43,7 @@
 #include <linux/vt.h>
 #endif
 
-#ifdef WITH_SYSTEMD
 #include <systemd/sd-daemon.h>
-#endif
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
 #include <systemd/sd-journal.h>
@@ -127,18 +125,8 @@ G_DEFINE_TYPE (GdmServer, gdm_server, G_TYPE_OBJECT)
 char *
 gdm_server_get_display_device (GdmServer *server)
 {
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                /* systemd finds the display device out on its own based on the display */
-                return NULL;
-        }
-#endif
-
-        if (server->priv->display_device == NULL) {
-                g_object_notify (G_OBJECT (server), "display-device");
-        }
-
-        return g_strdup (server->priv->display_device);
+        /* systemd finds the display device out on its own based on the display */
+        return NULL;
 }
 
 static void
@@ -240,8 +228,6 @@ gdm_server_init_command (GdmServer *server)
 
 #define X_SERVER_ARG_FORMAT " -background none -noreset -verbose %s%s"
 
-#ifdef WITH_SYSTEMD
-
         /* This is a temporary hack to work around the fact that XOrg
          * currently lacks support for multi-seat hotplugging for
          * display devices. This bit should be removed as soon as XOrg
@@ -255,10 +241,6 @@ gdm_server_init_command (GdmServer *server)
         /* We do not rely on this wrapper server if, a) the machine
          * wasn't booted using systemd, or b) the wrapper tool is
          * missing, or c) we are running for the main seat 'seat0'. */
-
-        if (!LOGIND_RUNNING()) {
-                goto fallback;
-        }
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
         /* For systemd, we don't have a log file but instead log to stdout,
@@ -282,9 +264,8 @@ gdm_server_init_command (GdmServer *server)
         return;
 
 fallback:
-#endif
-
         server->priv->command = g_strdup_printf (X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
+
 }
 
 static gboolean
@@ -334,12 +315,10 @@ gdm_server_resolve_command_line (GdmServer  *server,
                 argv[len++] = g_strdup (server->priv->auth_file);
         }
 
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING() && server->priv->display_seat_id != NULL) {
+        if (server->priv->display_seat_id != NULL) {
                 argv[len++] = g_strdup ("-seat");
                 argv[len++] = g_strdup (server->priv->display_seat_id);
         }
-#endif
 
         if (server->priv->disable_tcp && ! query_in_arglist) {
                 argv[len++] = g_strdup ("-nolisten");

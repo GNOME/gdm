@@ -31,9 +31,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#ifdef WITH_SYSTEMD
 #include <systemd/sd-login.h>
-#endif
 
 #include "common/gdm-common.h"
 #include "gdm-user-switching.h"
@@ -69,14 +67,12 @@ create_transient_display (GDBusConnection *connection,
         return TRUE;
 }
 
-#ifdef WITH_SYSTEMD
-
 static gboolean
-activate_session_id_for_systemd (GDBusConnection  *connection,
-                                 GCancellable     *cancellable,
-                                 const char       *seat_id,
-                                 const char       *session_id,
-                                 GError          **error)
+activate_session_id (GDBusConnection  *connection,
+                     GCancellable     *cancellable,
+                     const char       *seat_id,
+                     const char       *session_id,
+                     GError          **error)
 {
         GVariant *reply;
 
@@ -101,8 +97,8 @@ activate_session_id_for_systemd (GDBusConnection  *connection,
 }
 
 static gboolean
-get_login_window_session_id_for_systemd (const char  *seat_id,
-                                         char       **session_id)
+get_login_window_session_id (const char  *seat_id,
+                             char       **session_id)
 {
         gboolean   ret;
         int        res, i;
@@ -186,9 +182,9 @@ out:
 }
 
 static gboolean
-goto_login_session_for_systemd (GDBusConnection  *connection,
-                                GCancellable     *cancellable,
-                                GError          **error)
+goto_login_session (GDBusConnection  *connection,
+                    GCancellable     *cancellable,
+                    GError          **error)
 {
         gboolean        ret;
         int             res;
@@ -242,9 +238,9 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
                 return FALSE;
         }
 
-        res = get_login_window_session_id_for_systemd (seat_id, &session_id);
+        res = get_login_window_session_id (seat_id, &session_id);
         if (res && session_id != NULL) {
-                res = activate_session_id_for_systemd (connection, cancellable, seat_id, session_id, error);
+                res = activate_session_id (connection, cancellable, seat_id, session_id, error);
 
                 if (res) {
                         ret = TRUE;
@@ -263,11 +259,10 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
 
         return ret;
 }
-#endif
 
 gboolean
 gdm_goto_login_session_sync (GCancellable  *cancellable,
-			     GError       **error)
+                             GError       **error)
 {
         GDBusConnection *connection;
         gboolean retval;
@@ -276,16 +271,8 @@ gdm_goto_login_session_sync (GCancellable  *cancellable,
         if (!connection)
                 return FALSE;
 
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                retval = goto_login_session_for_systemd (connection,
-                                                         cancellable,
-                                                         error);
+        retval = goto_login_session (connection, cancellable, error);
 
-                g_object_unref (connection);
-                return retval;
-        }
-#endif
-
-        return FALSE;
+        g_object_unref (connection);
+        return retval;
 }

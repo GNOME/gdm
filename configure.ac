@@ -245,10 +245,6 @@ AC_ARG_WITH(tcp-wrappers,
             with_tcp_wrappers=auto)
 
 
-AC_ARG_WITH(systemd,
-            AS_HELP_STRING([--with-systemd],
-                           [Add systemd support @<:@default=auto@:>@]),
-            [with_systemd=$withval], [with_systemd=auto])
 AC_ARG_WITH([systemdsystemunitdir],
             AS_HELP_STRING([--with-systemdsystemunitdir=DIR],
                            [Directory for systemd service files]),
@@ -878,26 +874,8 @@ dnl - Check for systemd support
 dnl ---------------------------------------------------------------------------
 
 PKG_CHECK_MODULES(SYSTEMD,
-                  [libsystemd-login >= 186 libsystemd-daemon],
-                  [have_systemd=yes], [have_systemd=no])
+                  [libsystemd-login >= 186 libsystemd-daemon])
 
-if test "x$with_systemd" = "xauto" ; then
-        if test x$have_systemd = xno ; then
-                use_systemd=no
-        else
-                use_systemd=yes
-        fi
-else
-        use_systemd="$with_systemd"
-fi
-
-if test "x$use_systemd" != "xno" ; then
-        if test "x$have_systemd" = "xno"; then
-                AC_MSG_ERROR([Systemd support explicitly required, but systemd not found])
-        fi
-
-        AC_DEFINE(WITH_SYSTEMD, 1, [Define to enable systemd support])
-fi
 AC_SUBST(SYSTEMD_CFLAGS)
 AC_SUBST(SYSTEMD_LIBS)
 
@@ -1615,7 +1593,6 @@ echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${use_selinux}
-        systemd support:          ${use_systemd}
         systemd unit dir:         ${with_systemdsystemunitdir}
         plymouth support:         ${use_plymouth}
         wayland support:          ${use_wayland}

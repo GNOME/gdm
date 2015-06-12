@@ -39,9 +39,7 @@
 #include "mkdtemp.h"
 #endif
 
-#ifdef WITH_SYSTEMD
 #include <systemd/sd-login.h>
-#endif
 
 #define GDM_DBUS_NAME                            "org.gnome.DisplayManager"
 #define GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH      "/org/gnome/DisplayManager/LocalDisplayFactory"
@@ -345,12 +343,10 @@ create_transient_display (GDBusConnection *connection,
         return TRUE;
 }
 
-#ifdef WITH_SYSTEMD
-
 static gboolean
-activate_session_id_for_systemd (GDBusConnection *connection,
-                                 const char      *seat_id,
-                                 const char      *session_id)
+activate_session_id (GDBusConnection *connection,
+                     const char      *seat_id,
+                     const char      *session_id)
 {
         GError *local_error = NULL;
         GVariant *reply;
@@ -377,8 +373,8 @@ activate_session_id_for_systemd (GDBusConnection *connection,
 }
 
 static gboolean
-get_login_window_session_id_for_systemd (const char  *seat_id,
-                                         char       **session_id)
+get_login_window_session_id (const char  *seat_id,
+                             char       **session_id)
 {
         gboolean   ret;
         int        res, i;
@@ -446,8 +442,8 @@ out:
 }
 
 static gboolean
-goto_login_session_for_systemd (GDBusConnection  *connection,
-                                GError          **error)
+goto_login_session (GDBusConnection  *connection,
+                    GError          **error)
 {
         gboolean        ret;
         int             res;
@@ -501,9 +497,9 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
                 return FALSE;
         }
 
-        res = get_login_window_session_id_for_systemd (seat_id, &session_id);
+        res = get_login_window_session_id (seat_id, &session_id);
         if (res && session_id != NULL) {
-                res = activate_session_id_for_systemd (connection, seat_id, session_id);
+                res = activate_session_id (connection, seat_id, session_id);
 
                 if (res) {
                         ret = TRUE;
@@ -522,7 +518,6 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
 
         return ret;
 }
-#endif
 
 gboolean
 gdm_goto_login_session (GError **error)
@@ -538,13 +533,7 @@ gdm_goto_login_session (GError **error)
                 return FALSE;
         }
 
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                return goto_login_session_for_systemd (connection, error);
-        }
-#endif
-
-        return FALSE;
+        return goto_login_session (connection, error);
 }
 
 static void
