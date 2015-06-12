@@ -310,8 +310,6 @@ on_session_setup_complete (GdmSession        *session,
                 gdm_session_set_environment_variable (launch_environment->priv->session, key, value);
         }
         g_hash_table_destroy (hash);
-
-        gdm_session_select_session_type (launch_environment->priv->session, "LoginWindow");
 }
 
 static void
