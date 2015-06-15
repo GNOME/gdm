@@ -188,25 +188,35 @@ static void
 collect_sessions (void)
 {
         int         i;
-        const char *search_dirs[] = {
+        const char *xorg_search_dirs[] = {
                 "/etc/X11/sessions/",
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
-#ifdef ENABLE_WAYLAND_SUPPORT
-                DATADIR "/wayland-sessions/",
-#endif
                 NULL
         };
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        const char *wayland_search_dirs[] = {
+                DATADIR "/wayland-sessions/",
+                NULL
+        };
+#endif
 
         if (gdm_available_sessions_map == NULL) {
                 gdm_available_sessions_map = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                                     g_free, g_free);
         }
 
-        for (i = 0; search_dirs [i] != NULL; i++) {
-                collect_sessions_from_directory (search_dirs [i]);
+        for (i = 0; xorg_search_dirs [i] != NULL; i++) {
+                collect_sessions_from_directory (xorg_search_dirs [i]);
         }
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        for (i = 0; wayland_search_dirs [i] != NULL; i++) {
+                collect_sessions_from_directory (wayland_search_dirs [i]);
+        }
+#endif
 }
 
 /**
