@@ -329,7 +329,7 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
 }
 
 static const char **
-get_system_session_dirs (void)
+get_system_session_dirs (GdmSession *self)
 {
         static const char *search_dirs[] = {
                 "/etc/X11/sessions/",
@@ -358,7 +358,9 @@ is_prog_in_path (const char *prog)
 }
 
 static GKeyFile *
-load_key_file_for_file (const char *file, char **full_path)
+load_key_file_for_file (GdmSession   *self,
+                        const char   *file,
+                        char        **full_path)
 {
         GKeyFile   *key_file;
         GError     *error;
@@ -369,7 +371,7 @@ load_key_file_for_file (const char *file, char **full_path)
         error = NULL;
         res = g_key_file_load_from_dirs (key_file,
                                          file,
-                                         get_system_session_dirs (),
+                                         get_system_session_dirs (self),
                                          full_path,
                                          G_KEY_FILE_NONE,
                                          &error);
@@ -384,8 +386,9 @@ load_key_file_for_file (const char *file, char **full_path)
 }
 
 static gboolean
-get_session_command_for_file (const char *file,
-                              char      **command)
+get_session_command_for_file (GdmSession  *self,
+                              const char  *file,
+                              char       **command)
 {
         GKeyFile   *key_file;
         GError     *error;
@@ -400,7 +403,7 @@ get_session_command_for_file (const char *file,
         }
 
         g_debug ("GdmSession: getting session command for file '%s'", file);
-        key_file = load_key_file_for_file (file, NULL);
+        key_file = load_key_file_for_file (self, file, NULL);
         if (key_file == NULL) {
                 goto out;
         }
@@ -456,14 +459,15 @@ out:
 }
 
 static gboolean
-get_session_command_for_name (const char *name,
-                              char      **command)
+get_session_command_for_name (GdmSession  *self,
+                              const char  *name,
+                              char       **command)
 {
         gboolean res;
         char    *filename;
 
         filename = g_strdup_printf ("%s.desktop", name);
-        res = get_session_command_for_file (filename, command);
+        res = get_session_command_for_file (self, filename, command);
         g_free (filename);
 
         return res;
@@ -499,13 +503,13 @@ get_fallback_session_name (GdmSession *self)
 
         if (self->priv->fallback_session_name != NULL) {
                 /* verify that the cached version still exists */
-                if (get_session_command_for_name (self->priv->fallback_session_name, NULL)) {
+                if (get_session_command_for_name (self, self->priv->fallback_session_name, NULL)) {
                         goto out;
                 }
         }
 
         name = g_strdup ("gnome");
-        if (get_session_command_for_name (name, NULL)) {
+        if (get_session_command_for_name (self, name, NULL)) {
                 g_free (self->priv->fallback_session_name);
                 self->priv->fallback_session_name = name;
                 goto out;
@@ -514,7 +518,7 @@ get_fallback_session_name (GdmSession *self)
 
         sessions = g_sequence_new (g_free);
 
-        search_dirs = get_system_session_dirs ();
+        search_dirs = get_system_session_dirs (self);
         for (i = 0; search_dirs[i] != NULL; i++) {
                 GDir       *dir;
                 const char *base_name;
@@ -536,7 +540,7 @@ get_fallback_session_name (GdmSession *self)
                                 continue;
                         }
 
-                        if (get_session_command_for_file (base_name, NULL)) {
+                        if (get_session_command_for_file (self, base_name, NULL)) {
 
                                 g_sequence_insert_sorted (sessions, g_strdup (base_name), (GCompareDataFunc) g_strcmp0, NULL);
                         }
@@ -889,7 +893,7 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
 {
         GdmSession *self = conversation->session;
 
-        if (! get_session_command_for_name (session_name, NULL)) {
+        if (! get_session_command_for_name (self, session_name, NULL)) {
                 /* ignore sessions that don't exist */
                 g_debug ("GdmSession: not using invalid .dmrc session: %s", session_name);
                 g_free (self->priv->saved_session);
@@ -2360,7 +2364,7 @@ get_session_command (GdmSession *self)
         session_name = get_session_name (self);
 
         command = NULL;
-        res = get_session_command_for_name (session_name, &command);
+        res = get_session_command_for_name (self, session_name, &command);
         if (! res) {
                 g_critical ("Cannot find a command for specified session: %s", session_name);
                 exit (1);
@@ -2378,7 +2382,7 @@ get_session_desktop_names (GdmSession *self)
 
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
         g_debug ("GdmSession: getting desktop names for file '%s'", filename);
-        keyfile = load_key_file_for_file (filename, NULL);
+        keyfile = load_key_file_for_file (self, filename, NULL);
         if (keyfile != NULL) {
               gchar **names;
 
@@ -2943,7 +2947,7 @@ gdm_session_is_wayland_session (GdmSession *self)
 
         filename = get_session_filename (self);
 
-        key_file = load_key_file_for_file (filename, &full_path);
+        key_file = load_key_file_for_file (self, filename, &full_path);
 
         if (key_file == NULL) {
                 goto out;
@@ -2997,7 +3001,7 @@ gdm_session_bypasses_xsession (GdmSession *self)
 
         filename = get_session_filename (self);
 
-        key_file = load_key_file_for_file (filename, NULL);
+        key_file = load_key_file_for_file (self, filename, NULL);
 
         error = NULL;
         res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", NULL);
