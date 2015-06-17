@@ -213,6 +213,10 @@ collect_sessions (void)
         }
 
 #ifdef ENABLE_WAYLAND_SUPPORT
+        if (g_getenv ("WAYLAND_DISPLAY") == NULL && g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+                return;
+        }
+
         for (i = 0; wayland_search_dirs [i] != NULL; i++) {
                 collect_sessions_from_directory (wayland_search_dirs [i]);
         }
