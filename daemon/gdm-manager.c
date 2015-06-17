@@ -1345,8 +1345,11 @@ static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
+        GdmSession *session;
+        char       *display_session_type = NULL;
         const char *allowed_user;
         struct passwd *passwd_entry;
+        gboolean greeter_is_wayland;
 
         allowed_user = get_username_for_greeter_display (manager, display);
 
@@ -1358,7 +1361,18 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
+        session = create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
+
+        /* If the greeter display isn't a wayland session,
+         * then don't allow the user session to be a wayland
+         * session either.
+         */
+        g_object_get (G_OBJECT (display),
+                      "session-type", &display_session_type,
+                      NULL);
+        greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
+        g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
+
         gdm_display_start_greeter_session (display);
 }
 
