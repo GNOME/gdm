@@ -710,3 +710,90 @@ gdm_run_script (const char *dir,
 
         return ret;
 }
+
+gboolean
+gdm_shell_var_is_valid_char (gchar c, gboolean first)
+{
+        return (!first && g_ascii_isdigit (c)) ||
+                c == '_' ||
+                g_ascii_isalpha (c);
+}
+
+/* This expands a string somewhat similar to how a shell would do it
+   if it was enclosed inside double quotes.  It handles variable
+   expansion like $FOO and ${FOO}, single-char escapes using \, and
+   non-escaped # at the begining of a word is taken as a comment and ignored */
+char *
+gdm_shell_expand (const char *str,
+                  GdmExpandVarFunc expand_var_func,
+                  gpointer user_data)
+{
+        GString *s = g_string_new("");
+        const gchar *p, *start;
+        gchar c;
+        gboolean at_new_word;
+
+        p = str;
+        at_new_word = TRUE;
+        while (*p) {
+                c = *p;
+                if (c == '\\') {
+                        p++;
+                        c = *p;
+                        if (c != '\0') {
+                                p++;
+                                switch (c) {
+                                case '\\':
+                                        g_string_append_c (s, '\\');
+                                        break;
+                                case '$':
+                                        g_string_append_c (s, '$');
+                                        break;
+                                case '#':
+                                        g_string_append_c (s, '#');
+                                        break;
+                                default:
+                                        g_string_append_c (s, '\\');
+                                        g_string_append_c (s, c);
+                                        break;
+                                }
+                        }
+                } else if (c == '#' && at_new_word) {
+                        break;
+                } else if (c == '$') {
+                        gboolean brackets = FALSE;
+                        p++;
+                        if (*p == '{') {
+                                brackets = TRUE;
+                                p++;
+                        }
+                        start = p;
+                        while (*p != '\0' &&
+                               gdm_shell_var_is_valid_char (*p, p == start))
+                                p++;
+                        if (p == start || (brackets && *p != '}')) {
+                                /* Invalid variable, use as-is */
+                                g_string_append_c (s, '$');
+                                if (brackets)
+                                        g_string_append_c (s, '{');
+                                g_string_append_len (s, start, p - start);
+                        } else {
+                                gchar *expanded;
+                                gchar *var = g_strndup (start, p - start);
+                                if (brackets && *p == '}')
+                                        p++;
+
+                                expanded = expand_var_func (var, user_data);
+                                if (expanded)
+                                        g_string_append (s, expanded);
+                                g_free (var);
+                                g_free (expanded);
+                        }
+                } else {
+                        p++;
+                        g_string_append_c (s, c);
+                        at_new_word = g_ascii_isspace (c);
+                }
+        }
+        return g_string_free (s, FALSE);
+}
