@@ -21,6 +21,8 @@ m_common_SOURCES =		\
 	m-common.c		\
 	s-common-address.c	\
 	s-common-address.h	\
+	s-common.c		\
+	s-common.h		\
 	$(NULL)
 
 m_common_CFLAGS =		\

@@ -39,6 +39,9 @@
 GQuark gdm_common_error_quark (void);
 #define GDM_COMMON_ERROR gdm_common_error_quark()
 
+typedef char * (*GdmExpandVarFunc) (const char *var,
+                                    gpointer user_data);
+
 G_BEGIN_DECLS
 
 int            gdm_wait_on_pid           (int pid);
@@ -66,6 +69,12 @@ gboolean       gdm_run_script             (const char *dir,
                                            const char *display_name,
                                            const char *display_hostname,
                                            const char *display_x11_authority_file);
+
+gboolean      gdm_shell_var_is_valid_char (char c,
+                                           gboolean first);
+char *        gdm_shell_expand            (const char *str,
+                                           GdmExpandVarFunc expand_func,
+                                           gpointer user_data);
 
 G_END_DECLS
 
