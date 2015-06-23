@@ -257,7 +257,7 @@ AC_ARG_ENABLE(wayland-support,
 	      AS_HELP_STRING([--enable-wayland-support],
                              [Enable support for wayland sessions  @<:@default=auto@:>@]),
               [enable_wayland_support=$enableval],
-              [enable_wayland_support=auto])
+              [enable_wayland_support=yes])
 
 AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
@@ -884,14 +884,10 @@ PKG_CHECK_MODULES(JOURNALD,
                   [have_journald=yes], [have_journald=no])
 
 if test "x$enable_systemd_journal" = "xauto" ; then
-        if test x$use_systemd = xyes ; then
-                if test x$have_journald = xno ; then
-                        use_journald=no
-                else
-                        use_journald=yes
-                fi
-        else
+        if test x$have_journald = xno ; then
                 use_journald=no
+        else
+                use_journald=yes
         fi
 
 else
@@ -908,17 +904,7 @@ fi
 AC_SUBST(JOURNALD_CFLAGS)
 AC_SUBST(JOURNALD_LIBS)
 
-if test "x$enable_wayland_support" = "xauto" ; then
-        use_wayland="$use_systemd";
-else
-        use_wayland="$enable_wayland_support"
-fi
-
-if test "x$use_wayland" != "xno" ; then
-        if test "x$have_systemd" = "xno"; then
-                AC_MSG_ERROR([wayland support explicitly required, but logind not found])
-        fi
-
+if test "x$enable_wayland_support" != "xno" ; then
         AC_DEFINE(ENABLE_WAYLAND_SUPPORT, 1, [Define to enable wayland support])
 fi
 
@@ -929,7 +915,6 @@ AC_DEFINE_UNQUOTED(SYSTEMD_X_SERVER,"$SYSTEMD_X_SERVER",[Path to systemd X serve
 if test "x$with_systemdsystemunitdir" != xno; then
         AC_SUBST(SYSTEMD_SYSTEM_UNIT_DIR, [$with_systemdsystemunitdir])
 fi
-AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$with_systemdsystemunitdir" -a "x$with_systemdsystemunitdir" != xno -a "x$use_systemd" = "xyes" ])
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for plymouth support

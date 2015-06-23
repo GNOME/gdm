@@ -175,8 +175,6 @@ MAINTAINERCLEANFILES =			\
 
 systemdsystemunit =
 
-if HAVE_SYSTEMD
-
 gdm.service: $(srcdir)/gdm.service.in
 	$(AM_V_GEN)sed \
 		-e 's,[@]sbindir[@],$(sbindir),g' \
@@ -187,8 +185,6 @@ gdm.service: $(srcdir)/gdm.service.in
 		< $< > $@
 systemdsystemunit += gdm.service
 CLEANFILES += gdm.service
-
-endif
 
 Xsession_files =
 if ENABLE_GDM_XSESSION
