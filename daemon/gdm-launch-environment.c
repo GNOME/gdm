@@ -110,109 +110,6 @@ static void     gdm_launch_environment_finalize      (GObject                   
 
 G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 
-static void
-load_lang_config_file (const char  *config_file,
-                       const char **str_array)
-{
-        gchar         *contents = NULL;
-        gchar         *p;
-        gchar         *str_joinv;
-        gchar         *pattern;
-        gchar         *key;
-        gchar         *value;
-        gsize          length;
-        GError        *error;
-        GString       *line;
-        GRegex        *re;
-
-        g_return_if_fail (config_file != NULL);
-        g_return_if_fail (str_array != NULL);
-
-        if (!g_file_test (config_file, G_FILE_TEST_EXISTS)) {
-                g_debug ("Cannot access '%s'", config_file);
-                return;
-        }
-
-        error = NULL;
-        if (!g_file_get_contents (config_file, &contents, &length, &error)) {
-                g_debug ("Failed to parse '%s': %s",
-                         config_file,
-                         (error && error->message) ? error->message : "(null)");
-                g_error_free (error);
-                return;
-        }
-
-        if (!g_utf8_validate (contents, length, NULL)) {
-                g_warning ("Invalid UTF-8 in '%s'", config_file);
-                g_free (contents);
-                return;
-        }
-
-        str_joinv = g_strjoinv ("|", (char **) str_array);
-        if (str_joinv == NULL) {
-                g_warning ("Error in joined");
-                g_free (contents);
-                return;
-        }
-
-        pattern = g_strdup_printf ("(?P<key>(%s))=(\")?(?P<value>[^\"]*)?(\")?",
-                                   str_joinv);
-        error = NULL;
-        re = g_regex_new (pattern, 0, 0, &error);
-        g_free (pattern);
-        g_free (str_joinv);
-        if (re == NULL) {
-                g_warning ("Failed to regex: %s",
-                           (error && error->message) ? error->message : "(null)");
-                g_error_free (error);
-                g_free (contents);
-                return;
-        }
-
-        line = g_string_new ("");
-        for (p = contents; p && *p; p = g_utf8_find_next_char (p, NULL)) {
-                gunichar ch;
-                GMatchInfo *match_info = NULL;
-
-                ch = g_utf8_get_char (p);
-                if ((ch != '\n') && (ch != '\0')) {
-                        g_string_append_unichar (line, ch);
-                        continue;
-                }
-
-                if (line->str && g_utf8_get_char (line->str) == '#') {
-                        goto next_line;
-                }
-
-                if (!g_regex_match (re, line->str, 0, &match_info)) {
-                        goto next_line;
-                }
-
-                if (!g_match_info_matches (match_info)) {
-                        goto next_line;
-                }
-
-                key = g_match_info_fetch_named (match_info, "key");
-                value = g_match_info_fetch_named (match_info, "value");
-
-                if (key && *key && value && *value) {
-                        g_setenv (key, value, TRUE);
-                } else if (key && *key) {
-                        g_unsetenv (key);
-                }
-
-                g_free (key);
-                g_free (value);
-next_line:
-                g_match_info_free (match_info);
-                g_string_set_size (line, 0);
-        }
-
-        g_string_free (line, TRUE);
-        g_regex_unref (re);
-        g_free (contents);
-}
-
 static GHashTable *
 build_launch_environment (GdmLaunchEnvironment *launch_environment,
                           gboolean              start_session)
@@ -228,9 +125,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         };
         char *system_data_dirs;
         int i;
-
-        load_lang_config_file (LANG_CONFIG_FILE,
-                               (const char **) optional_environment);
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);

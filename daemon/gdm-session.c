@@ -485,8 +485,17 @@ get_session_command_for_name (const char *name,
 static const char *
 get_default_language_name (GdmSession *self)
 {
+    const char *default_language;
+
     if (self->priv->saved_language != NULL) {
-                return self->priv->saved_language;
+            return self->priv->saved_language;
+    }
+
+    default_language = g_hash_table_lookup (self->priv->environment,
+                                            "LANG");
+
+    if (default_language != NULL) {
+            return default_language;
     }
 
     return setlocale (LC_MESSAGES, NULL);
@@ -1672,6 +1681,90 @@ free_conversation (GdmSessionConversation *conversation)
 }
 
 static void
+load_lang_config_file (GdmSession *self)
+{
+        static const char *config_file = LANG_CONFIG_FILE;
+        gchar         *contents = NULL;
+        gchar         *p;
+        gchar         *key;
+        gchar         *value;
+        gsize          length;
+        GError        *error;
+        GString       *line;
+        GRegex        *re;
+
+        if (!g_file_test (config_file, G_FILE_TEST_EXISTS)) {
+                g_debug ("Cannot access '%s'", config_file);
+                return;
+        }
+
+        error = NULL;
+        if (!g_file_get_contents (config_file, &contents, &length, &error)) {
+                g_debug ("Failed to parse '%s': %s",
+                         LANG_CONFIG_FILE,
+                         (error && error->message) ? error->message : "(null)");
+                g_error_free (error);
+                return;
+        }
+
+        if (!g_utf8_validate (contents, length, NULL)) {
+                g_warning ("Invalid UTF-8 in '%s'", config_file);
+                g_free (contents);
+                return;
+        }
+
+        re = g_regex_new ("(?P<key>(LANG|LANGUAGE|LC_CTYPE|LC_NUMERIC|LC_TIME|LC_COLLATE|LC_MONETARY|LC_MESSAGES|LC_PAPER|LC_NAME|LC_ADDRESS|LC_TELEPHONE|LC_MEASUREMENT|LC_IDENTIFICATION|LC_ALL))=(\")?(?P<value>[^\"]*)?(\")?", 0, 0, &error);
+        if (re == NULL) {
+                g_warning ("Failed to regex: %s",
+                           (error && error->message) ? error->message : "(null)");
+                g_error_free (error);
+                g_free (contents);
+                return;
+        }
+
+        line = g_string_new ("");
+        for (p = contents; p && *p; p = g_utf8_find_next_char (p, NULL)) {
+                gunichar ch;
+                GMatchInfo *match_info = NULL;
+
+                ch = g_utf8_get_char (p);
+                if ((ch != '\n') && (ch != '\0')) {
+                        g_string_append_unichar (line, ch);
+                        continue;
+                }
+
+                if (line->str && g_utf8_get_char (line->str) == '#') {
+                        goto next_line;
+                }
+
+                if (!g_regex_match (re, line->str, 0, &match_info)) {
+                        goto next_line;
+                }
+
+                if (!g_match_info_matches (match_info)) {
+                        goto next_line;
+                }
+
+                key = g_match_info_fetch_named (match_info, "key");
+                value = g_match_info_fetch_named (match_info, "value");
+
+                if (key && *key && value && *value) {
+			g_setenv (key, value, TRUE);
+                }
+
+                g_free (key);
+                g_free (value);
+next_line:
+                g_match_info_free (match_info);
+                g_string_set_size (line, 0);
+        }
+
+        g_string_free (line, TRUE);
+        g_regex_unref (re);
+        g_free (contents);
+}
+
+static void
 gdm_session_init (GdmSession *self)
 {
         self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -1688,6 +1781,7 @@ gdm_session_init (GdmSession *self)
                                                          (GDestroyNotify) g_free,
                                                          (GDestroyNotify) g_free);
 
+        load_lang_config_file (self);
         setup_worker_server (self);
         setup_outside_server (self);
 }
