@@ -218,7 +218,7 @@ gdm_server_init_command (GdmServer *server)
                 debug_options = "";
         }
 
-#define X_SERVER_ARG_FORMAT " -background none -noreset -verbose %s%s"
+#define X_SERVER_ARG_FORMAT " -background none -noreset -audit 4 -verbose %s%s"
 
         /* This is a temporary hack to work around the fact that XOrg
          * currently lacks support for multi-seat hotplugging for

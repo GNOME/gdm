@@ -274,6 +274,8 @@ spawn_x_server (State        *state,
 
         g_ptr_array_add (arguments, "-noreset");
         g_ptr_array_add (arguments, "-keeptty");
+        g_ptr_array_add (arguments, "-audit");
+        g_ptr_array_add (arguments, "4");
 
         g_ptr_array_add (arguments, "-verbose");
         if (state->debug_enabled) {
