@@ -874,13 +874,13 @@ dnl - Check for systemd support
 dnl ---------------------------------------------------------------------------
 
 PKG_CHECK_MODULES(SYSTEMD,
-                  [libsystemd-login >= 186 libsystemd-daemon])
+                  [libsystemd])
 
 AC_SUBST(SYSTEMD_CFLAGS)
 AC_SUBST(SYSTEMD_LIBS)
 
 PKG_CHECK_MODULES(JOURNALD,
-                  [libsystemd-journal],
+                  [libsystemd],
                   [have_journald=yes], [have_journald=no])
 
 if test "x$enable_systemd_journal" = "xauto" ; then
