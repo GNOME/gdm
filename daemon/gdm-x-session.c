@@ -183,8 +183,8 @@ on_x_server_finished (GSubprocess  *subprocess,
                 g_debug ("X server was killed with status %d", signal_number);
         }
 
-out:
         g_clear_object (&state->x_subprocess);
+out:
         g_main_loop_quit (state->main_loop);
 }
 
@@ -352,8 +352,8 @@ on_bus_finished (GSubprocess  *subprocess,
                 g_debug ("message bus was killed with status %d", signal_number);
         }
 
-out:
         g_clear_object (&state->bus_subprocess);
+out:
         g_main_loop_quit (state->main_loop);
 }
 
@@ -489,8 +489,8 @@ on_session_finished (GSubprocess  *subprocess,
                 g_debug ("session was killed with status %d", signal_number);
         }
 
-out:
         g_clear_object (&state->session_subprocess);
+out:
         g_main_loop_quit (state->main_loop);
 }
 
