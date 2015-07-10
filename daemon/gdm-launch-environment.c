@@ -422,7 +422,6 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
         }
 
         if (launch_environment->priv->session != NULL) {
-                gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
                 gdm_session_close (launch_environment->priv->session);
 
                 g_clear_object (&launch_environment->priv->session);
