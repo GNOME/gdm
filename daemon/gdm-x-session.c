@@ -516,7 +516,7 @@ spawn_session (State        *state,
         vt = g_getenv ("XDG_VTNR");
 
         if (vt != NULL) {
-                g_subprocess_launcher_setenv (launcher, "WINDOWPATH", g_getenv ("XDG_VTNR"), TRUE);
+                g_subprocess_launcher_setenv (launcher, "WINDOWPATH", vt, TRUE);
         }
 
         if (run_script) {
