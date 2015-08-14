@@ -127,16 +127,6 @@ record_set_pid (UTMP *u,
 }
 
 static void
-record_set_id (UTMP       *u,
-               const char *id)
-{
-#if defined(HAVE_UT_UT_ID)
-        strncpy (u->ut_id, id, sizeof (u->ut_id));
-        g_debug ("using ut_id %.*s", (int) sizeof (u->ut_id), u->ut_id);
-#endif
-}
-
-static void
 record_set_host (UTMP       *u,
                  const char *x11_display_name,
                  const char *host_name)
@@ -217,9 +207,6 @@ gdm_session_record_login (GPid                  session_pid,
 
         record_set_timestamp (&session_record);
         record_set_pid (&session_record, session_pid);
-
-        /* Set ut_id to the $DISPLAY value */
-        record_set_id (&session_record, x11_display_name);
         record_set_host (&session_record, x11_display_name, host_name);
         record_set_line (&session_record, display_device, x11_display_name);
 
@@ -267,11 +254,8 @@ gdm_session_record_logout (GPid                  session_pid,
 
         record_set_timestamp (&session_record);
         record_set_pid (&session_record, session_pid);
-        /* Set ut_id to the $DISPLAY value */
-        record_set_id (&session_record, x11_display_name);
         record_set_host (&session_record, x11_display_name, host_name);
         record_set_line (&session_record, display_device, x11_display_name);
-
 
         /* Handle wtmp */
         g_debug ("Writing wtmp logout record to " GDM_NEW_SESSION_RECORDS_FILE);
@@ -315,8 +299,6 @@ gdm_session_record_failed (GPid                  session_pid,
 
         record_set_timestamp (&session_record);
         record_set_pid (&session_record, session_pid);
-        /* Set ut_id to the $DISPLAY value */
-        record_set_id (&session_record, x11_display_name);
         record_set_host (&session_record, x11_display_name, host_name);
         record_set_line (&session_record, display_device, x11_display_name);
 
