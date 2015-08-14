@@ -161,11 +161,10 @@ record_set_host (UTMP       *u,
         if (hostname != NULL) {
                 strncpy (u->ut_host, hostname, sizeof (u->ut_host));
                 g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
-                g_free (hostname);
-
 #ifdef HAVE_UT_UT_SYSLEN
                 u->ut_syslen = MIN (strlen (hostname), sizeof (u->ut_host));
 #endif
+                g_free (hostname);
         }
 #endif
 }
