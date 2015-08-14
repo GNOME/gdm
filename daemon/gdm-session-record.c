@@ -202,7 +202,6 @@ gdm_session_record_login (GPid                  session_pid,
                           const char           *display_device)
 {
         UTMP        session_record = { 0 };
-        UTMP       *u;
 
         if (x11_display_name == NULL)
                 x11_display_name = display_device;
@@ -238,31 +237,10 @@ gdm_session_record_login (GPid                  session_pid,
 #endif
 #endif
 
-        /*
-         * Handle utmp
-         * Update if entry already exists
-         */
+        /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
-        setutxent ();
-
-        while ((u = getutxent ()) != NULL) {
-                if (u->ut_type == USER_PROCESS &&
-                    (session_record.ut_line != NULL &&
-                     (strncmp (u->ut_line, session_record.ut_line,
-                               sizeof (u->ut_line)) == 0 ||
-                      u->ut_pid == session_record.ut_pid))) {
-                        g_debug ("Updating existing utmp record");
-                        pututxline (&session_record);
-                        break;
-                }
-        }
-        endutxent ();
-
-        /* Add new entry if update did not work */
-        if (u == NULL) {
-                g_debug ("Adding new utmp record");
-                pututxline (&session_record);
-        }
+        g_debug ("Adding or updating utmp record for login");
+        pututxline (&session_record);
 #elif defined(HAVE_LOGIN)
 	login (&session_record);
 #endif
@@ -276,7 +254,6 @@ gdm_session_record_logout (GPid                  session_pid,
                            const char           *display_device)
 {
         UTMP        session_record = { 0 };
-        UTMP       *u;
 
         if (x11_display_name == NULL)
                 x11_display_name = display_device;
@@ -308,36 +285,8 @@ gdm_session_record_logout (GPid                  session_pid,
 
         /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
-        setutxent ();
-
-        while ((u = getutxent ()) != NULL &&
-               (u = getutxid (&session_record)) != NULL) {
-
-                g_debug ("Removing utmp record");
-                if (u->ut_pid == session_pid &&
-                    u->ut_type == DEAD_PROCESS) {
-                        /* Already done */
-                        break;
-                }
-
-                u->ut_type = DEAD_PROCESS;
-#if defined(HAVE_UT_UT_TV)
-                u->ut_tv.tv_sec  = session_record.ut_tv.tv_sec;
-                u->ut_tv.tv_usec = session_record.ut_tv.tv_usec;
-#elif defined(HAVE_UT_UT_TIME)
-                u->ut_time = session_record.ut_time;
-#endif
-#ifdef HAVE_UT_UT_EXIT_E_TERMINATION
-                u->ut_exit.e_termination = 0;
-                u->ut_exit.e_exit = 0;
-#endif
-
-                pututxline (u);
-
-                break;
-        }
-
-        endutxent ();
+        g_debug ("Adding or updating utmp record for logout");
+        pututxline (&session_record);
 #elif defined(HAVE_LOGOUT)
         logout (session_record.ut_line);
 #endif
