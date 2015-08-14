@@ -174,8 +174,7 @@ record_set_line (UTMP       *u,
                 strncpy (u->ut_line,
                          display_device + strlen ("/dev/"),
                          sizeof (u->ut_line));
-        } else if (x11_display_name != NULL
-                   && g_str_has_prefix (x11_display_name, ":")) {
+        } else if (x11_display_name != NULL) {
                 strncpy (u->ut_line,
                          x11_display_name,
                          sizeof (u->ut_line));
