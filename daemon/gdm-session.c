@@ -2451,7 +2451,7 @@ set_up_session_environment (GdmSession *self)
 {
         GdmSessionDisplayMode display_mode;
         gchar *desktop_names;
-        const char *locale;
+        char *locale;
 
         gdm_session_set_environment_variable (self,
                                               "GDMSESSION",
@@ -2470,7 +2470,7 @@ set_up_session_environment (GdmSession *self)
 
         set_up_session_language (self);
 
-        locale = get_default_language_name (self);
+        locale = g_strdup (get_default_language_name (self));
 
         if (locale != NULL && locale[0] != '\0') {
                 gdm_session_set_environment_variable (self,
@@ -2480,6 +2480,8 @@ set_up_session_environment (GdmSession *self)
                                                       "GDM_LANG",
                                                       locale);
         }
+
+        g_free (locale);
 
         display_mode = gdm_session_get_display_mode (self);
         if (display_mode == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
