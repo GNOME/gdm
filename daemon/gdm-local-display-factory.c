@@ -183,11 +183,6 @@ store_display (GdmLocalDisplayFactory *factory,
 {
         GdmDisplayStore *store;
 
-        g_signal_connect (display, "notify::status",
-                          G_CALLBACK (on_display_status_changed), factory);
-
-        g_object_weak_ref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
-
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
 }
@@ -544,12 +539,58 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
         }
 }
 
+static void
+on_display_added (GdmDisplayStore        *display_store,
+                  const char             *id,
+                  GdmLocalDisplayFactory *factory)
+{
+        GdmDisplay *display;
+
+        display = gdm_display_store_lookup (display_store, id);
+
+        if (display != NULL) {
+                g_signal_connect (display, "notify::status",
+                                  G_CALLBACK (on_display_status_changed), factory);
+
+                g_object_weak_ref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
+        }
+}
+
+static void
+on_display_removed (GdmDisplayStore        *display_store,
+                    const char             *id,
+                    GdmLocalDisplayFactory *factory)
+{
+        GdmDisplay *display;
+
+        display = gdm_display_store_lookup (display_store, id);
+
+        if (display != NULL) {
+                g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), factory);
+                g_object_weak_unref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
+
+        }
+}
+
 static gboolean
 gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
+        GdmDisplayStore *store;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        g_signal_connect (G_OBJECT (store),
+                          "display-added",
+                          G_CALLBACK (on_display_added),
+                          factory);
+
+        g_signal_connect (G_OBJECT (store),
+                          "display-removed",
+                          G_CALLBACK (on_display_removed),
+                          factory);
 
         gdm_local_display_factory_start_monitor (factory);
         return gdm_local_display_factory_sync_seats (factory);
@@ -559,10 +600,20 @@ static gboolean
 gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
 {
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
+        GdmDisplayStore *store;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
         gdm_local_display_factory_stop_monitor (factory);
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        g_signal_handlers_disconnect_by_func (G_OBJECT (store),
+                                              G_CALLBACK (on_display_added),
+                                              factory);
+        g_signal_handlers_disconnect_by_func (G_OBJECT (store),
+                                              G_CALLBACK (on_display_removed),
+                                              factory);
 
         return TRUE;
 }
