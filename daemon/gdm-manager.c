@@ -1514,11 +1514,14 @@ create_display_for_user_session (GdmManager *self,
                                  const char *session_id)
 {
         GdmDisplay *display;
+        /* at the moment we only create GdmLocalDisplay objects on seat0 */
+        const char *seat_id = "seat0";
 
         display = gdm_local_display_new ();
 
         g_object_set (G_OBJECT (display),
                       "session-class", "user",
+                      "seat-id", seat_id,
                       "session-id", session_id,
                       NULL);
         gdm_display_store_add (self->priv->display_store,
