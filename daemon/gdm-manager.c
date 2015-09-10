@@ -1594,6 +1594,10 @@ on_start_user_session (StartUserSessionOperation *operation)
                 g_object_set_data (G_OBJECT (display), "gdm-embryonic-user-session", NULL);
                 g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
                 create_embryonic_user_session_for_display (operation->manager, display, allowed_uid);
+
+                /* remove the unused prepared greeter display since we're not going
+                 * to have a greeter */
+                gdm_display_store_remove (self->priv->display_store, display);
                 g_object_unref (display);
 
                 /* Give the user session a new display object for bookkeeping purposes */
