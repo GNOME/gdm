@@ -80,6 +80,7 @@ static void     on_display_status_changed               (GdmDisplay             
                                                          GParamSpec                  *arg1,
                                                          GdmLocalDisplayFactory      *factory);
 
+static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
 static gpointer local_display_factory_object = NULL;
 
 G_DEFINE_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM_TYPE_DISPLAY_FACTORY)
@@ -285,12 +286,16 @@ on_display_status_changed (GdmDisplay             *display,
                 }
                 gdm_display_store_remove (store, display);
 
-                /* Create a new equivalent display if it was static */
+                /* if this is a local display, do a full resync.  Only
+                 * seats without displays will get created anyway.  This
+                 * ensures we get a new login screen when the user logs out,
+                 * if there isn't one.
+                 */
                 if (is_local) {
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
-                        create_display (factory, seat_id, session_type, is_initial);
+                        gdm_local_display_factory_sync_seats (factory);
                 }
                 break;
         case GDM_DISPLAY_FAILED:
