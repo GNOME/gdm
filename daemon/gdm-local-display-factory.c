@@ -414,7 +414,8 @@ delete_display (GdmLocalDisplayFactory *factory,
         gdm_display_store_foreach_remove (store, lookup_by_seat_id, (gpointer) seat_id);
 }
 
-static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
+static gboolean
+gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 {
         GError *error = NULL;
         GVariant *result;
