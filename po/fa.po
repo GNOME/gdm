@@ -6,14 +6,15 @@
 # Alireza Kheirkhahan <kheirkhahan@gmail.com>, 2005.
 # Hedayat Vatankhah <hedayat@grad.com>, 2008.
 # Mahyar Moghimi <mahyar.moqimi@gmail.com>, 2010.
-# Arash Mousavi <mousavi.arash@gmail.com>, 2011, 2012.
+# Arash Mousavi <mousavi.arash@gmail.com>, 2011, 2012, 2013, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-07 17:45+0000\n"
-"PO-Revision-Date: 2013-10-05 18:35+0330\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N"
+"+L10N&component=general\n"
+"POT-Creation-Date: 2015-09-11 05:16+0000\n"
+"PO-Revision-Date: 2015-09-11 12:36+0430\n"
 "Last-Translator: Arash Mousavi <mousavi.arash@gmail.com>\n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -22,97 +23,109 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.8.4\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "دستگاه dev/urandom/ یک دستگاه نویسه‌ای نیست"
+
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
+#, c-format
+msgid "Could not identify the current session."
+msgstr "شناسایی نشست جاری ممکن نبود"
+
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "شناسایی نشست جاری ممکن نبود."
+
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login screen or start "
+"up a new login screen."
+msgstr ""
+"سیستم قادر به تشخیص اینکه باید به صفحه‌ی ورود به سیستم فعلی انتقال پیدا کند یا یک صفحه‌ی "
+"ورود به سیستم جدید ایجاد کند نبود."
+
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "سیستم قادر به راه‌اندازی یک صفحه‌ی جدید ورود به سیستم نبود."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "کاربر «%s» بر روی سیستم یافت نشد"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "هنوز هیچ نشستی موجود نیست"
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal error. "
+"Please contact your system administrator or check your syslog to diagnose. In the "
+"meantime this display will be disabled.  Please restart GDM when the problem is "
+"corrected."
+msgstr ""
+"بدلیل یک خطای داخلی، کارگزار X (محیط گرافیکی شما) آغاز نشد. لطفا با مدیر سیستم خود تماس "
+"بگیرید یا syslog خود را برای خطایابی بررسی کنید. ضمنا این نمایش غیرفعال خواهد شد. لطفا "
+"بعد از این‌که مشکل درست شد GDM را مجددا راه‌اندازی کنید."
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "نمی‌توان UID کاربر %s را پیدا کرد"
+#: ../daemon/gdm-manager.c:766
+msgid "No display available"
+msgstr "هیچ نمایشگری موجود نیست"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "هیچ نشستی موجود نیست"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "هیچ نشستی برای %s جهت تصدیق‌هویت مجدد موجود نیست"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "امکان پیدا کردن نشست برای کاربر %s وجود ندارد"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "نمی‌توان نشست متناسب برای کاربر %s پیدا کرد"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "کاربر دارای نشستی نیست"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "هیچ نشستی موجود نیست"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: اتصال به نمایشگر والد شکست خورد «%s»"
+#: ../daemon/gdm-manager.c:844
+msgid "Can only be called before user is logged in"
+msgstr "تنها پس از اینکه کاربر وارد سیستم شد می‌تواند فراخوانی شود"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:854
+msgid "Caller not GDM"
+msgstr "کالر نه GDM"
+
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr "باز کردن کانال ارتباط خصوصی امکان‌پذیر نبود"
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "کارگزار قرار بود که با کاربر %s راه‌اندازی شود ولی این کاربر وجود ندارد"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "تنظیم شناسه‌ی گروه به %Id ممکن نبود"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "تابع initgroups () برای %s شکست خورد"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "تنظیم شناسه‌ی کاربر به %d ممکن نبود"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Could not open log file for display %s!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506 ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Error setting %s to %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server priority couldn't be set to %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
@@ -141,143 +154,122 @@ msgstr "دستگاه نمایشگر"
 msgid "The display device"
 msgstr "دستگاه نمایشگر"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Could not create authentication helper process"
 
-#: ../daemon/gdm-session-worker.c:824
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "برای حساب شما یک محدودیت زمانی داده شده است که اکنون به پایان رسید."
 
-#: ../daemon/gdm-session-worker.c:831
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "متاسفم، این کمکی نکرد. لطفا دوباره تلاش کنید."
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "نام کاربر:"
 
-#: ../daemon/gdm-session-worker.c:1250
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "گذرواژه شما منسوخ شده است، لطفا آن را هم‌اکنون تغییر دهید."
 
-#: ../daemon/gdm-session-worker.c:1489 ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "هیچ حساب کاربری موجود نیست"
 
-#: ../daemon/gdm-session-worker.c:1533
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "ناتوان در تعویض کاربر"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr "بدلیل یک خطای داخلی، کارگزار X (محیط گرافیکی شما) آغاز نشد. لطفا با مدیر سیستم خود تماس بگیرید یا syslog خود را برای خطایابی بررسی کنید. ضمنا این نمایش غیرفعال خواهد شد. لطفا بعد از این‌که مشکل درست شد GDM را مجددا راه‌اندازی کنید."
+#: ../daemon/gdm-wayland-session.c:385
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "اجرا کننده‌ی نشست Wayland مدیر نمایش گنوم"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "تنها پس از اینکه کاربر وارد سیستم شد می‌تواند فراخوانی شود"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "کالر نه GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "کاربر وارد سیستم نشده است"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "درحال حاضر تنها یک کارگیر می‌تواند در آن واحد متصل شود"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "ایجادسوکت «%s» ممکن نیست!"
+
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr "اجرای برنامه از طریق کدنوشته etc/gdm/Xsession/"
+
+#: ../daemon/gdm-x-session.c:687
+msgid "Listen on TCP socket"
+msgstr "گوش‌دادن به سوکت TCP"
+
+#: ../daemon/gdm-x-session.c:698
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "اجرا کننده‌ی نشست X مدیر نمایش گنوم"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "نمی‌توان پرونده‌ی شناسه %s را نوشت: احتمالا دیسک جا ندارد: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Failed to create ran once marker dir %s: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Failed to create LogDir %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "کاربر %s مربوط به GDM وجود ندارد. در حال ساقط کردن!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "کاربر GDM نباید کاربر ریشه باشد. در حال ساقط کردن!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "گروه GDM با نام %s یافت نشد. در حال ساقط کردن!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "گروه GDM نباید ریشه باشد. در حال ساقط کردن!"
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "مهلک کردن همه‌ی اخطارها"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "خروج پس از تأخیری کوتاه (برای اشکال‌زدایی)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Print GDM version"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "مدیر نمایش گنوم"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "فقط کاربر ریشه می‌تواند GDM را اجرا کند"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "کارگر نشست مدیر نمایش گنوم"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "شناسه‌ی نمایش"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "شناسه"
-
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr " برده‌ی مدیر نمایش گنوم"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "پنجره‌ی ورود به سیستم"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "پوسته گنوم"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "مدیر و ترکیب‌ساز پنجره"
 
@@ -286,45 +278,69 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "اینکه آیا ورود به سیستم از طریق اثر انگشت اجازه داده شود یا خیر"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
-msgstr "صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که از اثر انگشت استفاده کرده‌اند با استفاده از آن اثر انگشت‌ها اجازه‌ی ورود به سیستم بدهد."
+msgid ""
+"The login screen can optionally allow users who have enrolled their fingerprints to log "
+"in using those prints."
+msgstr ""
+"صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که از اثر انگشت استفاده کرده‌اند "
+"با استفاده از آن اثر انگشت‌ها اجازه‌ی ورود به سیستم بدهد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "اینکه آیا ورود به سیستم از طریق کارت هوشمند اجازه داده شود یا خیر"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
-msgstr "صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که کارت هوشمند دارند با استفاده از آن کارت‌های هوشمند اجازه‌ی ورود به سیستم بدهد."
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in using those "
+"smartcards."
+msgstr ""
+"صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که کارت هوشمند دارند با استفاده "
+"از آن کارت‌های هوشمند اجازه‌ی ورود به سیستم بدهد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
 msgstr "اینکه آیا ورود به سیستم از گذرواژه اجازه داده شود یا خیر"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid "The login screen can be configured to disallow password authentication, forcing the user to use smartcard or fingerprint authentication."
-msgstr "صفحه ورود به سیستم می‌تواند به شکلی پیکربندی شود تا تصدیق هویت از طریق گذرواژه را اجازه ندهد، و کاربر را مجبور به استفاده از تصدیق هویت با استفاده از کارت هوشمند و یا اثر انگشت کند."
+msgid ""
+"The login screen can be configured to disallow password authentication, forcing the user "
+"to use smartcard or fingerprint authentication."
+msgstr ""
+"صفحه ورود به سیستم می‌تواند به شکلی پیکربندی شود تا تصدیق هویت از طریق گذرواژه را اجازه "
+"ندهد، و کاربر را مجبور به استفاده از تصدیق هویت با استفاده از کارت هوشمند و یا اثر انگشت "
+"کند."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "مسیر تصویر کوچک در بالای فهرست کاربران"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
-msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "صفحه ورود به سیستم می‌تواند به صورت اختیاری یک تصویر کوچک در بالای فهرست کاربران نمایش دهد تا به مدیران سایت‌ها و توزیع‌ها امکان اضافه کردن علامت تجاری را بدهد."
+msgid ""
+"The login screen can optionally show a small image at the top of its user list to "
+"provide site administrators and distributions a way to provide branding."
+msgstr ""
+"صفحه ورود به سیستم می‌تواند به صورت اختیاری یک تصویر کوچک در بالای فهرست کاربران نمایش "
+"دهد تا به مدیران سایت‌ها و توزیع‌ها امکان اضافه کردن علامت تجاری را بدهد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "صفحه ورود به سیستم در حالت یدکی می‌تواند به صورت اختیاری یک تصویر کوچک در بالای فهرست کاربران نمایش دهد تا به مدیران سایت‌ها و توزیع‌ها امکان اضافه کردن علامت تجاری را بدهد."
+msgid ""
+"The fallback login screen can optionally show a small image at the top of its user list "
+"to provide site administrators and distributions a way to provide branding."
+msgstr ""
+"صفحه ورود به سیستم در حالت یدکی می‌تواند به صورت اختیاری یک تصویر کوچک در بالای فهرست "
+"کاربران نمایش دهد تا به مدیران سایت‌ها و توزیع‌ها امکان اضافه کردن علامت تجاری را بدهد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "لغو نمایش فهرست کاربران"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:11
-msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
-msgstr "صفحه‌ی ورود به سیستم به‌طور معمول یک فهرست از کاربران موجود جهت ورود را نمایش می‌دهد. این تنظیمات می‌تواند به‌منظور عدم نمایش فهرست کاربران تغییر کند."
+msgid ""
+"The login screen normally shows a list of available users to log in as. This setting can "
+"be toggled to disable showing the user list."
+msgstr ""
+"صفحه‌ی ورود به سیستم به‌طور معمول یک فهرست از کاربران موجود جهت ورود را نمایش می‌دهد. این "
+"تنظیمات می‌تواند به‌منظور عدم نمایش فهرست کاربران تغییر کند."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
@@ -348,51 +364,20 @@ msgstr "غیرفعال‌سازی نمایش دکمه‌های راه‌اندا
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "روی درست تنظیم شود تا نمایش دکمه‌ی «راه‌اندازی مجدد» در پنجره‌ی ورود به سیستم از کار بیافتد."
+msgstr ""
+"روی درست تنظیم شود تا نمایش دکمه‌ی «راه‌اندازی مجدد» در پنجره‌ی ورود به سیستم از کار بیافتد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "تعداد مجاز شکست‌ها در تصدیق هویت"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
-msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
-msgstr "تعداد دفعاتی که کاربر می‌تواند برای تصدیق‌هویت، قبل از بازگشت به قسمت انتخاب کاربر، تلاش کند."
-
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "نمی‌توان نمایشگر گذرا را ساخت:"
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "نمی‌توان نشست را فعال کرد:"
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "شناسایی نشست جاری ممکن نبود"
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "کاربر در تعویض نشست ناتوان است."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "شناسایی نشست جاری ممکن نبود."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
-msgstr "سیستم قادر به تشخیص اینکه باید به صفحه‌ی ورود به سیستم فعلی انتقال پیدا کند یا یک صفحه‌ی ورود به سیستم جدید ایجاد کند نبود."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "سیستم قادر به راه‌اندازی یک صفحه‌ی جدید ورود به سیستم نبود."
+msgid ""
+"The number of times a user is allowed to attempt authentication, before giving up and "
+"going back to user selection."
+msgstr ""
+"تعداد دفعاتی که کاربر می‌تواند برای تصدیق‌هویت، قبل از بازگشت به قسمت انتخاب کاربر، تلاش "
+"کند."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -414,35 +399,39 @@ msgstr "XDMCP: Incorrect XDMCP version!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP: ناتوان در تجزیه‌ی نشانی"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:59
+msgid "Unable to create transient display: "
+msgstr "نمی‌توان نمایشگر گذرا را ساخت:"
+
+#: ../libgdm/gdm-user-switching.c:90
+msgid "Unable to activate session: "
+msgstr "نمی‌توان نشست را فعال کرد:"
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "فقط دستور VERSION پشتیبانی می‌شود"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47 ../utils/gdmflexiserver.c:49
+#: ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "چشم‌پوشی شده - نگه داشته شده برای سازگاری"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "خروجی اشکال‌زدایی"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "نسخه‌ی این برنامه"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- ورود به سیستم جدید گنوم"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "شروع نمایشگر امکان‌پذیر نبود"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -452,6 +441,54 @@ msgstr "عکس صفحه گرفته شد"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "گرفتن یک عکس از صفحه‌نمایش"
+
+#~ msgid "No session available yet"
+#~ msgstr "هنوز هیچ نشستی موجود نیست"
+
+#~ msgid "Unable to look up UID of user %s"
+#~ msgstr "نمی‌توان UID کاربر %s را پیدا کرد"
+
+#~ msgid "no sessions available"
+#~ msgstr "هیچ نشستی موجود نیست"
+
+#~ msgid "No sessions for %s available for reauthentication"
+#~ msgstr "هیچ نشستی برای %s جهت تصدیق‌هویت مجدد موجود نیست"
+
+#~ msgid "Unable to find session for user %s"
+#~ msgstr "امکان پیدا کردن نشست برای کاربر %s وجود ندارد"
+
+#~ msgid "Unable to find appropriate session for user %s"
+#~ msgstr "نمی‌توان نشست متناسب برای کاربر %s پیدا کرد"
+
+#~ msgid "User doesn't own session"
+#~ msgstr "کاربر دارای نشستی نیست"
+
+#~ msgid "%s: failed to connect to parent display '%s'"
+#~ msgstr "%s: اتصال به نمایشگر والد شکست خورد «%s»"
+
+#~ msgid "User not logged in"
+#~ msgstr "کاربر وارد سیستم نشده است"
+
+#~ msgid "Currently, only one client can be connected at once"
+#~ msgstr "درحال حاضر تنها یک کارگیر می‌تواند در آن واحد متصل شود"
+
+#~ msgid "Display ID"
+#~ msgstr "شناسه‌ی نمایش"
+
+#~ msgid "ID"
+#~ msgstr "شناسه"
+
+#~ msgid "GNOME Display Manager Slave"
+#~ msgstr " برده‌ی مدیر نمایش گنوم"
+
+#~ msgid "Login Window"
+#~ msgstr "پنجره‌ی ورود به سیستم"
+
+#~ msgid "User unable to switch sessions."
+#~ msgstr "کاربر در تعویض نشست ناتوان است."
+
+#~ msgid "Unable to start new display"
+#~ msgstr "شروع نمایشگر امکان‌پذیر نبود"
 
 #~ msgid "error initiating conversation with authentication system - %s"
 #~ msgstr "خطا در راه‌اندازی ارتباط با سیستم تایید هویت - %s"
@@ -468,8 +505,7 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgid "unknown error"
 #~ msgstr "خطای ناشناخته"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
+#~ msgid "error informing authentication system of preferred username prompt: %s"
 #~ msgstr "خطا در اطلاع دادن اعلان نام کاربر ترجیحی به سیستم تایید هویت: %s"
 
 #~ msgid "error informing authentication system of user's hostname: %s"
@@ -481,8 +517,7 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgid "error informing authentication system of display string: %s"
 #~ msgstr "خطا در اعلان رشته‌ی نمایش به سیستم تایید هویت: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
+#~ msgid "error informing authentication system of display xauth credentials: %s"
 #~ msgstr "خطا در اعلان گواهی xauth نمایش به سیستم تایید هویت: %s"
 
 #~ msgid "Failed to create AuthDir %s: %s"
@@ -570,8 +605,7 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "متن غیر فعال"
 
 #~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "متن مورد استفاده در برچسب هنگامی که هنوز کاربر موردی را انتخاب نکرده است"
+#~ msgstr "متن مورد استفاده در برچسب هنگامی که هنوز کاربر موردی را انتخاب نکرده است"
 
 #~ msgid "Active Text"
 #~ msgstr "متن فعال"
@@ -605,8 +639,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "Select language and click Log In"
 #~ msgstr "زبان را انتخاب کنید و «ورود به سیستم» را کلیک کنید"
-#~ msgctxt "customsession"
 
+#~ msgctxt "customsession"
 #~ msgid "Custom"
 #~ msgstr "سفارشی"
 
@@ -693,8 +727,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "Log in as %s"
 #~ msgstr "ورود به عنوان %s"
-#~ msgctxt "user"
 
+#~ msgctxt "user"
 #~ msgid "Other…"
 #~ msgstr "دیگر..."
 
@@ -732,14 +766,11 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "شاخه‌ی Authdir با نام %s یک شاخه نیست. در حال ساقط کردن."
 
 #~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr ""
-#~ "شاخه‌ی Authdir با نام %s در مالکیت کاربر %Id، گروه %Id نیست. در حال ساقط "
-#~ "کردن."
+#~ msgstr "شاخه‌ی Authdir با نام %s در مالکیت کاربر %Id، گروه %Id نیست. در حال ساقط کردن."
 
 #~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 #~ msgstr ""
-#~ "شاخه‌ی Authdir با نام %s مجوز‌های نادرست %o دارد. که باید %o باشد. در حال "
-#~ "ساقط کردن."
+#~ "شاخه‌ی Authdir با نام %s مجوز‌های نادرست %o دارد. که باید %o باشد. در حال ساقط کردن."
 
 #~ msgid "GNOME Screen Magnifier"
 #~ msgstr "ذره‌بین صفحه‌ی گنوم"
@@ -778,8 +809,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "متن پیام بنر وقتی گزیننده خالی است"
 
 #~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
+#~ "Text banner message to show in the login window when the user chooser is empty, "
+#~ "instead of banner_message_text."
 #~ msgstr ""
 #~ "پیام بنری که وقتی گزیننده‌ی کاربر خالی است، در پنجره‌ی ورود به سیستم به جای "
 #~ "banner_message_text نمایش داده می‌شود."
@@ -795,17 +826,16 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "Set to true to disable showing known users in the login window."
 #~ msgstr ""
-#~ "روی درست تنظیم شود تا نمایش کاربران شناخته شده در پنجره‌ی ورود به سیستم را "
-#~ "از کار بیاندازد."
+#~ "روی درست تنظیم شود تا نمایش کاربران شناخته شده در پنجره‌ی ورود به سیستم را از کار "
+#~ "بیاندازد."
 
 #~ msgid "Recently selected languages"
 #~ msgstr "زبان‌هایی که اخیرا انتخاب شده‌اند"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
+#~ msgid "Set to a list of languages to be shown by default in the login window."
 #~ msgstr ""
-#~ "روی فهرستی از زبان‌ها تنظیم شود که به عنوان پیش‌فرض در پنجره‌ی ورود به سیستم "
-#~ "نمایش داده شود."
+#~ "روی فهرستی از زبان‌ها تنظیم شود که به عنوان پیش‌فرض در پنجره‌ی ورود به سیستم نمایش داده "
+#~ "شود."
 
 #~ msgid "Use Compiz as the window manager"
 #~ msgstr "از کامپیز به عنوان مدیر پنجره استفاده شود"
@@ -834,27 +864,22 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgid "Enable accessibility keyboard plugin"
 #~ msgstr "فعال‌سازی متصل‌شونده‌ی دسترسی‌پذیری"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
+#~ msgid "Set to true to enable the plugin to manage the accessibility keyboard settings."
 #~ msgstr ""
-#~ "روی درست تنظیم شود تا افزونه‌ای به کار انداخته شود که تنظیمات دسترسی‌پذیری "
-#~ "صفحه‌کلید را مدیریت کند."
+#~ "روی درست تنظیم شود تا افزونه‌ای به کار انداخته شود که تنظیمات دسترسی‌پذیری صفحه‌کلید را "
+#~ "مدیریت کند."
 
 #~ msgid "True if the background settings manager plugin is enabled."
 #~ msgstr "درست اگر افزونه‌ی مدیر تنظیمات پس‌زمینه فعال باشد."
 
 #~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr ""
-#~ "روی درست تنظیم شود تا افزونه مدیر تنظیمات پس‌زمینه به کار انداخته شود."
+#~ msgstr "روی درست تنظیم شود تا افزونه مدیر تنظیمات پس‌زمینه به کار انداخته شود."
 
 #~ msgid "True if the media-keys settings manager plugin is enabled."
 #~ msgstr "درست اگر افزونه‌ی مدیر تنظیمات کلیدهای رسانه فعال باشد."
 
 #~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr ""
-#~ "روی درست تنظیم شود تا افزونه مدیر تنظیمات کلید‌های رسانه به کار انداخته "
-#~ "شود."
+#~ msgstr "روی درست تنظیم شود تا افزونه مدیر تنظیمات کلید‌های رسانه به کار انداخته شود."
 
 #~ msgid "True if the sound settings manager plugin is enabled."
 #~ msgstr "درست اگر افزونه‌ی مدیر تنظیمات صدا فعال باشد."
@@ -866,8 +891,7 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "درست اگر افزونه‌ی مدیر تنظیمات XRandR فعال باشد."
 
 #~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr ""
-#~ "روی درست تنظیم شود تا افزونه‌ی مدیر تنظیمات XRandR به کار انداخته شود."
+#~ msgstr "روی درست تنظیم شود تا افزونه‌ی مدیر تنظیمات XRandR به کار انداخته شود."
 
 #~ msgid "True if the xsettings settings manager plugin is enabled."
 #~ msgstr "درست اگر افزونه‌ی مدیر تنظیمات xsettings فعال باشد."
@@ -876,8 +900,7 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "روی درست تنظیم شود تا افزونه‌ی مدیر تنظیمات xsettings به کار افتد."
 
 #~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr ""
-#~ "سیستم قادر به پیدا کردن یک صفحه‌ی ورود به سیستم، جهت انتقال به آن نبود."
+#~ msgstr "سیستم قادر به پیدا کردن یک صفحه‌ی ورود به سیستم، جهت انتقال به آن نبود."
 
 #~ msgid "Denied XDMCP query from host %s"
 #~ msgstr "Denied XDMCP query from host %s"
@@ -947,8 +970,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "Could not get server hostname: %s!"
 #~ msgstr "گرفتن نام میزبان کارگزار ممکن نبود: %s!"
-#~| msgid "Version of this application"
 
+#~| msgid "Version of this application"
 #~ msgid "Activation of this plugin"
 #~ msgstr "فعالسازی این افزونه"
 
@@ -978,8 +1001,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "_Language:"
 #~ msgstr "_زبان:"
-#~ msgctxt "language"
 
+#~ msgctxt "language"
 #~ msgid "Other…"
 #~ msgstr "دیگر..."
 
@@ -1000,8 +1023,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "_Keyboard:"
 #~ msgstr "_صفحه‌کلید:"
-#~ msgctxt "keyboard"
 
+#~ msgctxt "keyboard"
 #~ msgid "Other…"
 #~ msgstr "دیگر..."
 
@@ -1014,42 +1037,37 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgid "Recently selected keyboard layouts"
 #~ msgstr "چیدمان‌های صفحه‌کلید که اخیرا گزیده شده‌اند"
 
-#~ msgid ""
-#~ "Set to a list of keyboard layouts to be shown by default in the login "
-#~ "window."
+#~ msgid "Set to a list of keyboard layouts to be shown by default in the login window."
 #~ msgstr ""
-#~ "روی فهرستی از چیدمان‌های صفحه کلید تنظیم شود که به عنوان پیش‌فرض در پنجره‌ی "
-#~ "ورود به سیستم نمایش داده شود."
+#~ "روی فهرستی از چیدمان‌های صفحه کلید تنظیم شود که به عنوان پیش‌فرض در پنجره‌ی ورود به "
+#~ "سیستم نمایش داده شود."
 
 #~ msgid ""
-#~ "The User Switch Applet is free software; you can redistribute it and/or "
-#~ "modify it under the terms of the GNU General Public License as published "
-#~ "by the Free Software Foundation; either version 2 of the License, or (at "
-#~ "your option) any later version."
+#~ "The User Switch Applet is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the Free Software "
+#~ "Foundation; either version 2 of the License, or (at your option) any later version."
 #~ msgstr ""
-#~ "برنامک تعویض کاربر یک نرم‌افزار آزاد است.  شما می‌توانید آن را تحت شرایط "
-#~ "اجازه‌نامه‌ی همگانی عمومی گنو، که بنیاد نرم‌افزارهای آزاد منتشر کرده است،‌ "
-#~ "تغییر دهید، یا دوباره توزیع کنید. یا نسخه‌ی 2 اجازه‌نامه یا (به اختیار "
-#~ "خودتان) هر نسخه‌ی بالاتر دیگری."
+#~ "برنامک تعویض کاربر یک نرم‌افزار آزاد است.  شما می‌توانید آن را تحت شرایط اجازه‌نامه‌ی "
+#~ "همگانی عمومی گنو، که بنیاد نرم‌افزارهای آزاد منتشر کرده است،‌ تغییر دهید، یا دوباره "
+#~ "توزیع کنید. یا نسخه‌ی 2 اجازه‌نامه یا (به اختیار خودتان) هر نسخه‌ی بالاتر دیگری."
 
 #~ msgid ""
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details."
+#~ "This program is distributed in the hope that it will be useful, but WITHOUT ANY "
+#~ "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A "
+#~ "PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 #~ msgstr ""
-#~ "این برنامه به این امید توزیع می‌شود که سودمند باشد ولی هیچ‌گونه ضمانتی "
-#~ "ندارد؛ حتی این ضمانت که قابل فروش باشد یا برای منظور بخصوصی مناسب باشد. "
-#~ "برای جزئیات بیشتر متن مجوز عمومی همگانی گنو را ببینید."
+#~ "این برنامه به این امید توزیع می‌شود که سودمند باشد ولی هیچ‌گونه ضمانتی ندارد؛ حتی این "
+#~ "ضمانت که قابل فروش باشد یا برای منظور بخصوصی مناسب باشد. برای جزئیات بیشتر متن مجوز "
+#~ "عمومی همگانی گنو را ببینید."
 
 #~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program; if not, write to the Free Software Foundation, Inc., "
-#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+#~ "You should have received a copy of the GNU General Public License along with this "
+#~ "program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, "
+#~ "Fifth Floor, Boston, MA 02110-1301, USA "
 #~ msgstr ""
-#~ "شما باید همراه با مرورگر وب گنوم یک نسخه از اجازه‌نامه‌ی همگانی عمومی گنو "
-#~ "را دریافت کرده باشید، در غیر این صورت برای سازمان جنبش نرم‌افزار آزاد به "
-#~ "آدرس 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA بنویسید."
+#~ "شما باید همراه با مرورگر وب گنوم یک نسخه از اجازه‌نامه‌ی همگانی عمومی گنو را دریافت "
+#~ "کرده باشید، در غیر این صورت برای سازمان جنبش نرم‌افزار آزاد به آدرس 51 Franklin St, "
+#~ "Fifth Floor, Boston, MA  02110-1301 USA بنویسید."
 
 #~ msgid "A menu to quickly switch between users."
 #~ msgstr "منویی برای تعویض فوری بین کاربران"
@@ -1094,8 +1112,8 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 
 #~ msgid "Switch User"
 #~ msgstr "تعویض کاربر"
-#~| msgid "_Quit"
 
+#~| msgid "_Quit"
 #~ msgid "Quit…"
 #~ msgstr "ترک..."
 
@@ -1201,20 +1219,20 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "این نشست با استفاده از ssh شما را وارد یک میزبان دوردست می‌کند"
 
 #~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and reconfigure the X server.  Then restart GDM."
+#~ "Failed to start the X server (your graphical interface).  It is likely that it is not "
+#~ "set up correctly.  You will need to log in on a console and reconfigure the X "
+#~ "server.  Then restart GDM."
 #~ msgstr ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and reconfigure the X server.  Then restart GDM."
+#~ "Failed to start the X server (your graphical interface).  It is likely that it is not "
+#~ "set up correctly.  You will need to log in on a console and reconfigure the X "
+#~ "server.  Then restart GDM."
 
 #~ msgid ""
-#~ "Would you like to try to configure the X server?  Note that you will need "
-#~ "the root password for this."
+#~ "Would you like to try to configure the X server?  Note that you will need the root "
+#~ "password for this."
 #~ msgstr ""
-#~ "Would you like to try to configure the X server?  Note that you will need "
-#~ "the root password for this."
+#~ "Would you like to try to configure the X server?  Note that you will need the root "
+#~ "password for this."
 
 #~ msgid "Please type in the root (privileged user) password."
 #~ msgstr "Please type in the root (privileged user) password."
@@ -1222,72 +1240,62 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgid "Trying to restart the X server."
 #~ msgstr "Trying to restart the X server."
 
-#~ msgid ""
-#~ "The X server is now disabled.  Restart GDM when it is configured "
-#~ "correctly."
-#~ msgstr ""
-#~ "The X server is now disabled.  Restart GDM when it is configured "
-#~ "correctly."
+#~ msgid "The X server is now disabled.  Restart GDM when it is configured correctly."
+#~ msgstr "The X server is now disabled.  Restart GDM when it is configured correctly."
 
 #~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
+#~ "Failed to start the X server (your graphical interface).  It is likely that it is not "
+#~ "set up correctly.  Would you like to view the X server output to diagnose the problem?"
 #~ msgstr ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
+#~ "Failed to start the X server (your graphical interface).  It is likely that it is not "
+#~ "set up correctly.  Would you like to view the X server output to diagnose the problem?"
 
 #~ msgid "Would you like to view the detailed X server output as well?"
 #~ msgstr "Would you like to view the detailed X server output as well?"
 
 #~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
+#~ "Failed to start the X server (your graphical interface).  It seems that the pointer "
+#~ "device (your mouse) is not set up correctly.  Would you like to view the X server "
+#~ "output to diagnose the problem?"
 #~ msgstr ""
-#~ "Failed to start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
+#~ "Failed to start the X server (your graphical interface).  It seems that the pointer "
+#~ "device (your mouse) is not set up correctly.  Would you like to view the X server "
+#~ "output to diagnose the problem?"
 
 #~ msgid ""
-#~ "Would you like to try to configure the mouse?  Note that you will need "
-#~ "the root password for this."
+#~ "Would you like to try to configure the mouse?  Note that you will need the root "
+#~ "password for this."
 #~ msgstr ""
-#~ "Would you like to try to configure the mouse?  Note that you will need "
-#~ "the root password for this."
+#~ "Would you like to try to configure the mouse?  Note that you will need the root "
+#~ "password for this."
 
 #~ msgid ""
-#~ "This is the failsafe xterm session.  Windows now have focus only if you "
-#~ "have your cursor above them.  To get out of this mode type 'exit' in the "
-#~ "window in the upper left corner"
+#~ "This is the failsafe xterm session.  Windows now have focus only if you have your "
+#~ "cursor above them.  To get out of this mode type 'exit' in the window in the upper "
+#~ "left corner"
 #~ msgstr ""
-#~ "این نشست پایانهٔ X محافظ‌دار است. پنجره‌ها فقط وقتی که مکان‌نما روی آنهاست "
-#~ "تمرکز دارند. برای خروج از این حالت گوشهٔ سمت راست پنجره بنویسید «exit»"
+#~ "این نشست پایانهٔ X محافظ‌دار است. پنجره‌ها فقط وقتی که مکان‌نما روی آنهاست تمرکز دارند. "
+#~ "برای خروج از این حالت گوشهٔ سمت راست پنجره بنویسید «exit»"
 
 #~ msgid ""
-#~ "Failed to start the session, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window in the upper left corner"
+#~ "Failed to start the session, so starting a failsafe xterm session.  Windows will have "
+#~ "focus only if the mouse pointer is above them.  To get out of this mode type 'exit' "
+#~ "in the window in the upper left corner"
 #~ msgstr ""
-#~ "آغاز نشست ممکن نبود بنابر‌این نشست پایانهٔ X محافظ‌دار آغاز شد. پنجره‌ها فقط "
-#~ "وقتی که مکان‌نما روی آنها هستند تمرکز دارند. برای خارج از این حالت گوشهٔ "
-#~ "سمت راست پنجره بنویسید «exit»"
+#~ "آغاز نشست ممکن نبود بنابر‌این نشست پایانهٔ X محافظ‌دار آغاز شد. پنجره‌ها فقط وقتی که "
+#~ "مکان‌نما روی آنها هستند تمرکز دارند. برای خارج از این حالت گوشهٔ سمت راست پنجره بنویسید "
+#~ "«exit»"
 
 #~ msgid "%s: Could not write new authorization entry: %s"
 #~ msgstr "%s: Could not write new authorization entry: %s"
 
-#~ msgid ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-#~ msgstr ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
+#~ msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
+#~ msgstr "%s: Could not write new authorization entry.  Possibly out of diskspace"
 
 #~ msgid ""
-#~ "GDM could not write a new authorization entry to disk.  Possibly out of "
-#~ "diskspace.%s%s"
+#~ "GDM could not write a new authorization entry to disk.  Possibly out of diskspace.%s%s"
 #~ msgstr ""
-#~ "GDM could not write a new authorization entry to disk.  Possibly out of "
-#~ "diskspace.%s%s"
+#~ "GDM could not write a new authorization entry to disk.  Possibly out of diskspace.%s%s"
 
 #~ msgid "%s: Could not make new cookie file in %s"
 #~ msgstr "%s: Could not make new cookie file in %s"
@@ -1311,13 +1319,13 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "Can't write to %s: %s"
 
 #~ msgid ""
-#~ "The display server has been shut down about 6 times in the last 90 "
-#~ "seconds. It is likely that something bad is going on.  Waiting for 2 "
-#~ "minutes before trying again on display %s."
+#~ "The display server has been shut down about 6 times in the last 90 seconds. It is "
+#~ "likely that something bad is going on.  Waiting for 2 minutes before trying again on "
+#~ "display %s."
 #~ msgstr ""
-#~ "The display server has been shut down about 6 times in the last 90 "
-#~ "seconds. It is likely that something bad is going on.  Waiting for 2 "
-#~ "minutes before trying again on display %s."
+#~ "The display server has been shut down about 6 times in the last 90 seconds. It is "
+#~ "likely that something bad is going on.  Waiting for 2 minutes before trying again on "
+#~ "display %s."
 
 #~ msgid "%s: Cannot create pipe"
 #~ msgstr "%s: Cannot create pipe"
@@ -1390,20 +1398,18 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "%s: Running the XKeepsCrashing script"
 
 #~ msgid ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
+#~ "The X server (your graphical interface) cannot be started.  It is likely that it is "
+#~ "not set up correctly.  You will need to log in on a console and rerun the X "
+#~ "configuration application, then restart GDM."
 #~ msgstr ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
+#~ "The X server (your graphical interface) cannot be started.  It is likely that it is "
+#~ "not set up correctly.  You will need to log in on a console and rerun the X "
+#~ "configuration application, then restart GDM."
 
 #~ msgid ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
+#~ "Failed to start X server several times in a short time period; disabling display %s"
 #~ msgstr ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
+#~ "Failed to start X server several times in a short time period; disabling display %s"
 
 #~ msgid "Master suspending..."
 #~ msgstr "Master suspending..."
@@ -1427,18 +1433,16 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "%s: Reboot failed: %s"
 
 #~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
+#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu "
+#~ "from display %s"
 #~ msgstr ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
+#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu "
+#~ "from display %s"
 
 #~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
+#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"
 #~ msgstr ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
+#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"
 
 #~ msgid "%s: Aborting display %s"
 #~ msgstr "%s: Aborting display %s"
@@ -1465,8 +1469,7 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "Preserve LD_* variables"
 
 #~ msgid "Start the first X server but then halt until we get a GO in the fifo"
-#~ msgstr ""
-#~ "Start the first X server but then halt until we get a GO in the fifo"
+#~ msgstr "Start the first X server but then halt until we get a GO in the fifo"
 
 #~ msgid "Can't open %s for writing"
 #~ msgstr "Can't open %s for writing"
@@ -1493,11 +1496,11 @@ msgstr "گرفتن یک عکس از صفحه‌نمایش"
 #~ msgstr "Unknown server type requested, using standard server."
 
 #~ msgid ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
+#~ "Requested server %s not allowed to be used for flexible servers; using standard "
+#~ "server."
 #~ msgstr ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
+#~ "Requested server %s not allowed to be used for flexible servers; using standard "
+#~ "server."
 
 #~ msgid "%s: No GDM configuration file: %s. Using defaults."
 #~ msgstr "%s: No GDM configuration file: %s. Using defaults."
