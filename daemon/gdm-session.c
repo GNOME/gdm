@@ -130,6 +130,9 @@ struct _GdmSessionPrivate
 
         guint32              is_program_session : 1;
         guint32              display_is_initial : 1;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        guint32              ignore_wayland : 1;
+#endif
 };
 
 enum {
@@ -146,6 +149,9 @@ enum {
         PROP_DISPLAY_X11_AUTHORITY_FILE,
         PROP_USER_X11_AUTHORITY_FILE,
         PROP_CONVERSATION_ENVIRONMENT,
+#ifdef ENABLE_WAYLAND_SUPPORT
+        PROP_IGNORE_WAYLAND,
+#endif
 };
 
 enum {
@@ -337,11 +343,18 @@ get_system_session_dirs (GdmSession *self)
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
 #ifdef ENABLE_WAYLAND_SUPPORT
-                DATADIR "/wayland-sessions/",
+                NULL,
 #endif
                 NULL
         };
 
+#ifdef ENABLE_WAYLAND_SUPPORT
+        if (!self->priv->ignore_wayland) {
+                search_dirs[G_N_ELEMENTS (search_dirs) - 1] = DATADIR "/wayland-sessions/";
+        } else {
+                search_dirs[G_N_ELEMENTS (search_dirs) - 1] = NULL;
+        }
+#endif
         return search_dirs;
 }
 
@@ -1937,6 +1950,15 @@ stop_conversation_now (GdmSessionConversation *conversation)
         g_clear_object (&conversation->job);
 }
 
+#ifdef ENABLE_WAYLAND_SUPPORT
+void
+gdm_session_set_ignore_wayland (GdmSession *self,
+                                gboolean    ignore_wayland)
+{
+        self->priv->ignore_wayland = ignore_wayland;
+}
+#endif
+
 gboolean
 gdm_session_start_conversation (GdmSession *self,
                                 const char *service_name)
@@ -3242,6 +3264,11 @@ gdm_session_set_property (GObject      *object,
         case PROP_CONVERSATION_ENVIRONMENT:
                 set_conversation_environment (self, g_value_get_pointer (value));
                 break;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        case PROP_IGNORE_WAYLAND:
+                gdm_session_set_ignore_wayland (self, g_value_get_boolean (value));
+                break;
+#endif
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -3295,6 +3322,11 @@ gdm_session_get_property (GObject    *object,
         case PROP_CONVERSATION_ENVIRONMENT:
                 g_value_set_pointer (value, self->priv->environment);
                 break;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        case PROP_IGNORE_WAYLAND:
+                g_value_set_boolean (value, self->priv->ignore_wayland);
+                break;
+#endif
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -3710,6 +3742,16 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               "display seat id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        g_object_class_install_property (object_class,
+                                         PROP_IGNORE_WAYLAND,
+                                         g_param_spec_boolean ("ignore-wayland",
+                                                               "ignore wayland",
+                                                               "ignore wayland",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+#endif
 }
 
 GdmSession *
