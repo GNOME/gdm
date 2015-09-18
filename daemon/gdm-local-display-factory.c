@@ -271,6 +271,26 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         return ret;
 }
 
+static gboolean
+ensure_initial_display_configuration (GdmLocalDisplayFactory *factory)
+{
+        GdmDisplay *display;
+
+#ifdef WITH_SYSTEMD
+        if (LOGIND_RUNNING()) {
+                if (!factory->priv->seat_new_id) {
+                        gdm_local_display_factory_start_monitor (factory);
+                }
+                return gdm_local_display_factory_sync_seats (factory);
+        }
+#endif
+
+        /* On ConsoleKit just create Seat1, and that's it. */
+        display = create_display (factory, CK_SEAT1_PATH, NULL, TRUE);
+
+        return display != NULL;
+}
+
 static void
 on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
@@ -317,7 +337,7 @@ on_display_status_changed (GdmDisplay             *display,
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
-                        gdm_local_display_factory_sync_seats (factory);
+                        ensure_initial_display_configuration (factory);
                 }
                 break;
         case GDM_DISPLAY_FAILED:
@@ -609,7 +629,7 @@ static gboolean
 gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
-        GdmDisplay             *display;
+        gboolean                display_started;
         GdmDisplayStore *store;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
@@ -626,17 +646,9 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
                           G_CALLBACK (on_display_removed),
                           factory);
 
-#ifdef WITH_SYSTEMD
-        if (LOGIND_RUNNING()) {
-                gdm_local_display_factory_start_monitor (factory);
-                return gdm_local_display_factory_sync_seats (factory);
-        }
-#endif
+        display_started = ensure_initial_display_configuration (factory);
 
-        /* On ConsoleKit just create Seat1, and that's it. */
-        display = create_display (factory, CK_SEAT1_PATH, NULL, TRUE);
-
-        return display != NULL;
+        return display_started;
 }
 
 static gboolean
