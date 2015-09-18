@@ -83,6 +83,7 @@ static void     on_display_status_changed               (GdmDisplay             
                                                          GParamSpec                  *arg1,
                                                          GdmLocalDisplayFactory      *factory);
 
+static void gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory);
 static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
 static gpointer local_display_factory_object = NULL;
 
