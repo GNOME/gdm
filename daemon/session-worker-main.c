@@ -27,6 +27,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <locale.h>
@@ -46,16 +47,6 @@
 static GdmSettings *settings = NULL;
 
 static gboolean
-on_shutdown_signal_cb (gpointer user_data)
-{
-        GMainLoop *mainloop = user_data;
-
-        g_main_loop_quit (mainloop);
-
-        return FALSE;
-}
-
-static gboolean
 on_sigusr1_cb (gpointer user_data)
 {
         g_debug ("Got USR1 signal");
@@ -73,6 +64,12 @@ is_debug_set (void)
         return debug;
 }
 
+static void
+on_sigterm_cb (int signal_number)
+{
+        _exit (0);
+}
+
 int
 main (int    argc,
       char **argv)
@@ -85,6 +82,8 @@ main (int    argc,
         static GOptionEntry entries []   = {
                 { NULL }
         };
+
+        signal (SIGTERM, on_sigterm_cb);
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         textdomain (GETTEXT_PACKAGE);
@@ -125,8 +124,6 @@ main (int    argc,
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
-        g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
-        g_unix_signal_add (SIGINT, on_shutdown_signal_cb, main_loop);
         g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         g_main_loop_run (main_loop);
