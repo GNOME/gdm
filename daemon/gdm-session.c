@@ -307,19 +307,18 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         service_name = conversation->service_name;
 
         if (worked) {
-                switch (self->priv->verification_mode) {
-                case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
-                        if (self->priv->user_verifier_interface != NULL) {
-                                gdm_dbus_user_verifier_emit_verification_complete (self->priv->user_verifier_interface,
-                                                                                   service_name);
-                                g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
-                        }
-                        break;
+                if (self->priv->user_verifier_interface != NULL) {
+                        gdm_dbus_user_verifier_emit_verification_complete (self->priv->user_verifier_interface,
+                                                                           service_name);
+                        g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
+                }
 
+                switch (self->priv->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
                 case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
                         gdm_session_open_session (self, service_name);
                         break;
+                case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
                 default:
                         break;
                 }
