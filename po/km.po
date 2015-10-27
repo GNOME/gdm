@@ -6,9 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-04-01 17:18+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2012-02-17 10:53+0700\n"
 "Last-Translator: Morn Met <mornmet@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
@@ -20,38 +19,29 @@ msgstr ""
 "X-Generator: WordForge 0.8 RC1\n"
 "X-Language: km-KH\n"
 
-#: ../common/gdm-common.c:519
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom មិនមែន​ជា​ឧបករណ៍​តួអក្សរ​ទេ"
 
-#: ../common/gdm-common.c:827 ../common/gdm-common.c:980
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "មិន​អាច​កំណត់​អត្តសញ្ញាណ​សម័យ​បច្ចុប្បន្ន ។"
 
-#: ../common/gdm-common.c:834 ../libgdm/gdm-user-switching.c:351
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
-msgid "User unable to switch sessions."
-msgstr "អ្នកប្រើ​មិន​អាច​ប្ដូរ​សម័យ ។"
-
-#: ../common/gdm-common.c:989 ../libgdm/gdm-user-switching.c:523
-#, c-format
-#| msgid "Could not identify the current session."
 msgid "Could not identify the current seat."
 msgstr "មិន​អាច​កំណត់​អត្តសញ្ញាណ​​កន្លែង​បច្ចុប្បន្ន។"
 
-#: ../common/gdm-common.c:999 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
-msgstr ""
-"ប្រព័ន្ធ​មិន​អាច​កំណត់​ថាតើត្រូវ​ប្ដូរ​ទៅ​អេក្រង់​ចូល​មាន​ស្រាប់ "
-"ឬ​ចាប់​ផ្ដើម​អេក្រង់ចូល​ថ្មី។"
+msgstr "ប្រព័ន្ធ​មិន​អាច​កំណត់​ថាតើត្រូវ​ប្ដូរ​ទៅ​អេក្រង់​ចូល​មាន​ស្រាប់ ឬ​ចាប់​ផ្ដើម​អេក្រង់ចូល​ថ្មី។"
 
-#: ../common/gdm-common.c:1007 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "ប្រព័ន្ធ​មិន​អាច​ចាប់ផ្ដើម​អេក្រង់​ចូល​ថ្មី។"
@@ -61,58 +51,72 @@ msgstr "ប្រព័ន្ធ​មិន​អាច​ចាប់ផ្ដ
 msgid "could not find user \"%s\" on system"
 msgstr "រក​មិន​ឃើញ​អ្នកប្រើ \"%s\" នៅ​លើ​ប្រព័ន្ធ​"
 
-#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1158
-#| msgid "no user account available"
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+
+#: ../daemon/gdm-manager.c:766
+#, fuzzy
+msgid "No display available"
+msgstr "មិនមាន​សម័យ"
+
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "មិនមាន​សម័យ"
 
-#: ../daemon/gdm-manager.c:953
-#, c-format
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "អាច​ត្រូវ​បាន​ហៅតែ​មុន​ពេល​អ្នកប្រើ​បាន​ចូល​ប៉ុណ្ណោះ"
 
-#: ../daemon/gdm-manager.c:962
-#, c-format
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "អ្នកហៅ​មិនមែន GDM"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "ម៉ាស៊ីន​បម្រើ​ត្រូវ​បាន​បង្កើត​ដោយ​អ្នកប្រើ %s ប៉ុន្តែ​មិន​មាន​អ្នកប្រើ​នោះ​ទេ"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "មិន​អាច​កំណត់ groupid ទៅជា %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () បាន​បរាជ័យ​សម្រាប់ %s"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "មិន​អាច​កំណត់ userid ទៅជា %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s ៖ មិន​អាច​បើក​ឯកសារ​កំណត់​ហេតុ​សម្រាប់​ការ​បង្ហាញ​ %s !"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s ៖ កំហុស​ក្នុង​ការ​កំណត់ %s ទៅជា %s"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s ៖ មិន​អាច​កំណត់​អាទិភាព​ម៉ាស៊ីន​បម្រើ​ទៅជា %d ៖ %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s ៖ ពាក្យ​បញ្ជា​ម៉ាស៊ីន​បម្រើ​ទទេ​សម្រាប់​ការ​បង្ហាញ %s"
@@ -141,101 +145,108 @@ msgstr "ឧបករណ៍​បង្ហាញ"
 msgid "The display device"
 msgstr "ឧបករណ៍​បង្ហាញ"
 
-#: ../daemon/gdm-session.c:1176
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "មិន​អាច​ផ្ទៀងផ្ទាត់​ដំណើរការ​ជំនួយ"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "គណនី​របស់​អ្នកត្រូវ​បាន​ផ្ដល់​មាន​ពេល​​កំណត់​​ដែលឥឡូវ​​បាន​ហួស​ហើយ។"
 
-#: ../daemon/gdm-session-worker.c:851
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "សូម​ទោស មិន​ដំណើរការ​ទេ។ សូម​ព្យាយាមម្ដងទៀត។"
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "ឈ្មោះ​អ្នកប្រើ ៖"
 
-#: ../daemon/gdm-session-worker.c:1241
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​ផុត​កំណត់ សូម​ប្ដូរ​វា​ឥឡូវ។"
 
-#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "គ្មាន​គណនី​អ្នកប្រើ"
 
-#: ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "មិន​អាច​ផ្លាស់ប្ដូរ​អ្នកប្រើ"
 
-#: ../daemon/gdm-simple-slave.c:871
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"មិន​អាច​ចាប់ផ្ដើម​ម៉ាស៊ីន​បម្រើ X (បរិស្ថាន​ក្រាហ្វិក​របស់​អ្នក) បានទេ ដោយសារតែ​មាន​កំហុស​ខាងក្នុង ។ សូម​"
-"ទាក់ទង​អ្នក​គ្រប់គ្រង​ប្រព័ន្ធ​របស់​អ្នក ឬ​ពិនិត្យមើល​កំណត់ហេតុ​ប្រព័ន្ធ​របស់​អ្នក ។ ក្នុង​ពេល​ដដែល​នេះ ការ​បង្ហាញ​"
-"នេះ​នឹង​ត្រូវ​បាន​បិទ ។ សូម​ចាប់ផ្ដើម GDM ឡើងវិញ នៅ​ពេល​បញ្ហា​ត្រូវ​បាន​ដោះស្រាយ​ ។"
+#: ../daemon/gdm-wayland-session.c:385
+#, fuzzy
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "កម្មវិធី​ដំណើរការ​សម័យ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​បង្ហាញ GNOME"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "មិន​អាច​បង្កើត​រន្ធ​បាន​ទេ !"
+
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:687
+msgid "Listen on TCP socket"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:698
+#, fuzzy
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "កម្មវិធី​ដំណើរការ​សម័យ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​បង្ហាញ GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "មិន​អាច​សរសេរ​ឯកសារ PID %s ៖ ប្រហែល​ជា​អស់​ទំហំ​ថាស ៖ %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បង្កើត​ ran once marker dir %s: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បង្កើត LogDir %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "រក​មិន​ឃើញ​អ្នកប្រើ GDM  '%s' ។ បោះបង់ !"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "អ្នកប្រើ GDM មិន​គួរ​ជា root ទេ ។ បោះបង់ !"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "រក​មិន​ឃើញ​ក្រុម GDM ទេ '%s' ។ បោះបង់ !"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "ក្រុម GDM មិន​គួរ​ជា root ទេ ។ បោះបង់ !"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "ធ្វើឲ្យ​ការ​ព្រមាន​ទាំងអស់​មាន​លក្ខណៈ​ធ្ងន់ធ្ងរ"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "បន្ទាប់​ពី​នោះ​មក ចាកចេញ (សម្រាប់​ការ​បំបាត់​កំហុស)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "បោះពុម្ព​កំណែ GDM"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​ការ​បង្ហាញ GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "មាន​តែ​អ្នកប្រើ​ជា root ប៉ុណ្ណោះ​ដែល​អាច​ដំណើរការ GDM"
 
@@ -245,15 +256,13 @@ msgstr "មាន​តែ​អ្នកប្រើ​ជា root ប៉ុណ
 msgid "GNOME Display Manager Session Worker"
 msgstr "កម្មវិធី​ដំណើរការ​សម័យ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​បង្ហាញ GNOME"
 
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "បង្អួច​ចូល"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "សែល​របស់ GNOME"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "សមាសភាគ និង​ការ​គ្រប់គ្រង​បង្អួច"
 
@@ -279,7 +288,6 @@ msgstr ""
 "ជា​ជម្រើស អេក្រង់​ចូល​អាច​អនុញ្ញាត​ឲ្យ​អ្នកប្រើ​ដែល​មាន smartcards ចូល​ដោយ​ប្រើ smartcards  ។"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
 msgstr "ថាតើ​ ឬ​មិន​អនុញ្ញាត​ពាក្យ​សម្ងាត់​សម្រាប់​ចូល"
 
@@ -288,10 +296,8 @@ msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"អេក្រង់ចូល​អាច​ត្រូវ​បាន​កំណត់​រចនាសម្ព័ន្ធ​ "
-"ដើម្បី​មិន​អនុញ្ញាត​ឲ្យ​ផ្ទៀងផ្ទាត់​ពាក្យ​សម្ងាត់ "
-"ដោយ​បង្ខំ​អ្នកប្រើ​ឲ្យ​ប្រើប្រាស់ការ​ផ្ទៀងផ្ទាត់​ដោយ​​ស្មាតកាត "
-"ឬ​ស្នាម​ម្រាមដៃ។"
+"អេក្រង់ចូល​អាច​ត្រូវ​បាន​កំណត់​រចនាសម្ព័ន្ធ​ ដើម្បី​មិន​អនុញ្ញាត​ឲ្យ​ផ្ទៀងផ្ទាត់​ពាក្យ​សម្ងាត់ ដោយ​បង្ខំ​អ្នកប្រើ​ឲ្យ​"
+"ប្រើប្រាស់ការ​ផ្ទៀងផ្ទាត់​ដោយ​​ស្មាតកាត ឬ​ស្នាម​ម្រាមដៃ។"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -307,18 +313,13 @@ msgstr ""
 "និង​ការ​ចែកចាយដើម្បី​ផ្ដល់  branding ។"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-#| msgid ""
-#| "The login screen can optionally show a small image at the top of its user "
-#| "list to provide site administrators and distributions a way to provide "
-#| "branding."
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
-"ជា​ជម្រើស អេក្រង់​ចូល​អាច​បង្ហាញ​រូបភាព​តូច​នៅ​ខាងលើ​បញ្ជី​អ្នកប្រើ​របស់​វា "
-"ដើម្បី​ផ្ដល់​អ្នក​គ្រប់គ្រង​​តំបន់បណ្ដាញ និង​ការ​ចែកចាយដើម្បី​ផ្ដល់ម៉ាកយីហើ "
-"។"
+"ជា​ជម្រើស អេក្រង់​ចូល​អាច​បង្ហាញ​រូបភាព​តូច​នៅ​ខាងលើ​បញ្ជី​អ្នកប្រើ​របស់​វា ដើម្បី​ផ្ដល់​អ្នក​គ្រប់គ្រង​​តំបន់បណ្ដាញ "
+"និង​ការ​ចែកចាយដើម្បី​ផ្ដល់ម៉ាកយីហើ ។"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -365,8 +366,7 @@ msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
-"ចំនួន​ដង​ដែលអ្នកប្រើ​ត្រូវ​បាន​អនុញ្ញាត​ព្យាយាម​ផ្ទៀងផ្ទាត់ មុន​នឹង​បោះបង់​ "
-"ហើយ​ត្រឡប់ទៅ​ជម្រើស​អ្នកប្រើ។"
+"ចំនួន​ដង​ដែលអ្នកប្រើ​ត្រូវ​បាន​អនុញ្ញាត​ព្យាយាម​ផ្ទៀងផ្ទាត់ មុន​នឹង​បោះបង់​ ហើយ​ត្រឡប់ទៅ​ជម្រើស​អ្នកប្រើ។"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -381,22 +381,18 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP ៖ មិន​អាច​អាន​បឋមកថា​របស់ XDMCP បាន​ទេ !"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-#| msgid "XMDCP: Incorrect XDMCP version!"
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP ៖ កំណែ XDMCP មិន​ត្រឹមត្រូវ!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-#| msgid "XMDCP: Unable to parse address"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP ៖ មិន​អាច​ញែកអាសយដ្ឋាន"
 
-#: ../libgdm/gdm-user-switching.c:72
-#| msgid "Unable to start new display"
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "មិន​អាច​បង្កើត​ការ​បង្ហាញថ្លា៖"
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
-#| msgid "Unable to open session"
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "មិន​អាច​ធ្វើ​ឲ្យ​សម័យ​សកម្ម៖"
 
@@ -435,422 +431,139 @@ msgstr "រូប​អេក្រង់​ត្រូវ​បាន​ថត
 msgid "Take a picture of the screen"
 msgstr "ថត​រូបភាព​អេក្រង់"
 
-#~ msgid "Display ID"
-#~ msgstr "លេខ​សម្គាល់​នៃ​ការ​​បង្ហាញ"
 
-#~ msgid "ID"
-#~ msgstr "លេខ​សម្គាល់"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "ឧបករណ៍​បម្រើ​កម្មវិធី​គ្រប់គ្រង​ការ​បង្ហាញ GNOME"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "មិន​អាច​ចាប់ផ្ដើម​ប្រព័ន្ធ​ចូល​បាន​ទេ"
 
-#~ msgid "Unable to authenticate user"
-#~ msgstr "មិន​អាច​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អ្នកប្រើ​បាន​ទេ"
 
-#~ msgid "Unable to authorize user"
-#~ msgstr "មិន​អាច​ផ្ដល់​សិទ្ធិ​ដល់​អ្នកប្រើ​បាន​ទេ"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "មិន​អាច​ស្ថាបនា​លិខិត​សម្គាល់​បាន​ទេ"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s ៖ បាន​បរាជ័យ​ក្នុង​ការ​តភ្ជាប់​ការ​បង្ហាញ​មេ '%s'"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "កំហុស​ក្នុង​ការ​ចាប់ផ្ដើម​ការ​សន្ទនា​ជាមួយ​ប្រព័ន្ធ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ - %s"
 
-#~ msgid "general failure"
-#~ msgstr "កំហុស​ទូទៅ"
 
-#~ msgid "out of memory"
-#~ msgstr "អស់​អង្គ​ចងចាំ"
 
-#~ msgid "application programmer error"
-#~ msgstr "កំហុស​អ្នក​សរសេរ​កម្មវិធី"
 
-#~ msgid "unknown error"
-#~ msgstr "មិន​ស្គាល់​កំហុស"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "កំហុស​ក្នុងការ​​ជូនដំណឹង​ដល់​​ប្រព័ន្ធ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ប្រអប់​បញ្ចូល​ឈ្មោះ​អ្នកប្រើ​ដែល​ពេញចិត្ត ៖ %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "កំហុស​ក្នុង​ការ​ជូនដំណឹង​ដល់​ប្រព័ន្ធ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ឈ្មោះ​ម៉ាស៊ីន​របស់​អ្នកប្រើ ៖ %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "កំហុស​ក្នុង​ការ​ជូនដំណឹង​ដល់​ប្រព័ន្ធ​ផ្ទៀងផ្ទាត់​ភាព​​ត្រឹមត្រូវ​អំពី​កុងសូល​របស់​អ្នកប្រើ ៖ %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "កំហុស​ក្នុង​ការ​ជូនដំណឹង​ដល់​ប្រព័ន្ធ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ការ​បង្ហាញ​ខ្សែ​អក្សរ ៖ %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "កំហុស​ក្នុង​ការ​ជូនដំណឹង​ដល់​ប្រព័ន្ធ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ការ​បង្ហាញ​លិខិត​សម្គាល់ xauth ៖ %s"
 
-#~ msgid "User %s doesn't exist"
-#~ msgstr "មិន​មាន​អ្នកប្រើ %s"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "មិន​មាន​ក្រុម %s"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "មិន​មាន Logdir %s ឬ​មិនមែន​ជា​ថត ។"
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "មិន​មាន Authdir %s ។ បោះបង់ ។"
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "Authdir %s មិនមែន​ជា​ថត ។ បោះបង់ ។"
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr "Authdir %s មិនមែន​ជា​របស់​អ្នកប្រើ %d ក្រុម %d ។ បោះបង់ ។"
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr "Authdir %s មាន​សិទ្ធិ​មិន​ត្រឹមត្រូវ %o ។ គួរតែ​ជា %o ។ បោះបង់ ។"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "កម្មវិធី​ពង្រីក​អេក្រង់ GNOME"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "ពង្រីក​ផ្នែក​ទាំងអស់​របស់​អេក្រង់"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "ក្ដារចុច​នៅ​លើ​អេក្រង់ GNOME"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "ប្រើ​ក្ដារ​ចុច​នៅ​លើ​អេក្រង់"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "កម្មវិធី​អាន​អេក្រង់ Orca"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "បង្ហាញ​ព័ត៌មាន​នៅ​លើ​អេក្រង់​ជា​សំឡេង ឬ​អក្សរ​មនុស្ស​ខ្វាក់"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ស្នាម​ផ្ដិត​ម្រាម​ដៃ"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "ចូល​ទៅ​ក្នុង​សម័យ​ដោយ​ប្រើ​ស្នាម​ផ្ដិត​ម្រាមដៃ"
 
-#~ msgid "Password Authentication"
-#~ msgstr "ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ពាក្យ​សម្ងាត់"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "ចូល​ទៅ​ក្នុង​សម័យ​ដោយ​ប្រើ​ឈ្មោះ​អ្នកប្រើ និង​ពាក្យ​សម្ងាត់"
 
-#~ msgid "Log In"
-#~ msgstr "ចូល"
 
-#~ msgid "Slot ID"
-#~ msgstr "លេខ​សម្គាល់​រន្ធ"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "រន្ធ​ដែល​កាត​ស្ថិត​នៅ​ក្នុង"
 
-#~ msgid "Slot Series"
-#~ msgstr "ស៊េរី​រន្ធ"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "គ្រឿង​សម្គាល់​កាត​ក្នុង​មួយ​រន្ធ"
 
-#~ msgid "name"
-#~ msgstr "ឈ្មោះ"
 
-#~ msgid "Module"
-#~ msgstr "ម៉ូឌុល"
 
-#~ msgid "smartcard driver"
-#~ msgstr "កម្មវិធី​បញ្ជា smartcard"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី Smartcard"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "ចូល​ទៅ​ក្នុង​សម័យ​ដោយ​ប្រើ smartcard"
 
-#~ msgid "Module Path"
-#~ msgstr "ផ្លូវ​ម៉ូឌុល"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "ផ្លូវ​ទៅកាន់​កម្មវិធី​បញ្ជា PKCS #11 របស់ smartcard"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "បាន​ទទួល​កំហុស ឬ​ផ្អាក​ពី​ប្រភព​ព្រឹត្តិការណ៍"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "មិន​អាច​ចាប់ផ្ដើម​ប្រព័ន្ធ​សុវត្ថិភាព NSS"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "រក​មិន​ឃើញ​កម្មវិធី​បញ្ជា smartcard ដែល​សមស្រប​ទេ"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "មិន​អាច​ផ្ទុក​កម្មវិធី​បញ្ជា smartcard '%s' បាន​ទេ"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "មិន​អាច​ឃ្លាំមើល​ព្រឹត្តិការណ៍​កាត​ដែល​នឹង​មក​ដល់​បាន​ទេ - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "បាន​ជួប​កំហុស​ដែល​មិន​បាន​រំពឹង​ទុក ខណៈ​ដែល​​រង់ចាំ​ព្រឹត្តិការណ៍ smartcard"
 
-#~ msgid "Authentication"
-#~ msgstr "ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ"
 
-#~ msgid "Log into session"
-#~ msgstr "ចូល​ទៅ​ក្នុង​សម័យ"
 
-#~ msgid "Value"
-#~ msgstr "តម្លៃ"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "ភាគរយ​នៃ​ពេលវេលា​ដែល​បាន​បញ្ចប់"
 
-#~ msgid "Inactive Text"
-#~ msgstr "អត្ថបទ​អសកម្ម"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "អត្ថបទ​នឹង​ត្រូវ​ប្រើ​នៅ​ក្នុង​ស្លាក ប្រសិនបើ​អ្នកប្រើ​ពុំ​ទាន់​បាន​ជ្រើស​ធាតុ​ណាមួយ"
 
-#~ msgid "Active Text"
-#~ msgstr "អត្ថបទ​សកម្ម"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "អត្ថបទ​ត្រូវ​ប្រើ​នៅ​ក្នុង​ស្លាក ប្រសិនបើ​អ្នកប្រើ​បាន​ជ្រើស​ធាតុ"
 
-#~ msgid "List Visible"
-#~ msgstr "បញ្ជី​ដែល​មើលឃើញ"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "ថា​តើ​បញ្ជី​កម្មវិធី​ជ្រើសរើស​អាច​មើល​ឃើញ​ដែរ​ឬ​ទេ"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %l:%M:%S %p"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %l:%M %p"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %l:%M:%S %p"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %l:%M %p"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "ចូល​ដោយ​ស្វ័យប្រវត្តិ…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "កំពុង​បោះបង់…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "ជ្រើស​ភាសា រួច​ចុច​ចូល"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "ផ្ទាល់ខ្លួន"
 
-#~ msgid "Custom session"
-#~ msgstr "សម័យ​ផ្ទាល់ខ្លួន"
 
-#~ msgid "Cancel"
-#~ msgstr "បោះបង់"
 
-#~ msgid "Computer Name"
-#~ msgstr "ឈ្មោះ​កុំព្យូទ័រ"
 
-#~ msgid "Login"
-#~ msgstr "ចូល"
 
-#~ msgid "Unlock"
-#~ msgstr "ដោះ​សោ"
 
-#~ msgid "Version"
-#~ msgstr "កំណែ"
 
-#~ msgid "Suspend"
-#~ msgstr "ផ្អាក"
 
-#~ msgid "Restart"
-#~ msgstr "ចាប់ផ្ដើម​ឡើងវិញ"
 
-#~ msgid "Shut Down"
-#~ msgstr "បិទ"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "មិន​ដឹង​ពេលវេលា​នៅ​សល់"
 
-#~ msgid "Panel"
-#~ msgstr "បន្ទះ"
 
-#~ msgid "Label Text"
-#~ msgstr "អត្ថបទ​ជា​ស្លាក"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "អត្ថបទ​ត្រូវ​ប្រើ​ជា​ស្លាក"
 
-#~ msgid "Icon name"
-#~ msgstr "ឈ្មោះ​រូបតំណាង"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "រូបតំណាង​ដែល​ត្រូវ​ប្រើ​ជាមួយ​ស្លាក"
 
-#~ msgid "Default Item"
-#~ msgstr "ធាតុ​លំនាំដើម"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "លេខ​សម្គាល់​ធាតុ​លំនាំដើម"
 
-#~ msgid "Max Item Count"
-#~ msgstr "ចំនួន​ធាតុ​អតិបរមា"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "ចំនួន​ធាតុ​អតិបរមា​ដែល​ត្រូវ​រក្សាទុក​នៅ​ក្នុង​បញ្ជី"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "ចូល​ពី​ចម្ងាយ (កំពុង​តភ្ជាប់​ទៅកាន់ %s…)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "ចូល​ពី​ចម្ងាយ (បាន​តភ្ជាប់​ទៅកាន់ %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "ចូល​ពី​ចម្ងាយ"
 
-#~ msgid "Session"
-#~ msgstr "សម័យ"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "អត្ថបទ​សារ​លើ​បដា នៅ​ពេល​កម្មវិធី​ជ្រើស​ទទេ"
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "កុំ​បង្ហាញ​អ្នកប្រើ​ដែល​ស្គាល់​ក្នុង​បង្អួច​ចូល"
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "បើក​ភាព​ងាយស្រួល​ប្រើ​របស់​កម្មវិធី​ជំនួយ​ក្ដារចុច"
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "បើក​ក្ដារចុច​នៅ​លើ​អេក្រង់"
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "បើក​កម្មវិធី​ពង្រីក​អេក្រង់"
 
-#~ msgid "Enable screen reader"
-#~ msgstr "បើក​កម្មវិធី​អាន​អេក្រង់"
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "ឈ្មោះ​រូបតំណាង​ដែល​ត្រូវ​ប្រើ​សម្រាប់​រូប​សញ្ញា​ស្វាគមន៍"
 
-#~ msgid "Recently selected languages"
-#~ msgstr "ភាសា​ដែល​បាន​ជ្រើស​ថ្មីៗ"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "កំណត់​ទៅជា​បញ្ជី​ភាសា​​​ដែល​បង្ហាញ​តាម​លំនាំដើម​នៅ​ក្នុង​បង្អួច​ចូល ។"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr "កំណត់​ទៅ​ជា​ឈ្មោះ​រូបតំណាង​ស្បែក​ដែល​ត្រូវ​ប្រើ​សម្រាប់​រូប​សញ្ញា​ស្វាគមន៍ ។"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បិទ​ការ​បង្ហាញ​អ្នកប្រើ​ដែល​ស្គាល់​នៅ​ក្នុង​បង្អួច​ចូល ។"
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់ XRandR ។"
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​ផ្ទៃ​ខាងក្រោយ ។"
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​សោ​មេឌៀ ។"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​ក្ដារចុច​នៅ​លើ​អេក្រង់ ។"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ជំនួយ​ដែល​ត្រូវ​គ្រប់គ្រង​ការ​កំណត់​ភាព​ងាយស្រួល​ប្រើ​របស់​ក្ដារចុច ។"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ពង្រីកអេក្រង់ ។"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​អាន​អេក្រង់ ។"
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​សំឡេង ។"
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​បើក​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​ xsettings ។"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "កំណត់​ទៅជា​ពិត ដើម្បី​ប្រើ Compiz ជា​កម្មវិធី​គ្រប់គ្រង​បង្អួច ។"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "សារ​អត្ថបទ​លើ​បដា​នឹង​ត្រូវ​ប្រើ​ក្នុង​បង្អួច​ចូល នៅ​ពេល​កម្មវិធី​ជ្រើស​អ្នកប្រើ​ទទេ ជំនួស​ឲ្យ "
-#~ "banner_message_text ។"
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "ពិត ប្រសិនបើ​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់ XRandR ត្រូវ​បាន​បើក ។"
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr "ពិត ប្រសិនបើ​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​ផ្ទៃ​ខាងក្រោយ​ត្រូវ​បាន​បើក ។"
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr "ពិត ប្រសិនបើ​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​សោ​មេឌៀ​ត្រូវ​បានបើក ។"
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "ពិត ប្រសិនបើ​កម្មវិធី​ជំនួយ​​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់​សំឡេង​ត្រូវ​បាន​បើក ។"
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr "ពិត ប្រសិនបើ​កម្មវិធី​ជំនួយ​របស់​កម្មវិធី​គ្រប់គ្រង​ការ​កំណត់ xsettings ត្រូវ​បាន​បើក ។"
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "ប្រើ Compiz ជា​កម្មវិធី​គ្រប់គ្រង​បង្អួច"
 
-#~ msgid "Duration"
-#~ msgstr "ថិរវេលា"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "ចំនួន​វិនាទី រហូតដល់​ឧបករណ៍​កំណត់​ពេល​ឈប់"
 
-#~ msgid "Start time"
-#~ msgstr "ពេលវេលា​ចាប់ផ្ដើម"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "ពេលវេលា​ដែល​ឧបករណ៍​កំណត់​ពេល​ត្រូវ​បាន​ចាប់ផ្ដើម"
 
-#~ msgid "Is it Running?"
-#~ msgstr "តើ​វា​កំពុងតែ​ដំណើរការ​ឬ ?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "ថា​តើ​ឧបករណ៍​កំណត់​ពេល​កំពុងតែ​ដំណើរការឬ"
 
-#~ msgid "Log in as %s"
-#~ msgstr "ចូល​ជា %s"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "ផ្សេងទៀត…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "ជ្រើស​គណនី​ផ្សេងទៀត"
 
-#~ msgid "Guest"
-#~ msgstr "ភ្ញៀវ"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "ចូល​ជា​ភ្ញៀវ​បណ្ដោះអាសន្ន"
 
-#~ msgid "Automatic Login"
-#~ msgstr "ចូល​ស្វ័យប្រវត្តិ"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "ចូល​ទៅ​ក្នុង​ប្រព័ន្ធ​ដោយ​ស្វ័យប្រវត្តិ បន្ទាប់​ពី​បាន​ជ្រើស​ជម្រើស"
 
-#~ msgid "Currently logged in"
-#~ msgstr "កំពុង​តែ​បាន​ចូល"
+

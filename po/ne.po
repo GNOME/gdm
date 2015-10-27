@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.gnome-2-14.ne\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-09-18 05:03+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2014-09-19 06:58+0400\n"
 "Last-Translator: Pawan Chitrakar <chautari@gmail.com>\n"
 "Language-Team: Nepali Translation Team <chautari@gmail.com>\n"
@@ -27,39 +27,29 @@ msgstr ""
 "X-Poedit-Language: Nepali\n"
 "X-Poedit-Country: NEPAL\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom चारित्रिक यन्त्र होईन "
 
-#: ../common/gdm-common.c:619
-#: ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344
-#: ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "हालको सेसन पहिचान गर्न सकिएन"
 
-#: ../common/gdm-common.c:626
-#: ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "प्रयोगकर्ता सत्र परिवर्तन गर्न असक्षम"
-
-#: ../common/gdm-common.c:781
-#: ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "हालको सिट पहिचान गर्न सकिएन"
 
-#: ../common/gdm-common.c:791
-#: ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, fuzzy, c-format
-msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
 msgstr "हालको लगईन "
 
-#: ../common/gdm-common.c:799
-#: ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "प्रणालीबाट नया लगईन पर्दा शुरु गर्न असक्षम"
@@ -69,60 +59,77 @@ msgstr "प्रणालीबाट नया लगईन पर्दा �
 msgid "could not find user \"%s\" on system"
 msgstr "यो प्रणालीमा  \"%s\" प्रयोगकर्ता भेटाउन सकिएन"
 
-#: ../daemon/gdm-manager.c:943
-#: ../daemon/gdm-manager.c:1203
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"केहि आन्तरिक त्रुटि कारणले X सर्भर (तपाईँको ग्राफिकल परिवेश) सुरू गर्न सकिएन । कृपया "
+"तपाईँको प्रणाली प्रशासकसंगसम्पर्क राख्नुहोस् वा तपाईँको समस्या पहिचान गर्नका लागि सिस्लग "
+"जाँच गर्नुहोस्\n"
+"सोही समयमा यो प्रदर्शन अक्षम पारिनेछ\n"
+"समस्या सुधारिए पछि GDM पुन: चालु गर्नुहोस् ।"
+
+#: ../daemon/gdm-manager.c:766
+#, fuzzy
+msgid "No display available"
+msgstr "सेसन उपलब्ध छैन"
+
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "सेसन उपलब्ध छैन"
 
-#: ../daemon/gdm-manager.c:953
-#, c-format
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "प्रयोगकर्ता लगईन गर्न अगाडि मात्रै चलाउन मिल्छ"
 
-#: ../daemon/gdm-manager.c:962
-#, c-format
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Caller not GDM"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "सर्भरलाई  %s बाट स्पाउन्ड् गरिएको छ तर त्यो प्रयोगकर्ता यहाँ अवस्थित छैन"
 
-#: ../daemon/gdm-server.c:448
-#: ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr " %d मा समूह आइ डी सेट सकिएन"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s को लागि सुरुसमुह () असफल"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "%d मा प्रयोगकर्ता आइ डी सेट गर्न सकिएन"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "लग फाइल खोल्न सकेन: %s: %s"
 
-#: ../daemon/gdm-server.c:559
-#: ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s देखि %sमा सेट गर्दा त्रुटि"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: सर्भरको प्राथमिकताहरू %d मा सेट हुन सक्दैन: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s प्रदर्शनका लागि खाली सर्भर आदेश ।"
@@ -151,101 +158,109 @@ msgstr " प्रदर्शन यन्त्र"
 msgid "The display device"
 msgstr "प्रदर्शन यन्त्र"
 
-#: ../daemon/gdm-session.c:1217
-#| msgid "%s: Could not read Authentication Names"
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "प्रमाणीकरण मद्दत प्रकिय बनाउन सकिएन"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "खाताको लागि तोकिएको समय समाप्त भयो"
 
-#: ../daemon/gdm-session-worker.c:851
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "त्यो कार्य भएन : पुन प्रयास गर्नुस "
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "प्रयोगकर्ता नाम:"
 
-#: ../daemon/gdm-session-worker.c:1241
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "तपाईको पासवर्डको अवधि समाप्त भयो , नया परिनत गर्नुस्"
 
-#: ../daemon/gdm-session-worker.c:1480
-#: ../daemon/gdm-session-worker.c:1497
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "प्रयोगकर्ता खाता उपलब्ध छैन"
 
-#: ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "प्रयोगकर्ता परिवर्तन गर्न असक्षम"
 
-#: ../daemon/gdm-simple-slave.c:871
-msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr ""
-"केहि आन्तरिक त्रुटि कारणले X सर्भर (तपाईँको ग्राफिकल परिवेश) सुरू गर्न सकिएन । कृपया तपाईँको प्रणाली प्रशासकसंगसम्पर्क राख्नुहोस् वा तपाईँको समस्या पहिचान गर्नका लागि सिस्लग जाँच गर्नुहोस्\n"
-"सोही समयमा यो प्रदर्शन अक्षम पारिनेछ\n"
-"समस्या सुधारिए पछि GDM पुन: चालु गर्नुहोस् ।"
+#: ../daemon/gdm-wayland-session.c:385
+#, fuzzy
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME प्रदर्शन प्रबन्धक सेसन कारक"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "सकेट सिर्जना गर्न असफल"
 
-#: ../daemon/main.c:125
-#: ../daemon/main.c:138
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:687
+#, fuzzy
+msgid "Listen on TCP socket"
+msgstr "UDP पोर्टलाई सुन्नुहोस्:"
+
+#: ../daemon/gdm-x-session.c:698
+#, fuzzy
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME प्रदर्शन प्रबन्धक सेसन कारक"
+
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
-#| msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID फाइल %s लेख्न सकिदैन, सम्भवत डिस्क खाली स्थान बाट बाहिर छ ।  त्रुटि: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "एक फेरमात्र चलाउने फोल्डर %s असफल : %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "%s;%s लगडाइरेक्टरी सिर्जना गर्न असफल भयो।"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM प्रयोगकर्ता (%s) लाई फेला पार्न सकिदैन । परित्याग हुँदैछ !"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM प्रयोगकर्ता रुट हुनुहुँदैन । परित्याग हुँदैछ !"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM समूह '%s' फेला पार्न सकेन । परित्याग हुँदैछ !"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM समूह रुट हुनुहुँदैन । परित्याग गर्दै !"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "सबै चेतावनीहरू घातक बनाउनुहोस्"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "केहि समय पछि निस्कनुहोस् (डिबग लागि)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "GDM संस्करण मुद्रण गर्नुहोस्"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "जिनोमको  प्रदर्शन प्रबन्धक"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "रुटले मात्र GDM चलाउन सक्छ"
 
@@ -255,15 +270,13 @@ msgstr "रुटले मात्र GDM चलाउन सक्छ"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME प्रदर्शन प्रबन्धक सेसन कारक"
 
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr " लगइन सञ्झ्याल"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "जिनोम पात्रो"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "सञ्झ्याल प्रबन्धक र क्मपोजिटिङ्ग "
 
@@ -272,7 +285,9 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "औठाछाप बाट लगईन गर्न दिने वा नदिने"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
 msgstr "ओँठाछाप दर्ता भएको प्रयोगकर्तालाई सो ओँठाछाप बाट लगईन गर्न अनुमति दिनुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
@@ -280,7 +295,9 @@ msgid "Whether or not to allow smartcard readers for login"
 msgstr "स्मर्तकार्डबाट लगईन गर्न दिने या नदिने"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
 msgstr "स्मार्टकार्डबाट लगईन गर्न प्रयोगकर्तालाई अनुमति प्रदान गर्नुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
@@ -288,7 +305,9 @@ msgid "Whether or not to allow passwords for login"
 msgstr "लगईन गर्न पासवर्द अनुमति दिने या नदिने"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid "The login screen can be configured to disallow password authentication, forcing the user to use smartcard or fingerprint authentication."
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
@@ -296,11 +315,17 @@ msgid "Path to small image at top of user list"
 msgstr "प्रयोगकर्ता सुचिको माथि सानो छवि "
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
-msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
 msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
 msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
@@ -308,7 +333,9 @@ msgid "Avoid showing user list"
 msgstr "प्रयोगकर्ता सुची नदेखाउनुस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:11
-msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
 msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
@@ -336,12 +363,13 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "लगईन सञ्झ्यालमा फेरि सुरु गर्ने बटन नदेखाउनुहोस्"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
-#| msgid "Authentication failure!\n"
 msgid "Number of allowed authentication failures"
 msgstr "प्रमाणिकरण असफल कतिपटक गर्न दिनुहुन्छ"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
-msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
 msgstr ""
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
@@ -364,13 +392,11 @@ msgstr "XDMCP: गलत XDMCP संस्करण !"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ठेगपदवर्णन गर्न अक्षम"
 
-#: ../libgdm/gdm-user-switching.c:72
-#| msgid "%s: failed to connect to parent display '%s'"
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "पर्दा बनाउन असफल"
 
-#: ../libgdm/gdm-user-switching.c:183
-#: ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "सेसन सक्रिय गर्न अक्षम"
 
@@ -382,15 +408,12 @@ msgstr "खालि VERSION आदेशमात्रै चलाउनम�
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../utils/gdmflexiserver.c:46
-#: ../utils/gdmflexiserver.c:47
-#: ../utils/gdmflexiserver.c:49
-#: ../utils/gdmflexiserver.c:50
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "बेवास्ता - अनुकूलता को लागि"
 
-#: ../utils/gdmflexiserver.c:48
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "निर्गतमा भएको त्रुटि सँच्याइदैं"
 
@@ -412,2774 +435,741 @@ msgstr "स्क्रिनको तस्बिर लिइयो"
 msgid "Take a picture of the screen"
 msgstr "स्क्रिनको तस्वीर लिनुहोस्"
 
-#~ msgid "CDE"
-#~ msgstr "CDE"
-
-#~ msgid "This session logs you into CDE"
-#~ msgstr "यो सत्रले तपाईँलाई CDE मा लग गर्दछ ।"
-
-#~ msgid "Default System Session"
-#~ msgstr "पूर्वनिर्धारित प्रणाली सत्र"
-
-#~ msgid "This is the default system session"
-#~ msgstr "यो पूर्वनिर्धारित प्रणाली सत्र हो"
-
-#~ msgid ""
-#~ "I cannot start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration program.  Then restart GDM."
-#~ msgstr ""
-#~ "मैले X सर्भर (तपाईँको ग्राफिकल इन्टरफेसमा) सुरू गर्न सकिन । यो राम्रो संग सेटअप गरे "
-#~ "जस्तो देखिदैन । तपाईँ कन्सोलमा लगइन गर्नुहोस् वा X कन्फिगरेसन कार्यक्रम पुन: सुरू गर्नुहोस् "
-#~ "। त्यसपछि GDM पुन:सुरू गर्नुहोस् ।"
-
-#~ msgid ""
-#~ "Would you like me to try to run the X configuration program?  Note that "
-#~ "you will need the root password for this."
-#~ msgstr ""
-#~ "तपाईँ X कन्फिगरेसन कार्यक्रम चलाउन मलाई कोसिस गर्न लगाउन चाहानुहुन्छ ?  याद "
-#~ "राख्नुहोस् कि त्यसका लागि तपाईँलाई रुट पासवर्ड चाहिन्छ ।"
-
-#~ msgid "Please type in the root (privileged user) password."
-#~ msgstr "कृपया रुटमा (विशेषाधिकार पाएको प्रयोगकर्ता) पासवर्ड टाइप गर्नुहोस् ।"
-
-#~ msgid "I will now try to restart the X server again."
-#~ msgstr "म X सर्भर पुन: सुरू गर्न प्रयास गर्ने छैन ।"
-
-#~ msgid ""
-#~ "I will disable this X server for now.  Restart GDM when it is configured "
-#~ "correctly."
-#~ msgstr ""
-#~ "म यो X सर्भर लाई अहिलेका लागि अक्षम बनाउनेछु । जब यसलाई राम्रो सँग कन्फिगर गरिन्छ "
-#~ "GDM पुन: सुरू गर्नुहोस् ।"
-
-#~ msgid ""
-#~ "I cannot start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
-#~ msgstr ""
-#~ "मैले X सर्भर (तपाईँको ग्राफिकल इन्टरफेसा) सुरू गरन सकिन । यसको सेटअप ठीक संग भएको छैन "
-#~ "जस्तो लाग्दछ । के तपाईँ Xसर्भरको परिमाण हेरेर समस्या पहिचान गर्न चाहानुहुन्छ ?"
-
-#~ msgid "Would you like to view the detailed X server output as well?"
-#~ msgstr "के तपाईँ राम्रो संगX सर्भरको प्रतिफल विवरण हेर्न चाहानुहुन्छ ?"
-
-#~ msgid ""
-#~ "I cannot start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
-#~ msgstr ""
-#~ "मैले X सर्भर (तपाईँको ग्राफिकल इन्टरफेस) सुरू गर्न सक्तिन ।  सूचक यन्त्र (तपाईँको माउस) "
-#~ "राम्रो संग सेटअप गरिएको छैन जस्तो देखिन्छ । के तपाईँ समस्या पहिचान गर्न X सर्भर "
-#~ "प्रतिफल हेर्न चाहनुहुन्छ ?"
-
-#~ msgid ""
-#~ "Would you like me to try to run the mouse configuration program?  Note "
-#~ "that you will need the root password for this."
-#~ msgstr ""
-#~ "के तपाईँ मलाई माउस कन्फिगरेसन कार्यक्रम चलाउन प्रयास गराउन चाहानुहुन्छ ?  याद "
-#~ "राख्नुहोस् कि, यसको लागि तपाईँलाई रुट पासवर्डको आवश्यकता पर्नेछ ।"
-
-#~ msgid ""
-#~ "This is the failsafe xterm session.  Windows now have focus only if you "
-#~ "have your cursor above them.  To get out of this mode type 'exit' in the "
-#~ "window in the upper left corner"
-#~ msgstr ""
-#~ "यो failsafe xterm सत्र हो । यदि तिनिहरू माथि तपाईँको कर्सर राखेको खण्डमा मात्र "
-#~ "सञ्झ्यालहरुले फोकस गर्दछन् ।  यसबाट निक्लिनका लागि तपाईँले सञ्झ्याल माथिको बायाँ "
-#~ "कुनामा 'exit' टाइप गर्नुहोस् ।"
-
-#~ msgid ""
-#~ "I could not start your session and so I have started the failsafe xterm "
-#~ "session.  Windows now have focus only if you have your cursor above "
-#~ "them.  To get out of this mode type 'exit' in the window in the upper "
-#~ "left corner"
-#~ msgstr ""
-#~ "मैले तपाईँको सत्र सुरू गर्न नसकेकाले failsafe xterm सत्र सुरू गरेको हो । यदि तपाईँले "
-#~ "तिनिहरू माथि कर्सर राखेको खण्डमा सञ्झ्याहरुले अहिले फोकस मात्र गर्दछन् । यसबाट "
-#~ "निक्लिनका लागि तपाईँले सञ्झ्यालको माथिको बायाँ कुनामा 'exit' टाइप गर्नुहोस् ।"
-
-#~ msgid "This session logs you into GNOME"
-#~ msgstr "यो सत्रले तपाईँलाई जिनोममा लग गर्दछ ।"
-
-#~ msgid "%s: Could not write new authorization entry: %s"
-#~ msgstr "%s: नयाँ प्रमाणीकरण गरिएको प्रविष्टि लेख्न सकेन: %s"
-
-#~ msgid ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-#~ msgstr ""
-#~ "%s: नयाँ प्रमाणीकरण गरिएको प्रविष्टि लेख्न सकेन । सम्भवत: डिस्कको खाली स्थान बाहिर "
-#~ "हुनुपर्दछ ।"
-
-#~ msgid ""
-#~ "GDM could not write a new authorization entry to disk.  Possibly out of "
-#~ "diskspace.%s%s"
-#~ msgstr ""
-#~ "GDM ले डिस्कमा नयाँ प्रमाणिकृत प्रविष्टि लेख्न सकेन । सम्भवत डिस्कको खाली स्थान बाहिर "
-#~ "हुनुपर्दछ ।%s%s"
 
-#~ msgid "%s: Could not make new cookie file in %s"
-#~ msgstr "%s: %s मा नयाँ कुकी फाइल बनाउन सकेन"
 
-#~ msgid "%s: Cannot safely open %s"
-#~ msgstr "%s:%s सुरक्षित तबरले खोल्न सकिदैन"
 
-#~ msgid "%s: Could not open cookie file %s"
-#~ msgstr "%s:%s ले कुकी फाइल खोल्न सकेन"
 
-#~ msgid "%s: Could not lock cookie file %s"
-#~ msgstr "%s: %s ले कुकी फाइलमा लक गर्न सकेन"
 
-#~ msgid "%s: Could not write cookie"
-#~ msgstr "%s: कुकी लेख्न सकिदैन"
 
-#~ msgid "%s: Ignoring suspiciously looking cookie file %s"
-#~ msgstr "%s: शङ्कास्पद हर्ने कुकि फाइल %s उपेक्षा गर्दै"
 
-#~ msgid "Can't write to %s: %s"
-#~ msgstr "%s मा लेख्न सकिदैन: %s"
 
-#~ msgid ""
-#~ "The display server has been shut down about 6 times in the last 90 "
-#~ "seconds. It is likely that something bad is going on.  Waiting for 2 "
-#~ "minutes before trying again on display %s."
-#~ msgstr ""
-#~ "अन्तिम ९० सेकेन्डमा प्रदर्शन सर्भर ६ चोटि बन्द भएको छ । केही खराब भएको जस्तो छ ।  २ "
-#~ "मिनेट प्रतिक्षा गरे पछि %s प्रदर्शन गर्न फेरि प्रयास गर्दै गर्नुहोस् ।"
 
-#~ msgid "%s: Cannot create pipe"
-#~ msgstr "%s: पाइप सिर्जना गर्न सकिदैन"
 
-#~ msgid "%s: Failed forking GDM slave process for %s"
-#~ msgstr "%s: %s का लागि GDM दास प्रक्रिया फ्रकिङ् असफल"
 
-#~ msgid "%s not a regular file!\n"
-#~ msgstr "%s नियमित फाइल होइन !\n"
 
-#~ msgid ""
-#~ "\n"
-#~ "... File too long to display ...\n"
-#~ msgstr ""
-#~ "\n"
-#~ "... फाइल प्रदर्शन गर्नलाई धेरै लामो ...\n"
 
-#~ msgid "%s could not be opened"
-#~ msgstr "%s खोल्न सकेन"
 
-#~ msgid "%s: Cannot fork to display error/info box"
-#~ msgstr "%s: प्रदर्शनमा त्रुटि/सूचना बाकस फ्रोक गर्न सक्दैन"
 
-#~ msgid "%s: Directory %s does not exist."
-#~ msgstr "%s: डाइरेक्टरी %s अवस्थित छैन ।"
 
-#~ msgid "%s: %s is not owned by uid %d."
-#~ msgstr "%s:%s uid %d को स्वामित्वमा छैन ।"
 
-#~ msgid "%s: %s is writable by group."
-#~ msgstr "%s: %s समूह द्वारा लेख्न योग्य छ ।"
 
-#~ msgid "%s: %s is writable by other."
-#~ msgstr "%s: %s अरूबाट लेख्न योग्य छ ।"
 
-#~ msgid "%s: %s does not exist but must exist."
-#~ msgstr "%s: %s अवस्थित हुन जरुरि हुन्छ तर छैन ।"
 
-#~ msgid "%s: %s is not a regular file."
-#~ msgstr "%s: %s नियमित फाइल होइन ।"
 
-#~ msgid "%s: %s is writable by group/other."
-#~ msgstr "%s:%s समूह/अन्य द्धारा लेख्न योग्य छ ।"
 
-#~ msgid "%s: %s is bigger than sysadmin specified maximum file size."
-#~ msgstr "%s: %s sysadmin बाट निर्दृष्ट गरिएको फाइल साइज भन्दा ठूलो छ ।"
 
-#~ msgid "%s: Could not make socket"
-#~ msgstr "%s: सकेट बनाउन सकेन"
 
-#~ msgid "%s: Could not bind socket"
-#~ msgstr "%s: सकेट बाइन्ड गर्न सकेन"
 
-#~ msgid "%s: Could not make FIFO"
-#~ msgstr "%s: FIFO बनाउन सकेन"
 
-#~ msgid "%s: Could not open FIFO"
-#~ msgstr "%s: FIFO खोल्न सकेन"
 
-#~ msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-#~ msgstr "PID फाइल %s लेख्न सकिदैन, सम्भवत डिस्क खाली स्थानबाट बाहिर छ । त्रुटि:%s\n"
 
-#~ msgid "%s: fork () failed!"
-#~ msgstr "%s: फ्रोर्क() असफल !"
 
-#~ msgid "%s: setsid () failed: %s!"
-#~ msgstr "%s: setsid() असफल: %s !"
 
-#~ msgid "%s: Trying failsafe X server %s"
-#~ msgstr "%s: failsafe X सर्भर %s प्रयास गर्दै"
 
-#~ msgid "%s: Running the XKeepsCrashing script"
-#~ msgstr "%s: XKeepsCrashin चलाउदै"
 
-#~ msgid ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
-#~ msgstr ""
-#~ "मैले X सर्भर (तपाईँको ग्राफिकल इन्टरफेसमा) सुरू गर्न सकिदैन । यो राम्रो सँग सेटअप नभएको "
-#~ "जस्तो लाग्छ । तपाईँ कन्सोलमा लगइन गर्नुहोस् वा X कन्फिगरेसन कार्यक्रम पुन: चालु "
-#~ "गर्नुहोस्, त्यसपछि GDM पुन: सुरू गर्नुहोस् ।"
 
-#~ msgid ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
-#~ msgstr "छोटो समय अबधिमा X सर्भर धेरै पटक सुरू गर्न असफल; प्रदर्शन %s अक्षम गर्दै"
 
-#~ msgid "Master suspending..."
-#~ msgstr "मास्टर निलम्बन गर्दैछ..."
 
-#~ msgid "System is restarting, please wait ..."
-#~ msgstr "प्रणाली फेरि सुरू हुँदैछ, कृपया प्रतिक्षा गर्नुहोस् ..."
 
-#~ msgid "System is shutting down, please wait ..."
-#~ msgstr "प्रणाली बन्द हुँदैछ, कृपया प्रतिक्षा गर्नुहोस् ..."
 
-#~ msgid "Master halting..."
-#~ msgstr "मास्टर हाल्टिङ्ग..."
 
-#~ msgid "%s: Halt failed: %s"
-#~ msgstr "%s: हाल्ट असफल भयो: %s"
 
-#~ msgid "Restarting computer..."
-#~ msgstr "कम्प्युटर फेरि सुरू हुँदैछ..."
 
-#~ msgid "%s: Restart failed: %s"
-#~ msgstr "%s: फेरि सुरू असफल: %s"
 
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
-#~ msgstr ""
-#~ "प्रदर्शन %s बाट जब त्यँहा कुनै प्रणाली मेनु हुदैन, GDM फेरि सुरू गर्नुहोस्, मेसिन फेरि सुरू "
-#~ "गर्नुहोस्, निलम्बन गर्नुहोस्, वा हल्ट गर्न अनुरोध गर्नुहोस्"
 
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
-#~ msgstr ""
-#~ "GDM फेरि सुरू गर्नुहोस्, मेसिन फेरि सुरू गर्नुहोस्,स्थिर नरहेको प्रदर्शन %s बाट अनुरोध "
-#~ "निलम्बर गर्नुहोस् वा हल्ट गर्नुहोस्"
 
-#~ msgid "%s: Aborting display %s"
-#~ msgstr "%s: प्रदर्शन %s परित्याग गर्दैछ"
 
-#~ msgid "GDM restarting ..."
-#~ msgstr "GDM फेरि सुरू गर्दै ..."
 
-#~ msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-#~ msgstr "मुख्य डेइमोन: Got SIGABRT, केही ठूलो त्रुटि भयो, तल जाँदैछ !"
 
-#~ msgid "Do not fork into the background"
-#~ msgstr "पृष्ठभूमिमा फ्रोक नगर्नुहोस्"
 
-#~ msgid "No console (static) servers to be run"
-#~ msgstr "कुनै कन्सोलमा (स्थिर) सर्भरहरू चलाउनु पर्ने छैन"
 
-#~ msgid "Alternative defaults configuration file"
-#~ msgstr "वैकल्पिक पूर्वनिर्धारितहरू कन्फिगरेसन फाइल"
 
-#~ msgid "CONFIGFILE"
-#~ msgstr "CONFIGFILE"
 
-#~ msgid "Preserve LD_* variables"
-#~ msgstr "LD_* चलहरू जोगाउनुहोस् ।"
 
-#~ msgid "Start the first X server but then halt until we get a GO in the fifo"
-#~ msgstr "पहिले X सर्भर सुरू गर्नुहोस् तर त्यसपछि fifo मा GO नपाउञ्जेल हल्ट गर्नुहोस् ।"
 
-#~ msgid "Can't open %s for writing"
-#~ msgstr "लेख्नका लागि %s खोल्न सकिदैन"
 
-#~ msgid ""
-#~ "Error on option %s: %s.\n"
-#~ "Run '%s --help' to see a full list of available command line options.\n"
-#~ msgstr ""
-#~ "विकल्प %s मा त्रुटि छ: %s ।\n"
-#~ "उपलब्ध आदेश लाइन विकल्पहरुको पूरा सूची हेर्नलाई '%s --help' चलाउनुहोस् ।\n"
 
-#~ msgid "%s: Error setting up %s signal handler: %s"
-#~ msgstr "%s: %s संकेत ह्यान्डलर सेटिङ् अपमा त्रुटि: %s"
 
-#~ msgid "GDM already running. Aborting!"
-#~ msgstr "GDM पहिले नै चलिरहेको छ । परित्याग गरिंदैछ !"
 
-#~ msgid "%s: Error setting up CHLD signal handler"
-#~ msgstr "%s: CHLD संकेत ह्यान्डलर सेटिङ् अप त्रुटि"
 
-#~ msgid "DYNAMIC request denied: Not authenticated"
-#~ msgstr "DYNAMIC अनुरोध अस्विकृत: प्रमाणीकरण गरिएको छैन"
 
-#~ msgid "%s request denied: Not authenticated"
-#~ msgstr "%s अनुरोध अस्विकृत: प्रमाणीकरण गरिएको छैन"
 
-#~ msgid "Unknown server type requested; using standard server."
-#~ msgstr "मानक सर्भर प्रयोग गर्दै; अज्ञात सर्भर प्रकार अनुरोध गरियो ।"
 
-#~ msgid ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
-#~ msgstr ""
-#~ "मानक सर्भर प्रयोग गर्दै; लचकदार सर्भर प्रयोग गर्नका लागि %s अनुरोधित सर्भर अनुमति "
-#~ "दिइदैन ।"
 
-#~ msgid "%s: No GDM configuration file: %s. Using defaults."
-#~ msgstr "%s: GDM कन्फिगरेसन फाइल होइन: %s । पूर्वनिर्धारितहरू प्रयोग गर्दै ।"
 
-#~ msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
-#~ msgstr "%s: BaseXsession रित्तो; %s/GDM/Xsession प्रयोग गर्दै"
 
-#~ msgid "%s: Standard X server not found; trying alternatives"
-#~ msgstr "%s: मानक X सर्भर फेला परेन, विकल्पहरुको प्रयास गर्दै"
 
-#~ msgid "%s: No greeter specified."
-#~ msgstr "%s: ग्रिटर निर्दृष्ट गरिएको छैन ।"
 
-#~ msgid "%s: No remote greeter specified."
-#~ msgstr "%s: कुनै टाढाँको ग्रिटर निर्दृष्ट गरिएको छैन ।"
 
-#~ msgid "%s: No sessions directory specified."
-#~ msgstr "%s: कुनै सत्रको डाइरेक्टरी निर्दृष्ट गरिएको छैन ।"
 
-#~ msgid ""
-#~ "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
-#~ msgstr "%s: XDMCP ले त्यहा समर्थन नभएको बेला XDMCP सक्षम पारियो, यसलाई बन्द गर्दै"
 
-#~ msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
-#~ msgstr "%s:TimedLoginDelay ५ भन्दा कम छ । ५ लाई पूर्वनिर्धारित गर्दै ।"
 
-#~ msgid "%s: Priority out of bounds; changed to %d"
-#~ msgstr "%s: सीमाहरू प्राथमिकता बाहिर; %d मा परिवर्तन गर्नुहोस्"
 
-#~ msgid "%s: Empty server command; using standard command."
-#~ msgstr "%s: रित्तो सर्भर आदेश; मानक आदेश प्रयोग गर्दैछ ।"
 
-#~ msgid ""
-#~ "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
-#~ msgstr ""
-#~ "%s: Logdir %s अवस्थित छैन वा डाइरेक्टरी होइन । ServAuthDir %s प्रयोग गर्दै ।"
 
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "does not exist. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "सर्भर अधिकार प्रदत्त डाइरेक्टरी (daemon/ServAuthDir) %s मा सेट गरिएको हुन्छ तर यो "
-#~ "अवस्थित छैन । GDM कन्फिरेसनन सच्याएर GDM फेरि सुरू गर्नुहोस् ।"
 
-#~ msgid "%s: Authdir %s does not exist. Aborting."
-#~ msgstr "%s: Authdir %s अवस्थित छैन । परित्याग गर्दै ।"
 
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "is not a directory. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "सर्भर अधिकारप्रदत्त डाइरेक्टरी (daemon/ServAuthDir) %s मा सेट गरिएको हुन्छ तर यो "
-#~ "डाइरेक्टरी होइन । कृपया GDM कन्फिरेसनन सँच्याएर GDM फेरि सुरू गर्नुहोस् ।"
 
-#~ msgid "%s: Authdir %s is not a directory. Aborting."
-#~ msgstr "%s: Authdir %s डाइरेक्टरी होइन । परित्याग गर्दैछ ।"
 
-#~ msgid "%s: Invalid server line in config file. Ignoring!"
-#~ msgstr "%s: कन्फिग फाइलमा सर्भर लाइन अवैध छ । उपेक्षा गर्दैछ !"
 
-#~ msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-#~ msgstr ""
-#~ "%s: XDMCP लाई अक्षम गरियो र कुनै स्थिर सर्भरहरू परिभाषा गरिएको छैन । परित्याग "
-#~ "गर्दैछ !"
 
-#~ msgid ""
-#~ "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to "
-#~ "allow configuration!"
-#~ msgstr ""
-#~ "%s: XDMCP अक्षम भयो र कुनै स्थिर सर्भर परिभाषित गरिएको छैन । यसमा %s थप्दा: %d "
-#~ "लाई कन्फिगरेसन अनुमति दिन्छ !"
 
-#~ msgid ""
-#~ "XDMCP is disabled and GDM cannot find any static server to start.  "
-#~ "Aborting!  Please correct the configuration and restart GDM."
-#~ msgstr ""
-#~ "XDMCP अक्षम गरिएको छ र GDM ले कुनै स्थानीय सर्भर सुरू गर्न सकेन । परित्याग हुँदैछ ! "
-#~ "कृपया %s कन्फिगरेसनलाई सँच्याएर GDM सुरू गर्नुहोस् ।"
 
-#~ msgid ""
-#~ "The GDM user '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr ""
-#~ "GDM प्रयोगकर्ता अवस्थित छैन । कृपया %s GDM कन्फिगरेसन सच्याउनुहोस् र GDM फेरि सुरू "
-#~ "गर्नुहोस् ।"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #, fuzzy
-#~ msgid ""
-#~ "The GDM user is set to be root, but this is not allowed since it can pose "
-#~ "a security risk.  Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "GDM प्रयोगकर्ता रुट हुन सेट गरिएको छ तर यो संग सुरक्षा खतरा भएकाले यसलाई अनुमिति "
-#~ "दिइदैन । GDM कन्फिगरेसन सच्याएर GDM फेरि सुरू गर्नुहोस् ।"
-
-#~ msgid ""
-#~ "The GDM group '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr ""
-#~ "GDM समूह '%s' अवस्थित छैन । कृपया GDM कन्फिगरेसन सँच्याएर GDM फेरि सुरू गर्नुहोस् ।"
-
-#~ msgid ""
-#~ "The GDM group is set to be root, but this is not allowed since it can "
-#~ "pose a security risk. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "GDM समूह लाई रुटमा सेट गरिएको छ, तर यो गर्न हुँदैन किनभने यसले सेक्युरिटि खतरा राखेको "
-#~ "हुन सक्छ । कृपया GDM कन्फिगरेसन सँच्याएर GDM फेरि सुरू गर्नुहोस् ।"
-
-#~ msgid "%s: Greeter not found or can't be executed by the GDM user"
-#~ msgstr "%s मा ग्रिटर भेट्टाउन सकिएन वा GDM प्रयोगकर्ताले कार्यान्वयन गर्न सकेन"
-
-#~ msgid "%s: Remote greeter not found or can't be executed by the GDM user"
-#~ msgstr "%s मा दूरगामी ग्रिटर भेटाउन सकिएन वा GDM प्रयोगकर्ताले कार्यान्वयन गर्न सकेन"
-
-#~ msgid "%s: Chooser not found or it can't be executed by the GDM user"
-#~ msgstr "%s मा दूरगामी ग्रिटर भेटाउन सकिएन वा GDM प्रयोगकर्ताले कार्यान्वयन गर्न सकेन"
-
-#~ msgid "No daemon/ServAuthDir specified in the GDM configuration file"
-#~ msgstr "कुनै पनि daemon/ServAuthDir GDM कन्फिगरेसन फाइलमा तोकिएको छैन"
-
-#~ msgid "%s: No daemon/ServAuthDir specified."
-#~ msgstr "%s मा कुनै daemon/ServAuthDir तोकिएको छैन ।"
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but is "
-#~ "not owned by user %s and group %s. Please correct the ownership or GDM "
-#~ "configuration and restart GDM."
-#~ msgstr ""
-#~ "सर्भर अधिकारप्रर्दत्त डाइरेक्टरी (daemon/ServAuthDir) लाई %sमा सेट गरिएको छ । तर "
-#~ "प्रयोगकर्ता %s र समूह %s को स्वामित्वमा छैन । कृपया अधीनता वा GDM कन्फिगरेसन "
-#~ "सँच्याउनुहोस् र GDM फेरि सुरू गर्नुहोस् ।"
-
-#~ msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
-#~ msgstr "%s: प्रयोगकर्ता %s,वा समूह %sको अधिनमा  Authdir %s छैन । परित्याग हुँदैछ ।"
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but has "
-#~ "the wrong permissions: it should have permissions of %o. Please correct "
-#~ "the permissions or the GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "सर्भर अधिकारप्रदान डाइरेक्टरी (daemon/ServAuthDir) लाई %s मा सेट गरिएको छ तर "
-#~ "गलत अनुमतिहरू छन्: अनुमतिहरू %o को हुनुपर्ने हो । कृपया अनुमतिहरू वा GDM कन्फिगरेसन "
-#~ "सँच्याएर GDM फेरि सुरू गर्नुहोस् ।"
-
-#~ msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr "%s: Authdir %sसंगगलत अनुमतिहरू %o छन् । %o हुनुपर्ने हो । परित्याग गर्दै ।"
-
-#~ msgid "y = Yes or n = No? >"
-#~ msgstr "y=Yes वा n=No?>"
-
-#~ msgid "%s: Cannot get local addresses!"
-#~ msgstr "%s: स्थानीय ठेगानहरू फेला पार्न सकिएन !"
-
-#~ msgid "Could not setgid %d. Aborting."
-#~ msgstr "%d setgid गर्न सकिएन । परित्याग गर्दै ।"
-
-#~ msgid "initgroups () failed for %s. Aborting."
-#~ msgstr "%s का लागि initgroups() असफल भयो । परित्याग गर्दैछ ।"
-
-#~ msgid "%s: Error setting signal %d to %s"
-#~ msgstr "%s: संकेत %d देखि %s त्रुटि सेट गर्दा त्रुटि"
-
-#~ msgid ""
-#~ "Last login:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "अन्तिम लगइन:\n"
-#~ "%s"
-
-#~ msgid "Can not start fallback console"
-#~ msgstr "फलब्याक् कन्सोल सुरू गर्न सकिएन"
-
-#~ msgid ""
-#~ "There already appears to be an X server running on display %s.  Should "
-#~ "another display number by tried?  Answering no will cause GDM to attempt "
-#~ "starting the server on %s again.%s"
-#~ msgstr ""
-#~ "तिनीहरू प्रदर्शन %s मा पहिल्यै चलिरहेको X सर्भरमा देखा परेका छन् ।  अर्को प्रदर्शन "
-#~ "सङ्ख्या अनुरोध गर्न प्रयास गर्नु पर्छ ? उत्तर दिदै कुनै कारणबिना GDM ले %s मा फेरि सर्भर "
-#~ "सुरू प्रयास गर्न ।%s"
-
-#~ msgid ""
-#~ "  (You can change consoles by pressing Ctrl-Alt plus a function key, such "
-#~ "as Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 "
-#~ "and higher.)"
-#~ msgstr ""
-#~ "  (तपाईँ Ctrl-Alt प्लस प्रकार्य कुञ्जी थिच्दै प्रयोग गरेर कन्सोलेसहरू परिवर्तन गर्न "
-#~ "सक्नुहुन्छ,जस्तै:- कन्सोल ७मा जान Ctrl-Alt-F7 । X सर्भरहरू सामान्यतया:७ वा त्यो भन्दा "
-#~ "माथि चलाउन सकिन्छ ।)"
-
-#~ msgid "Display '%s' cannot be opened by Xnest"
-#~ msgstr "प्रदर्शन '%s' लाई Xnestले खोल्न सकेन"
-
-#~ msgid "Display %s is busy. There is another X server running already."
-#~ msgstr "प्रदर्शन %s व्यस्त छ । त्यहाँ अर्को X.सर्भर पहिल्यै चलिरहेको छ ।"
-
-#~ msgid "%s: Error opening a pipe: %s"
-#~ msgstr "%s:पाइप खोल्दा त्रुटि:%s"
-
-#~ msgid "%s: Cannot find a free display number"
-#~ msgstr "%s: स्वतन्त्र प्रदर्शन सङ्ख्या भेटाउन सकिदैन"
-
-#~ msgid "%s: Display %s busy.  Trying another display number."
-#~ msgstr "%s:%s प्रदर्शन व्यस्त छ । अर्को प्रदर्शन सङ्ख्याको कोसिस गर्दै ।"
-
-#~ msgid "Invalid server command '%s'"
-#~ msgstr "'%s' अवैध सर्भर आदेश"
-
-#~ msgid "Server name '%s' not found; using standard server"
-#~ msgstr "सर्भर नाम '%s' फेला परेन; मानक सर्भर प्रयोग गर्दै"
-
-#~ msgid "%s: Couldn't set groupid to 0"
-#~ msgstr "%s: 0 मा समूह आइ डी सेट गर्न सकिएन"
-
-#~ msgid "%s: Xserver not found: %s"
-#~ msgstr "%s: Xserver भेटिएन:%s"
-
-#~ msgid "%s: Can't fork Xserver process!"
-#~ msgstr "%s: Xसर्भरको प्रक्रिया विभाजन गर्न सकिएन !"
-
-#~ msgid "Can't set EGID to user GID"
-#~ msgstr "प्रयोगकर्ता GID मा EGID सेट गर्न सकेन ।"
-
-#~ msgid "Can't set EUID to user UID"
-#~ msgstr "EUID लाई प्रयोगकर्ता UID मा सेट गर्न सकिएन ।"
-
-#~ msgid "Log in anyway"
-#~ msgstr "जसरी भए पनि लगइन गर्नुहोस्"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway, return to your "
-#~ "previous login session, or abort this login"
-#~ msgstr ""
-#~ "तपाईँ लगइन भइसक्नु भएको छ । तपाईँ जसरी पनि लगइन गर्न सक्नुहुन्छ; पहिलेको लगइन सत्र "
-#~ "फर्कनुहोस् अथवा यो लगइनलाई रोक्नुहोस्"
-
-#~ msgid "Return to previous login"
-#~ msgstr "अघिल्लो लगइनमा फर्कनुहोस्"
-
-#~ msgid "Abort login"
-#~ msgstr "लगइन परित्याग गर्नुहोस्"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway or abort this login"
-#~ msgstr ""
-#~ "तपाईँ लगइन भइसक्नुभइको छ । तपाईँ जसरी पनि लगइन गर्न सक्नुहुन्छ वा यो लगइन परित्याग "
-#~ "गर्न सक्नुहुन्छ"
-
-#~ msgid "%s: cannot fork"
-#~ msgstr "%s: विभाजन गर्न सकिएन"
-
-#~ msgid "%s: cannot open display %s"
-#~ msgstr "%s: प्रदर्शन %s खोल्न सकिएन"
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file.  Attempting to start it from the "
-#~ "default location."
-#~ msgstr ""
-#~ "कन्फिगरेसन कार्यक्रम कार्यान्वयन गर्न सकिएन ।  तपाईँ कन्फिगरेसन फाइलमा यसको बाटो "
-#~ "सहितवरले सेट भएको छ भनि निश्चित बन्नुहोस् । पूर्वस्थानधारित स्थानबाट सुरू गर्न प्रयास "
-#~ "गर्दै ।"
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file."
-#~ msgstr ""
-#~ "कन्फिगरेसन कार्यक्रम कार्यान्वयन गर्न सकेन ।  यसको बाटो कन्फिगरेसन फाइलमा बाटो "
-#~ "राम्रोसंगसेट भएको कुरामा निश्चित बन्नुहोस् ।"
-
-#~ msgid "You must authenticate as root to run configuration."
-#~ msgstr "कन्फिगरेसन चलाउनलाई तपाईँले रुटको रुपमा प्रमाणीकरण गर्नु पर्दछ ।"
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist."
-#~ msgstr ""
-#~ "गैर-स्थानीय प्रदर्शनमा लगइन ध्वनी अनुरोध गरिएको वा खोल्न सफ्ट्वेयर चालु गर्न नसकिएको "
-#~ "वा ध्वनी अवस्थित नभएको ।"
-
-#~ msgid "%s: Can't init pipe to gdmgreeter"
-#~ msgstr "%s: GDMgreeter मा पाइप थालनी गर्न सकिदैन"
-
-#~ msgid ""
-#~ "No servers were defined in the configuration file and XDMCP was "
-#~ "disabled.  This can only be a configuration error.  GDM has started a "
-#~ "single server for you.  You should log in and fix the configuration.  "
-#~ "Note that automatic and timed logins are disabled now."
-#~ msgstr ""
-#~ "कन्फिगरेसन फाइलमा कुनै पनि सर्भरहरू परिभाषित नगरिएकाले XDMCP अक्षम गरिएको छ ।  यो "
-#~ "एउटा कन्फिगरेसनको त्रुटि मात्र हुन सक्छ ।  तपाईँले कन्फिगरेसन पक्का गर्नु पर्दछ र लगइन "
-#~ "गर्नु पर्दछ ।  याद गर्नुहोस् तपाईँको स्वचालित र समयबद्ध लगइनहरू अब अक्षम गरेको छ ।"
-
-#~ msgid ""
-#~ "Could not start the regular X server (your graphical environment) and so "
-#~ "this is a failsafe X server.  You should log in and properly configure "
-#~ "the X server."
-#~ msgstr ""
-#~ "नियमित X सर्भर (तपाईँको ग्राफिकल परिवेशमा) सुरू गर्न सकिएन र यो failsafe X सर्भर "
-#~ "हो । तपाईँले राम्रोसंगX सर्भरमा लगइन र कन्फिगर गर्नुपर्ने हुन्छ ।"
-
-#~ msgid ""
-#~ "The specified display number was busy, so this server was started on "
-#~ "display %s."
-#~ msgstr "तोकिएको प्रदर्शन सङ्ख्या व्यस्त भएकाले यो सर्भर %s प्रदर्शन मा सुरू गरिएको छ ।"
-
-#~ msgid ""
-#~ "The greeter application appears to be crashing.\n"
-#~ "Attempting to use a different one."
-#~ msgstr ""
-#~ "ग्रिटर कार्यक्रम टुक्रिदा  देखियो\n"
-#~ "एउटा भिन्न प्रयोग गर्न प्रयास गर्ने छ ।"
-
-#~ msgid ""
-#~ "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-#~ msgstr "%s: ग्रिटर gtk मोड्युलहरू संगसुरू गर्न सकिएन:%s । मोड्युलहरू बिनानै कोसिस गर्दै ।"
-
-#~ msgid "%s: Cannot start greeter trying default: %s"
-#~ msgstr "%s: पूर्वनिर्धारित कोसिस गर्दै ग्रिटर सुरू गर्न सकिएन:%s"
-
-#~ msgid ""
-#~ "Cannot start the greeter application; you will not be able to log in.  "
-#~ "This display will be disabled.  Try logging in by other means and editing "
-#~ "the configuration file"
-#~ msgstr ""
-#~ "ग्रिटर कार्यक्रम सुरू गर्न सकिएन; तपाईँ लगइन गर्न सक्नु हुने छैन । यो प्रदर्शन अक्षम "
-#~ "गरिंनेछ । अरू नै तरिकाबाट कन्फिगरेसन फाइलमा लगिङ् इन वा सम्पादन गर्ने प्रयास गर्नुहोस् ।"
-
-#~ msgid "%s: Error starting greeter on display %s"
-#~ msgstr "%s: प्रदर्शन %s मा ग्रिटर सुरू गर्दा त्रुटि"
-
-#~ msgid "%s: Can't fork gdmgreeter process"
-#~ msgstr "%s: gdmgreeter प्रक्रिया विभाजन गर्न सक्दैन"
-
-#~ msgid "%s: Can't open fifo!"
-#~ msgstr "%s: fifo खोल्न सक्दैन !"
-
-#~ msgid "%s: Can't init pipe to gdmchooser"
-#~ msgstr "%s: gdmchooser मा पाइप थालनी गर्न सकिदैन"
-
-#~ msgid ""
-#~ "Cannot start the chooser application. You will probably not be able to "
-#~ "log in.  Please contact the system administrator."
-#~ msgstr ""
-#~ "रोज्ने अनुप्रयोग सुरू गर्न सकिएन, तपाईँ सम्भवत लगइन गर्न सक्षम हुनुहुन्न । कृपया, प्रणाली "
-#~ "प्रशसाकसंगसम्पर्क गर्नुहोस् ।"
-
-#~ msgid "%s: Error starting chooser on display %s"
-#~ msgstr "%s:  %s प्रदर्शनम छनौटकर्ता सुरू गर्दा त्रुटि भयो "
-
-#~ msgid "%s: Can't fork gdmchooser process"
-#~ msgstr "%s:GDMchooser प्रक्रिया विभाजन गर्न सक्दैन"
-
-#~ msgid "%s: Could not open ~/.xsession-errors"
-#~ msgstr "%s: ~/.xsession त्रुटिहरू खोल्न सकिएन"
-
-#~ msgid "%s: Execution of PreSession script returned > 0. Aborting."
-#~ msgstr "%s: PreSession र लिपीको कार्यान्वयन > 0 फिर्ता भयो । परित्याग हुँदछ "
-
-#~ msgid "Language %s does not exist; using %s"
-#~ msgstr "%s भाषा अवस्थित छैन, %s प्रयोग गर्दै"
-
-#~ msgid "System default"
-#~ msgstr "पूर्वनिर्धारित प्रणाली "
-
-#~ msgid "%s: Could not setup environment for %s. Aborting."
-#~ msgstr "%s: %s का लागि वातावरणसेट गर्नन सकिएन । परित्याग गर्दै ।"
-
-#~ msgid "%s: setusercontext () failed for %s. Aborting."
-#~ msgstr "%s:  %s का लागि setusercontext() असफल भयो । परित्याग गर्दै ।"
-
-#~ msgid "%s: Could not become %s. Aborting."
-#~ msgstr "%s: %s बन्न सकेन । परित्याग गर्दै ।"
-
-#~ msgid ""
-#~ "No Exec line in the session file: %s.  Running the GNOME failsafe session "
-#~ "instead"
-#~ msgstr "सत्रफाइल: %s मा Exec हरफ छैन । सट्टामा GNOME  failsafe चालु गरिदै"
-
-#~ msgid "%s: %s"
-#~ msgstr "%s: %s"
-
-#~ msgid ""
-#~ "%s: Cannot find or run the base Xsession script.  Running the GNOME "
-#~ "failsafe session instead."
-#~ msgstr ""
-#~ "%s: आधार Xsession लिपी फेला पार्न र चलाउन सकिदैन,  सट्टामा GNOME failsafe चालू "
-#~ "गर्दै ।"
-
-#~ msgid ""
-#~ "Cannot find or run the base session script.  Running the GNOME failsafe "
-#~ "session instead."
-#~ msgstr ""
-#~ "आधार सत्र स्क्रिप्ट फेला पार्न र चलाउन सकिदैन, सट्टामा GNOME failsafe सत्र चलाउदै ।"
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-#~ msgstr ""
-#~ "%s: failsafe GNOME सत्रका लागि  जिनोम-सत्र फेलसेफ भेटिएन, xtermको कोसिस गर्दा"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation, will try running the \"Failsafe "
-#~ "xterm\" session."
-#~ msgstr ""
-#~ "GNOMEस्थापना फेला पार्न सकिएन, बरु \"Failsafe xterm\" सत्र चलाउन कोसिस गरिरहनु "
-#~ "पर्ने छ ।"
-
-#~ msgid ""
-#~ "This is the Failsafe GNOME session.  You will be logged into the "
-#~ "'Default' session of GNOME without the startup scripts being run.  This "
-#~ "should be used to fix problems in your installation."
-#~ msgstr ""
-#~ "यो Failsafe जिनोम सत्र हो । तपाईँ पूर्वनिर्धारित जिनोम सत्रमा कुनै सुरुवात स्क्रिप्ट "
-#~ "चालु नगरी लग हुनुहुनेछ । यो तपाईँको स्थापना प्रक्रियामा समस्याहरू एकिन गर्नका लागि हो "
-#~ "।"
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
-#~ msgstr ""
-#~ "%s: failsafe GNOME सत्रका लागि जिनोम-सत्र फेलसेफ भेटिएन, xterm को प्रयास गर्दै"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
-#~ "session instead."
-#~ msgstr "GNOMEस्थापना फेला पार्न सकेन,  बरु \"Failsafe xterm\" सत्र चलाइरहनु पर्नेछ ।"
-
-#~ msgid "Cannot find \"xterm\" to start a failsafe session."
-#~ msgstr "failsafe सत्र सुरू गर्नका निमित्त \"xterm\" फेला पार्न सकिएन ।"
-
-#~ msgid ""
-#~ "This is the Failsafe xterm session.  You will be logged into a terminal "
-#~ "console so that you may fix your system if you cannot log in any other "
-#~ "way.  To exit the terminal emulator, type 'exit' and an enter into the "
-#~ "window."
-#~ msgstr ""
-#~ "यो Failsafe xterm सत्र हो । यदि तपाईँ  अरू कुनै माध्यमबाट लगइन गर्न सक्नुहुन्न भने "
-#~ "तपा ईटर्मिनल कन्सोलमा ल् इन भएर समस्याएकिनक गर्नुहोस् । टर्मिनल इमुलेटरबाट बाहिर "
-#~ "निक्लनाका लागि 'exit' टाइप गर्नुहोस्' र सञ्झ्यालमा'प्रविष्ट हुनुहोस्' ।"
-
-#~ msgid ""
-#~ "This is the Failsafe xterm session.  You will be logged into a terminal "
-#~ "console and be prompted to enter the password for root so that you may "
-#~ "fix your system if you cannot log in any other way. To exit the terminal "
-#~ "emulator, type 'exit' and an enter into the window."
-#~ msgstr ""
-#~ "यो Failsafe xterm सत्र हो । यदि तपाईँ  अरू कुनै माध्यमबाट लगइन गर्न सक्नुहुन्न भने "
-#~ "तपाईँ टर्मिनल कन्सोलमा लगइन भएर समस्या यकिन गर्नुहोस् । टर्मिनल इमुलेटरबाट बाहिर "
-#~ "निक्लनाका लागि, 'exit' टाइप गर्नुहोस्' र सञ्झ्यालमा'प्रविष्ट हुनुहोस्' ।"
-
-#~ msgid ""
-#~ "The failsafe session is restricted to users who have been assigned the "
-#~ "root role. If you cannot log in any other way please contact your system "
-#~ "administrator"
-#~ msgstr ""
-#~ "रुट मानाङ्कन गरिएको प्रयोगकर्ता लाई failsafe सत्र सीमित गरिएको छ । यदि तपाईँले "
-#~ "कुनै अन्य बाटोमा लग गर्न सक्नु भएन भने कृपया तपाईँको प्रणाली प्रशासक संगसम्पर्क गर्नुहोस्"
-
-#~ msgid "%s: User not allowed to log in"
-#~ msgstr "%s: प्रयोगकर्तालाई लगइन गर्न अनुमति दिने छैन"
-
-#~ msgid "The system administrator has disabled your account."
-#~ msgstr "प्रणाली प्रशासकसंगतपाईँको खाता अक्षम गरेको छ ।"
-
-#~ msgid "Error! Unable to set executable context."
-#~ msgstr "त्रुटि! कार्यान्वयन योग्य प्रसँग  सेट गर्न अक्षम छ ।"
-
-#~ msgid "%s: Could not exec %s %s %s %s %s %s"
-#~ msgstr "%s: exec %s %s %s %s %s %s गर्न सकेन"
-
-#~ msgid "%s: Could not exec %s %s %s"
-#~ msgstr "%s: exec %s %s %s गर्न सकेन"
-
-#~ msgid "Cannot start the session due to some internal error."
-#~ msgstr "केही आन्तरिक त्रुटिको कारणले सत्र सुरू गर्न सकिदैन ।"
-
-#~ msgid "%s: User passed auth but getpwnam (%s) failed!"
-#~ msgstr "%s: प्रयोगकर्ताले auth पास गरेको भएतापानि getpwnam (%s) असफल भयो ।"
-
-#~ msgid "%s: Execution of PostLogin script returned > 0. Aborting."
-#~ msgstr "%s:PostLogin लिपीको कार्यान्वयन > 0 फिर्ता भयो । परित्याग गर्दा"
-
-#~ msgid ""
-#~ "Your home directory is listed as:\n"
-#~ "'%s'\n"
-#~ "but it does not appear to exist.  Do you want to log in with the / (root) "
-#~ "directory as your home directory?\n"
-#~ "\n"
-#~ "It is unlikely anything will work unless you use a failsafe session."
-#~ msgstr ""
-#~ "तपाईँको गृह डाइरेक्टरी यसरी सूचीबद्ध भएको छ:'\n"
-#~ "'%s'\n"
-#~ "तर यो अवस्थित छ जस्तो देखिंदैन । के तपाईँ  / (रुट) डाइरेक्टरीलाई गृह डाइरेक्टरीको रुपमा "
-#~ "लगइन गर्न चाहानुहुन्छ ?\n"
-#~ "तपाईँले failsafe सत्र सुरू नगरुञ्जेल कहीले पनि काम गर्न सक्नुहुन्न ।"
-
-#~ msgid "%s: Home directory for %s: '%s' does not exist!"
-#~ msgstr "%s:%sका लागि गृह डाइरेक्टरी :'%s' अवस्थित छैन !"
-
-#~ msgid ""
-#~ "User's $HOME/.dmrc file is being ignored.  This prevents the default "
-#~ "session and language from being saved.  File should be owned by user and "
-#~ "have 644 permissions.  User's $HOME directory must be owned by user and "
-#~ "not writable by other users."
-#~ msgstr ""
-#~ "प्रयोगकर्ताको $HOME/.dmrc फाइल ध्यान दिइदैन ।  यसले पूर्वनिर्धारित सत्र र भाषा बाट "
-#~ "बचत हुन सुरक्षा दिन्छ ।  फाइल प्रयोगकर्ताको स्वामित्वमा हुन पर्दछ र ६४४ अनुमतिहरू हुन "
-#~ "पर्दछ ।  प्रयोगकर्ताको $HOME डाइरेक्टरी प्रयोगकर्ताले स्वामित्व ग्रहण गरेको र "
-#~ "प्रयोगकर्ता बाहेक अरूद्धारा लेख्न योग्य हुनुहुदैन ।"
-
-#~ msgid ""
-#~ "GDM could not write to your authorization file.  This could mean that you "
-#~ "are out of disk space or that your home directory could not be opened for "
-#~ "writing.  In any case, it is not possible to log in.  Please contact your "
-#~ "system administrator"
-#~ msgstr ""
-#~ "GDM ले तपाईँको अधिकार प्रदत्त फाइलमा लेख्न सकेन । यसको मतलब तपाईँ डिस्क्पेस्पेस बाट "
-#~ "बाहिर हुनुहुन्छ वा तपाईँको घरेलु डाइरेक्टरी लेख्नका लागि खोल्न कुनै केसमा, पनि बेला लगइन "
-#~ "गर्न सम्भव छैन । कृपया तपाईँको प्रणाली प्रबन्धक सँग  सम्पर्क गर्नुहोस् ।"
-
-#~ msgid "%s: Error forking user session"
-#~ msgstr "%s: प्रयोगकर्ता सत्र त्रुटि विभाजन गर्दा"
-
-#~ msgid ""
-#~ "Your session only lasted less than 10 seconds.  If you have not logged "
-#~ "out yourself, this could mean that there is some installation problem or "
-#~ "that you may be out of diskspace.  Try logging in with one of the "
-#~ "failsafe sessions to see if you can fix this problem."
-#~ msgstr ""
-#~ "तपाईँको सत्र १० सेकेन्ड भन्दा कम समयदेखि सकिएको छ । तपाईँले आफैंले लगआउट गर्नुभएको छैन "
-#~ "भने,त्यहाँ स्थापना समस्या हुनसक्छ वा तपाईँ डिस्कस्पेसबाट बाहिर हुनु हुन्छ । यदी तपाईँले "
-#~ "समस्या किटान गर्न सक्नुहुन्छ भने हेर्नलाई एउटा फेलसेफ सत्रहरुमा लगइन सुरू गर्ने प्रयास "
-#~ "गर्नहोस् ।"
-
-#~ msgid "View details (~/.xsession-errors file)"
-#~ msgstr "विवरणहरू (~/.xsession-errors file) देखाउँदछ"
-
-#~ msgid "GDM detected a halt or restart in progress."
-#~ msgstr "GDM ले बन्द गर्ने वा पुन:बुट गर्ने प्रक्रिया भेटाएको छ ।"
-
-#~ msgid "Ping to %s failed; whacking display!"
-#~ msgstr "%s मा Ping असफल भएको छ, प्रदर्शन य्हाकिङ्ग गर्दै !"
-
-#~ msgid "%s: Fatal X error - Restarting %s"
-#~ msgstr "%s: फ्याटल X त्रुटि - पुन: सुरू हुँदै %s"
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist"
-#~ msgstr ""
-#~ "गैर-स्थानीय प्रदर्शनमा लगइन ध्वनी अनुरोध गरिएको वा खोल्न सफ्टवेयर चालु गर्न नसकिएको "
-#~ "वा ध्वनी नभएको"
-
-#~ msgid "%s: Failed starting: %s"
-#~ msgstr "%s:सुरू गर्दा असफल भयो: %s"
-
-#~ msgid "%s: Can't fork script process!"
-#~ msgstr "%s: स्क्रिप्ट प्रक्रिया विभाजन गर्न सक्दैन !"
-
-#~ msgid "%s: Failed creating pipe"
-#~ msgstr "%s: पाइप सिर्जना गर्दा असफल भयो"
-
-#~ msgid "%s: Failed executing: %s"
-#~ msgstr "%s: कार्यान्वयन गर्दा असफल भयो: %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Incorrect username or password.  Letters must be typed in the correct "
-#~ "case."
-#~ msgstr ""
-#~ "\n"
-#~ "गलत प्रयोगकर्ता नाम वा पासवर्ड । अक्षरहरुलाई उचित केसमा टाइप गर्न जरुरि हुन्छ ।"
-
-#~ msgid "Caps Lock is on."
-#~ msgstr "क्याप्स लक चालू छ ।"
-
-#~ msgid "Please enter your username"
-#~ msgstr "कृपया तपाईँको प्रयोगकर्ता नाम प्रविष्ट गर्नुहोस् ।"
-
-#~ msgid "Password:"
-#~ msgstr "पासवर्ड:"
-
-#~ msgid "Couldn't authenticate user \"%s\""
-#~ msgstr "प्रयोगकर्ता \"%s\"लाई अधिकार प्रदान गर्न सकेन ।"
-
-#~ msgid "Root login disallowed on display '%s'"
-#~ msgstr "'%s' प्रदर्शनमा रुट लगइन मान्य छैन"
-
-#~ msgid "The system administrator is not allowed to login from this screen"
-#~ msgstr "प्रणाली प्रशासकलाई पूरापर्दा बाट लगइन गर्ने अनुमति छैन"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled your account."
-#~ msgstr ""
-#~ "\n"
-#~ "प्रणाली प्रशासकसंगतपाईँको खाता अक्षम छ ।"
-
-#~ msgid "Cannot set user group for %s"
-#~ msgstr "%sका लागि प्रयोगकर्ता समूह सेट गर्न सकिदैन"
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "प्रयोगकर्ता समूहलाई सेट गर्न सकेन, तपाईँ लगइन गर्न सक्नुहुन्न, कृपया तपाईँको प्रणाली "
-#~ "प्रशासकसंगसम्पर्क राख्नुहोस् ।"
-
-#~ msgid "Password of %s has expired"
-#~ msgstr "%s को पासवर्ड मिति नाघेको छ"
-
-#~ msgid ""
-#~ "You are required to change your password.\n"
-#~ "Please choose a new one."
-#~ msgstr "तपाईँले पासवर्ड परिवर्तन गर्नुपर्ने हुन्छ । कृपया नयाँ छान्नुहोस् ।"
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot change your password; you will not be able to log in. Please try "
-#~ "again later or contact your system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "तपाईँको पासवर्ड परिवर्तन गर्न सकेन, तपाईँलग-इन गर्न सक्नुहुन्न, कृपया पछि पुन: प्रयास "
-#~ "गर्नुहोस् वा तपाईँको प्रणाली प्रशासकसंगसम्पर्क राख्नुहोस् ।"
-
-#~ msgid ""
-#~ "Your password has been changed but you may have to change it again. "
-#~ "Please try again later or contact your system administrator."
-#~ msgstr ""
-#~ "तपाईँको पासवर्ड परिवर्तित भएको छ तर तपाईँले पुन: परिवर्तन गर्नुपर्ने हुन सक्छ, कृपया "
-#~ "पछि पुन: प्रयास गर्नुहोस् वा तपाईँको प्रणाली प्रशासकसंगसम्पर्क राख्नुहोस् ।"
-
-#~ msgid "Internal error on passwdexpired"
-#~ msgstr "मिति नागेको पासवर्डमा आन्तरिक त्रुटि"
-
-#~ msgid ""
-#~ "An internal error occurred. You will not be able to log in.\n"
-#~ "Please try again later or contact your system administrator."
-#~ msgstr ""
-#~ "एउटा आन्तरिक त्रुटि भएको छ । तपाईँ लगइन गर्न सक्नुहुन्न ।\n"
-#~ "कृपया पछि पुन: प्रयास गर्नुहोस् वा तपाईँको प्रणाली प्रशासकसंगसम्पर्क राख्नुहोस् ।"
-
-#~ msgid "Cannot get passwd structure for %s"
-#~ msgstr "%sका लागि पासवर्ड बनावट पाउन सकेन"
-
-#~ msgid "You are required to change your password immediately (password aged)"
-#~ msgstr "तपाईँले पासवर्ड तुरुन्त परिवर्तन गर्नुपर्ने हुन्छ ।(पासवर्ड धेरै अघि देखिको भएकाले)"
-
-#~ msgid "You are required to change your password immediately (root enforced)"
-#~ msgstr "तपाईँले पासवर्ड तुरुन्त परिवर्तन गर्नुपर्ने हुन्छ (रुटले बल दिएको हुनाले)"
-
-#~ msgid "Your account has expired; please contact your system administrator"
-#~ msgstr "तपाईँको खाताले मिती नाघेको छ, कृपया तपाईँको प्रणाली प्रशासकसंगसम्पर्क राख्नुहोस्"
-
-#~ msgid "No password supplied"
-#~ msgstr "कुनै पासवर्ड आपुर्ति भएको छैन"
-
-#~ msgid "Password unchanged"
-#~ msgstr "अपरिवर्तित पासवर्ड"
-
-#~ msgid "Can not get username"
-#~ msgstr "प्रयोगकर्ता नाम पाउन सकिएन"
-
-#~ msgid "Retype new UNIX password:"
-#~ msgstr "नयाँ UNIX पासवर्ड पुन: टाइप गर्नुहोस्:"
-
-#~ msgid "Enter new UNIX password:"
-#~ msgstr "नयाँ:UNIX पासवर्ड प्रविष्ट गर्नुहोस्:"
-
-#~ msgid "(current) UNIX password:"
-#~ msgstr "(हालको) UNIX पासवर्ड:"
-
-#~ msgid "Error while changing NIS password."
-#~ msgstr "NIS पासवर्ड परिवर्तन गर्दा त्रुटि भएको छ ।"
-
-#~ msgid "You must choose a longer password"
-#~ msgstr "तपाईँले लामो पासवर्ड रोज्नु पर्ने हुन्छ"
-
-#~ msgid "Password has been already used. Choose another."
-#~ msgstr "पासवर्ड पहिल्यै प्रयोग भएको छ,अर्को रोज्नुहोस् ।"
-
-#~ msgid "You must wait longer to change your password"
-#~ msgstr "पासवर्ड परिवर्तन गर्नका लागि तपाईँले लामो समय कुर्नुपर्ने हुन्छ"
-
-#~ msgid "Sorry, passwords do not match"
-#~ msgstr "माफ गर्नुहोस्, पासवर्डहरू मिलेनन्"
-
-#~ msgid "Cannot setup pam handle with null display"
-#~ msgstr "नुल प्रदर्शनसहित पाम ह्यान्डल सेटअप गर्न सकिएन"
-
-#~ msgid "Unable to establish service %s: %s\n"
-#~ msgstr "%s सेवा स्थापना गर्न अक्षम: %s\n"
-
-#~ msgid "Can't set PAM_TTY=%s"
-#~ msgstr "PAM_TTY=%s सेट गर्न सकिएन"
-
-#~ msgid "Can't set PAM_RHOST=%s"
-#~ msgstr "PAM_RHOST=%sसेट गर्न सकिएन"
-
-#~ msgid "Couldn't authenticate user"
-#~ msgstr "प्रयोगकर्तालाई प्रमाणीकरण गर्न सकिएन"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator is not allowed to login from this screen"
-#~ msgstr ""
-#~ "\n"
-#~ "प्रणाली प्रशासकलाई यो पर्दाबाट लगइन गर्ने अनुमति छैन"
-
-#~ msgid "Authentication token change failed for user %s"
-#~ msgstr "प्रमाणीकरण गरिएको चिनोको परिवर्तन प्रयोगकर्ता %s का लागि असफल भयो"
-
-#~ msgid ""
-#~ "\n"
-#~ "The change of the authentication token failed. Please try again later or "
-#~ "contact the system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "प्रमाणीकरण चिनोको परिवर्तन असफल भयो । कृपया फेरि प्रयास गर्नुहोस् वा प्रणाली "
-#~ "प्रशासकसंगसम्पर्क राख्नुहोस् ।"
-
-#~ msgid "User %s no longer permitted to access the system"
-#~ msgstr "%s प्रयोगकर्तालाई प्रणालीमा पहुँच गर्न त्यति धेरै अनुमति छैन"
-
-#~ msgid "User %s not permitted to gain access at this time"
-#~ msgstr "प्रयोगकर्ता %sलाई यो समयमा पहुँच आर्जन गर्नलाई अनुमति छैन"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled access to the system temporarily."
-#~ msgstr ""
-#~ "\n"
-#~ "प्रणाली प्रशासकले प्रणालीको पहुँचलाई अल्पकालीन रुपमा अक्षम गरेको छ ।"
-
-#~ msgid "Couldn't set acct. mgmt for %s"
-#~ msgstr "%sका लागि mgmt खाता सेट गर्न सकिएनन"
-
-#~ msgid "Couldn't set credentials for %s"
-#~ msgstr "%sका लागि प्रमाण पत्र सेट गर्न सकिएन"
-
-#~ msgid "Couldn't open session for %s"
-#~ msgstr "%sका लागि सत्र खोल्न सकिएन"
-
-#~ msgid ""
-#~ "\n"
-#~ "Authentication failed.  Letters must be typed in the correct case."
-#~ msgstr ""
-#~ "\n"
-#~ "प्रमाणीकरण असफल भयो । अक्षरहरू ठीक ढङ्गले टाइप गर्न जरुरि हुन्छ ।"
-
-#~ msgid "Authentication failed"
-#~ msgstr "प्रमाणीकरण असफल भयो"
-
-#~ msgid "Automatic login"
-#~ msgstr "स्वचालित लगइन"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled your access to the system "
-#~ "temporarily."
-#~ msgstr ""
-#~ "\n"
-#~ "प्रणाली प्रशासकले तपाईँको अल्पकालीन प्रणालीमा हुने पहुँचलाई अक्षम बनाएको छ ।"
-
-#~ msgid "Can't find PAM configuration for GDM."
-#~ msgstr "GDMका लागि PAM कन्फिगरेसन फेला पार्न सकिएन ।"
-
-#~ msgid "%s: Could not get server hostname: %s!"
-#~ msgstr "%s: सर्भरको होस्टनाम भेट्टाउन सकेन: %s !"
-
-#~ msgid "%s: Could not bind to XDMCP socket!"
-#~ msgstr "%s:XDMCP सकेटमा बाइन्ड गर्न सकेन !"
-
-#~ msgid "%s: Unknown opcode from host %s"
-#~ msgstr "%s: होस्ट्बाट %sबाटा अज्ञात opcode"
-
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s: प्याकेटबाट प्रमाणीकरण सूची निकाल्न सकेन"
-
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s:जोड जाँचमा त्रुटि"
-
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s: प्रदर्श गरेकोन ठेगाना पढ्न सकेन"
-
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s: प्रदर्श गरेकोन पोर्ट् सङ्ख्या पढ्न सकेन"
-
-#~ msgid "%s: Bad address"
-#~ msgstr "%s: गलत ठेगाना"
-
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "%s होस्ट्बाट XDMCP क्वेरी नकारिएको छ"
-
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s: वर्जित होस्ट् %s बाट REQUEST  भेट्टायो"
-
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s: प्रदर्शन गरेको सङ्ख्या पढ्न सकिएन"
-
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s: जडानको प्रकारलाई पढ्न सकिएन"
-
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s: ग्राहकको ठेगाना पढ्न सकेन"
-
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s: प्रमाणीकरण गरिएको डेटा पढ्न सकिएन"
-
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s: अधिकारप्राप्त सूची पढ्न सकिएन"
-
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s: उत्पादका परिचय(ID) पढ्न सकिएन"
-
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s: %s बाट जोड जाँछ गर्न  गर्न असफल भयो"
-
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s: वर्जित होस्ट् %sबाट प्रबन्ध पायो"
-
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s: सत्रको परिचय (ID) पढ्न सकिएन"
-
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s: प्रदर्शन कक्ष पढ्न सकिएन"
-
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s: ठेगाना पढ्न सकिएन"
-
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s: वर्जित होस्ट %s बाट KEEPALIVE पाइयो"
-
-#~ msgid ""
-#~ "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
-#~ "authfile %s': %s"
-#~ msgstr ""
-#~ "%s: चलाउन असफल '%s --प्रदर्शन %s --पर्दशन-authfile %s --लाई %s --लाई-"
-#~ "authfile %s': %s"
-
-#~ msgid "%s: No XDMCP support"
-#~ msgstr "%s:XDMCPको समर्थन छैन"
-
-#~ msgid "Xnest command line"
-#~ msgstr "Xnest आदेश लाइन"
-
-#~ msgid "STRING"
-#~ msgstr "STRING"
-
-#~ msgid "Extra options for Xnest"
-#~ msgstr "Xnestका लागि थप विकल्पहरू"
-
-#~ msgid "OPTIONS"
-#~ msgstr "OPTIONS"
-
-#~ msgid "Run in background"
-#~ msgstr "पृष्ठभूमिमा चलाउनुहोस्"
-
-#~ msgid "Just run Xnest, no query (no chooser)"
-#~ msgstr "Xnest मात्र चलाउनुहोस्, क्वेरी (छनौटकर्ता होइन ) होइन"
-
-#~ msgid "Do direct query instead of indirect (chooser)"
-#~ msgstr "अप्रत्यक्ष (छनौटकर्ता) को सट्टा प्रत्यक्ष क्वेरी गर्नुहोस् ।"
-
-#~ msgid "Run broadcast instead of indirect (chooser)"
-#~ msgstr "अप्रत्यक्ष (छनौटकर्ता) को सट्टा प्रसारण चलाउनुहोस्"
-
-#~ msgid "Don't check for running GDM"
-#~ msgstr "चलिरहेको GDM का लागि जाँच गर्नुहोस् ।"
-
-#~ msgid "Xnest doesn't exist."
-#~ msgstr "Xnest अवस्थित छैन"
-
-#~ msgid "Please ask your system administrator to install it."
-#~ msgstr "कृपया तपाईँको प्रणाली प्रशासकलाई यो स्थापना गर्न भन्नुहोस् ।"
-
-#~ msgid "Indirect XDMCP is not enabled"
-#~ msgstr "अप्रत्यक्ष XDMCP अक्षम छैन"
-
-#~ msgid "Please ask your system administrator to enable this feature."
-#~ msgstr "कृपया तपाईँको प्रणाली प्रशासकलाई यो सुविधा सक्षम गर्न भन्नुहोस् ।"
-
-#~ msgid "XDMCP is not enabled"
-#~ msgstr "XDMCP अक्षम गरिएको छैन"
-
-#~ msgid "GDM is not running"
-#~ msgstr "GDM चलिरहेको छैन"
-
-#~ msgid "Please ask your system administrator to start it."
-#~ msgstr "कृपया तपाईँको प्रणाली प्रशासकलाई सुरू गर्न सोध्नुहोस् ।"
-
-#~ msgid "Could not find a free display number"
-#~ msgstr "स्वतन्त्र प्रदर्शन सङ्ख्या पत्ता लगाउन सकिएन ।"
-
-#~ msgid "Please wait: scanning local network..."
-#~ msgstr "कृपया प्रतिक्षा गर्नुहोस्: स्थानीय सञ्जाल स्क्यानिङ्ग गर्दैछ..."
-
-#~ msgid "No serving hosts were found."
-#~ msgstr "कुनै सर्भिङ्ग होस्ट्हरू भेटाउना सकिएन ।"
-
-#~ msgid "Choose a ho_st to connect to:"
-#~ msgstr "...मा जडान होस्ट रोज्नुहोस्:"
-
-#~ msgid ""
-#~ "The host \"%s\" is not willing to support a login session right now.  "
-#~ "Please try again later."
-#~ msgstr ""
-#~ "\"%s\" होस्ट्ले लगइन सत्रलाई अहिले समर्थन गर्ने पक्षमा छैन । कृपया पछि पुन: प्रयास "
-#~ "गर्नुहोस् ।"
-
-#~ msgid "Cannot connect to remote server"
-#~ msgstr "रिमोट सर्भरमा जडान गर्न सकिदैन"
-
-#~ msgid ""
-#~ "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
-#~ "host is not turned on, or is not willing to support a login session right "
-#~ "now.  Please try again later."
-#~ msgstr ""
-#~ "\"%s\" in %d सेकेन्डहरू होस्ट्बाट कुनै प्रतिक्रिया पाउन सकिएन । सम्भवत: होस्ट् खूल्ला "
-#~ "छैन, वा लगइन सत्रलाई अहिले सुरू गर्ने पक्षमा छैन । कृपया पछि पुन:प्रयास गर्नुहोस् ।"
-
-#~ msgid "Did not receive response from server"
-#~ msgstr "सर्भरबाट प्रतिक्रिया पाउन सकिएन"
-
-#~ msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
-#~ msgstr ""
-#~ "मैले होस्ट \"%s\", फेला पार्न सकिदैन, शायद तपाईँले यसलाई गलत टाइप गरेको हुनुपर्दछ ।"
-
-#~ msgid "Cannot find host"
-#~ msgstr "होस्ट भेटाउन सकिएन"
-
-#~ msgid ""
-#~ "The main area of this application shows the hosts on the local network "
-#~ "that have \"XDMCP\" enabled. This allows users to login remotely to other "
-#~ "computers as if they were logged on using the console.\n"
-#~ "\n"
-#~ "You can rescan the network for new hosts by clicking \"Refresh\".  When "
-#~ "you have selected a host click \"Connect\" to open a session to that "
-#~ "computer."
-#~ msgstr ""
-#~ "यो अनुप्रयोगको मुख्य क्षेत्रले \"XDMCP\" अक्षम गरिएको स्थानीय सञ्जालहरूमा होस्टहरू "
-#~ "देखाउँछ । यसले गर्दा प्रयोगकर्ताहरुले टाढाबाट अन्य कम्प्युटरमा पनि लगइन गर्न सक्छन् जस्तो "
-#~ "की उनीहरू आफैं कन्सोल प्रयोग गरेर लगअन भएका छन् ।\n"
-#~ "\n"
-#~ "तपाईँले नयाँ होस्टहरू का लागि \"Refresh\"क्लीक गरेर सञ्जाललाई स्क्यान गर्न सक्नुहुन्छ । "
-#~ "तपाईँले जब होस्ट चयन गर्नुहुन्छ कम्प्युटर सत्र खोल्न \"Connect\" मा क्लीक गर्नुहोस् ।"
-
-#~ msgid "Socket for xdm communication"
-#~ msgstr "xdm सञ्चारका लागि सकेट"
-
-#~ msgid "SOCKET"
-#~ msgstr "SOCKET"
-
-#~ msgid "Client address to return in response to xdm"
-#~ msgstr "xdmलाई प्रतिक्रियामा फर्काउनका लागि ग्राहकको ठेगाना"
-
-#~ msgid "ADDRESS"
-#~ msgstr "ADDRESS"
-
-#~ msgid "Connection type to return in response to xdm"
-#~ msgstr "xdmलाई प्रतिक्रियामा फर्काउनका लागि जडानको प्रकार"
-
-#~ msgid "TYPE"
-#~ msgstr "TYPE"
-
-#~ msgid ""
-#~ "The chooser version (%s) does not match the daemon version (%s).  You "
-#~ "have probably just upgraded GDM.  Please restart the GDM daemon or the "
-#~ "computer."
-#~ msgstr ""
-#~ "रोज्ने संस्करण (%s) डोमेन संस्करण (%s) संगमेल खाएन । तपाईँले सम्भवत:GDMको स्तरवृद्धि "
-#~ "गर्नुभएको छ । कृपया GDM डोमेन वा कम्प्युटर फेरि सुरू गर्नुहोस् ।"
-
-#~ msgid "Cannot run chooser"
-#~ msgstr "छनौटकर्ता चलाउन सकिएन सकेन"
-
-#~ msgid "A_dd host: "
-#~ msgstr "होस्ट थप्नुहोस्: "
-
-#~ msgid "C_onnect"
-#~ msgstr "जडान गर्नुहोस्"
-
-#~ msgid "Exit the application"
-#~ msgstr "अनुप्रयोगलाई बाहिर निकाल्नुहोस्"
-
-#~ msgid "Login Host Chooser"
-#~ msgstr "होस्ट छनौटकर्ता लगइन गर्नुहोस्"
-
-#~ msgid "Open a session to the selected host"
-#~ msgstr "चयन गरिएको होस्ट्मा सत्र खोल्नुहोस्"
-
-#~ msgid "Probe the network"
-#~ msgstr "सञ्जाल अनुसन्धान गर्नुहोस्"
-
-#~ msgid "Query and add this host to the above list"
-#~ msgstr "क्वेरी गरेर यो होस्ट्लाई माथिको सूचीमा थप्नुहोस्"
-
-#~ msgid "Status"
-#~ msgstr "वस्तुस्थिति"
-
-#~ msgid "_Add"
-#~ msgstr "थप्नुहोस्"
-
-#~ msgid ""
-#~ "You might in fact be using a different display manager, such as KDM (KDE "
-#~ "Display Manager) or xdm. If you still wish to use this feature, either "
-#~ "start GDM yourself or ask your system administrator to start GDM."
-#~ msgstr ""
-#~ "तपाईँले साँच्चिकै फरक प्रदर्शन प्रबन्धक, जस्तै KDM (KDE प्रदर्शन प्रबन्धक) वा xdm गर्दै "
-#~ "हुनुहुन सक्छ । यदितपाईँ अझै पनि यो सुविधा प्रयोग गर्न चाहानुहुन्छ भने या त GDM चालु "
-#~ "गर्नुहोस् वा प्रणाली प्रशासकलाई GDM सुरू गर्नलाई भन्नुहोस् ।"
-
-#~ msgid "Cannot communicate with GDM (The GNOME Display Manager)"
-#~ msgstr "GDM (The GNOME प्रदर्शन प्रबन्धक)संगसम्पर्क राख्न सकिएन"
-
-#~ msgid "Perhaps you have an old version of GDM running."
-#~ msgstr "सायद तपाईँ GDM को पुरानो संस्करण चलाइरहनु भएको छ ।"
-
-#~ msgid ""
-#~ "Cannot communicate with GDM. Perhaps you have an old version running."
-#~ msgstr "GDM सँग  सञ्चार सम्पर्क हुन सकेन,सम्भवत:तपाईँले पुरानो संस्करण चलाउनु भएको छ ।"
-
-#~ msgid "The allowed limit of flexible X servers reached."
-#~ msgstr "लचकदार X सर्भरहरुको छुट्टयाइएका सीमामा पुगेको छ ।"
-
-#~ msgid "There were errors trying to start the X server."
-#~ msgstr " X सर्भर सुरू गर्न प्रयास गरिरहदाका त्रुटिहरू थिए ।"
-
-#~ msgid "The X server failed.  Perhaps it is not configured well."
-#~ msgstr "X सर्भर असफल भएको छ । पक्का पनि यो राम्रोसंगकन्फिगर भएको छैन ।"
-
-#~ msgid "Too many X sessions running."
-#~ msgstr "धेरै X सत्रहरू सञ्चालनमा छन् ।"
-
-#~ msgid ""
-#~ "The nested X server (Xnest) cannot connect to your current X server.  You "
-#~ "may be missing an X authorization file."
-#~ msgstr ""
-#~ "नेस्ट गरिएको् X सर्भर ( Xnest)लाई तपाईँको X सर्भरमा जडान गर्न सकिएन । तपाईँले X "
-#~ "अधिकारप्राप्त फाइल हराउनुभएको छ ।"
-
-#~ msgid ""
-#~ "The nested X server (Xnest) is not available, or GDM is badly "
-#~ "configured.\n"
-#~ "Please install the Xnest package in order to use the nested login."
-#~ msgstr ""
-#~ "नेस्ट गरिएको X सर्भर ( Xnest) यहाँ छैन वा GDMलाई खराब तरिकाले कन्फिगर गरिएको छ "
-#~ "।\n"
-#~ " कृपया  नेस्ट गरिएको् लग- इन प्रयोग गर्नलाई Xnest प्याकेजलाई स्थापना गर्नुहोस् ।"
-
-#~ msgid "The X server is not available. GDM may be misconfigured."
-#~ msgstr "X सर्भर उपलब्ध छैन, लाग्दछ GDM खराब सँग  कन्फिगर भएको छ ।"
-
-#~ msgid ""
-#~ "Trying to set an unknown logout action, or trying to set a logout action "
-#~ "which is not available."
-#~ msgstr ""
-#~ "अज्ञात लग-आउट कार्य सेट गर्न प्रयास गर्दै, वा यहाँ उपलब्ध नभएको लग-आउट कार्य सेट गर्न "
-#~ "प्रयास गर्दै ।"
-
-#~ msgid "Virtual terminals not supported."
-#~ msgstr "अवास्तविक टर्मिनलहरू समर्थन गर्दैन ।"
-
-#~ msgid "Trying to change to an invalid virtual terminal number."
-#~ msgstr "अवैध अवास्तविक टर्मिनल सङ्ख्यालाई परिवर्तन गर्न प्रयास गर्दै ।"
-
-#~ msgid "Trying to update an unsupported configuration key."
-#~ msgstr "समर्थन प्राप्त नगरेको कन्फिगरेसन कुञ्जी अध्यावधिक गर्न प्रयास गर्दै ।"
-
-#~ msgid ""
-#~ "You do not seem to have the authentication needed for this operation.  "
-#~ "Perhaps your .Xauthority file is not set up correctly."
-#~ msgstr ""
-#~ "तपाईँलाई यो सञ्चालनका लागि प्रमाणीकरण आवश्यक छैन जस्तो छ । सम्भवत: तपाईँको "
-#~ "Xauthority फाइल राम्रोसंगसेट भएको छैन ।"
-
-#~ msgid "Too many messages were sent to GDM and it hung up on us."
-#~ msgstr "GDMमा धेरै सन्देशहरू पठाइएकाले यो हामी माथि हङ्ग भएको छ ।"
-
-#~ msgid "Unknown error occurred."
-#~ msgstr "अज्ञात त्रुटि भयो ।"
-
-#~ msgid "%a %b %d, %H:%M"
-#~ msgstr "%a %b %d, %H:%M"
-
-#~ msgid "%a %b %d, %l:%M %p"
-#~ msgstr "%a %b %d, %l:%M %p"
 
-#~ msgid " seconds"
-#~ msgstr "सेकेण्ड"
 
-#~ msgid " second"
-#~ msgstr " सेकेण्ड"
 
-#~ msgid "Usage: %s [-b][-v] and one of the following:\n"
-#~ msgstr " %s [-b][-v] र निम्न मध्ये एक प्रयोग गर्नुहोस्:\n"
 
-#~ msgid "\t-a display\n"
-#~ msgstr "\t-एउटा प्रदर्शन\n"
 
-#~ msgid "\t-r display\n"
-#~ msgstr "\t-r प्रदर्शन\n"
 
-#~ msgid "\t-d display\n"
-#~ msgstr "\t-d प्रदर्शन\n"
 
-#~ msgid "\t-l [server_name]\n"
-#~ msgstr "\t-l [सर्भर नाम]\n"
 
-#~ msgid "\t-t maximum tries to connect (default 15)\n"
-#~ msgstr "\t-t ले जडान गर्न अति प्रयास गर्दछ (पूर्वनिर्धारित १५)\n"
 
-#~ msgid "\t-s sleep value (default 8)\n"
-#~ msgstr "\t-s सिल्प मान (पूर्वनिर्धारित ८)\n"
 
-#~ msgid "Server busy, will sleep.\n"
-#~ msgstr "सर्भर ब्यस्त छ, सिल्प गर्दै छ होला ।\n"
 
-#~ msgid ""
-#~ "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-#~ msgstr ""
-#~ "डोमेनमा जडान असफल,  %d का लागि सेकेण्ड सिल्प गरिरहेको ।  पुन: प्रयास गर्नुहोस्  %d "
-#~ "of %d\n"
 
-#~ msgid "Failed to connect to server after %d retries\n"
-#~ msgstr "पून प्रयास पछि %d सर्भर जडान गर्न असफल \n"
 
-#~ msgid "Log in as another user inside a nested window"
-#~ msgstr "अर्को नेस्ट गरिएको् सञ्झ्यालको प्रयोगकर्ताको रुपमा भित्र लगइन गर्नुहोस्"
 
-#~ msgid "New Login in a Nested Window"
-#~ msgstr "नेस्ट गरिएको् सञ्झ्यालमा नयाँ लगइन"
 
-#~ msgid "Cannot change display"
-#~ msgstr "प्रदर्शन परिवर्तन गर्न सकेन"
 
-#~ msgid "Nobody"
-#~ msgstr "कोही पनि छैन"
 
-#~ msgid "Display %s on virtual terminal %d"
-#~ msgstr " %s अवास्तविक टर्मिनलमा %d प्रदर्शन"
 
-#~ msgid "Nested display %s on virtual terminal %d"
-#~ msgstr "%s अवास्तविक टर्मिनलमा %d नेस्ट गरिएको् प्रदर्शन गर्नुहोस्"
 
-#~ msgid "Open Displays"
-#~ msgstr "प्रदर्शनहरू खोल्नुहोस्"
 
-#~ msgid "_Open New Display"
-#~ msgstr "नयाँ प्रदर्शन खोल्नुहोस्"
 
-#~ msgid "Change to _Existing Display"
-#~ msgstr "अवस्थित प्रदर्शनमा परिवर्तन गर्नुहोस्"
 
-#~ msgid ""
-#~ "There are some displays already open.  You can select one from the list "
-#~ "below or open a new one."
-#~ msgstr ""
-#~ "केही प्रदर्शनहरू खुल्लै छन् । तपाईँले तलको सूचीबाट एउटा छान्न सक्नुहुनेछ वा एउटा नयाँ खोल्न "
-#~ "सक्नुहुनेछ ।"
 
-#~ msgid "Choose server"
-#~ msgstr "सर्भर रोज्नुहोस्"
 
-#~ msgid "Choose the X server to start"
-#~ msgstr "X सर्भर सुरू गर्न रोज्नुहोस्"
 
-#~ msgid "Standard server"
-#~ msgstr "मानक सर्भर"
 
-#~ msgid "Send the specified protocol command to GDM"
-#~ msgstr "GDMमा तोकिएको प्रोटोकल आदेश पठाउनुहोस् ।"
 
-#~ msgid "Xnest mode"
-#~ msgstr "Xnest मोड"
 
-#~ msgid "Do not lock current screen"
-#~ msgstr "हालको पर्दालाई लक नगर्नुहोस्"
 
-#~ msgid "Authenticate before running --command"
-#~ msgstr "चलाइने -- आदेश आउनुभन्दा पहिले प्रमाणीकरण गर्नुहोस् ।"
 
-#~ msgid "Start new flexible session; do not show popup"
-#~ msgstr "नयाँ लचकदार सत्रहरू सुरू गर्नुहोस्; पपअप नदेखाउनुहोस्"
 
-#~ msgid "You do not seem to have the authentication needed for this operation"
-#~ msgstr "तपाईँ लाई यो सञ्चालनका लागि प्रमाणीकरण आवश्यक छैन ।"
 
-#~ msgid "Perhaps your .Xauthority file is not set up correctly."
-#~ msgstr "सम्भवत: तपाईँको Xauthority फाइल राम्रोसंगसेट गरिएको छैन ।"
 
-#~ msgid "You do not seem to be logged in on the console"
-#~ msgstr "तपाईँ कन्सोलमा लगइन भएको देखिनुहुन्न"
 
-#~ msgid "Starting a new login only works correctly on the console."
-#~ msgstr "नयाँ लगइन सुरू गरेपछि मात्र कन्सोलमा ठीकसंगकाम गर्दछ ।"
 
-#~ msgid "Cannot start new display"
-#~ msgstr "नयाँ प्रदर्शन सुरू गर्न सकिएन"
 
-#~ msgid "Log in as another user without logging out"
-#~ msgstr "लगआउट नगरीकन अर्को प्रयोगकर्ताको रुपमा लगइन गर्नुहोस् ।"
 
-#~ msgid "A-M|Afrikaans"
-#~ msgstr "अफ्रिकनहरू"
 
-#~ msgid "A-M|Albanian"
-#~ msgstr "अल्विनियन"
 
-#~ msgid "A-M|Amharic"
-#~ msgstr "आम्हारिक"
 
-#~ msgid "A-M|Arabic (Egypt)"
-#~ msgstr "अरेबिक (इजिप्ट)"
 
-#~ msgid "A-M|Arabic (Lebanon)"
-#~ msgstr "अरेबिक (लेबनान )"
 
-#~ msgid "A-M|Armenian"
-#~ msgstr "आर्मेनियाली"
 
-#~ msgid "A-M|Azerbaijani"
-#~ msgstr "अजरबैजानि"
 
-#~ msgid "A-M|Basque"
-#~ msgstr "बास्क"
 
-#~ msgid "A-M|Belarusian"
-#~ msgstr "बेलारुसियन"
 
-#~ msgid "A-M|Bengali"
-#~ msgstr "बङ्गाली"
 
-#~ msgid "A-M|Bengali (India)"
-#~ msgstr "बङ्गाली (भारत)"
 
-#~ msgid "A-M|Bulgarian"
-#~ msgstr "बल्गेरियन"
 
-#~ msgid "A-M|Bosnian"
-#~ msgstr "बोस्नियन"
 
-#~ msgid "A-M|Catalan"
-#~ msgstr "क्याटालन"
 
-#~ msgid "A-M|Chinese (China Mainland)"
-#~ msgstr "चिनियाँ( चिनियाँ मुख्य भूमि)"
 
-#~ msgid "A-M|Chinese (Hong Kong)"
-#~ msgstr "चिनियाँ(हङ्ककङ्)"
 
-#~ msgid "A-M|Chinese (Singapore)"
-#~ msgstr "चिनियाँ(सिङ्गापुर)"
 
-#~ msgid "A-M|Chinese (Taiwan)"
-#~ msgstr "चिनियाँ(टाइवान)"
 
-#~ msgid "A-M|Croatian"
-#~ msgstr "क्रोसियन"
 
-#~ msgid "A-M|Czech"
-#~ msgstr "चेक"
 
-#~ msgid "A-M|Danish"
-#~ msgstr "डेनिस"
 
-#~ msgid "A-M|Dutch"
-#~ msgstr "डच"
 
-#~ msgid "A-M|English (USA)"
-#~ msgstr "अंग्रेजी (USA)"
 
-#~ msgid "A-M|English (Australia)"
-#~ msgstr "अंग्रेजी (अष्ट्रेलियन)"
 
-#~ msgid "A-M|English (UK)"
-#~ msgstr "अंग्रेजी (UK)"
 
-#~ msgid "A-M|English (Canada)"
-#~ msgstr "अंग्रेजी (क्यानाडा)"
 
-#~ msgid "A-M|English (Ireland)"
-#~ msgstr "अंग्रेजी (इरिल्याण्ड)"
 
-#~ msgid "A-M|English (Denmark)"
-#~ msgstr "अंग्रेजी (डेन्मार्क)"
 
-#~ msgid "A-M|English (South Africa)"
-#~ msgstr "अंग्रेजी (साउथ अफ्रिका)"
 
-#~ msgid "A-M|Estonian"
-#~ msgstr "एस्टोनियन"
 
-#~ msgid "A-M|Finnish"
-#~ msgstr "फिन्नीस"
 
-#~ msgid "A-M|French"
-#~ msgstr "फ्रान्सेली"
 
-#~ msgid "A-M|French (Belgium)"
-#~ msgstr "फ्रान्सेली (बेल्जियमस)"
 
-#~ msgid "A-M|French (Switzerland)"
-#~ msgstr "फ्रान्सेली (स्वीटजरल्याण्ड)"
 
-#~ msgid "A-M|Galician"
-#~ msgstr "ग्यालिसियन"
 
-#~ msgid "A-M|German"
-#~ msgstr "जर्मन"
 
-#~ msgid "A-M|German (Austria)"
-#~ msgstr "जर्मन (अष्ट्रिया)"
 
-#~ msgid "A-M|German (Switzerland)"
-#~ msgstr "जर्मन (स्विट्जर्ल्यान्ड्)"
 
-#~ msgid "A-M|Greek"
-#~ msgstr "ग्रीक"
 
-#~ msgid "A-M|Gujarati"
-#~ msgstr "गुजराती"
 
-#~ msgid "A-M|Hebrew"
-#~ msgstr "हिब्रु "
 
-#~ msgid "A-M|Hindi"
-#~ msgstr "हिन्दी"
 
-#~ msgid "A-M|Hungarian"
-#~ msgstr "हन्गेरियन"
 
-#~ msgid "A-M|Icelandic"
-#~ msgstr "आइसलान्डीक"
 
-#~ msgid "A-M|Indonesian"
-#~ msgstr "ईन्डोनेसियन"
 
-#~ msgid "A-M|Interlingua"
-#~ msgstr "इन्टरलिङ्गुआ"
 
-#~ msgid "A-M|Irish"
-#~ msgstr "आइरिस"
 
-#~ msgid "A-M|Italian"
-#~ msgstr "ईटालीयन"
 
-#~ msgid "A-M|Japanese"
-#~ msgstr "जापानी"
 
-#~ msgid "A-M|Kannada"
-#~ msgstr "कन्नाड"
 
-#~ msgid "A-M|Kinyarwanda"
-#~ msgstr "किन्यारवान्डा"
 
-#~ msgid "A-M|Korean"
-#~ msgstr "कोरियाली"
 
-#~ msgid "A-M|Latvian"
-#~ msgstr "लात्भियन"
 
-#~ msgid "A-M|Lithuanian"
-#~ msgstr "लिथुवानियन"
 
-#~ msgid "A-M|Macedonian"
-#~ msgstr "म्यासिडोनियन"
 
-#~ msgid "A-M|Malay"
-#~ msgstr "A-M|मलाय"
 
-#~ msgid "A-M|Malayalam"
-#~ msgstr "मलयालम"
 
-#~ msgid "A-M|Marathi"
-#~ msgstr "मराठी"
 
-#~ msgid "A-M|Mongolian"
-#~ msgstr "मंगोलियाली"
 
-#~ msgid "N-Z|Northern Sotho"
-#~ msgstr "उत्तरी सोथो"
 
-#~ msgid "N-Z|Norwegian (bokmal)"
-#~ msgstr "नर्वेली( बोक्माल)"
 
-#~ msgid "N-Z|Norwegian (nynorsk)"
-#~ msgstr "नर्वेली(निनोआरएसके )"
 
-#~ msgid "N-Z|Oriya"
-#~ msgstr "औरिया"
 
-#~ msgid "N-Z|Panjabi"
-#~ msgstr "पन्जाबी"
 
-#~ msgid "N-Z|Persian"
-#~ msgstr "पर्शियन"
 
-#~ msgid "N-Z|Polish"
-#~ msgstr "पोलिस"
 
-#~ msgid "N-Z|Portuguese"
-#~ msgstr "पोर्तुगाली"
 
-#~ msgid "N-Z|Portuguese (Brazilian)"
-#~ msgstr "पोर्तुगाली (ब्राजिलियन)"
 
-#~ msgid "N-Z|Romanian"
-#~ msgstr "रोमानियन"
 
-#~ msgid "N-Z|Russian"
-#~ msgstr "रसियाली"
 
-#~ msgid "N-Z|Serbian"
-#~ msgstr "सर्बियन"
 
-#~ msgid "N-Z|Serbian (Latin)"
-#~ msgstr "सर्बियन (ल्याटिन)"
 
-#~ msgid "N-Z|Serbian (Jekavian)"
-#~ msgstr "सर्बियन(जेकाभियन )"
 
-#~ msgid "N-Z|Slovak"
-#~ msgstr "स्लोभाक"
 
-#~ msgid "N-Z|Slovenian"
-#~ msgstr "स्लोभेनियन"
 
-#~ msgid "N-Z|Spanish"
-#~ msgstr "स्पेनिस"
 
-#~ msgid "N-Z|Spanish (Mexico)"
-#~ msgstr "स्पेनिस(मेक्सिको)"
 
-#~ msgid "N-Z|Swedish"
-#~ msgstr "स्विडिस"
 
-#~ msgid "N-Z|Swedish (Finland)"
-#~ msgstr "स्विडिस (फिन्ल्यान्ड्)"
 
-#~ msgid "N-Z|Tamil"
-#~ msgstr "तमिल"
 
-#~ msgid "N-Z|Telugu"
-#~ msgstr "तेलगु"
 
-#~ msgid "N-Z|Thai"
-#~ msgstr "थाइ"
 
-#~ msgid "N-Z|Turkish"
-#~ msgstr "टर्कीस"
 
-#~ msgid "N-Z|Ukrainian"
-#~ msgstr "युक्रेनियन"
 
-#~ msgid "N-Z|Vietnamese"
-#~ msgstr "भियतनामि"
 
-#~ msgid "N-Z|Walloon"
-#~ msgstr "वालुन"
 
-#~ msgid "N-Z|Welsh"
-#~ msgstr "वेल्स्"
 
-#~ msgid "N-Z|Yiddish"
-#~ msgstr "यिड्डिस्"
 
-#~ msgid "N-Z|Zulu"
-#~ msgstr "जुलु"
 
-#~ msgid "Other|POSIX/C English"
-#~ msgstr "POSIX/C अंग्रेजी"
 
-#~ msgid "A-M"
-#~ msgstr "A-M"
 
-#~ msgid "N-Z"
-#~ msgstr "N-Z"
 
-#~ msgid "Cannot run command '%s': %s."
-#~ msgstr "'%s' आदेश चलाउन सकिदैन: %s"
 
-#~ msgid "Cannot start background application"
-#~ msgstr "पृष्ठभूमि अनुप्रयोग सुरू गर्न सकिदैन"
 
-#~ msgid "User %u will login in %t"
-#~ msgstr "यो गकर्ता %u प्रयोगकर्ता %tमा लगइन हु"
 
-#~ msgid "Are you sure you want to restart the computer?"
-#~ msgstr "के तपाईँ तपाईँको कम्प्युटर फेरि सुरू गर्न चाहानुमा निश्चित हुनुहुन्छ ?"
 
-#~ msgid "_Restart"
-#~ msgstr "फेरि सुरू गर्नुहोस्"
 
-#~ msgid "Are you sure you want to Shut Down the computer?"
-#~ msgstr "के तपाईँ तपाईँको कम्प्युटर बन्द गर्ने चाहानामा निश्चित हुनुहुन्छ ?"
 
-#~ msgid "Shut _Down"
-#~ msgstr "बन्द गर्नुहोस्"
 
-#~ msgid "Are you sure you want to suspend the computer?"
-#~ msgstr "के तपाईँ तपाईँको कम्प्युटर निलम्बन गर्न चाहानुमा निश्चित हुनुहुन्छ?"
 
-#~ msgid "_Suspend"
-#~ msgstr "निलम्बन"
 
-#~ msgid "Do you wish to make %s the default for future sessions?"
-#~ msgstr "के तपाईँ %s लाई भविष्यको सत्रहरूका लागि पूर्वनिर्धारित गर्न चाहानुहुन्छ ?"
 
-#~ msgid "Your preferred session type %s is not installed on this computer."
-#~ msgstr "तपाईँले रुचाउनु भएको प्रकार %s यो कम्प्युटरमा स्थापना गरिएको छैन ।"
 
-#~ msgid "Make _Default"
-#~ msgstr "पूर्वनिर्धारित बनाउनुहोस्"
 
-#~ msgid "Just _Log In"
-#~ msgstr "लगइन मात्र गर्नुहोस्"
 
-#~ msgid "You have chosen %s for this session, but your default setting is %s."
-#~ msgstr ""
-#~ "तपाईँले यो सत्रका लागि %s रोज्नु भएको छ, तर तपाईँको पूर्वनिर्धारित सेटिङ् %s हो ।"
 
-#~ msgid "Just For _This Session"
-#~ msgstr "सत्रका लागि मात्र"
 
-#~ msgid "You have chosen %s for this session."
-#~ msgstr "तपाईँले यो सत्रका लागि %s रोज्नु भएको छ ।"
 
-#~ msgid ""
-#~ "If you wish to make %s the default for future sessions, run the "
-#~ "'switchdesk' utility (System Tools->Desktop Switching Tool from the main "
-#~ "menu)."
-#~ msgstr ""
-#~ "तपाईँले यो सत्रका लागि %s लाई रोज्नु भएको छ ।\n"
-#~ " यदि तपाईँ भविष्यका सत्रहरुका लागि पूर्वनिर्धारित बनाउन चाहानुहुन्छ भने,\n"
-#~ "'switchdesk' उपयोगिता \n"
-#~ " लाई चालु गर्नुहोस् ।(प्यानल मेनुबाट प्रणाली->डेस्कटप स्विचीङ्ग उपकरण चलाउनु होस् ?"
 
-#~ msgid "System Default"
-#~ msgstr "पूर्वनिर्धारित प्रणाली"
 
-#~ msgid "_Username:"
-#~ msgstr "प्रयोगकर्ता नाम:"
 
-#~ msgid "%s session selected"
-#~ msgstr "छानिएको %s सत्र"
 
-#~ msgid "_Last"
-#~ msgstr "अन्तिम"
 
-#~ msgid "%s language selected"
-#~ msgstr "ो %s भाष चयन गरियोा"
 
-#~ msgid "_System Default"
-#~ msgstr "पूर्वनिर्धारित प्रणाली"
 
-#~ msgid "_Other"
-#~ msgstr "अन्य"
 
-#~ msgid "_Password:"
-#~ msgstr "पासवर्ड:"
 
-#~ msgid "Please insert 25 cents to log in."
-#~ msgstr "कृपया लगइन गर्नका लागि २५ सेन्ट् घुसाउनुहोस्"
 
-#~ msgid "Finger"
-#~ msgstr "औंला"
 
-#~ msgid "GDM Login"
-#~ msgstr "GDM लगइन"
 
-#~ msgid "_Session"
-#~ msgstr "सत्र"
 
-#~ msgid "_Language"
-#~ msgstr "भाषा"
 
-#~ msgid "Remote Login via _XDMCP..."
-#~ msgstr "XDMCP हुदै रिमोट लगइन..."
 
-#~ msgid "_Configure Login Manager..."
-#~ msgstr "लग-इन प्रबन्धक कन्फिगरेसन गर्नुहोस्..."
 
-#~ msgid "_Actions"
-#~ msgstr "कार्यहरू"
 
-#~ msgid "_Theme"
-#~ msgstr "विषयवस्तु"
 
-#~ msgid "_Quit"
-#~ msgstr "अन्त्य गर्नुहोस्"
 
-#~ msgid "D_isconnect"
-#~ msgstr "विच्छेद गर्नुहोस्"
 
-#~ msgid "Icon"
-#~ msgstr "प्रतिमा"
 
-#~ msgid "Welcome"
-#~ msgstr "स्वागतम"
 
-#~ msgid ""
-#~ "The greeter version (%s) does not match the daemon version. You have "
-#~ "probably just upgraded GDM. Please restart the GDM daemon or the computer."
-#~ msgstr ""
-#~ "यो ग्रिटर संस्करण (%s ) डोमेन संस्करणसंगमेल खाँदैन । तपाईँले सम्भवत: GDMको स्तरवृद्धि "
-#~ "गर्नुभएको छ । कृपया GDM डोमेनलाई वा  कम्प्युटरलाई फेरि सुरू गर्नुहोस् ।"
 
-#~ msgid "Cannot start the greeter"
-#~ msgstr "ग्रिटर सुरू गर्न सकिएन"
 
-#~ msgid "Restart"
-#~ msgstr "फेरि सुरू गर्नुहोस्"
 
-#~ msgid ""
-#~ "The greeter version (%s) does not match the daemon version (%s).  You "
-#~ "have probably just upgraded GDM.  Please restart the GDM daemon or the "
-#~ "computer."
-#~ msgstr ""
-#~ "यो ग्रिटर संस्करण (%s ) डोमेन संस्करण (%s ) संगमेल खाँदैन । तपाईँले सम्भवत: GDMको "
-#~ "स्तरवृद्धि गर्नुभएको छ । कृपया GDM डोमेन वा कम्प्युटरलाई फेरि सुरू गर्नुहोस् ।"
 
-#~ msgid "Restart GDM"
-#~ msgstr "GDM फेरि सुरू गर्नुहोस्"
 
-#~ msgid "Restart computer"
-#~ msgstr "कम्प्युटर फेरि बुट गर्नुहोस्"
 
-#~ msgid "Could not set signal mask!"
-#~ msgstr "सङ्केतको मास्क सेट गर्न सकिएन !"
 
-#~ msgid "Session directory is missing"
-#~ msgstr "डाइरेक्टरी सत्र हराइरहेको छ"
 
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the GDM "
-#~ "configuration."
-#~ msgstr ""
-#~ "तपाईँको डाइरेक्टरी सत्र हराइरहेको छ वा खाली छ !  तपाईँलाई प्रयोग गर्नलाई दुईवटा "
-#~ "सत्रहरू उपलब्धछन्, तर तपाईँले लगइन गरेर GDM कन्फिगरेसनलाई सँच्याउनुहोस् ।"
 
-#~ msgid "Configuration is not correct"
-#~ msgstr "कन्फिगरेसन ठीक छैन"
 
-#~ msgid ""
-#~ "The configuration file contains an invalid command line for the login "
-#~ "dialog, so running the default command.  Please fix your configuration."
-#~ msgstr ""
-#~ "कन्फिगरेसन फाइलभित्र लगइन सम्बाद गर्नका लागि अवैध आदेश हरफहरू समाहित छन,यसर्थ "
-#~ "पूर्वनिर्धारित आदेश चलिरहेको छ ।  कृपया तपाईँको कन्फिगरेसन यकिन गर्नुहोस् ।"
 
-#~ msgid "File %s cannot be opened for writing."
-#~ msgstr "फाइल %s लेख्नका लागि खोल्न सकिदैन ।"
 
-#~ msgid "Cannot open file"
-#~ msgstr "फाइल खोल्न सकिएन"
 
-#~ msgid "Images"
-#~ msgstr "छविहरू"
 
-#~ msgid "All Files"
-#~ msgstr "सबै फाइलहरू"
 
-#~ msgid ""
-#~ "Change the picture that will show in the GDM (login manager) face browser"
-#~ msgstr "GDM(लग-इन प्रबन्धक ) फेस ब्राउजर देखाउने तस्वीर परिवर्तन गर्नुहोस् ।"
 
-#~ msgid "Login Photo"
-#~ msgstr "फोटो लगइन गर्नुहोस्"
 
-#~ msgid "<b>User Image</b>"
-#~ msgstr "<b>प्रयोगकर्ता छवि</b>"
 
-#~ msgid "Login Photo Preferences"
-#~ msgstr "फोटो प्राथमिकताहरू लगइन गर्नुहोस्"
 
-#~ msgid "Failsafe _GNOME"
-#~ msgstr "GNOME फेलसेभ"
 
-#~ msgid ""
-#~ "This is a failsafe session that will log you into GNOME. No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  GNOME will use the 'Default' session."
-#~ msgstr ""
-#~ "यो फेलसेभ सत्रले हो जसले तपाईँलाई GNOMEमा लगइन गरिदिन्छ । तपाईँले अन्य कुनै माध्यमबाट "
-#~ "लगइन गर्न सक्नुभएन भने मात्र सुरुवातका स्क्रिप्टहरू पढ्न पाउनुहुन्छ नत्र पाउनुहुन्न । GNOMEले "
-#~ "'पूर्वनिर्धारित' सत्र प्रयोग गर्नेछ ।"
 
-#~ msgid "Failsafe _Terminal"
-#~ msgstr "फेलसेभ टर्मिनल"
 
-#~ msgid ""
-#~ "This is a failsafe session that will log you into a terminal.  No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  To exit the terminal, type 'exit'."
-#~ msgstr ""
-#~ "यो फेलसेभ सत्रले तपाईँलाई टर्मिनलमा लगइन गरिदिन्छ । तपाईँले अन्य कुनै माध्यमबाट लगइन "
-#~ "गर्न सक्नुभएन भने मात्र सुरुवातका लिपीहरू पढिनेछ नत्र पढिने छैन । टर्मिनलबाट बाहिर "
-#~ "निक्लनाका लागि 'exit' टाइप गर्नुहोस् ।"
 
-#~ msgid ""
-#~ "An error occurred while trying to contact the login screens.  Not all "
-#~ "updates may have taken effect."
-#~ msgstr ""
-#~ "लग-इन पर्दाहरुमा सम्पर्क गर्न खोज्दा एउटा त्रुटि भएको छ ।  सबै अद्यावधिकहरू प्रभावमा "
-#~ "आउन सकेनन् होलान् ।"
 
-#~ msgid "Themed"
-#~ msgstr "थम्ड"
 
-#~ msgid "Plain"
-#~ msgstr "सादा"
 
-#~ msgid "Plain with face browser"
-#~ msgstr "फेस ब्राउजर सँग  सादा"
 
-#~ msgid "Autologin or timed login to the root account is not allowed."
-#~ msgstr "स्वचालित वा समयबद्ध लगइन मूल प्रयोगकर्ताको खातामा अनुमति प्राप्त छैन ।"
 
-#~ msgid "The \"%s\" user already exists in the include list."
-#~ msgstr "प्रयोगकर्ता \"%s\" पहिल्यै समावेश सूचीमा अवस्थित छ ।"
 
-#~ msgid "Cannot add user"
-#~ msgstr "प्रयोगकर्ता नाम थप्न सकिदैन"
 
-#~ msgid "The \"%s\" user already exists in the exclude list."
-#~ msgstr "प्रयोगकर्ता \"%s\" हटाउने सूचीमा पहिल्यै अवस्थित छ ।"
 
-#~ msgid "The \"%s\" user does not exist."
-#~ msgstr "प्रयोगकर्ता \"%s\" अवस्थित छैन ।"
 
-#~ msgid "Sounds"
-#~ msgstr "ध्वनि"
 
-#~ msgid "None"
-#~ msgstr "कुनै पनि होइन"
 
-#~ msgid "Archive is not of a subdirectory"
-#~ msgstr "संग्रह सबडाइरेक्टरीको होइन"
 
-#~ msgid "Archive is not of a single subdirectory"
-#~ msgstr "संग्रह एउटा सहायक डाइरेक्टरीका लागि होइन"
 
-#~ msgid "File not a tar.gz or tar archive"
-#~ msgstr "फाइल tar.gz or tar संग्रह होइन"
 
-#~ msgid "Archive does not include a GdmGreeterTheme.info file"
-#~ msgstr "संग्रह भित्र  GdmGreeterTheme सूचना फाइल समाविष्ट छैनन्"
 
-#~ msgid "File does not exist"
-#~ msgstr "फाइल अवस्थित छैन"
 
-#~ msgid "%s"
-#~ msgstr "%s"
 
-#~ msgid "Not a theme archive"
-#~ msgstr "विषयवस्तु संग्रह होइन"
 
-#~ msgid ""
-#~ "Theme directory '%s' seems to be already installed. Install again anyway?"
-#~ msgstr ""
-#~ "विषयवस्तु डाइरेक्टरी '%s' पहिल्यै स्थापना भइसकेको छ, जे भए पनि स्थापना गर्नुहुन्छ ?"
 
-#~ msgid "Some error occurred when installing the theme"
-#~ msgstr "विषयवस्तु स्थापना गर्दा केही त्रुटि भएको छ ।"
 
-#~ msgid "No file selected"
-#~ msgstr "फाइल चयन गरिएको छैन"
 
-#~ msgid "Select Theme Archive"
-#~ msgstr "विषयवस्तु संग्रह बचत गर्नुहोस्"
 
-#~ msgid "_Install"
-#~ msgstr "स्थापना गर्नुहोस्"
 
-#~ msgid "Remove the \"%s\" theme?"
-#~ msgstr "विषयवस्तु \"%s\" हटाउनुहुन्छ ?"
 
-#~ msgid "If you choose to remove the theme, it will be permanently lost."
-#~ msgstr "यदि तपाईँले विषयवस्तु हटाउन रोज्नुहुन्छ भने, यो सधैका लागि हराउनेछ ।"
 
-#~ msgid "_Remove Theme"
-#~ msgstr "विषयवस्तु हटाउनुहोस्"
 
-#~ msgid "Install the theme from '%s'?"
-#~ msgstr " '%s'बाट नयाँ विषयवस्तु स्थापना गर्नुहुन्छ ?"
 
-#~ msgid "Select install to add the theme from the file '%s'."
-#~ msgstr "फाइल '%s'बाट विषयवस्तु थप्न 'स्थापना गर्नुहोस्' चयन गर्नुहोस् ।"
 
-#~ msgid ""
-#~ "This configuration window changes settings for the GDM daemon, which is "
-#~ "the graphical login screen for GNOME.  Changes that you make will take "
-#~ "effect immediately.\n"
-#~ "\n"
-#~ "Note that not all configuration options are listed here.  You may want to "
-#~ "edit %s if you cannot find what you are looking for.\n"
-#~ "\n"
-#~ "For complete documentation see the GNOME help browser under the \"Desktop"
-#~ "\" category."
-#~ msgstr ""
-#~ "यो कन्फिगरेसन सञ्झ्यालले GDM डोमेनका लागि सेटिङहरुको परिवर्तन गर्दछ, जो GNOMEका "
-#~ "लागि ग्राफिकल लगइन पर्दा हो । तपाईँले गर्नुभएको परिवर्तनले चाँडै प्रभावमा लिन्छ ।\n"
-#~ "\n"
-#~ "याद राख्नुहोस् कि सबै कन्फिगरेसन विकल्पहरू यहाँ सूचीबद्ध गरिएका छैनन् ।  तपाईँले "
-#~ "खोज्नुभएको कुरा भेट्नुभएको छैन भने तपाईँले %s लाई सम्पादन गर्न चाहानुहुन्छ  । कागजात "
-#~ "पूरागर्नका लागि \"Desktop\" कोटि मुनिको GNOME मद्दत ब्राउजर हेर्नुहोस् ।"
 
-#~ msgid "Apply the changes to users before closing?"
-#~ msgstr "बन्द गर्नु भन्दा पहिले प्रयोगकर्ताहरुमा परिवर्तन लागू गर्नुहुन्छ ?"
 
-#~ msgid ""
-#~ "If you don't apply, the changes made on the Users tab will be disregarded."
-#~ msgstr ""
-#~ "यदि तपाईँले लागू गर्नु भएन भने, प्रयोगकर्ता ट्याबहरुमा गरेको परिवर्तनहरू वेवास्ता हुनेछन् ।"
 
-#~ msgid "Close _without Applying"
-#~ msgstr "लागू नगरिकन बन्द गर्नुहोस्"
 
-#~ msgid "Could not access GDM configuration file.\n"
-#~ msgstr "GDM कन्फिगरेसन फाइलमा पहुँच गर्न सकेन ।\n"
 
-#~ msgid "You must be the root user to configure GDM."
-#~ msgstr "GDM कन्फिगर गर्नका लागि तपाईँ मूल प्रयोगकर्ता हुनुपर्नेछ ।"
 
-#~ msgid "Configure the login window (GNOME Display Manager)"
-#~ msgstr "लग-इन सञ्झ्याल कन्फिगर गर्नुहोस् (जिनोम प्रदर्शन प्रबन्धक)"
 
-#~ msgid "Login Window Preferences"
-#~ msgstr "सञ्झ्याल प्राथमिकताहरू लगइन गर्नुहोस्"
 
-#~ msgid "    "
-#~ msgstr "    "
 
-#~ msgid "%n will be replaced by hostname"
-#~ msgstr "होस्टनामद्धारा %n बदलिने छ ।"
 
-#~ msgid ""
-#~ "<b>Note:</b>  Users in the Include list will appear in the face browser "
-#~ "if enabled and will appear in the user drop-down lists for automatic and "
-#~ "timed logins on the Security tab.  Users in the Exclude list will not "
-#~ "appear."
-#~ msgstr ""
-#~ "<b>द्रष्टव्य:</b>  यदि सक्षम पारिएमा प्रयोगकर्ता समावेश सूचीमा देखा पर्नेछ र "
-#~ "प्रयोगकर्ता ड्रपडाउन सूचीहरु स्वचालितका लागि र समयबद्ध लगइन सुरक्षा ट्याबमा देखा "
-#~ "पर्नेछ ।  प्रयोगकर्ता हटाउने सूचीमा देखा पर्ने छैन ।"
 
-#~ msgid ""
-#~ "<b>Warning:</b>  Incorrect settings could prevent the X server from "
-#~ "restarting.  Changes to these settings will not take effect until GDM is "
-#~ "restarted."
-#~ msgstr ""
-#~ "<b>चेतावनी:</b>  गलत सेटिङ्ले X सर्भरलाई फेरि सुरुहुनबाट रोक्न सक्छ ।  GDM फेरि सुरू "
-#~ "नगरेसम्म ति सेटिङ्हरुका परिवर्तन प्रभाव पर्ने छैन ।"
 
-#~ msgid "A_dd..."
-#~ msgstr "थप्नुहोस्..."
 
-#~ msgid "A_llow remote system administrator login"
-#~ msgstr "रिमोट प्रणाली प्रशासकलाई लगइन गर्न अनुमति दिनुहोस् ।"
 
-#~ msgid "A_pply User Changes"
-#~ msgstr "प्रयोगकर्ता परिवर्तनहरू लागू गर्नुहोस्"
 
-#~ msgid "Accessibility"
-#~ msgstr "पहुँचयोग्य"
 
-#~ msgid "Add / Modify Servers To Start"
-#~ msgstr "सुरू गर्न सर्भरहरू थप्नुहोस् / परिमार्जन गर्नुहोस्"
 
-#~ msgid "Add S_erver..."
-#~ msgstr "सर्भर थप्नुहोस्..."
 
-#~ msgid "Add User"
-#~ msgstr "प्रयोगकर्ता थप्नुहोस्"
 
-#~ msgid "Allo_w remote timed logins"
-#~ msgstr "रिमोट समयबद्ध लगइनलाई अनुमति दिनुहोस् ।"
 
-#~ msgid "Author:"
-#~ msgstr "लेखक:"
 
-#~ msgid "Background"
-#~ msgstr "पृष्ठभूमि"
 
-#~ msgid "C_ommand:"
-#~ msgstr "आदेश:"
 
-#~ msgid "C_ustom:"
-#~ msgstr "अनुकूल:"
 
-#~ msgid "Co_lor:"
-#~ msgstr "रङ:"
 
-#~ msgid "Color depth:"
-#~ msgstr "रङको गहिराई:"
 
-#~ msgid "Configure _X Server..."
-#~ msgstr "लग-इन प्रबन्धक कन्फिगर गर्नुहोस्..."
 
-#~ msgid "Configure _XDMCP..."
-#~ msgstr "XDMCP कन्फिगर गर्नुहोस्..."
 
-#~ msgid "Copyright:"
-#~ msgstr "सर्वाधिकार:"
 
-#~ msgid "Disables X forwarding, but does not affect XDMCP."
-#~ msgstr "X फरवार्ड गर्ने अक्षम पार्छ, तर XDMCP लाई कुनै असर पार्दैन ।"
 
-#~ msgid "Displays per _host:"
-#~ msgstr "प्रतिहोस्ट प्रदर्शन गर्दछ:"
 
-#~ msgid "Do not show image for _remote logins"
-#~ msgstr "रिमोट लागइनहरुका लागि छवि नदेखाउनुहोस्"
 
-#~ msgid "E_nable debug messages to system log"
-#~ msgstr "प्रणाली लगको त्रुटि सच्चाउने सन्देश सक्षम पार्नुहोस्"
 
-#~ msgid "E_xclude:"
-#~ msgstr "हटाउने:"
 
-#~ msgid "Enable _Timed Login"
-#~ msgstr "समयबद्ध लगइन सक्षम पार्नुहोस्"
 
-#~ msgid "Example: /usr/X11R6/bin/X"
-#~ msgstr "उदाहरण: /usr/X11R6/bin/X"
 
-#~ msgid ""
-#~ "Greeter\n"
-#~ "Chooser"
-#~ msgstr ""
-#~ "ग्रिटर\n"
-#~ "छनौटकर्ता"
 
-#~ msgid "Honor _indirect requests"
-#~ msgstr "सम्मानित अप्रत्यक्ष अनुरोधहरू"
 
-#~ msgid "I_mage:"
-#~ msgstr "छवि:"
 
-#~ msgid "I_nclude:"
-#~ msgstr "समावेश:"
 
-#~ msgid "Includ_e Hostname Chooser (XDMCP) menu item"
-#~ msgstr "होस्टनाम छनौटकर्ता (XDMCP) मेनु वस्तु समावेश गर्नुहोस्"
 
-#~ msgid "Include Con_figure menu item"
-#~ msgstr "कन्फिगर मेनु वस्तु समावेश गर्नुहोस्"
 
-#~ msgid "L_ogin retry delay:"
-#~ msgstr "लगइन पुन: प्रयासमा ढिलाई:"
 
-#~ msgid "La_unch:"
-#~ msgstr "सुरुवात गर्नुहोस्:"
 
-#~ msgid "Listen on _UDP port: "
-#~ msgstr "UDP पोर्टलाई सुन्नुहोस्:"
 
-#~ msgid "Local"
-#~ msgstr "स्थानीय"
 
-#~ msgid "Login _failed:"
-#~ msgstr "लगइन असफल:"
 
-#~ msgid "Login _successful:"
-#~ msgstr "लगइन सफल भयो:"
 
-#~ msgid "Logo"
-#~ msgstr "लोगो"
 
-#~ msgid "Maximum _pending requests:"
-#~ msgstr "अधिक विचाराधिन अनुरोधहरू:"
 
-#~ msgid "Maximum _remote sessions:"
-#~ msgstr "अधिक रिमोट सत्रहरू:"
 
-#~ msgid "Maximum _wait time:"
-#~ msgstr "अधिक पर्खने समय:"
 
-#~ msgid "Maximum indirect w_ait time:"
-#~ msgstr "अधिक अप्रत्यक्ष पर्खने समय:"
 
-#~ msgid "Maximum p_ending indirect requests:"
-#~ msgstr "अधिक अप्रत्यक्ष विचाराधिन अनुरोधहरू:"
 
-#~ msgid "Menu Bar"
-#~ msgstr "मेनुपट्टी"
 
-#~ msgid "Op_tions:\t"
-#~ msgstr "विकल्पहरू:\t"
 
-#~ msgid "Pick Background Color"
-#~ msgstr "पृष्ठभूमि रङ पिक"
 
-#~ msgid "Pin_g interval:"
-#~ msgstr "पिङ्ग अन्तराल:"
 
-#~ msgid ""
-#~ "Plain\n"
-#~ "Plain with face browser\n"
-#~ "Themed"
-#~ msgstr ""
-#~ "सादा\n"
-#~ "फेस ब्राउजर सँग  सादा\n"
-#~ "थेम्ड"
 
-#~ msgid "R_emove"
-#~ msgstr "हटाउनुहोस्"
 
-#~ msgid "Re_move Server"
-#~ msgstr "सर्भर हटाउनुहोस्"
 
-#~ msgid "Refresh rate:"
-#~ msgstr "दर ताजा पार्नुहोस्:"
 
-#~ msgid "Remote"
-#~ msgstr "रिमोट"
 
-#~ msgid ""
-#~ "Remote login disabled\n"
-#~ "Same as Local"
-#~ msgstr ""
-#~ "रिमोट लगइन अक्षम पारियो\n"
-#~ "स्थानीय जस्तै"
 
-#~ msgid "Resolution:"
-#~ msgstr "रिजोल्युसन:"
 
-#~ msgid "Sc_ale to fit screen"
-#~ msgstr "पर्दा ठीक्क पार्ने स्केल"
 
-#~ msgid "Security"
-#~ msgstr "सुरक्षा"
 
-#~ msgid "Select Background Image"
-#~ msgstr "पृष्ठभूमि छविलाई चयन गर्नुहोस्"
 
-#~ msgid "Select Logo Image"
-#~ msgstr "लोगो छवि चयन गर्नुहोस्"
 
-#~ msgid "Select Sound File"
-#~ msgstr "ध्वनि फाइल चयन गर्नुहोस्"
 
-#~ msgid ""
-#~ "Selected only\n"
-#~ "Random from selected\n"
-#~ msgstr ""
-#~ "चयन गरिएको मात्र\n"
-#~ "चयन गरिएको बाट अनियमित\n"
 
-#~ msgid "Server Settings"
-#~ msgstr "सर्भर सेटिङ्"
 
-#~ msgid "Server _name:"
-#~ msgstr "सर्भर नाम:"
 
-#~ msgid "Servers To Start"
-#~ msgstr "सुरू गर्न सर्भरहरू"
 
-#~ msgid "Sho_w Actions menu"
-#~ msgstr "कार्य मेनु देखाउनुहोस्"
 
-#~ msgid "Themes"
-#~ msgstr "विषयवस्तुहरू"
 
-#~ msgid "U_ser:"
-#~ msgstr "प्रयोगकर्तानाम:"
 
-#~ msgid "Users"
-#~ msgstr "प्रयोगकर्ता नामहरू"
 
-#~ msgid "Welcome Message"
-#~ msgstr "स्वागतम सन्देश"
 
-#~ msgid "X Server Login Window Preferences"
-#~ msgstr "X सर्भर लगइन सञ्झ्याल प्राथमिकताहरू"
 
-#~ msgid "XDMCP Login Window Preferences"
-#~ msgstr "XDMCP लगइन सञ्झ्याल प्राथमिकताहरू"
 
-#~ msgid "_Add..."
-#~ msgstr "थप्नुहोस्..."
 
-#~ msgid "_Add/Modify..."
-#~ msgstr "थप्नुहोस्/परिमार्जन गर्नुहोस्..."
 
-#~ msgid "_Allow local system administrator login"
-#~ msgstr "स्थानीय प्रणाली प्रशासकलाई लगइन गर्न अनुमति दिनुहोस् ।"
 
-#~ msgid "_Allow users to change fonts and colors of plain greeter"
-#~ msgstr "सादा ग्रिटरको रङहरू र फन्टहरू परिवर्तन गर्न प्रयोगकर्ताहरुलाई अनुमति दिनुहोस्"
 
-#~ msgid "_Background color:"
-#~ msgstr "पृष्ठभूमि रङ:"
 
-#~ msgid "_Default: \"Welcome to %n\""
-#~ msgstr "पूर्वनिर्धारित: \"Welcome to %n\""
 
-#~ msgid "_Default: \"Welcome\""
-#~ msgstr "पूर्वनिर्धारित: \"Welcome\""
 
-#~ msgid "_Deny TCP connections to Xserver"
-#~ msgstr "Xसर्भरमा TCP जडानहरू गर्न अविस्कार गर्नुहोस्"
 
-#~ msgid "_Enable Automatic Login"
-#~ msgstr "स्वचालित लगइन सक्षम पार्नुहोस्"
 
-#~ msgid "_Enable accessible login"
-#~ msgstr "पहुँचयोग्य लगइनलाई सक्षम पार्नुहोस्"
 
-#~ msgid "_Flexible (on demand)"
-#~ msgstr "लचकदार (मागमा)"
 
-#~ msgid "_Image:"
-#~ msgstr "छवि:"
 
-#~ msgid "_Include all users from /etc/passwd (not for NIS)"
-#~ msgstr " /etc/पासवर्ड (NISका लागि होइन) बाट सबै प्रयोगकर्ताहरू समावेश गर्नुहोस्"
 
-#~ msgid "_Login screen ready:"
-#~ msgstr "पर्दाको लगइन तयार छ:"
 
-#~ msgid "_Logins are handled by this computer"
-#~ msgstr "लगइनहरू त्यो कम्प्युटरद्धारा ह्यान्डल गरिएको छ"
 
-#~ msgid "_Pause before login:"
-#~ msgstr "लगइन गर्नु भन्दा पहिले पज गर्नुहोस्:"
 
-#~ msgid "_Remove"
-#~ msgstr "हटाउनुहोस्"
 
-#~ msgid "_Remove..."
-#~ msgstr "हटाउनुहोस्..."
 
-#~ msgid "_Server:"
-#~ msgstr "सर्भर:"
 
-#~ msgid "_Servers:"
-#~ msgstr "सर्भरहरू:"
 
-#~ msgid "_Style:"
-#~ msgstr "शैली:"
 
-#~ msgid "_Theme:"
-#~ msgstr "विषयवस्तु:"
 
-#~ msgid "_User:"
-#~ msgstr "प्रयोगकर्ता:"
 
-#~ msgid "_VT:"
-#~ msgstr "VT:"
 
-#~ msgid "dummy"
-#~ msgstr "डमी"
 
-#~ msgid "seconds"
-#~ msgstr "सेकेण्ड"
 
-#~ msgid "Too many users to list here..."
-#~ msgstr "सूचीबद्ध गर्नुपर्ने धेरै प्रयोगकर्ताहरुलाई..."
 
-#~ msgid "Restart Machine"
-#~ msgstr "मेशिन फेरि सुरू गर्नुहोस्"
 
-#~ msgid "There was an error loading the theme %s"
-#~ msgstr "विषयवस्तु %s लाई लोड गर्दा त्रुटि भएको छ ।"
 
-#~ msgid "The greeter theme is corrupt"
-#~ msgstr "ग्रिटरको विषयवस्तु दूषित छ"
 
-#~ msgid ""
-#~ "The theme does not contain definition for the username/password entry "
-#~ "element."
-#~ msgstr "विषयवस्तुमा प्रयोगकर्ता नाम वा पासवर्ड तत्वको परिभाषा समाविष्ट छैन ।"
 
-#~ msgid ""
-#~ "There was an error loading the theme, and the default theme could not be "
-#~ "loaded. Attempting to start the standard greeter"
-#~ msgstr ""
-#~ "विषयवस्तु लोड गर्दा एउटा त्रुटि भएको छ, वा पूर्वनिर्धारित विषयवस्तुलाई पनि लोड गर्न "
-#~ "सकिएको छैन, मानक ग्रिटर सुरू गर्ने प्रयास गर्दै"
 
-#~ msgid ""
-#~ "The GTK+ greeter could not be started.  This display will abort and you "
-#~ "may have to login another way and fix the installation of GDM"
-#~ msgstr ""
-#~ "GTK+ मानक ग्रिटर सुरू गर्न सकिएन । यो प्रदर्शनले परित्याग गर्नेछ र तपाईँले अर्को "
-#~ "किसिमले लगइन गर्नुपर्ने हुन सक्दछ र GDM को स्थापना तय गर्नुहोस्"
 
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the gdm "
-#~ "configuration."
-#~ msgstr ""
-#~ "तपाईँको डाइरेक्टरी सत्र हराइरहेको छ वा खाली छ ! तपाईँले प्रयोग गर्न दुईवटा सत्रहरू "
-#~ "छन्, तर तपाईँ लगइन गरेर gdm कन्फिगरेसनलाई सँच्याउनुहोस् ।"
 
-#~ msgid "Last Language"
-#~ msgstr "अन्तिम भाषा"
 
-#~ msgid "Select a Language"
-#~ msgstr "एउटा भाषा चयन गर्नुहोस्"
 
-#~ msgid "Change _Language"
-#~ msgstr "भाषा परिवर्तन गर्नुहोस्"
 
-#~ msgid "_Select the language for your session to use:"
-#~ msgstr "तपाईँको सत्रलाई प्रयोग गर्नलाई भाषा चयन गर्नुहोस्:"
 
-#~ msgid "Select _Language..."
-#~ msgstr "भाषा चयन गर्नुहोस्..."
 
-#~ msgid "Select _Session..."
-#~ msgstr "सत्र चयन गर्नुहोस्..."
 
-#~ msgid ""
-#~ "Answer questions here and press Enter when done.  For a menu press F10."
-#~ msgstr ""
-#~ "प्रश्नका उत्तरहरू यहाँ दिनुहोस् र दिइसके पछि प्रवेश थिच्नुहोस् । एउटा मेनुका लागि F10 "
-#~ "थिच्नुहोस् ।"
 
-#~ msgid "Already logged in"
-#~ msgstr "पहिल्यै लगइन छ"
 
-#~ msgid "Sus_pend"
-#~ msgstr "निलम्बन"
 
-#~ msgid "Remote Login via _XDMCP"
-#~ msgstr "XDMCP हुदै रिमोट लगइन"
 
-#~ msgid "Confi_gure"
-#~ msgstr "कन्फिगर"
 
-#~ msgid "Op_tions"
-#~ msgstr "विकल्पहरू"
 
-#~ msgid "_OK"
-#~ msgstr "ठीक छ"
 
-#~ msgid "_Cancel"
-#~ msgstr "रद्द गर्नुहोस्"
 
-#~ msgid "You have chosen %s for this session"
-#~ msgstr "तपाईँले यो सत्रका लागि %s चयन गर्नु भएको छ"
 
-#~ msgid ""
-#~ "If you wish to make %s the default for future sessions, run the "
-#~ "'switchdesk' utility (System->Desktop Switching Tool from the panel menu)."
-#~ msgstr ""
-#~ "यदि तपाईँले भविष्यका लागि सत्रका %s लाई पूर्वनिर्धारित बनाउन चाउनु हुन्छ भने, "
-#~ "स्विचडेस्क उपयोगिता (प्रणाली->प्यानल मेनुबाट डेस्कटप स्विच गर्ने उपकरण) चलाउनुहोस् ।"
 
-#~ msgid "Change _Session"
-#~ msgstr "सत्र परिवर्तन गर्नुहोस्"
 
-#~ msgid "Sessions"
-#~ msgstr "सत्रहरू"
 
-#~ msgid "_Last session"
-#~ msgstr "अन्तिम सत्र"
 
-#~ msgid "Log in using the session that you have used last time you logged in"
-#~ msgstr "तपाईँले सबैभदा अन्तिममा लगइन गर्दाको सत्र प्रयोग गर्नुहोस् ।"
 
-#~ msgid "Confi_gure Login Manager..."
-#~ msgstr "लग-इन प्रबन्धक कन्फिगर गर्नुहोस्..."
 
-#~ msgid "Choose an Action"
-#~ msgstr "एउटा कार्य रोज्नुहोस्"
 
-#~ msgid "Shut _down the computer"
-#~ msgstr "कम्प्युटर बन्द गर्नुहोस्"
 
-#~ msgid "Shut Down your computer so that you may turn it off."
-#~ msgstr "तपाईँको shut down गर्नुहोस् ता कि तपाईँले यसलाई बन्द गर्न सक्नुहुन्छ ।"
 
-#~ msgid "_Restart the computer"
-#~ msgstr "कम्प्युटर फेरि सुरू गर्नुहोस्"
 
-#~ msgid "Restart your computer"
-#~ msgstr "तपाईँको कम्प्युटर फेरि सुरू गर्नुहोस्"
 
-#~ msgid "Sus_pend the computer"
-#~ msgstr "कम्प्युटरलाई निलम्बन गर्नुहोस्"
 
-#~ msgid "Suspend your computer"
-#~ msgstr "तपाईँको कम्प्युटर निलम्बन गर्नुहोस्"
 
-#~ msgid "Run _XDMCP chooser"
-#~ msgstr "XDMCP छनौतकर्ता चलाउनुहोस्"
 
-#~ msgid ""
-#~ "Run an XDMCP chooser which will allow you to log into available remote "
-#~ "computers, if there are any."
-#~ msgstr ""
-#~ "एउटा XDMCP छनौटकर्तालाई चलाउनुहोस् जसले तपाईँलाई उपलब्ध रिमोट कम्प्युटरलाई लग गर्न "
-#~ "अनुमति दिनेछ, यदि त्यहा केहि छ ।"
 
-#~ msgid "Confi_gure the login manager"
-#~ msgstr "लगइन प्रबन्धकलाई कन्फिगर गर्नुहोस्"
 
-#~ msgid ""
-#~ "Configure GDM (this login manager). This will require the root password."
-#~ msgstr ""
-#~ "GDM (यो लगइन प्रबन्धक) लाई कन्फिगर गर्नुहोस् । यसलाई रुट पासवर्ड आवश्यक पर्छ ।"
 
-#~ msgid "(c) 2002 Bond, James Bond"
-#~ msgstr "(c) 2002 Bond, James Bond"
 
-#~ msgid "Bond, James Bond"
-#~ msgstr "बोन्ड, जेम्स् बोन्ड"
 
-#~ msgid "Circles"
-#~ msgstr "वृत्तहरू"
 
-#~ msgid "Theme with blue circles"
-#~ msgstr "नीलो वृत्तहरू सहितको विषयवस्तु"
 
-#~ msgid "(c) 2002 GNOME"
-#~ msgstr "(सि)२००२ GNOME"
 
-#~ msgid "GNOME Art variation of Circles with a Face Browser"
-#~ msgstr "GNOME कलाको फेस ब्राउजरहरू सहितको वृत्तहरुको भिन्नता"
 
-#~ msgid "GNOME Artists"
-#~ msgstr "GNOME कलाकारहरू"
 
-#~ msgid "Happy GNOME with Browser"
-#~ msgstr "ब्राउजर सहितको खुशियाली GNOME"
 
-#~ msgid "GNOME Art variation of Circles"
-#~ msgstr "GNOME कला को वृत्तहरुको भिन्नता"
 
-#~ msgid "Happy GNOME"
-#~ msgstr "खुशियाली GNOME"
 
-#~ msgid ""
-#~ "Error while trying to run (%s)\n"
-#~ "which is linked to (%s)"
-#~ msgstr ""
-#~ "चलाउन (%s)\n"
-#~ "प्रयास गर्दाको त्रुटि जुन (%s)मा लिङ्क् भएको हुन्छ"
 
-#~ msgid "Cannot open gestures file: %s"
-#~ msgstr "गेस्चर फाइल खोल्न सकिदैन: %s"
 
-#~ msgid "DMX display to migrate to"
-#~ msgstr "मा DMX प्रदर्शन बसाई सार्न"
 
-#~ msgid "DISPLAY"
-#~ msgstr "DISPLAY"
 
-#~ msgid "Backend display name"
-#~ msgstr "ब्याकइन्ड प्रदर्शन नाम"
 
-#~ msgid "Xauthority file for destination display"
-#~ msgstr "गन्तव्य प्रदर्शनका लागि Xअधिकार फाइल"
 
-#~ msgid "AUTHFILE"
-#~ msgstr "AUTHFILE"
 
-#~ msgid "Xauthority file for backend display"
-#~ msgstr "ब्याकइन्ड प्रदर्शनका लागि Xअधिकार फाइल"
 
-#~ msgid "Failed to open display \"%s\"\n"
-#~ msgstr "खोल्न असफल प्रदर्शन \"%s\"\n"
 
-#~ msgid "DMX extension not present on \"%s\"\n"
-#~ msgstr "DMX विस्तारमा प्रस्तुत छैन \"%s\"\n"
 
-#~ msgid "- migrate a backend display from one DMX display to another"
-#~ msgstr "- एउटा DMX प्रदर्शनबाट अन्यमा एउटा ब्याकइन्ड प्रदर्शनमा बसाई सार्नुहोस्"
 
-#~ msgid "You must specify a destination DMX display using %s\n"
-#~ msgstr "तपाईँले गन्तब्य DMX प्रदर्शन तोक्नु पर्दछ प्रयोग गर्दै %s\n"
 
-#~ msgid "You must specify a backend display by using %s\n"
-#~ msgstr "तपाईँले ब्याकइन्ड प्रदर्शन तोक्नु पर्दछ प्रयोग गर्दै %s\n"
 
-#~ msgid "DMXAddScreen \"%s\" failed on \"%s\"\n"
-#~ msgstr "DMXपर्दा थप्न असफल \"%s\" मा \"%s\"\n"
 
-#~ msgid "gdmaskpass only runs as root\n"
-#~ msgstr "रुटको रुपमामा GDMaskpass मात्र चल्छन्छ\n"
 
-#~ msgid "(memory buffer)"
-#~ msgstr "(स्मृतिको बफर)"
 
-#~ msgid ""
-#~ "An error occurred while loading user interface element %s%s from file "
-#~ "%s.  Possibly the glade interface description was corrupted.  %s cannot "
-#~ "continue and will exit now.  You should check your installation of %s or "
-#~ "reinstall %s."
-#~ msgstr ""
-#~ "%s फाइलबाट प्रयोगकर्ता इन्टरफेस तत्व %s%s लाई लोड गर्दा एउटा त्रुटि भएको छ ।  "
-#~ "सायद ग्लेड इन्टरफेसको वर्णन दूषित भएको छ । %s अब जारी रहन सक्तैन र अब निक्लदैंछ छ । "
-#~ "तपाईँले %s को स्थापना जाँच्नुपर्ने हुन्छ वा %s लाई पुन: स्थापना गर्नुपर्ने हुन्छ ।"
 
-#~ msgid "Cannot load user interface"
-#~ msgstr "प्रयोगकर्ता इन्टरफेस लोड गर्न सकेन"
 
-#~ msgid ""
-#~ "Glade file is on crack! Make sure the correct file is installed!\n"
-#~ "file: %s widget: %s"
-#~ msgstr ""
-#~ "ग्लेड फाइल क्र्याकमा छ ! ठीक फाइल स्थापना गरिएको कुरामा ढुक्क हुनुहोस् !\n"
-#~ "फाइल: %s विड्जेट: %s"
 
-#~ msgid ""
-#~ "An error occurred while loading the user interface element %s%s from file "
-#~ "%s. CList type widget should have %d column. Possibly the glade interface "
-#~ "description was corrupted. %s cannot continue and will exit now. You "
-#~ "should check your installation of %s or reinstall %s."
 
-#~ msgid_plural ""
-#~ "An error occurred while loading the user interface element %s%s from file "
-#~ "%s. CList type widget should have %d columns. Possibly the glade "
-#~ "interface description was corrupted. %s cannot continue and will exit "
-#~ "now. You should check your installation of %s or reinstall %s."
-#~ msgstr[0] ""
-#~ "%s फाइलबाट प्रयोगकर्ता इन्टरफेस तत्व %s%s तत्व लोडिङ्ग गर्दा एउटा त्रुटि भएको छ । "
-#~ "क्लिस्ट् प्रकारको विड्जेट मा %d स्तम्भू हुनुपर्दछ । सम्भवत: ग्लेड इन्टरफेसको वर्णन दूषित छ । "
-#~ "%s अब जारी रहन सक्तैन र अब निस्कदैंछ । तपाईँले %s को स्थापना जाँच्नुपर्ने हुन्छ वा %s "
-#~ "लाई पुन:स्थापना गर्नुपर्ने हुन्छ ।"
-#~ msgstr[1] ""
-#~ "%s फाइलबाट प्रयोगकर्ता इन्टरफेस तत्व %s%s लोडिङ्ग गर्दा एउटा त्रुटि भएको छ । क्लिस्ट् "
-#~ "प्रकारको विड्जेट मा %d स्तम्भहरू हुनुपर्दछ । सम्भवत: ग्लेड इन्टरफेसको वर्णन दूषित छ । %s "
-#~ "अब जारी रहन सक्तैन र अब निस्कदैंछ । तपाईँले %s को स्थापना जाँच्नुपर्ने हुन्छ वा %s लाई "
-#~ "पुन:स्थापना गर्नुपर्ने हुन्छ ।"
 
-#~ msgid ""
-#~ "Glade file is on crack! Make sure the correct file is installed!\n"
-#~ "file: %s widget: %s expected clist columns: %d"
-#~ msgstr ""
-#~ "ग्लेड फाइल क्र्याकमा छ ! ठीक फाइल स्थापना गरिएको कुरामा ढुक्क हुनुहोस् !%s फाइलको "
-#~ "विड्जेट %s मा अनुमानित क्लिस्ट् स्तम्भहरू: %d"
 
-#~ msgid ""
-#~ "An error occurred while loading the user interface from file %s.  "
-#~ "Possibly the glade interface description was not found.  %s cannot "
-#~ "continue and will exit now.  You should check your installation of %s or "
-#~ "reinstall %s."
-#~ msgstr ""
-#~ "प्रयोगकर्ता इन्टरफेस फाइल %s बाट तत्व लोडिङ्ग गर्दा एउटा त्रुटि भएको छ । सम्भवत: "
-#~ "ग्लेड इन्टरफेसको वर्णन पाउन सकिएन ।  %s जारी रहन सक्तैन र अब निस्कदैंछ । तपाईँले %sको "
-#~ "पुन: स्थापना जाँच्नु पर्नेछ र %s पुन: स्थापना गर्नु पर्ने हुन्छ ।"
 
-#~ msgid "No interface could be loaded. This is BAD! (file: %s)"
-#~ msgstr "कुनै इन्टरफेस लोड गर्न सकिएन । गलत ! (फाइल: %s)"
 
-#~ msgid "Too many alias levels for a locale; may indicate a loop"
-#~ msgstr "स्थानीय कक्षका लागि धेरै उपनाम स्तरहरू छन्; धेरैले लूप जनाउदछ"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

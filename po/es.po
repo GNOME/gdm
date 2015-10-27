@@ -16,9 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-02-23 05:52+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-02-23 18:57+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
@@ -31,28 +30,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom no es un dispositivo de caracteres"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "No se pudo identificar la sesión actual."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "El usuario no puede cambiar entre sesiones."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "No se pudo identificar la sesión actual."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -61,7 +54,7 @@ msgstr ""
 "El sistema no puede determinar si cambiar a una pantalla de inicio de sesión "
 "existente o iniciar una pantalla de inicio de sesión nueva."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "El sistema no puede iniciar una pantalla de inicio de sesión nueva."
@@ -71,7 +64,7 @@ msgstr "El sistema no puede iniciar una pantalla de inicio de sesión nueva."
 msgid "could not find user \"%s\" on system"
 msgstr "no se pudo encontrar el usuario «%s» en el sistema"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -83,65 +76,64 @@ msgstr ""
 "del sistema para obtener un diagnóstico. Mientras tanto esta pantalla se "
 "desactivará. Reinicie GDM cuando se haya solucionado el problema."
 
-#: ../daemon/gdm-manager.c:1075
-#| msgid "No session available"
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "No hay ninguna pantalla disponible"
 
-#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "No hay ninguna sesión disponible"
 
-#: ../daemon/gdm-manager.c:1135
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Sólo se puede llamar antes de que el usuario inicie sesión"
 
-#: ../daemon/gdm-manager.c:1145
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "El solicitante no es GDM"
 
-#: ../daemon/gdm-manager.c:1155
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "No se puede abrir el cana de comunicación privada"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "El servidor debía ser lanzado por el usuario %s pero ese usuario no existe"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "No se pudo establecer el id de grupo a %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Ha fallado initgroups() para %s"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No se pudo establecer el id de usuario a %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: No se pudo abrir el archivo de registro de la pantalla %s."
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Ha ocurrido un error al establecer %s a %s"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: La prioridad del servidor no se pudo poner a %d: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comando de servidor vacío para la pantalla %s"
@@ -170,37 +162,36 @@ msgstr "Pantalla"
 msgid "The display device"
 msgstr "La pantalla"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "No se pudo crear el proceso de ayuda de autenticación"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Su cuenta tiene un tiempo límite, y lo ha superado."
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Eso no ha funcionado. Inténtelo de nuevo"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Usuario:"
 
-#: ../daemon/gdm-session-worker.c:1242
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Su contraseña ha caducado, cámbiela ahora."
 
-#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: ../daemon/gdm-session-worker.c:1525
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
-#: ../daemon/gdm-wayland-session.c:377
-#| msgid "GNOME Display Manager Session Worker"
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Lanzador de la sesión Wayland del gestor de pantallas de GNOME"
 
@@ -208,17 +199,16 @@ msgstr "Lanzador de la sesión Wayland del gestor de pantallas de GNOME"
 msgid "Could not create socket!"
 msgstr "No se pudo crear el socket."
 
-#: ../daemon/gdm-x-session.c:677
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr ""
 "Ejecutar el programa mediante el script de abstracción /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Escuchar en el socket TCP"
 
-#: ../daemon/gdm-x-session.c:689
-#| msgid "GNOME Display Manager Session Worker"
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Lanzador de la sesión X del gestor de pantallas de GNOME"
 
@@ -229,52 +219,52 @@ msgstr ""
 "No se puede escribir el archivo con PID %s: posiblemente no hay espacio en "
 "el disco: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Falló al crear la carpeta %s indicadora de ejecutado una vez: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Falló al LogDir %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "No se puede encontrar el usuario de GDM «%s». Se aborta."
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "El usuario de GDM no debería ser root. Se aborta."
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "No se encuentra el grupo de GDM «%s». Se aborta."
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "El grupo de GDM no debería ser root. Se aborta."
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Hacer que todos los avisos sean críticos"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Salir después de un tiempo (para depuración)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Imprimir la versión de GDM"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Gestor de entrada de GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Solo el administrador puede ejecutar GDM"
 
@@ -427,11 +417,11 @@ msgstr "XDMCP: versión de XDMCP incorrecta"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP: no se puede analizar la dirección"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "No se pudo crear la pantalla de transición: "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "No se pudo activar la sesión: "
 
@@ -470,869 +460,257 @@ msgstr "Captura de pantalla obtenida"
 msgid "Take a picture of the screen"
 msgstr "Tomar una captura de la pantalla"
 
-#~ msgid "Login Window"
-#~ msgstr "Ventana de inicio de sesión"
 
-#~ msgid "No session available yet"
-#~ msgstr "Todavía no hay disponible ninguna sesión"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "No se pudo consultar el UID del usuario %s"
 
-#~ msgid "no sessions available"
-#~ msgstr "no hay sesiones disponibles"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "No hay sesiones disponibles para %s para autenticar de nuevo"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "No se pudo encontrar la sesión del usuario %s"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "No se pudo encontrar una sesión adecuada para el usuario %s"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "El usuario no tiene sesión"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: falló al conectar con la pantalla madre «%s»"
 
-#~ msgid "User not logged in"
-#~ msgstr "El usuario no ha iniciado sesión"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Actualmente, sólo puede haber un cliente conectado a la vez"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "Falló al AuthDir %s: %s"
 
-#~ msgid "Display ID"
-#~ msgstr "ID de pantalla"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "Esclavo del gestor de pantallas de GNOME"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "No puede iniciar una pantalla nueva"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr ""
-#~ "error al iniciar la conversación con el sistema de autenticación: %s"
 
-#~ msgid "general failure"
-#~ msgstr "fallo general"
 
-#~ msgid "out of memory"
-#~ msgstr "sin memoria"
 
-#~ msgid "application programmer error"
-#~ msgstr "error del programador de la aplicación"
 
-#~ msgid "unknown error"
-#~ msgstr "error desconocido"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "error al informar al sistema de autenticación del diálogo del nombre de "
-#~ "usuario preferido: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "error al informar al sistema de autenticación del nombre del equipo del "
-#~ "usuario: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "error al informar al sistema de autenticación acerca de la consola del "
-#~ "usuario: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "error al informar al sistema de autenticación de la cadena de pantalla: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "error al informar al sistema de autenticación de las credenciales xauth "
-#~ "de la pantalla: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Autenticación por huella dactilar"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Iniciar sesión con huella dactilar"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Autenticación por contraseña"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "Iniciar sesión con nombre de usuario y contraseña"
 
-#~ msgid "Log In"
-#~ msgstr "Iniciar sesión"
 
-#~ msgid "Slot ID"
-#~ msgstr "ID de la ranura"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "La ranura en la que está la tarjeta"
 
-#~ msgid "Slot Series"
-#~ msgstr "Serie de la ranura"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "identificador de tarjetas por ranura"
 
-#~ msgid "name"
-#~ msgstr "nombre"
 
-#~ msgid "Module"
-#~ msgstr "Módulo"
 
-#~ msgid "smartcard driver"
-#~ msgstr "controlador de tarjeta inteligente"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Autenticación por tarjeta inteligente"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Iniciar sesión con tarjeta inteligente"
 
-#~ msgid "Module Path"
-#~ msgstr "Ruta del módulo"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "ruta al controlador de tarjetas inteligentes PKCS #11"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "se recibió un error o un cuelgue desde el origen de eventos"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "No se pudo inicializar el sistema de seguridad NSS"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "no se pudo encontrar un controlador de tarjeta inteligente adecuado"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "no se pudo cargar el controlador de tarjeta inteligente «%s»"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "no se pudieron vigilar los eventos entrantes de la tarjeta: %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr ""
-#~ "se encontró un error inesperado al esperar los eventos de la tarjeta "
-#~ "inteligente"
 
-#~ msgid "Authentication"
-#~ msgstr "Autenticación"
 
-#~ msgid "Log into session"
-#~ msgstr "Iniciar sesión"
 
-#~ msgid "Value"
-#~ msgstr "Valor"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "porcentaje de tiempo completado"
 
-#~ msgid "Inactive Text"
-#~ msgstr "Texto inactivo"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "El texto que se usará en la etiqueta si el usuario todavía no ha elegido "
-#~ "un elemento"
 
-#~ msgid "Active Text"
-#~ msgstr "Texto activo"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr ""
-#~ "El texto que se usará en la etiqueta si el usuario ha elegido un elemento"
 
-#~ msgid "List Visible"
-#~ msgstr "Listar visibles"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Indica si la lista del selector es visible"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %H:%M:%S"
 
 # El formato de fecha, día y 12-horas (Dom 12 de jun, 2:00 pm)
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %H:%M"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %H:%M:%S"
 
 # El formato de fecha, día y 12-horas (Dom 12 de jun, 2:00 pm)
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %H:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "Iniciar sesión automáticamente…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "Cancelando…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "Seleccione un idioma y pulse Iniciar sesión"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Personalizada"
 
-#~ msgid "Custom session"
-#~ msgstr "Sesión personalizada"
 
-#~ msgid "Computer Name"
-#~ msgstr "Nombre del equipo"
 
-#~ msgid "Version"
-#~ msgstr "Versión"
 
-#~ msgid "Cancel"
-#~ msgstr "Cancelar"
 
-#~ msgid "Unlock"
-#~ msgstr "Desbloquear"
 
-#~ msgid "Login"
-#~ msgstr "Iniciar sesión"
 
-#~ msgid "Suspend"
-#~ msgstr "Suspender"
 
-#~ msgid "Restart"
-#~ msgstr "Reiniciar"
 
-#~ msgid "Shut Down"
-#~ msgstr "Apagar"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "Tiempo restante desconocido"
 
-#~ msgid "Panel"
-#~ msgstr "Panel"
 
-#~ msgid "Label Text"
-#~ msgstr "Texto de etiqueta"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "El texto que usar como etiqueta"
 
-#~ msgid "Icon name"
-#~ msgstr "Nombre del icono"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "El icono que usar con la etiqueta"
 
-#~ msgid "Default Item"
-#~ msgstr "Elemento predeterminado"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "El ID del elemento predeterminado"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Inicio de sesión remoto (conectándose a %s…)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Inicio de sesión (conectado a %s…)"
 
-#~ msgid "Remote Login"
-#~ msgstr "Inicio de sesión remoto"
 
-#~ msgid "Session"
-#~ msgstr "Sesión"
 
-#~ msgid "Duration"
-#~ msgstr "Duración"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Número de segundos hasta que se pare el contador"
 
-#~ msgid "Start time"
-#~ msgstr "Hora de inicio"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "Hora en la que se inició el contador"
 
-#~ msgid "Is it Running?"
-#~ msgstr "¿Se está ejecutando?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Indica si el contador está ejecutándose actualmente"
 
-#~ msgid "Log in as %s"
-#~ msgstr "Iniciar sesión como %s"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Otro…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "Elija una cuenta distinta"
 
-#~ msgid "Guest"
-#~ msgstr "Invitado"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Iniciar sesión como invitado temporal"
 
-#~ msgid "Automatic Login"
-#~ msgstr "Inicio de sesión automático"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr ""
-#~ "Iniciar sesión en el sistema automáticamente después de seleccionar las "
-#~ "opciones"
 
-#~ msgid "Currently logged in"
-#~ msgstr "Sesión iniciada"
 
-#~ msgid "User %s doesn't exist"
-#~ msgstr "El usuario %s no existe"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "El grupo %s no existe"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "La carpeta de registro %s no existe o no es una carpeta."
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "La carpeta de autorización %s no existe. Se aborta."
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "La carpeta de autorización %s no es una carpeta. Se aborta."
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr ""
-#~ "La carpeta de autorización %s no pertenece al usuario %d, grupo %d. Se "
-#~ "aborta."
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr ""
-#~ "La carpeta de autorización %s tiene los permisos incorrectos %o. Debería "
-#~ "tener %o. Se aborta."
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "Magnificador de pantalla de GNOME"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Magnificar partes de la pantalla"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "Teclado en pantalla de GNOME"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Usar un teclado en pantalla"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Lector de pantalla Orca"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "Presentar información en pantalla como voz o Braille"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "No se pudo inicializar el sistema de acceso"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "No se pudieron establecer las credenciales"
 
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr ""
-#~ "El sistema no puede encontrar una pantalla de inicio de sesión a la que "
-#~ "cambiar."
 
-#~ msgid "Max Item Count"
-#~ msgstr "Número máximo de elementos"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "El máximo número de elementos que mantener en la lista"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "Mensaje de texto de entrada cuando el selector está vacío"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "Mensaje de texto que mostrar en la ventana de inicio de sesión cuando el "
-#~ "selector está vacío, en lugar de banner_message_text."
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr ""
-#~ "Nombre del icono que usar para el logotipo de la interfaz de entrada"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr ""
-#~ "Establecer al nombre del tema de iconos que usar para el logotipo de la "
-#~ "interfaz gráfica."
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "No mostrar los usuarios en la ventana de inicio de sesión"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "Establecer a verdadero para desactivar el mostrado de los usuarios "
-#~ "conocidos en la ventana de inicio de sesión."
 
-#~ msgid "Recently selected languages"
-#~ msgstr "Idiomas recientemente seleccionados"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr ""
-#~ "Establecer a una lista de idiomas para mostrar en la ventana de inicio de "
-#~ "sesión de forma predeterminada."
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "Usar Compiz como gestor de ventanas"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "Establecer a verdadero para usar Compiz como gestor de ventanas."
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "Activar teclado en pantalla"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "Establecer a verdadero para activar el teclado en pantalla."
 
-#~ msgid "Enable screen reader"
-#~ msgstr "Activar lector de pantalla"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "Establecer a verdadero para activar el lector de pantalla."
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "Activar magnificador de pantalla"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "Establecer a verdadero para activar el magnificador de pantalla."
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "Activar el complemento de teclado de accesibilidad"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "Establecer a verdadero para activar el complemento del gestor de ajustes "
-#~ "de accesibilidad del teclado."
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Verdadero si el complemento del gestor de ajustes del fondo de pantalla "
-#~ "está activado."
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr ""
-#~ "Establecer a verdadero para activar el complemento del gestor de ajustes "
-#~ "del fondo de pantalla."
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Verdadero si el complemento del gestor de ajustes de teclas multimedia "
-#~ "está activado."
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr ""
-#~ "Establecer a verdadero para activar los ajustes del complemento del "
-#~ "gestor de teclas multimedia."
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Verdadero si el complemento del gestor de ajustes de sonido está activado."
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr ""
-#~ "Establecer a verdadero para activar el complemento del gestor de ajustes "
-#~ "de sonido."
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Verdadero si el complemento del gestor de ajustes de XRandR está activado."
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr ""
-#~ "Establecer a verdadero para activar el complemento del gestor de ajustes "
-#~ "de XRandR."
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Verdadero si el complemento del gestor de ajustes xsettings está activado."
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr ""
-#~ "Establecer a verdadero para activar el complemento del gestor de ajustes "
-#~ "xsettings."
 
-#~| msgid "Could not identify the current session."
-#~ msgid "Could not identify multi session property."
-#~ msgstr "No se pudo identificar la multisesión correctamente."
 
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "La petición XDMCP desde equipo %s se ha denegado"
 
-#~ msgid "Could not extract authlist from packet"
-#~ msgstr "No se pudo extraer la lista de autorizaciones del paquete"
 
-#~ msgid "Error in checksum"
-#~ msgstr "Error en la suma de comprobación"
 
-#~ msgid "Bad address"
-#~ msgstr "Dirección errónea"
 
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s: no se pudo leer la dirección de la pantalla"
 
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s: no se pudo leer el número de puerto de la pantalla"
 
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s: no se pudo extraer la lista de autorizaciones del paquete"
 
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s: error en la suma de comprobación"
 
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s: se ha recibido el mensaje REQUEST desde el equipo excluido %s"
 
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s: no se pudo leer el número de la pantalla"
 
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s: no se pudo leer el tipo de conexión"
 
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s: no se pudo leer la dirección del cliente"
 
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s: no se pudo leer los datos de autenticación"
 
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s: no se pudo leer la lista de autorizaciones"
 
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s: no se pudo leer el ID del fabricante"
 
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s: ha fallado la suma de verificación de %s"
 
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s: se ha recibido el mensaje MANAGE desde el equipo excluido %s"
 
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s: no se pudo leer el Id de sesión"
 
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s: no se pudo leer la clase de pantalla"
 
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s: no se pudo leer la dirección"
 
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s: se ha recibido el mensaje KEEPALIVE desde el equipo excluido %s"
 
-#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-#~ msgstr "GdmXdmcpDisplayFactory: No se pudo leer la cabecera XDMCP."
 
-#~ msgid "Could not get server hostname: %s!"
-#~ msgstr "No se pudo obtener el nombre del equipo: %s."
 
-#~ msgid "Activation of this plugin"
-#~ msgstr "Activación de este complemento"
 
-#~ msgid "Whether this plugin would be activated or not"
-#~ msgstr "Indica si se debe activar el complemento o no"
 
-#~ msgid "Log into session with username and unified"
-#~ msgstr "Iniciar sesión con nombre de usuario y unificada"
 
-#~ msgid "AT-SPI Registry Wrapper"
-#~ msgstr "Envolvente de registro AT SPI"
 
-#~ msgid "Power Manager"
-#~ msgstr "Gestión de energía"
 
-#~ msgid "GNOME Session Acceleration Checker"
-#~ msgstr "Comprobador de aceleración de la sesión de GNOME"
 
-#~ msgid "GNOME Settings Daemon"
-#~ msgstr "Administrador de preferencias de GNOME"
 
-#~ msgid "Metacity"
-#~ msgstr "Metacity"
 
-#~ msgid "PolicyKit Authentication Agent"
-#~ msgstr "Agente de autenticación de PolicyKit"
 
-#~ msgid "Languages"
-#~ msgstr "Idiomas"
 
-#~ msgid "_Languages:"
-#~ msgstr "_Idiomas:"
 
-#~ msgid "_Language:"
-#~ msgstr "_Idioma:"
 
-#~ msgctxt "language"
-#~ msgid "Other…"
-#~ msgstr "Otro…"
 
-#~ msgid "Choose a language from the full list of available languages."
-#~ msgstr "Elija un idioma de la lista de idiomas disponibles."
 
-#~ msgid "Language"
-#~ msgstr "Idioma"
 
-#~ msgid "Unspecified"
-#~ msgstr "Sin especificar"
 
-#~ msgid "Keyboard layouts"
-#~ msgstr "Distribuciones de teclado"
 
-#~ msgid "_Keyboard:"
-#~ msgstr "_Teclado:"
 
-#~ msgctxt "keyboard"
-#~ msgid "Other…"
-#~ msgstr "Otra…"
 
-#~ msgid "Choose a keyboard layout from the full list of available layouts."
-#~ msgstr ""
-#~ "Elija una distribución de teclado de la lista de distribuciones "
-#~ "disponibles."
 
-#~ msgid "Keyboard"
-#~ msgstr "Teclado"
 
-#~ msgid "Recently selected keyboard layouts"
-#~ msgstr "Distribuciones de teclado seleccionadas recientemente"
 
-#~ msgid ""
-#~ "Set to a list of keyboard layouts to be shown by default in the login "
-#~ "window."
-#~ msgstr ""
-#~ "Establecer una lista de distribuciones de teclado para mostrar en la "
-#~ "ventana de inicio de sesión de forma predeterminada."
 
-#~ msgid "Shutdown Options…"
-#~ msgstr "Opciones de apagado…"
 
-#~ msgid ""
-#~ "The User Switch Applet is free software; you can redistribute it and/or "
-#~ "modify it under the terms of the GNU General Public License as published "
-#~ "by the Free Software Foundation; either version 2 of the License, or (at "
-#~ "your option) any later version."
-#~ msgstr ""
-#~ "La miniaplicación Selector de usuarios es software libre; puede "
-#~ "redistribuirla y/o modificarla bajo los términs de la Licencia Pública "
-#~ "General GNU publicada por la Free Software Foundation; bien en la versión "
-#~ "2 de la Licencia, o (a su elección) cualquier versión posterior."
 
-#~ msgid ""
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details."
-#~ msgstr ""
-#~ "Este programa se distribuye con la esperanza de que le sea útil, pero SIN "
-#~ "NINGUNA GARANTÍA; sin incluso la garantía implícita de MERCANTILIDAD o "
-#~ "IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General "
-#~ "GNU para más detalles."
 
-#~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program; if not, write to the Free Software Foundation, Inc., "
-#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-#~ msgstr ""
-#~ "Debería haber recibido una copia de la Licencia Pública General de GNU "
-#~ "junto con este programa, si no es así, escriba a la Free Software "
-#~ "Foundation, Inc, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 "
-#~ "EE. UU."
 
-#~ msgid "A menu to quickly switch between users."
-#~ msgstr "Un menú para cambiar rápidamente entre usuarios."
 
-#~ msgid "translator-credits"
-#~ msgstr ""
-#~ "Jorge González <jorgegonz@svn.gnome.org>, 2009-2010\n"
-#~ "Lucas Vieites <lucas@codexion.com>, 2008"
 
-#~ msgid "Can't lock screen: %s"
-#~ msgstr "No se puede bloquear la pantalla: %s"
 
-#~ msgid "Can't temporarily set screensaver to blank screen: %s"
-#~ msgstr ""
-#~ "No se puede establecer temporalmente el salvapantallas a oscurecer "
-#~ "pantalla: %s"
 
-#~ msgid "Can't log out: %s"
-#~ msgstr "No se puede salir de la sesión: %s"
 
-#~ msgid "Available"
-#~ msgstr "Disponible"
 
-#~ msgid "Invisible"
-#~ msgstr "Invisible"
 
-#~ msgid "Busy"
-#~ msgstr "Ocupado"
 
-#~ msgid "Away"
-#~ msgstr "Ausente"
 
-#~ msgid "Account Information"
-#~ msgstr "Información de la cuenta"
 
-#~ msgid "System Preferences"
-#~ msgstr "Preferencias del sistema"
 
-#~ msgid "Lock Screen"
-#~ msgstr "Bloquear la pantalla"
 
-#~ msgid "Switch User"
-#~ msgstr "Cambiar de usuario"
 
-#~ msgid "Quit…"
-#~ msgstr "Salir…"
 
-#~ msgid "User Switch Applet"
-#~ msgstr "Miniaplicación del selector de usuarios"
 
-#~ msgid "Change account settings and status"
-#~ msgstr "Cambiar los ajustes de la cuenta y el estado"
 
-#~ msgid "A menu to quickly switch between users"
-#~ msgstr "Un menú para cambiar rápidamente entre usuarios"
 
-#~ msgid "User Switcher"
-#~ msgstr "Selector de usuarios"
 
-#~ msgid "User Switcher Applet Factory"
-#~ msgstr "Fábrica de la miniaplicación del selector de usuarios"
 
-#~ msgid "Edit Personal _Information"
-#~ msgstr "Editar _información personal"
 
-#~ msgid "_About"
-#~ msgstr "Acerca _de"
 
-#~ msgid "_Edit Users and Groups"
-#~ msgstr "_Editar usuarios y grupos"
 
-#~ msgid "Unknown"
-#~ msgstr "Desconocido"
 
-#~ msgid "Manager"
-#~ msgstr "Gestor"
 
-#~ msgid "The user manager object this user is controlled by."
-#~ msgstr "El objeto de gestión de usuarios que controla a este usuario."
 
-#~ msgid "Couldn't set groupid to 0"
-#~ msgstr "No se pudo establecer el id de grupo a 0"
 
-#~ msgid "%x"
-#~ msgstr "%x"
 
-#~ msgid "Quit..."
-#~ msgstr "Salir…"
 
-#~ msgid "Enable debugging code"
-#~ msgstr "Activar código de depuración"
 
-#~ msgid "Enable debugging"
-#~ msgstr "Activar depuración"
 
-#~ msgid "Enable debugging mode for the greeter."
-#~ msgstr "Activar el modo de depuración para la interfaz de entrada."
 
-#~ msgid "id"
-#~ msgstr "id"
 
 # El formato de la fecha, día y 24-horas Dom 12 de jun, 14:00)
-#~ msgid "%a %b %e"
-#~ msgstr "%a %b %e"
 
-#~ msgid "%1$s, %2$s"
-#~ msgstr "%1$s, %2$s"
 
-#~ msgid "worker exited with status %d"
-#~ msgstr "worker se detuvo con estado %d"
 
-#~ msgid "Unable establish credentials"
-#~ msgstr "No se pudieron establecer las credenciales"
 
-#~ msgid ""
-#~ "You are not allowed to restart the computer because multiple users are "
-#~ "logged in"
-#~ msgstr ""
-#~ "No se le permite reiniciar el equipo porque hay múltiples usuarios que "
-#~ "han iniciado sesión"
 
-#~ msgid "Failed to stop computer"
-#~ msgstr "Falló al parar el equipo"
 
-#~ msgid ""
-#~ "You are not allowed to stop the computer because multiple users are "
-#~ "logged in"
-#~ msgstr ""
-#~ "No se le permite parar el equipo porque hay múltiples usuarios que han "
-#~ "iniciado sesión"
 
-#~ msgid "page 5"
-#~ msgstr "página 5"
 
-#~ msgid "Status"
-#~ msgstr "Estado"
 
-#~ msgid "User"
-#~ msgstr "Usuario"
 
-#~ msgid "The user this menu item represents."
-#~ msgstr "El usuario que este elemento del menú representa."
 
-#~ msgid "Icon Size"
-#~ msgstr "Tamaño de icono"
 
-#~ msgid "The size of the icon to use."
-#~ msgstr "El tamaño del icono que usar."
 
-#~ msgid "Indicator Size"
-#~ msgstr "Tamaño del indicador"
 
-#~ msgid "Size of check indicator"
-#~ msgstr "Tamaño del indicador de comprobación"
 
-#~ msgid "Indicator Spacing"
-#~ msgstr "Espaciado del indicador"
 
-#~ msgid "Space between the username and the indicator"
-#~ msgstr "Espacio entre el nombre de usuario y el indicador"
 
-#~ msgid "Main Options"
-#~ msgstr "Opciones principales"
 
-#~ msgid "You have the Caps Lock key on."
-#~ msgstr "Tiene pulsada la tecla Bloq Mayús"
 
-#~ msgid "_Help"
-#~ msgstr "Ay_uda"
 
-#~ msgid "Disable showing the accessibility button"
-#~ msgstr "Desactivar el mostrado del botón de accesibilidad"
 
-#~ msgid ""
-#~ "Set to TRUE to disable showing the accessibility button in the login "
-#~ "window."
-#~ msgstr ""
-#~ "Establecer a «TRUE» para desactivar el mostrado del botón de "
-#~ "accesibilidad en la ventana de inicio de sesión."

@@ -543,7 +543,7 @@ listify_hash (const char *key,
 {
         char *str;
         str = g_strdup_printf ("%s=%s", key, value);
-        g_debug ("GdmSlave: script environment: %s", str);
+        g_debug ("Gdm: script environment: %s", str);
         g_ptr_array_add (env, str);
 }
 

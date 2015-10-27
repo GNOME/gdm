@@ -18,8 +18,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GDM master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-03-26 18:09+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-03-26 18:45-0300\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@gmx.de>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
@@ -30,33 +30,31 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ist kein zeichenorientiertes Gerät"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Aktuelle Sitzung kann nicht identifiziert werden."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Benutzer kann Sitzung nicht wechseln."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Aktuelle Sitzung kann nicht identifiziert werden."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
-msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
-msgstr "Das System kann nicht feststellen, ob zu einem existierenden Anmeldebildschirm gewechselt oder ein neuer gestartet werden soll."
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Das System kann nicht feststellen, ob zu einem existierenden "
+"Anmeldebildschirm gewechselt oder ein neuer gestartet werden soll."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Das System kann keinen neuen Anmeldebildschirm starten."
@@ -66,67 +64,78 @@ msgstr "Das System kann keinen neuen Anmeldebildschirm starten."
 msgid "could not find user \"%s\" on system"
 msgstr "Benutzer »%s« konnte nicht auf dem System gefunden werden"
 
-#: ../daemon/gdm-legacy-display.c:220
-msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr "Der X-Server (Ihre grafische Umgebung) konnte auf Grund eines internen Fehlers nicht gestartet werden. Bitte kontaktieren Sie den Systemadministrator oder überprüfen Sie zur Fehlerdiagnose das Systemprotokoll. Bis auf Weiteres wird diese Anzeige deaktiviert. Bitte starten Sie GDM neu, wenn der Fehler behoben ist."
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Der X-Server (Ihre grafische Umgebung) konnte auf Grund eines internen "
+"Fehlers nicht gestartet werden. Bitte kontaktieren Sie den "
+"Systemadministrator oder überprüfen Sie zur Fehlerdiagnose das "
+"Systemprotokoll. Bis auf Weiteres wird diese Anzeige deaktiviert. Bitte "
+"starten Sie GDM neu, wenn der Fehler behoben ist."
 
-#: ../daemon/gdm-manager.c:1093
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Keine Anzeige verfügbar"
 
-#: ../daemon/gdm-manager.c:1142 ../daemon/gdm-manager.c:1398
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Keine Sitzungen verfügbar"
 
-#: ../daemon/gdm-manager.c:1153
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Kann nur vor der Benutzeranmeldung aufgerufen werden"
 
-#: ../daemon/gdm-manager.c:1163
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Aufruf nicht durch GDM"
 
-#: ../daemon/gdm-manager.c:1173
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Es kann kein privater Kommunikationskanal geöffnet werden"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "Server sollte für den Benutzer %s gestartet werden, aber dieser Benutzer existiert nicht"
+msgstr ""
+"Server sollte für den Benutzer %s gestartet werden, aber dieser Benutzer "
+"existiert nicht"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "%d konnte nicht als Gruppenkennung festgelegt werden"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () für %s gescheitert"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "%d konnte nicht als Benutzerkennung festgelegt werden"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Protokolldatei für Anzeige %s konnte nicht geöffnet werden!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s konnte nicht auf %s gesetzt werden"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Priorität des Servers konnte nicht auf %d gesetzt werden: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Leerer Server-Befehl für Anzeige %s"
@@ -155,38 +164,39 @@ msgstr "Anzeigegerät"
 msgid "The display device"
 msgstr "Das Anzeigegerät"
 
-#: ../daemon/gdm-session.c:1184
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Hilfsprozess zur Legitimierung konnte nicht erstellt werden"
 
-#: ../daemon/gdm-session-worker.c:849
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
-msgstr "Ihrem Konto wurde eine Zeitbeschränkung auferlegt, die nun abgelaufen ist."
+msgstr ""
+"Ihrem Konto wurde eine Zeitbeschränkung auferlegt, die nun abgelaufen ist."
 
-#: ../daemon/gdm-session-worker.c:856
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr ""
 "Das hat leider nicht geklappt. Bitte\n"
 "versuchen Sie es erneut."
 
-#: ../daemon/gdm-session-worker.c:1221
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Benutzername:"
 
-#: ../daemon/gdm-session-worker.c:1355
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Ihr Passwort ist abgelaufen. Bitte ändern Sie es jetzt."
 
-#: ../daemon/gdm-session-worker.c:1594 ../daemon/gdm-session-worker.c:1611
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "Kein Benutzerkonto verfügbar"
 
-#: ../daemon/gdm-session-worker.c:1638
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Zum Benutzer konnte nicht gewechselt werden"
 
-#: ../daemon/gdm-wayland-session.c:377
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Wayland-Sitzungsstarter für GNOME Display-Manager"
 
@@ -194,27 +204,30 @@ msgstr "Wayland-Sitzungsstarter für GNOME Display-Manager"
 msgid "Could not create socket!"
 msgstr "Socket konnte nicht angelegt werden!"
 
-#: ../daemon/gdm-x-session.c:677
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Programm über das Wrapper-Skript /etc/gdm/Xsession ausführen"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Auf TCP-Socket lauschen"
 
-#: ../daemon/gdm-x-session.c:689
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "X-Sitzungsstarter für GNOME Display-Manager"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr "PID-Datei %s konnte nicht geschrieben werden, möglicherweise geht der Plattenplatz zur Neige: %s"
+msgstr ""
+"PID-Datei %s konnte nicht geschrieben werden, möglicherweise geht der "
+"Plattenplatz zur Neige: %s"
 
 #: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr "Markierungsordner %s für »einmal gelaufen« konnte nicht erstellt werden: %s"
+msgstr ""
+"Markierungsordner %s für »einmal gelaufen« konnte nicht erstellt werden: %s"
 
 #: ../daemon/main.c:188
 #, c-format
@@ -281,44 +294,74 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Fingerabdruckleser für die Anmeldung erlauben"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
-msgstr "Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich durch zuvor registrierte Fingerabdrücke anzumelden."
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+"Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich durch zuvor "
+"registrierte Fingerabdrücke anzumelden."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Smartcard-Leser für die Anmeldung erlauben"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
-msgstr "Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich mittels Smartcards anzumelden."
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+"Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich mittels "
+"Smartcards anzumelden."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
 msgstr "Legt fest, ob Passwörter für die Anmeldung erlaubt sind"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid "The login screen can be configured to disallow password authentication, forcing the user to use smartcard or fingerprint authentication."
-msgstr "Der Anmeldebildschirm kann so eingestellt werden, dass Legitimierung mit Passwörtern nicht erlaubt ist. Damit wird der Benutzer gezwungen sich mit SmartCard oder Fingerabdruck anzumelden."
+msgid ""
+"The login screen can be configured to disallow password authentication, "
+"forcing the user to use smartcard or fingerprint authentication."
+msgstr ""
+"Der Anmeldebildschirm kann so eingestellt werden, dass Legitimierung mit "
+"Passwörtern nicht erlaubt ist. Damit wird der Benutzer gezwungen sich mit "
+"SmartCard oder Fingerabdruck anzumelden."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Pfad zu einem kleinen Bild oben in der Benutzerliste"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
-msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "Der Anmeldebildschirm kann optional ein kleines Bild oben in der Benutzerliste anzeigen, um Systemverwaltern und Distributoren eine Möglichkeit zu geben, ein Logo anzubringen."
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"Der Anmeldebildschirm kann optional ein kleines Bild oben in der "
+"Benutzerliste anzeigen, um Systemverwaltern und Distributoren eine "
+"Möglichkeit zu geben, ein Logo anzubringen."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "Der Ausweich-Anmeldebildschirm kann optional ein kleines Bild oben in der Benutzerliste anzeigen, um Systemverwaltern und Distributoren eine Möglichkeit zu geben, ein Logo anzubringen."
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"Der Ausweich-Anmeldebildschirm kann optional ein kleines Bild oben in der "
+"Benutzerliste anzeigen, um Systemverwaltern und Distributoren eine "
+"Möglichkeit zu geben, ein Logo anzubringen."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Benutzerliste nicht anzeigen"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:11
-msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
-msgstr "Der Anmeldebildschirm zeigt normalerweise eine Liste der Benutzer an, die zur Anmeldung verfügbar sind. Diese Einstellung kann verwendet werden, um die Benutzerliste ein- und auszuschalten."
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
+msgstr ""
+"Der Anmeldebildschirm zeigt normalerweise eine Liste der Benutzer an, die "
+"zur Anmeldung verfügbar sind. Diese Einstellung kann verwendet werden, um "
+"die Benutzerliste ein- und auszuschalten."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
@@ -342,15 +385,21 @@ msgstr "Anzeige des Knopfes »Neustart« deaktivieren"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "Den Schlüssel auf »wahr« setzen, um die Anzeige des Knopfes »Neustart« im Anmeldefenster zu deaktivieren."
+msgstr ""
+"Den Schlüssel auf »wahr« setzen, um die Anzeige des Knopfes »Neustart« im "
+"Anmeldefenster zu deaktivieren."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Anzahl der Fehlversuche der Legitimierung"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
-msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
-msgstr "Die Anzahl der Versuche für den Benutzer, legitimiert zu werden, bevor aufgegeben wird und die Benutzerauswahl erneut erscheint "
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Die Anzahl der Versuche für den Benutzer, legitimiert zu werden, bevor "
+"aufgegeben wird und die Benutzerauswahl erneut erscheint "
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -372,11 +421,11 @@ msgstr "XDMCP: Falsche XDMCP-Version!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Adresse konnte nicht verarbeitet werden"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Vorübergehende Anzeige konnte nicht gestartet werden:"
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Sitzung konnte nicht aktiviert werden:"
 
@@ -415,174 +464,54 @@ msgstr "Bildschirmfoto wurde aufgenommen"
 msgid "Take a picture of the screen"
 msgstr "Ein Foto des Bildschirminhalts aufnehmen"
 
-#~ msgid "No session available yet"
-#~ msgstr "Noch keine Sitzung verfügbar"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "Benutzerkennung für Benutzer %s konnte nicht nachgeschlagen werden"
 
-#~ msgid "no sessions available"
-#~ msgstr "Keine Sitzungen verfügbar"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "Für %s sind keine Sitzungen zur erneuten Legitimierung verfügbar"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "Für Benutzer %s konnte keine Sitzung gefunden werden"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "Passende Sitzung für Benutzer %s konnte nicht gefunden werden"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "Benutzer ist nicht Eigentümer der Sitzung"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: Verbindung zur Elternanzeige »%s« gescheitert"
 
-#~ msgid "Your account was given an expiration date that's now passed."
-#~ msgstr ""
-#~ "Ihrem Konto wurde ein Ablaufdatum auferlegt, das nun abgelaufen ist."
 
-#~ msgid "User not logged in"
-#~ msgstr "Benutzer ist nicht angemeldet"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Derzeit können nicht mehrere Clients gleichzeitig verbunden werden"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "AuthDir %s konnte nicht erstellt werden: %s"
 
-#~ msgid "Display ID"
-#~ msgstr "Anzeigenkennung"
 
-#~ msgid "ID"
-#~ msgstr "Kennung"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "GNOME Display-Manager-Slave"
 
-#~ msgid "Login Window"
-#~ msgstr "Anmeldefenster"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "Neue Anzeige konnte nicht gestartet werden"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr ""
-#~ "Fehler beim Initialisieren des Austausches mit dem Legitimationssystem - "
-#~ "%s"
 
-#~ msgid "general failure"
-#~ msgstr "Allgemeiner Fehler"
 
-#~ msgid "out of memory"
-#~ msgstr "Zu wenig Speicherplatz"
 
-#~ msgid "application programmer error"
-#~ msgstr "Programmierfehler in der Anwendung"
 
-#~ msgid "unknown error"
-#~ msgstr "Unbekannter Fehler"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "Fehler beim Benachrichtigen des Legitimationssystems über die bevorzugte "
-#~ "Benutzernamenanzeige: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "Fehler beim Benachrichtigen des Legitimationssystems über den "
-#~ "Rechnernamen des Benutzers: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "Fehler beim Benachrichtigen des Legitimationssystems über das "
-#~ "Befehlseingabeprogramm des Benutzers: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "Fehler beim Benachrichtigen des Legitimationssystems über den "
-#~ "Anzeigenamen des Benutzers: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "Fehler beim Benachrichtigen des Legitimationssystems über die Display "
-#~ "xauth-Berechtigungsnachweise: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Fingerabdrucks-Legitimierung"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Mit Fingerabdruck anmelden"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Passwort-Legitimierung"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "Mit Nutzernamen und Passwort anmelden"
 
-#~ msgid "Log In"
-#~ msgstr "Anmelden"
 
-#~ msgid "Slot ID"
-#~ msgstr "Steckplatz-Kennung"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "Der Steckplatz, in dem sich die Karte befindet"
 
-#~ msgid "Slot Series"
-#~ msgstr "Steckplatz-Bereich"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "Kartenkennung nach Steckplatz"
 
-#~ msgid "name"
-#~ msgstr "Name"
 
-#~ msgid "Module"
-#~ msgstr "Modul"
 
-#~ msgid "smartcard driver"
-#~ msgstr "Smartcard-Treiber"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Smartcard-Legitimierung"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Mit Smartcard an der Sitzung anmelden"
 
-#~ msgid "Module Path"
-#~ msgstr "Modulpfad"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "Pfad zum Smartcard PKCS #11-Treiber"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "Fehler oder Verbindungsabbruch durch Ereignisquelle erkannt"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "NSS-Sicherheitssystem konnte nicht initialisiert werden"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "Es konnte kein geeigneter Smartcard-Treiber gefunden werden"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "Smartcard-Treiber »%s« konnte nicht geladen werden"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "Überwachung eingehender Karten-Ereignisse ist nicht möglich - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr ""
-#~ "Unerwarteter Fehler beim Warten auf Smartcard-Ereignisse wurde erkannt"
 
-#~ msgid "Authentication"
-#~ msgstr "Legitimierung"
 
-#~ msgid "Log into session"
-#~ msgstr "An der Sitzung anmelden"
 
-#~ msgid "Value"
-#~ msgstr "Wert"

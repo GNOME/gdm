@@ -20,9 +20,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-02-23 09:46+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-02-24 23:42+0100\n"
 "Last-Translator: Alexandre Franke <alexandre.franke@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -32,28 +31,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom n'est pas un périphérique de caractères"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Impossible d'identifier la session actuelle."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Impossible pour l'utilisateur de changer de session."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Impossible d'identifier le poste actuel."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -62,7 +55,7 @@ msgstr ""
 "Le système est incapable de déterminer s'il doit basculer vers un écran de "
 "connexion existant ou démarrer un nouvel écran de connexion."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Le système est incapable de démarrer un nouvel écran de connexion."
@@ -72,7 +65,7 @@ msgstr "Le système est incapable de démarrer un nouvel écran de connexion."
 msgid "could not find user \"%s\" on system"
 msgstr "impossible de trouver l'utilisateur « %s » sur le système"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -84,66 +77,66 @@ msgstr ""
 "journaux système pour diagnostiquer le problème. En attendant, cet affichage "
 "est désactivé. Veuillez redémarrer GDM lorsque le problème sera résolu."
 
-#: ../daemon/gdm-manager.c:1075
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Aucun affichage disponible"
 
-#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Aucune session disponible"
 
-#: ../daemon/gdm-manager.c:1135
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Peut seulement être appelé avant que l'utilisateur soit connecté"
 
-#: ../daemon/gdm-manager.c:1145
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "L'appelant n'est pas GDM"
 
-#: ../daemon/gdm-manager.c:1155
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Impossible d'ouvrir un canal de communication privé"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Le serveur devait être lancé par l'utilisateur %s mais cet utilisateur "
 "n'existe pas"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Impossible de définir l'identificateur du groupe à %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () a échoué pour %s"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Impossible de définir l'identificateur de l'utilisateur à %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr ""
 "%s : impossible d'ouvrir le fichier de journalisation pour l'affichage %s !"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s : erreur lors de la définition de %s à %s"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s : la priorité du serveur ne peut pas être fixée à %d : %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s : commande de serveur vide pour l'affichage %s"
@@ -172,36 +165,36 @@ msgstr "Périphérique d'affichage"
 msgid "The display device"
 msgstr "Le périphérique d'affichage"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Impossible de créer un processus assistant d'authentification"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Votre compte a une limite de temps qui est maintenant échue."
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Désolé, ça n'a pas fonctionné. Veuillez réessayer."
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Identifiant :"
 
-#: ../daemon/gdm-session-worker.c:1242
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Votre mot de passe a expiré, veuillez le changer maintenant."
 
-#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "aucun compte utilisateur disponible"
 
-#: ../daemon/gdm-session-worker.c:1525
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Impossible de changer vers l'utilisateur"
 
-#: ../daemon/gdm-wayland-session.c:377
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Lanceur de session Wayland du gestionnaire de connexions GNOME"
 
@@ -209,15 +202,15 @@ msgstr "Lanceur de session Wayland du gestionnaire de connexions GNOME"
 msgid "Could not create socket!"
 msgstr "Impossible de créer le connecteur."
 
-#: ../daemon/gdm-x-session.c:677
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Exécuter le programme via un script enveloppeur /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Écouter sur un connecteur TCP"
 
-#: ../daemon/gdm-x-session.c:689
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Lanceur de session X du gestionnaire de connexions GNOME"
 
@@ -228,54 +221,54 @@ msgstr ""
 "Impossible d'écrire le fichier PID %s : probablement par manque d'espace "
 "disque : %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr ""
 "Impossible de créer un marqueur « a été lancé une fois » sur le répertoire "
 "%s : %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Impossible de créer le répertoire de connexion %s : %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Impossible de trouver l'utilisateur GDM « %s ». Abandon !"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "L'utilisateur GDM ne doit pas être root. Abandon !"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Impossible de trouver le groupe GDM « %s ». Abandon !"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Le groupe GDM ne doit pas être root. Abandon !"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Rend tous les avertissements fatals"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Quitte après un délai (pour débogage)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Affiche la version de GDM"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Gestionnaire de connexions GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Seul l'utilisateur root peut lancer GDM"
 
@@ -432,11 +425,11 @@ msgstr "XDMCP : version incorrecte de XDMCP."
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP : impossible d'analyser l'adresse"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Impossible de créer un affichage provisoire : "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Impossible d'activer la session : "
 
@@ -475,328 +468,103 @@ msgstr "Capture d'écran effectuée"
 msgid "Take a picture of the screen"
 msgstr "Effectue une capture de l'écran"
 
-#~ msgid "No session available yet"
-#~ msgstr "Aucune session disponible pour l'instant"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "Impossible de trouver l'UID de l'utilisateur %s"
 
-#~ msgid "no sessions available"
-#~ msgstr "aucune session disponible"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "Aucune session disponible pour la réauthentification de %s"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "Impossible de trouver une session pour l'utilisateur %s"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "Impossible de trouver une session appropriée pour l'utilisateur %s"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "L'utilisateur ne possède pas cette session"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s : la connexion à l'affichage parent « %s » a échoué"
 
-#~ msgid "User not logged in"
-#~ msgstr "L'utilisateur n'est pas connecté"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Actuellement, un seul client peut être connecté à la fois"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "Impossible de créer le répertoire d'authentification %s : %s"
 
-#~ msgid "Display ID"
-#~ msgstr "Identificateur de l'affichage"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "Esclave du gestionnaire de connexions GNOME"
 
-#~ msgid "Login Window"
-#~ msgstr "Fenêtre de connexion"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "Impossible de créer un nouvel affichage"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr ""
-#~ "erreur lors de l'initialisation de la conversation avec le système "
-#~ "d'authentification - %s"
 
-#~ msgid "general failure"
-#~ msgstr "échec global"
 
-#~ msgid "out of memory"
-#~ msgstr "mémoire insuffisante"
 
-#~ msgid "application programmer error"
-#~ msgstr "erreur de programmation de l'application"
 
-#~ msgid "unknown error"
-#~ msgstr "erreur inconnue"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "erreur lors de la notification au système d'authentification de l'invite "
-#~ "favorite de l'utilisateur : %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "erreur lors de la notification au système d'authentification du nom "
-#~ "d'hôte de l'utilisateur : %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "erreur lors de la notification au système d'authentification de la "
-#~ "console de l'utilisateur : %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "erreur lors de la notification au système d'authentification de la chaîne "
-#~ "d'affichage : %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "erreur lors de la notification au système d'authentification des "
-#~ "informations d'identification xauth de l'affichage : %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Authentification par empreinte digitale"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Se connecter à la session avec une empreinte digitale"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Authentification par mot de passe"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr ""
-#~ "Se connecter à la session avec un nom d'utilisateur et un mot de passe"
 
-#~ msgid "Log In"
-#~ msgstr "Se connecter"
 
-#~ msgid "Slot ID"
-#~ msgstr "Identificateur de l'emplacement"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "L'emplacement dans lequel se trouve la carte"
 
-#~ msgid "Slot Series"
-#~ msgstr "Séries d'emplacements"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "identifiant de carte par emplacement"
 
-#~ msgid "name"
-#~ msgstr "nom"
 
-#~ msgid "Module"
-#~ msgstr "Module"
 
-#~ msgid "smartcard driver"
-#~ msgstr "pilote pour carte à puce"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Authentification par carte à puce"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Se connecter à la session avec une carte à puce"
 
-#~ msgid "Module Path"
-#~ msgstr "Chemin du module"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "chemin vers le pilote pour carte à puce PKCS #11"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "erreur ou blocage reçu de la source d'évènements"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "le système de sécurité NSS n'a pas pu être initialisé"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "aucun pilote pour carte à puce approprié n'a été trouvé"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "le pilote de carte à puce « %s » n'a pas pu être chargé"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "impossible de surveiller les évènements de carte entrants - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr ""
-#~ "une erreur inattendue est survenue lors de l'attente d'évènements de "
-#~ "carte à puce"
 
-#~ msgid "Authentication"
-#~ msgstr "Authentification"
 
-#~ msgid "Log into session"
-#~ msgstr "Se connecter à la session"
 
-#~ msgid "Value"
-#~ msgstr "Valeur"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "pourcentage du temps écoulé"
 
-#~ msgid "Inactive Text"
-#~ msgstr "Texte inactif"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "Le texte à utiliser dans l'étiquette si l'utilisateur n'a pas déjà choisi "
-#~ "un élément"
 
-#~ msgid "Active Text"
-#~ msgstr "Texte actif"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr ""
-#~ "Le texte à utiliser dans l'étiquette si l'utilisateur a choisi un élément"
 
-#~ msgid "List Visible"
-#~ msgstr "Liste visible"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Indique si le sélecteur est visible"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %e %b, %H:%M:%S"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %e %b, %H:%M"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %H:%M:%S"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %H:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "Connexion automatique en cours…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "Annulation…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "Choisissez la langue et cliquez sur Se connecter"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Personnalisée"
 
-#~ msgid "Custom session"
-#~ msgstr "Session personnalisée"
 
-#~ msgid "Computer Name"
-#~ msgstr "Nom de l'ordinateur"
 
-#~ msgid "Version"
-#~ msgstr "Version"
 
-#~ msgid "Cancel"
-#~ msgstr "Annuler"
 
-#~ msgid "Unlock"
-#~ msgstr "Déverrouiller"
 
-#~ msgid "Login"
-#~ msgstr "Se connecter"
 
-#~ msgid "Suspend"
-#~ msgstr "Suspendre"
 
-#~ msgid "Restart"
-#~ msgstr "Redémarrer"
 
-#~ msgid "Shut Down"
-#~ msgstr "Éteindre"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "Durée restante inconnue"
 
-#~ msgid "Panel"
-#~ msgstr "Tableau"
 
-#~ msgid "Label Text"
-#~ msgstr "Texte de l'étiquette"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "Le texte à utiliser en tant qu'étiquette"
 
-#~ msgid "Icon name"
-#~ msgstr "Nom de l'icône"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "L'icône à utiliser avec l'étiquette"
 
-#~ msgid "Default Item"
-#~ msgstr "Élément par défaut"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "L'identificateur de l'élément par défaut"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Connexion distante (connexion à %s…)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Connexion distante (connecté à %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "Connexion distante"
 
-#~ msgid "Session"
-#~ msgstr "Session"
 
-#~ msgid "Duration"
-#~ msgstr "Durée"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Nombre de secondes avant l'arrêt du compte à rebours"
 
-#~ msgid "Start time"
-#~ msgstr "Heure de démarrage"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "Heure à laquelle le compte à rebours a été démarré"
 
-#~ msgid "Is it Running?"
-#~ msgstr "Est-il lancé ?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Indique si le compte à rebours est actif"
 
-#~ msgid "Log in as %s"
-#~ msgstr "Se connecter en tant que %s"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Autre…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "Choisissez un compte différent"
 
-#~ msgid "Guest"
-#~ msgstr "Invité"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Se connecter en tant qu'invité temporaire"
 
-#~ msgid "Automatic Login"
-#~ msgstr "Connexion automatique"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr ""
-#~ "Se connecter automatiquement au système après avoir choisi des options"
 
-#~ msgid "Currently logged in"
-#~ msgstr "Déjà connecté"

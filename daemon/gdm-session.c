@@ -3107,8 +3107,6 @@ gdm_session_select_session (GdmSession *self,
         }
 }
 
-/* At some point we may want to read these right from
- * the slave but for now I don't want the dependency */
 static void
 set_display_name (GdmSession *self,
                   const char *name)

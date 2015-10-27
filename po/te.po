@@ -10,9 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: te\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-18 18:36+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2014-01-30 14:28+0630\n"
 "Last-Translator: Krishnababu Krothapalli <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <Fedora-trans-te@redhat.com>\n"
@@ -23,67 +22,109 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Lokalize 1.5\n"
 
-#: ../common/gdm-common.c:497
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom అక్షర పరికరం కాదు"
+
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
+#, c-format
+msgid "Could not identify the current session."
+msgstr "ప్రస్తుత భాగమును గుర్తించలేక పోయింది."
+
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "ప్రస్తుత పీఠమును  గుర్తించలేక పోయింది."
+
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"వ్యవస్థ ఇప్పటికే ఉన్న లాగిన్ తెర మారడం లేదా ఒక క్రొత్త లాగిన్ తెర పైకి ప్రారంభించడము అనే  నిర్ణయాన్ని  "
+"చెయ్యలేకపోయింది."
+
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "వ్యవస్థ ఒక క్రొత్త లాగిన్ తెర పైకి మొదలు చేయలేదు. "
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "వ్యవస్థ లో వాడుకరి \"%s\" కనిపించుటలేదు"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "ఏ సెషన్ యింకా అందుబాటులోలేదు"
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"అంతర్గత దోషం కారణంగా X సేవిక(మీ గ్రాఫికల్ ఎన్విరాన్‌మెంట్) ప్రారంభం కాలేదు.దోష కారణం తెలుసుకొనుటకు మీ "
+"వ్యవస్థ నిర్వహణాధికారిని సంప్రదించండి లేదా మీ సిస్‌లాగ్ ని పరిశీలించండి.ఈ సమయం లో ఈ ప్రదర్శన అచేతనం "
+"చేయబడుతుంది.దయచేసి సమస్య ఎదురైనప్పడు GDM ను పునఃప్రారంభించండి."
 
-#: ../daemon/gdm-manager.c:367 ../daemon/gdm-manager.c:412
+#: ../daemon/gdm-manager.c:766
+#, fuzzy
+msgid "No display available"
+msgstr "ఏ సెషన్ అందుబాటులోలేదు"
+
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "ఏ సెషన్ అందుబాటులోలేదు"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: మాత్రుక ప్రదర్శన '%s' కు అనుసంధానం కావుటలో విఫలమైంది"
+#: ../daemon/gdm-manager.c:844
+msgid "Can only be called before user is logged in"
+msgstr "వాడుకరి లాగిన్ అవ్వడానికి ముందల మాత్రమే పిలువబడగలవు"
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:854
+msgid "Caller not GDM"
+msgstr "కాలర్ GDM కాదు"
+
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "%s వాడుకరి చేత సేవిక ఉంచబడింది అయితే ఆ వాడుకరి లేదు."
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "%d కు సమూహం id ని అమర్చలేము"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () %s కొరకు విఫలమైంది"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "%d కు వాడుకరి id ని అమర్చలేము"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: లాగ్‌ఫైలును  %s ప్రదర్శన కొరకు తెరువలేదు!"
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ని %s కు అమర్చుటలో దోషం"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: సేవిక ప్రాధాన్యత %d కు అమర్చ బడదు: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ఖాళీ సేవిక ఆదేశం %s ప్రదర్శన కొరకు"
@@ -112,122 +153,108 @@ msgstr "ప్రదర్శించు పరికరం"
 msgid "The display device"
 msgstr "ప్రదర్శన పరికరం"
 
-#: ../daemon/gdm-session.c:1160
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "ధృవీకరణ సహాయక ప్రోసెస్ సృష్టించలేక పోయింది"
 
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "మీ ఖాతాకు కొంత సమయం పరిమితి ఇవ్వబడినది అది ఇప్పుడు గడిచిపోయెను."
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "క్షమించండి, అది పనిచేయలేదు. దయచేసి మరలా ప్రయత్నించండి."
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "వాడుకరిపేరు:"
 
-#: ../daemon/gdm-session-worker.c:1261
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "మీ సంకేతపదం గడువుముగిసినది, దాని ఇప్పుడు మార్చండి."
 
-#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "ఏ వాడుకరి ఖాతా అందుబాటులోలేదు"
 
-#: ../daemon/gdm-session-worker.c:1544
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "వాడుకరికి మారలేదు"
 
-#: ../daemon/gdm-simple-slave.c:1531
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"అంతర్గత దోషం కారణంగా X సేవిక(మీ గ్రాఫికల్ ఎన్విరాన్‌మెంట్) ప్రారంభం "
-"కాలేదు.దోష కారణం తెలుసుకొనుటకు మీ "
-"వ్యవస్థ నిర్వహణాధికారిని సంప్రదించండి లేదా మీ సిస్‌లాగ్ ని పరిశీలించండి.ఈ "
-"సమయం లో ఈ ప్రదర్శన అచేతనం "
-"చేయబడుతుంది.దయచేసి సమస్య ఎదురైనప్పడు GDM ను పునఃప్రారంభించండి."
+#: ../daemon/gdm-wayland-session.c:385
+#, fuzzy
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME ప్రదర్శన నిర్వహకి భాగపు పనికారిణి"
 
-#: ../daemon/gdm-simple-slave.c:1572
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "వాడుకరి లాగిన్ అవ్వడానికి ముందల మాత్రమే పిలువబడగలవు"
-
-#: ../daemon/gdm-simple-slave.c:1582
-#, c-format
-msgid "Caller not GDM"
-msgstr "కాలర్ GDM కాదు"
-
-#: ../daemon/gdm-simple-slave.c:1635
-msgid "User not logged in"
-msgstr "వాడుకరి లాగిన్ అయ్యిలేరు"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "ప్రస్తుతం, వొకసారి వొక కక్షిదారి మాత్రమే అనుసంధానమవును"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "సాకెట్ ను సృష్టించలేదు!"
+
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:687
+msgid "Listen on TCP socket"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:698
+#, fuzzy
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME ప్రదర్శన నిర్వహకి భాగపు పనికారిణి"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID ఫైల్ %s ను వ్రాయలేదు: సాద్యమైనంతవరకు డిస్కు ఖాళీ అయిపోయింది: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "ఒకసారి నడుపు మార్కర్ డైరెక్టరీ %s సృష్టించుటకు విఫలమైంది: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s సృష్టించుటకు విఫలమైంది: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM వాడుకరి '%s' ని కనుగొనలేకపోయింది. తిరస్కరించబడింది!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM వాడుకరి రూట్ అవకూడదు. తిరస్కరించబడింది!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM సమూహం '%s' ని కనుగొనలేకపోయింది. తిరస్కరించబడింది."
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM సమూహం రూట్ కాకూడదు. తిరస్కరించబడింది!"
 
-#: ../daemon/main.c:321
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "అన్ని హెచ్చరికలను దుర్భలమైనవిగా చేయుము"
 
-#: ../daemon/main.c:322
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "ఒక సమయం తరువాత నిష్క్రమించు (డీబగ్గింగ్ కొరకు)"
 
-#: ../daemon/main.c:323
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "GDM వర్షన్ ను ముద్రించు"
 
-#: ../daemon/main.c:334
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "GNOME ప్రదర్శన నిర్వాహకి"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:382
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "GDM ను రూట్ వాడుకరి మాత్రమే నడుపగలరు"
 
@@ -237,27 +264,13 @@ msgstr "GDM ను రూట్ వాడుకరి మాత్రమే న�
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ప్రదర్శన నిర్వహకి భాగపు పనికారిణి"
 
-#: ../daemon/simple-slave-main.c:119 ../daemon/xdmcp-chooser-slave-main.c:118
-msgid "Display ID"
-msgstr "ప్రదర్శన ID"
-
-#: ../daemon/simple-slave-main.c:119 ../daemon/xdmcp-chooser-slave-main.c:118
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/simple-slave-main.c:127 ../daemon/xdmcp-chooser-slave-main.c:126
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME ప్రదర్శన నిర్వాహకి బానిస"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "లాగిన్ విండో"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME షెల్"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "తెర  నిర్వాహకి మరియు కం పోస్టింగ్ "
 
@@ -270,8 +283,7 @@ msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"లాగిన్ తెర  అభీష్టానికనుగునంగా వినియూగదారునిని నమొదు చెయుటకుముద్రను ఉపయూగించి "
-"నమొదు చెసుకొనుటకు "
+"లాగిన్ తెర  అభీష్టానికనుగునంగా వినియూగదారునిని నమొదు చెయుటకుముద్రను ఉపయూగించి నమొదు చెసుకొనుటకు "
 "వెలిముద్ర"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
@@ -283,12 +295,10 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-" లాగిన్ తెర   అభీష్టానికి  అనుగుణంగా    స్మార్టకర్డలు ప్రయోగించుట  ద్వారా  "
-"అవి   కలిగివున్న వారికి "
+" లాగిన్ తెర   అభీష్టానికి  అనుగుణంగా    స్మార్టకర్డలు ప్రయోగించుట  ద్వారా  అవి   కలిగివున్న వారికి "
 "ప్రవేశము కలదు "
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
 msgstr "లాగిన్ కొరకు సంకేతపదాలను అనుమతించాలా లేదా"
 
@@ -297,8 +307,8 @@ msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"సంకేతపదం ధృవీకరణను నిరాకరించునట్లు మీరు లాగిన్ తెరను ఆకృతీకరించవచ్చు, "
-"వాడుకరిని స్మార్టుకార్డు లేదా వేలిముద్ర ధృవీకరణను ఉపయోగించునట్లు చేయవచ్చు."
+"సంకేతపదం ధృవీకరణను నిరాకరించునట్లు మీరు లాగిన్ తెరను ఆకృతీకరించవచ్చు, వాడుకరిని స్మార్టుకార్డు లేదా "
+"వేలిముద్ర ధృవీకరణను ఉపయోగించునట్లు చేయవచ్చు."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -310,8 +320,7 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"లాగిన్ తెర   అభీష్టానికి  అనుగుణంగా  ఒక చిన్న  ప్రతిమ వాడుకరి  జాబితా  పైన  "
-"స్థలము ప్రకారము అమర్చుట "
+"లాగిన్ తెర   అభీష్టానికి  అనుగుణంగా  ఒక చిన్న  ప్రతిమ వాడుకరి  జాబితా  పైన  స్థలము ప్రకారము అమర్చుట "
 "ద్వారా విచారణకర్త లు మరియు పంచిపెట్టడము  కనిపిస్తుం ది "
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
@@ -320,8 +329,7 @@ msgid ""
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
-"లాగిన్ తెర   అభీష్టానికి  అనుగుణంగా  ఒక చిన్న  ప్రతిమ వాడుకరి  జాబితా  పైన  "
-"స్థలము ప్రకారము అమర్చుట "
+"లాగిన్ తెర   అభీష్టానికి  అనుగుణంగా  ఒక చిన్న  ప్రతిమ వాడుకరి  జాబితా  పైన  స్థలము ప్రకారము అమర్చుట "
 "ద్వారా విచారణకర్త లు మరియు పంచిపెట్టడము  కనిపిస్తుం ది"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
@@ -333,8 +341,7 @@ msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr ""
-"లాగిన్ తెర సాధారణంగా గా లాగిన్ అందుబాటులో వాడుకరుల  జాబితాను చూపిస్తుంది. ఈ "
-"సెట్టింగు వాడుకరి  జాబితా "
+"లాగిన్ తెర సాధారణంగా గా లాగిన్ అందుబాటులో వాడుకరుల  జాబితాను చూపిస్తుంది. ఈ సెట్టింగు వాడుకరి  జాబితా "
 "చూపిస్తున్న డిసేబుల్ టాగుల్  చేయవచ్చు."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
@@ -359,8 +366,7 @@ msgstr "పునఃప్రారంభ బటన్‌లను చూపు�
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"లాగిన్ విండోనందు పునఃప్రారంభ బటన్‌లు చూపుట అచేతనంచేయుటకు సత్యంకు అమర్చుము."
+msgstr "లాగిన్ విండోనందు పునఃప్రారంభ బటన్‌లు చూపుట అచేతనంచేయుటకు సత్యంకు అమర్చుము."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
@@ -371,8 +377,7 @@ msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
-"ప్రయత్నం ఆపి మరలా వాడుకరి యెంపికకు వెళ్ళడానికి ముందు యెన్ని సార్లు వాడుకరి "
-"ధృవీకరణ కొరకు "
+"ప్రయత్నం ఆపి మరలా వాడుకరి యెంపికకు వెళ్ళడానికి ముందు యెన్ని సార్లు వాడుకరి ధృవీకరణ కొరకు "
 "ప్రయత్నించవచ్చు."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
@@ -395,74 +400,39 @@ msgstr "XDMCP: సరికాని XDMCP వర్షన్!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: చిరునామాను పార్స్ చేయలేదు"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "ట్రాన్సియంట్ ప్రదర్శన సృష్టించలేక పోయింది: "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "సెషన్ క్రియాశీలపరచలేక పోయింది: "
 
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
-#: ../utils/gdmflexiserver.c:447 ../utils/gdmflexiserver.c:600
-#, c-format
-msgid "Could not identify the current session."
-msgstr "ప్రస్తుత భాగమును గుర్తించలేక పోయింది."
-
-#: ../libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "వాడుకరి సెషన్‌ను మార్చలేకపోతున్నాడు"
-
-#: ../libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:609
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "ప్రస్తుత పీఠమును  గుర్తించలేక పోయింది."
-
-#: ../libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:619
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"వ్యవస్థ ఇప్పటికే ఉన్న లాగిన్ తెర మారడం లేదా ఒక క్రొత్త లాగిన్ తెర పైకి "
-"ప్రారంభించడము అనే  నిర్ణయాన్ని  "
-"చెయ్యలేకపోయింది."
-
-#: ../libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:627
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "వ్యవస్థ ఒక క్రొత్త లాగిన్ తెర పైకి మొదలు చేయలేదు. "
-
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "VERSION ఆదేశము మాత్రమే మద్దతీయబడును"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "ఆదేశం"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "వదిలివేయబడింది - సారూప్యతకొరకు వుంచబడింది"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "అవుట్‌పుట్ ను డీబగ్‌చేస్తోంది"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "ఈ అనువర్తనం యొక్క వర్షన్"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:693
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- కొత్త GDM లాగిన్"
-
-#: ../utils/gdmflexiserver.c:749
-msgid "Unable to start new display"
-msgstr "కొత్త ప్రదర్శనను ప్రారంభించలేక పోయింది"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -473,674 +443,227 @@ msgstr "స్క్రీన్‌షాట్ తీసుకొనబడి�
 msgid "Take a picture of the screen"
 msgstr "తెరయొక్క చిత్రమును తీసుకొనుము"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "వాడుకరి %s కొరకు UID చూడలేక పోయింది"
 
-#~ msgid "no sessions available"
-#~ msgstr "ఏ సెషన్లు అందుబాటులోలేవు"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "పునఃధృవీకరణకు %s కొరకు యే సెషన్లు అందుబాటులో లేవు"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "వాడుకరి %s కొరకు సెషన్ కనుగొనలేక పోయింది"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "వాడుకరి %s కొరకు సరైన సెషన్ కనుగొనలేక పోయింది"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "వాడుకరి సెషన్ కలిగిలేరు"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "దృవీకరణ వ్యవస్థ తో సంభాషణ ప్రారంభించుటలో దోషం - %s"
 
-#~ msgid "general failure"
-#~ msgstr "సాధారణ వైఫల్యం"
 
-#~ msgid "out of memory"
-#~ msgstr "మెమొరీ మించిపోయింది"
 
-#~ msgid "application programmer error"
-#~ msgstr "అప్లికేషన్ ప్రోగ్రామర్ దోషం"
 
-#~ msgid "unknown error"
-#~ msgstr "తెలియని దోషం"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr "అభీష్ట వాడుకరిపేరు యొక్క దృవీకరణ వ్యవస్థ తెలియజేయుటలో దోషం - %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "వాడుకరి అతిధేయ పేరు యొక్క దృవీకరణ వ్యవస్థ ను తెలియజేయుటలో దోషం - %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "వాడుకరి కన్సోల్ యొక్క వ్యవస్థ దృవీకరణను తెలియజేయుటలో దోషం - %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "ప్రదర్శన స్ట్రింగ్ యొక్క దృవీకరణ వ్యవస్థ తెలియజేయుటలో దోషము - %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "ప్రదర్శన xauth ఆనవాళ్ళ యొక్క దృవీకరణ వ్యవస్థ తెలియజేయుటలో దోషము - %s"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "AuthDir %s సృష్టించుటకు విఫలమైంది: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "వేలిముద్ర ధృవీకరణము"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "వెలిముద్రతో సెషన్ లోనికి లాగిన్ అవ్వుము"
 
-#~ msgid "Password Authentication"
-#~ msgstr "సంకేతపదము ధృవీకరణ"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "వాడుకరిపేరు మరియు సంకేతపదముతో సెషన్‌కు లాగిన్ అగుట"
 
-#~ msgid "Log In"
-#~ msgstr "లాగ్ యిన్"
 
-#~ msgid "Slot ID"
-#~ msgstr "స్లాట్ ID"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "స్లాట్ కార్డు లోన వున్నది"
 
-#~ msgid "Slot Series"
-#~ msgstr "స్లాట్ క్రమములు"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "ఒక్కో-స్లాట్ చొప్పున కార్డ్ గుర్తింపుకారి"
 
-#~ msgid "name"
-#~ msgstr "పేరు"
 
-#~ msgid "Module"
-#~ msgstr "మాడ్యూల్"
 
-#~ msgid "smartcard driver"
-#~ msgstr "స్మార్టుకార్డ్ డ్రైవర్"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "స్మార్ట్‍కార్డ్ ధృవీకరణము"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "సెషన్‌కు స్మార్ట్‍కార్డుతో లాగిన్ అవ్వుము"
 
-#~ msgid "Module Path"
-#~ msgstr "మాడ్యూల్ పాత్"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "స్మార్టుకార్డ్ PKCS #11 డ్రైవర్‌కు పాత్"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "దోషమును పొందినది లేదా ఘటనా మూలంనుండి స్థంబించినది"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "NSS రక్షణ వ్యవస్థ సిద్దము కాలేక పోయింది"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "ఏ సూటగునటువంటి స్మార్టుకార్డ్ డ్రైవ్ కనుగొనబడలేదు"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "స్మార్టుకార్డు డ్రైవర్ '%s' లోడు కాలేకపోయింది"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "లోనికివచ్చు కార్డు ఘటనలను పర్యవేక్షించలేక పోయింది - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "స్మార్టుకార్డు ఘటనల కొరకు వేచివున్నప్పుడు అనుకోని దోషము యెదురైంది"
 
-#~ msgid "Authentication"
-#~ msgstr "ధృవీకరణ"
 
-#~ msgid "Log into session"
-#~ msgstr "సెషన్‌కు  లాగిన్ అవ్వుము"
 
-#~ msgid "Value"
-#~ msgstr "విలువ"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "పూర్తైన సమయంయొక్క శాతం"
 
-#~ msgid "Inactive Text"
-#~ msgstr "అచేతనమైన పాఠ్యము"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "వాడుకరి ఇంకనూ ఒక అంశమును తీసుకొనకపోతే లేబుల్ నందు ఉపయోగింపబడు పాఠ్యము"
 
-#~ msgid "Active Text"
-#~ msgstr "చేతనమైన పాఠ్యము"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "వాడుకరి ఒక అంశమును తీసుకొనినట్లైతే లేబుల్ నందు ఉపయోగింపబడు పాఠ్యము"
 
-#~ msgid "List Visible"
-#~ msgstr "కనిపించునవి జాబితాచేయుము"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "ఎంపికకారి జాబితా దర్శనీయం కావాలా లేదా"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %l:%M:%S %p"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %l:%M %p"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %l:%M:%S %p"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %l:%M %p"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "స్వయంచాలకంగా లాగిన్ అవుట..."
 
-#~ msgid "Cancelling…"
-#~ msgstr "రద్దుచేయుచున్నది..."
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "భాషను యెంపికచేసికొని లాగిన్ నొక్కుము"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "మలచిన"
 
-#~ msgid "Custom session"
-#~ msgstr "మలచిన సెషన్"
 
-#~ msgid "Computer Name"
-#~ msgstr "కంప్యూటర్ పేరు"
 
-#~ msgid "Version"
-#~ msgstr "వర్షన్"
 
-#~ msgid "Cancel"
-#~ msgstr "రద్దు"
 
-#~ msgid "Unlock"
-#~ msgstr "అన్‌లాక్"
 
-#~ msgid "Login"
-#~ msgstr "లాగిన్"
 
-#~ msgid "Suspend"
-#~ msgstr "అర్ధాంతరనిలుపుదల"
 
-#~ msgid "Restart"
-#~ msgstr "పునఃప్రారంభించు"
 
-#~ msgid "Shut Down"
-#~ msgstr "మూసివేయి"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "తెలియని సమయం మిగిలివుంది"
 
-#~ msgid "Panel"
-#~ msgstr "ప్యానల్"
 
-#~ msgid "Label Text"
-#~ msgstr "లేబుల్ టెక్స్ట్‍"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "లేబుల్‌గా ఉపయోగించుటకు పాఠ్యము"
 
-#~ msgid "Icon name"
-#~ msgstr "ప్రతిమ పేరు"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "లేబుల్‌తో వుపయోగించుటకు ప్రతిమ"
 
-#~ msgid "Default Item"
-#~ msgstr "అప్రమేయ అంశము"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "అప్రమేయ అంశము యొక్క ID"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "దూరస్థ లాగిన్ (%s కు అనుసంధానం అవుతోంది...)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "దూరస్థ లాగిన్ (%s కు అనుసంధానంఅయింది)"
 
-#~ msgid "Remote Login"
-#~ msgstr "దూరస్థ లాగిన్"
 
-#~ msgid "Session"
-#~ msgstr "భాగము"
 
-#~ msgid "Duration"
-#~ msgstr "నిడివి"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "టైమర్ ఆపునంతవరకు సెకనుల సంఖ్య"
 
-#~ msgid "Start time"
-#~ msgstr "ప్రారంభ సమయం"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "టైమర్ సమయం ప్రారంభమైంది"
 
-#~ msgid "Is it Running?"
-#~ msgstr "అది నడుస్తోందా?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "టైమర్ ప్రస్తుతం నడుస్తోందా"
 
-#~ msgid "Log in as %s"
-#~ msgstr "%s లాగా లాగిన్ అవ్వుము"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "ఇతర..."
 
-#~ msgid "Choose a different account"
-#~ msgstr "భిన్నమైన ఖాతాను ఎంచుకొనుము"
 
-#~ msgid "Guest"
-#~ msgstr "అతిధేయి"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "తాత్కాలిక అతిధేయి లాగా లాగిన్ అవ్వుము"
 
-#~ msgid "Automatic Login"
-#~ msgstr "స్వయంచాలక లాగిన్"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "ఐచ్చికాలను ఎంపికచేసిన తర్వాత స్వయంచాలకంగా వ్యవస్థ‌కు లాగిన్ అవ్వండి"
 
-#~ msgid "Currently logged in"
-#~ msgstr "ప్రస్తుతం దీనినందు లాగిన్ అయ్యింది"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "Logdir %s లేదు లేదా అది సంచయం కాదు."
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "Authdir %s లేదు. తిరస్కరించబడింది."
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "Authdir %s సంచయం కాదు. తిరస్కరించబడింది."
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr "Authdir %s వాడుకరి %d,సమూహం %d చేత కలిగిలేదు. తిరస్కరించబడింది."
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr "Authdir %s సరికాని అనుమతులు %o లను కలిగిఉంది. %o అయిఉండాలి. తిరస్కరించబడింది."
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME తెరను పెంచునది"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "తెరయొక్క భాగములను పెద్దవిచేయుము"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "GNOME తెర-పైని కీబోర్డు"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "తెర-పైన కీబోర్డును ‌వుపయోగించు"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orca తెరను చదువునది"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "తెరపైని సమాచారమును సంభాషణవలె గాని లేదా బ్రెయిలీవలె గాని సమర్పించుము"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "లాగిన్ వ్యవస్థ ను సిద్దపరచ లేదు"
 
-#~ msgid "Unable to authenticate user"
-#~ msgstr "వాడుకరి ని దృవీకరించలేము"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "సాధకములను ఎర్పరచలేము"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "సమూహం %s లేదు"
 
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr "వ్యవస్థ మారాలని ఒక లాగిన్ తెర అందుకోలేక ఉంది."
 
-#~ msgid "Max Item Count"
-#~ msgstr "గరిష్ఠంగా అంశం లెక్క"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "జాబితా లో ఉంచవలిసిన అంశముల యొక్క గరిష్ఠ సంఖ్య"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "ఎంపికకారి ఖాళీగా వున్నప్పుడు బానర్ సందేశ పాఠ్యము"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "banner_message_text బదులుగా, వాడుకరి యెంపిక ఖాళీగావున్నప్పుడు లాగిన్ విండోనందు చూపుటకు "
-#~ "టెక్స్ట్‍ బ్యానర్ సందేశం."
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "అభినందని లోగోకు వుపయోగించుటకు ప్రతిమ పేరు"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr "అభినందని లోగోకు వుపయోగించుటకు థీమ్‌డ్ ప్రతిమ నామమకు అమర్చుము."
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "లాగిన్ విండోనందు తెలిసిన వాడుకరులను చూపవద్దు"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr "లాగిన్ విండోనందు తెలిసిన వాడుకరులను చూపుట అచేతనంచేయుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "Recently selected languages"
-#~ msgstr "ఇటీవల యెంచుకొనిన భాషలు"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "లాగిన్ విండోనందు అప్రమేయంగా చూపుటకు భాషల జాబితాకు అమర్చుము."
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "compizను విండో నిర్వాహికలాగా వుపయోగించుము"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "compizను విండో నిర్వాహికలాగా వుపయోగించుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "తెర-పైన కీబోర్డును చేతనంచేయుము"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "తెర-పైన కీబోర్డును చేతనంచేయుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "Enable screen reader"
-#~ msgstr "తెరను చదువుదానిని చేతనంచేయుము"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "తెర చదువుదానిని చేతనంచేయుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "తెరను పెంచుదానిని చేతనంచేయుము"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "తెర పెంచుదానిని చేతనంచేయుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "ఆందుబాటు కీబోర్డు ప్లగ్ఇన్ చేతనంచేయుము"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "యాక్సిస్‌బిలిటి కీబోర్డు అమరికలను నిర్వహించుటకు ప్లగ్ఇన్‌ను చేతనం చేయుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr "బ్యాక్‌గ్రౌండు అమరికల నిర్వాహకి ప్లగ్ఇన్ చేతనమైతే సత్యం."
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "బ్యాక్‌గ్రౌండు అమరికల నిర్వాహకి ప్లగ్ఇన్ ను చేతనపరుచుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr "మీడియా-కీల అమరికల నిర్వాహకి ప్లగ్ఇన్ చేతనమైతే సత్యం."
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr "మీడియా-కీస్ అమరికల నిర్వాహకి ప్లగ్ఇన్ ను చేతనపరుచుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "సౌండ్ అమరికల నిర్వాహకి ప్లగ్ఇన్ చేతనమైతే సత్యం."
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "సౌండ్ అమరికల నిర్వాహకి ప్లగ్ఇన్‌ను చేతనపరుచుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "xrandr అమరికల నిర్వాహకి ప్లగ్ఇన్ చేతనమైతే సత్యం."
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "xrandr అమరికల నిర్వాహకి ప్లగ్ఇన్‌ను చేతనపరుచుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr "xsettings అమరికల నిర్వాహకి ప్లగ్ఇన్ చేతనమైతే సత్యం."
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr "xsettings అమరికల నిర్వాహకి ప్లగ్ఇన్ ను చేతనపరుచుటకు సత్యంకు అమర్చుము."
 
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "XDMCP సవాలు అతిధేయనుండి తిరస్కరించబడింది %s"
 
-#~ msgid "Could not extract authlist from packet"
-#~ msgstr "పాకెట్ నుండి authlist ను బహిర్గతం చేయలేదు"
 
-#~ msgid "Error in checksum"
-#~ msgstr "చెక్‌సమ్ లో దోషం"
 
-#~ msgid "Bad address"
-#~ msgstr "సరికాని చిరునామా"
 
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s: ప్రదర్శన చిరునామా ను చదవలేదు"
 
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s: ప్రదర్శన పోర్టు సంఖ్యను చదువలేదు"
 
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s: ఆథ్‌లిస్టును పాకెట్ నుండి బహిర్గతం చేయలేదు"
 
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s: చెక్‌సమ్ నందు దోషం"
 
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s: నిషేధించబడిన అతిధేయ నుండి అభ్యర్ధన పొందబడింది %s"
 
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s: ప్రదర్శన సంఖ్యను చదువలేదు"
 
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s: అనుసంధానం రకం ను చదువలేదు"
 
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s: కక్షిదారి చిరునామాను చదువలేదు"
 
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s: దృవీకరణ డాటాను చదువలేదు"
 
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s: అధికారపు జాబితాను చదువలేకపోయింది"
 
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s: తయారీదారి ID ని చదువలేకపోయింది"
 
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s: విఫలమైన చెక్‌సమ్ %s నుండి"
 
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s: నిషేధించబడిన అతిధేయ %s నుండి నిర్వహణను పొందింది"
 
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s: భాగపు ID ని చదువలేదు"
 
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s: ప్రదర్శన తరగతిని చదువలేదు"
 
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s: చిరునామాను చదువలేదు"
 
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s: నిషేధించబడిన అతిధేయ %s నుండి KEEPALIVE ను పొందింది"
 
-#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-#~ msgstr "GdmXdmcpDisplayFactory: XDMCP యెగువ సూచీ ను చదువలేదు"
 
-#~ msgid "Could not get server hostname: %s!"
-#~ msgstr "సేవిక యొక్క అతిధేయ పేరు పొందలేకపోయింది: %s!"
 
-#~ msgid "Activation of this plugin"
-#~ msgstr "ఈ అనువర్తనం యొక్క సక్రియాకరణం "
 
-#~ msgid "Whether this plugin would be activated or not"
-#~ msgstr "ఈ ప్లగిన్ ఉత్తేజితమైనదా లేదా "
 
-#~ msgid "AT-SPI Registry Wrapper"
-#~ msgstr "AT-SPI రిజిస్ట్రీ వ్రాపర్"
 
-#~ msgid "Power Manager"
-#~ msgstr "పవర్ నిర్వాహకి"
 
-#~ msgid "GNOME Session Acceleration Checker"
-#~ msgstr "GNOME సెషన్ యాక్సెల్‌రేషన్ పరిశీలకి"
 
-#~ msgid "GNOME Settings Daemon"
-#~ msgstr "GNOME అమర్పుల డెమోన్"
 
-#~ msgid "Metacity"
-#~ msgstr "మెటాసిటి"
 
-#~ msgid "PolicyKit Authentication Agent"
-#~ msgstr "పాలసీకిట్ దృవీకరణ ప్రతినిది"
 
-#~ msgid "Languages"
-#~ msgstr "భాషలు"
 
-#~ msgid "_Languages:"
-#~ msgstr "భాషలు(_L):"
 
-#~ msgid "_Language:"
-#~ msgstr "భాష(_L):"
 
-#~ msgctxt "language"
-#~ msgid "Other…"
-#~ msgstr "ఇతర..."
 
-#~ msgid "Choose a language from the full list of available languages."
-#~ msgstr "పూర్తిజాబితాలో అందుబాటులో ఉన్న భాషలనుండి ఒక భాషను ఎంపికచేసుకొనుము."
 
-#~ msgid "Language"
-#~ msgstr "భాష"
 
-#~ msgid "Unspecified"
-#~ msgstr "తెలుపబడని"
+
+
+
+
+
+
+
+
+
+
 
 #, fuzzy
-#~ msgid "Shutdown Options…"
-#~ msgstr "మూసివేయు ఐచ్చికములు..."
 
-#~ msgid "Keyboard layouts"
-#~ msgstr "కీబోర్డ్‍ మాదిరిలు"
 
-#~ msgid "_Keyboard:"
-#~ msgstr "కీబోర్డ్‍ (_K):"
 
 #, fuzzy
-#~ msgctxt "keyboard"
-#~ msgid "Other…"
-#~ msgstr "ఇతర..."
 
-#~ msgid "Choose a keyboard layout from the full list of available layouts."
-#~ msgstr "అందుబాటులోవున్న మాదిరిల పూర్తి జాబితానుండి కీబోర్డ్‍ మాదిరిని ఎంచుకొనుము."
 
-#~ msgid "Keyboard"
-#~ msgstr "కీబోర్డ్"
 
-#~ msgid "Recently selected keyboard layouts"
-#~ msgstr "ఇటీవల యెంచుకొనిన కీబోర్డ్‍ మాదిరిలు"
 
 #, fuzzy
-#~ msgid ""
-#~ "Set to a list of keyboard layouts to be shown by default in the login "
-#~ "window."
-#~ msgstr "లాగిన్ విండోవద్ద అప్రమేయంగా చూపుటకు కీబోర్డ్‍ మాదిరిల జాబితాకు అమర్చుము."
 
-#~ msgid ""
-#~ "The User Switch Applet is free software; you can redistribute it and/or "
-#~ "modify it under the terms of the GNU General Public License as published "
-#~ "by the Free Software Foundation; either version 2 of the License, or (at "
-#~ "your option) any later version."
-#~ msgstr ""
-#~ "వినియోగదారిని మార్చు ఆప్లెట్ ఉచిత సాఫ్టువేర్; ఉచిత సాఫ్టువేర్ సంస్థ తరుపున ప్రచురితమైనGNU జనరల్ "
-#~ "పబ్లిక్ లైసెన్సు కు లోబడి దీనిని మీరు పునఃపంపిణి మరియు/లేదాసవరణ చేయవచ్చు; మీరు అనుసరించవలిసినది "
-#~ "లైసెన్సు యొక్క వర్షన్ 2, లేదా(మీ ఐచ్చికం వద్ద) దాని తరువాతి వర్షన్ కాని."
 
-#~ msgid ""
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details."
-#~ msgstr ""
-#~ "ఈ ప్రోగ్రామ్ అది ఉపయోగపడుతుందనే నమ్మకం తో పంపిణీ చేయబడింది,అయితే ఏ హామి లేదు; వ్యాపారసంబంధితంగా కాని "
-#~ "లేదా ప్రతిపాదిత ప్రయోజనం కొరకుకాని హామీ లేదు. అధికవివరములకొరకు GNU జనరల్ పబ్లిక్ లైసెన్సు నుచూడండి."
 
-#~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program; if not, write to the Free Software Foundation, Inc., "
-#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-#~ msgstr ""
-#~ "ఈ ప్రోగ్రామ్ తో మీరు GNU జనరల్ పబ్లిక్ లైసెన్సు నకలు ను పొంది ఉంటారు;పొందకపోతే, Free Software "
-#~ "Foundation, Inc., 51 Franklin Street, FifthFloor, Boston. MA  02110-1301, "
-#~ "USA కు వ్రాయండి"
 
-#~ msgid "A menu to quickly switch between users."
-#~ msgstr "వాడుకరుల మద్య వేగముగా మారుటకు మెనూ."
 
-#~ msgid "translator-credits"
-#~ msgstr "KrishnaBabu K <kkrothap@redhat.com> 2008."
 
-#~ msgid "Can't lock screen: %s"
-#~ msgstr "తెరను లాక్‌చేయలేదు: %s"
 
-#~ msgid "Can't temporarily set screensaver to blank screen: %s"
-#~ msgstr "తెరకాపరిని తాత్కాలికంగా బ్లాంక్ తెరకు అమర్చలేదు: %s"
 
 #, fuzzy
-#~ msgid "Can't log out: %s"
-#~ msgstr "లాగ్అవుట్ కాలేదు: %s"
 
-#~ msgid "Available"
-#~ msgstr "అందుబాటులోవుంది"
 
-#~ msgid "Invisible"
-#~ msgstr "కనిపించని"
 
-#~ msgid "Busy"
-#~ msgstr "రద్దీ(బ్యుజీ)"
 
-#~ msgid "Away"
-#~ msgstr "దూరంగా"
 
-#~ msgid "Account Information"
-#~ msgstr "ఖాతా సమాచారము"
 
-#~ msgid "System Preferences"
-#~ msgstr "వ్యవస్థ అభీష్టాలు"
 
-#~ msgid "Lock Screen"
-#~ msgstr "తెరను లాక్‌చేయుము"
 
-#~ msgid "Switch User"
-#~ msgstr "వినియోగదారిని మార్చుము"
 
-#~ msgid "Unknown"
-#~ msgstr "తెలియని"
 
-#~ msgid "User Switch Applet"
-#~ msgstr "వినియోగదారిని మార్చు ఆప్లెట్"
 
-#~ msgid "Change account settings and status"
-#~ msgstr "ఖాతా అమర్పులను మరియు స్థితిని మార్చుము"
 
-#~ msgid "A menu to quickly switch between users"
-#~ msgstr "వాడుకరుల మధ్య త్వరగా మారుటకు ఒక మెనూ"
 
-#~ msgid "User Switcher"
-#~ msgstr "వాడుకరి మార్చునది"
 
-#~ msgid "User Switcher Applet Factory"
-#~ msgstr "వినియోగదారి మార్చుదాని ఆప్లెట్ ఫాక్టరీ"
 
-#~ msgid "Edit Personal _Information"
-#~ msgstr "వ్యక్తిగత సమాచారమును సరిచేయుము(_I)"
 
-#~ msgid "_About"
-#~ msgstr "గురించి(_A)"
 
-#~ msgid "_Edit Users and Groups"
-#~ msgstr "వాడుకరులను మరియు సమూహాలను సరిచేయి(_E)"
 
-#~ msgid "Force X to start on active vt"
-#~ msgstr "క్రియాశీల vt పై ప్రారంభమగుటకు Xను బలవంతం చేయుము"
 
-#~ msgid "Quit..."
-#~ msgstr "నిష్క్రమించు..."

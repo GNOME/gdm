@@ -15,9 +15,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-04-16 13:55+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-04-10 15:54+0800\n"
 "Last-Translator: osfans <waxaca@163.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -28,35 +27,29 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.7.5\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符设备"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "无法识别当前会话。"
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "用户无法切换会话。"
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "无法识别当前位置。"
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr "系统无法确定是否应当切换到一个已经登录的屏幕还是启动一个新登录屏幕。"
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "系统无法启动新登录屏幕。"
@@ -76,63 +69,63 @@ msgstr ""
 "由于内部错误无法启动 X 服务器(您的图形界面)。请与系统管理员联系或检查系统日志"
 "以便进行诊断。在此期间该显示将被禁用。请在问题更正以后重新启动 GDM。"
 
-#: ../daemon/gdm-manager.c:1175
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "无可用的显示"
 
-#: ../daemon/gdm-manager.c:1242 ../daemon/gdm-manager.c:1498
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "无可用的会话"
 
-#: ../daemon/gdm-manager.c:1253
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "只能在用户登录前被调用"
 
-#: ../daemon/gdm-manager.c:1263
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "调用者不是 GDM"
 
-#: ../daemon/gdm-manager.c:1273
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "无法打开专用通信通道"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "服务器是以用户 %s 身份创建的，但此用户不存在"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "无法将组 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() 执行 %s 失败"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "无法将用户 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：无法打开显示屏 %s 的日志文件！"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：将 %s 设为 %s 出错"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s：服务器优先级无法设为 %d：%s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：显示画面 %s 的服务器命令为空"
@@ -161,36 +154,36 @@ msgstr "显示设备"
 msgid "The display device"
 msgstr "显示设备"
 
-#: ../daemon/gdm-session.c:1184
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
-#: ../daemon/gdm-session-worker.c:849
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "你的帐号设有时间限制，已超过限定时间。"
 
-#: ../daemon/gdm-session-worker.c:856
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "抱歉，没有奏效，请再试一次。"
 
-#: ../daemon/gdm-session-worker.c:1221
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "用户名："
 
-#: ../daemon/gdm-session-worker.c:1355
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "你的密码已过期，请立即修改。"
 
-#: ../daemon/gdm-session-worker.c:1594 ../daemon/gdm-session-worker.c:1611
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "无可用用户帐户"
 
-#: ../daemon/gdm-session-worker.c:1638
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
-#: ../daemon/gdm-wayland-session.c:377
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME 显示管理器 Wayland 会话启动器"
 
@@ -198,15 +191,15 @@ msgstr "GNOME 显示管理器 Wayland 会话启动器"
 msgid "Could not create socket!"
 msgstr "无法创建套接字！"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "通过 /etc/gdm/Xsession 包装脚本运行程序"
 
-#: ../daemon/gdm-x-session.c:679
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "监听 TCP 套接字"
 
-#: ../daemon/gdm-x-session.c:690
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME 显示管理器 X 会话启动器"
 
@@ -396,11 +389,11 @@ msgstr "XMDCP：XDMCP 版本错误！"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP：无法解析地址"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "无法创建过渡显示界面："
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "无法激活会话："
 
@@ -439,760 +432,241 @@ msgstr "已经截屏"
 msgid "Take a picture of the screen"
 msgstr "截取屏幕"
 
-#~ msgid "No session available yet"
-#~ msgstr "尚无可用会话"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s：无法连接到父显示屏“%s”"
 
-#~ msgid "User not logged in"
-#~ msgstr "用户未登录"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "当前，一次只能连接一个客户端"
 
-#~ msgid "Display ID"
-#~ msgstr "显示 ID"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "GNOME 从属显示管理器"
 
-#~ msgid "Login Window"
-#~ msgstr "登录窗口"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "无法启动新显示会话"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "无法查询用户 %s 的 UID"
 
-#~ msgid "no sessions available"
-#~ msgstr "无可用会话"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "没有 %s 的可用于重新验证的会话"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "无法找到用户 %s 的会话"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "无法找到适合用户 %s 的会话"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "用户未拥有会话"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "闯将 AuthDir 失败 %s: %s"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "使用认证系统初始化会话出错 - %s"
 
-#~ msgid "general failure"
-#~ msgstr "一般性错误"
 
-#~ msgid "out of memory"
-#~ msgstr "内存耗尽"
 
-#~ msgid "application programmer error"
-#~ msgstr "应用程序编程错误"
 
-#~ msgid "unknown error"
-#~ msgstr "未知错误"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr "将首选用户名提示符通知验证系统时出错:%s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "将用户主机名通知验证系统时出错:%s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "将用户终端通知验证系统时出错:%s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "将显示字符串通知验证系统时出错:%s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "将显示 xauth 证书通知验证系统时发生错误:%s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "指纹认证"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "通过指纹登录会话"
 
-#~ msgid "Password Authentication"
-#~ msgstr "口令认证"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "通过用户名和密码登录会话"
 
-#~ msgid "Log In"
-#~ msgstr "登录"
 
-#~ msgid "Slot ID"
-#~ msgstr "插槽 ID"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "智能卡所在的插槽"
 
-#~ msgid "Slot Series"
-#~ msgstr "插槽组"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "各插槽卡的标识符"
 
-#~ msgid "name"
-#~ msgstr "名称"
 
-#~ msgid "Module"
-#~ msgstr "模块"
 
-#~ msgid "smartcard driver"
-#~ msgstr "智能卡驱动"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "智能卡认证"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "通过智能卡登录会话"
 
-#~ msgid "Module Path"
-#~ msgstr "模块路径"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "到智能卡 PKCS #11 驱动的路径"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "收到事件源的错误或挂起信号"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "无法初始化 NSS 安全系统"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "找不到合适的智能卡驱动"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "无法加载智能卡驱动“%s”"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "无法监测发来的智能卡事件 - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "在等候智能卡事件时遇到意外错误"
 
-#~ msgid "Authentication"
-#~ msgstr "认证"
 
-#~ msgid "Log into session"
-#~ msgstr "登录会话"
 
-#~ msgid "Value"
-#~ msgstr "值"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "完成时间的百分比"
 
-#~ msgid "Inactive Text"
-#~ msgstr "非活动文本"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "用户尚未选择任何条目前在标签中使用的文本"
 
-#~ msgid "Active Text"
-#~ msgstr "活动文本"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "用户选择一个条目时在标签中使用的文本"
 
-#~ msgid "List Visible"
-#~ msgstr "列表可见"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "选择器列表是否可见"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%m月%d日 %A %H:%M:%S"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%m月%d日 %A %H:%M"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%A %H:%M:%S"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%A %H:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "正在自动登录..."
 
-#~ msgid "Cancelling…"
-#~ msgstr "正在取消..."
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "选择语言，单击“登录”"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "自定义"
 
-#~ msgid "Custom session"
-#~ msgstr "自定义会话"
 
-#~ msgid "Computer Name"
-#~ msgstr "计算机名"
 
-#~ msgid "Version"
-#~ msgstr "版本"
 
-#~ msgid "Cancel"
-#~ msgstr "取消"
 
-#~ msgid "Unlock"
-#~ msgstr "解锁"
 
-#~ msgid "Login"
-#~ msgstr "登录"
 
-#~ msgid "Suspend"
-#~ msgstr "挂起"
 
-#~ msgid "Restart"
-#~ msgstr "重新启动"
 
-#~ msgid "Shut Down"
-#~ msgstr "关机"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "剩余时间未知"
 
-#~ msgid "Panel"
-#~ msgstr "面板"
 
-#~ msgid "Label Text"
-#~ msgstr "标签文本"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "该文本将用作一个标签"
 
-#~ msgid "Icon name"
-#~ msgstr "图标名"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "该标签所共用的图标"
 
-#~ msgid "Default Item"
-#~ msgstr "默认项目"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "默认项目的 ID"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "远程登录(正在连接 %s...)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "远程登录(已连接至 %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "远程登录"
 
-#~ msgid "Session"
-#~ msgstr "会话"
 
-#~ msgid "Duration"
-#~ msgstr "持续时间"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "多少秒直到计时器停止"
 
-#~ msgid "Start time"
-#~ msgstr "启动时间"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "计时器开始时间"
 
-#~ msgid "Is it Running?"
-#~ msgstr "它正在运行中吗？"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "是否计时器正在运行"
 
-#~ msgid "Log in as %s"
-#~ msgstr "作为 %s 登录"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "其他..."
 
-#~ msgid "Choose a different account"
-#~ msgstr "选择不同的帐户"
 
-#~ msgid "Guest"
-#~ msgstr "来宾"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "作为临时来宾登录"
 
-#~ msgid "Automatic Login"
-#~ msgstr "自动登录"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "选定选项后自动登录到系统"
 
-#~ msgid "Currently logged in"
-#~ msgstr "当前已登录"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "日志目录 %s 不存在或者不是目录。"
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "认证目录 %s 不存在。中止。"
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "认证目录 %s 不是目录。中止。"
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr "认证目录 %s 不属于用户 %d，组 %d。中止。"
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr "认证目录 %s 的权限 %o 是错误的。应为 %o。中止。"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME 屏幕放大镜"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "放大屏幕的某一部分"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "GNOME 屏幕键盘"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "使用屏幕键盘"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orca 屏幕读取器"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "将屏幕上的信息展示为语音或盲文"
 
-#~ msgid "User %s doesn't exist"
-#~ msgstr "用户 %s 不存在。"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "组 %s 不存在。"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "无法初始化登录系统"
 
-#~ msgid "Unable to authenticate user"
-#~ msgstr "无法验证用户"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "无法建立信任证书"
 
-#~ msgid "Max Item Count"
-#~ msgstr "最大项目数"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "在清单中保存项目数量的最大值"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "当选择器是空的时候的横幅信息文字"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "用户选择器为空时显示在登录窗口的文本横幅信息，用来替代 "
-#~ "banner_message_text。"
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "用于欢迎屏幕徽标的图标名"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr "设置用于欢迎屏幕徽标的主题图标名"
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "在登录窗口中不显示已知用户"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr "设置为真将禁止在登录窗口中显示已知用户"
 
-#~ msgid "Recently selected languages"
-#~ msgstr "最近选过的语言"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "设置在登录窗口默认显示的语言清单"
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "使用 Compiz 作为窗口管理器"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "设置为“真(true)”以使用 compiz 作为窗口管理器。"
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "启用屏幕键盘"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "设置为真以启用屏幕键盘。"
 
-#~ msgid "Enable screen reader"
-#~ msgstr "启用屏幕读取器"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "设置为真以启用屏幕读取器。"
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "启用屏幕放大镜"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "设置为真以启用屏幕放大镜。"
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "启用辅助功能键盘插件"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr "设置为真以启用管理辅助功能键盘设置的插件。"
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr "为真(true)时表示背景设置管理器插件已启用。"
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "设置为真以启用背景设置管理器插件。"
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr "为真(true)表示多媒体键设置管理器插件已启用。"
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr "设置为真以启用多媒体键管理器插件。"
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "为真(true)表示声音设置管理器插件已启用。"
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "设置为真以启用声音设置管理器插件。"
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "为真(true)表示 XRandR 设置管理器插件已启用。"
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "设置为真以启用 XRandR 设置管理器插件。"
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr "为真(true)时表示 xsettings 设置管理器插件已启用。"
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr "设置为真以启用 xsettings 设置管理器插件。"
 
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr "系统无法找到可切换至的登录屏幕。"
 
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "从主机 %s 发出的 XDMCP 查询被拒绝"
 
-#~ msgid "Could not extract authlist from packet"
-#~ msgstr "无法从包中解出认证表"
 
-#~ msgid "Error in checksum"
-#~ msgstr "校验值错误"
 
-#~ msgid "Bad address"
-#~ msgstr "错误的地址"
 
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s：无法读取显示地址"
 
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s：无法读取显示端口编号"
 
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s：无法从包中分解出认证表"
 
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s：校验和错误"
 
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s：从禁止的主机获得 REQUEST %s"
 
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s：无法读取显示编号"
 
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s：无法读取连接类型"
 
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s：无法读取客户端地址"
 
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s：无法读取认证数据"
 
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s：无法读取认证表"
 
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s：无法读取制造商 ID"
 
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s：%s 校验和校验失败"
 
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s：从禁止的主机 %s 获得 Manage"
 
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s：无法读取会话 ID"
 
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s：无法读取显示级别"
 
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s：无法读取地址"
 
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s：从禁止的主机获得 KEEPALIVE %s"
 
-#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-#~ msgstr "GdmXdmcpDisplayFactory：无法读取 XDMCP 头信息！"
 
-#~ msgid "Could not get server hostname: %s!"
-#~ msgstr "找不到服务器主机名：%s！"
 
-#~ msgid "Activation of this plugin"
-#~ msgstr "激活此插件"
 
-#~ msgid "Whether this plugin would be activated or not"
-#~ msgstr "是否激活此插件"
 
-#~ msgid "AT-SPI Registry Wrapper"
-#~ msgstr "AT-SPI 注册表包装器"
 
-#~ msgid "Power Manager"
-#~ msgstr "电源管理器"
 
-#~ msgid "GNOME Session Acceleration Checker"
-#~ msgstr "GNOME 会话加速检查器"
 
-#~ msgid "GNOME Settings Daemon"
-#~ msgstr "GNOME 设置守护程序"
 
-#~ msgid "Metacity"
-#~ msgstr "Metacity"
 
-#~ msgid "PolicyKit Authentication Agent"
-#~ msgstr "PolicyKit 的认证代理"
 
-#~ msgid "Log into session with username and unified"
-#~ msgstr "通过用户名和统一认证登录会话"
 
-#~ msgid "Languages"
-#~ msgstr "语言"
 
-#~ msgid "_Languages:"
-#~ msgstr "语言(_L)："
 
-#~ msgid "_Language:"
-#~ msgstr "语言(_L)："
 
-#~ msgctxt "language"
-#~ msgid "Other…"
-#~ msgstr "其它..."
 
-#~ msgid "Choose a language from the full list of available languages."
-#~ msgstr "从可用语言的完全清单中选择某语言。"
 
-#~ msgid "Language"
-#~ msgstr "语言"
 
-#~ msgid "Unspecified"
-#~ msgstr "未指定"
 
-#~ msgid "Shutdown Options…"
-#~ msgstr "关闭选项..."
 
-#~ msgid "Keyboard layouts"
-#~ msgstr "键盘布局"
 
-#~ msgid "_Keyboard:"
-#~ msgstr "键盘(_K)："
 
-#~ msgctxt "keyboard"
-#~ msgid "Other…"
-#~ msgstr "其它..."
 
-#~ msgid "Choose a keyboard layout from the full list of available layouts."
-#~ msgstr "从可用布局的完全清单中选择某键盘布局"
 
-#~ msgid "Keyboard"
-#~ msgstr "键盘"
 
-#~ msgid "Recently selected keyboard layouts"
-#~ msgstr "最近选过的键盘布局"
 
-#~ msgid ""
-#~ "Set to a list of keyboard layouts to be shown by default in the login "
-#~ "window."
-#~ msgstr "设置在登录窗口默认显示的键盘布局清单"
 
-#~ msgid ""
-#~ "The User Switch Applet is free software; you can redistribute it and/or "
-#~ "modify it under the terms of the GNU General Public License as published "
-#~ "by the Free Software Foundation; either version 2 of the License, or (at "
-#~ "your option) any later version."
-#~ msgstr ""
-#~ "用户切换小工具是自由软件；你可以遵照自由软件基金会出版的GNU通用公共许可证"
-#~ "条款来修改和重新发布这一程序。你可以使用许可证的第二版，或者（根据你的选"
-#~ "择）用任何更新的版本。"
 
-#~ msgid ""
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details."
-#~ msgstr ""
-#~ "发布这一程序是希望他有用，但没有任何担保。甚至没有任何适合特定目的的隐含担"
-#~ "保。更多详情，请参阅GNU通用公共许可证。"
 
-#~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program; if not, write to the Free Software Foundation, Inc., "
-#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-#~ msgstr ""
-#~ "你应该和这个程序一起收到了GNU通用公共许可证的副本，如果没有，写信给Free "
-#~ "Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
-#~ "02110-1301, USA"
 
-#~ msgid "A menu to quickly switch between users."
-#~ msgstr "一个用于在用户间快速切换的菜单"
 
-#~ msgid "translator-credits"
-#~ msgstr ""
-#~ "Wang Li <charles@linux.net.cn>, 2002\n"
-#~ "Funda Wang <fundawang@linux.net.cn>, 2003, 2004\n"
-#~ "甘露(Gan Lu) <rhythm.gan@gmail.com>, 2008, 2009\n"
-#~ "Tao Wei <weitao1979@gmail.com>, 2009\n"
-#~ "Aron Xu <happyaron.xu@gmail.com>, 2010\n"
-#~ "Fan Qijiang <fqj1994@linux.com>, 2010"
 
-#~ msgid "Can't lock screen: %s"
-#~ msgstr "无法锁定屏幕：%s"
 
-#~ msgid "Can't temporarily set screensaver to blank screen: %s"
-#~ msgstr "无法临时设置屏保为空白屏幕：%s"
 
-#~ msgid "Can't log out: %s"
-#~ msgstr "无法注销：%s"
 
-#~ msgid "Available"
-#~ msgstr "可用"
 
-#~ msgid "Invisible"
-#~ msgstr "隐身"
 
-#~ msgid "Busy"
-#~ msgstr "忙碌"
 
-#~ msgid "Away"
-#~ msgstr "离开"
 
-#~ msgid "Account Information"
-#~ msgstr "账户信息"
 
-#~ msgid "System Preferences"
-#~ msgstr "系统首选项"
 
-#~ msgid "Lock Screen"
-#~ msgstr "锁定屏幕"
 
-#~ msgid "Switch User"
-#~ msgstr "切换用户"
 
-#~ msgid "Quit…"
-#~ msgstr "退出..."
 
-#~ msgid "User Switch Applet"
-#~ msgstr "用户切换小程序"
 
-#~ msgid "Change account settings and status"
-#~ msgstr "改变账户设置和状态"
 
-#~ msgid "A menu to quickly switch between users"
-#~ msgstr "一个可在用户间快速切换的菜单"
 
-#~ msgid "User Switcher"
-#~ msgstr "用户切换器"
 
-#~ msgid "User Switcher Applet Factory"
-#~ msgstr "用户切换小程序工厂"
 
-#~ msgid "Edit Personal _Information"
-#~ msgstr "编辑个人信息(_I)"
 
-#~ msgid "_About"
-#~ msgstr "关于(_A)"
 
-#~ msgid "_Edit Users and Groups"
-#~ msgstr "编辑用户和组(_E)"
 
-#~ msgid "Unknown"
-#~ msgstr "未知"
 
-#~ msgid "Manager"
-#~ msgstr "管理器"
 
-#~ msgid "The user manager object this user is controlled by."
-#~ msgstr "控制此用户的用户管理器对象"
 
-#~ msgid "Couldn't set groupid to 0"
-#~ msgstr "无法将组 ID 设置为 0"
 
-#~ msgid "Quit..."
-#~ msgstr "退出..."
 
-#~ msgid "%x"
-#~ msgstr "%x"
 
-#~ msgid "Enable debugging code"
-#~ msgstr "启用调试代码"
 
-#~ msgid "id"
-#~ msgstr "id"
 
-#~ msgid "worker exited with status %d"
-#~ msgstr "工作程序以状态 %d 退出"
 
-#~ msgid "Unable establish credentials"
-#~ msgstr "无法建立信任连接"
 
-#~ msgid "%a %b %e"
-#~ msgstr "%b%e日 星期%a"
 
-#~ msgid "%1$s, %2$s"
-#~ msgstr "%1$s, %2$s"
 
-#~ msgid ""
-#~ "You are not allowed to restart the computer because multiple users are "
-#~ "logged in"
-#~ msgstr "因为多个用户已登录，系统不允许你重启动计算机"
 
-#~ msgid "Failed to stop computer"
-#~ msgstr "关闭计算机失败"
 
-#~ msgid ""
-#~ "You are not allowed to stop the computer because multiple users are "
-#~ "logged in"
-#~ msgstr "因为多个用户已登录，系统不允许你关闭计算机"
 
-#~ msgid "page 5"
-#~ msgstr "第5页"
 
-#~ msgid "Enable debugging"
-#~ msgstr "启用调试"
 
-#~ msgid "Enable debugging mode for the greeter."
-#~ msgstr "为欢迎界面启用调试模式"
+

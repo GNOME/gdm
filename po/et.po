@@ -14,9 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GDM MASTER\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-03-15 05:53+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-03-15 01:42+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
@@ -27,22 +26,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom pole märkseade"
 
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Praegust seanssi pole võimalik tuvastada."
 
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Kasutajal pole võimalik seansse vahetada"
-
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Praegust olekut pole võimalik tuvastada."
 
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -51,14 +50,17 @@ msgstr ""
 "Süsteem ei suuda otsustada, kas hüpata olemasolevale sisselogimiskuvale või "
 "käivitada uus."
 
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Süsteem ei suuda käivitada uut sisselogimiskuva."
 
+#: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "kasutajat \"%s\" pole võimalik süsteemist leida"
 
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -70,168 +72,219 @@ msgstr ""
 "jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
 "Probleemide kõrvaldamise järel palun taaskäivita GDM."
 
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Ühtegi kuva pole saadaval"
 
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Seanss pole saadaval"
 
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Seda saab kutsuda ainult enne kasutaja sisselogimist"
 
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Väljakutsuja pole GDM"
 
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Pole võimalik avada privaatset sidekanalit"
 
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Server proovis luua uut protsessi kasutaja %s õigustes, kuid sellist "
 "kasutajat pole olemas"
 
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Grupi ID'd (groupid) pole võimalik %d-ks seada"
 
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "tõrge initgroups() täitmisel %s jaoks"
 
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kasutaja ID'd (userid) pole võimalik %d-ks seada"
 
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kuva %s jaoks pole võimalik logifaili avada!"
 
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Viga signaali %s sättimisel signaaliks %s"
 
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Serveri prioriteeti pole võimalik %d-ks seada: %s"
 
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tühi serverikäsk kuva %s jaoks"
 
+#: ../daemon/gdm-session-auditor.c:90
 msgid "Username"
 msgstr "Kasutajanimi"
 
+#: ../daemon/gdm-session-auditor.c:91
 msgid "The username"
 msgstr "Kasutajanimi"
 
+#: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
 msgstr "Hostinimi"
 
+#: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
 msgstr "Hostinimi"
 
+#: ../daemon/gdm-session-auditor.c:101
 msgid "Display Device"
 msgstr "Kuvaseade"
 
+#: ../daemon/gdm-session-auditor.c:102
 msgid "The display device"
 msgstr "Kuvaseade"
 
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Autentimise abiprotsessi ei suudetud luua"
 
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Sinu konto oli ajaliselt piiratud. Piirang on nüüdseks ületatud."
 
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Kahjuks see ei toiminud. Palun proovi uuesti."
 
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Kasutajanimi:"
 
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Sinu parool on aegunud. Palun muuda see nüüd ära."
 
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "kasutajakonto pole saadaval"
 
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Kasutajat pole võimalik vahetada"
 
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME'i kuvahalduri Waylandi seansi käivitaja"
 
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "Soklit pole võimalik luua!"
 
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Programmi käivitamine /etc/gdm/Xsession skripti kaudu"
 
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "TCP pordi kuulamine"
 
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME'i kuvahalduri X-i seansi käivitaja"
 
+#: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "PID-faili %s pole võimalik kirjutada kirjutada: arvatavasti on kettaruum "
 "otsas: %s"
 
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Ühekordse käivitamise markeri kataloogi %s pole võimalik luua: %s"
 
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir'i %s loomine nurjus: %s"
 
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM-i kasutajat '%s' pole võimalik leida. Katkestatakse!"
 
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM-i kasutaja ei tohi olla juurkasutaja. Katkestatakse!"
 
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM-i gruppi '%s' pole võimalik leida. Katkestatakse!"
 
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM-i grupp ei tohi olla juurkasutaja grupp. Katkestatakse!"
 
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Kõikide hoiatuste fataalseks muutmine"
 
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Lõpetamine pärast kindlat ajavahemikku (silumise jaoks)"
 
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "GDM-i versiooni printimine"
 
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "GNOME kuvahaldur"
 
 #. make sure the pid file doesn't get wiped
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Ainult juurkasutaja tohib GDM-i käivitada"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME'i kuvahalduri sessioonitööline"
 
+#: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
+#: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Akna- ja komposiithaldus"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Kas sõrmejäljelugejaga on võimalik sisse logida"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -239,9 +292,11 @@ msgstr ""
 "Sisselogimiskuva võib lubada kasutajatel, kes on sisestanud oma sõrmejäljed, "
 "nende alusel sisse logida."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Kas smartcardi lugejaga on võimalik sisse logida"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -249,9 +304,11 @@ msgstr ""
 "Sisselogimiskuva võib lubada kasutajatel, kellel on smartcard kaart, selle "
 "abil sisse logida."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
 msgstr "Kas parooliga on võimalik sisse logida"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -260,9 +317,11 @@ msgstr ""
 "võimalik, selle asemel tuleb sisse logida kiipkaardiga (ID-kaart) või "
 "sõrmejäljega."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
 msgstr "Kasutajaloendi kohal asetseva väikese pildi asukoht"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -271,6 +330,7 @@ msgstr ""
 "Sisselogimiskuva võib kuvada väikest pilti kasutajate loendi kohal, et "
 "võimaldada halduritel ja distributsioonidel kuvada kaubamärgi logo."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
@@ -279,9 +339,11 @@ msgstr ""
 "Varusisselogimiskuva võib kuvada väikest pilti kasutajate loendi kohal, et "
 "võimaldada halduritel ja distributsioonidel kuvada kaubamärgi logo."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
 msgstr "Kasutajaloendit ei näidata"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -289,29 +351,37 @@ msgstr ""
 "Sisselogimiskuva näitab tavaliselt saadavalolevaid kasutajaid, kellena on "
 "võimalik sisse logida. Selle sättega muudetakse kasutajate loendi kuvamist."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
 msgstr "Bännerisõnumi näitamise lubamine"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
 msgstr "Kui märgitud, siis kuvatakse bännerisõnumit."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
 msgstr "Bännersõnumi tekst"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
 msgstr "Sisselogimisaknas kuvatav bännertekst."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
 msgstr "Taaskäivitamise nuppude näitamise keelamine"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Kui märgitud, siis on taaskäivitamise nuppude näitamine sisselogimisaknas "
 "keelatud."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
 msgstr "Mitu korda tohib autentimine nurjuda"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -319,277 +389,138 @@ msgstr ""
 "Mitu korda tohib kasutaja autentimine nurjuda, enne kui loobutakse ning "
 "naasetakse kasutaja valiku juurde."
 
+#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Süsteemi valimine"
 
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: XDMCP puhvrit pole võimalik luua!"
 
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: XDMCP päise lugemine pole võimalik!"
 
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Vale XDMCP versioon!"
 
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Aadressi pole võimalik analüüsida"
 
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Lühiajalist kuva pole võimalik luua:"
 
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Seanssi pole võimalik aktiveerida:"
 
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Ainult VERSION käsk on toetatud"
 
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "KÄSK"
 
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Eirati — säilitatakse ühilduvuse huvides"
 
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Väljastab silumisteavet"
 
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Selle rakenduse versioon"
 
 #. Option parsing
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- uus GDM sisselogimisaken"
 
+#: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "Ekraanipilt on tehtud"
 
 #. Option parsing
+#: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Ekraani pildistamine"
 
-#~ msgid "No session available yet"
-#~ msgstr "Ühtegi seannsi pole veel saadaval"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "Kasutaja %s UID-d ei leitud"
 
-#~ msgid "no sessions available"
-#~ msgstr "seansse pole saadaval"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "Uuesti autentimiseks pole %s jaoks saadaval ühtegi seanssi"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "Kasutaja %s jaoks ei leitud seanssi"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "Kasutaja %s jaoks ei leitud sobivat seanssi"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "Kasutajal pole seanssi"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: tõrge ühendumisel vanemkuvaga '%s'"
 
-#~ msgid "User not logged in"
-#~ msgstr "Kasutaja pole sisselogitud"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Praegu saab ainult üks klient korraga ühenduda"
 
-#~ msgid "Display ID"
-#~ msgstr "Kuva ID"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "GNOME'i kuvahalduri ori"
 
-#~ msgid "Login Window"
-#~ msgstr "Sisselogimisaken"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "Uut kuva pole võimalik luua"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "viga autentimissüsteemiga suhtluse alustamisel - %s"
 
-#~ msgid "general failure"
-#~ msgstr "üldine tõrge"
 
-#~ msgid "out of memory"
-#~ msgstr "mälu sai otsa"
 
-#~ msgid "application programmer error"
-#~ msgstr "rakenduse programmeerija viga"
 
-#~ msgid "unknown error"
-#~ msgstr "tundmatu viga"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "viga autentimissüsteemi teavitamisel eelistatud kasutajanime viibast: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "viga autentimissüsteemile kasutaja hostinime kohta teavituse saatamisel: "
-#~ "%s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "viga autentimissüsteemile kasutaja konsooli kohta teavituse saatamisel: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "viga autentimissüsteemile kuvatava stringi kohta teavituse saatamisel: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "viga autentimissüsteemile xauth tõendite kohta teavituse saatamisel: %s"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "AuthDir'i %s loomine nurjus: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Sõrmejäljega autentimine"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Seanssi sisselogimine sõrmejäljega"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Parooliga autentimine"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "Seanssi sisselogimine kasutajanime ja parooliga"
 
-#~ msgid "Log In"
-#~ msgstr "Logi sisse"
 
-#~ msgid "Slot ID"
-#~ msgstr "Pesa ID"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "Pesa, milles kaart asub"
 
-#~ msgid "Slot Series"
-#~ msgstr "Pesa seeriakood"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "pesa jaoks kaardi identifitseerija"
 
-#~ msgid "name"
-#~ msgstr "nimi"
 
-#~ msgid "Module"
-#~ msgstr "Moodul"
 
-#~ msgid "smartcard driver"
-#~ msgstr "smartcard draiver"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Smartcard autentimine"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Seanssi sisselogimine smartcardiga"
 
-#~ msgid "Module Path"
-#~ msgstr "Mooduli asukoht"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "Smartcardi PKCS #11 draiveri asukoht"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "saadi viga või sündmuste allikas hangus"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "NSS turvasüsteemi pole võimalik lähtestada"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "sobivat smartcardi draiverit ei leitud"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "smartcardi draiverit '%s' polnud võimalik laadida"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "sisenevaid kaardisündmuseid ei suudetud vaadelda - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "esines ootamatu viga smartcardi sündmuste ootamisel"
 
-#~ msgid "Authentication"
-#~ msgstr "Autentimine"
 
-#~ msgid "Log into session"
-#~ msgstr "Seanssi sisselogimine"
 
-#~ msgid "Value"
-#~ msgstr "Väärtus"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "aega lõpetamiseni protsentides"
 
-#~ msgid "Inactive Text"
-#~ msgstr "Passiivne tekst"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "Sildil kasutatav tekst, kui kasutaja pole ühtegi kirjet valinud"
 
-#~ msgid "Active Text"
-#~ msgstr "Aktiivne tekst"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "Sildil kasutatav tekst, kui kasutaja on kirje valinud"
 
-#~ msgid "List Visible"
-#~ msgstr "Nimekiri nähtaval"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Kas kasutajate valimise nimekiri on nähtaval või mitte"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a, %e. %b, %H:%M:%S"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a, %e. %b, %H:%M"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %H:%M:%S"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %H:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "Automaatne sisselogimine…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "Tühistamine…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "Vali keel ja klõpsa sisselogimise nupul"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Kohandatud"
 
-#~ msgid "Custom session"
-#~ msgstr "Kohandatud seanss"
 
-#~ msgid "Computer Name"
-#~ msgstr "Arvuti nimi"
 
-#~ msgid "Version"
-#~ msgstr "Versioon"
 
-#~ msgid "Cancel"
-#~ msgstr "Tühista"
 
-#~ msgid "Unlock"
-#~ msgstr "Võta lukust lahti"
 
-#~ msgid "Login"
-#~ msgstr "Logi sisse"
 
-#~ msgid "Suspend"
-#~ msgstr "Alusta uinakut"

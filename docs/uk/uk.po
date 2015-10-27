@@ -233,16 +233,8 @@ msgstr ""
 msgid "GDM can be asked to manage a display a number of ways. Local displays are always managed when GDM starts and will be restarted when a user's session is finished. Displays can be requested via XDMCP, flexible displays can be requested by running the <command>gdmflexiserver</command> command. Displays that are started on request are not restarted on session exit. GDM also provides the <command>gdmdynamic</command> command to allow easier management of displays on a multi-user server. These display types are discussed further in the next section."
 msgstr ""
 
-#: ../C/gdm.xml:225(para)
-msgid "When the GDM daemon is asked to manage a display, it will fork an X server process, then run the <filename>Init</filename> script as the root user, and start the login GUI dialog as a slave process on the display. GDM can be configured to use either <command>gdmgreeter</command> (the default) or <command>gdmlogin</command> as the GUI dialog program. The <command>gdmlogin</command> program supports accessibility while the <command>gdmgreeter</command> program supports greater themeability. The GUI dialog is run as the unpriviledged \"gdm\" user/group which is described in the \"Security\" section below. The GUI dialog communicates with the daemon via a sockets protocol and via standard input/output. The slave, for example passes the username and password information to the GDM daemon via standard input/output so the daemon can handle the actual authentication."
-msgstr ""
-
 #: ../C/gdm.xml:242(para)
 msgid "The login GUI dialog screen allows the user to select which session they wish to start and which language they wish to use. Sessions are defined by files that end in the .desktop extension and more information about these files can be found in the \"Configuration\" section. The user enters their name and password and if these successfully authenticate, GDM will start the requested session for the user. It is possible to configure GDM to avoid the authentication process by turning on the Automatic or Timed Login features in the GDM configuration. The login GUI can also be configured to provide additional features to the user, such as the Face Browser; the ability to halt, restart, or suspend the system; and/or edit the login configuration (after entering the root password)."
-msgstr ""
-
-#: ../C/gdm.xml:257(para)
-msgid "GDM, by default, will use Pluggable Authentication Modules (PAM) for authentication, but can also support regular crypt and shadow passwords on legacy systems. After authenticating a user, the daemon runs the <filename>PostLogin</filename> script as root, and forks a slave process to start the requested session. This slave process runs the <filename>PreSession</filename> script as root, sets up the users environment, and starts the requested session. GDM keeps track of the user's default session and language in the user's <filename>~/.dmrc</filename> and will use these defaults if the user did not pick a session or language in the login GUI. On Solaris, GDM (since version 2.8.0.3) uses the SDTLOGIN interface after user authentication to tell the X server to be restarted as the user instead of as root for added security. When the users session exits, the GDM daemon will run the <filename>PostSession</filename> script as root."
 msgstr ""
 
 #: ../C/gdm.xml:276(title)
@@ -484,10 +476,6 @@ msgstr "Користувач GDM"
 #: ../C/gdm.xml:779(para)
 msgid "For security reasons a dedicated user and group id are required for proper operation! The need to be able to write Xauth files is why user \"nobody\" is not appropriate for gdm."
 msgstr ""
-
-#: ../C/gdm.xml:785(para)
-msgid "The GDM daemon normally runs as root, as does the slave. However GDM should also have a dedicated user id and a group id which it uses for its graphical interfaces such as <command>gdmgreeter</command> and <command>gdmlogin</command>. These are configured via the <filename>User</filename> and <filename>Group</filename> configuration options in the GDM configuration files. The user and group should be created before running \"make install\". By default GDM assumes the user and the group are called \"gdm\"."
-msgstr "Зазвичай GDM сервер запускається від імені адміністратора (root). Але GDM також має призначені ідентифікатори користувача (uid) та групи (gid), якими він користується для запуску графічного інтерфейсу, тобто <command>gdmgreeter</command> та <command>gdmlogin</command>. Вона налаштовуються у параметрах <filename>User</filename> та <filename>Group</filename> у файлі конфігурації GDM. Користувач та група мають існувати перед запуском \"make install\". Зазвичай користувач та група  GDM називається \"gdm\". "
 
 #: ../C/gdm.xml:796(para)
 msgid "This userid is used to run the GDM GUI programs required for login. All functionality that requires root authority is done by the GDM daemon process. This design ensures that if the GUI programs are somehow exploited, only the dedicated user privileges are available."
@@ -735,10 +723,6 @@ msgstr "Після цього запускається основний сцен
 #: ../C/gdm.xml:1256(para)
 msgid "This script should really load the users profile and generally do all the voodoo that is needed to launch a session. Since many systems reset the language selections done by GDM, GDM will also set the <filename>$GDM_LANG</filename> variable to the selected language. You can use this to reset the language environmental variables after you run the users profile. If the user elected to use the system language, then <filename>$GDM_LANG</filename> is not set."
 msgstr "Цей сценарій повинен зчитати профіль користувача та виконати всю роботу, необхідну для встановлення сеансу. Через те, що у деяких системах скидається вибране користувачем у GDM значення мови, GDM також встановлює змінну оточення <filename>$GDM_LANG</filename> у вибране значення мови. Можна її використовувати для встановлення змінних оточення після запуску профілю, які відповідають за вибір мови. Якщо користувач вибрав системну мову, тоді <filename>$GDM_LANG</filename> не встановлюється."
-
-#: ../C/gdm.xml:1266(para)
-msgid "When the user terminates his session, the <filename>PostSession</filename> script will be run. Again operation is similar to <filename>Init</filename>, <filename>PostLogin</filename> and <filename>PreSession</filename>. Again the script will be run with root privileges, the slave daemon will block and the <filename>$USER</filename> environment variable will contain the name of the user who just logged out and <filename>$DISPLAY</filename> will be set to the display the user used, however note that the X server for this display may already be dead and so you shouldn't try to access it. Also <filename>$X_SERVERS</filename> environmental variable is set and this points to a fake generated X servers file for use with the sessreg accounting application."
-msgstr "Коли користувач завершує сеанс, знову виконується сценарій з <filename>PostSession</filename>. Всі дії такі самі як і у <filename>Init</filename>, <filename>PostLogin</filename> та <filename>PreSession</filename>. Знову ж таки сценарій запускається з правами адміністратора (root), допоміжний процес сервера блокується. Змінна оточення <filename>$USER</filename> містить ім'я користувача, який завершує сеанс, змінна оточення <filename>$DISPLAY</filename> буде встановлена у значення дисплею, але зверніть увагу, що X-сервер для цього дисплею може бути вже завершений, тому не слід намагатись отримати до нього доступ. Тут встановлена змінна оточення <filename>$X_SERVERS</filename>, вона має значення фальшивого згенерованого файлу x-сервера для використання з програмою обліку sessreg."
 
 #: ../C/gdm.xml:1281(para)
 msgid "Note that the <filename>PostSession</filename> script will be run even when the display fails to respond due to an I/O error or similar. Thus, there is no guarantee that X applications will work during script execution."
@@ -2933,10 +2917,6 @@ msgstr "handled"
 msgid "handled=true"
 msgstr "handled=true"
 
-#: ../C/gdm.xml:3723(para)
-msgid "Indicates that GDM should run the login window on this server and allow a user to log in. If set to false, then GDM will just run this server and wait for it to terminate. This can be useful to run an X terminal using GDM. When this is done you should normally also add <filename>-terminate</filename> to the command line of the server to make the server terminate after each session. Otherwise the control of the slave will never come back to GDM and, for example, soft restarts won't work. This is because GDM assumes there is a login in progress for the entire time this server is active."
-msgstr "Означає, що GDM має виводити вікно запрошення до входу на цьому сервері. Якщо значення false, тоді GDM просто запускає цей сервер та очікує завершення. Це корисно для запуску X-терміналів через GDM. Також звичайно можна додати до командного рядка сервера <filename>-terminate</filename>, щоб сервер завершувався після завершення кожного сеансу. У іншому випадку керування над породженим процесом ніколи не повернеться до GDM та, наприклад, не працюватиме м'який перезапуск, бо GDM вважатиме, що сеанс триває весь час активності сервера."
-
 #: ../C/gdm.xml:3739(term)
 msgid "chooser"
 msgstr "chooser"
@@ -3085,10 +3065,6 @@ msgstr "Протокол роботи з FIFO"
 #: ../C/gdm.xml:3967(para)
 msgid "GDM also provides a FIFO called <filename>.gdmfifo</filename> in the <filename>ServAuthDir</filename> directory (usually <filename>&lt;var&gt;/gdm/.gdmfifo</filename>). You must be root to use this protocol, and it is mostly used for internal GDM chatter. It is a very simple protocol where you just echo a command on a single line to this file. It can be used to tell GDM things such as restart, suspend the computer, or restart all X servers next time it has a chance (which would be useful from an X configuration application)."
 msgstr "GDM також має канал FIFO з назвою <filename>.gdmfifo</filename> у каталозі <filename>ServAuthDir</filename> (зазвичай <filename>&lt;var&gt;/gdm/.gdmfifo</filename>). Користуватись цим протоколом може лише root, і він здебільшого використовується для внутрішнього обміну GDM. Це дуже простий протокол. Ви надсилаєте команди через echo по одній команді на рядок. Він може використовуватись, щоб змусити GDM виконати перезавантаження, призупинення комп'ютера чи перезапустити усі X-сервери одразу коли буде можливість (це корисно для програми налаштовування X-сервера)."
-
-#: ../C/gdm.xml:3978(para)
-msgid "Full and up to date documentation of the commands and their use is contained in the GDM source tree in the file <filename>daemon/gdm.h</filename>. Look for the defines starting with <filename>GDM_SOP_</filename>. The commands which require the pid of the slave as an argument are the ones that are really used for internal communication of the slave with the master and should not be used."
-msgstr "Повна та оновлена документація з команд та їх використання міститься у програмному коді GDM у файлі <filename>daemon/gdm.h</filename>. Шукайте визначення, що починаються  з <filename>GDM_SOP_</filename>. Команди, яким у аргументі слід вказувати pid дочірнього процесу, - це команди які справді використовуються для внутрішнього зв'язку дочірнього процесу з головним процесом. Такі команди не слід використовувати."
 
 #: ../C/gdm.xml:3990(title)
 msgid "Socket Protocol"
@@ -3885,83 +3861,9 @@ msgstr ""
 msgid "SERVER_BUSY"
 msgstr "SERVER_BUSY"
 
-#: ../C/gdm.xml:4411(screen)
-#, fuzzy, no-wrap
-msgid ""
-"\n"
-"SERVER_BUSY:  Returns true if half or more of the daemon's sockets\n"
-"              are busy, false otherwise.  Used by slave programs\n"
-"              which want to ensure they do not overwhelm the \n"
-"              sever.\n"
-"Supported since: 2.13.0.8\n"
-"Arguments: None\n"
-"Answers:\n"
-"  OK &lt;value&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-msgstr ""
-"\n"
-"GREETERPIDS: Список усіх ідентифікаторів процесів програм привітання.\n"
-"             З його допомогою можна надіслати сигнал HUP усім процесам\n"
-"             для повторного зчитування конфігурації. Це може робити лише root.\n"
-"Підтримується з: 2.3.90.2\n"
-"Аргументи:  Немає\n"
-"Відповідь:\n"
-"  OK &lt;номер процесу&gt;;&lt;номер процесу&gt;;...\n"
-"  ERROR &lt;код помилки&gt; &lt;опис помилки англійською&gt;\n"
-"     0 = Не реалізовано\n"
-"     200 = Надто багато повідомлень\n"
-"     999 = Невідома помилка\n"
-"      "
-
 #: ../C/gdm.xml:4428(title)
 msgid "SET_LOGOUT_ACTION"
 msgstr "SET_LOGOUT_ACTION"
-
-#: ../C/gdm.xml:4429(screen)
-#, fuzzy, no-wrap
-msgid ""
-"\n"
-"SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after\n"
-"                   slave process exits.  Only supported on\n"
-"                   connections that passed AUTH_LOCAL.\n"
-"Supported since: 2.5.90.0\n"
-"Arguments: &lt;action&gt;\n"
-"  NONE           Set exit action to 'none'\n"
-"  HALT           Set exit action to 'halt'\n"
-"  REBOOT         Set exit action to 'reboot'\n"
-"  SUSPEND        Set exit action to 'suspend'\n"
-"Answers:\n"
-"  OK\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     7 = Unknown logout action, or not available\n"
-"     100 = Not authenticated\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-msgstr ""
-"\n"
-"SET_LOGOUT_ACTION:  Вказує службі вимкнути/перезапустити/призупинити\n"
-"                    комп'ютер після завершення підлеглого процесу. \n"
-"Підтримується лише для з'єднань, які пройшли AUTH_LOCAL.\n"
-"Підтримується з: 2.5.90.0\n"
-"Аргументи:  &lt;дія&gt;\n"
-"  NONE           Встановити дію при виході у 'none'\n"
-"  HALT           Встановити дію при виході у 'halt'\n"
-"  REBOOT         Встановити дію при виході у 'reboot'\n"
-"  SUSPEND        Встановити дію при виході у 'suspend'\n"
-"\n"
-"Відповідь:\n"
-"  OK\n"
-"  ERROR &lt;код помилки&gt; &lt;опис помилки англійською&gt;\n"
-"     0 = Не реалізовано\n"
-"     7 = Невідома дія при виході, або дія недоступна\n"
-"     100 = Немає автентифікації\n"
-"     200 = Надто багато повідомлень\n"
-"     999 = Невідома помилка\n"
-"      "
 
 #: ../C/gdm.xml:4451(title)
 msgid "SET_SAFE_LOGOUT_ACTION"

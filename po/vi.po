@@ -9,9 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-03-14 17:57+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-03-15 07:34+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <gnome-vi-list@gnome.org>\n"
@@ -21,28 +20,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom không phải là một thiết bị ký tự"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Không thể nhận ra phiên bản đang chạy."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Người dùng không thể chuyển phiên làm việc."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Không thể nhận ra trạm này."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -51,7 +44,7 @@ msgstr ""
 "Hệ thống không thể quyết định có chuyển sang màn hình đăng nhập sẵn có hoặc "
 "mở màn hình đăng nhập mới."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Hệ thống không thể mở màn hình đăng nhập mới."
@@ -61,7 +54,7 @@ msgstr "Hệ thống không thể mở màn hình đăng nhập mới."
 msgid "could not find user \"%s\" on system"
 msgstr "không tìm thấy người dùng \"%s\" trên hệ thống"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -73,65 +66,65 @@ msgstr ""
 "của hệ thống) để chẩn đoán lỗi. Trong khi đợi, bộ trình bày này sẽ bị tắt. "
 "Hãy khởi động lại GDM khi vấn đề đã được tháo gỡ."
 
-#: ../daemon/gdm-manager.c:1090
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Không có bộ hiển thị nào"
 
-#: ../daemon/gdm-manager.c:1139 ../daemon/gdm-manager.c:1395
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Không có phiên làm việc nào"
 
-#: ../daemon/gdm-manager.c:1150
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Chỉ có thể được gọi trước khi đăng nhập"
 
-#: ../daemon/gdm-manager.c:1160
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Bên gọi không phải GDM"
 
-#: ../daemon/gdm-manager.c:1170
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Không thể mở kênh truyền thông riêng"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Máy phục vụ nên được người dùng %s khởi tạo, nhưng người dùng đó không tồn "
 "tại"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Không thể đặt mã số nhóm thành %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () bị lỗi đối với %s"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Không thể đặt mã số người dùng thành %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Không thể mở tập tin ghi nhật ký cho bộ trình bày %s!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Gặp lỗi khi đặt %s thành %s"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Không thể đặt mức ưu tiên của máy phục vụ thành %d: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Lệnh máy phục vụ rỗng cho bộ trình bày %s."
@@ -160,37 +153,37 @@ msgstr "Thiết bị trình bày"
 msgid "The display device"
 msgstr "Thiết bị trình bày, v.d. màn hình"
 
-#: ../daemon/gdm-session.c:1181
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Không thể tạo tiến trình trợ giúp xác thực"
 
-#: ../daemon/gdm-session-worker.c:849
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr ""
 "Tài khoản của bạn có đưa ra thời gian giới hạn, cái mà hiện tại đã vượt quá. "
 
-#: ../daemon/gdm-session-worker.c:856
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Rất tiếc, nó không làm việc. Hãy thử lại lần nữa."
 
-#: ../daemon/gdm-session-worker.c:1209
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Tài khoản:"
 
-#: ../daemon/gdm-session-worker.c:1343
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Mật khẩu của bạn đã quá hạn dùng, xin hãy thay đổi nó ngay bây giờ."
 
-#: ../daemon/gdm-session-worker.c:1582 ../daemon/gdm-session-worker.c:1599
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "không có sẵn tài khoản người dùng"
 
-#: ../daemon/gdm-session-worker.c:1626
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Không thể chuyển đổi sang người dùng"
 
-#: ../daemon/gdm-wayland-session.c:377
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bày Wayland GNOME"
 
@@ -198,15 +191,15 @@ msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bà
 msgid "Could not create socket!"
 msgstr "Không thể tạo ổ cắm mạng!"
 
-#: ../daemon/gdm-x-session.c:677
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Chạy chương trình thông qua văn lệnh bao /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Lắng nghe trên ổ cắm TCP"
 
-#: ../daemon/gdm-x-session.c:689
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bày X GNOME"
 
@@ -215,52 +208,52 @@ msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bà
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Không thể ghi tập tin PID %s: gần như chắc chắn là do hết đĩa: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Không thể tạo thư mục đánh dấu chạy một lần %s: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Gặp lỗi khi tạo LogDir %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Không thể tìm thấy người dùng GDM \"%s\". Hủy bỏ!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Người dùng GDM không nên là root vì lý do an ninh. Hủy bỏ!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Không thể tìm thấy nhóm GDM \"%s\". Hủy bỏ!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Nhóm GDM không nên là root vì lý do an ninh nên hủy bỏ!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Xem mọi cảnh báo là nghiêm trọng"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Thoát sau một khoảng thời gian (để gỡ lỗi)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "In ra phiên bản GDM"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Trình quản lý bộ trình bày GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Chỉ có tài khoản siêu quản trị mới có quyền chạy GDM"
 
@@ -404,11 +397,11 @@ msgstr "XMDCP: Phiên bản XDMCP không đúng!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP: Không thể phân tích địa chỉ"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Không thể tạo trình bày chuyển tiếp: "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Không thể kích hoạt phiên làm việc: "
 
@@ -447,551 +440,174 @@ msgstr "Đã chụp ảnh màn hình"
 msgid "Take a picture of the screen"
 msgstr "Chụp ảnh màn hình"
 
-#~ msgid "No session available yet"
-#~ msgstr "Không có phiên làm việc sẵn sàng"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "Không thể tra UID của người dùng %s"
 
-#~ msgid "no sessions available"
-#~ msgstr "không có phiên làm việc sẵn sàng"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "Không có phiên làm việc sẵn sàng cho %s để xác thực lại"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "Không thể tìm phiên làm việc cho người dùng %s"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "Không thể tìm phiên làm việc phù hợp cho người dùng %s"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "Người dùng không sở hữu phiên làm việc"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: lỗi kết nối đến bộ trình bày mẹ \"%s\"."
 
-#~ msgid "User not logged in"
-#~ msgstr "Người dùng chưa đăng nhập"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Hiện thời chỉ một trình khách có thể kết nối"
 
-#~ msgid "Display ID"
-#~ msgstr "Mã số bộ trình bày"
 
-#~ msgid "ID"
-#~ msgstr "Mã số"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "Trình quản lý bộ trình bày GNOME phụ"
 
-#~ msgid "Login Window"
-#~ msgstr "Cửa sổ Đăng nhập"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "Không thể khởi động bộ hiển thị mới"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "gặp lỗi khi bắt đầu cuộc thoại với hệ thống xác thực — %s"
 
-#~ msgid "general failure"
-#~ msgstr "lỗi chung"
 
-#~ msgid "out of memory"
-#~ msgstr "tràn bộ nhớ"
 
-#~ msgid "application programmer error"
-#~ msgstr "lỗi lập trình viên ứng dụng"
 
-#~ msgid "unknown error"
-#~ msgstr "lỗi không rõ"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "gặp lỗi khi báo hệ thống xác thực về dấu nhắc tên người dùng đã muốn: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "gặp lỗi khi báo hệ thống xác thực về tên máy của người dùng: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "gặp lỗi khi báo hệ thống xác thực về bàn giao tiếp của người dùng: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "gặp lỗi khi báo hệ thống xác thực về chuỗi display: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "gặp lỗi khi báo hệ thống xác thực về thông tin xác thực xauth: %s"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "Lỗi tạo AuthDir %s: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Xác thực dấu vân tay"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Đăng nhập phiên làm việc bằng vân tay"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Xác thực mật khẩu"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "Đăng nhập phiên làm việc tên người dùng và mật khẩu"
 
-#~ msgid "Log In"
-#~ msgstr "Đăng nhập"
 
-#~ msgid "Slot ID"
-#~ msgstr "ID khe"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "Khe cắm thẻ"
 
-#~ msgid "Slot Series"
-#~ msgstr "Dãy số khe"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "Định danh thẻ theo khe"
 
-#~ msgid "name"
-#~ msgstr "tên"
 
-#~ msgid "Module"
-#~ msgstr "Môđun"
 
-#~ msgid "smartcard driver"
-#~ msgstr "trình điều khiển smartcard"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Xác thực Smartcard"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Đăng nhập phiên làm việc bằng smartcard"
 
-#~ msgid "Module Path"
-#~ msgstr "Đường dẫn môđun"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "đường dẫn đến trình điều khiển smartcard PKCS #11"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "nhận lỗi hoặc ngắt từ nguồn sự kiện"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "Không thể khởi động hệ thống an ninh NSS"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "không tìm thấy trình điều khiển smartcard phù hợp"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "không thể nạp trình điều khiển smartcard “%s”"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "không thể theo dõi sự kiện thẻ - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "gặp lỗi bất thường khi chờ sự kiện smartcard"
 
-#~ msgid "Authentication"
-#~ msgstr "Xác thực"
 
-#~ msgid "Log into session"
-#~ msgstr "Đăng nhập vào phiên làm việc"
 
-#~ msgid "Value"
-#~ msgstr "Giá trị"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "phần trăm thời gian hoàn tất"
 
-#~ msgid "Inactive Text"
-#~ msgstr "Chuỗi bị động"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "Chuỗi cần dùng trong nhãn nếu người dùng chưa chọn mục"
 
-#~ msgid "Active Text"
-#~ msgstr "Chuỗi hoạt động"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "Chuỗi cần dùng trong nhãn nếu người dùng đã chọn mục"
 
-#~ msgid "List Visible"
-#~ msgstr "Danh sách hiện rõ"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Có nên hiển thị danh sách lựa chọn hay không"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %l:%M:%S %p"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %l:%M %p"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %l:%M:%S %p"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %l:%M %p"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "Đang tự động đăng nhập…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "Đang thôi…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "Chọn ngôn ngữ, rồi bấm nút Đăng nhập"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Tự chọn"
 
-#~ msgid "Custom session"
-#~ msgstr "Phiên làm việc tự chọn"
 
-#~ msgid "Computer Name"
-#~ msgstr "Tên máy tính"
 
-#~ msgid "Version"
-#~ msgstr "Phiên bản"
 
-#~ msgid "Cancel"
-#~ msgstr "Thôi"
 
-#~ msgid "Unlock"
-#~ msgstr "Bỏ khóa"
 
-#~ msgid "Login"
-#~ msgstr "Đăng nhập"
 
-#~ msgid "Suspend"
-#~ msgstr "Ngưng máy"
 
-#~ msgid "Restart"
-#~ msgstr "Khởi động lại"
 
-#~ msgid "Shut Down"
-#~ msgstr "Tắt máy"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "Không rõ thời gian còn lại"
 
-#~ msgid "Panel"
-#~ msgstr "Bảng"
 
-#~ msgid "Label Text"
-#~ msgstr "Chuỗi nhãn"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "Chuỗi văn bản cần dùng làm nhãn"
 
-#~ msgid "Icon name"
-#~ msgstr "Tên biểu tượng"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "Biểu tượng cần dùng với nhãn đó"
 
-#~ msgid "Default Item"
-#~ msgstr "Mục mặc định"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "Mã số của mục mặc định"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Đăng nhập từ xa (Đang kết nối tới %s…)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Đăng nhập từ xa (Đã kết nối tới %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "Đăng nhập từ xa"
 
-#~ msgid "Session"
-#~ msgstr "Phiên làm việc"
 
-#~ msgid "Duration"
-#~ msgstr "Thời lượng"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Số các giây đến khi bộ đếm thời gian dừng"
 
-#~ msgid "Start time"
-#~ msgstr "Giờ đầu"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "Giờ bắt đầu bộ đếm thời gian"
 
-#~ msgid "Is it Running?"
-#~ msgstr "Nó đang chạy chưa?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Bộ đếm thời gian đang chạy hay không"
 
-#~ msgid "Log in as %s"
-#~ msgstr "Đăng nhập dưới %s"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Khác…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "Chọn tài khoản khác"
 
-#~ msgid "Guest"
-#~ msgstr "Khách"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Đăng nhập như khách tạm"
 
-#~ msgid "Automatic Login"
-#~ msgstr "Tự động Đăng nhập"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "Tự động đăng nhập vào hệ thống sau khi bật các tùy chọn thích hợp"
 
-#~ msgid "Currently logged in"
-#~ msgstr "Đã đăng nhập"
 
-#~ msgid "User %s doesn't exist"
-#~ msgstr "Người dùng %s không tồn tại"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "Nhóm %s không tồn tại"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr ""
-#~ "Thư mục Logdir %s (thư mục bản ghi) không tồn tại hoặc không phải là một "
-#~ "thư mục."
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "Thư mục Authdir (thư mục xác thực) %s không tồn tại. Hùy bỏ."
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr ""
-#~ "Thư mục Authdir (thư mục xác thực) %s không phải là một thư mục. Hủy bỏ."
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr ""
-#~ "Thư mục Authdir %s (thư mục xác thực) không được người dùng %d, nhóm %d "
-#~ "sở hữu. Hủy bỏ."
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr ""
-#~ "Thư mục Authdir (thư mục xác thực) %s có quyền truy nhập %o không đúng: "
-#~ "nên là %o. Hủy bỏ."
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "Kính lúp Màn hình GNOME"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Phóng to từng phần màn hình"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "Bàn phím Màn hình GNOME"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Dùng bàn phím trên màn hình"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Bộ đọc màn hình Orca"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "Trình bày thông tin trên màn hình dạng tiếng nói hoặc chữ nổi"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "Không thể sơ khởi hệ thống đăng nhập"
 
-#~ msgid "Unable to authenticate user"
-#~ msgstr "Không thể xác thực người dùng"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "Không thể thiết lập thông tin xác thực"
 
-#~ msgid "Max Item Count"
-#~ msgstr "Số mục tối đa"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "Số tối đa các mục cần giữ trong danh sách"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "Chuỗi thông điệp băng cờ khi bộ chọn vẫn trống"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "Chuỗi thông điệp băng cờ cần hiển thị trên cửa sổ đăng nhập khi bộ chọn "
-#~ "người dùng vẫn trống, thay cho banner_message_text."
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "Tên biểu tượng cần dùng cho biểu hình trình chào mừng"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr ""
-#~ "Đặt thành tên biểu tượng theo sắc thái cần dùng cho biểu hình trình chào "
-#~ "mừng."
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "Đừng hiển thị các người dùng đã biết trong cửa sổ đăng nhập"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "Lập thành đúng để tắt hiển thị các người dùng đã biết trong cửa sổ đăng "
-#~ "nhập."
 
-#~ msgid "Recently selected languages"
-#~ msgstr "Ngôn ngữ được chọn gần đây"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "Đặt danh sách ngôn ngữ hiển thị mặc định tại cửa sổ đăng nhập."
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "Dùng Compiz làm bộ quản lý cửa sổ"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr ""
-#~ "Đặt thành Đúng (True) để dùng phần mềm Compiz làm bộ quản lý cửa sổ."
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "Bật bàn phím trên màn hình"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "Lập thành đúng để hiệu lực bàn phím trên màn hình."
 
-#~ msgid "Enable screen reader"
-#~ msgstr "Bật trình đọc màn hình"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "Lập thành đúng để hiệu lực trình đọc trên màn hình."
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "Bật kính lúp trên màn hình"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "Lập thành đúng để hiệu lực kính lúp trên màn hình."
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "Bật phần mở rộng bàn phím khả năng truy cập"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "Lập thành đúng để hiệu lực phần bổ sung quản lý các thiết lập bàn phím "
-#~ "của khả năng truy cập."
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Đúng (True) nếu phần bổ sung quản lý thiết lập nền đã được hiệu lực."
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "Lập thành đúng để hiệu lực phần bổ sung quản lý thiết lập nền."
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Đúng (True) nếu phần bổ sung quản lý thiết lập các phím nhạc/phim (media-"
-#~ "keys) đã được hiệu lực."
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr ""
-#~ "Lập thành đúng để hiệu lực phần bổ sung quản lý thiết lập các phím nhạc/"
-#~ "phim."
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Đúng (True) nếu phần bổ sung quản lý thiết lập âm thanh đã được hiệu lực."
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "Lập thành đúng để hiệu lực phần bổ sung quản lý thiết lập âm thanh."
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Đúng (True) nếu phần bổ sung quản lý thiết lập XRandR đã được hiệu lực."
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "Lập thành đúng để hiệu lực phần bổ sung quản lý thiết lập XRandR."
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Đúng (True) nếu phần bổ sung quản lý thiết lập xsettings đã được hiệu lực."
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr ""
-#~ "Lập thành đúng để hiệu lực phần bổ sung quản lý thiết lập xsettings."
 
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr "Hệ thống không thể tìm màn hình đăng nhập để chuyển sang."
 
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "Đã từ chối truy vấn XDMCP từ máy %s"
 
-#~ msgid "Could not extract authlist from packet"
-#~ msgstr "Không thể trích lấy authlist (danh sách xác thực) ra gói tin"
 
-#~ msgid "Error in checksum"
-#~ msgstr "Lỗi tổng kiểm tra"
 
-#~ msgid "Bad address"
-#~ msgstr "Địa chỉ sai"
 
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s: không thể đọc địa chỉ bộ trình bày"
 
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s: không thể đọc số hiệu cổng bộ trình bày"
 
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s: không thể trích lấy authlist (danh sách xác thực) ra gói tin"
 
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s: lỗi tổng kiểm tra"
 
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s: nhận được tín hiệu REQUEST (yêu cầu) từ máy bị cấm %s"
 
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s: không thể đọc Số hiệu bộ trình bày (Display Number)"
 
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s: không thể đọc kiểu kết nối (Connection Type)"
 
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s: không thể đọc địa chỉ máy khách (Client Address)"
 
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s: không thể đọc dữ liệu xác thực (Authentication Data)"
 
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s: không thể đọc danh sách xác thực (Authorization List)"
 
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s: không thể đọc mã số nhà sản xuất (Manufacturer ID)"
 
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s: lỗi tổng kiểm tra (checksum) từ %s"
 
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s: nhận được tín hiệu Manage (quản lý) từ máy bị cấm %s."
 
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s: không thể đọc được mã số phiên chạy (Session ID)"
 
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s: không thể đọc hạng trình bày (Display Class)"
 
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s: không thể đọc địa chỉ"
 
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s: nhận được tín hiệu KEEPALIVE (giữ kết nối) từ máy bị cấm %s"
 
-#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-#~ msgstr "GdmXdmcpDisplayFactory: không thể đọc phần đầu XDMCP !"
 
-#~ msgid "Could not get server hostname: %s!"
-#~ msgstr "Không thể lấy tên máy của máy phục vụ : %s !"
+

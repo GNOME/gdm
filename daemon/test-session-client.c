@@ -185,7 +185,7 @@ main (int   argc,
                                                                   NULL,
                                                                   &error);
         if (address == NULL) {
-                g_critical ("Failed obtaining slave address: %s", error->message);
+                g_critical ("Failed opening reauthentication channel: %s", error->message);
                 exit (1);
         }
 
@@ -195,7 +195,7 @@ main (int   argc,
                                                              NULL,
                                                              &error);
         if (connection == NULL) {
-                g_critical ("Failed connecting to the slave: %s", error->message);
+                g_critical ("Failed connecting to the manager: %s", error->message);
                 exit (1);
         }
 

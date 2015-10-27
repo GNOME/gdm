@@ -13,9 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.2.0\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-02-20 05:54+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-03-16 19:37+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
@@ -26,35 +25,29 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.7.4\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符裝置"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "無法識別目前的作業階段。"
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "無法切換作業階段。"
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "無法識別目前的 seat。"
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr "系統無法決定要切換到現有的登入畫面或是啟動一個新的登入畫面。"
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "系統無法啟動一個新的登入畫面。"
@@ -64,71 +57,73 @@ msgstr "系統無法啟動一個新的登入畫面。"
 msgid "could not find user \"%s\" on system"
 msgstr "在系統中找不到使用者「%s」"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
-msgstr "因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請聯絡系統管理員或是檢查系統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
+msgstr ""
+"因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請聯絡系統管理員或是檢"
+"查系統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
 
-#: ../daemon/gdm-manager.c:1075
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "沒有顯示可用"
 
-#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "沒有可用的作業階段"
 
-#: ../daemon/gdm-manager.c:1135
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "只能在使用者登入前呼叫"
 
-#: ../daemon/gdm-manager.c:1145
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "呼叫者不是 GDM"
 
-#: ../daemon/gdm-manager.c:1155
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "無法開啟私隱通訊頻道"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "伺服器應以使用者 %s 的身分衍生，但該使用者不存在"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "無法設定 groupid 為 %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s 的 initgroups () 失敗。"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "無法設定 userid 為 %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：無法開啟顯示 %s 的紀錄檔案！"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：將 %s 設定為 %s 時發生錯誤"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s：伺服器優先等級無法設定為 %d：%s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：顯示畫面 %s 的伺服器指令是空白的"
@@ -157,36 +152,36 @@ msgstr "顯示裝置"
 msgid "The display device"
 msgstr "顯示裝置"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "無法建立核對協助程序"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "你的帳號設有時間限制，而現在已超過限制時間。"
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "抱歉，那沒有作用。請再試一次。"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "使用者名稱:"
 
-#: ../daemon/gdm-session-worker.c:1242
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "你的密碼已逾期，請立即改變它。"
 
-#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "沒有可用的使用者帳號"
 
-#: ../daemon/gdm-session-worker.c:1525
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "無法改變為使用者"
 
-#: ../daemon/gdm-wayland-session.c:378
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME 登入管理員 Wayland 工作階段啟動器"
 
@@ -194,15 +189,15 @@ msgstr "GNOME 登入管理員 Wayland 工作階段啟動器"
 msgid "Could not create socket!"
 msgstr "無法建立 socket！"
 
-#: ../daemon/gdm-x-session.c:675
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "透過 /etc/gdm/Xsession 包裹命令稿執行程式"
 
-#: ../daemon/gdm-x-session.c:676
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "聽取 TCP 插槽"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME 登入管理員 X 工作階段的啟動器"
 
@@ -211,52 +206,52 @@ msgstr "GNOME 登入管理員 X 工作階段的啟動器"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "無法寫入 PID 檔 %s：可能是磁碟空間不足：%s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "無法建立一次性標記目錄 %s：%s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "無法建立 LogDir %s：%s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "找不到 GDM 使用者‘%s’。必須放棄！"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM 使用者不應該是 root。必須放棄！"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "找不到 GDM 羣組‘%s’。必須放棄！"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM 羣組不應該是 root。必須放棄！"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "把所有的警告訊息都當成嚴重錯誤"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "一段時間後離開（除錯用）"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "顯示 GDM 版本"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "GNOME 登入管理員"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "只有 root 使用者可以執行 GDM"
 
@@ -315,14 +310,18 @@ msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
 "branding."
-msgstr "登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展示他們的品牌。"
+msgstr ""
+"登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展"
+"示他們的品牌。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
-msgstr "後備登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展示他們的品牌。"
+msgstr ""
+"後備登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本"
+"能展示他們的品牌。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -332,7 +331,9 @@ msgstr "避免顯示使用者清單"
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
-msgstr "登入畫面通常會顯示可登入使用者的清單。這個設定值可以切換以停用這個清單的顯示。"
+msgstr ""
+"登入畫面通常會顯示可登入使用者的清單。這個設定值可以切換以停用這個清單的顯"
+"示。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
@@ -388,11 +389,11 @@ msgstr "XMDCP：XDMCP 版本不正確！"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP：無法解析位址"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "無法建立瞬時顯示："
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "無法讓作業階段生效："
 
@@ -431,360 +432,121 @@ msgstr "拍下截圖"
 msgid "Take a picture of the screen"
 msgstr "照下螢幕的圖片"
 
-#~ msgid "No session available yet"
-#~ msgstr "沒有可用的作業階段"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "無法查詢使用者 %s 的 UID"
 
-#~ msgid "no sessions available"
-#~ msgstr "沒有可用的作業階段"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "%s 沒有作業階段可用於重新核對"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "找不到使用者 %s 的作業階段"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "找不到適合使用者 %s 的作業階段"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "使用者未擁有作業階段"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s：無法連接主顯示畫面‘%s’"
 
-#~ msgid "User not logged in"
-#~ msgstr "使用者尚未登入"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "目前，一次只能連線一個客戶端"
 
-#~ msgid "Display ID"
-#~ msgstr "顯示 ID"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "GNOME 從屬顯示管理程式"
 
-#~ msgid "Login Window"
-#~ msgstr "登入畫面"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "無法啟動新的顯示畫面"
 
-#~ msgid "Your account was given an expiration date that's now passed."
-#~ msgstr "您的帳號設有到期日，而現在已經逾期。"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "無法建立 AuthDir %s：%s"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "核對系統初始化交談發生錯誤 - %s"
 
-#~ msgid "general failure"
-#~ msgstr "一般性失敗"
 
-#~ msgid "out of memory"
-#~ msgstr "記憶體耗盡"
 
-#~ msgid "application programmer error"
-#~ msgstr "應用程式錯誤"
 
-#~ msgid "unknown error"
-#~ msgstr "不明的錯誤"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr "以首選的使用者名稱提示通知核對系統時發生錯誤： %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "以使用者的主機名稱通知核對系統時發生錯誤：%s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "以使用者的主控臺通知核對系統時發生錯誤：%s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "以顯示字串通知核對系統時發生錯誤：%s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "以顯示 xauth 證書通知核對系統時發生錯誤：%s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "指紋核對"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "以指紋登入作業階段"
 
-#~ msgid "Password Authentication"
-#~ msgstr "密碼核對"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "以使用者名稱與密碼登入作業階段"
 
-#~ msgid "Log In"
-#~ msgstr "登入"
 
-#~ msgid "Slot ID"
-#~ msgstr "插槽 ID"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "卡片放入的插槽"
 
-#~ msgid "Slot Series"
-#~ msgstr "插槽序列"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "各插槽卡片識別符"
 
-#~ msgid "name"
-#~ msgstr "名稱"
 
-#~ msgid "Module"
-#~ msgstr "模組"
 
-#~ msgid "smartcard driver"
-#~ msgstr "智慧卡驅動程式"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "智慧卡核對"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "以智慧卡登入作業階段"
 
-#~ msgid "Module Path"
-#~ msgstr "模組路徑"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "智慧卡 PKCS #11 驅動程式的路徑"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "接收到錯誤或是從事件來源掛斷"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "無法初始化 NSS 安全系統"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "找不到合適的智慧卡驅動程式"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "智慧卡驅動程式「%s」無法被載入"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "無法監看剛剛的卡片事件 - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "當等候智慧卡事件時遭遇到未預期的錯誤"
 
-#~ msgid "Authentication"
-#~ msgstr "核對"
 
-#~ msgid "Log into session"
-#~ msgstr "登入到作業階段"
 
-#~ msgid "Value"
-#~ msgstr "數值"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "完成時間百分比"
 
-#~ msgid "Inactive Text"
-#~ msgstr "未使用的文字"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "若使用者尚未挑選任何項目，要在標籤中使用的文字"
 
-#~ msgid "Active Text"
-#~ msgstr "使用中的文字"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "若使用者已挑選某個項目，要在標籤中使用的文字"
 
-#~ msgid "List Visible"
-#~ msgstr "清單可見性"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "是否顯示選擇程式清單"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%b%e日 (%a) %p%l:%M:%S"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%b%e日 (%a) %p%l:%M"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%A %p%l:%M:%S"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%A %p %l:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "正在自動登入…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "正在取消…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "選擇語言並按下「登入」"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "自訂"
 
-#~ msgid "Custom session"
-#~ msgstr "自訂作業階段"
 
-#~ msgid "Computer Name"
-#~ msgstr "電腦名稱"
 
-#~ msgid "Version"
-#~ msgstr "版本"
 
-#~ msgid "Cancel"
-#~ msgstr "取消"
 
-#~ msgid "Unlock"
-#~ msgstr "解鎖"
 
-#~ msgid "Login"
-#~ msgstr "登入"
 
-#~ msgid "Suspend"
-#~ msgstr "暫停"
 
-#~ msgid "Restart"
-#~ msgstr "重新啟動"
 
-#~ msgid "Shut Down"
-#~ msgstr "關閉電腦"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "剩餘時間不明"
 
-#~ msgid "Panel"
-#~ msgstr "面板"
 
-#~ msgid "Label Text"
-#~ msgstr "標籤文字"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "要用做標籤的文字"
 
-#~ msgid "Icon name"
-#~ msgstr "圖示名稱"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "要與標籤一起使用的圖示"
 
-#~ msgid "Default Item"
-#~ msgstr "預設的項目"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "預設項目的 ID"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "遠端登入（連線至 %s…）"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "遠端登入 (連線至 %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "遠端登入"
 
-#~ msgid "Session"
-#~ msgstr "作業階段"
 
-#~ msgid "Duration"
-#~ msgstr "持續時間"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "計時器停止前的秒數"
 
-#~ msgid "Start time"
-#~ msgstr "開始時刻"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "計時器開始時刻"
 
-#~ msgid "Is it Running?"
-#~ msgstr "它是否正在執行？"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "計時器現在是否在計時"
 
-#~ msgid "Log in as %s"
-#~ msgstr "以 %s 身分登入"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "其他…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "選擇不同的帳號"
 
-#~ msgid "Guest"
-#~ msgstr "訪客"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "以臨時訪客的身分登入"
 
-#~ msgid "Automatic Login"
-#~ msgstr "自動登入"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "在選取選項後自動登入系統"
 
-#~ msgid "Currently logged in"
-#~ msgstr "現在已經登入"
 
-#~ msgid "User %s doesn't exist"
-#~ msgstr "使用者 %s 不存在"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "群組 %s 不存在"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "Logdir %s 不存在或者根本不是目錄。"
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "認證目錄 %s 不存在。必須放棄。"
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "認證目錄 %s 並非目錄。必須放棄。"
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr "認證目錄 %s 不屬於使用者 %d 及群組 %d。必須放棄。"
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr "認證目錄 %s 的權限 %o 不正確，應該為 %o。必須放棄。"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME 螢幕放大鏡"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "螢幕的放大部份"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "GNOME 螢幕鍵盤"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "使用顯示在螢幕上的鍵盤"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orca 螢幕閱讀器"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "將螢幕上的資訊以語音或點字呈現"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "無法初始化登入系統"
 
-#~ msgid "Unable to authorize user"
-#~ msgstr "無法核對使用者"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "無法建立證書"
+

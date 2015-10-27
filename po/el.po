@@ -32,9 +32,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-02-19 17:55+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-02-19 22:09+0200\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Ελληνικά <opensuse-translation-el@opensuse.org>\n"
@@ -46,28 +45,22 @@ msgstr ""
 "X-Generator: Poedit 1.5.7\n"
 "X-Project-Style: gnome\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "Το /dev/urandom δεν είναι μια συσκευή χαρακτήρων"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Αδυναμία αναγνώρισης της παρούσας συνεδρίας."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Αδυναμία χρήστη να εναλλάξει συνεδρίες."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Αδυναμία αναγνώρισης της παρούσας έδρας."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -76,7 +69,7 @@ msgstr ""
 "Το σύστημα δεν είναι δυνατό να καθορίσει αν θα μεταβείτε σε μια υπάρχουσα "
 "οθόνη σύνδεσης ή θα ξεκινήσει μια νέα οθόνη σύνδεσης."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Το σύστημα δεν είναι δυνατό να εκκινήσει μια νέα οθόνη σύνδεσης."
@@ -86,7 +79,7 @@ msgstr "Το σύστημα δεν είναι δυνατό να εκκινήσε
 msgid "could not find user \"%s\" on system"
 msgstr "αδυναμία εύρεσης του χρήστη \"%s\" στο σύστημα"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -98,28 +91,27 @@ msgstr ""
 "ελέγξτε το syslog για διάγνωση. Στο μεταξύ αυτή η οθόνη θα απενεργοποιηθεί. "
 "Επανεκκινήστε το GDM όταν διορθωθεί το πρόβλημα."
 
-#: ../daemon/gdm-manager.c:1075
-#| msgid "No session available"
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Καμία διαθέσιμη εμφάνιση"
 
-#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Καμία διαθέσιμη συνεδρία"
 
-#: ../daemon/gdm-manager.c:1135
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Μπορεί μόνο να κληθεί πριν συνδεθεί ο χρήστης"
 
-#: ../daemon/gdm-manager.c:1145
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Ο καλών δεν είναι GDM"
 
-#: ../daemon/gdm-manager.c:1155
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Αδυναμία ανοίγματος ιδιωτικού καναλιού επικοινωνίας"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
@@ -127,42 +119,42 @@ msgstr ""
 "υπάρχει"
 
 #
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
 
 #
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Το initgroups () απέτυχε για το %s"
 
 #
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
 
 #
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Αποτυχία ανοίγματος αρχείου καταγραφών για εμφάνιση %s!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Σφάλμα ρύθμισης %s σε %s"
 
 #
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Η προτεραιότητα του διακομιστή δεν μπορεί να ορισθεί σε %d: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Κενή εντολή διακομιστή για εμφάνιση %s"
@@ -192,39 +184,38 @@ msgid "The display device"
 msgstr "Η συσκευή απεικόνισης"
 
 #
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Αδυναμία δημιουργίας διεργασίας βοηθού πιστοποίησης"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Έχει περάσει το χρονικό όριο που δώθηκε στον λογαριασμό σας."
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Συγνώμη, αυτό δεν λειτούργησε. Παρακαλούμε προσπαθήστε ξανά."
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Όνομα χρήστη:"
 
-#: ../daemon/gdm-session-worker.c:1242
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr ""
 "Ο κωδικός πρόσβασής σας έχει λήξει. Παρακαλούμε αλλάξτε τον κωδικό πρόσβασης "
 "τώρα."
 
-#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "δεν υπάρχει διαθέσιμος λογαριασμός χρήστη"
 
-#: ../daemon/gdm-session-worker.c:1525
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Αδυναμία αλλαγής σε χρήστη"
 
-#: ../daemon/gdm-wayland-session.c:378
-#| msgid "GNOME Display Manager Session Worker"
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Εκκινητής συνεδρίας διαχειριστή οθόνης Wayland  του GNOME"
 
@@ -233,16 +224,15 @@ msgstr "Εκκινητής συνεδρίας διαχειριστή οθόνη�
 msgid "Could not create socket!"
 msgstr "Αποτυχία δημιουργίας υποδοχής!"
 
-#: ../daemon/gdm-x-session.c:675
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Εκτέλεση προγράμματος μέσω δέσμης ενεργειών /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:676
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Απάντηση υποδοχής TCP"
 
-#: ../daemon/gdm-x-session.c:687
-#| msgid "GNOME Display Manager Session Worker"
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Εκκινητής συνεδρίας διαχειριστή οθόνης GNOME"
 
@@ -252,58 +242,58 @@ msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Αδυναμία εγγραφής αρχείου PID %s, πιθανή ανεπάρκεια χώρου στο δίσκο: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr ""
 "Αδυναμία δημιουργίας εκτέλεσης μιας φοράς του σημειωτή καταλόγου %s: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Αποτυχία δημιουργίας LogDir %s: %s"
 
 #
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Δε βρέθηκε ο χρήστης GDM '%s'. Διακοπή!"
 
 #
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Ο χρήστης GDM δεν πρέπει να είναι διαχειριστής. Διακοπή!"
 
 #
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Δε βρέθηκε η ομάδα GDM '%s'. Διακοπή!"
 
 #
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Η ομάδα GDM δε πρέπει να είναι διαχειριστής. Διακοπή!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Να γίνουν όλες οι προειδοποιήσεις μοιραίες"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Έξοδος μετά από ένα χρονικό διάστημα (για αποσφαλμάτωση)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Εμφάνιση έκδοσης GDM"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Διαχειριστής οθόνης GNOME"
 
 #
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Μόνο ο διαχειριστής μπορεί να εκτελέσει το GDM"
 
@@ -462,11 +452,11 @@ msgstr "XDMCP: Εσφαλμένη έκδοση XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Αδυναμία ανάλυσης διεύθυνσης"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Αδυναμία δημιουργίας παροδικής εμφάνισης: "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Αδυναμία ενεργοποίησης συνεδρίας: "
 
@@ -505,23 +495,10 @@ msgstr "Έγινε λήψη στιγμιότυπου οθόνης"
 msgid "Take a picture of the screen"
 msgstr "Λήψη φωτογραφίας της οθόνης"
 
-#~ msgid "Login Window"
-#~ msgstr "Παράθυρο εισόδου"
 
-#~ msgid "No session available yet"
-#~ msgstr "Ακόμη καμία διαθέσιμη συνεδρία"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "Αδυναμία εύρεσης UID του χρήστη %s"
 
-#~ msgid "no sessions available"
-#~ msgstr "καθόλου διαθέσιμες συνεδρίες"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "Καθόλου διαθέσιμες συνεδρίες %s για επαναπιστοποίηση"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "Αδυναμία εύρεσης συνεδρίας για το χρήστη %s"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "Αδυναμία εύρεσης κατάλληλης συνεδρίας για το χρήστη %s"
+

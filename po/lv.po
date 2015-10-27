@@ -12,9 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lv\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-04-03 05:08+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-04-03 20:57+0300\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
@@ -27,28 +26,22 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "X-Launchpad-Export-Date: 2009-02-19 16:12+0000\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nav rakstzīmju ierīce"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Neizdevās identificēt pašreizējo sesiju."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Lietotājs nevar pārslēgt sesijas."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Neizdevās identificēt pašreizējo vietu."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -57,7 +50,7 @@ msgstr ""
 "Sistēma nespēj noteikt, vai vajadzētu pārslēgties uz jau esošu ierakstīšanās "
 "ekrānu vai izveidot jaunu ierakstīšanās ekrānu."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Sistēma nespēj izveidot jaunu ierakstīšanās ekrānu."
@@ -67,7 +60,7 @@ msgstr "Sistēma nespēj izveidot jaunu ierakstīšanās ekrānu."
 msgid "could not find user \"%s\" on system"
 msgstr "sistēmā neizdevās atrast lietotāju “%s”"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -79,64 +72,63 @@ msgstr ""
 "žurnālu, lai noteiktu problēmas cēloni. Pa to laiku displejs tiks "
 "deaktivēts. Lūdzu, pārstartējiet GDM, kad problēma ir novērsta."
 
-#: ../daemon/gdm-manager.c:1175
-#| msgid "No session available"
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Nav pieejamu displeju"
 
-#: ../daemon/gdm-manager.c:1240 ../daemon/gdm-manager.c:1496
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Nav pieejamu sesiju"
 
-#: ../daemon/gdm-manager.c:1251
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Var izsaukt tikai pirms lietotājs ir ierakstījies"
 
-#: ../daemon/gdm-manager.c:1261
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Izsaucējs nav GDM"
 
-#: ../daemon/gdm-manager.c:1271
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Nevar atvērt privātu komunikācijas kanālu"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Serveri vajadzēja palaist lietotājam %s, bet šāds lietotājs neeksistē"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Neizdevās iestatīt groupid uz %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() neizdevās %s"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Neizdevās iestatīt userid uz %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s — neizdevās atvērt %s displeja žurnāla datni!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s — kļūda, iestatot %s uz %s"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s — servera prioritāti neizdevās iestatīt uz %d — %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s — tukša servera komanda displejam %s"
@@ -165,37 +157,36 @@ msgstr "Displeja ierīce"
 msgid "The display device"
 msgstr "Displeja ierīce"
 
-#: ../daemon/gdm-session.c:1184
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Neizdevās izveidot autentifikācijas palīgprocesu"
 
-#: ../daemon/gdm-session-worker.c:849
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Jūsu kontam bija laika limits, kas ir beidzies."
 
-#: ../daemon/gdm-session-worker.c:856
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Diemžēl tas nenostrādāja. Lūdzu, mēģiniet vēlreiz."
 
-#: ../daemon/gdm-session-worker.c:1221
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Lietotājvārds:"
 
-#: ../daemon/gdm-session-worker.c:1355
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Jūsu parole ir izbeigusies, lūdzu, tagad to nomainiet."
 
-#: ../daemon/gdm-session-worker.c:1594 ../daemon/gdm-session-worker.c:1611
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "nav pieejams lietotāja konts"
 
-#: ../daemon/gdm-session-worker.c:1638
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Neizdevās nomainīties uz lietotāju"
 
-#: ../daemon/gdm-wayland-session.c:377
-#| msgid "GNOME Display Manager Session Worker"
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME displeja pārvaldnieka Wayland sesijas palaidējs"
 
@@ -203,16 +194,15 @@ msgstr "GNOME displeja pārvaldnieka Wayland sesijas palaidējs"
 msgid "Could not create socket!"
 msgstr "Neizdevās izveidot ligzdu!"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Izpildīt programmu caur /etc/gdm/Xsession ietinamo skriptu"
 
-#: ../daemon/gdm-x-session.c:679
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Klausīties TCP ligzdu"
 
-#: ../daemon/gdm-x-session.c:690
-#| msgid "GNOME Display Manager Session Worker"
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME displeja pārvaldnieka X sesijas palaidējs"
 
@@ -418,11 +408,11 @@ msgstr "XMDCP — nepareiza XDMCP versija!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP — neizdevās parsēt adresi"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Nevar izveidot pārejas displeju: "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Nevar aktivēt sesiju: "
 

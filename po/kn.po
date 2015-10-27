@@ -8,9 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-02-19 06:07+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2014-02-19 18:32+0630\n"
 "Last-Translator: \n"
 "Language-Team: Kannada <kde-i18n-doc@kde.org>\n"
@@ -21,28 +20,22 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../common/gdm-common.c:519
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ವು ಒಂದು ಕ್ಯಾರಕ್ಟರ್ ಸಾಧನವಲ್ಲ"
 
-#: ../common/gdm-common.c:827 ../common/gdm-common.c:980
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "ಪ್ರಸಕ್ತ ಅಧೀವೇಶನವನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
-#: ../common/gdm-common.c:834 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "ಬಳಕೆದಾರರು ಅಧಿವೇಶನವನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
-
-#: ../common/gdm-common.c:989 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "ಪ್ರಸಕ್ತ ಸ್ಥಾನವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
-#: ../common/gdm-common.c:999 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -51,7 +44,7 @@ msgstr ""
 "ಈಗಿರುವ ಪ್ರವೇಶ ತೆರೆಗೆ ಬದಲಾಯಿಸಬೇಕೆ ಅಥವ ಒಂದು ಹೊಸ ಪ್ರವೇಶ ತೆರೆಯನ್ನು ಪ್ರಾರಂಭಿಸಬೇಕೆ "
 "ಎಂದು ನಿರ್ಧರಿಸಲು ವ್ಯವಸ್ಥೆಗೆ ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
-#: ../common/gdm-common.c:1007 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "ಹೊಸ ಪ್ರವೇಶ ತೆರೆಯನ್ನು ಒದಗಿಸಲು ವ್ಯವಸ್ಥೆಯಿಂದ ಸಾಧ್ಯವಾಗಿಲ್ಲ."
@@ -61,60 +54,74 @@ msgstr "ಹೊಸ ಪ್ರವೇಶ ತೆರೆಯನ್ನು ಒದಗಿಸ
 msgid "could not find user \"%s\" on system"
 msgstr "ಗಣಕದಲ್ಲಿ \"%s\" ಬಳಕೆದಾರನು ಕಂಡುಬಂದಿಲ್ಲ"
 
-#: ../daemon/gdm-display.c:1364 ../daemon/gdm-display.c:1398
-#, c-format
-msgid "No session available yet"
-msgstr "ಯಾವುದೆ ಅಧಿವೇಶನವು ಇನ್ನೂ ಸಹ ಲಭ್ಯವಿಲ್ಲ"
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
 
-#: ../daemon/gdm-manager.c:361 ../daemon/gdm-manager.c:406
+#: ../daemon/gdm-manager.c:766
+#, fuzzy
+msgid "No display available"
+msgstr "ಯಾವುದೆ ಅಧಿವೇಶನವು ಲಭ್ಯವಿಲ್ಲ"
+
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "ಯಾವುದೆ ಅಧಿವೇಶನವು ಲಭ್ಯವಿಲ್ಲ"
 
-#: ../daemon/gdm-server.c:289
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: ಮೂಲವಾದ '%s' ಪ್ರದರ್ಶಕಕ್ಕೆ ಸಂಪರ್ಕಹೊಂದಲಾಗಿಲ್ಲ"
+#: ../daemon/gdm-manager.c:844
+msgid "Can only be called before user is logged in"
+msgstr ""
 
-#: ../daemon/gdm-server.c:470
+#: ../daemon/gdm-manager.c:854
+msgid "Caller not GDM"
+msgstr ""
+
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
-"%s ಬಳಕೆದಾರನಿಂದ ಪೂರೈಕೆಗಣಕವು ತಯಾರಿಸಲ್ಪಡ(ಸ್ಪಾನ್) ಬೇಕಿತ್ತು ಆದರೆ ಆ ಬಳಕೆದಾರ "
-"ಅಸ್ತಿತ್ವದಲ್ಲೇ "
+"%s ಬಳಕೆದಾರನಿಂದ ಪೂರೈಕೆಗಣಕವು ತಯಾರಿಸಲ್ಪಡ(ಸ್ಪಾನ್) ಬೇಕಿತ್ತು ಆದರೆ ಆ ಬಳಕೆದಾರ ಅಸ್ತಿತ್ವದಲ್ಲೇ "
 "ಇಲ್ಲ"
 
-#: ../daemon/gdm-server.c:481 ../daemon/gdm-server.c:501
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "ಸಮೂಹಐಡಿಯನ್ನು %d ಗೆ ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
 
-#: ../daemon/gdm-server.c:487
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () %s ಗೆ ವಿಫಲಗೊಂಡಿವೆ"
 
-#: ../daemon/gdm-server.c:493
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "ಬಳಕೆದಾರ ಐಡಿಯನ್ನು %d ಗೆ ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
 
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s ಪ್ರದರ್ಶಕಕ್ಕಾಗಿ ದಿನಚರಿ ಕಡತವನ್ನು ತೆಗೆಯಲಾಗಲಿಲ್ಲ!"
 
-#: ../daemon/gdm-server.c:592 ../daemon/gdm-server.c:598
-#: ../daemon/gdm-server.c:604
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ಅನ್ನು %s ಗೆ ಹೊಂದಿಸುವಲ್ಲಿ ದೋಷ ಎದುರಾಗಿದೆ"
 
-#: ../daemon/gdm-server.c:624
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: ಪೂರೈಕೆಗಣಕದ ಆದ್ಯತೆಯನ್ನು %d ಗೆ ಹೊಂದಿಸಲಾಗಿಲ್ಲ: %s"
 
-#: ../daemon/gdm-server.c:772
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s ಪ್ರದರ್ಶಕಕ್ಕಾಗಿ ಖಾಲಿಯಾದ ಪೂರೈಕೆಗಣಕ ಆದೇಶ"
@@ -143,123 +150,108 @@ msgstr "ಪ್ರದರ್ಶಕ ಸಾಧನ"
 msgid "The display device"
 msgstr "ಪ್ರದರ್ಶಕ ಸಾಧನ"
 
-#: ../daemon/gdm-session.c:1173
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "ದೃಢೀಕರಣ ನೆರವಿನ ಪ್ರಕ್ರಿಯೆಯನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../daemon/gdm-session-worker.c:836
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "ನಿಮ್ಮ ಖಾತೆಗೆ ಒಂದು ಸಮಯದ ಮಿತಿಯನ್ನು ನೀಡಲಾಗಿತ್ತು ಅದು ಈಗ ಕಳೆದಿದೆ."
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "ಕ್ಷಮಿಸು, ಅದು ಕೆಲಸ ಮಾಡಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಇನ್ನೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "ಬಳಕೆದಾರಹೆಸರು:"
 
-#: ../daemon/gdm-session-worker.c:1205
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "ನಿಮ್ಮ ಗುಪ್ತಪದದ ವಾಯಿದೆಯು ತೀರಿ ಹೋಗಿದೆ, ದಯವಿಟ್ಟು ಅದನ್ನು ಈಗಲೆ ಬದಲಾಯಿಸಿ."
 
-#: ../daemon/gdm-session-worker.c:1444 ../daemon/gdm-session-worker.c:1461
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "ಯಾವುದೆ ಬಳಕೆದಾರ ಖಾತೆಯು ಲಭ್ಯವಿಲ್ಲ"
 
-#: ../daemon/gdm-session-worker.c:1488
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "ಬಳಕೆದಾರನಿಗೆ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
 
-#: ../daemon/gdm-simple-slave.c:1520
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"ಒಂದು ಆಂತರಿಕ ದೋಷಗಳ ಕಾರಣದಿಂದಾಗಿ X ಪೂರೈಕೆಗಣಕವನ್ನು (ನಿಮ್ಮ ಚಿತ್ರಾತ್ಮಕ ವಾತಾವರಣ) "
-"ಆರಂಭಿಸಲಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಗಣಕ ವ್ಯವಸ್ಥಾಪಕರನ್ನು ಸಂಪರ್ಕಿಸಿ ಅಥವ ತೊಂದರೆ ಪತ್ತೆ "
-"ಹಚ್ಚಲು "
-"syslog ಅನ್ನು ನೋಡಿ. ಈ ಸಮಯದಲ್ಲಿ ನಿಮ್ಮ ಪ್ರದರ್ಶಕವು ನಿಷ್ಕ್ರಿಯಗೊಂಡಿರುತ್ತದೆ.  "
-"ತೊಂದರೆಯು "
-"ಸರಿಪಡಿಸಿದ ನಂತರ ದಯವಿಟ್ಟು GDM ಅನ್ನು ಪುನಃ ಆರಂಭಿಸಿ."
+#: ../daemon/gdm-wayland-session.c:385
+#, fuzzy
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME ಪ್ರದರ್ಶಕ ವ್ಯವಸ್ಥಾಪಕ ಅಧಿವೇಶನ ಕೆಲಸಗಾರ"
 
-#: ../daemon/gdm-simple-slave.c:1561
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "ಬಳಕೆದಾರರು ಒಳಗೆ ಪ್ರವೇಶಿಸಿವು ಮೊದಲು ಮಾತ್ರ ಕರೆಯಬಹುದಾಗಿರುತ್ತದೆ"
-
-#: ../daemon/gdm-simple-slave.c:1571
-#, c-format
-msgid "Caller not GDM"
-msgstr "ಕಾಲರ್ GDM ಆಗಿಲ್ಲ"
-
-#: ../daemon/gdm-simple-slave.c:1623
-msgid "User not logged in"
-msgstr "ಬಳಕೆದಾರರು ಒಳಗೆ ಪ್ರವೇಶಿಸಿಲ್ಲ"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:364
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "ಪ್ರಸ್ತುತ, ಒಂದು ಬಾರಿಗೆ ಕೇವಲ ಒಂದು ಕಕ್ಷಿಯನ್ನು ಮಾತ್ರ ಸಂಪರ್ಕ ಜೋಡಿಸಬಹುದು"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:605
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "ಸಾಕೆಟ್ ಅನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ!"
+
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:687
+msgid "Listen on TCP socket"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:698
+#, fuzzy
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME ಪ್ರದರ್ಶಕ ವ್ಯವಸ್ಥಾಪಕ ಅಧಿವೇಶನ ಕೆಲಸಗಾರ"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID ಕಡತ %s ಅನ್ನು ಬರೆಯಲಾಗಿಲ್ಲ: ಬಹುಷಃ ಡಸ್ಕಿ‍ನಲ್ಲಿ ಜಾಗ ಇಲ್ಲದಿರಬಹುದು: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "ಒಮ್ಮೆ ಚಲಾಯಿಸಲಾದ dir %s ಅನ್ನು ರಚಿಸುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s ಅನ್ನು ರಚಿಸುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM ಬಳಕೆದಾರ '%s' ನನ್ನು ಪತ್ತೆ ಮಾಡಲಾಗಲಿಲ್ಲ. ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM ಬಳಕೆದಾರನು ನಿರ್ವಾಹಕನಾಗಿರಬಾರದು. ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM ಸಮೂಹ '%s' ವನ್ನು ಪತ್ತೆ ಮಾಡಲಾಗಲಿಲ್ಲ. ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM ಸಮೂಹವು ನಿರ್ವಾಹಕರಾಗಿರಬಾರದು. ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "ಎಲ್ಲಾ ಎಚ್ಚರಿಕೆಗಳನ್ನು ಮಾರಕವಾಗಿಸು"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "ನಿಗದಿತ ಸಮಯದ ನಂತರ ನಿರ್ಗಮಿಸು (ದೋಷನಿವಾರಣೆಗಾಗಿ)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "GDM ಆವೃತ್ತಿಯನ್ನು ಮುದ್ರಿಸು"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "GNOME ಪ್ರದರ್ಶಕ ವ್ಯವಸ್ಥಾಪಕ"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "ಕೇವಲ ನಿರ್ವಾಹಕರು ಮಾತ್ರ GDM ಅನ್ನು ಚಲಾಯಿಸಬಹುದಾಗಿದೆ"
 
@@ -269,27 +261,13 @@ msgstr "ಕೇವಲ ನಿರ್ವಾಹಕರು ಮಾತ್ರ GDM ಅನ�
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ಪ್ರದರ್ಶಕ ವ್ಯವಸ್ಥಾಪಕ ಅಧಿವೇಶನ ಕೆಲಸಗಾರ"
 
-#: ../daemon/simple-slave-main.c:118 ../daemon/xdmcp-chooser-slave-main.c:118
-msgid "Display ID"
-msgstr "ಪ್ರದರ್ಶಕ ಐಡಿ"
-
-#: ../daemon/simple-slave-main.c:118 ../daemon/xdmcp-chooser-slave-main.c:118
-msgid "ID"
-msgstr "ಐಡಿ"
-
-#: ../daemon/simple-slave-main.c:126 ../daemon/xdmcp-chooser-slave-main.c:126
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME ಪ್ರದರ್ಶಕ ವ್ಯವಸ್ಥಾಪಕ ಸೇವಕ"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "ಪ್ರವೇಶ ಕಿಟಕಿ"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME ಶೆಲ್‌"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "ಕಿಟಕಿ ನಿರ್ವಹಣೆ ಹಾಗು ಮಿಶ್ರಗೊಳಿಕೆ"
 
@@ -314,8 +292,7 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"ಪ್ರವೇಶ ತೆರೆಯು ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡನ್ನು ಹೊಂದಿರುವ ಬಳಕೆದಾರರು ಬೇಕಿದ್ದಲ್ಲಿ "
-"ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡನ್ನು "
+"ಪ್ರವೇಶ ತೆರೆಯು ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡನ್ನು ಹೊಂದಿರುವ ಬಳಕೆದಾರರು ಬೇಕಿದ್ದಲ್ಲಿ ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡನ್ನು "
 "ಬಳಸಿಕೊಂಡು ಪ್ರವೇಶಿಸಲು ಅನುಮತಿಸಬಲ್ಲದು."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
@@ -327,10 +304,8 @@ msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"ಗುಪ್ತಪದದ ದೃಢೀಕರಣ ಅನುಮತಿಸದೆ ಇರುವಂತೆ ಪ್ರವೇಶದ ತೆರೆಯನ್ನು ಸಂರಚಿಸಲು, ಆ ಮೂಲಕ "
-"ಬಳಕೆದಾರರು "
-"ಸ್ಮಾರ್ಟಕಾರ್ಡ್ ಅಥವ ಫಿಂಗರ್-ಪ್ರಿಂಟ್ ದೃಢೀಕರಣವನ್ನು ಬಳಸುವಂತೆ ಬಳಕೆದಾರರನ್ನು "
-"ಒತ್ತಾಯಿಸಲು "
+"ಗುಪ್ತಪದದ ದೃಢೀಕರಣ ಅನುಮತಿಸದೆ ಇರುವಂತೆ ಪ್ರವೇಶದ ತೆರೆಯನ್ನು ಸಂರಚಿಸಲು, ಆ ಮೂಲಕ ಬಳಕೆದಾರರು "
+"ಸ್ಮಾರ್ಟಕಾರ್ಡ್ ಅಥವ ಫಿಂಗರ್-ಪ್ರಿಂಟ್ ದೃಢೀಕರಣವನ್ನು ಬಳಸುವಂತೆ ಬಳಕೆದಾರರನ್ನು ಒತ್ತಾಯಿಸಲು "
 "ಸಾಧ್ಯವಿರುತ್ತದೆ."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
@@ -343,8 +318,7 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"ಪ್ರವೇಶ ತೆರೆಯು ಬೇಕಿದ್ದಲ್ಲಿ ತನ್ನ ಬಳಕೆದಾರರ ಪಟ್ಟಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ತಾಣದ ವ್ಯವಸ್ಥಾಪಕರು "
-"ಮತ್ತು "
+"ಪ್ರವೇಶ ತೆರೆಯು ಬೇಕಿದ್ದಲ್ಲಿ ತನ್ನ ಬಳಕೆದಾರರ ಪಟ್ಟಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ತಾಣದ ವ್ಯವಸ್ಥಾಪಕರು ಮತ್ತು "
 "ವಿತರಣೆಗಾರರಿಗೆ ತಮ್ಮ ಛಾಪನ್ನು ಒತ್ತಲು ಅನುವಾಗುವಂತೆ ಒಂದು ಚಿಕ್ಕ ಚಿತ್ರವನ್ನು ತೋರಿಸಲು "
 "ಸಾಧ್ಯವಿರುತ್ತದೆ."
 
@@ -394,8 +368,7 @@ msgstr "ಮರಳಿ ಆರಂಭಿಸುವ ಗುಂಡಿಗಳನ್ನು 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
-"ಮರಳಿ ಆರಂಭಿಸುವ ಗುಂಡಿಗಳನ್ನು ಪ್ರವೇಶ ವಿಂಡೋದಲ್ಲಿ ತೋರಿಸುವುದನ್ನು ಅಶಕ್ತಗೊಳಿಸಲು true "
-"ಗೆ "
+"ಮರಳಿ ಆರಂಭಿಸುವ ಗುಂಡಿಗಳನ್ನು ಪ್ರವೇಶ ವಿಂಡೋದಲ್ಲಿ ತೋರಿಸುವುದನ್ನು ಅಶಕ್ತಗೊಳಿಸಲು true ಗೆ "
 "ಹೊಂದಿಸಿ."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
@@ -430,11 +403,11 @@ msgstr "XDMCP: ಸರಿಯಲ್ಲದ XDMCP ಆವೃತ್ತಿ!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ವಿಳಾಸವನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "ಅಸ್ಥಿರ ಪ್ರದರ್ಶಕವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "ಅಧಿವೇಶನವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
@@ -460,7 +433,7 @@ msgid "Version of this application"
 msgstr "ಈ ಅನ್ವಯದ ಆವೃತ್ತಿ"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:149
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- ಹೊಸ GDM ಪ್ರವೇಶ"
 
@@ -473,269 +446,93 @@ msgstr "ತೆರೆಚಿತ್ರವನ್ನು ತೆಗೆದುಕೊಳ�
 msgid "Take a picture of the screen"
 msgstr "ತೆರೆಯ ಒಂದು ಚಿತ್ರವನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "ದೃಢೀಕರಣ ವ್ಯವಸ್ಥೆಯೊಂದಿಗೆ ಸಂವಾದವನ್ನು ಆರಂಭಿಸುವಲ್ಲಿ ದೋಷ - %s"
 
-#~ msgid "general failure"
-#~ msgstr "ಸಾಮಾನ್ಯ ವಿಫಲತೆ"
 
-#~ msgid "out of memory"
-#~ msgstr "ಮೆಮೊರಿ ಇಲ್ಲ"
 
-#~ msgid "application programmer error"
-#~ msgstr "ಅನ್ವಯ ಪ್ರೊಗ್ರಾಮರ್ ದೋಷ"
 
-#~ msgid "unknown error"
-#~ msgstr "ಅಜ್ಞಾತ ದೋಷ"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "ಸೂಚಿಸಲಾದ ಬಳಕೆದಾರರಹೆಸರಿನ ಪ್ರಾಂಪ್ಟಿ‍ನ ದೃಢೀಕರಣ ವ್ಯವಸ್ಥೆಯನ್ನು ತಿಳಿಸುವಲ್ಲಿ ದೋಷ: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "ಬಳಕೆದಾರರ ಅತಿಥೇಯಹೆಸರಿನ ದೃಢೀಕರಣ ವ್ಯವಸ್ಥೆಯನ್ನು ತಿಳಿಸುವಲ್ಲಿ ದೋಷ: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "ಬಳಕೆದಾರರ ಕನ್ಸೋಲ್‍ನ ದೃಢೀಕರಣ ವ್ಯವಸ್ಥೆಯನ್ನು ತಿಳಿಸುವಲ್ಲಿ ದೋಷ: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "ಪ್ರದರ್ಶಕ ವಾಕ್ಯದ ದೃಢೀಕರಣ ವ್ಯವಸ್ಥೆಯನ್ನು ತಿಳಿಸುವಲ್ಲಿ ದೋಷ: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "ಪ್ರದರ್ಶಕ xauth ರುಜುವಾತುಗಳ ದೃಢೀಕರಣ ವ್ಯವಸ್ಥೆಯನ್ನು ತಿಳಿಸುವಲ್ಲಿ ದೋಷ: %s"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "AuthDir %s ಅನ್ನು ರಚಿಸುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "ಬೆರಳಗುರುತಿನ ದೃಢೀಕರಣ"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "ಬೆರಳಗುರತನ್ನು ಬಳಸಿಕೊಂಡು ಅಧಿವೇಶನಕ್ಕೆ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgid "Password Authentication"
-#~ msgstr "ಗುಪ್ತಪದ ದೃಢೀಕರಣ"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "ಬಳಕೆದಾರಹೆಸರು ಹಾಗು ಗುಪ್ತಪದದೊಂದಿಗೆ ಅಧಿವೇಶನಕ್ಕೆ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgid "Log In"
-#~ msgstr "ಒಳಗೆ ಪ್ರವೇಶಿಸು"
 
-#~ msgid "Slot ID"
-#~ msgstr "ಸ್ಲಾಟ್ ID"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "ಕಾರ್ಡ್ ಇರುವ ಸ್ಲಾಟ್"
 
-#~ msgid "Slot Series"
-#~ msgstr "ಸ್ಲಾಟ್ ಸರಣಿಗಳು"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "ಪ್ರತಿ ಸ್ಲಾಟಿನಲ್ಲಿನ ಕಾರ್ಡಿನ ಪತ್ತೆಗಾರ"
 
-#~ msgid "name"
-#~ msgstr "ಹೆಸರು"
 
-#~ msgid "Module"
-#~ msgstr "ಮಾಡ್ಯೂಲ್"
 
-#~ msgid "smartcard driver"
-#~ msgstr "ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡ್ ಚಾಲಕ"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡ್ ದೃಢೀಕರಣ"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡನ್ನು ಬಳಸಿಕೊಂಡು ಅಧಿವೇಶನಕ್ಕೆ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgid "Module Path"
-#~ msgstr "ಮಾಡ್ಯೂಲಿನ ಮಾರ್ಗ"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡ್ PKCS #11 ಚಾಲಕದ ಮಾರ್ಗ"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "ಘಟನೆಯ ಆಕರದಿಂದ ದೋಷ ಅಥವ ಹ್ಯಾಂಗ್ ಅಪ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "NSS ಸುರಕ್ಷತಾ ವ್ಯವಸ್ಥೆಯನ್ನು ಆರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "ಯಾವುದೆ ಸೂಕ್ತವಾದ ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡ್ ಚಾಲಕವು ಕಂಡುಬಂದಿಲ್ಲ"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡ್ ಚಾಲಕ '%s' ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "ಒಳಬರುವ ಕಾರ್ಡ್ ಘಟನೆಗಳಿಗಾಗಿ ಗಮನಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡ್ ಘಟನೆಗಳಿಗಾಗಿ ಕಾಯುವಾಗ ಅನಿರೀಕ್ಷಿತವಾದ ದೋಷವು ಕಂಡುಬಂದಿದೆ"
 
-#~ msgid "Authentication"
-#~ msgstr "ದೃಢೀಕರಣ"
 
-#~ msgid "Log into session"
-#~ msgstr "ಅಧಿವೇಶನಕ್ಕೆ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgid "Value"
-#~ msgstr "ಮೌಲ್ಯ"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "ಪೂರ್ಣಗೊಂಡ ಸಮಯದ ಪ್ರತಿಶತ"
 
-#~ msgid "Inactive Text"
-#~ msgstr "ನಿಷ್ಕ್ರಿಯ ಪಠ್ಯ"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "ಬಳಕೆದಾರನು ಒಂದು ಅಂಶವನ್ನು ತೆಗೆದುಕೊಳ್ಳದೇ ಹೋದಲ್ಲಿ ಲೇಬಲ್ಲಿನಲ್ಲಿ ಬಳಸಬೇಕಿರುವ ಪಠ್ಯ"
 
-#~ msgid "Active Text"
-#~ msgstr "ಸಕ್ರಿಯ ಪಠ್ಯ"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "ಬಳಕೆದಾರನು ಒಂದು ಅಂಶವನ್ನು ತೆಗೆದುಕೊಂಡಲ್ಲಿ ಲೇಬಲ್ಲಿನಲ್ಲಿ ಬಳಸಬೇಕಿರುವ ಪಠ್ಯ"
 
-#~ msgid "List Visible"
-#~ msgstr "ಗೋಚರಿಸುವ ಪಟ್ಟಿ"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "ಆರಿಸುವ ಪಟ್ಟಿ ಗೋಚರಿಸುತ್ತಿದೆಯೆ"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %l:%M:%S %p"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %l:%M %p"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %l:%M:%S %p"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %l:%M %p"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪ್ರವೇಶಿಸಲಾಗುತ್ತಿದೆ..."
 
-#~ msgid "Cancelling…"
-#~ msgstr "ರದ್ದು ಮಾಡಲಾಗುತ್ತಿದೆ…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "ಭಾಷೆಯನ್ನು ಆರಿಸಿ ಹಾಗು ಪ್ರವೇಶಿಸಲು ಕ್ಲಿಕ್ಕಿಸಿ"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "ಅಗತ್ಯಾನುಗುಣ"
 
-#~ msgid "Custom session"
-#~ msgstr "ಅಗತ್ಯಾನುಗುಣ ಅಧಿವೇಶನ"
 
-#~ msgid "Computer Name"
-#~ msgstr "ಗಣಕದ ಹೆಸರು"
 
-#~ msgid "Version"
-#~ msgstr "ಆವೃತ್ತಿ"
 
-#~ msgid "Cancel"
-#~ msgstr "ರದ್ದು ಮಾಡು"
 
-#~ msgid "Unlock"
-#~ msgstr "ಅನ್‌ಲಾಕ್ ಮಾಡು"
 
-#~ msgid "Login"
-#~ msgstr "ಪ್ರವೇಶ"
 
-#~ msgid "Suspend"
-#~ msgstr "ತಾತ್ಕಾಲಿಕ ಸ್ಥಗಿತ"
 
-#~ msgid "Restart"
-#~ msgstr "ಪುನಃ ಆರಂಭಿಸು"
 
-#~ msgid "Shut Down"
-#~ msgstr "ಮುಚ್ಚು"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "ಉಳಿದಿರುವ ಸಮಯ ತಿಳಿದಿಲ್ಲ"
 
-#~ msgid "Panel"
-#~ msgstr "ಫಲಕ"
 
-#~ msgid "Label Text"
-#~ msgstr "ಲೇಬಲ್ ಪಠ್ಯ"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "ಒಂದು ಲೇಬಲ್ ಆಗಿ ಬಳಸಬೇಕಿರುವ ಪಠ್ಯ"
 
-#~ msgid "Icon name"
-#~ msgstr "ಚಿಹ್ನೆಯ ಹೆಸರು"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "ಒಂದು ಲೇಬಲ್ ಆಗಿ ಬಳಸಬೇಕಿರುವ ಪಠ್ಯ"
 
-#~ msgid "Default Item"
-#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಅಂಶ"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಅಂಶದ ಐಡಿ"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "ದೂರಸ್ಥ ಪ್ರವೇಶ (%s ಗೆ ಸಂಪರ್ಕ ಹೊಂದಲಾಗುತ್ತಿದೆ...)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "ದೂರಸ್ಥ ಪ್ರವೇಶ (%s ಗೆ ಸಂಪರ್ಕ ಹೊಂದಲಾಗಿದೆ)"
 
-#~ msgid "Remote Login"
-#~ msgstr "ದೂರಸ್ಥ ಪ್ರವೇಶ"
 
-#~ msgid "Session"
-#~ msgstr "ಅಧಿವೇಶನ"
 
-#~ msgid "Duration"
-#~ msgstr "ಕಾಲಾವಧಿ"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "ಟೈಮರ್ ನಿಲ್ಲುವವರೆಗಿನ ಸಮಯ, ಸೆಕೆಂಡುಗಳಲ್ಲಿ"
 
-#~ msgid "Start time"
-#~ msgstr "ಆರಂಭದ ಸಮಯ"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "ಟೈಮರ್ ಅನ್ನು ಆರಂಭಿಸಲಾದ ಸಮಯ"
 
-#~ msgid "Is it Running?"
-#~ msgstr "ಅದು ಚಾಲನೆಯಲ್ಲಿದೆಯೆ?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "ಟೈಮರ್ ಚಾಲನೆಯಲ್ಲಿದೆಯೆ"
 
-#~ msgid "Log in as %s"
-#~ msgstr "%s ಆಗಿ ಒಳ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "ಇತರೆ…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "ಬೇರೊಂದು ಖಾತೆಯನ್ನು ಆರಿಸಿ"
 
-#~ msgid "Guest"
-#~ msgstr "ಅತಿಥಿ"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "ಒಬ್ಬ ತಾತ್ಕಾಲಿಕ ಅತಿಥಿಯಾಗಿ ಒಳಗೆ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgid "Automatic Login"
-#~ msgstr "ಸ್ವಯಂಚಾಲಿತ ಪ್ರವೇಶ"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "ಆಯ್ಕೆಗಳನ್ನು ಆರಿಸಿದ ನಂತರ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಗಣಕಕ್ಕೆ ಪ್ರವೇಶಿಸಿ"
 
-#~ msgid "Currently logged in"
-#~ msgstr "ಪ್ರಸ್ತುತ ಒಳಗೆ ಪ್ರವೇಶಿಸಿರುವುದು"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "ಹೊಸ ಪ್ರದರ್ಶವನ್ನು ಆರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+
+
+
+

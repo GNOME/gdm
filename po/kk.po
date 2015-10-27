@@ -1,9 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm to kazakh\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-02-24 05:55+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -14,28 +13,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.7.3\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom символдық құрылғы емес"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Ағымдағы сессияны анықтау мүмкін емес."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Пайдаланушы сессияларды ауыстыра алмайды."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Ағымдағы отыру орнын анықтау мүмкін емес."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -44,7 +37,7 @@ msgstr ""
 "Жүйе бар болып тұрған жүйеге кіру экранын қолдану немесе жаңа жүйеге кіру "
 "экраның жасау керектігін анықтай алмады."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Жүйеге кірудің жаңа экраның жүйе іске қоса алмады."
@@ -54,7 +47,7 @@ msgstr "Жүйеге кірудің жаңа экраның жүйе іске қ
 msgid "could not find user \"%s\" on system"
 msgstr "жүйеден \"%s\" пайдаланушысы табылмады"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -66,63 +59,63 @@ msgstr ""
 "шығысын тексеріңіз. Бұл экран уақытша сөндіріледі. Мәселе шешілген кезде GDM "
 "қызметін қайта қосыңыз."
 
-#: ../daemon/gdm-manager.c:1075
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Қолжетерлік дисплей жоқ"
 
-#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "қолжетерлік сессиялар жоқ"
 
-#: ../daemon/gdm-manager.c:1135
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Пайдаланушы кіргенге дейін ғана шақыруға болады"
 
-#: ../daemon/gdm-manager.c:1145
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Шақырушы GDM емес"
 
-#: ../daemon/gdm-manager.c:1155
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Жеке хабарласу арнасын ашу мүмкін емес"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Серверді %s пайдаланушысы қосқан, бірақ ол пайдаланушысы жоқ болып тұр"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Groupid мәнін %d-ға орнату қатесі"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s үшін initgroups () қатесі"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Userid мәнін %d-ға орнату қатесі"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s экраны үшін лог файлын ашу мүмкін емес!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s жаңа %s мәніне орнату қатесі"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Сервердің приоритеті %d мәніне орнатуға болмайды: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s экраны үшін бос сервер командасы"
@@ -151,36 +144,36 @@ msgstr "Экран құрылғысы"
 msgid "The display device"
 msgstr "экран құрылғысы"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Аутентификациясының көмекші үрдісін жасау мүмкін емес"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Тіркелгіңіз үшін берілген уақыт мерзімі енді аяқталды."
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Кешіріңіз, бұл дұрыс емес болды. Қайтадан көріңіз."
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Пайдаланушы:"
 
-#: ../daemon/gdm-session-worker.c:1242
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Пароліңіздің мерзімі аяқталды, оны қазір ауыстырыңыз."
 
-#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "қолжетерлік пайдаланушы тіркелгілер жоқ"
 
-#: ../daemon/gdm-session-worker.c:1525
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Пайдаланушыға ауысу мүмкін емес"
 
-#: ../daemon/gdm-wayland-session.c:377
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME дисплейлер басқарушысының Wayland сессиясын жөнелткіші"
 
@@ -188,15 +181,15 @@ msgstr "GNOME дисплейлер басқарушысының Wayland сесс
 msgid "Could not create socket!"
 msgstr "Сокет құру мүмкін емес!"
 
-#: ../daemon/gdm-x-session.c:677
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "/etc/gdm/Xsession аймалау скрипті арқылы қолданбаны жөнелту"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "TCP сокетін тындау"
 
-#: ../daemon/gdm-x-session.c:689
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME дисплейлер басқарушысының X сессиясын жөнелткіші"
 
@@ -205,52 +198,52 @@ msgstr "GNOME дисплейлер басқарушысының X сессияс
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "%s PID файлын жазу мүмкін емес: дискіде орын жоқ болуы мүмкін: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Дара жөнелту маркер %s бумасын жасау сәтсіз аяқталды: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s жасау сәтсіз: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM пайдаланушысы '%s' табылмады. Тоқтатылады!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM пайдаланушысы root болмауы керек. Тоқтатылады!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM тобы '%s' табылмады. Тоқтатылады!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM тобы root болмауы керек. Тоқтатылады!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Барлық ескертулерді фаталды деп белгілеу"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Уақыт өте шығу (жөндеу режимі)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "GDM нұсқасын көрсету"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "GNOME Дисплей Менеджері"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "GDM бағдарламасын тек root жібере алады"
 
@@ -399,11 +392,11 @@ msgstr "XMDCP: XDMCP нұсқасы қате!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP: Адресті талдау мүмкін емес"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Аралық экранды жасау мүмкін емес:"
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Сессияны белсендіру мүмкін емес:"
 
@@ -442,97 +435,31 @@ msgstr "Скриншот алынды"
 msgid "Take a picture of the screen"
 msgstr "Экранның сурет көшірмесін сақтау"
 
-#~ msgid "No session available yet"
-#~ msgstr "қолжетерлік сессиялар әлі жоқ"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "%s пайдаланушысы үшін UID табу мүмкін емес"
 
-#~ msgid "no sessions available"
-#~ msgstr "қолжетерлік сессиялар жоқ"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "%s үшін қайта аутентификация үшін бірде-бір сессия жоқ"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "%s пайдаланушысы үшін сессияны табу мүмкін емес"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "%s пайдаланушысы үшін жарайтын сессияны табу мүмкін емес"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "Пайдаланушы сессияға ие емес"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: аталық экранға '%s' байланыс орнату қатесі"
 
-#~ msgid "User not logged in"
-#~ msgstr "Пайдаланушы жүйеге кіріп тұрған жоқ"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Қазір, бір уақытта тек бір клиент қосулы тұра алады"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "AuthDir %s жасау сәтсіз: %s"
 
-#~ msgid "Display ID"
-#~ msgstr "Дисплей ID"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "GNOME Display Manager Slave"
 
-#~ msgid "Login Window"
-#~ msgstr "Кіру терезесі"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "Жаңа экранды бастау мүмкін емес"
 
-#~| msgid "error initiating conversation with authentication system: %s"
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "аутентификация жүйесімен сөйлесуді бастау қатесі - %s"
 
-#~ msgid "general failure"
-#~ msgstr "жалпы қате"
 
-#~ msgid "out of memory"
-#~ msgstr "жады жеткіліксіз"
 
-#~ msgid "application programmer error"
-#~ msgstr "бағдарламалаушы қатесі"
 
-#~ msgid "unknown error"
-#~ msgstr "белгісіз қате"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "аутентификация жүйесіне тандалған пайдаланушы жөнінде хабарлау қатесі: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "аутентификация жүйесіне пайдаланушының хост аты жөнінде хабарлау қатесі: "
-#~ "%s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "аутентификация жүйесіне пайдаланушының консолі жөнінде хабарлау қатесі: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "аутентификация жүйесіне экран жолы жөнінде хабарлау қатесі: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "аутентификация жүйесіне экран xauth credentials жөнінде хабарлау қатесі: "
-#~ "%s"
 
-#~| msgid "PolicyKit Authentication Agent"
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "PolicyKit аутентификация агенті"
 
 #, fuzzy
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Сессияға саусақты оқу"

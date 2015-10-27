@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-06 21:56+0200\n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2013-09-14 02:20+0200\n"
 "Last-Translator: Josep Sànchez <papapep@gmx.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -23,95 +23,106 @@ msgstr ""
 "Content-Transfer-Encoding: 8bits\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../common/gdm-common.c:518
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "El /dev/urandom no és un dispositiu de caràcters"
+
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
+#, c-format
+msgid "Could not identify the current session."
+msgstr "No s'ha pogut identificar la sessió actual."
+
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "No s'ha pogut identificar el seient actual."
+
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"El sistema no pot determinar si canviar a una pantalla d'entrada existent o "
+"iniciar-ne una de nova."
+
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "El sistema no pot iniciar una pantalla d'entrada nova."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "no s'ha trobat l'usuari «%s» al sistema"
 
-#: ../daemon/gdm-display.c:1328 ../daemon/gdm-display.c:1362
-#, c-format
-msgid "No session available yet"
-msgstr "No hi ha cap sessió disponible encara"
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
 
-#: ../daemon/gdm-manager.c:276 ../daemon/gdm-manager.c:383
-#, c-format
-msgid "Unable to look up UID of user %s"
-msgstr "No s'ha pogut consultar l'UID de l'usuari %s"
+#: ../daemon/gdm-manager.c:766
+#, fuzzy
+msgid "No display available"
+msgstr "No hi ha cap sessió disponible"
 
-#: ../daemon/gdm-manager.c:290
-msgid "no sessions available"
-msgstr "no hi ha cap sessió disponible"
-
-#: ../daemon/gdm-manager.c:351
-#, c-format
-msgid "No sessions for %s available for reauthentication"
-msgstr "No hi ha més sessions disponibles per re-autenticar-se per l'usuari %s"
-
-#: ../daemon/gdm-manager.c:405
-#, c-format
-msgid "Unable to find session for user %s"
-msgstr "No s'ha pogut trobar la sessió de l'usuari %s"
-
-#: ../daemon/gdm-manager.c:475
-#, c-format
-msgid "Unable to find appropriate session for user %s"
-msgstr "No s'ha pogut trobar la sessió adequada per l'usuari %s"
-
-#: ../daemon/gdm-manager.c:670
-msgid "User doesn't own session"
-msgstr "La sessió no pertany a l'usuari"
-
-#: ../daemon/gdm-manager.c:683 ../daemon/gdm-manager.c:770
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "No hi ha cap sessió disponible"
 
-#: ../daemon/gdm-server.c:234
-#, c-format
-msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: no s'ha pogut connectar a la pantalla pare «%s»"
+#: ../daemon/gdm-manager.c:844
+msgid "Can only be called before user is logged in"
+msgstr ""
 
-#: ../daemon/gdm-server.c:413
+#: ../daemon/gdm-manager.c:854
+msgid "Caller not GDM"
+msgstr ""
+
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "L'usuari %s havia d'engendrar el servidor però este usuari no existeix"
 
-#: ../daemon/gdm-server.c:424 ../daemon/gdm-server.c:444
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "No s'ha pogut definir el groupid com a %d"
 
-#: ../daemon/gdm-server.c:430
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "ha fallat l'initgroups () per a %s"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No s'ha pogut definir l'userid com a %d"
 
-#: ../daemon/gdm-server.c:483
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: no s'ha pogut obrir el fitxer de registre per a la pantalla %s."
 
-#: ../daemon/gdm-server.c:494 ../daemon/gdm-server.c:500
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: s'ha produït un error en establir %s a %s"
 
-#: ../daemon/gdm-server.c:526
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: no s'ha pogut establir la prioritat del servidor a %d: %s"
 
-#: ../daemon/gdm-server.c:682
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: l'orde del servidor per a la pantalla %s està buida"
@@ -140,70 +151,58 @@ msgstr "Dispositiu de pantalla"
 msgid "The display device"
 msgstr "El dispositiu de pantalla"
 
-#: ../daemon/gdm-session.c:1183
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "No s'ha pogut crear un procés auxiliar d'autenticació"
 
-#: ../daemon/gdm-session-worker.c:835
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "El compte tenia un temps límit que s'ha sobrepassat."
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "S'ha produït algun error. Torneu-ho a provar."
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
-#: ../daemon/gdm-session-worker.c:1261
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Ha expirat la contrasenya, l'heu de canviar ara."
 
-#: ../daemon/gdm-session-worker.c:1500 ../daemon/gdm-session-worker.c:1517
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "no hi ha tal compte d'usuari disponible"
 
-#: ../daemon/gdm-session-worker.c:1544
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "No s'ha pogut commutar a este usuari"
 
-#: ../daemon/gdm-simple-slave.c:1527
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"No s'ha pogut iniciar el servidor X (l'entorn gràfic) degut a un error "
-"intern. Hauríeu de contactar amb l'administrador del sistema o comprovar el "
-"fitxer de registre de sistema (syslog) per poder-ne fer un diagnòstic. "
-"Mentrestant s'inhabilitarà esta pantalla. Reinicieu el GDM quan hàgeu "
-"solucionat el problema."
+# FIXME (dpm)
+#: ../daemon/gdm-wayland-session.c:385
+#, fuzzy
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
 
-#: ../daemon/gdm-simple-slave.c:1568
-#, c-format
-msgid "Can only be called before user is logged in"
-msgstr "Només es pot cridar abans que l'usuari haja entrat"
-
-#: ../daemon/gdm-simple-slave.c:1578
-#, c-format
-msgid "Caller not GDM"
-msgstr "El que ha fet la crida no és el GDM"
-
-#: ../daemon/gdm-simple-slave.c:1631
-msgid "User not logged in"
-msgstr "L'usuari no ha entrat"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:368
-#, c-format
-msgid "Currently, only one client can be connected at once"
-msgstr "Ara mateix, només es pot connectar un client al mateix temps"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:604
+#: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "No s'ha pogut crear el sòcol"
+
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:687
+msgid "Listen on TCP socket"
+msgstr ""
+
+# FIXME (dpm)
+#: ../daemon/gdm-x-session.c:698
+#, fuzzy
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
@@ -212,85 +211,70 @@ msgstr ""
 "No es pot escriure el fitxer de PID %s: pot ser que no quede espai al disc: "
 "%s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "No s'ha pogut crear el directori de marcatge d'un sol ús %s: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "No s'ha pogut crear el directori de registre %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "No es pot trobar l'usuari del GDM «%s». S'interromprà."
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "L'usuari del GDM no hauria de ser l'usuari primari. S'interromprà."
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "No s'ha trobat el grup «%s» del GDM. S'interromprà."
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 "El grup del GDM no hauria de ser el de l'usuari primari. S'interromprà."
 
-#: ../daemon/main.c:327
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Fes que tots els avisos siguen fatals"
 
-#: ../daemon/main.c:328
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Ix al cap d'un temps (utilitzeu-ho per a la depuració)"
 
-#: ../daemon/main.c:329
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Mostra la versió del GDM"
 
-#: ../daemon/main.c:340
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Gestor de pantalla del GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:388
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Només l'usuari primari pot executar el GDM"
 
 # FIXME (dpm)
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:101
+#: ../daemon/session-worker-main.c:95
 msgid "GNOME Display Manager Session Worker"
 msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
 
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "Display ID"
-msgstr "Identificador de la pantalla"
-
-#: ../daemon/simple-slave-main.c:125 ../daemon/xdmcp-chooser-slave-main.c:124
-msgid "ID"
-msgstr "Identificador"
-
-# FIXME (dpm)
-#: ../daemon/simple-slave-main.c:133 ../daemon/xdmcp-chooser-slave-main.c:132
-msgid "GNOME Display Manager Slave"
-msgstr "Esclau del gestor de pantalla del GNOME"
-
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "Finestra d'entrada"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Gestió de finestres i composició"
 
@@ -407,46 +391,6 @@ msgstr ""
 "El nombre de vegades que es permet que un usuari intente autenticar-se abans "
 "de deixar-ho estar i tornar a la selecció d'usuaris."
 
-#: ../gui/libgdm/gdm-user-switching.c:72
-msgid "Unable to create transient display: "
-msgstr "No s'ha pogut crear una visualització temporal: "
-
-#: ../gui/libgdm/gdm-user-switching.c:183
-#: ../gui/libgdm/gdm-user-switching.c:395
-msgid "Unable to activate session: "
-msgstr "No s'ha pogut activar la sessió: "
-
-#: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:447
-#: ../utils/gdmflexiserver.c:614
-#, c-format
-msgid "Could not identify the current session."
-msgstr "No s'ha pogut identificar la sessió actual."
-
-#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:454
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "L'usuari no pot canviar entre sessions."
-
-#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:623
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "No s'ha pogut identificar el seient actual."
-
-#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:633
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"El sistema no pot determinar si canviar a una pantalla d'entrada existent o "
-"iniciar-ne una de nova."
-
-#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:641
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "El sistema no pot iniciar una pantalla d'entrada nova."
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Seleccioneu el sistema"
@@ -467,35 +411,39 @@ msgstr "XDMCP: la versió de l'XDMCP és incorrecte"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: no s'ha pogut analitzar l'adreça"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../libgdm/gdm-user-switching.c:59
+msgid "Unable to create transient display: "
+msgstr "No s'ha pogut crear una visualització temporal: "
+
+#: ../libgdm/gdm-user-switching.c:90
+msgid "Unable to activate session: "
+msgstr "No s'ha pogut activar la sessió: "
+
+#: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Només s'admet l'orde VERSION"
 
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "ORDRE"
 
-#: ../utils/gdmflexiserver.c:66 ../utils/gdmflexiserver.c:67
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
+#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
+#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Ignorat — existeix només per compatibilitat"
 
-#: ../utils/gdmflexiserver.c:68 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Eixida de depuració"
 
-#: ../utils/gdmflexiserver.c:72
+#: ../utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Versió d'esta aplicació"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:707
+#: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
 msgstr "- Entrada GDM nova"
-
-#: ../utils/gdmflexiserver.c:763
-msgid "Unable to start new display"
-msgstr "No s'ha pogut iniciar una visualització nova"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -506,288 +454,103 @@ msgstr "S'ha fet una captura de pantalla"
 msgid "Take a picture of the screen"
 msgstr "Fes una foto de la pantalla"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr ""
-#~ "s'ha produït un error en iniciar la conversa amb el sistema "
-#~ "d'autenticació - %s"
 
-#~ msgid "general failure"
-#~ msgstr "s'ha produït una fallada general"
 
-#~ msgid "out of memory"
-#~ msgstr "s'ha exhaurit la memòria"
 
-#~ msgid "application programmer error"
-#~ msgstr "s'ha produït un error de programació de l'aplicació"
 
-#~ msgid "unknown error"
-#~ msgstr "error desconegut"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "s'ha produït un error en informar el sistema d'autenticació de "
-#~ "l'indicador de nom d'usuari preferit: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "s'ha produït un error en informar el sistema d'autenticació del nom de "
-#~ "l'ordinador de l'usuari: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr ""
-#~ "s'ha produït un error en informar el sistema d'autenticació de la consola "
-#~ "de l'usuari: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr ""
-#~ "s'ha produït un error en informar el sistema d'autenticació de la cadena "
-#~ "de la pantalla: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "s'ha produït un error en informar el sistema d'autenticació de les "
-#~ "credencials xauth de la pantalla: %s"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "No s'ha pogut crear el directori d'autenticació %s: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Autenticació per empremta"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Inicia la sessió amb empremta"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Autenticació per contrasenya"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "Inicia la sessió amb nom d'usuari i contrasenya"
 
-#~ msgid "Log In"
-#~ msgstr "Inici de sessió"
 
-#~ msgid "Slot ID"
-#~ msgstr "Identificador de la ranura"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "La ranura on és la targeta"
 
-#~ msgid "Slot Series"
-#~ msgstr "Sèrie de la ranura"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "identificador de targetes per ranura"
 
-#~ msgid "name"
-#~ msgstr "nom"
 
-#~ msgid "Module"
-#~ msgstr "Mòdul:"
 
-#~ msgid "smartcard driver"
-#~ msgstr "controlador de targetes intel·ligents"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Autenticació per targeta intel·ligent"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Inicia la sessió amb targeta intel·ligent"
 
-#~ msgid "Module Path"
-#~ msgstr "Camí al mòdul"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "camí al mòdul PKCS #11 de la targeta intel·ligent"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "s'ha rebut un error o s'ha penjant des de la font de l'esdeveniment"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "No s'ha pogut inicialitzar el sistema de seguretat NSS"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr ""
-#~ "no s'ha pogut trobar cap controlador de targetes intel·ligents adequat"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr ""
-#~ "no s'ha pogut carregar el controlador de targetes intel·ligents «%s»"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr ""
-#~ "no s'han pogut vigilar els esdeveniments d'entrada de la targeta - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr ""
-#~ "s'ha produït un error inesperat mentre s'esperaven esdeveniments de la "
-#~ "targeta intel·ligent"
 
-#~ msgid "Authentication"
-#~ msgstr "Autenticació"
 
-#~ msgid "Log into session"
-#~ msgstr "Entra en la sessió"
 
-#~ msgid "Value"
-#~ msgstr "Valor"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "percentatge de temps completat"
 
-#~ msgid "Inactive Text"
-#~ msgstr "Text inactiu"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "El text a utilitzar a l'etiqueta si l'usuari encara no ha seleccionat cap "
-#~ "element"
 
-#~ msgid "Active Text"
-#~ msgstr "Text actiu"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr ""
-#~ "El text a utilitzar a l'etiqueta si l'usuari ha seleccionat un element"
 
-#~ msgid "List Visible"
-#~ msgstr "La llista és visible"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Si la llista per triar l'usuari és visible"
+
+
+
+
+
+
+
+
+
+
+
 
 # Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
 # Time.html#Formatting-Calendar-Time
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a, %e de %b, %H:%M:%S"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a, %e de %b, %H:%M"
 
 # Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
 # Time.html#Formatting-Calendar-Time
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %H:%M:%S"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %H:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "S'està entrant de manera automàtica…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "S'està cancel·lant…"
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "Seleccioneu la llengua i feu clic a «Entra»"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Personalitzat"
 
-#~ msgid "Custom session"
-#~ msgstr "Sessió personalitzada"
 
-#~ msgid "Computer Name"
-#~ msgstr "Nom de l'ordinador"
 
-#~ msgid "Version"
-#~ msgstr "Versió"
 
-#~ msgid "Cancel"
-#~ msgstr "Cancel·la"
 
-#~ msgid "Unlock"
-#~ msgstr "Desbloca"
 
-#~ msgid "Login"
-#~ msgstr "Entra"
 
-#~ msgid "Suspend"
-#~ msgstr "Atura temporalment"
 
-#~ msgid "Restart"
-#~ msgstr "Reinicia"
 
-#~ msgid "Shut Down"
-#~ msgstr "Atura"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "Es desconeix el temps restant"
 
-#~ msgid "Panel"
-#~ msgstr "Quadre"
 
-#~ msgid "Label Text"
-#~ msgstr "Text de l'etiqueta"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "El text a utilitzar com a etiqueta"
 
-#~ msgid "Icon name"
-#~ msgstr "Nom de la icona"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "La icona a utilitzar amb l'etiqueta"
 
-#~ msgid "Default Item"
-#~ msgstr "Element predeterminat"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "L'identificador de l'element predeterminat"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Entrada remota (s'està connectant a %s…)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Entrada remota (connectat a %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "Entrada remota"
 
-#~ msgid "Session"
-#~ msgstr "Sessió"
 
-#~ msgid "Duration"
-#~ msgstr "Durada"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Nombre de segons abans d'aturar el temporitzador"
 
-#~ msgid "Start time"
-#~ msgstr "Hora d'inici"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "L'hora en què s'ha iniciat el temporitzador"
 
-#~ msgid "Is it Running?"
-#~ msgstr "S'està executant?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Si el temporitzador està activat"
 
-#~ msgid "Log in as %s"
-#~ msgstr "Entra com a %s"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Altres…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "Seleccioneu un compte diferent"
 
-#~ msgid "Guest"
-#~ msgstr "Convidat"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Entra com a convidat temporal"
 
-#~ msgid "Automatic Login"
-#~ msgstr "Entrada automàtica"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "Entra automàticament a la sessió després de seleccionar les opcions"
 
-#~ msgid "Currently logged in"
-#~ msgstr "Actualment connectat"

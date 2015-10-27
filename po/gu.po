@@ -5,9 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gu\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-08-26 05:02+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2014-08-26 15:56+0530\n"
 "Last-Translator: \n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
@@ -40,28 +39,22 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom એ અક્ષર ઉપકરણ નથી"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "હાલના સત્રને ઓળખી શકાતુ નથી."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "વપરાશકર્તાએ સત્રોને બદલવામાં અસમર્થ."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "વર્તમાન બેઠકને ઓળખી શક્યા નહિં."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -70,7 +63,7 @@ msgstr ""
 "સિસ્ટમ નક્કી કરવા માટે અસમર્થ છે ક્યાંતો હાલની પ્રવેશ સ્ક્રીનને ખસેડવા અથવા નવી પ્રવેશ "
 "સ્ક્રીનને શરૂ કરો."
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "સિસ્ટમ નવી પ્રવેશ સ્ક્રીનને શરૂ કરવામાં અસમર્થ છે."
@@ -80,57 +73,73 @@ msgstr "સિસ્ટમ નવી પ્રવેશ સ્ક્રીનન
 msgid "could not find user \"%s\" on system"
 msgstr "સિસ્ટમ પર વપરાશકર્તા \"%s\" શોધી શકાતો નથી"
 
-#: ../daemon/gdm-manager.c:943 ../daemon/gdm-manager.c:1203
+#: ../daemon/gdm-legacy-display.c:235
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+
+#: ../daemon/gdm-manager.c:766
+#, fuzzy
+msgid "No display available"
+msgstr "સત્ર ઉપલબ્ધ નથી"
+
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "સત્ર ઉપલબ્ધ નથી"
 
-#: ../daemon/gdm-manager.c:953
-#, c-format
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "વપરાશકર્તા પ્રવેશે તે પહેલાં ફક્ત કોલ કરી શકાય છે"
 
-#: ../daemon/gdm-manager.c:962
-#, c-format
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "કોલર GDM નથી"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-manager.c:864
+msgid "Unable to open private communication channel"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "સર્વર વપરાશકર્તા %s દ્વારા ઉત્પન્ન કરવાનું હતું પરંતુ તે વપરાશકર્તા અસ્તિત્વ ધરાવતો નથી"
+msgstr ""
+"સર્વર વપરાશકર્તા %s દ્વારા ઉત્પન્ન કરવાનું હતું પરંતુ તે વપરાશકર્તા અસ્તિત્વ ધરાવતો નથી"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "જૂથના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નહિં"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s માટે initgroups () નિષ્ફળ"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "વપરાશકર્તાના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નથી"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: દર્શાવ %s માટે લોગ ફાઇલ ખોલી શક્યા નહિં!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ને %s પર સુયોજિત કરવામાં ભૂલ"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: સર્વર પ્રાધાન્ય %d માં સુયોજિત કરી શકાઈ નહિં: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ડિસ્પ્લે %s માટે ખાલી સર્વર આદેશ"
@@ -159,102 +168,108 @@ msgstr "ડિસ્પ્લે ઉપકરણ"
 msgid "The display device"
 msgstr "ડિસ્પ્લે ઉપકરણ"
 
-#: ../daemon/gdm-session.c:1217
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "સત્તાધિકરણ મદદકર્તા પ્રક્રિયા બનાવી શક્યા નહિં"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "તમારું ખાતાને સમય મર્યાદા આપેલ હતી તે હવે પસાર થઇ ગઇ છે."
 
-#: ../daemon/gdm-session-worker.c:851
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "દિલગીર છું, કામ કરતુ નથી. મહેરબાની કરીને ફરીથી પ્રયત્ન કરો."
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "વપરાશકર્તાનું નામ:"
 
-#: ../daemon/gdm-session-worker.c:1241
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "તમારો પાસવર્ડ નિવૃત્ત થયેલ છે, મહેરબાની કરીને હવે તેને બદલો."
 
-#: ../daemon/gdm-session-worker.c:1480 ../daemon/gdm-session-worker.c:1497
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "વપરાશકર્તાનું ખાતુ ઉપલબ્ધ નથી"
 
-#: ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "વપરાશકર્તાને બદલવામાં અસમર્થ"
 
-#: ../daemon/gdm-simple-slave.c:871
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"અમુક આંતરિક ભૂલોના કારણે X સર્વર (તમારું ચિત્રાત્મક પર્યાવરણ) શરુ કરી શકાતું નથી.મહેરબાની "
-"કરીને તમારા સિસ્ટમ સંચાલકનો સંપર્ક કરો અથવા તપાસ માટે તમારું syslog ચકાસો. આ સમય "
-"દરમ્યાન આ ડિસ્પ્લે નિષ્ક્રિય થઇ જશે.  મહેરબાની કરીને જ્યારે સમસ્યાનો હલ આવી જાય ત્યારે GDM "
-"ફરીથી શરુ કરો."
+#: ../daemon/gdm-wayland-session.c:385
+#, fuzzy
+msgid "GNOME Display Manager Wayland Session Launcher"
+msgstr "GNOME ડિસ્પ્લે વ્યવસ્થાપક સત્ર કામ કરનાર ચાલી"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:609
 msgid "Could not create socket!"
 msgstr "સોકૅટ બનાવી શકાયુ નહિ!"
+
+#: ../daemon/gdm-x-session.c:686
+msgid "Run program through /etc/gdm/Xsession wrapper script"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:687
+msgid "Listen on TCP socket"
+msgstr ""
+
+#: ../daemon/gdm-x-session.c:698
+#, fuzzy
+msgid "GNOME Display Manager X Session Launcher"
+msgstr "GNOME ડિસ્પ્લે વ્યવસ્થાપક સત્ર કામ કરનાર ચાલી"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID ફાઈલ %s પર લખી શકાતુ નથી: સંભવિત છે કે ડિસ્કજગ્યા બહાર છે: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "એકવાર dir %s ચાલે પછી તેને બનાવવાનું નિષ્ફળ: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s ને બનાવવામાં નિષ્ફળ: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM વપરાશકર્તા '%s' શોધી શકતા નથી. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM વપરાશકર્તા રુટ હોવો જોઈએ નહિં. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM જૂથ '%s' શોધી શકતા નથી. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM જૂથ રુટ હોવું જોઈએ નહિં. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "બધી ચેતવણીઓ ફેટલ બનાવો"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "થોડા સમય પછી બહાર નીકળો (ડિબગીંગ માટે)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "GDM આવૃત્તિ છાપો"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "જીનોમ ડિસ્પ્લે વ્યવસ્થાપક"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "માત્ર રુટ વપરાશકર્તા GDM ને ચલાવી શકે છે"
 
@@ -264,15 +279,13 @@ msgstr "માત્ર રુટ વપરાશકર્તા GDM ને ચ�
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ડિસ્પ્લે વ્યવસ્થાપક સત્ર કામ કરનાર ચાલી"
 
-#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-msgid "Login Window"
-msgstr "પ્રવેશ વિન્ડો"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
+#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "વિન્ડો વ્યવસ્થાપન અને કમ્પોઝીટીંગ"
 
@@ -301,7 +314,6 @@ msgstr ""
 "મદદથી પ્રવેશવા માટે સ્માર્ટકાર્ડો છે."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#| msgid "Whether or not to allow smartcard readers for login"
 msgid "Whether or not to allow passwords for login"
 msgstr "ક્યાંતો પ્રવેશ માટે પાસવર્ડને પરવાનગી આપવી છે કે નહિં"
 
@@ -310,8 +322,8 @@ msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"પ્રવેશ સ્ક્રીન પાસવર્ડ સત્તાધિકરણને પરવાનગી ન આપવા વાપરી શકાય છે, સ્માર્ટકાર્ડ અને આંગળીછાપન "
-"સત્તાધિકરણને વાપરવા માટે વપરાશકર્તાને દબાણ કરી રહ્યા છે."
+"પ્રવેશ સ્ક્રીન પાસવર્ડ સત્તાધિકરણને પરવાનગી ન આપવા વાપરી શકાય છે, સ્માર્ટકાર્ડ અને "
+"આંગળીછાપન સત્તાધિકરણને વાપરવા માટે વપરાશકર્તાને દબાણ કરી રહ્યા છે."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -404,11 +416,11 @@ msgstr "XDMCP: અયોગ્ય XDMCP આવૃત્તિ!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: સરનામાંને પદચ્છેદન કરવાનું અસમર્થ"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "અસ્થાયી દર્શાવ બનાવવામાં અસમર્થ:"
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "સત્રને સક્રિય કરવાનું અસમર્થ: "
 
@@ -447,569 +459,187 @@ msgstr "સ્ક્રીનશોટ લીધેલ છે"
 msgid "Take a picture of the screen"
 msgstr "સ્ક્રીનનું ચિત્ર ને લો"
 
-#~ msgid "No session available yet"
-#~ msgstr "હજુ સત્ર ઉપલબ્ધ નથી"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "વપરાશકર્તા %s ની UID ને જોવામાં અસમર્થ"
 
-#~ msgid "no sessions available"
-#~ msgstr "સત્રો ઉપલબ્ધ નથી"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "પુન:સત્તાધિકરણ માટે %s ઉપલબ્ધ માટે સત્રો નથી"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "વપરાશકર્તા  %s માટે સત્રને શોધવામાં અસમર્થ"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "વપરાશકર્તા %s માટે અનુકુળ સત્રને શોધવામાં અસમર્થ"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "વપરાશકર્તા પોતાનું સત્ર હોતુ નથી"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: પિતૃ ડિસ્પ્લે '%s' સાથે જોડાવામાં નિષ્ફળ"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "સત્તાધિકરણ સિસ્ટમ સાથે શરૂઆતમાં વાર્તાલાપ કરવા દરમ્યાન ભૂલ - %s"
 
-#~ msgid "general failure"
-#~ msgstr "સામાન્ય નિષ્ફળતા"
 
-#~ msgid "out of memory"
-#~ msgstr "મેમરીની બહાર"
 
-#~ msgid "application programmer error"
-#~ msgstr "કાર્યક્રમ પ્રોગ્રામર ભૂલ"
 
-#~ msgid "unknown error"
-#~ msgstr "અજ્ઞાત ભૂલ"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr ""
-#~ "અધિમાન્ય વપરાશકર્તાનામ પ્રોમ્પ્ટનાં સિસ્ટમ સત્તાધિકરણને જાણકારી દરમિયાન ભૂલ: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr "વપરાશકર્તાનાં યજમાનનામની સિસ્ટમ સત્તાધિકરણની જાણકારી દરમિયાન ભૂલ: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "વપરાશકર્તાનાં કન્સોલની સિસ્ટમ સત્તાધિકરણને જાણકારી દરમિયાન ભૂલ: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "શબ્દમાળાને દર્શાવવા સિસ્ટમ સત્તાધિકરણને જાણકારી દરમિયાન ભૂલ: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr "xauth શ્રેય દર્શાવવા નું સત્તાધિકરણ સિસ્ટમને જાણકારી દરમિયાન ભૂલ: %s"
 
-#~ msgid "User not logged in"
-#~ msgstr "વપરાશકર્તા પ્રવેશેલ નથી"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "હાલમાં, ફક્ત એક ક્લાયન્ટ ફક્ત એકવાર જોડાઇ શકે છે"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "AuthDir %s બનાવવામાં નિષ્ફળતા: %s"
 
-#~ msgid "Display ID"
-#~ msgstr "ડિસ્પ્લે ID"
 
-#~ msgid "ID"
-#~ msgstr "ID"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "જીનોમ ડિસ્પ્લે વ્યવસ્થાપક સ્લેવ"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "ફિંગરપ્રીન્ટ સત્તાધિકરણ"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "ફિંગરપ્રીન્ટ સાથે સત્રમાં પ્રવેશો"
 
-#~ msgid "Password Authentication"
-#~ msgstr "પાસવર્ડ સત્તાધિકરણ"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "વપરાશકર્તાનામ અને પાસવર્ડ સાથે સત્રમાં પ્રવેશો"
 
-#~ msgid "Log In"
-#~ msgstr "પ્રવેશ"
 
-#~ msgid "Slot ID"
-#~ msgstr "સ્લોટ ID"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "કાર્ડનું સ્લોટ તેમાં છે"
 
-#~ msgid "Slot Series"
-#~ msgstr "સ્લોટ શ્રેણી"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "પ્રતિ-સ્લોટ કાર્ડ ઓળખનાર"
 
-#~ msgid "name"
-#~ msgstr "નામ"
 
-#~ msgid "Module"
-#~ msgstr "મોડ્યુલ"
 
-#~ msgid "smartcard driver"
-#~ msgstr "સ્માર્ટકાર્ડ ડ્રાઇવર"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "સ્માર્ટકાર્ડ સત્તાધિકરણ"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "સ્માર્ટકાર્ડ સાથે સત્રમાં પ્રવેશો"
 
-#~ msgid "Module Path"
-#~ msgstr "મોડ્યુલ પાથ"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "smartcard PKCS #11 ડ્રાઇવર માટે પાથ"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "ઘટના સ્ત્રોતમાંથી અટકી ગયું અથવા ભૂલ મળી"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "NSS સુરક્ષા સિસ્ટમનો પ્રારંભ કરી શક્યા નહિં"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "સુસંગત સ્માર્ટકાર્ડ ડ્રાઇવર શોધી શક્યા નહિં"
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "સ્માર્ટ કાર્ડ ડ્રાઇવર '%s' ને લાવી શક્યા નહિં"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "આવતી કાર્ડ ઘટનાઓ માટે ધ્યાન રાખી શક્યા નહિં - %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr "અનિચ્છનીય ભૂલ મળી જ્યારે સ્માર્ટકાર્ડ ઘટનાઓ માટે રાહ જોઇ રહ્યા હોય"
 
-#~ msgid "Authentication"
-#~ msgstr "સત્તાધિકરણ"
 
-#~ msgid "Log into session"
-#~ msgstr "સત્રમાં પ્રવેશો"
 
-#~ msgid "Value"
-#~ msgstr "કિંમત"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "સમયની ટકાવારી સમાપ્ત થઇ "
 
-#~ msgid "Inactive Text"
-#~ msgstr "નિષ્ક્રિય લ ખાણ"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr "જો વપરાશકર્તા એ હજુ વસ્તુને પકડેલ ન હોય તો લેબલમાં વપરાતુ લખાણ"
 
-#~ msgid "Active Text"
-#~ msgstr "સક્રિય લખાણ"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "જો વપરાશકર્તા વસ્તુને પકડેલ હોય ત્યારે વપરાતા લેબલમાં વપરાતુ લખાણ"
 
-#~ msgid "List Visible"
-#~ msgstr "દેખાતી યાદી"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "ક્યાંતો પસંદ કરનાર યાદી દેખાશે કે નહિં"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %b %e, %l:%M:%S %p"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %b %e, %l:%M %p"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %l:%M:%S %p"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %l:%M %p"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "આપોઆપ પ્રવેશી રહ્યા છે..."
 
-#~ msgid "Cancelling…"
-#~ msgstr "રદ કરી રહ્યા છે..."
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "ભાષા પસંદ કરો અને પ્રવેશો પર ક્લિક કરો"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "વૈવિધ્ય"
 
-#~ msgid "Custom session"
-#~ msgstr "વૈવિધ્ય ક્ષેત્ર"
 
-#~ msgid "Computer Name"
-#~ msgstr "કમ્પ્યુટર નામ"
 
-#~ msgid "Version"
-#~ msgstr "આવૃત્તિ"
 
-#~ msgid "Cancel"
-#~ msgstr "રદ કરો"
 
-#~ msgid "Unlock"
-#~ msgstr "તાળુ ખોલો"
 
-#~ msgid "Login"
-#~ msgstr "પ્રવેશ"
 
-#~ msgid "Suspend"
-#~ msgstr "સ્થગિત"
+
 
 # gnome-session/session-properties.c:173
-#~ msgid "Restart"
-#~ msgstr "ફરીથી શરુ કરો"
 
-#~ msgid "Shut Down"
-#~ msgstr "બંધ કરો"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "અજ્ઞાત સમય બાકી રહેલ છે"
 
-#~ msgid "Panel"
-#~ msgstr "પેનલ"
 
-#~ msgid "Label Text"
-#~ msgstr "લેબલ લખાણ"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "લેબલ તરીકે વાપરવા માટે લખાણ"
 
-#~ msgid "Icon name"
-#~ msgstr "આઇકોન નામ"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "લેબલ સાથે વપરાતા આઇકોન"
 
-#~ msgid "Default Item"
-#~ msgstr "મૂળભૂત વસ્તુ"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "મૂળભૂત વસ્તુનું ID"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "દૂરસ્થ પ્રવેશ (%s ને જોડાઇ રહ્યા છે...)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "દૂરસ્થ પ્રવેશ (%s ને જોડાઇ રહ્યા છે)"
 
-#~ msgid "Remote Login"
-#~ msgstr "દૂરસ્થ પ્રવેશ"
 
-#~ msgid "Session"
-#~ msgstr "સત્ર"
 
-#~ msgid "Duration"
-#~ msgstr "સમયગાળો"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "ટાઇમર બંધ કરીએ ત્યાં સુધી સેકન્ડોના નંબર"
 
-#~ msgid "Start time"
-#~ msgstr "સમય શરૂ કરો"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "સમયનું ટાઇમર શરુ થયેલ હતુ"
 
-#~ msgid "Is it Running?"
-#~ msgstr "શું તે ચાલી રહ્યુ છે?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "ક્યાંતો ટાઇમર હાલમાં શરૂ થઇ રહ્યુ છે કે નહિં"
 
-#~ msgid "Log in as %s"
-#~ msgstr "%s તરીકે પ્રવેશ કરો"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "બીજું..."
 
-#~ msgid "Choose a different account"
-#~ msgstr "વિવિધ ખાતા પસંદ કરો"
 
-#~ msgid "Guest"
-#~ msgstr "મહેમાન"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "કામચલાઉ મહેમાન તરીકે પ્રવેશ"
 
-#~ msgid "Automatic Login"
-#~ msgstr "આપોઆપ પ્રવેશ"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "વિકલ્પો પસંદ કરવા દરમિયાન પછી આપોઆપ સિસ્ટમ દાખલ થાય છે"
 
-#~ msgid "Currently logged in"
-#~ msgstr "વર્તમાનમાં જ પ્રવેશેલ છે"
 
-#~| msgid "Unable to create transient display: "
-#~ msgid "Unable to start new display"
-#~ msgstr "નવાં દર્શાવને શરૂ કરવાનું અસમર્થ"
 
-#~ msgid "User %s doesn't exist"
-#~ msgstr "વપરાશકર્તા %s અસ્તિત્વ ધરાવતુ નથી"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "જૂથ %s અસ્તિત્વ ધરાવતુ નથી"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "Logdir %s એ અસ્તિત્વ ધરાવતી નથી અથવા તે ડિરેક્ટરી નથી."
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "Authdir %s અસ્તિત્વ ધરાવતી નથી. અડધેથી છોડી રહ્યા છે."
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "Authdir %s ડિરેક્ટરી નથી. અડધેથી છોડી રહ્યા છે."
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr "Authdir %1$s વપરાશકર્તા %2$d, જૂથ %3$d દ્દારા માલિકી નથી. ખંડિત કરે છે."
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr "Authdir %s ખોટી %o પરવાનગી છે, એ %o હોવી જોઇએ. અડધેથી બંધ કરી રહ્યા છે."
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME સ્ક્રીન આવર્ધક"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "સ્ક્રીનનાં ભાગોને મોટા કરો"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "GNOME ઓન-સ્ક્રીન કિબોર્ડ"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "ઓન-સ્ક્રીન કિબોર્ડ ને વાપરો"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orca સ્ક્રીન વાંચનાર"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "ઓન-સ્ક્રીન માહિતી બોલવા અથવા બ્રૈલે તરીકે હાજર કરો"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "સિસ્ટમના પ્રવેશની શરૂઆત કરવામાં અસમર્થ"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "ઓળખાણપત્ર સ્થાપવામાં અસમર્થ"
 
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr "ખસેડવા માટે સિસ્ટમ પ્રવેશ સ્ક્રીનને શોધવા માટે અસમર્થ છે."
 
-#~ msgid "Max Item Count"
-#~ msgstr "મહત્તમ વસ્તુ ગણતરી"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "યાદીમાં દરેક બાજુમાં વસ્તુઓનો મહત્તમ નંબર"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "જ્યારે પસંદકરનાર ખાલી હોય તો બેનર સંદેશ લખાણ"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "પ્રવેશ વિન્ડો પર બતાવવા માટે લખાણ બેનર સંદેશ જ્યારે વપરાશકર્તા પસંદકરનાર ખાલી હોય, "
-#~ "banner_message_text ને બદલે."
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "શુભેચ્છક લોગો માટે વપરાતા આઇકોન નામ"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr "શુભેચ્છક લોગો માટે વપરાશ કરવા માટે થીમ થયેલ આઇકોન નામને સુયોજિત કરો."
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "પ્રવેશ વિન્ડો માં જાણીતા વપરાશકર્તાને બતાવો નહિં"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "પ્રવેશ વિન્ડોમાં જાણીતા વપરાશકર્તાઓ બતાવવાનું નિષ્ક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "Recently selected languages"
-#~ msgstr "હાલમાં પસંદ કરાયેલ ભાષાઓ"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "પ્રવેશ વિન્ડો પર મૂળભૂત વડે બતાવેલ ભાષાઓની યાદીને સુયોજિત કરો."
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "કૉમ્પીઝને વિન્ડો વ્યવસ્થાપક તરીકે વાપરો"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "વિન્ડો વ્યવસ્થાપક તરીકે કૉમ્પીઝ વાપરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "ઓન-સ્ક્રીન કિબોર્ડ સક્રિય"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "ઓન-સ્ક્રીન કિબોર્ડ ને સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "Enable screen reader"
-#~ msgstr "સ્ક્રીન વાંચનાર સક્રિય"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "સ્ક્રીન વાંચનારને સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "સ્ક્રીન વિસ્તૃત કરનાર સક્રિય"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "સ્ક્રીન વર્ધકને સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "સુલભ કિબોર્ડ પ્લગઇનને સક્રિય કરો"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "સુલભ કિબોર્ડ સુયોજનો વ્યવસ્થિત કરવા પ્લગઇન ને સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr "True છે જો પાશ્ર્વભાગ સુયોજનાઓ વ્યવસ્થાપક પ્લગઇન સક્રિય થયેલ છે."
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "પાશ્ર્વભાગ સુયોજનો વ્યવસ્થાપક પ્લગઇનને સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr "True છે જો મિડીઆ-કી સુયોજનાઓ વ્યવસ્થાપક પ્લગઇન સક્રિય થયેલ છે."
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr ""
-#~ "મિડીઆ-કીઓ સુયોજનાઓ વ્યવસ્થાપક પ્લગઇન ને સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "True છે જો સાઉન્ડ સુયોજનાઓ વ્યવસ્થાપક પ્લગઇન સક્રિય થયેલ છે."
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "સાઉન્ડ સુયોજનો વ્યવસ્થાપક પ્લગઇન સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "True છે જો xrandr સુયોજનાઓ વ્યવસ્થાપક પ્લગઇન સક્રિય થયેલ છે."
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "XRandR વ્યવસ્થાપક પ્લગઇન સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr "True છે જો xsettings સુયોજનાઓ વ્યવસ્થાપક પ્લગઇન સક્રિય થયેલ છે."
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr "xsettings સુયોજનો વ્યવસ્થાપક પ્લગઇન સક્રિય કરવા માટે true ને સુયોજિત કરો."
 
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "યજમાન %s પાસેથી XDMCP પરનો સવાલ નકારી કઢાયો"
 
-#~ msgid "Could not extract authlist from packet"
-#~ msgstr "પૅકૅટમાંથી સત્તા માટેની યાદી કાઢી શકાયી નહિ"
 
-#~ msgid "Error in checksum"
-#~ msgstr "ચકાસણીઅંકમાં ભૂલ"
 
-#~ msgid "Bad address"
-#~ msgstr "ખોટુ સરનામું"
 
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s: ડિસ્પ્લે સરનામું વાંચી શકાયુ નહિ"
 
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s: ડિસ્પ્લે પોર્ટ આંક વાંચી શકાયો નહિ"
 
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s: પૅકૅટમાંથી સત્તા માટેની યાદી કાઢી શકાયી નહિ"
 
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s: ચકાસણીઅંકમાં ભૂલ"
 
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s: પ્રતિબંધિત યજનામ %s પાસેથી વિનંતી મળી"
 
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s: ડિસ્પ્લે આંક વાંચી શકાયો નહિ"
 
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s: જોડાણ પ્રકાર વાંચી શકાયુ નહિ"
 
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s: ક્લાઇન્ટ સરનામું વાંચી શકાયુ નહિ"
 
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s: સત્તાધીશની માહિતી વાંચી શકાયી નહિ"
 
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s: સત્તાધીશ માટેની યાદી વાંચી શકાયી નહિ"
 
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s: ઉત્પાદક ઓળખ ક્રમાંક વાંચી શકાતો નથી"
 
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s: %s માથી ચકાસણીઅંક નિષ્ફળ"
 
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s: પ્રતિબંધિત યજમાનનુ %s માંથી વ્યવસ્થાપન થયુ"
 
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s: સત્રનુ ઓળખ ક્રમાંક વાંચી શકાતુ નથી"
 
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s: ડિસ્પ્લે વર્ગ વાંચી શકાયો નહિ"
 
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s: સરનામુ વાંચી શકાયુ નહિ"
 
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s: પ્રતિબંધિત યજમાન %s માંથી KEEPALIVE મળ્યુ"
 
-#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-#~ msgstr "GdmXdmcpDisplayFactory: XDMCP હેડરને વાંચી શકાતુ નથી!"
 
-#~ msgid "Could not get server hostname: %s!"
-#~ msgstr "યજમાન સર્વરનુ નામ મેળવી શકાયુ નહિ: %s!"
 
-#~ msgid "Activation of this plugin"
-#~ msgstr "આ પ્લગઇનનું સક્રિયકરણ"
 
-#~ msgid "Whether this plugin would be activated or not"
-#~ msgstr "શું આ પ્લગઇન સક્રિય થયેલ છે કે નહિં"
 
-#~ msgid "AT-SPI Registry Wrapper"
-#~ msgstr "AT SPI રજીસ્ટરી રૅપર"
 
-#~ msgid "Power Manager"
-#~ msgstr "પાવર વ્યવસ્થાપક"
 
-#~ msgid "GNOME Session Acceleration Checker"
-#~ msgstr "GNOME સત્ર એક્સેલરેશન ચકાસનાર"
 
-#~ msgid "GNOME Settings Daemon"
-#~ msgstr "GNOME સુયોજનાઓ ડેઇમોન"
 
-#~ msgid "Metacity"
-#~ msgstr "મેટાસીટી"
 
-#~ msgid "Languages"
-#~ msgstr "ભાષાઓ"
 
-#~ msgid "_Languages:"
-#~ msgstr "ભાષાઓ (_L):"
 
-#~ msgid "_Language:"
-#~ msgstr "ભાષા (_L):"
 
-#~ msgctxt "language"
-#~ msgid "Other…"
-#~ msgstr "બીજું..."
 
-#~ msgid "Choose a language from the full list of available languages."
-#~ msgstr "ઉપલબ્ધ ભાષાઓની સંપૂર્ણ યાદી માંથી ભાષા પસંદ કરો."
 
-#~ msgid "Language"
-#~ msgstr "ભાષા"
 
-#~ msgid "Unspecified"
-#~ msgstr "સ્પષ્ટ થયેલ નથી"

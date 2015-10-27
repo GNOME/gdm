@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.90.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-24 22:16+0200\n"
+"POT-Creation-Date: 2015-10-27 15:41-0400\n"
 "PO-Revision-Date: 2015-02-24 22:27+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: linux.org.ua\n"
@@ -17,32 +17,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Virtaal 0.7.1\n"
 
-#: ../common/gdm-common.c:311
+#: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не є символьним пристроєм"
 
-#: ../common/gdm-common.c:619 ../common/gdm-common.c:772
-#: ../libgdm/gdm-user-switching.c:344 ../libgdm/gdm-user-switching.c:514
+#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Неможливо розпізнати поточний сеанс."
 
-#: ../common/gdm-common.c:626 ../libgdm/gdm-user-switching.c:351
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Користувач не може перемкнути сеанс."
-
-#: ../common/gdm-common.c:781 ../libgdm/gdm-user-switching.c:523
+#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Неможливо розпізнати поточне місце."
 
-#: ../common/gdm-common.c:791 ../libgdm/gdm-user-switching.c:533
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -51,7 +45,7 @@ msgstr ""
 "Система не може визначити, чи перемкнутись на наявний вхідний екран чи "
 "запустити новий. "
 
-#: ../common/gdm-common.c:799 ../libgdm/gdm-user-switching.c:541
+#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Система не може запустити новий вхідний екран."
@@ -61,7 +55,7 @@ msgstr "Система не може запустити новий вхідни�
 msgid "could not find user \"%s\" on system"
 msgstr "неможливо знайти користувача «%s» у системі"
 
-#: ../daemon/gdm-legacy-display.c:220
+#: ../daemon/gdm-legacy-display.c:235
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -73,63 +67,63 @@ msgstr ""
 "системний журнал. Через деякий час цей дисплей буде вимкнено. Будь ласка, "
 "перезавантажте GDM, коли проблема буде вирішено."
 
-#: ../daemon/gdm-manager.c:1075
+#: ../daemon/gdm-manager.c:766
 msgid "No display available"
 msgstr "Немає доступного екрана"
 
-#: ../daemon/gdm-manager.c:1124 ../daemon/gdm-manager.c:1380
+#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
 msgid "No session available"
 msgstr "Немає доступного сеансу"
 
-#: ../daemon/gdm-manager.c:1135
+#: ../daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
 msgstr "Можна тільки викликатись перед входом користувача"
 
-#: ../daemon/gdm-manager.c:1145
+#: ../daemon/gdm-manager.c:854
 msgid "Caller not GDM"
 msgstr "Викликач не GDM"
 
-#: ../daemon/gdm-manager.c:1155
+#: ../daemon/gdm-manager.c:864
 msgid "Unable to open private communication channel"
 msgstr "Неможливо відкрити закритий канал зв'язку"
 
-#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:378
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Сервер запущено користувачем %s, але цього користувача не існує"
 
-#: ../daemon/gdm-server.c:448 ../daemon/gdm-server.c:468
+#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Не вдалось встановити groupid для %d"
 
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:395
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Помилка initgroups() для %s"
 
-#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:401
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Не вдалось встановити userid для %d"
 
-#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не вдалось відкрити файл журналу для екрана %s!"
 
-#: ../daemon/gdm-server.c:559 ../daemon/gdm-server.c:565
-#: ../daemon/gdm-server.c:571
+#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: помилка налаштування %s для %s"
 
-#: ../daemon/gdm-server.c:591
+#: ../daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Пріоритет сервера неможливо вказати для %d: %s"
 
-#: ../daemon/gdm-server.c:743
+#: ../daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: порожня команда програми сервера для екрана %s"
@@ -158,36 +152,36 @@ msgstr "Пристрій показу"
 msgid "The display device"
 msgstr "Пристрій показу"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "Неможливо створити дію з помічника розпізнавання"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
 msgstr "Ваш обліковий запис має часове обмеження, яке вже вичерпано."
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Вибачте, це не працює. Спробуйте ще."
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Користувач:"
 
-#: ../daemon/gdm-session-worker.c:1242
+#: ../daemon/gdm-session-worker.c:1142
 msgid "Your password has expired, please change it now."
 msgstr "Ваш пароль застарів, змініть його."
 
-#: ../daemon/gdm-session-worker.c:1481 ../daemon/gdm-session-worker.c:1498
+#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
 #, c-format
 msgid "no user account available"
 msgstr "недоступний обліковий запис користувача"
 
-#: ../daemon/gdm-session-worker.c:1525
+#: ../daemon/gdm-session-worker.c:1549
 msgid "Unable to change to user"
 msgstr "Неможливо змінити користувача"
 
-#: ../daemon/gdm-wayland-session.c:377
+#: ../daemon/gdm-wayland-session.c:385
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Пускач сеансу Wayland GNOME"
 
@@ -195,15 +189,15 @@ msgstr "Пускач сеансу Wayland GNOME"
 msgid "Could not create socket!"
 msgstr "Не вдалось створити гніздо!"
 
-#: ../daemon/gdm-x-session.c:677
+#: ../daemon/gdm-x-session.c:686
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Запустити програму через скрипт у /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:678
+#: ../daemon/gdm-x-session.c:687
 msgid "Listen on TCP socket"
 msgstr "Чекати на сокет TCP"
 
-#: ../daemon/gdm-x-session.c:689
+#: ../daemon/gdm-x-session.c:698
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Пускач сеансу X GNOME"
 
@@ -212,52 +206,52 @@ msgstr "Пускач сеансу X GNOME"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Неможливо записати файл PID %s: можливо, немає місця на диску: %s"
 
-#: ../daemon/main.c:188
+#: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Неможливо створити клеймований каталог %s: %s"
 
-#: ../daemon/main.c:194
+#: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Не вдалося створити LogDir %s: %s"
 
-#: ../daemon/main.c:229
+#: ../daemon/main.c:223
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Не знайдено користувача GDM «%s». Скасування!"
 
-#: ../daemon/main.c:235
+#: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Користувачем GDM не може бути root. Скасування!"
 
-#: ../daemon/main.c:241
+#: ../daemon/main.c:235
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Не знайдено групу GDM «%s». Скасування!"
 
-#: ../daemon/main.c:247
+#: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Група GDM не повинна бути групою root. Скасування!"
 
-#: ../daemon/main.c:324
+#: ../daemon/main.c:318
 msgid "Make all warnings fatal"
 msgstr "Зробити всі попередження критичними"
 
-#: ../daemon/main.c:325
+#: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
 msgstr "Вийти через деякий час (для зневадження)"
 
-#: ../daemon/main.c:326
+#: ../daemon/main.c:320
 msgid "Print GDM version"
 msgstr "Показати версію GDM"
 
-#: ../daemon/main.c:339
+#: ../daemon/main.c:333
 msgid "GNOME Display Manager"
 msgstr "Менеджер стільниці GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:387
+#: ../daemon/main.c:381
 msgid "Only the root user can run GDM"
 msgstr "Лише адміністратор (root) може запускати GDM"
 
@@ -408,11 +402,11 @@ msgstr "XDMCP: неправильна версія XDMCP!"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: неможливо розібрати адресу"
 
-#: ../libgdm/gdm-user-switching.c:72
+#: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Неможливо створити змінний екран:"
 
-#: ../libgdm/gdm-user-switching.c:183 ../libgdm/gdm-user-switching.c:395
+#: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Неможливо ввімкнути сеанс:"
 
@@ -451,715 +445,222 @@ msgstr "Знімок екрана зроблено"
 msgid "Take a picture of the screen"
 msgstr "Зробити знімок екрана"
 
-#~ msgid "No session available yet"
-#~ msgstr "Поки що немає доступного сеансу"
 
-#~ msgid "Unable to look up UID of user %s"
-#~ msgstr "Неможливо віднайти UID користувача %s"
 
-#~ msgid "no sessions available"
-#~ msgstr "немає доступного сеансу"
 
-#~ msgid "No sessions for %s available for reauthentication"
-#~ msgstr "Немає доступного сеансу %s для повторного розпізнавання"
 
-#~ msgid "Unable to find session for user %s"
-#~ msgstr "Неможливо знайти сеанс для користувача %s"
 
-#~ msgid "Unable to find appropriate session for user %s"
-#~ msgstr "Неможливо знайти відповідний сеанс для користувача %s"
 
-#~ msgid "User doesn't own session"
-#~ msgstr "Користувач не володіє сеансом"
 
-#~ msgid "%s: failed to connect to parent display '%s'"
-#~ msgstr "%s: не вдалось з'єднатись з батьківським екраном «%s»"
 
-#~ msgid "User not logged in"
-#~ msgstr "Користувач не увійшов"
 
-#~ msgid "Currently, only one client can be connected at once"
-#~ msgstr "Наразі, тільки один клієнт можна з'єднати за раз"
 
-#~ msgid "Display ID"
-#~ msgstr "Ідентифікатор екрана"
 
-#~ msgid "ID"
-#~ msgstr "Ідентифікатор"
 
-#~ msgid "GNOME Display Manager Slave"
-#~ msgstr "Підлеглий менеджер стільниці GNOME"
 
-#~ msgid "Login Window"
-#~ msgstr "Вікно входу в систему"
 
-#~ msgid "Unable to start new display"
-#~ msgstr "Неможливо запустити новий екран"
 
-#~ msgid "error initiating conversation with authentication system - %s"
-#~ msgstr "помилка початкового обміну з системою автентифікації —  %s"
 
-#~ msgid "general failure"
-#~ msgstr "загальна помилка"
 
-#~ msgid "out of memory"
-#~ msgstr "немає вільної пам'яті"
 
-#~ msgid "application programmer error"
-#~ msgstr "помилка програміста програми"
 
-#~ msgid "unknown error"
-#~ msgstr "невідома помилка"
 
-#~ msgid ""
-#~ "error informing authentication system of preferred username prompt: %s"
-#~ msgstr "помилка сповіщення системи автентифікації запиту користувача: %s"
 
-#~ msgid "error informing authentication system of user's hostname: %s"
-#~ msgstr ""
-#~ "помилка сповіщення системи автентифікації назви вузла користувача: %s"
 
-#~ msgid "error informing authentication system of user's console: %s"
-#~ msgstr "помилка сповіщення системи автентифікації консолі користувача: %s"
 
-#~ msgid "error informing authentication system of display string: %s"
-#~ msgstr "помилка сповіщення системи автентифікації рядка екрана: %s"
 
-#~ msgid ""
-#~ "error informing authentication system of display xauth credentials: %s"
-#~ msgstr ""
-#~ "помилка сповіщення системи автентифікації реєстрації даних екрана xauth: "
-#~ "%s"
 
-#~ msgid "Failed to create AuthDir %s: %s"
-#~ msgstr "Не вдалося створити AuthDir %s: %s"
 
-#~ msgid "Fingerprint Authentication"
-#~ msgstr "Аутентифікація за відбитками пальців"
 
-#~ msgid "Log into session with fingerprint"
-#~ msgstr "Зайти у сеанс через відбитки пальців"
 
-#~ msgid "Password Authentication"
-#~ msgstr "Аутентифікація за паролем"
 
-#~ msgid "Log into session with username and password"
-#~ msgstr "Зайти у сеанс за допомогою введення користувача й паролю"
 
-#~ msgid "Log In"
-#~ msgstr "Увійти"
 
-#~ msgid "Slot ID"
-#~ msgstr "Ідентифікатор гнізда"
 
-#~ msgid "The slot the card is in"
-#~ msgstr "Гніздо, де перебуває картка"
 
-#~ msgid "Slot Series"
-#~ msgstr "Серія гнізда"
 
-#~ msgid "per-slot card identifier"
-#~ msgstr "Ідентифікатор картки через гніздо"
 
-#~ msgid "name"
-#~ msgstr "назва"
 
-#~ msgid "Module"
-#~ msgstr "Модуль"
 
-#~ msgid "smartcard driver"
-#~ msgstr "драйвер смарт-картки"
 
-#~ msgid "Smartcard Authentication"
-#~ msgstr "Аутентифікація за смарт-карткою"
 
-#~ msgid "Log into session with smartcard"
-#~ msgstr "Зайти у сеанс через смарт-картку"
 
-#~ msgid "Module Path"
-#~ msgstr "Шлях до модуля"
 
-#~ msgid "path to smartcard PKCS #11 driver"
-#~ msgstr "Шлях до драйвера смарт-картки PKCS #11"
 
-#~ msgid "received error or hang up from event source"
-#~ msgstr "одержано помилку або зависло у джерелі події"
 
-#~ msgid "NSS security system could not be initialized"
-#~ msgstr "Неможливо запустити систему безпеки NSS"
 
-#~ msgid "no suitable smartcard driver could be found"
-#~ msgstr "не знайдено придатного драйвера смарт-картки "
 
-#~ msgid "smartcard driver '%s' could not be loaded"
-#~ msgstr "неможливо завантажити драйвер смарт-картки «%s»"
 
-#~ msgid "could not watch for incoming card events - %s"
-#~ msgstr "неможливо спостерігати за вхідними подіями картки — %s"
 
-#~ msgid "encountered unexpected error while waiting for smartcard events"
-#~ msgstr ""
-#~ "Трапилась несподівана помилка протягом очікування подій смарт-картки"
 
-#~ msgid "Authentication"
-#~ msgstr "Автентифікація"
 
-#~ msgid "Log into session"
-#~ msgstr "Зайти у сеанс"
 
-#~ msgid "Value"
-#~ msgstr "Значення"
 
-#~ msgid "percentage of time complete"
-#~ msgstr "відсотків часу до завершення"
 
-#~ msgid "Inactive Text"
-#~ msgstr "Неактивний текст"
 
-#~ msgid "The text to use in the label if the user hasn't picked an item yet"
-#~ msgstr ""
-#~ "Текст, що буде використано в мітках, якщо користувач ще не вибрав об'єкт"
 
-#~ msgid "Active Text"
-#~ msgstr "Активний текст"
 
-#~ msgid "The text to use in the label if the user has picked an item"
-#~ msgstr "Текст, що буде використано в мітках, якщо користувач вибрав об'єкт"
 
-#~ msgid "List Visible"
-#~ msgstr "Список видимий"
 
-#~ msgid "Whether the chooser list is visible"
-#~ msgstr "Чи показувати список вибору"
 
-#~ msgid "%a %b %e, %l:%M:%S %p"
-#~ msgstr "%a %e %b, %k:%M:%S"
 
-#~ msgid "%a %b %e, %l:%M %p"
-#~ msgstr "%a %e %b, %k:%M"
 
-#~ msgid "%a %l:%M:%S %p"
-#~ msgstr "%a %k:%M:%S"
 
-#~ msgid "%a %l:%M %p"
-#~ msgstr "%a %k:%M"
 
-#~ msgid "Automatically logging in…"
-#~ msgstr "Автоматичний вхід у систему…"
 
-#~ msgid "Cancelling…"
-#~ msgstr "Скасування..."
 
-#~ msgid "Select language and click Log In"
-#~ msgstr "Виберіть мову та натисніть «Увійти»"
 
-#~ msgctxt "customsession"
-#~ msgid "Custom"
-#~ msgstr "Власне"
 
-#~ msgid "Custom session"
-#~ msgstr "Власний сеанс"
 
-#~ msgid "Computer Name"
-#~ msgstr "Назва комп'ютера"
 
-#~ msgid "Version"
-#~ msgstr "Версія"
 
-#~ msgid "Cancel"
-#~ msgstr "Скасувати"
 
-#~ msgid "Unlock"
-#~ msgstr "Розблокувати"
 
-#~ msgid "Login"
-#~ msgstr "Увійти"
 
-#~ msgid "Suspend"
-#~ msgstr "Приспати"
 
-#~ msgid "Restart"
-#~ msgstr "Перезапустити"
 
-#~ msgid "Shut Down"
-#~ msgstr "Вимкнути"
 
-#~ msgid "Unknown time remaining"
-#~ msgstr "Залишилась невідома кількість часу"
 
-#~ msgid "Panel"
-#~ msgstr "Панель"
 
-#~ msgid "Label Text"
-#~ msgstr "Текст міток"
 
-#~ msgid "The text to use as a label"
-#~ msgstr "Текст, що використовується у мітках"
 
-#~ msgid "Icon name"
-#~ msgstr "Назва піктограми"
 
-#~ msgid "The icon to use with the label"
-#~ msgstr "Піктограма, що використовується з міткою"
 
-#~ msgid "Default Item"
-#~ msgstr "Типовий об'єкт"
 
-#~ msgid "The ID of the default item"
-#~ msgstr "ID типового об'єкта"
 
-#~ msgid "Remote Login (Connecting to %s…)"
-#~ msgstr "Віддалений вхід (з'єднання з %s…)"
 
-#~ msgid "Remote Login (Connected to %s)"
-#~ msgstr "Віддалений вхід (з'єднано з %s)"
 
-#~ msgid "Remote Login"
-#~ msgstr "Віддалений вхід"
 
-#~ msgid "Session"
-#~ msgstr "Сеанс"
 
-#~ msgid "Duration"
-#~ msgstr "Тривалість"
 
-#~ msgid "Number of seconds until timer stops"
-#~ msgstr "Кількість секунд, поки таймер не зупиниться"
 
-#~ msgid "Start time"
-#~ msgstr "Час запуску"
 
-#~ msgid "Time the timer was started"
-#~ msgstr "Час, коли запущено таймер"
 
-#~ msgid "Is it Running?"
-#~ msgstr "Запущено?"
 
-#~ msgid "Whether the timer is currently ticking"
-#~ msgstr "Чи таймер зараз увімкнено"
 
-#~ msgid "Log in as %s"
-#~ msgstr "Увійти як %s"
 
-#~ msgctxt "user"
-#~ msgid "Other…"
-#~ msgstr "Інший…"
 
-#~ msgid "Choose a different account"
-#~ msgstr "Вибрати інший обліковий запис"
 
-#~ msgid "Guest"
-#~ msgstr "Гість"
 
-#~ msgid "Log in as a temporary guest"
-#~ msgstr "Увійти як тимчасовий користувач"
 
-#~ msgid "Automatic Login"
-#~ msgstr "Автоматичний вхід"
 
-#~ msgid "Automatically log into the system after selecting options"
-#~ msgstr "Автоматично входити у систему після вибору параметрів"
 
-#~ msgid "Currently logged in"
-#~ msgstr "Уже увійшов"
 
-#~ msgid "Logdir %s does not exist or isn't a directory."
-#~ msgstr "Каталог реєстрації %s не існує або він не є каталогом."
 
-#~ msgid "Authdir %s does not exist. Aborting."
-#~ msgstr "Каталог авторизації %s не існує. Скасування."
 
-#~ msgid "Authdir %s is not a directory. Aborting."
-#~ msgstr "Каталог авторизації %s не є каталогом. Скасування."
 
-#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-#~ msgstr ""
-#~ "Каталог авторизації %s не належить користувачу %d, групі %d. Скасування."
 
-#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-#~ msgstr ""
-#~ "Каталог авторизації %s має помилкові права %o. Мають бути %o. Скасування."
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "Лупа для екрана GNOME"
 
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Збільшити частини екрана"
 
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "Екранна клавіатура GNOME"
 
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Використовувати екранну клавіатуру"
 
-#~ msgid "Unable to initialize login system"
-#~ msgstr "Неможливо запустити систему входу"
 
-#~ msgid "Unable to authenticate user"
-#~ msgstr "Не вдалось автентифікувати користувача"
 
-#~ msgid "Unable to establish credentials"
-#~ msgstr "Не вдалось встановити реєстраційні дані"
 
-#~ msgid "Group %s doesn't exist"
-#~ msgstr "Група %s не існує"
 
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Зчитувач екрана Orca"
 
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "Представляти інформацію на екрані як розмову або шрифтом Брайля"
 
-#~ msgid "The system is unable to find a login screen to switch to."
-#~ msgstr "Система не може знайти вхідний екран, щоб перемкнутись у нього."
 
-#~ msgid "Max Item Count"
-#~ msgstr "Найбільша кількість об'єктів"
 
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "Найбільша кількість об'єктів у переліку"
 
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "Текст повідомлення, коли вікно входу порожнє"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "Текст повідомлення, що буде показано у вікні входу, коли воно порожнє, "
-#~ "замість banner_message_text."
 
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "Назва піктограми, що буде використана для логотипу привітання"
 
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr ""
-#~ "Встановити тематичну назву піктограм для використання у логотипі "
-#~ "привітання."
 
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "Не показувати відомих користувачів у вікні входу"
 
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "Встановити так, щоб вимкнути показ відомих користувачів у вікні входу."
 
-#~ msgid "Recently selected languages"
-#~ msgstr "Нещодавно вибрані мови"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "Встановити перелік мов, що типово буде показано у вікні входу."
 
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "Використати Compiz як менеджер вікон"
 
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "Встановити так, щоб використати Compiz як менеджер вікон."
 
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "Увімкнути екранну клавіатуру"
 
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "Встановити так, щоб увімкнути додаток екранної клавіатури."
 
-#~ msgid "Enable screen reader"
-#~ msgstr "Увімкнути зчитувача екрана"
 
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "Встановити так, щоб увімкнути зчитувача екрана."
 
-#~ msgid "Enable screen magnifier"
-#~ msgstr "Увімкнути екранну лупу"
 
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "Встановити так, щоб увімкнути екранну лупу."
 
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "Увімкнути додаток підтримки спеціальних можливостей"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "Встановити так, щоб увімкнути додаток керування доступністю налаштувань "
-#~ "клавіатури."
 
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr "Так, якщо додаток менеджера налаштувань тла ввімкнено."
 
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "Встановити так, щоб увімкнути додаток менеджера налаштування тла."
 
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr "Так, якщо додаток менеджера налаштувань медіаклавіш увімкнено."
 
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr ""
-#~ "Встановити так, щоб увімкнути додаток менеджера налаштувань медіаклавіш."
 
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "Так, якщо додаток менеджера налаштувань звуку ввімкнено."
 
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "Встановити так, щоб увімкнути додаток налаштувань звуку."
 
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "Так, якщо додаток менеджера налаштувань XRandR увімкнено."
 
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "Встановити так, щоб увімкнути додаток менеджера налаштувань XRandR."
 
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr "Так, якщо додаток менеджера налаштувань xsettings увімкнено."
 
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr ""
-#~ "Встановити так, щоб увімкнути додаток менеджера налаштувань xsettings."
 
-#~ msgid "Denied XDMCP query from host %s"
-#~ msgstr "Отримано відмову на запит XDMCP від вузла %s"
 
-#~ msgid "Could not extract authlist from packet"
-#~ msgstr "Не вдалось виділити перелік авторизації з пакету"
 
-#~ msgid "Error in checksum"
-#~ msgstr "Помилка в контрольній сумі"
 
-#~ msgid "Bad address"
-#~ msgstr "Неправильна адреса"
 
-#~ msgid "%s: Could not read display address"
-#~ msgstr "%s: не вдалось зчитати адресу екрана"
 
-#~ msgid "%s: Could not read display port number"
-#~ msgstr "%s: не вдалось зчитати номер порту екрана"
 
-#~ msgid "%s: Could not extract authlist from packet"
-#~ msgstr "%s: не вдалось виділити список авторизації з пакету"
 
-#~ msgid "%s: Error in checksum"
-#~ msgstr "%s: помилка в контрольній сумі"
 
-#~ msgid "%s: Got REQUEST from banned host %s"
-#~ msgstr "%s: отримано REQUEST від заблокованого вузла %s"
 
-#~ msgid "%s: Could not read Display Number"
-#~ msgstr "%s: не вдалось зчитати номер екрана"
 
-#~ msgid "%s: Could not read Connection Type"
-#~ msgstr "%s: не вдалось зчитати тип з'єднання"
 
-#~ msgid "%s: Could not read Client Address"
-#~ msgstr "%s: не вдалось зчитати адресу клієнта"
 
-#~ msgid "%s: Could not read Authentication Data"
-#~ msgstr "%s: не вдалось зчитати дані автентифікації"
 
-#~ msgid "%s: Could not read Authorization List"
-#~ msgstr "%s: не вдалось зчитати список авторизації"
 
-#~ msgid "%s: Could not read Manufacturer ID"
-#~ msgstr "%s: Не вдалось зчитати ідентифікатор виробника"
 
-#~ msgid "%s: Failed checksum from %s"
-#~ msgstr "%s: помилкова контрольна сума з %s"
 
-#~ msgid "%s: Got Manage from banned host %s"
-#~ msgstr "%s: отримано Manage від заблокованого вузла %s"
 
-#~ msgid "%s: Could not read Session ID"
-#~ msgstr "%s: не вдалось зчитати ідентифікатор сеансу"
 
-#~ msgid "%s: Could not read Display Class"
-#~ msgstr "%s: не вдалось зчитати клас екрана"
 
-#~ msgid "%s: Could not read address"
-#~ msgstr "%s: не вдалось зчитати адресу"
 
-#~ msgid "%s: Got KEEPALIVE from banned host %s"
-#~ msgstr "%s: Отримано KEEPALIVE від заблокованого вузла %s"
 
-#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-#~ msgstr "GdmXdmcpDisplayFactory: не вдалось прочитати заголовок XDMCP!"
 
-#~ msgid "Could not get server hostname: %s!"
-#~ msgstr "Не вдалось отримати назву вузла: %s!"
 
-#~ msgid "AT-SPI Registry Wrapper"
-#~ msgstr "Обгортка реєстру AT-SPI"
 
-#~ msgid "Power Manager"
-#~ msgstr "Керування живленням"
 
-#~ msgid "GNOME Session Acceleration Checker"
-#~ msgstr "Сеанс прискореної перевірки GNOME"
 
-#~ msgid "GNOME Settings Daemon"
-#~ msgstr "Служба налаштування GNOME"
 
-#~ msgid "Metacity"
-#~ msgstr "Metacity"
 
-#~ msgid "Languages"
-#~ msgstr "Мови"
 
-#~ msgid "_Languages:"
-#~ msgstr "_Мови:"
 
-#~ msgid "_Language:"
-#~ msgstr "_Мова:"
 
-#~ msgctxt "language"
-#~ msgid "Other…"
-#~ msgstr "Інша…"
 
-#~ msgid "Choose a language from the full list of available languages."
-#~ msgstr "Виберіть мову з повного переліку наявних мов."
 
-#~ msgid "Language"
-#~ msgstr "Мова"
 
-#~ msgid "Unspecified"
-#~ msgstr "Не вказано"
 
-#~ msgid "Couldn't set groupid to 0"
-#~ msgstr "Не вдається встановити groupid у 0"
 
-#~ msgid "%x"
-#~ msgstr "%x"
 
-#~ msgid "Shutdown Options..."
-#~ msgstr "Параметри вимикання..."
 
-#~ msgid "Keyboard layouts"
-#~ msgstr "Розкладки клавіатури"
 
-#~ msgid "_Keyboard:"
-#~ msgstr "_Клавіатура:"
 
-#~ msgctxt "keyboard"
-#~ msgid "Other..."
-#~ msgstr "Інший..."
 
-#~ msgid "Choose a keyboard layout from the full list of available layouts."
-#~ msgstr "Виберіть розкладку клавіатури з повного переліку наявних розкладок."
 
-#~ msgid "Recently selected keyboard layouts"
-#~ msgstr "Нещодавно вибрані розкладки клавіатури"
 
-#~ msgid ""
-#~ "Set to a list of keyboard layouts to be shown by default at the login "
-#~ "window."
-#~ msgstr ""
-#~ "Встановити перелік розкладок клавіатури, що будуть показані за "
-#~ "замовчуванням у вікні входу."
 
-#~ msgid "Manager"
-#~ msgstr "Керівник"
 
-#~ msgid "The user manager object this user is controlled by."
-#~ msgstr "Об'єкт керівника користувача, яким керується користувач."
 
-#~ msgid ""
-#~ "The User Switch Applet is free software; you can redistribute it and/or "
-#~ "modify it under the terms of the GNU General Public License as published "
-#~ "by the Free Software Foundation; either version 2 of the License, or (at "
-#~ "your option) any later version."
-#~ msgstr ""
-#~ "Аплет перемикання користувачів є вільним програмним забезпеченням; ви "
-#~ "можете розповсюджувати та/або змінювати його в рамках GNU General Public "
-#~ "License що видана Free Software Foundation; або версії 2 ліцензії або (на "
-#~ "ваш вибір) пізнішою версією."
 
-#~ msgid ""
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details."
-#~ msgstr ""
-#~ "Ця програма розповсюджується з надією, що буде корисною, але БЕЗ БУДЬ-"
-#~ "ЯКИХ ЗОБОВ'ЯЗАНЬ; навіть без зобов'язань КОМЕРЦІЙНИХ СПРОМОЖНОСТЕЙ або "
-#~ "КОРИСНОСТІ ДЛЯ ЗАДАНОЇ МЕТИ. Дивіться General Public License для "
-#~ "подробиць."
 
-#~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program; if not, write to the Free Software Foundation, Inc., "
-#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-#~ msgstr ""
-#~ "Вам слід отримати копію GNU General Public License разом з цією "
-#~ "програмиою; якщо ні, напишіть до Free Software Foundation, Inc., 51 "
-#~ "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 
-#~ msgid "A menu to quickly switch between users."
-#~ msgstr "Меню для швидкого перемикання між користувачами."
 
-#~ msgid "translator-credits"
-#~ msgstr ""
-#~ "Yuri Syrota <rasta@renome.rovno.ua>\n"
-#~ "Maxim Dziumanenko <dziumanenko@gmail.com>\n"
-#~ "Oleksandr Kovalenko <alx.kovalenko@gmail.com>"
 
-#~ msgid "Can't lock screen: %s"
-#~ msgstr "Неможливо заблокувати екран: %s"
 
-#~ msgid "Can't temporarily set screensaver to blank screen: %s"
-#~ msgstr "Неможливо тимчасово встановити зберігач екрану у порожній екран: %s"
 
-#~ msgid "Can't logout: %s"
-#~ msgstr "Неможливо вийти: %s"
 
-#~ msgid "Available"
-#~ msgstr "Доступий"
 
-#~ msgid "Invisible"
-#~ msgstr "Невидимий"
 
-#~ msgid "Busy"
-#~ msgstr "Зайнятий"
 
-#~ msgid "Away"
-#~ msgstr "Відійшов"
 
-#~ msgid "Account Information"
-#~ msgstr "Інформація про обліковий запис"
 
-#~ msgid "System Preferences"
-#~ msgstr "Параметри системи"
 
-#~ msgid "Lock Screen"
-#~ msgstr "Заблокувати"
 
-#~ msgid "Switch User"
-#~ msgstr "Змінити користувача"
 
-#~ msgid "Quit..."
-#~ msgstr "Вийти..."
 
-#~ msgid "Unknown"
-#~ msgstr "Невідомо"
 
-#~ msgid "User Switch Applet"
-#~ msgstr "Аплет перемикання користувачів"
 
-#~ msgid "Change account settings and status"
-#~ msgstr "Змінити налаштування облікого запису та стан"
 
-#~ msgid "A menu to quickly switch between users"
-#~ msgstr "Меню для швидкого перемикання користувачів"
 
-#~ msgid "User Switcher"
-#~ msgstr "Перемикач користувачів"
 
-#~ msgid "User Switcher Applet Factory"
-#~ msgstr "Фабрика аплету перемикання користувачів"
 
-#~ msgid "Edit Personal _Information"
-#~ msgstr "Редагувати особисту _інформацію"
 
-#~ msgid "_About"
-#~ msgstr "_Про"
 
-#~ msgid "_Edit Users and Groups"
-#~ msgstr "_Редагувати користувачів та групи"
+
