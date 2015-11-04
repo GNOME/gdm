@@ -306,8 +306,6 @@ on_display_status_changed (GdmDisplay             *display,
                         if (factory->priv->num_failures > MAX_DISPLAY_FAILURES) {
                                 /* oh shit */
                                 g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
-                                /* FIXME: should monitor hardware changes to
-                                   try again when seats change */
                         } else {
 #ifdef ENABLE_WAYLAND_SUPPORT
                                 if (g_strcmp0 (session_type, "wayland") == 0) {
