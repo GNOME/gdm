@@ -42,8 +42,6 @@
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
-#define SYSTEMD_SEAT0_PATH                  "seat0"
-
 #define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
 #define GDM_MANAGER_DBUS_NAME               "org.gnome.DisplayManager.LocalDisplayFactory"
@@ -187,13 +185,6 @@ store_display (GdmLocalDisplayFactory *factory,
         gdm_display_store_add (store, display);
 }
 
-static const char *
-get_seat_of_transient_display (GdmLocalDisplayFactory *factory)
-{
-        /* FIXME: don't hardcode seat */
-        return SYSTEMD_SEAT0_PATH;
-}
-
 /*
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
@@ -208,7 +199,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 {
         gboolean         ret;
         GdmDisplay      *display = NULL;
-        const char      *seat_id;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -218,9 +208,8 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         display = gdm_local_display_new ();
 
-        seat_id = get_seat_of_transient_display (factory);
         g_object_set (display,
-                      "seat-id", seat_id,
+                      "seat-id", "seat0"
                       "allow-timed-login", FALSE,
                       NULL);
 
