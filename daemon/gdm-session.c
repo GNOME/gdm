@@ -467,19 +467,6 @@ get_session_command_for_name (const char *name,
         res = get_session_command_for_file (filename, command);
         g_free (filename);
 
-        /*
-         * The GDM Xsession script honors "custom" as a valid session.  If the
-         * session is one of these, no file is needed, then just run the
-         * command as "custom".
-         */
-        if (!res && strcmp (name, GDM_CUSTOM_SESSION) == 0) {
-                g_debug ("No custom desktop file, but accepting it anyway.");
-                if (command != NULL) {
-                        *command = g_strdup (GDM_CUSTOM_SESSION);
-                }
-                res = TRUE;
-        }
-
         return res;
 }
 
