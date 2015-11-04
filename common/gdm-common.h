@@ -31,8 +31,6 @@
                 expr;                \
         } while G_UNLIKELY (errno == EINTR);
 
-#define GDM_CUSTOM_SESSION  "custom"
-
 GQuark gdm_common_error_quark (void);
 #define GDM_COMMON_ERROR gdm_common_error_quark()
 
