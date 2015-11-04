@@ -66,7 +66,7 @@ enum {
 static void     gdm_xdmcp_display_class_init    (GdmXdmcpDisplayClass *klass);
 static void     gdm_xdmcp_display_init          (GdmXdmcpDisplay      *xdmcp_display);
 
-G_DEFINE_ABSTRACT_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM_TYPE_DISPLAY)
+G_DEFINE_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM_TYPE_DISPLAY)
 
 gint32
 gdm_xdmcp_display_get_session_number (GdmXdmcpDisplay *display)
