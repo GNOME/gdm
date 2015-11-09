@@ -338,23 +338,22 @@ static const char **
 get_system_session_dirs (GdmSession *self)
 {
         static const char *search_dirs[] = {
+#ifdef ENABLE_WAYLAND_SUPPORT
+                DATADIR "/wayland-sessions/",
+#endif
                 "/etc/X11/sessions/",
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
-#ifdef ENABLE_WAYLAND_SUPPORT
-                NULL,
-#endif
                 NULL
         };
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        if (!self->priv->ignore_wayland) {
-                search_dirs[G_N_ELEMENTS (search_dirs) - 1] = DATADIR "/wayland-sessions/";
-        } else {
-                search_dirs[G_N_ELEMENTS (search_dirs) - 1] = NULL;
+        if (self->priv->ignore_wayland) {
+                return search_dirs + 1;
         }
 #endif
+
         return search_dirs;
 }
 
