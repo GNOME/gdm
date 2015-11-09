@@ -907,11 +907,6 @@ gdm_create_greeter_launch_environment (const char *display_name,
 {
         const char *session_name = NULL;
 
-        if (g_strcmp0 (session_type, "wayland") == 0)
-                session_name = "gnome-wayland";
-        else if (g_strcmp0 (session_type, "x11") == 0)
-                session_name = "gnome";
-
         return create_gnome_session_environment (session_name,
                                                  GDM_USERNAME,
                                                  display_name,
