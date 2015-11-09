@@ -12,22 +12,15 @@ edit = sed \
 
 @INTLTOOL_DESKTOP_RULE@
 desktopdir = $(pkgdatadir)/greeter/applications
-desktop_in_files = 							\
-	gnome-shell.desktop.in						\
-	gnome-shell-wayland.desktop.in					\
-	$(NULL)
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
-	       mime-dummy-handler.desktop				\
+desktop_DATA = mime-dummy-handler.desktop				\
 	       mimeapps.list						\
 	       $(NULL)
 
 EXTRA_DIST =								\
-	$(desktop_in_files)						\
 	$(desktop_DATA)							\
 	$(NULL)
 
 DISTCLEANFILES =							\
-	$(desktop_in_files:.desktop.in=.desktop)			\
 	$(NULL)
 
 MAINTAINERCLEANFILES =                  				\
