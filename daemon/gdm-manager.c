@@ -1327,15 +1327,26 @@ set_up_automatic_login_session (GdmManager *manager,
                                 GdmDisplay *display)
 {
         GdmSession *session;
+        char       *display_session_type = NULL;
         gboolean is_initial;
+        gboolean greeter_would_have_been_wayland;
 
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
          */
         session = create_embryonic_user_session_for_display (manager, display, 0);
 
-        g_object_get (G_OBJECT (display), "is-initial", &is_initial, NULL);
-        g_object_set (G_OBJECT (session), "display-is-initial", is_initial, NULL);
+        g_object_get (G_OBJECT (display),
+                      "is-initial", &is_initial,
+                      "session-type", &display_session_type,
+                      NULL);
+
+        greeter_would_have_been_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
+
+        g_object_set (G_OBJECT (session),
+                      "display-is-initial", is_initial,
+                      "ignore-wayland", !greeter_would_have_been_wayland,
+                      NULL);
 
         g_debug ("GdmManager: Starting automatic login conversation");
         gdm_session_start_conversation (session, "gdm-autologin");
