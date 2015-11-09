@@ -913,12 +913,12 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                 return;
         }
 
+        update_session_type (self);
+
         if (strcmp (session_name,
                     get_default_session_name (self)) != 0) {
                 g_free (self->priv->saved_session);
                 self->priv->saved_session = g_strdup (session_name);
-
-                update_session_type (self);
 
                 if (self->priv->greeter_interface != NULL) {
                         gdm_dbus_greeter_emit_default_session_name_changed (self->priv->greeter_interface,
