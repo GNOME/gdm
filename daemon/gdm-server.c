@@ -320,10 +320,23 @@ gdm_server_resolve_command_line (GdmServer  *server,
                 argv[len++] = g_strdup (server->priv->display_seat_id);
         }
 
+        /* If we were compiled with Xserver >= 1.17 we need to specify
+         * '-listen tcp' as the X server dosen't listen on tcp sockets
+         * by default anymore. In older versions we need to pass
+         * -nolisten tcp to disable listening on tcp sockets.
+         */
+#ifdef HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY
+        if (!server->priv->disable_tcp && ! query_in_arglist) {
+                argv[len++] = g_strdup ("-listen");
+                argv[len++] = g_strdup ("tcp");
+        }
+#else
         if (server->priv->disable_tcp && ! query_in_arglist) {
                 argv[len++] = g_strdup ("-nolisten");
                 argv[len++] = g_strdup ("tcp");
         }
+
+#endif
 
         if (vtarg != NULL && ! gotvtarg) {
                 argv[len++] = g_strdup (vtarg);

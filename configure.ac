@@ -1228,6 +1228,14 @@ else
 fi
 
 dnl ---------------------------------------------------------------------------
+dnl - Check if Xorg is new enough to require '-listen tcp' (1.17)
+dnl ---------------------------------------------------------------------------
+
+if $PKG_CONFIG --atleast-version=1.17 xorg-server; then
+   AC_DEFINE([HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY], [], [XServer disables tcp access by default])
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl - Check for Xnest / Xephyr support
 dnl ---------------------------------------------------------------------------
 

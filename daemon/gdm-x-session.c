@@ -249,10 +249,22 @@ spawn_x_server (State        *state,
         g_ptr_array_add (arguments, "-auth");
         g_ptr_array_add (arguments, auth_file);
 
+        /* If we were compiled with Xserver >= 1.17 we need to specify
+         * '-listen tcp' as the X server dosen't listen on tcp sockets
+         * by default anymore. In older versions we need to pass
+         * -nolisten tcp to disable listening on tcp sockets.
+         */
+#ifdef HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY
+        if (allow_remote_connections) {
+                g_ptr_array_add (arguments, "-listen");
+                g_ptr_array_add (arguments, "tcp");
+        }
+#else
         if (!allow_remote_connections) {
                 g_ptr_array_add (arguments, "-nolisten");
                 g_ptr_array_add (arguments, "tcp");
         }
+#endif
 
         g_ptr_array_add (arguments, "-background");
         g_ptr_array_add (arguments, "none");
