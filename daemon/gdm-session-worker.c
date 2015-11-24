@@ -1139,7 +1139,6 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
          */
         if (error_code == PAM_NEW_AUTHTOK_REQD && !worker->priv->is_program_session) {
                 g_debug ("GdmSessionWorker: authenticated user requires new auth token");
-                gdm_session_worker_report_problem (worker, _("Your password has expired, please change it now."));
                 error_code = pam_chauthtok (worker->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
 
                 gdm_session_worker_get_username (worker, NULL);
