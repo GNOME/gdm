@@ -159,7 +159,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->priv->session_mode));
 
         /* Inital setup needs gvfs for fetching remote avatars. */
-        if (strcmp (launch_environment->priv->session_mode, INITIAL_SETUP_SESSION_MODE)) {
+        if (strcmp (launch_environment->priv->session_mode, INITIAL_SETUP_SESSION_MODE) != 0) {
                 g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
                 g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
                 g_hash_table_insert (hash, g_strdup ("GVFS_REMOTE_VOLUME_MONITOR_IGNORE"), g_strdup ("1"));
