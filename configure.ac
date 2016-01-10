@@ -454,8 +454,8 @@ dnl ---------------------------------------------------------------------------
 
 withval=""
 AC_ARG_WITH(group,
-            AS_HELP_STRING([--with-group=<username>],
-                           [specify gdm's user name]))
+            AS_HELP_STRING([--with-group=<group>],
+                           [specify gdm's group name]))
 
 if test x$withval != x; then
 	GDM_GROUPNAME="$withval"
