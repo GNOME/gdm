@@ -869,7 +869,7 @@ create_gnome_session_environment (const char *session_id,
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
 
         args = g_ptr_array_new ();
-        g_ptr_array_add (args, BINDIR "/gnome-session");
+        g_ptr_array_add (args, "gnome-session");
 
         g_ptr_array_add (args, "--autostart");
         g_ptr_array_add (args, DATADIR "/gdm/greeter/autostart");
