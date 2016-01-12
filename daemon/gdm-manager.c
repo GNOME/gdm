@@ -1329,7 +1329,9 @@ set_up_automatic_login_session (GdmManager *manager,
         GdmSession *session;
         char       *display_session_type = NULL;
         gboolean is_initial;
+#ifdef ENABLE_WAYLAND_SUPPORT
         gboolean greeter_would_have_been_wayland;
+#endif
 
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
@@ -1341,11 +1343,15 @@ set_up_automatic_login_session (GdmManager *manager,
                       "session-type", &display_session_type,
                       NULL);
 
+#ifdef ENABLE_WAYLAND_SUPPORT
         greeter_would_have_been_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
+#endif
 
         g_object_set (G_OBJECT (session),
                       "display-is-initial", is_initial,
+#ifdef ENABLE_WAYLAND_SUPPORT
                       "ignore-wayland", !greeter_would_have_been_wayland,
+#endif
                       NULL);
 
         g_debug ("GdmManager: Starting automatic login conversation");
@@ -1357,10 +1363,12 @@ set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
         GdmSession *session;
-        char       *display_session_type = NULL;
         const char *allowed_user;
         struct passwd *passwd_entry;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        char       *display_session_type = NULL;
         gboolean greeter_is_wayland;
+#endif
 
         allowed_user = get_username_for_greeter_display (manager, display);
 
@@ -1374,6 +1382,7 @@ set_up_greeter_session (GdmManager *manager,
 
         session = create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
 
+#ifdef ENABLE_WAYLAND_SUPPORT
         /* If the greeter display isn't a wayland session,
          * then don't allow the user session to be a wayland
          * session either.
@@ -1383,6 +1392,7 @@ set_up_greeter_session (GdmManager *manager,
                       NULL);
         greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
         g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
+#endif
 
         gdm_display_start_greeter_session (display);
 }
