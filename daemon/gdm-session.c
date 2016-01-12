@@ -3083,15 +3083,6 @@ gdm_session_get_display_mode (GdmSession *self)
                  self->priv->is_program_session? "yes" : "no",
                  self->priv->display_seat_id);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
-        /* Wayland sessions are for now assumed to run in a
-         * mutter-launch-like environment, so we allocate
-         * a new VT for them. */
-        if (g_strcmp0 (self->priv->session_type, "wayland") == 0) {
-                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
-        }
-#endif
-
         /* Non-seat0 sessions share their X server with their login screen
          * for now.
          */
@@ -3099,16 +3090,26 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
         }
 
-        /* The X session used for the login screen now is run
-         * within the login session and managed by logind
-         */
-        if (self->priv->is_program_session) {
-                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
-        }
-
-        /* user based X sessions need us to allocate a VT for them
-         * and jump to it up front, because the X servers logind support
-         * currently relies on X running in the foreground VT.
+        /* All other cases (wayland login screen, X login screen,
+         * wayland user session, X user session) use the NEW_VT
+         * display mode.  That display mode means that GDM allocates
+         * a new VT and jumps to it before starting the session. The
+         * session is expected to use logind to gain access to the
+         * display and input devices.
+         *
+         * GDM also has a LOGIND_MANAGED display mode which we can't
+         * use yet. The difference between it and NEW_VT, is with it,
+         * GDM doesn't do any VT handling at all, expecting the session
+         * and logind to do everything.  The problem is, for wayland
+         * sessions it will cause flicker until * this bug is fixed:
+         *
+         * https://bugzilla.gnome.org/show_bug.cgi?id=745141
+         *
+         * Likewise, for X sessions it's problematic because
+         *   1) X doesn't call TakeControl before switching VTs
+         *   2) X doesn't support getting started "in the background"
+         *   right now.  It will die with an error if logind devices
+         *   are paused when handed out.
          */
         return GDM_SESSION_DISPLAY_MODE_NEW_VT;
 }
