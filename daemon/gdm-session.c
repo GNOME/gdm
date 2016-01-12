@@ -564,6 +564,10 @@ get_fallback_session_name (GdmSession *self)
 
         name = NULL;
         session = g_sequence_get_begin_iter (sessions);
+
+        if (g_sequence_iter_is_end (session))
+                g_error ("GdmSession: no session desktop files installed, aborting...");
+
         do {
                if (g_sequence_get (session)) {
                        char *base_name;
