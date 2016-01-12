@@ -1586,7 +1586,7 @@ echo \
         SELinux support:          ${use_selinux}
         systemd unit dir:         ${with_systemdsystemunitdir}
         plymouth support:         ${use_plymouth}
-        wayland support:          ${use_wayland}
+        wayland support:          ${enable_wayland_support}
         Build with RBAC:          ${msg_rbac_shutdown}
         Initial VT:               ${GDM_INITIAL_VT}
         Enable documentation:     ${enable_documentation}
