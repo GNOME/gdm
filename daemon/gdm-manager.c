@@ -1452,6 +1452,7 @@ on_display_status_changed (GdmDisplay *display,
                                                 set_up_greeter_session (manager, display);
                                         }
                                 }
+                                g_free (session_class);
                         }
 
                         if (status == GDM_DISPLAY_MANAGED) {
