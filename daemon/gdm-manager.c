@@ -34,6 +34,8 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#include <act/act-user-manager.h>
+
 #include <systemd/sd-login.h>
 
 #include "gdm-common.h"
@@ -1254,25 +1256,6 @@ get_automatic_login_details (GdmManager *manager,
         return enabled;
 }
 
-static gboolean
-display_should_autologin (GdmManager *manager,
-                          GdmDisplay *display)
-{
-        gboolean enabled = FALSE;
-
-        if (manager->priv->ran_once) {
-                return FALSE;
-        }
-
-        if (!display_is_on_seat0 (display)) {
-                return FALSE;
-        }
-
-        enabled = get_automatic_login_details (manager, NULL);
-
-        return enabled;
-}
-
 static void
 maybe_start_pending_initial_login (GdmManager *manager,
                                    GdmDisplay *greeter_display)
@@ -1374,6 +1357,87 @@ set_up_greeter_session (GdmManager *manager,
 }
 
 static void
+set_up_automatic_login_session_if_user_exists (GdmManager *manager,
+                                               GdmDisplay *display,
+                                               ActUser    *user)
+{
+        if (act_user_is_nonexistent (user))
+                set_up_greeter_session (manager, display);
+        else
+                set_up_automatic_login_session (manager, display);
+}
+
+typedef struct {
+        GdmManager *manager;
+        GdmDisplay *display;
+        char *username;
+} UsernameLookupOperation;
+
+static void
+destroy_username_lookup_operation (UsernameLookupOperation *operation)
+{
+        g_object_unref (operation->manager);
+        g_object_unref (operation->display);
+        g_free (operation->username);
+        g_free (operation);
+}
+
+static void
+on_user_is_loaded_changed (ActUser                 *user,
+                           GParamSpec              *pspec,
+                           UsernameLookupOperation *operation)
+{
+        if (act_user_is_loaded (user)) {
+                set_up_automatic_login_session_if_user_exists (operation->manager, operation->display, user);
+                g_signal_handlers_disconnect_by_func (G_OBJECT (user),
+                                                      G_CALLBACK (on_user_is_loaded_changed),
+                                                      operation);
+                destroy_username_lookup_operation (operation);
+        }
+}
+
+static void
+set_up_session (GdmManager *manager,
+                GdmDisplay *display)
+{
+        ActUserManager *user_manager;
+        ActUser *user;
+        gboolean loaded;
+        gboolean autologin_enabled = FALSE;
+        char *username = NULL;
+
+        if (!manager->priv->ran_once && display_is_on_seat0 (display))
+                autologin_enabled = get_automatic_login_details (manager, &username);
+
+        if (!autologin_enabled) {
+                set_up_greeter_session (manager, display);
+                g_free (username);
+                return;
+        }
+
+        /* Check whether the user really exists before committing to autologin. */
+        user_manager = act_user_manager_get_default ();
+        user = act_user_manager_get_user (user_manager, username);
+        g_object_get (user_manager, "is-loaded", &loaded, NULL);
+
+        if (loaded) {
+                set_up_automatic_login_session_if_user_exists (manager, display, user);
+        } else {
+                UsernameLookupOperation *operation;
+
+                operation = g_new (UsernameLookupOperation, 1);
+                operation->manager = g_object_ref (manager);
+                operation->display = g_object_ref (display);
+                operation->username = username;
+
+                g_signal_connect (user,
+                                  "notify::is-loaded",
+                                  G_CALLBACK (on_user_is_loaded_changed),
+                                  operation);
+        }
+}
+
+static void
 greeter_display_started (GdmManager *manager,
                          GdmDisplay *display)
 {
@@ -1417,17 +1481,8 @@ on_display_status_changed (GdmDisplay *display,
                                 g_object_get (display,
                                               "session-class", &session_class,
                                               NULL);
-                                if (g_strcmp0 (session_class, "greeter") == 0) {
-                                        gboolean will_autologin;
-
-                                        will_autologin = display_should_autologin (manager, display);
-
-                                        if (will_autologin) {
-                                                set_up_automatic_login_session (manager, display);
-                                        } else {
-                                                set_up_greeter_session (manager, display);
-                                        }
-                                }
+                                if (g_strcmp0 (session_class, "greeter") == 0)
+                                        set_up_session (manager, display);
                                 g_free (session_class);
                         }
 
