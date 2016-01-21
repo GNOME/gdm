@@ -2433,6 +2433,10 @@ get_session_desktop_names (GdmSession *self)
         GKeyFile *keyfile;
         gchar *desktop_names = NULL;
 
+        if (self->priv->selected_program != NULL) {
+                return g_strdup ("GNOME-Greeter:GNOME");
+        }
+
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
         g_debug ("GdmSession: getting desktop names for file '%s'", filename);
         keyfile = load_key_file_for_file (self, filename, NULL);
@@ -2497,15 +2501,17 @@ set_up_session_environment (GdmSession *self)
         gchar *desktop_names;
         char *locale;
 
-        gdm_session_set_environment_variable (self,
-                                              "GDMSESSION",
-                                              get_session_name (self));
-        gdm_session_set_environment_variable (self,
-                                              "DESKTOP_SESSION",
-                                              get_session_name (self));
-        gdm_session_set_environment_variable (self,
-                                              "XDG_SESSION_DESKTOP",
-                                              get_session_name (self));
+        if (self->priv->selected_program == NULL) {
+                gdm_session_set_environment_variable (self,
+                                                      "GDMSESSION",
+                                                      get_session_name (self));
+                gdm_session_set_environment_variable (self,
+                                                      "DESKTOP_SESSION",
+                                                      get_session_name (self));
+                gdm_session_set_environment_variable (self,
+                                                      "XDG_SESSION_DESKTOP",
+                                                      get_session_name (self));
+        }
 
         desktop_names = get_session_desktop_names (self);
         if (desktop_names != NULL) {
