@@ -3343,6 +3343,9 @@ gdm_session_dispose (GObject *object)
 
         gdm_session_close (self);
 
+        g_clear_pointer (&self->priv->conversations,
+                         g_hash_table_unref);
+
         g_clear_object (&self->priv->user_verifier_interface);
         g_clear_object (&self->priv->greeter_interface);
         g_clear_object (&self->priv->chooser_interface);
