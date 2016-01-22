@@ -304,8 +304,8 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
             g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 return;
 
-        self = conversation->session;
-        service_name = conversation->service_name;
+        self = g_object_ref (conversation->session);
+        service_name = g_strdup (conversation->service_name);
 
         if (worked) {
                 if (self->priv->user_verifier_interface != NULL) {
@@ -326,6 +326,9 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         } else {
                 report_and_stop_conversation (self, service_name, error);
         }
+
+        g_free (service_name);
+        g_object_unref (self);
 }
 
 static const char **
