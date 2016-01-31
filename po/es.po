@@ -11,14 +11,15 @@
 # Lucas Vieites <lucas@codexion.com>, 2008.
 # 
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010., 2011., 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011., 2012, 2013, 2014, 2015.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011., 2012, 2013, 2014, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-02-23 18:57+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-01-25 06:44+0000\n"
+"PO-Revision-Date: 2016-01-25 16:25+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -96,44 +97,44 @@ msgstr "El solicitante no es GDM"
 msgid "Unable to open private communication channel"
 msgstr "No se puede abrir el cana de comunicación privada"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "El servidor debía ser lanzado por el usuario %s pero ese usuario no existe"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "No se pudo establecer el id de grupo a %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Ha fallado initgroups() para %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No se pudo establecer el id de usuario a %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: No se pudo abrir el archivo de registro de la pantalla %s."
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Ha ocurrido un error al establecer %s a %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: La prioridad del servidor no se pudo poner a %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comando de servidor vacío para la pantalla %s"
@@ -162,7 +163,7 @@ msgstr "Pantalla"
 msgid "The display device"
 msgstr "La pantalla"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "No se pudo crear el proceso de ayuda de autenticación"
 
@@ -178,16 +179,12 @@ msgstr "Eso no ha funcionado. Inténtelo de nuevo"
 msgid "Username:"
 msgstr "Usuario:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Su contraseña ha caducado, cámbiela ahora."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
@@ -199,16 +196,16 @@ msgstr "Lanzador de la sesión Wayland del gestor de pantallas de GNOME"
 msgid "Could not create socket!"
 msgstr "No se pudo crear el socket."
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:698
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr ""
 "Ejecutar el programa mediante el script de abstracción /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:699
 msgid "Listen on TCP socket"
 msgstr "Escuchar en el socket TCP"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:710
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Lanzador de la sesión X del gestor de pantallas de GNOME"
 
@@ -270,19 +267,9 @@ msgstr "Solo el administrador puede ejecutar GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Trabajador de sesión de GDM"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Shell"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Gestor de composición de ventanas"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -327,24 +314,30 @@ msgid "Path to small image at top of user list"
 msgstr "Ruta a una imagen pequeña en la parte superior de la lista de usuarios"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#| msgid ""
+#| "The login screen can optionally show a small image at the top of its user "
+#| "list to provide site administrators and distributions a way to provide "
+#| "branding."
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "La pantalla de inicio de sesión permite opcionalmente mostrar una pequeña "
-"imagen en la lista superior de usuarios para proporcionar a los "
-"administradores y distribuidores una forma de estilo y marca."
+"imagen para proporcionar a los administradores y distribuidores una manera "
+"de mostrar su marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#| msgid ""
+#| "The fallback login screen can optionally show a small image at the top of "
+#| "its user list to provide site administrators and distributions a way to "
+#| "provide branding."
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "La pantalla de inicio de sesión alternativo permite opcionalmente mostrar "
-"una pequeña imagen en la lista superior de usuarios para proporcionar a los "
-"administradores y distribuidores del sitio una marca."
+"una pequeña imagen para proporcionar a los administradores y distribuidores "
+"una manera de mostrar su marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -460,257 +453,11 @@ msgstr "Captura de pantalla obtenida"
 msgid "Take a picture of the screen"
 msgstr "Tomar una captura de la pantalla"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Su contraseña ha caducado, cámbiela ahora."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Shell"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# El formato de fecha, día y 12-horas (Dom 12 de jun, 2:00 pm)
-
-
-# El formato de fecha, día y 12-horas (Dom 12 de jun, 2:00 pm)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# El formato de la fecha, día y 24-horas Dom 12 de jun, 14:00)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "Gestor de composición de ventanas"
