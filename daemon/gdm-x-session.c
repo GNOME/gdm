@@ -496,10 +496,10 @@ spawn_bus (State        *state,
         }
 
         g_variant_unref (reply);
-        g_clear_object (&connection);
 
         is_running = TRUE;
 out:
+        g_clear_object (&connection);
         g_clear_object (&data_stream);
         g_clear_object (&subprocess);
         g_clear_object (&launcher);
