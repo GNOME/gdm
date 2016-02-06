@@ -9,15 +9,15 @@
 # Wojciech Kapusta <wkapusta@aviary.pl>, 2006-2007.
 # Wadim Dziedzic <wdziedzic@aviary.pl>, 2007-2008.
 # Tomasz Dominikowski <dominikowski@gmail.com>, 2008-2009.
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2016.
 # Wojciech Szczęsny <wszczesny@aviary.pl>, 2013.
-# Aviary.pl <gnomepl@aviary.pl>, 2006-2015.
+# Aviary.pl <gnomepl@aviary.pl>, 2006-2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-08-24 15:35+0200\n"
+"POT-Creation-Date: 2016-02-06 16:03+0100\n"
+"PO-Revision-Date: 2016-02-06 16:04+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -96,45 +96,45 @@ msgstr "Program wywołujący to nie GDM"
 msgid "Unable to open private communication channel"
 msgstr "Nie można otworzyć prywatnego kanału komunikacji"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Serwer powinien zostać uruchomiony przez użytkownika %s, ale taki użytkownik "
 "nie istnieje"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nie można ustawić identyfikatora grupy na %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Funkcja initgroups () się nie powiodła dla %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nie można ustawić identyfikatora użytkownika na %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: nie można otworzyć pliku dziennika dla ekranu %s."
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: błąd przy ustawianiu %s na %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: nie można ustawić priorytetu serwera na %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: puste polecenie serwera dla ekranu %s"
@@ -163,7 +163,7 @@ msgstr "Urządzenie wyświetlające"
 msgid "The display device"
 msgstr "Nazwa urządzenia wyświetlającego"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Nie można utworzyć pomocniczego procesu uwierzytelniania"
 
@@ -179,16 +179,12 @@ msgstr "To nie zadziałało. Proszę spróbować ponownie."
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Hasło wygasło, proszę je teraz zmienić."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "brak dostępnego konta użytkownika"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
@@ -200,15 +196,15 @@ msgstr "Proces uruchamiania sesji Wayland menedżera wyświetlania GNOME"
 msgid "Could not create socket!"
 msgstr "Nie można utworzyć gniazda."
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Uruchamia program przez skrypt /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "Nasłuchuje na gnieździe TCP"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Proces uruchamiania sesji X menedżera wyświetlania GNOME"
 
@@ -269,19 +265,9 @@ msgstr "Tylko użytkownik root może uruchamiać GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Proces roboczy menedżera wyświetlania GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "Powłoka środowiska GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Składanie i zarządzanie oknami"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -326,22 +312,19 @@ msgstr "Ścieżka do małego obrazu na górze listy użytkowników"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Ekran logowania może opcjonalnie wyświetlać mały obraz na górze listy "
-"użytkowników, aby administratorzy i dystrybucje mogły użyć swoich marek."
+"Ekran logowania może opcjonalnie wyświetlać mały obraz, aby administratorzy "
+"i dystrybucje mogły wyświetlać swoje marki."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Zastępczy ekran logowania może opcjonalnie wyświetlać mały obraz na górze "
-"listy użytkowników, aby administratorzy i dystrybucje mogły użyć swoich "
-"marek."
+"Zastępczy ekran logowania może opcjonalnie wyświetlać mały obraz, aby "
+"administratorzy i dystrybucje mogły wyświetlać swoje marki."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
