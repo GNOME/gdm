@@ -1,8 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm to kazakh\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-02-08 06:44+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -11,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.7.3\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -79,43 +80,43 @@ msgstr "Шақырушы GDM емес"
 msgid "Unable to open private communication channel"
 msgstr "Жеке хабарласу арнасын ашу мүмкін емес"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Серверді %s пайдаланушысы қосқан, бірақ ол пайдаланушысы жоқ болып тұр"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Groupid мәнін %d-ға орнату қатесі"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s үшін initgroups () қатесі"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Userid мәнін %d-ға орнату қатесі"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s экраны үшін лог файлын ашу мүмкін емес!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s жаңа %s мәніне орнату қатесі"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Сервердің приоритеті %d мәніне орнатуға болмайды: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s экраны үшін бос сервер командасы"
@@ -144,7 +145,7 @@ msgstr "Экран құрылғысы"
 msgid "The display device"
 msgstr "экран құрылғысы"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Аутентификациясының көмекші үрдісін жасау мүмкін емес"
 
@@ -160,16 +161,12 @@ msgstr "Кешіріңіз, бұл дұрыс емес болды. Қайтад�
 msgid "Username:"
 msgstr "Пайдаланушы:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Пароліңіздің мерзімі аяқталды, оны қазір ауыстырыңыз."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "қолжетерлік пайдаланушы тіркелгілер жоқ"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "Пайдаланушыға ауысу мүмкін емес"
 
@@ -181,15 +178,15 @@ msgstr "GNOME дисплейлер басқарушысының Wayland сесс
 msgid "Could not create socket!"
 msgstr "Сокет құру мүмкін емес!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "/etc/gdm/Xsession аймалау скрипті арқылы қолданбаны жөнелту"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "TCP сокетін тындау"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME дисплейлер басқарушысының X сессиясын жөнелткіші"
 
@@ -249,19 +246,9 @@ msgstr "GDM бағдарламасын тек root жібере алады"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Shell"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Терезелерді басқару мен эффектілер"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -306,21 +293,19 @@ msgstr "Пайдаланушылар тізімінің үстіндегі кі�
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "Жүйеге кіру экраны әкімшілер және өндірушілер үшін ұйымды анықтауды мүмкін "
-"қылатын, пайдаланушылар тізімінің үстінде кіші бейнені көрсете алады."
+"қылатын кіші бейнені көрсете алады."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "Жүйеге кіру қосымша экраны әкімшілер және өндірушілер үшін ұйымды анықтауды "
-"мүмкін қылатын, пайдаланушылар тізімінің үстінде кіші бейнені көрсете алады."
+"мүмкін қылатын кіші бейнені көрсете алады."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -435,31 +420,11 @@ msgstr "Скриншот алынды"
 msgid "Take a picture of the screen"
 msgstr "Экранның сурет көшірмесін сақтау"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Пароліңіздің мерзімі аяқталды, оны қазір ауыстырыңыз."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Shell"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#, fuzzy
+#~ msgid "Window management and compositing"
+#~ msgstr "Терезелерді басқару мен эффектілер"
