@@ -608,6 +608,8 @@ static void
 gdm_session_defaults_changed (GdmSession *self)
 {
 
+        update_session_type (self);
+
         if (self->priv->greeter_interface != NULL) {
                 gdm_dbus_greeter_emit_default_language_name_changed (self->priv->greeter_interface,
                                                                      get_default_language_name (self));
@@ -919,8 +921,6 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                 self->priv->saved_session = NULL;
                 return;
         }
-
-        update_session_type (self);
 
         if (strcmp (session_name,
                     get_default_session_name (self)) != 0) {
