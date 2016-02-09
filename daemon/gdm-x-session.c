@@ -379,7 +379,7 @@ spawn_bus (State        *state,
         GInputStream        *input_stream = NULL;
         GDataInputStream    *data_stream = NULL;
         GDBusConnection     *connection = NULL;
-        GVariantBuilder     *builder = NULL;
+        GVariantBuilder      builder;
         GVariant            *reply = NULL;
         GError              *error = NULL;
         const char          *bus_env = NULL;
