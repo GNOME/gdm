@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
+"POT-Creation-Date: 2016-02-22 19:59+0100\n"
 "PO-Revision-Date: 2015-03-07 08:20+0200\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -90,44 +90,44 @@ msgstr "El que ha fet la crida no és el GDM"
 msgid "Unable to open private communication channel"
 msgstr "No s'ha pogut obrir un canal de comunicació privat"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "L'usuari %s havia d'engendrar el servidor però aquest usuari no existeix"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "No s'ha pogut definir el groupid com a %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "ha fallat l'initgroups () per a %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No s'ha pogut definir l'userid com a %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: no s'ha pogut obrir el fitxer de registre per a la pantalla %s."
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: s'ha produït un error en establir %s a %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: no s'ha pogut establir la prioritat del servidor a %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: l'ordre del servidor per a la pantalla %s està buida"
@@ -156,7 +156,7 @@ msgstr "Dispositiu de pantalla"
 msgid "The display device"
 msgstr "El dispositiu de pantalla"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "No s'ha pogut crear un procés auxiliar d'autenticació"
 
@@ -172,16 +172,12 @@ msgstr "S'ha produït algun error. Torneu-ho a provar."
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Ha expirat la contrasenya, l'heu de canviar ara."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "no hi ha tal compte d'usuari disponible"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "No s'ha pogut commutar a aquest usuari"
 
@@ -193,15 +189,15 @@ msgstr "Llançador de la sessió Wayland del gestor de pantalla del GNOME"
 msgid "Could not create socket!"
 msgstr "No s'ha pogut crear el sòcol"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Executa el programa a través del script d'embolcall /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "Escolta en el sòcol TCP"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Llançador de la sessió X del gestor de pantalla del GNOME"
 
@@ -265,19 +261,9 @@ msgstr "Només l'usuari primari pot executar el GDM"
 # FIXME (dpm)
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Shell"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Gestió de finestres i composició"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -322,23 +308,21 @@ msgstr "Camí a la imatge petita de la part superior de la llista d'usuaris"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"La pantalla d'entrada pot mostrar de forma opcional una imatge petita a la "
-"part superior de la llista d'usuaris per proporcionar als administradors i "
-"distribuïdors del lloc una manera de proporcionar una marca."
+"La pantalla d'entrada pot mostrar de forma opcional una imatge petita que "
+"proporciona als administradors i distribuïdors una manera de mostrar una "
+"marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "La pantalla d'entrada auxiliar pot mostrar de forma opcional una imatge "
-"petita a la part superior de la llista d'usuaris per proporcionar als "
-"administradors i distribuïdors del lloc una manera de proporcionar una marca."
+"petita que proporciona als administradors i distribuïdors una manera de "
+"mostrar una marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -455,109 +439,11 @@ msgstr "S'ha fet una captura de pantalla"
 msgid "Take a picture of the screen"
 msgstr "Fes una foto de la pantalla"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Ha expirat la contrasenya, l'heu de canviar ara."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Shell"
 
-
-
-
-
-
-
-
-
-
-
-
-# FIXME (dpm)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
-# Time.html#Formatting-Calendar-Time
-
-
-# Vegeu http://www.gnu.org/software/libc/manual/html_node/Formatting-Calendar-
-# Time.html#Formatting-Calendar-Time
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "Gestió de finestres i composició"
