@@ -402,7 +402,7 @@ main (int    argc,
         ret = gdm_settings_direct_init (state->settings, DATADIR "/gdm/gdm.schemas", "/");
 
         if (!ret) {
-                g_printerr ("Unable to initialize settings");
+                g_printerr ("Unable to initialize settings\n");
                 exit_status = EX_DATAERR;
                 goto out;
         }
@@ -420,7 +420,7 @@ main (int    argc,
         ret = spawn_bus (state, state->cancellable);
 
         if (!ret) {
-                g_printerr ("Unable to run session message bus");
+                g_printerr ("Unable to run session message bus\n");
                 exit_status = EX_SOFTWARE;
                 goto out;
         }
@@ -428,7 +428,7 @@ main (int    argc,
         ret = spawn_session (state, state->cancellable);
 
         if (!ret) {
-                g_printerr ("Unable to run session");
+                g_printerr ("Unable to run session\n");
                 exit_status = EX_SOFTWARE;
                 goto out;
         }
@@ -436,7 +436,7 @@ main (int    argc,
         ret = register_display (state, state->cancellable);
 
         if (!ret) {
-                g_printerr ("Unable to register display with display manager");
+                g_printerr ("Unable to register display with display manager\n");
                 exit_status = EX_SOFTWARE;
                 goto out;
         }
