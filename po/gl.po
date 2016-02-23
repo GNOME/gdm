@@ -14,13 +14,13 @@
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
-# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013, 2015.
+# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013, 2015, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm-master-po-gl-41637\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-02-19 12:13+0200\n"
+"POT-Creation-Date: 2016-02-23 20:05+0100\n"
+"PO-Revision-Date: 2016-02-23 20:07+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -96,44 +96,44 @@ msgstr "O solicitante non é GDM"
 msgid "Unable to open private communication channel"
 msgstr "Non foi posíbel abrir unha canle de comunicación privada"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "O servidor íase iniciar co usuario %s, mais ese usuario non existe"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Non foi posíbel definir o identificador de grupo como %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "fallou o initgroups () para %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Non foi posíbel definir o identificador de usuario como %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: non é posíbel abrir o ficheiro de rexistro para a pantalla %s!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: produciuse un erro ao configurar %s a %s"
 
 # Poño "Xserver" porque seica é o nome do executable
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: non foi posíbel definir a prioridade do servidor como %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: a orde do servidor está baleira para a pantalla %s"
@@ -162,7 +162,7 @@ msgstr "Dispositivo de pantalla"
 msgid "The display device"
 msgstr "O dispositivo de pantalla"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Non foi posíbel crear o proceso de axuda de autenticación"
 
@@ -178,16 +178,12 @@ msgstr "Desculpe, iso non funcionou. Ténteo de novo."
 msgid "Username:"
 msgstr "Nome de usuario:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "O seu contrasinal expirou, por favor cámbieo."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "non hai ningunha conta de usuario dispoñíbel"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "Non é posíbel cambiar a ese usuario"
 
@@ -199,15 +195,15 @@ msgstr "Iniciador do xestor de sesión Wayland de pantalla de GNOME"
 msgid "Could not create socket!"
 msgstr "Non é posíbel crear o sócket!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Executa un programa mediante o script /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "Escoitar nun socket TCP"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Iniciador do xestor de sesión X de pantalla de GNOME"
 
@@ -271,19 +267,9 @@ msgstr "Só o usuario root pode executar o GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Traballador do xestor de sesión de pantalla de GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Shell"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Xestión e composición de xanelas"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -329,23 +315,21 @@ msgstr "Ruta á imaxe pequena da parte superior da lista de usuarios"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Opcionalmente, a pantalla de inicio pode mostrar unha imaxe pequena na parte "
-"superior da lista de usuarios fornecida polos administradores e "
-"distribucións como unha forma de crear marca."
+"Opcionalmente, a pantalla de inicio pode mostrar unha imaxe pequena como "
+"unha forma de que os administradores e as distribucións poidan mostrar a súa "
+"marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"A pantalla de inicio de sesión alternativo permite mostrar unha pequena "
-"imaxe na lista superior de usuarios para fornecerlle aos administradores e "
-"distribucións un lugar para marca."
+"Opcionalmente, a pantalla de inicio alternativo pode mostrar unha imaxe "
+"pequena como unha forma de que os administradores e as distribucións poidan "
+"mostrar a súa marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -462,234 +446,11 @@ msgstr "Captura de pantalla tomada"
 msgid "Take a picture of the screen"
 msgstr "Capturar unha imaxe da pantalla"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "O seu contrasinal expirou, por favor cámbieo."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Shell"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "Xestión e composición de xanelas"
