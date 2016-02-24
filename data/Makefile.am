@@ -99,7 +99,7 @@ pam_redhat_files = pam-redhat/gdm.pam		\
 	$(NULL)
 EXTRA_DIST += $(pam_redhat_files)
 
-pam_openembedded_files = pam-openembedded/gdm.pam	\
+pam_openembedded_files = pam-openembedded/gdm-password.pam	\
 	pam-openembedded/gdm-autologin.pam		\
 	pam-openembedded/gdm-launch-environment.pam	\
 	pam-openembedded/gdm-pin.pam			\
