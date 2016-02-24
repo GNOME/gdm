@@ -1841,6 +1841,9 @@ on_session_client_connected (GdmSession      *session,
 
         gdm_session_set_timed_login_details (session, username, delay);
 
+        g_debug ("GdmManager: Starting automatic login conversation (for timed login)");
+        gdm_session_start_conversation (session, "gdm-autologin");
+
         g_free (username);
 
 }
