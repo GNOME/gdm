@@ -10,14 +10,15 @@
 # Baris Cicek <baris@teamforce.name.tr>, 2004, 2009.
 # Ozan Çağlayan <ozancag@gmail.com>, 2013.
 # Gökhan Gurbetoğlu <ggurbet@gmail.com>, 2013.
-# Muhammet Kara <muhammetk@gmail.com>, 2011, 2012, 2013, 2015.
+# Muhammet Kara <muhammetk@gmail.com>, 2011, 2012, 2013, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-02-20 15:18+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-03-19 06:47+0000\n"
+"PO-Revision-Date: 2016-03-19 20:21+0200\n"
 "Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -93,44 +94,44 @@ msgstr "Çağıran GDM değil"
 msgid "Unable to open private communication channel"
 msgstr "Özel iletişim kanalı açılamadı"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Sunucu %s kullanıcısı tarafından yeniden başlatılmalı ama bu kullanıcı yok"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid %d olarak değiştirilemedi"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s için initgroups () başarısız oldu"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid %d olarak değiştirilemedi"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s ekranı için günlük dosyası açılamadı!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ayarı %s olarak atarken hata"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Sunucu önceliği %d olarak atanamadı: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s ekranı için boş sunucu komutu"
@@ -159,7 +160,7 @@ msgstr "Görüntü Aygıtı"
 msgid "The display device"
 msgstr "Görüntü aygıtı"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Kimlik doğrulama yardımcı süreci oluşturulamadı"
 
@@ -175,16 +176,12 @@ msgstr "Üzgünüm ama işe yaramadı. Lütfen tekrar deneyin."
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Parolanızın kullanım süresi doldu, lütfen şimdi değiştirin."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "hiçbir kullanıcı hesabı mevcut değil"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "Kullanıcıya değiştirilemiyor"
 
@@ -196,15 +193,15 @@ msgstr "GNOME Görüntü Yöneticisi Wayland Oturumu Başlatıcı"
 msgid "Could not create socket!"
 msgstr "Soket oluşturulamadı!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "/etc/gdm/Xsession sarmalayıcı betiği aracılığıyla program çalıştır"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "TCP yuvası üzerinden dinle"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME Görüntü Yöneticisi X Oturumu Başlatıcı"
 
@@ -264,19 +261,9 @@ msgstr "Yalnızca yetkili kullanıcı GDM'yi çalıştırabilir"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Görüntü Yöneticisi Oturum Çalıştırıcısı"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Kabuğu"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Pencere yönetimi ve kompozisyon"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -320,24 +307,28 @@ msgid "Path to small image at top of user list"
 msgstr "Kullanıcı listesinin tepesindeki küçük resme giden yol"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#| msgid ""
+#| "The login screen can optionally show a small image at the top of its user "
+#| "list to provide site administrators and distributions a way to provide "
+#| "branding."
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Oturum açma ekranı, isteğe bağlı olarak, kullanıcı listesinin tepesinde "
-"küçük bir resim gösterebilir. Böylece, site yöneticileri ve dağıtımlara "
-"markalaşma olanağı sağlanmış olur."
+"Oturum açma ekranı, isteğe bağlı olarak, site yöneticileri ve dağıtımlara "
+"markalaşma olanağı sağlamak için küçük bir resim gösterebilir."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#| msgid ""
+#| "The fallback login screen can optionally show a small image at the top of "
+#| "its user list to provide site administrators and distributions a way to "
+#| "provide branding."
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Korumalı kip oturum açma ekranı, isteğe bağlı olarak, kullanıcı listesinin "
-"tepesinde küçük bir resim gösterebilir. Böylece, site yöneticileri ve "
-"dağıtımlara markalaşma olanağı sağlanmış olur."
+"Korumalı kip oturum açma ekranı, isteğe bağlı olarak, site yöneticileri ve "
+"dağıtımlara markalaşma olanağı sağlamak için küçük bir resim gösterebilir."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -453,231 +444,11 @@ msgstr "Ekran görüntüsü alındı"
 msgid "Take a picture of the screen"
 msgstr "Ekranın bir resmini çek"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Parolanızın kullanım süresi doldu, lütfen şimdi değiştirin."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Kabuğu"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "Pencere yönetimi ve kompozisyon"
