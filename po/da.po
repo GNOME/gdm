@@ -1,5 +1,5 @@
 # Danish translation of GDM.
-# Copyright (C) 1998-2010, 2015
+# Copyright (C) 1998-2010, 2015-2016
 # This file is distributed under the same license as the gdm package.
 # Kenneth Christiansen <kenneth@ripen.dk>, 1998, 1999.
 # Birger Langkjer <birger.langkjer@image.dk>, 2000.
@@ -8,7 +8,7 @@
 # Marie Lund <marielund@post.cybercity.dk>, 2004.
 # Martin Willemoes Hansen <mwh@sysrq.dk>, 2004, 05.
 # Lasse Bang Mikkelsen <lbm@fatalerror.dk>, 2006.
-# Ask Hjorth Larsen <asklarsen@gmail.com>, 2008, 09, 2015.
+# Ask Hjorth Larsen <asklarsen@gmail.com>, 2008, 09, 2015, 2016.
 # Kenneth Nielsen <k.nielsen81@gmail.com>, 2009, 2010-2012.
 # flemming christensen <fc@stromata.dk>, 2011
 # Kris Thomsen <mail@kristhomsen.dk>, 2013
@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-03-15 16:32+0100\n"
+"POT-Creation-Date: 2016-03-20 23:46+0100\n"
+"PO-Revision-Date: 2016-03-20 03:21+0100\n"
 "Last-Translator: Kris Thomsen <mail@kristhomsen.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -107,44 +107,44 @@ msgstr "Kaldeophav er ikke GDM"
 msgid "Unable to open private communication channel"
 msgstr "Kan ikke åbne den private kommunikationskanal"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Serveren skulle være startet af brugeren %s, men den bruger eksisterer ikke"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunne ikke sætte gruppe-id til %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () mislykkedes for %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunne ikke sætte bruger-id til %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kunne ikke åbne logfil for terminalen %s!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Fejl ved sætning af %s til %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server-prioritet kunne ikke angives til %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tom serverkommando til terminalen %s"
@@ -174,7 +174,7 @@ msgid "The display device"
 msgstr "Skærmenheden"
 
 # Kunne strengt taget også være: hjælpeproces til autentificering, men mon ikke dette er det mest sandsynlige
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Kunne ikke oprette proces for autentificeringshjælp"
 
@@ -190,16 +190,12 @@ msgstr "Beklager, det virkede ikke. Prøv igen."
 msgid "Username:"
 msgstr "Brugernavn:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Din adgangskode er udløbet, ændr den venligst med det samme."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "ingen brugerkonto tilgængelig"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "Kan ikke skifte til bruger"
 
@@ -211,15 +207,15 @@ msgstr "Waylandsessionsstarter for GNOME-skærmhåndtering"
 msgid "Could not create socket!"
 msgstr "Kunne ikke oprette sokkel!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Kør program gennem /etc/gdm/Xsession-wrapperscript"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "Lyt på TCP-sokkel"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "X-sessionsstarter for GNOME-skærmhåndtering"
 
@@ -279,19 +275,9 @@ msgstr "Kun root-brugeren kan køre GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Sessionsarbejder for GNOME-skærmhåndtering"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Shell"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Vindueshåndtering og -sammensætning"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -336,23 +322,20 @@ msgstr "Sti til lille billede øverst på brugerlisten"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Logindskærmen kan give mulighed for at vise et lille billede øverst på "
-"brugerlisten for at give administratorer og distributioner mulighed for "
-"branding."
+"Logindskærmen kan give mulighed for at vise et lille billede for at give "
+"administratorer og distributioner mulighed for branding."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "Skærmen til tilbagefald ved logind kan give mulighed for at vise et lille "
-"billede øverst på brugerlisten for at give administratorer og distributioner "
-"mulighed for markedsføring (branding)."
+"billede for at give administratorer og distributioner mulighed for "
+"markedsføring (branding)."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -467,1058 +450,11 @@ msgstr "Skærmbillede taget"
 msgid "Take a picture of the screen"
 msgstr "Tag et billede af skærmen"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Din adgangskode er udløbet, ændr den venligst med det samme."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Shell"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ???
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ???
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# uid = Unique Identification
-# Bruger man samme forkortelse på dansk?
-# Hvis ikke, skulle vi måske have det på ordlisten.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# dækker vist nogenlunde, test før der rettes til noget andet
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# dækker vist nogenlunde, test før der rettes til noget andet
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# bemærk at denne tekst skal synkroniseres med en hjælpetekst nedenfor
-
-
-
-
-# mere beskrivende
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Her er vist en fejl i selve programmet - ???
-# Engelsk fra Danmark... hm.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# som i 'forrige session'
-
-
-
-
-
-
-
-
-
-
-# bemærk at denne tekst skal synkroniseres med en hjælpetekst nedenfor
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# som i 'sidste session'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "Vindueshåndtering og -sammensætning"
