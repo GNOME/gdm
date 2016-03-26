@@ -15,17 +15,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-04-10 15:54+0800\n"
-"Last-Translator: osfans <waxaca@163.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-02-04 18:46+0000\n"
+"PO-Revision-Date: 2016-01-19 18:47-0700\n"
+"Last-Translator: Jeff Bai <jeffbai@aosc.xyz>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -89,43 +90,43 @@ msgstr "调用者不是 GDM"
 msgid "Unable to open private communication channel"
 msgstr "无法打开专用通信通道"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "服务器是以用户 %s 身份创建的，但此用户不存在"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "无法将组 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() 执行 %s 失败"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "无法将用户 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：无法打开显示屏 %s 的日志文件！"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：将 %s 设为 %s 出错"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s：服务器优先级无法设为 %d：%s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：显示画面 %s 的服务器命令为空"
@@ -154,7 +155,7 @@ msgstr "显示设备"
 msgid "The display device"
 msgstr "显示设备"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
@@ -170,16 +171,12 @@ msgstr "抱歉，没有奏效，请再试一次。"
 msgid "Username:"
 msgstr "用户名："
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "你的密码已过期，请立即修改。"
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
 #, c-format
 msgid "no user account available"
 msgstr "无可用用户帐户"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1548
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
@@ -191,15 +188,15 @@ msgstr "GNOME 显示管理器 Wayland 会话启动器"
 msgid "Could not create socket!"
 msgstr "无法创建套接字！"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "通过 /etc/gdm/Xsession 包装脚本运行程序"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "监听 TCP 套接字"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME 显示管理器 X 会话启动器"
 
@@ -259,19 +256,9 @@ msgstr "只有 root 用户才能运行 GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME 显示管理器会话工作进程"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME Shell"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "窗口管理与混成"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -309,21 +296,16 @@ msgstr "用户列表上方小图片的路径"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
-msgstr ""
-"登录屏幕可以在用户列表的顶部显示一个小图像，允许网站管理员和发行版本展示标识"
-"(可选)。"
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
+msgstr "登录屏幕可显示一个小图像以允许管理员和发行版展示标识（可选）。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"备用模式登录屏幕可以在用户列表的顶部显示一个小图像，允许网站管理员和发行版本"
-"展示标识(可选)。"
+"备用模式的登录屏幕可显示一个小图像以允许管理员和发行版展示标识（可选）。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -432,241 +414,11 @@ msgstr "已经截屏"
 msgid "Take a picture of the screen"
 msgstr "截取屏幕"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "你的密码已过期，请立即修改。"
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME Shell"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "窗口管理与混成"
