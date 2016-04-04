@@ -350,7 +350,6 @@ AC_CHECK_HEADERS(sys/vt.h)
 
 EXTRA_DAEMON_LIBS=""
 EXTRA_CHOOSER_LIBS=""
-EXTRA_XNEST_LIBS=""
 EXTRA_FLEXI_LIBS=""
 EXTRA_DYNAMIC_LIBS=""
 EXTRA_SETUP_LIBS=""
@@ -360,7 +359,6 @@ AC_CHECK_FUNC(socket,,[
 	      AC_CHECK_LIB(socket,socket, [
 			   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsocket"
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lsocket"
-			   EXTRA_XNEST_LIBS="$EXTRA_XNEST_LIBS -lsocket"
 			   EXTRA_FLEXI_LIBS="$EXTRA_FLEXI_LIBS -lsocket"
 			   EXTRA_DYNAMIC_LIBS="$EXTRA_DYNAMIC_LIBS -lsocket"
 			   EXTRA_SETUP_LIBS="$EXTRA_SETUP_LIBS -lsocket"
@@ -1199,7 +1197,6 @@ fi
 #
 AC_SUBST(EXTRA_DAEMON_LIBS)
 AC_SUBST(EXTRA_CHOOSER_LIBS)
-AC_SUBST(EXTRA_XNEST_LIBS)
 AC_SUBST(EXTRA_FLEXI_LIBS)
 AC_SUBST(EXTRA_DYNAMIC_LIBS)
 AC_SUBST(EXTRA_SETUP_LIBS)
@@ -1279,33 +1276,6 @@ dnl ---------------------------------------------------------------------------
 
 if $PKG_CONFIG --atleast-version=1.17 xorg-server; then
    AC_DEFINE([HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY], [], [XServer disables tcp access by default])
-fi
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for Xnest / Xephyr support
-dnl ---------------------------------------------------------------------------
-
-# Use Xephyr if it is available.  It works better than Xnest since Xephyr
-# supports the Xserver extensions, even if on a remote machine.
-#
-X_XNEST_UNSCALED_FONTPATH="true"
-if test -x $X_SERVER_PATH/Xephyr; then
-    X_XNEST_CMD="$X_SERVER_PATH/Xephyr"
-    X_XNEST_CONFIG_OPTIONS="-audit 0"
-else
-    if test -x /usr/openwin/bin/Xnest; then
-        # If on Solaris, Xnest is only shipped with the Xsun Xserver, so
-        # use this version.
-        #
-        X_XNEST_CMD="/usr/openwin/bin/Xnest"
-        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
-        X_XNEST_UNSCALED_FONTPATH="false"
-    else
-        if test -x $X_SERVER_PATH/Xnest; then
-            X_XNEST_CMD="$X_SERVER_PATH/Xnest"
-            X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
-        fi
-    fi
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -1553,13 +1523,6 @@ AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER",[])
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH",[])
-
-AC_SUBST(X_XNEST_CMD)
-AC_SUBST(X_XNEST_CONFIG_OPTIONS)
-AC_SUBST(X_XNEST_UNSCALED_FONTPATH)
-AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD",[])
-AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS",[])
-AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH",[])
 
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then
