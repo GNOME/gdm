@@ -963,6 +963,32 @@ _get_xauth_for_pam (const char *x11_authority_file)
 #endif
 
 static gboolean
+ensure_login_vt (GdmSessionWorker *worker)
+{
+        int fd;
+        struct vt_stat vt_state = { 0 };
+        gboolean got_login_vt = FALSE;
+
+        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+
+        if (fd < 0) {
+                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
+                return FALSE;
+        }
+
+        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
+                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
+                goto out;
+        }
+
+        worker->priv->login_vt = vt_state.v_active;
+        got_login_vt = TRUE;
+out:
+        close (fd);
+        return got_login_vt;
+}
+
+static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *service,
                                    const char       *username,
@@ -976,6 +1002,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
 {
         struct pam_conv        pam_conversation;
         int                    error_code;
+        char tty_string[256];
 
         g_assert (worker->priv->pam_handle == NULL);
 
@@ -1047,6 +1074,12 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
 
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SETUP_COMPLETE;
+
+        /* Temporarily set PAM_TTY with the currently active VT (login screen) 
+           PAM_TTY will be reset with the users VT right before the user session is opened */
+        ensure_login_vt (worker);
+        g_snprintf (tty_string, 256, "/dev/tty%d", worker->priv->login_vt);
+        pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -2020,7 +2053,6 @@ set_up_for_new_vt (GdmSessionWorker *worker)
 {
         int fd;
         char vt_string[256], tty_string[256];
-        struct vt_stat vt_state = { 0 };
         int session_vt = 0;
 
         fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
@@ -2028,11 +2060,6 @@ set_up_for_new_vt (GdmSessionWorker *worker)
         if (fd < 0) {
                 g_debug ("GdmSessionWorker: couldn't open VT master: %m");
                 return FALSE;
-        }
-
-        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
-                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
-                goto fail;
         }
 
         if (worker->priv->display_is_initial) {
@@ -2044,7 +2071,6 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                 }
         }
 
-        worker->priv->login_vt = vt_state.v_active;
         worker->priv->session_vt = session_vt;
 
         close (fd);
