@@ -1080,6 +1080,8 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         ensure_login_vt (worker);
         g_snprintf (tty_string, 256, "/dev/tty%d", worker->priv->login_vt);
         pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+        if (!display_is_local)
+                worker->priv->password_is_required = TRUE;
 
  out:
         if (error_code != PAM_SUCCESS) {
