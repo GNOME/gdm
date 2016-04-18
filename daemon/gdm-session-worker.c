@@ -1856,6 +1856,24 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 jump_to_vt (worker, worker->priv->session_vt);
         }
 
+        if (!worker->priv->is_program_session && !run_script (worker, GDMCONFDIR "/PostLogin")) {
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                             "Failed to execute PostLogin script");
+                error_code = PAM_ABORT;
+                goto out;
+        }
+
+        if (!worker->priv->is_program_session && !run_script (worker, GDMCONFDIR "/PreSession")) {
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                             "Failed to execute PreSession script");
+                error_code = PAM_ABORT;
+                goto out;
+        }
+
         session_pid = fork ();
 
         if (session_pid < 0) {
@@ -2251,14 +2269,6 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
                 flags |= PAM_SILENT;
         }
 
-        if (!run_script (worker, GDMCONFDIR "/PostLogin")) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                             "Failed to execute PostLogin script");
-                return FALSE;
-        }
-
         error_code = pam_open_session (worker->priv->pam_handle, flags);
 
         if (error_code != PAM_SUCCESS) {
@@ -2273,14 +2283,6 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
 
         session_id = gdm_session_worker_get_environment_variable (worker, "XDG_SESSION_ID");
-
-        /* FIXME: should we do something here?
-         * Note that error return status from PreSession script should
-         * be ignored in the case of a X-GDM-BypassXsession session, which can
-         * be checked by calling:
-         * gdm_session_bypasses_xsession (session)
-         */
-        run_script (worker, GDMCONFDIR "/PreSession");
 
         if (session_id != NULL) {
                 g_free (worker->priv->session_id);
