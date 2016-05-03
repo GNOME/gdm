@@ -1,15 +1,15 @@
 # Norwegian bokmål translation of gdm.
 # Copyright (C) 1998-2005 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998-2013.
+# Kjartan Maraas <kmaraas@gnome.org>, 1998-2016.
 # Terance Edward Sola <terance@lyse.net>, 2005.
 # Torstein Adolf Winterseth <kvikende@fsfe.org>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 3.9.x\n"
+"Project-Id-Version: gdm 3.20.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-02-19 11:44+0100\n"
+"POT-Creation-Date: 2016-05-03 23:26+0200\n"
+"PO-Revision-Date: 2016-05-03 23:27+0200\n"
 "Last-Translator: Åka Sikrom <a4NOSPAMPLEASETHANKYOU@hush.com>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -84,43 +84,43 @@ msgstr "Kaller er ikke GDM"
 msgid "Unable to open private communication channel"
 msgstr "Klarte ikke å åpne privat kommunikasjonskanal"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Tjeneren skulle startes av bruker %s, men denne brukeren finnes ikke"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Klarte ikke å velge %d som gruppe-ID"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () mislyktes for %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Klarte ikke å velge %d som bruker-id"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Klarte ikke å åpne loggfil for skjerm %s!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Feil under setting  av %s til %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Klarte ikke å velge %d som tjenerprioritet. %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tjenerkommandoen for skjerm %s er tom"
@@ -149,7 +149,7 @@ msgstr "Skjerm-enhet"
 msgid "The display device"
 msgstr "Skjermenheten"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Klarte ikke å lage hjelpeprosess for autentisering"
 
@@ -161,20 +161,16 @@ msgstr "Kontoen din ble gitt en tidsgrense som har gått ut nå."
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Beklager, men det fungerte ikke. Prøv igjen."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Passordet er utgått. Velg nytt passord."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Klarte ikke å bytte til bruker"
 
@@ -186,15 +182,15 @@ msgstr "Wayland-øktstarter for GNOME skjermbehandler"
 msgid "Could not create socket!"
 msgstr "Klarte ikke å lage sokkel!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:734
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Kjør program via omslagssskript i /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:735
 msgid "Listen on TCP socket"
 msgstr "Lytt til TCP-sokkel"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:746
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "X-øktstarter for GNOME skjermbehandler"
 
@@ -254,19 +250,9 @@ msgstr "Bare root-bruker kan kjøre GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Øktarbeider for GNOME skjermbehandler"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME skall"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Vinduhåndtering og komposisjon"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -309,21 +295,15 @@ msgstr "Sti til bilde øverst i brukerlisten"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
-msgstr ""
-"Innloggingsskjermen kan vise et lite bilde øverst i brukerlisten for å la "
-"administratorer og distributører legge inn symboler på merkevare."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
+msgstr "Innloggingsskjermen kan vise et lite bilde for å la administratorer og distributører legge inn symboler på merkevare."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
-msgstr ""
-"Innloggingsskjermen kan vise et lite bilde øverst i brukerlisten for å la "
-"administratorer og distributører legge inn symboler på merkevare."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
+msgstr "Reserveinnloggingsskjermen kan vise et lite bilde for å la administratorer og distributører legge inn symboler på merkevare."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -437,21 +417,3 @@ msgstr "Skjermbilde tatt"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Ta bilde av skjermen"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
