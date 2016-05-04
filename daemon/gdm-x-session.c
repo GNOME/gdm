@@ -370,6 +370,60 @@ out:
 }
 
 static gboolean
+update_bus_environment (State        *state,
+                        GCancellable *cancellable)
+{
+        GDBusConnection     *connection = NULL;
+        GVariantBuilder      builder;
+        GVariant            *reply = NULL;
+        GError              *error = NULL;
+        gboolean             environment_updated = FALSE;
+
+        connection = g_dbus_connection_new_for_address_sync (state->bus_address,
+                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+                                                             G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+                                                             NULL,
+                                                             cancellable,
+                                                             &error);
+
+        if (connection == NULL) {
+                g_debug ("could not open connection to session bus: %s",
+                         error->message);
+                goto out;
+        }
+
+        g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
+        g_variant_builder_add (&builder, "{ss}", "DISPLAY", state->display_name);
+        g_variant_builder_add (&builder, "{ss}", "XAUTHORITY", state->auth_file);
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.DBus",
+                                             "/org/freedesktop/DBus",
+                                             "org.freedesktop.DBus",
+                                             "UpdateActivationEnvironment",
+                                             g_variant_new ("(@a{ss})",
+                                                            g_variant_builder_end (&builder)),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1, NULL, &error);
+
+        if (reply == NULL) {
+                g_debug ("could not update activation environment: %s", error->message);
+                goto out;
+        }
+
+        g_variant_unref (reply);
+
+        environment_updated = TRUE;
+
+out:
+        g_clear_object (&connection);
+        g_clear_error (&error);
+
+        return environment_updated;
+}
+
+static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
@@ -378,9 +432,6 @@ spawn_bus (State        *state,
         GSubprocess         *subprocess = NULL;
         GInputStream        *input_stream = NULL;
         GDataInputStream    *data_stream = NULL;
-        GDBusConnection     *connection = NULL;
-        GVariantBuilder      builder;
-        GVariant            *reply = NULL;
         GError              *error = NULL;
         const char          *bus_env = NULL;
         char                *bus_address_fd_string;
@@ -462,44 +513,8 @@ spawn_bus (State        *state,
                                  on_bus_finished,
                                  state);
 
-        connection = g_dbus_connection_new_for_address_sync (state->bus_address,
-                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
-                                                             G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
-                                                             NULL,
-                                                             cancellable,
-                                                             &error);
-
-        if (connection == NULL) {
-                g_debug ("could not open connection to session bus: %s",
-                         error->message);
-                goto out;
-        }
-
-        g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
-        g_variant_builder_add (&builder, "{ss}", "DISPLAY", state->display_name);
-        g_variant_builder_add (&builder, "{ss}", "XAUTHORITY", state->auth_file);
-
-        reply = g_dbus_connection_call_sync (connection,
-                                             "org.freedesktop.DBus",
-                                             "/org/freedesktop/DBus",
-                                             "org.freedesktop.DBus",
-                                             "UpdateActivationEnvironment",
-                                             g_variant_new ("(@a{ss})",
-                                                            g_variant_builder_end (&builder)),
-                                             NULL,
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1, NULL, &error);
-
-        if (reply == NULL) {
-                g_debug ("could not update activation environment: %s", error->message);
-                goto out;
-        }
-
-        g_variant_unref (reply);
-
         is_running = TRUE;
 out:
-        g_clear_object (&connection);
         g_clear_object (&data_stream);
         g_clear_object (&subprocess);
         g_clear_object (&launcher);
@@ -507,7 +522,6 @@ out:
 
         return is_running;
 }
-
 
 static void
 on_session_finished (GSubprocess  *subprocess,
@@ -790,6 +804,14 @@ main (int    argc,
 
         if (!ret) {
                 g_printerr ("Unable to run session message bus\n");
+                exit_status = EX_SOFTWARE;
+                goto out;
+        }
+
+        ret = update_bus_environment (state, state->cancellable);
+
+        if (!ret) {
+                g_printerr ("Unable to update bus environment\n");
                 exit_status = EX_SOFTWARE;
                 goto out;
         }
