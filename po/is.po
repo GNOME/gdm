@@ -4,13 +4,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Richard Allen <ra@ra.is>, 2003.
-# Sveinn í Felli <sv1@fellsnet.is>, 2015.
+# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.master.is\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-04-10 09:53+0000\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-05-13 05:56+0000\n"
+"PO-Revision-Date: 2016-05-14 22:27+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -86,43 +87,43 @@ msgstr "Kallari er ekki GDM"
 msgid "Unable to open private communication channel"
 msgstr "Mistókst að opna einkasamskiptarás"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:391
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Þjóninn átti að ræsa af notandanum %s en sá notandi er ekki til"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Gat ekki sett groupid hópauðkenni sem %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:408
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () brást fyrir %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Gat ekki sett userid einstaklingsauðkenni sem %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:492
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Gat ekki opnað annálsskrá (log) til birtingar %s!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Villa við að setja %s sem %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Gat ekki sett forgang þjóns á %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Auð skipun frá þjóni fyrir skjá %s"
@@ -151,7 +152,7 @@ msgstr "Skjátæki"
 msgid "The display device"
 msgstr "Tækið sem skjámyndin birtist á"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1205
 msgid "Could not create authentication helper process"
 msgstr "Gat ekki búið til hjálparferli auðkenningar"
 
@@ -164,20 +165,16 @@ msgid "Sorry, that didn't work. Please try again."
 msgstr "Æ, þetta virkaði ekki. Endilega reyndu aftur."
 
 #  login: is whacked always translate to Username:
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Notandanafn:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Lykilorðið þitt er útrunnið, endilega breyttu því núna."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "enginn notandaaðgangur tiltækur"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Það tókst ekki að skipta yfir í notanda"
 
@@ -191,15 +188,15 @@ msgstr ""
 msgid "Could not create socket!"
 msgstr "Gat ekki búið til sökkul!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:748
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Keyra forrit í gegnum /etc/gdm/Xsession umbúðaskriftu"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:749
 msgid "Listen on TCP socket"
 msgstr "Hlusta á TCP-gátt"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:760
 msgid "GNOME Display Manager X Session Launcher"
 msgstr ""
 "GNOME Display Manager X Session Launcher - Ræsir fyrir X-setu skjástýringu"
@@ -262,19 +259,9 @@ msgstr "Einungis kerfisstjóri getur keyrt GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker - Setuvöktun skjástjórnunar"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "GNOME skel"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Gluggastjórnun og skjásamsetning"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -318,20 +305,26 @@ msgid "Path to small image at top of user list"
 msgstr "Slóð að lítilli mynd efst á notendalista"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#| msgid ""
+#| "The login screen can optionally show a small image at the top of its user "
+#| "list to provide site administrators and distributions a way to provide "
+#| "branding."
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "Innskráningarglugginn getur verið með lítilli mynd fyrir ofan "
 "notendalistann, ágæt leið fyrir lénstjóra og hugbúnaðardreifingar til að "
 "auðkenna sig með vörumerki."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#| msgid ""
+#| "The fallback login screen can optionally show a small image at the top of "
+#| "its user list to provide site administrators and distributions a way to "
+#| "provide branding."
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
 "Vara-innskráningarglugginn getur verið með lítilli mynd fyrir ofan "
 "notendalistann, ágæt leið fyrir lénstjóra og hugbúnaðardreifingar til að "
@@ -451,3 +444,11 @@ msgstr "Skjámynd tekin"
 msgid "Take a picture of the screen"
 msgstr "Taktu mynd af skjánum"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Lykilorðið þitt er útrunnið, endilega breyttu því núna."
+
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME skel"
+
+#~ msgid "Window management and compositing"
+#~ msgstr "Gluggastjórnun og skjásamsetning"
