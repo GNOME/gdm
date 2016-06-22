@@ -536,8 +536,10 @@ on_display_added (GdmDisplayStore        *display_store,
         display = gdm_display_store_lookup (display_store, id);
 
         if (display != NULL) {
-                g_signal_connect (display, "notify::status",
-                                  G_CALLBACK (on_display_status_changed), factory);
+                g_signal_connect_object (display, "notify::status",
+                                         G_CALLBACK (on_display_status_changed),
+                                         factory,
+                                         0);
 
                 g_object_weak_ref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
         }
@@ -569,15 +571,17 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        g_signal_connect (G_OBJECT (store),
-                          "display-added",
-                          G_CALLBACK (on_display_added),
-                          factory);
+        g_signal_connect_object (G_OBJECT (store),
+                                 "display-added",
+                                 G_CALLBACK (on_display_added),
+                                 factory,
+                                 0);
 
-        g_signal_connect (G_OBJECT (store),
-                          "display-removed",
-                          G_CALLBACK (on_display_removed),
-                          factory);
+        g_signal_connect_object (G_OBJECT (store),
+                                 "display-removed",
+                                 G_CALLBACK (on_display_removed),
+                                 factory,
+                                 0);
 
         gdm_local_display_factory_start_monitor (factory);
         return gdm_local_display_factory_sync_seats (factory);
