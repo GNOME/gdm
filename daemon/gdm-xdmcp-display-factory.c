@@ -210,7 +210,10 @@ enum {
 static void     gdm_xdmcp_display_factory_class_init    (GdmXdmcpDisplayFactoryClass *klass);
 static void     gdm_xdmcp_display_factory_init          (GdmXdmcpDisplayFactory      *manager);
 static void     gdm_xdmcp_display_factory_finalize      (GObject                     *object);
-
+static void     gdm_xdmcp_send_alive (GdmXdmcpDisplayFactory *factory,
+                                      GdmAddress             *address,
+                                      CARD16                  dspnum,
+                                      CARD32                  sessid);
 static gpointer xdmcp_display_factory_object = NULL;
 
 G_DEFINE_TYPE (GdmXdmcpDisplayFactory, gdm_xdmcp_display_factory, GDM_TYPE_DISPLAY_FACTORY)
@@ -2065,6 +2068,9 @@ on_display_status_changed (GdmDisplay             *display,
         GdmDisplayStore *store;
         GdmLaunchEnvironment *launch_environment;
         GdmSession *session;
+        GdmAddress *address;
+        gint32  session_number;
+        int display_number;
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
@@ -2081,6 +2087,13 @@ on_display_status_changed (GdmDisplay             *display,
         g_debug ("GdmXdmcpDisplayFactory: xdmcp display status changed: %d", status);
         switch (status) {
         case GDM_DISPLAY_FINISHED:
+                g_object_get (display,
+                              "remote-address", &address,
+                              "x11-display-number", &display_number,
+                              "session-number", &session_number,
+                              NULL);
+                gdm_xdmcp_send_alive (factory, address, display_number, session_number);
+
                 gdm_display_store_remove (store, display);
                 break;
         case GDM_DISPLAY_FAILED:
