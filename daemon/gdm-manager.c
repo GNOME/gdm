@@ -618,10 +618,12 @@ switch_to_compatible_user_session (GdmManager *manager,
 
         if (existing_session != NULL) {
                 ssid_to_activate = gdm_session_get_session_id (existing_session);
-                res = activate_session_id (manager, seat_id, ssid_to_activate);
-                if (! res) {
-                        g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
-                        goto out;
+                if (seat_id != NULL) {
+                        res = activate_session_id (manager, seat_id, ssid_to_activate);
+                        if (! res) {
+                                g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
+                                goto out;
+                        }
                 }
 
                 res = session_unlock (manager, ssid_to_activate);
