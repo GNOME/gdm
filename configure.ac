@@ -221,6 +221,12 @@ AM_CONDITIONAL(ENABLE_EXHERBO_PAM_CONFIG, test x$with_default_pam_config = xexhe
 AM_CONDITIONAL(ENABLE_LFS_PAM_CONFIG, test x$with_default_pam_config = xlfs)
 AM_CONDITIONAL(ENABLE_ARCH_PAM_CONFIG, test x$with_default_pam_config = xarch)
 
+AC_CHECK_HEADERS([security/pam_modules.h security/pam_modutil.h security/pam_ext.h],
+                 [have_pam=yes],
+                 [if test "x$have_pam" = xyes ; then
+                        AC_MSG_ERROR([PAM development files not found.])
+                 fi])
+
 AC_ARG_ENABLE(console-helper,
 	      AS_HELP_STRING([--enable-console-helper],
                              [Enable PAM console helper @<:@default=auto@:>@]),,
@@ -1519,6 +1525,7 @@ chooser/Makefile
 libgdm/Makefile
 libgdm/gdm.pc
 utils/Makefile
+pam_gdm/Makefile
 data/gdm.conf
 data/Makefile
 data/applications/Makefile
