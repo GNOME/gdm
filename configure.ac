@@ -522,6 +522,14 @@ if test "x$have_pam" = "xyes"; then
        )
 fi
 
+AC_CHECK_LIB(keyutils, keyctl_read, [
+        AC_DEFINE(HAVE_KEYUTILS, 1, [Define if have keyutils])
+        KEYUTILS_LIBS="-lkeyutils"
+        KEYUTILS_CFLAGS=""
+])
+AC_SUBST(KEYUTILS_LIBS)
+AC_SUBST(KEYUTILS_CFLAGS)
+
 dnl Check if we can use the setpenv function to add specialvariable
 dnl to the environment (such as the /etc/environment file under AIX)
 AC_LINK_IFELSE([

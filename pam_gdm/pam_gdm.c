@@ -17,11 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <config.h>
+
+#include <unistd.h>
+
 #include <security/_pam_macros.h>
 #include <security/pam_ext.h>
 #include <security/pam_misc.h>
 #include <security/pam_modules.h>
 #include <security/pam_modutil.h>
+
+#ifdef HAVE_KEYUTILS
+#include <keyutils.h>
+#endif
 
 int
 pam_sm_authenticate (pam_handle_t  *pamh,
@@ -29,6 +37,27 @@ pam_sm_authenticate (pam_handle_t  *pamh,
                      int            argc,
                      const char   **argv)
 {
+#ifdef HAVE_KEYUTILS
+        int r;
+        void *cached_password = NULL;
+        key_serial_t serial;
+
+        serial = find_key_by_type_and_desc ("user", "cryptsetup", 0);
+        if (serial == 0)
+                return PAM_AUTHINFO_UNAVAIL;
+
+        r = keyctl_read_alloc (serial, &cached_password);
+        if (r < 0)
+                return PAM_AUTHINFO_UNAVAIL;
+
+        r = pam_set_item (pamh, PAM_AUTHTOK, cached_password);
+
+        free (cached_password);
+
+        if (r < 0)
+                return PAM_AUTH_ERR;
+#endif
+
         return PAM_SUCCESS;
 }
 

@@ -1,5 +1,7 @@
 auth     requisite pam_nologin.so
 auth     required  pam_env.so
+auth     optional  pam_gdm.so
+auth     optional  pam_gnome_keyring.so
 auth     optional  pam_permit.so
 
 account  include   system-local-login
@@ -8,3 +10,4 @@ password include   system-local-login
 
 session  optional  pam_keyinit.so force revoke
 session  include   system-local-login
+session  optional  pam_gnome_keyring.so auto_start
