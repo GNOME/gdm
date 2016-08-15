@@ -5,7 +5,7 @@ SUBDIRS = 			\
 	common 			\
 	daemon 			\
 	libgdm 			\
-	gui 			\
+	chooser			\
 	utils 			\
 	po 			\
 	tests 			\

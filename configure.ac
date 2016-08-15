@@ -1515,8 +1515,7 @@ AC_CONFIG_FILES([
 Makefile
 daemon/Makefile
 docs/Makefile
-gui/Makefile
-gui/simple-chooser/Makefile
+chooser/Makefile
 libgdm/Makefile
 libgdm/gdm.pc
 utils/Makefile
