@@ -5,11 +5,15 @@ SUBDIRS = 			\
 	common 			\
 	daemon 			\
 	libgdm 			\
-	chooser			\
 	utils 			\
 	po 			\
 	tests 			\
 	$(NULL)
+
+if XDMCP_SUPPORT
+SUBDIRS += chooser
+endif
+
 if ENABLE_DOCUMENTATION
 SUBDIRS += docs
 endif
