@@ -53,6 +53,8 @@ typedef struct
         GDBusConnection *bus_connection;
         char            *bus_address;
 
+        char           **environment;
+
         GSubprocess  *session_subprocess;
         char         *session_command;
         int           session_exit_status;
@@ -528,6 +530,38 @@ out:
         return is_running;
 }
 
+static gboolean
+import_environment (State        *state,
+                    GCancellable *cancellable)
+{
+        g_autoptr(GVariant) reply = NULL;
+        g_autoptr(GVariant) environment_variant = NULL;
+        g_autoptr(GError)   error = NULL;
+
+        reply = g_dbus_connection_call_sync (state->bus_connection,
+                                             "org.freedesktop.systemd1",
+                                             "/org/freedesktop/systemd1",
+                                             "org.freedesktop.DBus.Properties",
+                                             "Get",
+                                             g_variant_new ("(ss)",
+                                                            "org.freedesktop.systemd1.Manager",
+                                                            "Environment"),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1, cancellable, &error);
+
+        if (reply == NULL) {
+                g_debug ("could not fetch environment: %s", error->message);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(v)", &environment_variant);
+
+        state->environment = g_variant_dup_strv (environment_variant, NULL);
+
+        return TRUE;
+}
+
 static void
 on_session_finished (GSubprocess  *subprocess,
                      GAsyncResult *result,
@@ -578,6 +612,26 @@ spawn_session (State        *state,
 
         g_subprocess_launcher_setenv (launcher, "DISPLAY", state->display_name, TRUE);
         g_subprocess_launcher_setenv (launcher, "XAUTHORITY", state->auth_file, TRUE);
+
+        if (state->environment != NULL) {
+                size_t i;
+
+                for (i = 0; state->environment[i] != NULL; i++) {
+                        g_auto(GStrv) environment_entry = NULL;
+
+                        if (state->environment[i] == '\0') {
+                                continue;
+                        }
+
+                        environment_entry = g_strsplit (state->environment[i], "=", 2);
+
+                        if (environment_entry[0] == NULL || environment_entry[1] == NULL) {
+                                continue;
+                        }
+
+                        g_subprocess_launcher_setenv (launcher, environment_entry[0], environment_entry[1], FALSE);
+                }
+        }
 
         if (state->bus_address != NULL) {
                 g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
@@ -723,6 +777,7 @@ clear_state (State **out_state)
         g_clear_object (&state->bus_connection);
         g_clear_object (&state->session_subprocess);
         g_clear_object (&state->x_subprocess);
+        g_clear_pointer (&state->environment, g_strfreev);
         g_clear_pointer (&state->auth_file, g_free);
         g_clear_pointer (&state->display_name, g_free);
         g_clear_pointer (&state->main_loop, g_main_loop_unref);
@@ -816,6 +871,8 @@ main (int    argc,
                 exit_status = EX_SOFTWARE;
                 goto out;
         }
+
+        import_environment (state, state->cancellable);
 
         ret = update_bus_environment (state, state->cancellable);
 
