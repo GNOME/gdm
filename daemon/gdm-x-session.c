@@ -619,7 +619,7 @@ spawn_session (State        *state,
                 for (i = 0; state->environment[i] != NULL; i++) {
                         g_auto(GStrv) environment_entry = NULL;
 
-                        if (state->environment[i] == '\0') {
+                        if (state->environment[i][0] == '\0') {
                                 continue;
                         }
 
