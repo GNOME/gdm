@@ -89,13 +89,13 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
+        GDBusConnection     *bus_connection = NULL;
         GPtrArray           *arguments = NULL;
         GSubprocessLauncher *launcher = NULL;
         GSubprocess         *subprocess = NULL;
         GInputStream        *input_stream = NULL;
         GDataInputStream    *data_stream = NULL;
         GError              *error = NULL;
-        const char          *bus_env = NULL;
         char                *bus_address_fd_string = NULL;
         char                *bus_address = NULL;
         gsize                bus_address_size;
@@ -106,10 +106,13 @@ spawn_bus (State        *state,
 
         g_debug ("Running session message bus");
 
-        bus_env = g_getenv ("DBUS_SESSION_BUS_ADDRESS");
-        if (bus_env != NULL) {
+        bus_connection = g_bus_get_sync (G_BUS_TYPE_SESSION,
+                                         cancellable,
+                                         NULL);
+
+        if (bus_connection != NULL) {
                 g_debug ("session message bus already running, not starting another one");
-                state->bus_address = g_strdup (bus_env);
+                g_clear_object (&bus_connection);
                 return TRUE;
         }
 
@@ -241,7 +244,9 @@ spawn_session (State        *state,
         }
 
         launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_NONE);
-        g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
+        if (state->bus_address != NULL) {
+                g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
+        }
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) argv,
                                                    &error);
