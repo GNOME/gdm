@@ -405,7 +405,7 @@ update_bus_environment (State        *state,
                                                             g_variant_builder_end (&builder)),
                                              NULL,
                                              G_DBUS_CALL_FLAGS_NONE,
-                                             -1, NULL, &error);
+                                             -1, cancellable, &error);
 
         if (reply == NULL) {
                 g_debug ("could not update activation environment: %s", error->message);
