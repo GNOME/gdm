@@ -49,8 +49,9 @@ typedef struct
         char         *auth_file;
         char         *display_name;
 
-        GSubprocess  *bus_subprocess;
-        char         *bus_address;
+        GSubprocess     *bus_subprocess;
+        GDBusConnection *bus_connection;
+        char            *bus_address;
 
         GSubprocess  *session_subprocess;
         char         *session_command;
@@ -373,30 +374,16 @@ static gboolean
 update_bus_environment (State        *state,
                         GCancellable *cancellable)
 {
-        GDBusConnection     *connection = NULL;
         GVariantBuilder      builder;
         GVariant            *reply = NULL;
         GError              *error = NULL;
         gboolean             environment_updated = FALSE;
 
-        connection = g_dbus_connection_new_for_address_sync (state->bus_address,
-                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
-                                                             G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
-                                                             NULL,
-                                                             cancellable,
-                                                             &error);
-
-        if (connection == NULL) {
-                g_debug ("could not open connection to session bus: %s",
-                         error->message);
-                goto out;
-        }
-
         g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
         g_variant_builder_add (&builder, "{ss}", "DISPLAY", state->display_name);
         g_variant_builder_add (&builder, "{ss}", "XAUTHORITY", state->auth_file);
 
-        reply = g_dbus_connection_call_sync (connection,
+        reply = g_dbus_connection_call_sync (state->bus_connection,
                                              "org.freedesktop.DBus",
                                              "/org/freedesktop/DBus",
                                              "org.freedesktop.DBus",
@@ -417,7 +404,6 @@ update_bus_environment (State        *state,
         environment_updated = TRUE;
 
 out:
-        g_clear_object (&connection);
         g_clear_error (&error);
 
         return environment_updated;
@@ -427,13 +413,13 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
+        GDBusConnection     *bus_connection = NULL;
         GPtrArray           *arguments = NULL;
         GSubprocessLauncher *launcher = NULL;
         GSubprocess         *subprocess = NULL;
         GInputStream        *input_stream = NULL;
         GDataInputStream    *data_stream = NULL;
         GError              *error = NULL;
-        const char          *bus_env = NULL;
         char                *bus_address_fd_string;
         char                *bus_address = NULL;
         gsize                bus_address_size;
@@ -444,10 +430,13 @@ spawn_bus (State        *state,
 
         g_debug ("Running session message bus");
 
-        bus_env = g_getenv ("DBUS_SESSION_BUS_ADDRESS");
-        if (bus_env != NULL) {
+        bus_connection = g_bus_get_sync (G_BUS_TYPE_SESSION,
+                                         cancellable,
+                                         NULL);
+
+        if (bus_connection != NULL) {
                 g_debug ("session message bus already running, not starting another one");
-                state->bus_address = g_strdup (bus_env);
+                state->bus_connection = bus_connection;
                 return TRUE;
         }
 
@@ -513,6 +502,22 @@ spawn_bus (State        *state,
                                  on_bus_finished,
                                  state);
 
+
+        bus_connection = g_dbus_connection_new_for_address_sync (state->bus_address,
+                                                                 G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+                                                                 G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+                                                                 NULL,
+                                                                 cancellable,
+                                                                 &error);
+
+        if (bus_connection == NULL) {
+                g_debug ("could not open connection to session bus: %s",
+                         error->message);
+                goto out;
+        }
+
+        state->bus_connection = bus_connection;
+
         is_running = TRUE;
 out:
         g_clear_object (&data_stream);
@@ -573,7 +578,10 @@ spawn_session (State        *state,
 
         g_subprocess_launcher_setenv (launcher, "DISPLAY", state->display_name, TRUE);
         g_subprocess_launcher_setenv (launcher, "XAUTHORITY", state->auth_file, TRUE);
-        g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
+
+        if (state->bus_address != NULL) {
+                g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
+        }
 
         vt = g_getenv ("XDG_VTNR");
 
@@ -712,6 +720,7 @@ clear_state (State **out_state)
         State *state = *out_state;
 
         g_clear_object (&state->cancellable);
+        g_clear_object (&state->bus_connection);
         g_clear_object (&state->session_subprocess);
         g_clear_object (&state->x_subprocess);
         g_clear_pointer (&state->auth_file, g_free);
