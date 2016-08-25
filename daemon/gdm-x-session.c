@@ -850,9 +850,11 @@ main (int    argc,
         }
 
 out:
-        signal_subprocesses (state);
-        wait_on_subprocesses (state);
-        clear_state (&state);
+        if (state != NULL) {
+                signal_subprocesses (state);
+                wait_on_subprocesses (state);
+                clear_state (&state);
+        }
 
         return exit_status;
 }
