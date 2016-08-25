@@ -42,8 +42,10 @@ typedef struct
 {
         GdmSettings  *settings;
         GCancellable *cancellable;
-        GSubprocess  *bus_subprocess;
-        char         *bus_address;
+
+        GSubprocess     *bus_subprocess;
+        GDBusConnection *bus_connection;
+        char            *bus_address;
 
         GSubprocess  *session_subprocess;
         char         *session_command;
@@ -112,7 +114,7 @@ spawn_bus (State        *state,
 
         if (bus_connection != NULL) {
                 g_debug ("session message bus already running, not starting another one");
-                g_clear_object (&bus_connection);
+                state->bus_connection = bus_connection;
                 return TRUE;
         }
 
@@ -177,6 +179,20 @@ spawn_bus (State        *state,
                                  on_bus_finished,
                                  state);
 
+        bus_connection = g_dbus_connection_new_for_address_sync (state->bus_address,
+                                                                 G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+                                                                 G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+                                                                 NULL,
+                                                                 cancellable,
+                                                                 &error);
+
+        if (bus_connection == NULL) {
+                g_debug ("could not open connection to session bus: %s",
+                         error->message);
+                goto out;
+        }
+
+        state->bus_connection = bus_connection;
         is_running = TRUE;
 out:
         g_clear_object (&data_stream);
@@ -349,6 +365,7 @@ clear_state (State **out_state)
         State *state = *out_state;
 
         g_clear_object (&state->cancellable);
+        g_clear_object (&state->bus_connection);
         g_clear_object (&state->session_subprocess);
         g_clear_pointer (&state->main_loop, g_main_loop_unref);
         *out_state = NULL;
