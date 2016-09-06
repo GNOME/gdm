@@ -56,6 +56,8 @@ pam_sm_authenticate (pam_handle_t  *pamh,
 
         if (r < 0)
                 return PAM_AUTH_ERR;
+        else
+                return PAM_SUCCESS;
 #endif
 
         return PAM_AUTHINFO_UNAVAIL;
