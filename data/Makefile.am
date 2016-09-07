@@ -89,7 +89,7 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
 
-pam_redhat_files = pam-redhat/gdm.pam		\
+pam_redhat_files = \
 	pam-redhat/gdm-autologin.pam		\
 	pam-redhat/gdm-launch-environment.pam	\
 	pam-redhat/gdm-fingerprint.pam		\
@@ -115,7 +115,7 @@ pam_exherbo_files = pam-exherbo/gdm-autologin.pam \
 	$(NULL)
 EXTRA_DIST += $(pam_exherbo_files)
 
-pam_lfs_files = pam-lfs/gdm.pam			\
+pam_lfs_files = \
 	pam-lfs/gdm-autologin.pam		\
 	pam-lfs/gdm-launch-environment.pam	\
 	pam-lfs/gdm-fingerprint.pam		\
