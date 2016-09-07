@@ -1,8 +1,6 @@
 #%PAM-1.0
-auth       [success=ok default=3] pam_gdm.so
+auth       [success=ok default=1] pam_gdm.so
 -auth      optional    pam_gnome_keyring.so
-auth       include     password-auth
-auth       include     postlogin
 auth       sufficient  pam_permit.so
 account    required    pam_nologin.so
 account    include     system-auth

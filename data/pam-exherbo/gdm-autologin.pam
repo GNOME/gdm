@@ -2,8 +2,7 @@
 # except for the authentication method, which is:
 # always permit login
 
-auth        [success=ok default=2] pam_gdm.so
-auth        substack    system-local-login
+auth        [success=ok default=1] pam_gdm.so
 -auth       optional    pam_gnome_keyring.so
 auth        sufficient  pam_permit.so
 
