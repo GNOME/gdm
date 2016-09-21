@@ -318,6 +318,13 @@ spawn_session (State        *state,
         if (state->bus_address != NULL) {
                 g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
         }
+
+        /* Don't allow session specific environment variables from earlier sessions to leak through */
+        g_subprocess_launcher_unsetenv (launcher, "DISPLAY");
+        g_subprocess_launcher_unsetenv (launcher, "XAUTHORITY");
+        g_subprocess_launcher_unsetenv (launcher, "WAYLAND_DISPLAY");
+        g_subprocess_launcher_unsetenv (launcher, "WAYLAND_SOCKET");
+
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) argv,
                                                    &error);
