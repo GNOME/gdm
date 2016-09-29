@@ -297,7 +297,7 @@ _create_xauth_file_for_user (const char  *username,
                 g_set_error (error,
                              GDM_DISPLAY_ERROR,
                              GDM_DISPLAY_ERROR_GETTING_USER_INFO,
-                             _("could not find user \"%s\" on system"),
+                             _("could not find user “%s” on system"),
                              username);
                 goto out;
 

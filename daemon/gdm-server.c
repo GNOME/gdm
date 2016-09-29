@@ -388,7 +388,7 @@ change_user (GdmServer *server)
 
         gdm_get_pwent_for_name (server->priv->user_name, &pwent);
         if (pwent == NULL) {
-                g_warning (_("Server was to be spawned by user %s but that user doesn't exist"),
+                g_warning (_("Server was to be spawned by user %s but that user doesn’t exist"),
                            server->priv->user_name);
                 _exit (1);
         }
@@ -399,7 +399,7 @@ change_user (GdmServer *server)
 
         if (pwent->pw_uid != 0) {
                 if (setgid (pwent->pw_gid) < 0)  {
-                        g_warning (_("Couldn't set groupid to %d"),
+                        g_warning (_("Couldn’t set groupid to %d"),
                                    pwent->pw_gid);
                         _exit (1);
                 }
@@ -411,7 +411,7 @@ change_user (GdmServer *server)
                 }
 
                 if (setuid (pwent->pw_uid) < 0)  {
-                        g_warning (_("Couldn't set userid to %d"),
+                        g_warning (_("Couldn’t set userid to %d"),
                                    (int)pwent->pw_uid);
                         _exit (1);
                 }
@@ -419,7 +419,7 @@ change_user (GdmServer *server)
                 gid_t groups[1] = { 0 };
 
                 if (setgid (0) < 0)  {
-                        g_warning (_("Couldn't set groupid to %d"), 0);
+                        g_warning (_("Couldn’t set groupid to %d"), 0);
                         /* Don't error out, it's not fatal, if it fails we'll
                          * just still be */
                 }
@@ -542,7 +542,7 @@ server_child_setup (GdmServer *server)
 
         if (server->priv->priority != 0) {
                 if (setpriority (PRIO_PROCESS, 0, server->priv->priority)) {
-                        g_warning (_("%s: Server priority couldn't be set to %d: %s"),
+                        g_warning (_("%s: Server priority couldn’t be set to %d: %s"),
                                    "gdm_server_spawn",
                                    server->priv->priority,
                                    g_strerror (errno));

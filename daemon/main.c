@@ -220,7 +220,7 @@ gdm_daemon_lookup_user (uid_t *uidp,
 
         /* Set uid and gid */
         if G_UNLIKELY (pwent == NULL) {
-                gdm_fail (_("Can't find the GDM user '%s'. Aborting!"), username);
+                gdm_fail (_("Can’t find the GDM user “%s”. Aborting!"), username);
         } else {
                 uid = pwent->pw_uid;
         }
@@ -232,7 +232,7 @@ gdm_daemon_lookup_user (uid_t *uidp,
         grent = getgrnam (groupname);
 
         if G_UNLIKELY (grent == NULL) {
-                gdm_fail (_("Can't find the GDM group '%s'. Aborting!"), groupname);
+                gdm_fail (_("Can’t find the GDM group “%s”. Aborting!"), groupname);
         } else  {
                 gid = grent->gr_gid;
         }

@@ -639,14 +639,14 @@ get_friendly_error_message (int error_code)
 
             case PAM_ACCT_EXPIRED:
             case PAM_AUTHTOK_EXPIRED:
-                return _("Your account was given a time limit that's now passed.");
+                return _("Your account was given a time limit that’s now passed.");
                 break;
 
             default:
                 break;
         }
 
-        return _("Sorry, that didn't work. Please try again.");
+        return _("Sorry, that didn’t work. Please try again.");
 }
 
 static int
