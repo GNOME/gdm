@@ -1196,7 +1196,11 @@ dnl ---------------------------------------------------------------------------
 # and /usr/X11 since they often symlink to each other, and configure
 # should use the more stable location (the real directory) if possible.
 #
-if test -x /usr/X11/bin/Xserver; then
+if test -x /usr/bin/X; then
+   X_PATH="/usr/bin"
+   X_SERVER_PATH="/usr/bin"
+   X_SERVER="/usr/bin/X"
+elif test -x /usr/X11/bin/Xserver; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/Xserver"
@@ -1231,10 +1235,6 @@ elif test -x /opt/X11R6/bin/X; then
    X_PATH="/opt/X11R6/bin"
    X_SERVER_PATH="/opt/X11R6/bin"
    X_SERVER="/opt/X11R6/bin/X"
-elif test -x /usr/bin/X; then
-   X_PATH="/usr/bin"
-   X_SERVER_PATH="/usr/bin"
-   X_SERVER="/usr/bin/X"
 else
    # what to do, what to do, this is wrong, but this just sets the
    # defaults, perhaps this user is cross compiling or some such
