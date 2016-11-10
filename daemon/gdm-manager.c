@@ -781,8 +781,10 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
         if (session != NULL) {
                 GPid pid;
 
-                if (x11_display_name != NULL)
+                if (x11_display_name != NULL) {
                         g_object_set (G_OBJECT (session), "display-name", x11_display_name, NULL);
+                        g_object_set (G_OBJECT (display), "x11-display-name", x11_display_name, NULL);
+                }
 
                 /* FIXME: this should happen in gdm-session.c when the session is opened
                  */
