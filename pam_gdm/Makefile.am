@@ -36,4 +36,4 @@ pam_gdm_LTLIBRARIES = \
 	pam_gdm.la \
 	$(END_OF_LIST)
 
-pam_gdmdir = $(libdir)/security
+pam_gdmdir = $(PAM_MOD_DIR)

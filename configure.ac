@@ -477,7 +477,7 @@ dnl ---------------------------------------------------------------------------
 dnl - Check for PAM stuff
 dnl ---------------------------------------------------------------------------
 
-dnl PAM prefix
+dnl PAM prefix (configuration files)
 withval=""
 AC_ARG_WITH(pam-prefix,
             AS_HELP_STRING([--with-pam-prefix=<prefix>],
@@ -492,6 +492,14 @@ else
 	PAM_PREFIX='${sysconfdir}'
 fi
 AC_SUBST(PAM_PREFIX)
+
+dnl PAM dir (dynamic modules)
+AC_ARG_WITH([pam-mod-dir],
+            [AS_HELP_STRING([--with-pam-mod-dir=DIR],
+                            [directory to install pam modules in])],
+            [], [with_pam_mod_dir='${libdir}/security'])
+PAM_MOD_DIR="$with_pam_mod_dir"
+AC_SUBST(PAM_MOD_DIR)
 
 have_pam=no
 AC_CHECK_LIB(pam, pam_start, have_pam=yes)
@@ -1582,6 +1590,7 @@ echo "
 
         dbus-1 system.d dir:      ${DBUS_SYS_DIR}
         PAM prefix:               ${PAM_PREFIX}
+        PAM module dir:           ${PAM_MOD_DIR}
         PAM config:               ${with_default_pam_config}
         X server:                 ${X_SERVER}
 "
