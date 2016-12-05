@@ -1329,9 +1329,6 @@ set_up_automatic_login_session (GdmManager *manager,
         GdmSession *session;
         char       *display_session_type = NULL;
         gboolean is_initial;
-#ifdef ENABLE_WAYLAND_SUPPORT
-        gboolean greeter_would_have_been_wayland;
-#endif
 
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
@@ -1343,15 +1340,8 @@ set_up_automatic_login_session (GdmManager *manager,
                       "session-type", &display_session_type,
                       NULL);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
-        greeter_would_have_been_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
-#endif
-
         g_object_set (G_OBJECT (session),
                       "display-is-initial", is_initial,
-#ifdef ENABLE_WAYLAND_SUPPORT
-                      "ignore-wayland", !greeter_would_have_been_wayland,
-#endif
                       NULL);
 
         g_debug ("GdmManager: Starting automatic login conversation");
@@ -1362,13 +1352,8 @@ static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
-        GdmSession *session;
         const char *allowed_user;
         struct passwd *passwd_entry;
-#ifdef ENABLE_WAYLAND_SUPPORT
-        char       *display_session_type = NULL;
-        gboolean greeter_is_wayland;
-#endif
 
         allowed_user = get_username_for_greeter_display (manager, display);
 
@@ -1380,20 +1365,7 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        session = create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-        /* If the greeter display isn't a wayland session,
-         * then don't allow the user session to be a wayland
-         * session either.
-         */
-        g_object_get (G_OBJECT (display),
-                      "session-type", &display_session_type,
-                      NULL);
-        greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
-        g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
-#endif
-
+        create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
         gdm_display_start_greeter_session (display);
 }
 
@@ -2060,6 +2032,10 @@ create_embryonic_user_session_for_display (GdmManager *manager,
         char       *display_auth_file = NULL;
         char       *display_seat_id = NULL;
         char       *display_id = NULL;
+#ifdef ENABLE_WAYLAND_SUPPORT
+        char       *display_session_type = NULL;
+        gboolean    greeter_is_wayland;
+#endif
 
         g_object_get (G_OBJECT (display),
                       "id", &display_id,
@@ -2068,6 +2044,9 @@ create_embryonic_user_session_for_display (GdmManager *manager,
                       "remote-hostname", &remote_hostname,
                       "x11-authority-file", &display_auth_file,
                       "seat-id", &display_seat_id,
+#ifdef ENABLE_WAYLAND_SUPPORT
+                      "session-type", &display_session_type,
+#endif
                       NULL);
         display_device = get_display_device (manager, display);
 
@@ -2143,6 +2122,12 @@ create_embryonic_user_session_for_display (GdmManager *manager,
                                 g_object_ref (session),
                                 (GDestroyNotify)
                                 clean_embryonic_user_session);
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
+        g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
+#endif
+
         return session;
 }
 
