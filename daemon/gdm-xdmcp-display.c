@@ -210,7 +210,7 @@ gdm_xdmcp_display_manage (GdmDisplay *display)
 {
         GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
 
-        g_timeout_add (500, (GSourceFunc)idle_connect_to_display, self);
+        g_timeout_add (50, (GSourceFunc)idle_connect_to_display, self);
 
         g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
 }

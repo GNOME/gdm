@@ -2447,7 +2447,10 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                         gdm_xdmcp_send_decline (factory,
                                                 address,
                                                 "Only MIT-MAGIC-COOKIE-1 supported");
-                } else if (factory->priv->num_sessions >= factory->priv->max_displays) {
+                } 
+#if 0
+		
+		else if (factory->priv->num_sessions >= factory->priv->max_displays) {
                         g_warning ("Maximum number of open XDMCP sessions reached");
                         gdm_xdmcp_send_decline (factory,
                                                 address,
@@ -2459,6 +2462,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                 address,
                                                 "Maximum number of open sessions from your host reached");
                 }
+#endif
         }
 
         XdmcpDisposeARRAY8 (&clnt_authname);
