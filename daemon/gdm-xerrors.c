@@ -24,6 +24,7 @@
 #include <glib/gstdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <setjmp.h>
 
 #include "gdm-xerrors.h"
 
@@ -34,6 +35,11 @@ struct _GdmErrorTrap
         int (*old_handler) (Display *, XErrorEvent *);
         int error_warnings;
         int error_code;
+};
+
+struct _GdmIOErrorTrap
+{
+        int (*old_handler) (Display *);
 };
 
 static int          gdm_x_error                  (Display     *display,
@@ -47,7 +53,6 @@ static GSList *gdm_error_trap_free_list = NULL;      /* Free list */
 
 static int                _gdm_error_warnings = TRUE;
 static int                _gdm_error_code = 0;
-
 void
 gdm_xerrors_init (void)
 {
@@ -239,4 +244,40 @@ gdm_error_trap_pop (void)
         XSetErrorHandler (trap->old_handler);
 
         return result;
+}
+
+static jmp_buf gdm_jmp_buf;
+
+static enum {
+    NO_EXCEPTION = 0,
+    EXCEPTION = 1,
+    FINISHED = 2
+} gdm_jmp_state;
+
+#define TRY if ((gdm_jmp_state = setjmp (gdm_jmp_buf)) == NO_EXCEPTION)
+#define EXCEPT if (gdm_jmp_state == NO_EXCEPTION) longjmp (gdm_jmp_buf, FINISHED); else
+
+#define THROW() longjmp (gdm_jmp_buf, EXCEPTION)
+
+static int
+gdm_trapped_x_io_error (Display *display)
+{
+        THROW ();
+}
+
+void
+gdm_trap_xserver_hangup (GdmTrappedFunc trapped_func,
+                         gpointer       data)
+{
+        int (*old_handler) (Display *) = NULL;
+
+        TRY {
+                old_handler = XSetIOErrorHandler (gdm_trapped_x_io_error);
+
+                trapped_func (data);
+
+                XSetIOErrorHandler (old_handler);
+        } EXCEPT {
+                XSetIOErrorHandler (old_handler);
+        }
 }

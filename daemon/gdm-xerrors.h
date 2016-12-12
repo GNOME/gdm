@@ -31,9 +31,14 @@ typedef void (* GdmXErrorHandler) (Display     *dpy,
                                    XErrorEvent *error,
                                    gpointer     data);
 
+typedef void (* GdmTrappedFunc) (gpointer *data);
+
 void      gdm_xerrors_init    (void);
 
 void      gdm_error_trap_push (void);
 gint      gdm_error_trap_pop  (void);
+
+void      gdm_trap_xserver_hangup (GdmTrappedFunc trapped_func,
+                                   gpointer       data);
 
 #endif
