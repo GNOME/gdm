@@ -34,8 +34,7 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
+#include <xcb/xcb.h>
 
 #include "gdm-common.h"
 #include "gdm-display.h"
@@ -76,7 +75,8 @@ struct GdmDisplayPrivate
 
         guint                 finish_idle_id;
 
-        Display              *x11_display;
+        xcb_connection_t     *xcb_connection;
+        int                   xcb_screen_number;
 
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
@@ -292,32 +292,17 @@ gdm_display_create_authority (GdmDisplay *self)
 }
 
 static void
-setup_xhost_auth (XHostAddress              *host_entries,
-                  XServerInterpretedAddress *si_entries)
+setup_xhost_auth (XHostAddress              *host_entries)
 {
-        si_entries[0].type        = "localuser";
-        si_entries[0].typelength  = strlen ("localuser");
-        si_entries[1].type        = "localuser";
-        si_entries[1].typelength  = strlen ("localuser");
-        si_entries[2].type        = "localuser";
-        si_entries[2].typelength  = strlen ("localuser");
-
-        si_entries[0].value       = "root";
-        si_entries[0].valuelength = strlen ("root");
-        si_entries[1].value       = GDM_USERNAME;
-        si_entries[1].valuelength = strlen (GDM_USERNAME);
-        si_entries[2].value       = "gnome-initial-setup";
-        si_entries[2].valuelength = strlen ("gnome-initial-setup");
-
         host_entries[0].family    = FamilyServerInterpreted;
-        host_entries[0].address   = (char *) &si_entries[0];
-        host_entries[0].length    = sizeof (XServerInterpretedAddress);
+        host_entries[0].address   = "localuser\0root";
+        host_entries[0].length    = sizeof ("localuser\0root");
         host_entries[1].family    = FamilyServerInterpreted;
-        host_entries[1].address   = (char *) &si_entries[1];
-        host_entries[1].length    = sizeof (XServerInterpretedAddress);
+        host_entries[1].address   = "localuser\0" GDM_USERNAME;
+        host_entries[1].length    = sizeof ("localuser\0" GDM_USERNAME);
         host_entries[2].family    = FamilyServerInterpreted;
-        host_entries[2].address   = (char *) &si_entries[2];
-        host_entries[2].length    = sizeof (XServerInterpretedAddress);
+        host_entries[2].address   = "localuser\0gnome-initial-setup";
+        host_entries[2].length    = sizeof ("localuser\0gnome-initial-setup");
 }
 
 gboolean
@@ -331,8 +316,8 @@ gdm_display_add_user_authorization (GdmDisplay *self,
         gboolean              res;
 
         int                       i;
-        XServerInterpretedAddress si_entries[3];
         XHostAddress              host_entries[3];
+        xcb_void_cookie_t         cookies[3];
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
@@ -382,14 +367,25 @@ gdm_display_add_user_authorization (GdmDisplay *self,
         /* Remove access for the programs run by greeter now that the
          * user session is starting.
          */
-        setup_xhost_auth (host_entries, si_entries);
-        gdm_error_trap_push ();
+        setup_xhost_auth (host_entries);
+
         for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
-                XRemoveHost (self->priv->x11_display, &host_entries[i]);
+                cookies[i] = xcb_change_hosts_checked (self->priv->xcb_connection,
+                                                       XCB_HOST_MODE_DELETE,
+                                                       host_entries[i].family,
+                                                       host_entries[i].length,
+                                                       (uint8_t *) host_entries[i].address);
         }
-        XSync (self->priv->x11_display, False);
-        if (gdm_error_trap_pop ()) {
-                g_warning ("Failed to remove greeter program access to the display. Trying to proceed.");
+
+        for (i = 0; i < G_N_ELEMENTS (cookies); i++) {
+                xcb_generic_error_t *xcb_error;
+
+                xcb_error = xcb_request_check (self->priv->xcb_connection, cookies[i]);
+
+                if (xcb_error != NULL) {
+                        g_warning ("Failed to remove greeter program access to the display. Trying to proceed.");
+                        free (xcb_error);
+                }
         }
 
         return TRUE;
@@ -652,7 +648,7 @@ gdm_display_finish (GdmDisplay *self)
 static void
 gdm_display_disconnect (GdmDisplay *self)
 {
-        g_clear_pointer (&self->priv->x11_display, XCloseDisplay);
+        g_clear_pointer (&self->priv->xcb_connection, xcb_disconnect);
 }
 
 gboolean
@@ -951,7 +947,7 @@ gdm_display_get_property (GObject        *object,
                 g_value_set_boolean (value, self->priv->is_local);
                 break;
         case PROP_IS_CONNECTED:
-                g_value_set_boolean (value, self->priv->x11_display != NULL);
+                g_value_set_boolean (value, self->priv->xcb_connection != NULL);
                 break;
         case PROP_LAUNCH_ENVIRONMENT:
                 g_value_set_object (value, self->priv->launch_environment);
@@ -1601,70 +1597,78 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
         }
 }
 
+static xcb_window_t
+get_root_window (xcb_connection_t *connection,
+                 int               screen_number)
+{
+        xcb_screen_t *screen = NULL;
+        xcb_screen_iterator_t iter;
+
+        iter = xcb_setup_roots_iterator (xcb_get_setup (connection));
+        while (iter.rem) {
+                if (screen_number == 0)
+                        screen = iter.data;
+                screen_number--;
+                xcb_screen_next (&iter);
+        }
+
+        if (screen != NULL) {
+                return screen->root;
+        }
+
+        return XCB_WINDOW_NONE;
+}
+
 static void
 gdm_display_set_windowpath (GdmDisplay *self)
 {
         /* setting WINDOWPATH for clients */
-        Atom prop;
-        Atom actualtype;
-        int actualformat;
-        unsigned long nitems;
-        unsigned long bytes_after;
-        unsigned char *buf;
+        xcb_intern_atom_cookie_t atom_cookie;
+        xcb_intern_atom_reply_t *atom_reply = NULL;
+        xcb_get_property_cookie_t get_property_cookie;
+        xcb_get_property_reply_t *get_property_reply = NULL;
+        xcb_window_t root_window = XCB_WINDOW_NONE;
         const char *windowpath;
         char *newwindowpath;
-        unsigned long num;
+        uint32_t num;
         char nums[10];
         int numn;
 
-        prop = XInternAtom (self->priv->x11_display, "XFree86_VT", False);
-        if (prop == None) {
+        atom_cookie = xcb_intern_atom (self->priv->xcb_connection, 0, strlen("XFree86_VT"), "XFree86_VT");
+        atom_reply = xcb_intern_atom_reply (self->priv->xcb_connection, atom_cookie, NULL);
+
+        if (atom_reply == NULL) {
                 g_debug ("no XFree86_VT atom\n");
-                return;
+                goto out;
         }
-        if (XGetWindowProperty (self->priv->x11_display,
-                DefaultRootWindow (self->priv->x11_display), prop, 0, 1,
-                False, AnyPropertyType, &actualtype, &actualformat,
-                &nitems, &bytes_after, &buf)) {
+
+        root_window = get_root_window (self->priv->xcb_connection,
+                                       self->priv->xcb_screen_number);
+
+        if (root_window == XCB_WINDOW_NONE) {
+                g_debug ("couldn't find root window\n");
+                goto out;
+        }
+
+        get_property_cookie = xcb_get_property (self->priv->xcb_connection,
+                                                FALSE,
+                                                root_window,
+                                                atom_reply->atom,
+                                                XCB_ATOM_INTEGER,
+                                                0,
+                                                1);
+
+        get_property_reply = xcb_get_property_reply (self->priv->xcb_connection, get_property_cookie, NULL);
+
+        if (get_property_reply == NULL) {
                 g_debug ("no XFree86_VT property\n");
-                return;
+                goto out;
         }
 
-        if (nitems != 1) {
-                g_debug ("%lu items in XFree86_VT property!\n", nitems);
-                XFree (buf);
-                return;
-        }
-
-        switch (actualtype) {
-        case XA_CARDINAL:
-        case XA_INTEGER:
-        case XA_WINDOW:
-                switch (actualformat) {
-                case  8:
-                        num = (*(uint8_t  *)(void *)buf);
-                        break;
-                case 16:
-                        num = (*(uint16_t *)(void *)buf);
-                        break;
-                case 32:
-                        num = (*(long *)(void *)buf);
-                        break;
-                default:
-                        g_debug ("format %d in XFree86_VT property!\n", actualformat);
-                        XFree (buf);
-                        return;
-                }
-                break;
-        default:
-                g_debug ("type %lx in XFree86_VT property!\n", actualtype);
-                XFree (buf);
-                return;
-        }
-        XFree (buf);
+        num = ((uint32_t *) xcb_get_property_value (get_property_reply))[0];
 
         windowpath = getenv ("WINDOWPATH");
-        numn = snprintf (nums, sizeof (nums), "%lu", num);
+        numn = snprintf (nums, sizeof (nums), "%u", num);
         if (!windowpath) {
                 newwindowpath = malloc (numn + 1);
                 sprintf (newwindowpath, "%s", nums);
@@ -1674,11 +1678,15 @@ gdm_display_set_windowpath (GdmDisplay *self)
         }
 
         g_setenv ("WINDOWPATH", newwindowpath, TRUE);
+out:
+        g_clear_pointer (&atom_reply, free);
+        g_clear_pointer (&get_property_reply, free);
 }
 
 gboolean
 gdm_display_connect (GdmDisplay *self)
 {
+        xcb_auth_info_t *auth_info = NULL;
         gboolean ret;
 
         ret = FALSE;
@@ -1687,21 +1695,26 @@ gdm_display_connect (GdmDisplay *self)
 
         /* Get access to the display independent of current hostname */
         if (self->priv->x11_cookie != NULL) {
-                XSetAuthorization ("MIT-MAGIC-COOKIE-1",
-                                   strlen ("MIT-MAGIC-COOKIE-1"),
-                                   (gpointer)
-                                   self->priv->x11_cookie,
-                                   self->priv->x11_cookie_size);
+                auth_info = g_alloca (sizeof (xcb_auth_info_t));
+
+                auth_info->namelen = strlen ("MIT-MAGIC-COOKIE-1");
+                auth_info->name = "MIT-MAGIC-COOKIE-1";
+                auth_info->datalen = self->priv->x11_cookie_size;
+                auth_info->data = self->priv->x11_cookie;
+
         }
 
-        self->priv->x11_display = XOpenDisplay (self->priv->x11_display_name);
+        self->priv->xcb_connection = xcb_connect_to_display_with_auth_info (self->priv->x11_display_name,
+                                                                            auth_info,
+                                                                            &self->priv->xcb_screen_number);
 
-        if (self->priv->x11_display == NULL) {
+        if (xcb_connection_has_error (self->priv->xcb_connection)) {
+                g_clear_pointer (&self->priv->xcb_connection, xcb_disconnect);
                 g_warning ("Unable to connect to display %s", self->priv->x11_display_name);
                 ret = FALSE;
         } else if (self->priv->is_local) {
-                XServerInterpretedAddress si_entries[3];
                 XHostAddress              host_entries[3];
+                xcb_void_cookie_t         cookies[3];
                 int                       i;
 
                 g_debug ("GdmDisplay: Connected to display %s", self->priv->x11_display_name);
@@ -1709,17 +1722,27 @@ gdm_display_connect (GdmDisplay *self)
 
                 /* Give programs access to the display independent of current hostname
                  */
-                setup_xhost_auth (host_entries, si_entries);
-
-                gdm_error_trap_push ();
+                setup_xhost_auth (host_entries);
 
                 for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
-                        XAddHost (self->priv->x11_display, &host_entries[i]);
+                        cookies[i] = xcb_change_hosts_checked (self->priv->xcb_connection,
+                                                               XCB_HOST_MODE_INSERT,
+                                                               host_entries[i].family,
+                                                               host_entries[i].length,
+                                                               (uint8_t *) host_entries[i].address);
                 }
 
-                XSync (self->priv->x11_display, False);
-                if (gdm_error_trap_pop ()) {
-                        g_debug ("Failed to give some system users access to the display. Trying to proceed.");
+                for (i = 0; i < G_N_ELEMENTS (cookies); i++) {
+                        xcb_generic_error_t *xcb_error;
+
+                        xcb_error = xcb_request_check (self->priv->xcb_connection, cookies[i]);
+
+                        if (xcb_error != NULL) {
+                                g_debug ("Failed to give system user '%s' access to the display. Trying to proceed.", host_entries[i].address + sizeof ("localuser"));
+                                free (xcb_error);
+                        } else {
+                                g_debug ("Gave system user '%s' access to the display.", host_entries[i].address + sizeof ("localuser"));
+                        }
                 }
 
                 gdm_display_set_windowpath (self);
