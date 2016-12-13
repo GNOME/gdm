@@ -649,6 +649,12 @@ gdm_display_finish (GdmDisplay *self)
         return TRUE;
 }
 
+static void
+gdm_display_disconnect (GdmDisplay *self)
+{
+        g_clear_pointer (&self->priv->x11_display, XCloseDisplay);
+}
+
 gboolean
 gdm_display_unmanage (GdmDisplay *self)
 {
@@ -657,6 +663,8 @@ gdm_display_unmanage (GdmDisplay *self)
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
         g_debug ("GdmDisplay: unmanage display");
+
+        gdm_display_disconnect (self);
 
         g_timer_stop (self->priv->server_timer);
 
