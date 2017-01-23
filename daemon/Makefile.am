@@ -15,6 +15,7 @@ AM_CPPFLAGS = \
 	-DLOCALSTATEDIR=\"$(localstatedir)\"		\
 	-DLOGDIR=\"$(logdir)\"				\
 	-DSBINDIR=\"$(sbindir)\"			\
+	-DSYSCONFDIR=\"$(sysconfdir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DGDM_RUN_DIR=\"$(GDM_RUN_DIR)\"		\
 	-DGDM_XAUTH_DIR=\"$(GDM_XAUTH_DIR)\"		\
