@@ -358,7 +358,11 @@ get_system_session_dirs (GdmSession *self)
                 g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
 
 #ifdef ENABLE_WAYLAND_SUPPORT
+#ifdef ENABLE_USER_DISPLAY_SERVER
                 g_array_prepend_val (search_array, wayland_search_dir);
+#else
+                g_array_append_val (search_array, wayland_search_dir);
+#endif
 #endif
         }
 
@@ -3107,6 +3111,7 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
         }
 
+#ifdef ENABLE_USER_DISPLAY_SERVER
         /* All other cases (wayland login screen, X login screen,
          * wayland user session, X user session) use the NEW_VT
          * display mode.  That display mode means that GDM allocates
@@ -3129,6 +3134,18 @@ gdm_session_get_display_mode (GdmSession *self)
          *   are paused when handed out.
          */
         return GDM_SESSION_DISPLAY_MODE_NEW_VT;
+#else
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+        /* Wayland sessions are for now assumed to run in a
+         * mutter-launch-like environment, so we allocate
+         * a new VT for them. */
+        if (g_strcmp0 (self->priv->session_type, "wayland") == 0) {
+                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
+        }
+#endif
+        return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+#endif
 }
 
 void

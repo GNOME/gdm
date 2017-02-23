@@ -195,6 +195,16 @@ if test x$enable_split_authentication = xyes; then
   AC_DEFINE(ENABLE_SPLIT_AUTHENTICATION, 1, [Define if split authentication is enabled])
 fi
 
+AC_ARG_ENABLE(user-display-server,
+	      AS_HELP_STRING([--enable-user-display-server],
+                             [Enable running X server as user @<:@default=yes@:>@]),,
+              enable_user_display_server=yes)
+AM_CONDITIONAL(ENABLE_USER_DISPLAY_SERVER, test x$user_display_server = xyes)
+
+if test x$enable_user_display_server = xyes; then
+  AC_DEFINE(ENABLE_USER_DISPLAY_SERVER, 1, [Define if user display servers are supported])
+fi
+
 AC_ARG_WITH(default-pam-config,
 	    AS_HELP_STRING([--with-default-pam-config: One of redhat, openembedded, exherbo, lfs, arch, none @<:@default=auto@:>@]))
 dnl If not given, try autodetecting from release files (see NetworkManager source) 

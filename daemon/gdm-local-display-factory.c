@@ -206,7 +206,17 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         g_debug ("GdmLocalDisplayFactory: Creating transient display");
 
+#ifdef ENABLE_USER_DISPLAY_SERVER
         display = gdm_local_display_new ();
+#else
+        if (display == NULL) {
+                guint32 num;
+
+                num = take_next_display_number (factory);
+
+                display = gdm_legacy_display_new (num);
+        }
+#endif
 
         g_object_set (display,
                       "seat-id", "seat0"
@@ -358,13 +368,14 @@ create_display (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
-
+#ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_strcmp0 (seat_id, "seat0") == 0) {
                 display = gdm_local_display_new ();
                 if (session_type != NULL) {
                         g_object_set (G_OBJECT (display), "session-type", session_type, NULL);
                 }
         }
+#endif
 
         if (display == NULL) {
                 guint32 num;
