@@ -340,10 +340,9 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
 static const char **
 get_system_session_dirs (GdmSession *self)
 {
-        static const char *search_dirs[] = {
-#ifdef ENABLE_WAYLAND_SUPPORT
-                DATADIR "/wayland-sessions/",
-#endif
+        static GArray *search_array = NULL;
+
+        static const char *x_search_dirs[] = {
                 "/etc/X11/sessions/",
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
@@ -351,13 +350,19 @@ get_system_session_dirs (GdmSession *self)
                 NULL
         };
 
-#ifdef ENABLE_WAYLAND_SUPPORT
-        if (self->priv->ignore_wayland) {
-                return search_dirs + 1;
-        }
-#endif
+        static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
 
-        return search_dirs;
+        if (search_array == NULL) {
+                search_array = g_array_new (TRUE, TRUE, sizeof (char *));
+
+                g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+                g_array_prepend_val (search_array, wayland_search_dir);
+#endif
+        }
+
+        return (const char **) search_array->data;
 }
 
 static gboolean
