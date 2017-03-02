@@ -2104,6 +2104,41 @@ fail:
 }
 
 static gboolean
+set_xdg_vtnr_to_current_vt (GdmSessionWorker *worker)
+{
+        int fd;
+        char vt_string[256];
+        struct vt_stat vt_state = { 0 };
+
+        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+
+        if (fd < 0) {
+                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
+                return FALSE;
+        }
+
+        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
+                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
+                goto fail;
+        }
+
+        close (fd);
+        fd = -1;
+
+        g_snprintf (vt_string, sizeof (vt_string), "%d", vt_state.v_active);
+
+        gdm_session_worker_set_environment_variable (worker,
+                                                     "XDG_VTNR",
+                                                     vt_string);
+
+        return TRUE;
+
+fail:
+        close (fd);
+        return FALSE;
+}
+
+static gboolean
 set_up_for_current_vt (GdmSessionWorker  *worker,
                        GError           **error)
 {
@@ -2168,6 +2203,14 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
                 g_free (pam_xauth);
          }
 #endif
+
+        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
+                g_debug ("GdmSessionWorker: setting XDG_VTNR to current vt");
+                set_xdg_vtnr_to_current_vt (worker);
+        } else {
+                g_debug ("GdmSessionWorker: not setting XDG_VTNR since not seat0");
+        }
+
         return TRUE;
 out:
         return FALSE;
