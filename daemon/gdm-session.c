@@ -358,11 +358,13 @@ get_system_session_dirs (GdmSession *self)
                 g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
 
 #ifdef ENABLE_WAYLAND_SUPPORT
+                if (!self->priv->ignore_wayland) {
 #ifdef ENABLE_USER_DISPLAY_SERVER
-                g_array_prepend_val (search_array, wayland_search_dir);
+                        g_array_prepend_val (search_array, wayland_search_dir);
 #else
-                g_array_append_val (search_array, wayland_search_dir);
+                        g_array_append_val (search_array, wayland_search_dir);
 #endif
+                }
 #endif
         }
 
