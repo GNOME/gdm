@@ -337,10 +337,11 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         g_object_unref (self);
 }
 
-static const char **
+static char **
 get_system_session_dirs (GdmSession *self)
 {
-        static GArray *search_array = NULL;
+        GArray *search_array = NULL;
+        char **search_dirs;
 
         static const char *x_search_dirs[] = {
                 "/etc/X11/sessions/",
@@ -352,23 +353,25 @@ get_system_session_dirs (GdmSession *self)
 
         static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
 
-        if (search_array == NULL) {
-                search_array = g_array_new (TRUE, TRUE, sizeof (char *));
+        search_array = g_array_new (TRUE, TRUE, sizeof (char *));
 
-                g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
+        g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-                if (!self->priv->ignore_wayland) {
+        if (!self->priv->ignore_wayland) {
 #ifdef ENABLE_USER_DISPLAY_SERVER
-                        g_array_prepend_val (search_array, wayland_search_dir);
+                g_array_prepend_val (search_array, wayland_search_dir);
 #else
-                        g_array_append_val (search_array, wayland_search_dir);
-#endif
-                }
+                g_array_append_val (search_array, wayland_search_dir);
 #endif
         }
+#endif
 
-        return (const char **) search_array->data;
+        search_dirs = g_strdupv ((char **) search_array->data);
+
+        g_array_free (search_array, TRUE);
+
+        return search_dirs;
 }
 
 static gboolean
@@ -391,13 +394,15 @@ load_key_file_for_file (GdmSession   *self,
         GKeyFile   *key_file;
         GError     *error;
         gboolean    res;
+        char      **search_dirs;
 
         key_file = g_key_file_new ();
 
+        search_dirs = get_system_session_dirs (self),
         error = NULL;
         res = g_key_file_load_from_dirs (key_file,
                                          file,
-                                         get_system_session_dirs (self),
+                                         (const char **) search_dirs,
                                          full_path,
                                          G_KEY_FILE_NONE,
                                          &error);
@@ -407,6 +412,8 @@ load_key_file_for_file (GdmSession   *self,
                 g_key_file_free (key_file);
                 key_file = NULL;
         }
+
+        g_strfreev (search_dirs);
 
         return key_file;
 }
@@ -521,7 +528,7 @@ get_default_language_name (GdmSession *self)
 static const char *
 get_fallback_session_name (GdmSession *self)
 {
-        const char    **search_dirs;
+        char          **search_dirs;
         int             i;
         char           *name;
         GSequence      *sessions;
@@ -574,6 +581,7 @@ get_fallback_session_name (GdmSession *self)
 
                 g_dir_close (dir);
         }
+        g_strfreev (search_dirs);
 
         name = NULL;
         session = g_sequence_get_begin_iter (sessions);
