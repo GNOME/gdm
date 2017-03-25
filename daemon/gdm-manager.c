@@ -1446,8 +1446,6 @@ greeter_display_started (GdmManager *manager,
         }
 
         maybe_start_pending_initial_login (manager, display);
-
-        manager->priv->ran_once = TRUE;
 }
 
 static void
@@ -1457,6 +1455,7 @@ on_display_status_changed (GdmDisplay *display,
 {
         int         status;
         int         display_number = -1;
+        char       *session_type = NULL;
 #ifdef WITH_PLYMOUTH
         gboolean    display_is_local = FALSE;
         gboolean    quit_plymouth = FALSE;
@@ -1467,7 +1466,10 @@ on_display_status_changed (GdmDisplay *display,
         quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
 #endif
 
-        g_object_get (display, "x11-display-number", &display_number, NULL);
+        g_object_get (display,
+                      "x11-display-number", &display_number,
+                      "session-type", &session_type,
+                      NULL);
 
         status = gdm_display_get_status (display);
 
@@ -1500,6 +1502,9 @@ on_display_status_changed (GdmDisplay *display,
                         }
 #endif
 
+                        if (status == GDM_DISPLAY_FINISHED || g_strcmp0 (session_type, "x11") == 0) {
+                                manager->priv->ran_once = TRUE;
+                        }
                         maybe_start_pending_initial_login (manager, display);
                         break;
                 default:
