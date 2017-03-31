@@ -119,6 +119,33 @@ chooser_host_remove (GdmHostChooserWidget *widget,
 }
 #endif
 
+static gboolean
+address_hostnames_equal (GdmAddress *address,
+                         GdmAddress *other_address)
+{
+        char *hostname, *other_hostname;
+        gboolean are_equal;
+
+        if (gdm_address_equal (address, other_address)) {
+                return TRUE;
+        }
+
+        if (!gdm_address_get_hostname (address, &hostname)) {
+                gdm_address_get_numeric_info (address, &hostname, NULL);
+        }
+
+        if (!gdm_address_get_hostname (other_address, &other_hostname)) {
+                gdm_address_get_numeric_info (other_address, &other_hostname, NULL);
+        }
+
+        are_equal = g_strcmp0 (hostname, other_hostname) == 0;
+
+        g_free (hostname);
+        g_free (other_hostname);
+
+        return are_equal;
+}
+
 static GdmChooserHost *
 find_known_host (GdmHostChooserWidget *widget,
                  GdmAddress           *address)
@@ -127,8 +154,13 @@ find_known_host (GdmHostChooserWidget *widget,
         GdmChooserHost *host;
 
         for (li = widget->priv->chooser_hosts; li != NULL; li = li->next) {
+                GdmAddress *other_address;
+
                 host = li->data;
-                if (gdm_address_equal (gdm_chooser_host_get_address (host), address)) {
+
+                other_address = gdm_chooser_host_get_address (host);
+                        
+                if (address_hostnames_equal (address, other_address)) {
                         goto out;
                 }
         }
