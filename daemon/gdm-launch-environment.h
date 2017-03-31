@@ -59,6 +59,8 @@ typedef struct
                                     int                    exit_code);
         void (* died)              (GdmLaunchEnvironment  *launch_environment,
                                     int                    signal_number);
+        void (* hostname_selected) (GdmLaunchEnvironment  *launch_environment,
+                                    const char            *hostname);
 } GdmLaunchEnvironmentClass;
 
 GType                 gdm_launch_environment_get_type           (void);
