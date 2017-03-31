@@ -193,6 +193,7 @@ idle_connect_to_display (GdmXdmcpDisplay *self)
 
         res = gdm_display_connect (GDM_DISPLAY (self));
         if (res) {
+                g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
         } else {
                 if (self->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", self->priv->connection_attempts);
@@ -211,8 +212,6 @@ gdm_xdmcp_display_manage (GdmDisplay *display)
         GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
 
         g_timeout_add (500, (GSourceFunc)idle_connect_to_display, self);
-
-        g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
 }
 
 static void
