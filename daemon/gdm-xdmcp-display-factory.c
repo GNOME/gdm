@@ -2050,7 +2050,8 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
 }
 
 static void
-on_client_disconnected (GdmDisplay *display)
+on_client_disconnected (GdmSession *session,
+                        GdmDisplay *display)
 {
         if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED)
                 return;
