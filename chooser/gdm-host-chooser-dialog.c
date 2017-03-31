@@ -133,7 +133,7 @@ gdm_host_chooser_dialog_constructor (GType                  type,
 
 
         dialog->priv->chooser_widget = gdm_host_chooser_widget_new (dialog->priv->kind_mask);
-        gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), dialog->priv->chooser_widget);
+        gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), dialog->priv->chooser_widget, TRUE, TRUE, 0);
         gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
