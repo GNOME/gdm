@@ -1935,25 +1935,7 @@ on_session_client_disconnected (GdmSession   *session,
                                 GPid          pid_of_client,
                                 GdmManager   *manager)
 {
-        GdmDisplay *display;
-        gboolean display_is_local;
-
         g_debug ("GdmManager: client disconnected");
-
-        display = get_display_for_user_session (session);
-
-        if (display == NULL) {
-                return;
-        }
-
-        g_object_get (G_OBJECT (display),
-                      "is-local", &display_is_local,
-                      NULL);
-
-        if ( ! display_is_local && gdm_session_is_running (session)) {
-                gdm_display_unmanage (display);
-                gdm_display_finish (display);
-        }
 }
 
 typedef struct
