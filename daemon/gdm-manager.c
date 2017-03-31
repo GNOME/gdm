@@ -45,6 +45,7 @@
 #include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
+#include "gdm-launch-environment.h"
 #include "gdm-local-display.h"
 #include "gdm-local-display-factory.h"
 #include "gdm-session.h"
@@ -52,6 +53,7 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 #include "gdm-xdmcp-display-factory.h"
+#include "gdm-xdmcp-chooser-display.h"
 
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
@@ -820,7 +822,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         const char       *sender;
         GDBusConnection  *connection;
         GdmDisplay       *display = NULL;
-        GdmSession       *session;
+        GdmSession       *session = NULL;
         const char       *address;
         GPid              pid = 0;
         uid_t             uid = (uid_t) -1;
@@ -841,14 +843,32 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        session = get_embryonic_user_session_for_display (display);
+        if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
+                GdmLaunchEnvironment *launch_environment;
 
-        if (gdm_session_is_running (session)) {
-                g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_ACCESS_DENIED,
-                                                               _("Can only be called before user is logged in"));
-                return TRUE;
+                g_object_get (display, "launch-environment", &launch_environment, NULL);
+
+                if (launch_environment != NULL) {
+                        session = gdm_launch_environment_get_session (launch_environment);
+                }
+
+                if (session == NULL) {
+                        g_dbus_method_invocation_return_error_literal (invocation,
+                                                                       G_DBUS_ERROR,
+                                                                       G_DBUS_ERROR_ACCESS_DENIED,
+                                                                       _("Chooser session unavailable"));
+                        return TRUE;
+                }
+        } else {
+                session = get_embryonic_user_session_for_display (display);
+
+                if (gdm_session_is_running (session)) {
+                        g_dbus_method_invocation_return_error_literal (invocation,
+                                                                       G_DBUS_ERROR,
+                                                                       G_DBUS_ERROR_ACCESS_DENIED,
+                                                                       _("Can only be called before user is logged in"));
+                        return TRUE;
+                }
         }
 
         allowed_user = gdm_session_get_allowed_user (session);
@@ -1336,6 +1356,26 @@ set_up_automatic_login_session (GdmManager *manager,
 }
 
 static void
+set_up_chooser_session (GdmManager *manager,
+                        GdmDisplay *display)
+{
+        const char *allowed_user;
+        struct passwd *passwd_entry;
+
+        allowed_user = get_username_for_greeter_display (manager, display);
+
+        if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
+                g_warning ("GdmManager: couldn't look up username %s",
+                           allowed_user);
+                gdm_display_unmanage (display);
+                gdm_display_finish (display);
+                return;
+        }
+
+        gdm_display_start_greeter_session (display);
+}
+
+static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
@@ -1410,7 +1450,11 @@ set_up_session (GdmManager *manager,
                 autologin_enabled = get_automatic_login_details (manager, &username);
 
         if (!autologin_enabled) {
-                set_up_greeter_session (manager, display);
+                if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
+                        set_up_chooser_session (manager, display);
+                } else {
+                        set_up_greeter_session (manager, display);
+                }
                 g_free (username);
                 return;
         }
