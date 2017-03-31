@@ -151,6 +151,8 @@ browser_add_host (GdmHostChooserWidget *widget,
         GtkTreeIter   iter;
         gboolean      res;
 
+        GtkTreeSelection  *selection;
+
         g_assert (host != NULL);
 
         if (! gdm_chooser_host_get_willing (host)) {
@@ -179,6 +181,11 @@ browser_add_host (GdmHostChooserWidget *widget,
                             CHOOSER_LIST_HOST_COLUMN, host,
                             -1);
         g_free (label);
+
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->treeview));
+        if (!gtk_tree_selection_get_selected (selection, NULL, NULL)) {
+                gtk_tree_selection_select_iter (selection, &iter);
+        }
 
 }
 
@@ -804,7 +811,7 @@ gdm_host_chooser_widget_init (GdmHostChooserWidget *widget)
         gtk_container_add (GTK_CONTAINER (scrolled), widget->priv->treeview);
 
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->treeview));
-        gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+        gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
         g_signal_connect (selection, "changed",
                           G_CALLBACK (on_host_selected),
                           widget);
