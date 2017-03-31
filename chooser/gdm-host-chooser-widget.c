@@ -273,8 +273,8 @@ decode_packet (GIOChannel           *source,
                 /* server changed it's mind */
                 if (header.opcode == WILLING
                     && ! gdm_chooser_host_get_willing (chooser_host)) {
-                        g_object_set (chooser_host, "willing", TRUE, NULL);
                         browser_add_host (widget, chooser_host);
+                        g_object_set (chooser_host, "willing", TRUE, NULL);
                 }
                 /* FIXME: handle unwilling? */
         }
