@@ -2056,6 +2056,7 @@ on_client_disconnected (GdmSession *session,
         if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED)
                 return;
 
+        gdm_display_stop_greeter_session (display);
         gdm_display_unmanage (display);
         gdm_display_finish (display);
 }
