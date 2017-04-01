@@ -843,6 +843,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
+#ifdef HAVE_LIBXDMCP
         if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
                 GdmLaunchEnvironment *launch_environment;
 
@@ -859,7 +860,9 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                                                                        _("Chooser session unavailable"));
                         return TRUE;
                 }
-        } else {
+        }
+#endif
+        if (session == NULL) {
                 session = get_embryonic_user_session_for_display (display);
 
                 if (gdm_session_is_running (session)) {
@@ -1450,12 +1453,16 @@ set_up_session (GdmManager *manager,
                 autologin_enabled = get_automatic_login_details (manager, &username);
 
         if (!autologin_enabled) {
+                g_free (username);
+
+#ifdef HAVE_LIBXDMCP
                 if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
                         set_up_chooser_session (manager, display);
-                } else {
-                        set_up_greeter_session (manager, display);
+                        return;
                 }
-                g_free (username);
+#endif
+
+                set_up_greeter_session (manager, display);
                 return;
         }
 
