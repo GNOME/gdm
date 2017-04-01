@@ -1,21 +1,21 @@
 # Polish translation for gdm.
-# Copyright © 1999-2016 the gdm authors.
+# Copyright © 1999-2017 the gdm authors.
 # This file is distributed under the same license as the gdm package.
 # Zbigniew Chyla <chyla@alice.ci.pwr.wroc.pl>, 1999-2003.
 # Artur Flinta <aflinta@at.kernel.pl>, 2003-2006.
 # Wojciech Kapusta <wkapusta@aviary.pl>, 2006-2007.
 # Wadim Dziedzic <wdziedzic@aviary.pl>, 2007-2008.
 # Tomasz Dominikowski <dominikowski@gmail.com>, 2008-2009.
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2016.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2017.
 # Wojciech Szczęsny <wszczesny@aviary.pl>, 2013.
-# Aviary.pl <community-poland@mozilla.org>, 2006-2016.
+# Aviary.pl <community-poland@mozilla.org>, 2006-2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-22 20:37+0200\n"
-"PO-Revision-Date: 2016-08-22 20:38+0200\n"
+"POT-Creation-Date: 2017-04-01 10:58+0200\n"
+"PO-Revision-Date: 2017-04-01 10:59+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -29,19 +29,19 @@ msgstr ""
 msgid "Select System"
 msgstr "Wybór systemu"
 
-#: ../chooser/gdm-host-chooser-widget.c:215
+#: ../chooser/gdm-host-chooser-widget.c:254
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: nie można utworzyć bufora XDMCP."
 
-#: ../chooser/gdm-host-chooser-widget.c:221
+#: ../chooser/gdm-host-chooser-widget.c:260
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: nie można odczytać nagłówka XDMCP."
 
-#: ../chooser/gdm-host-chooser-widget.c:227
+#: ../chooser/gdm-host-chooser-widget.c:266
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: niepoprawna wersja XDMCP."
 
-#: ../chooser/gdm-host-chooser-widget.c:233
+#: ../chooser/gdm-host-chooser-widget.c:272
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: nie można przetworzyć adresu"
 
@@ -92,23 +92,27 @@ msgstr ""
 "zostanie tymczasowo wyłączony. Po naprawieniu problemu proszę ponownie "
 "uruchomić GDM."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Brak dostępnych ekranów"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1114
 msgid "No session available"
 msgstr "Brak dostępnych sesji"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:859
+msgid "Chooser session unavailable"
+msgstr "Sesja ekranu wyboru jest niedostępna"
+
+#: ../daemon/gdm-manager.c:869
 msgid "Can only be called before user is logged in"
 msgstr "Może być wywoływane tylko przed zalogowaniem użytkownika"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:880
 msgid "Caller not GDM"
 msgstr "Program wywołujący to nie GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:890
 msgid "Unable to open private communication channel"
 msgstr "Nie można otworzyć prywatnego kanału komunikacji"
 
@@ -177,9 +181,9 @@ msgstr "Urządzenie wyświetlające"
 
 #: ../daemon/gdm-session-auditor.c:102
 msgid "The display device"
-msgstr "Nazwa urządzenia wyświetlającego"
+msgstr "Urządzenie wyświetlające"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Nie można utworzyć pomocniczego procesu uwierzytelniania"
 
@@ -204,23 +208,23 @@ msgstr "brak dostępnego konta użytkownika"
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Proces uruchamiania sesji Wayland menedżera wyświetlania GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Nie można utworzyć gniazda."
 
-#: ../daemon/gdm-x-session.c:748
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Uruchamia program przez skrypt /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:749
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Nasłuchuje na gnieździe TCP"
 
-#: ../daemon/gdm-x-session.c:760
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Proces uruchamiania sesji X menedżera wyświetlania GNOME"
 
@@ -264,7 +268,7 @@ msgstr "Wszystkie ostrzeżenia jako błędy"
 
 #: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
-msgstr "Wyjście po czasie (debugowanie)"
+msgstr "Kończy działanie po czasie (w celu debugowania)"
 
 #: ../daemon/main.c:320
 msgid "Print GDM version"
@@ -283,7 +287,7 @@ msgstr "Tylko użytkownik root może uruchamiać GDM"
 #. of starting up a session
 #: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
-msgstr "Proces roboczy menedżera wyświetlania GNOME"
+msgstr "Proces roboczy sesji menedżera wyświetlania GNOME"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -424,13 +428,13 @@ msgstr "Wersja tego programu"
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
 msgid "- New GDM login"
-msgstr "- nowe logowanie GDM"
+msgstr "— nowe logowanie GDM"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
-msgstr "Pobrano zrzut ekranu"
+msgstr "Wykonano zrzut ekranu"
 
 #. Option parsing
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
-msgstr "Pobiera zrzut ekranu"
+msgstr "Wykonuje zrzut ekranu"
