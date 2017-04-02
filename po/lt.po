@@ -9,15 +9,15 @@
 # Gintautas Miliauskas <gintautas@miliauskas.lt>, 2008,2009.
 # Rimas Kudelis <rq@akl.lt>, 2010.
 # Algimantas Margevičius <gymka@mail.ru>, 2011.
-# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2015, 2016.
+# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-02-12 18:46+0000\n"
-"PO-Revision-Date: 2016-02-13 01:55+0200\n"
+"POT-Creation-Date: 2017-03-31 21:48+0000\n"
+"PO-Revision-Date: 2017-04-02 22:20+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -26,8 +26,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Gtranslator 2.91.7\n"
 "X-Project-Style: gnome\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Pasirinkite sistemą"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Nepavyko sukurti XDMCP buferio!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Nepavyko perskaityti XDMCP antraštės!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Neteisinga XDMCP versija!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Nepavyko perskaityti adreso"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -75,23 +95,28 @@ msgstr ""
 "norite diagnozuoti problemą. Kol kas šis ekranas bus išjungtas.  Kai "
 "išspręsite problemą, paleiskite GDM iš naujo."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Nėra galimų vaizduoklių"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1114
 msgid "No session available"
 msgstr "Nėra prieinamų seansų"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:859
+#| msgid "No session available"
+msgid "Chooser session unavailable"
+msgstr "Pasirinkimo seansas nepasiekiamas"
+
+#: ../daemon/gdm-manager.c:869
 msgid "Can only be called before user is logged in"
 msgstr "Gali būti kviečiamas tik prieš naudotojui prisijungiant"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:880
 msgid "Caller not GDM"
 msgstr "Kvietėjas ne GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:890
 msgid "Unable to open private communication channel"
 msgstr "Nepavyko atverti privataus komunikacijos kanalo"
 
@@ -161,7 +186,7 @@ msgstr "Vaizdavimo įrenginys"
 msgid "The display device"
 msgstr "Vaizdavimo įrenginys"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Nepavyko sukurti tapatybės patvirtinimo pagalbinio proceso"
 
@@ -173,36 +198,36 @@ msgstr "Jūsų paskyrai buvo suteiktas laiko limitas, kuris dabar baigėsi."
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Atleiskite, tai nesuveikė. Bandykite dar kartą."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME ekrano tvarkytuvės Wayland seanso paleidėjas"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Nepavyko sukurti lizdo!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Paleisti programą per /etc/gdm/Xsession tarpinį scenarijų"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Klausytis TCP lizdo"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME ekrano tvarkytuvės X seanso paleidėjas"
 
@@ -373,26 +398,6 @@ msgid ""
 msgstr ""
 "Skaičius kartų, kiek naudotojui leidžiama mėginti patvirtinti tapatybę prieš "
 "grįžtant į naudotojų pasirinkimą."
-
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Pasirinkite sistemą"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: Nepavyko sukurti XDMCP buferio!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: Nepavyko perskaityti XDMCP antraštės!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Neteisinga XDMCP versija!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: Nepavyko perskaityti adreso"
 
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
