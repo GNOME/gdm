@@ -219,7 +219,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 #endif
 
         g_object_set (display,
-                      "seat-id", "seat0"
+                      "seat-id", "seat0",
                       "allow-timed-login", FALSE,
                       NULL);
 
