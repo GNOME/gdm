@@ -1315,6 +1315,133 @@ maybe_start_pending_initial_login (GdmManager *manager,
         g_free (user_session_seat_id);
 }
 
+static gboolean
+get_login_window_session_id (const char  *seat_id,
+                             char       **session_id)
+{
+        gboolean   ret;
+        int        res, i;
+        char     **sessions;
+        char      *service_id;
+        char      *service_class;
+        char      *state;
+
+        res = sd_seat_get_sessions (seat_id, &sessions, NULL, NULL);
+        if (res < 0) {
+                g_debug ("Failed to determine sessions: %s", strerror (-res));
+                return FALSE;
+        }
+
+        if (sessions == NULL || sessions[0] == NULL) {
+                *session_id = NULL;
+                ret = TRUE;
+                goto out;
+        }
+
+        for (i = 0; sessions[i]; i ++) {
+
+                res = sd_session_get_class (sessions[i], &service_class);
+                if (res < 0) {
+                        g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_class, "greeter") != 0) {
+                        free (service_class);
+                        continue;
+                }
+
+                free (service_class);
+
+                ret = sd_session_get_state (sessions[i], &state);
+                if (ret < 0) {
+                        g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (g_strcmp0 (state, "closing") == 0) {
+                        free (state);
+                        continue;
+                }
+                free (state);
+
+                res = sd_session_get_service (sessions[i], &service_id);
+                if (res < 0) {
+                        g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_id, "gdm-launch-environment") == 0) {
+                        *session_id = g_strdup (sessions[i]);
+                        ret = TRUE;
+
+                        free (service_id);
+                        goto out;
+                }
+
+                free (service_id);
+        }
+
+        *session_id = NULL;
+        ret = TRUE;
+
+out:
+        if (sessions) {
+                for (i = 0; sessions[i]; i ++) {
+                        free (sessions[i]);
+                }
+
+                free (sessions);
+        }
+
+        return ret;
+}
+
+static void
+activate_login_window_session_on_seat (GdmManager *self,
+                                       const char *seat_id)
+{
+        char *session_id;
+
+        if (!get_login_window_session_id (seat_id, &session_id)) {
+                return;
+        }
+
+        activate_session_id (self, seat_id, session_id);
+}
+
+static void
+maybe_activate_other_session (GdmManager *self,
+                              GdmDisplay *old_display)
+{
+        char *seat_id = NULL;
+        char *session_id;
+        int ret;
+
+        g_object_get (G_OBJECT (old_display),
+                      "seat-id", &seat_id,
+                      NULL);
+
+        ret = sd_seat_get_active (seat_id, &session_id, NULL);
+
+        if (ret == 0) {
+                GdmDisplay *display;
+
+                display = gdm_display_store_find (self->priv->display_store,
+                                                  lookup_by_session_id,
+                                                  (gpointer) session_id);
+
+                if (display == NULL) {
+                        activate_login_window_session_on_seat (self, seat_id);
+                }
+        }
+
+        g_free (seat_id);
+}
+
 static const char *
 get_username_for_greeter_display (GdmManager *manager,
                                   GdmDisplay *display)
@@ -1557,6 +1684,7 @@ on_display_status_changed (GdmDisplay *display,
                                 manager->priv->ran_once = TRUE;
                         }
                         maybe_start_pending_initial_login (manager, display);
+                        maybe_activate_other_session (manager, display);
                         break;
                 default:
                         break;
