@@ -2022,6 +2022,26 @@ on_session_reauthenticated (GdmSession *session,
                             GdmManager *manager)
 {
         gboolean fail_if_already_switched = FALSE;
+
+        if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
+                const char *seat_id;
+                char *session_id;
+
+                seat_id = gdm_session_get_display_seat_id (session);
+                if (get_login_window_session_id (seat_id, &session_id)) {
+                        GdmDisplay *display = gdm_display_store_find (manager->priv->display_store,
+                                                                      lookup_by_session_id,
+                                                                      (gpointer) session_id);
+
+                        if (display != NULL) {
+                                gdm_display_stop_greeter_session (display);
+                                gdm_display_unmanage (display);
+                                gdm_display_finish (display);
+                        }
+                }
+                g_free (session_id);
+        }
+
         /* There should already be a session running, so jump to its
          * VT. In the event we're already on the right VT, (i.e. user
          * used an unlock screen instead of a user switched login screen),
