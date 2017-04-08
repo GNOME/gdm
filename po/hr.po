@@ -4,11 +4,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2008-05-21 16:51+0000\n"
-"Last-Translator: Launchpad Translations Administrators <rosetta@launchpad."
-"net>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-03-31 21:48+0000\n"
+"PO-Revision-Date: 2017-04-08 18:18+0200\n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
@@ -17,22 +17,42 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Launchpad-Export-Date: 2008-05-28 05:19+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Odaberi sustav"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Ne može stvoriti XDMCP međuspremnik!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Ne može čitati XDMCP zaglavlje!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Neispravna XDMCP inačica!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Nemoguća obrada adrese"
 
 #: ../common/gdm-common.c:298
 #, c-format
 msgid "/dev/urandom is not a character device"
-msgstr ""
+msgstr "/dev/urandom nije znakovni uređaj"
 
 #: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
-msgstr ""
+msgstr "Nemoguće otkrivanje trenutne sesije."
 
 #: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
-#, fuzzy, c-format
+#, c-format
 msgid "Could not identify the current seat."
-msgstr "%s: Ne mogu napraviti vezu ka udaljenom računalu"
+msgstr "Nemoguće identificirati trenutno sjedište."
 
 #: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
 #, c-format
@@ -40,16 +60,18 @@ msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr ""
+"Sustav ne može otkriti treba li se prebaciti na postojeći zaslon prijave ili "
+"pokrenuti novi zaslon prijave."
 
 #: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
-msgstr ""
+msgstr "Sustav ne može pokrenuti novi zaslon prijave."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr ""
+msgstr "nemoguće je pronaći korisnika \"%s\" na sustavu"
 
 #: ../daemon/gdm-legacy-display.c:235
 msgid ""
@@ -58,66 +80,72 @@ msgid ""
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
+"Nemoguće pokretanje X poslužitelja (vaše grafičko okruženje) zbog unutrašnje "
+"greške. Kontaktirajte svojeg administratora sustava ili provjerite vaš zapis "
+"sustava u svrhu dijagnosticiranja problema. U međuvremenu ovaj zaslon biti "
+"će onemogućen. Ponovno pokrenite GDM kada problem ispravite."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
-msgstr ""
+msgstr "Nema dostupnog zaslona"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1114
 msgid "No session available"
-msgstr ""
+msgstr "Nema dostupne sesije"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:859
+msgid "Chooser session unavailable"
+msgstr "Nedostupan odabiratelj sesije"
+
+#: ../daemon/gdm-manager.c:869
 msgid "Can only be called before user is logged in"
-msgstr ""
+msgstr "Može se jedino pozvati prije nego što se korisnik prijavi"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:880
 msgid "Caller not GDM"
-msgstr ""
+msgstr "Pozivatelj nije GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:890
 msgid "Unable to open private communication channel"
-msgstr ""
+msgstr "Nemoguće otvaranje privatno kanala komunikacije"
 
-#: ../daemon/gdm-server.c:378
-#, fuzzy, c-format
+#: ../daemon/gdm-server.c:391
+#, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr ""
-"%s: Poslužitelj je se trebao pokrenuti sa uid brojem %d, ali taj korisnik ne "
-"postoji"
+msgstr "Poslužitelj je stvorio korisnik %s, ali taj korisnik ne postoji"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
-#, fuzzy, c-format
+#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
+#, c-format
 msgid "Couldn't set groupid to %d"
-msgstr "%s: Ne mogu postaviti groupid na %d"
+msgstr "Nemoguće postavljanje id grupe na %d"
 
-#: ../daemon/gdm-server.c:395
-#, fuzzy, c-format
+#: ../daemon/gdm-server.c:408
+#, c-format
 msgid "initgroups () failed for %s"
-msgstr "%s: initgrouops () nije uspio za %s"
+msgstr "pokretanje grupe () nije uspjelo za %s"
 
-#: ../daemon/gdm-server.c:401
-#, fuzzy, c-format
+#: ../daemon/gdm-server.c:414
+#, c-format
 msgid "Couldn't set userid to %d"
-msgstr "%s: Ne mogu postaviti userid na %d"
+msgstr "Nemoguće postavljanje id korisnika na %d"
 
-#: ../daemon/gdm-server.c:479
-#, fuzzy, c-format
+#: ../daemon/gdm-server.c:492
+#, c-format
 msgid "%s: Could not open log file for display %s!"
-msgstr "%s: Ne mogu otvoriti datoteku sa dnevnikom za zaslon %s!"
+msgstr "%s: Nemoguće otvaranje datoteke zapisa za zaslon %s!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:525
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Greška pri postavljanju %s na %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Prioritet poslužitelja se ne može postaviti na %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:697
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Prazna komanda poslužitelja za zaslon %s"
@@ -127,289 +155,249 @@ msgid "Username"
 msgstr "Korisničko ime"
 
 #: ../daemon/gdm-session-auditor.c:91
-#, fuzzy
 msgid "The username"
 msgstr "Korisničko ime"
 
 #: ../daemon/gdm-session-auditor.c:95
-#, fuzzy
 msgid "Hostname"
-msgstr "Korisničko ime"
+msgstr "Naziv računala"
 
 #: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
-msgstr ""
+msgstr "Naziv računala"
 
 #: ../daemon/gdm-session-auditor.c:101
-#, fuzzy
 msgid "Display Device"
-msgstr "Prikaz"
+msgstr "Uređaj zaslona"
 
 #: ../daemon/gdm-session-auditor.c:102
 msgid "The display device"
-msgstr ""
+msgstr "Uređaj zaslona"
 
-#: ../daemon/gdm-session.c:1193
-#, fuzzy
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
-msgstr "%s: Ne mogu zapisati novi autorizacijski unos: %s"
+msgstr "Nemoguće stvaranje procesa pomoći ovjere"
 
 #: ../daemon/gdm-session-worker.c:642
 msgid "Your account was given a time limit that's now passed."
-msgstr ""
+msgstr "Vašem računu dano je vremensko ograničenje koje je sada isteklo."
 
 #: ../daemon/gdm-session-worker.c:649
 msgid "Sorry, that didn't work. Please try again."
-msgstr ""
+msgstr "Nažalost, to ne radi. Pokušajte ponovno."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Korisničko ime:"
 
-#: ../daemon/gdm-session-worker.c:1142
-#, fuzzy
-msgid "Your password has expired, please change it now."
-msgstr ""
-"Vaša lozinka je prestala važiti.\n"
-"Sada ju samo administrator sustava može promijeniti."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
-msgstr ""
+msgstr "nema dostupnih korisničkih računa"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
-msgstr ""
+msgstr "Nemoguća promjena korisnika"
 
-#: ../daemon/gdm-wayland-session.c:385
-#, fuzzy
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
-msgstr "Radno okruženje GNOMEa"
+msgstr "GNOME Upravitelj zaslona pokretanja wayland sesije"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
-#, fuzzy
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
-msgstr "%s: Ne mogu napraviti vezu ka udaljenom računalu"
+msgstr "Nemoguće stvaranje priključnice!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
-msgstr ""
+msgstr "Pokreni program putem /etc/gdm/Xsession zaštitne skripte"
 
-#: ../daemon/gdm-x-session.c:687
-#, fuzzy
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
-msgstr "Slušaj na _UDP portu: "
+msgstr "Slušaj na TCP priključnici"
 
-#: ../daemon/gdm-x-session.c:698
-#, fuzzy
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
-msgstr "Radno okruženje GNOMEa"
+msgstr "GNOME Upravitelj zaslona pokretanja X sesije"
 
 #: ../daemon/main.c:125 ../daemon/main.c:138
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
-"Ne mogu zapisati PID datoteku %s, moguće je da više nema prostora na disku. "
-"Greška: %s"
+"Nemoguće zapisivanje PID datoteke %s, možda nema više slobodnog prostora na "
+"disku: %s"
 
 #: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
+msgstr "Neuspješno stvaranje direktorija određenog za jedno pokretanje %s: %s"
 
 #: ../daemon/main.c:188
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "Nisam se uspio ponovo pokrenuti"
+msgstr "Neuspješno stvaranje direktorija zapisa %s': %s"
 
 #: ../daemon/main.c:223
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "%s: Ne mogu pronaći GDM korisnika '%s'. Prekidam!"
+msgstr "Nemoguće je pronaći GDM korisnika '%s'. Prekidam!"
 
 #: ../daemon/main.c:229
-#, fuzzy
 msgid "The GDM user should not be root. Aborting!"
-msgstr "%s: GDM korisnik ne može biti root korisnik. Prekidam!"
+msgstr "GDM korisnik ne može biti korijenski korisnik. Prekidam!"
 
 #: ../daemon/main.c:235
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "%s: Ne mogu pronaći GDM grupu '%s'. Odustajem!"
+msgstr "Nemoguće je pronaći GDM grupu '%s'. Prekidam!"
 
 #: ../daemon/main.c:241
-#, fuzzy
 msgid "The GDM group should not be root. Aborting!"
-msgstr "%s: GDM grupa nebi smjela biti root. Prekidam!"
+msgstr "GDM grupa ne može imati korijenske ovlasti. Prekidam!"
 
 #: ../daemon/main.c:318
 msgid "Make all warnings fatal"
-msgstr ""
+msgstr "Učini sva upozorenja opasnima!"
 
 #: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
-msgstr ""
+msgstr "Izađi nakon određenog vremena (u svrhu otklanjanja grešaka)"
 
 #: ../daemon/main.c:320
 msgid "Print GDM version"
-msgstr "Ispiši inačicu GDM-a"
+msgstr "Ispiši GDM inačicu"
 
 #: ../daemon/main.c:333
-#, fuzzy
 msgid "GNOME Display Manager"
-msgstr "Radno okruženje GNOMEa"
+msgstr "GNOME Upravitelj zaslona"
 
 #. make sure the pid file doesn't get wiped
 #: ../daemon/main.c:381
-#, fuzzy
 msgid "Only the root user can run GDM"
-msgstr "Samo root želi pokretati GDM\n"
+msgstr "Samo korijenski korisnik može pokretati GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
-msgstr ""
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-#, fuzzy
-msgid "GNOME Shell"
-msgstr "GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr ""
+msgstr "GNOME Upravitelj zaslona rad sesije"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr ""
+msgstr "Treba li dopustiti čitačima otisaka prijavu"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
+"Zaslon prijave može po izboru dopustiti korisnicima koji su pohranili svoje "
+"otiske da se prijave pomoću tih otiska."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
-msgstr ""
+msgstr "Treba li dopustiti čitačima pametnih kartica prijavu"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
+"Zaslon prijave može po izboru dopustiti korisnicima koji imaju pametnu "
+"karticu da se prijave pomoću te kartice."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
-msgstr ""
+msgstr "Treba li dopustiti prijavu pomoću lozinke"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
+"Zaslon prijave može se podesiti da onemogući ovjeru lozinkom, prisiljavajući "
+"korisnika da koristi pametnu karticu ili otisak za ovjeru."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
-msgstr ""
+msgstr "Putanja ili mala slika na vrhu popisa korisnika"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
+"Zaslon prijave može neobavezno prikazati malu sliku kako bi omogućio "
+"administratoru stranice i distributerima način prikaza brendiranja."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
+"Pomoćni zaslon prijave može neobavezno prikazati malu sliku kako bi omogućio "
+"administratoru stranice i distributerima način prikaza brendiranja."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
-msgstr ""
+msgstr "Izbjegavaj prikaz popisa korisnika"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr ""
+"Zaslon prijave uobičajeno prikazuje popis dostupnih korisnika za prijavu. "
+"Ova postavka se može podesiti da se ne prikazuje popis korisnika."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Enable showing the banner message"
-msgstr ""
+msgstr "Omogući prikazivanje poruka transparenta"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Set to true to show the banner message text."
-msgstr ""
+msgstr "Postavite na 'true' za prikaz teksta poruka transparenta."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid "Banner message text"
-msgstr ""
+msgstr "Tekst poruke transparenta"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Text banner message to show in the login window."
-msgstr ""
+msgstr "Poruka transparenta koja će se prikazati u prozoru prijave."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Disable showing the restart buttons"
-msgstr ""
+msgstr "Onemogući prikazivanje tipke ponovnog pokretanja"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
+"Postavite na 'true' za onemogućavanje tipke ponovnog pokretanja u prozoru "
+"prijave."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
-#, fuzzy
 msgid "Number of allowed authentication failures"
-msgstr "Greška prilikom autentifikacije!\n"
+msgstr "Broj dopuštenih neuspjeha ovjere"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
-
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-#, fuzzy
-msgid "Select System"
-msgstr "Odaberite sliku korisnika"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-#, fuzzy
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "%s: Ne mogu napraviti vezu ka udaljenom računalu"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr ""
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr ""
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr ""
+"Broj dopuštenih puta pokušaja ovjere korisnika, prije odustajanja i vraćanja "
+"natrag na odabir korisnika."
 
 #: ../libgdm/gdm-user-switching.c:59
-#, fuzzy
 msgid "Unable to create transient display: "
-msgstr "Ne može pokrenuti novi zaslon"
+msgstr "Nemoguće stvaranje prolaznog zaslona: "
 
 #: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
-msgstr ""
+msgstr "Nemoguće aktiviranje sesije: "
 
 #: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
-msgstr ""
+msgstr "Samo naredba INAČICE je dopuštena"
 
 #: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
@@ -418,756 +406,36 @@ msgstr "NAREDBA"
 #: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
 #: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
-msgstr ""
+msgstr "Zanemareno — opozvano zbog kompabilnosti"
 
 #: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
-msgstr "Otklanjaj greške u izlazu"
+msgstr "Izlaz otklanjanja greške"
 
 #: ../utils/gdmflexiserver.c:52
-#, fuzzy
 msgid "Version of this application"
-msgstr "Kako koristiti ovu aplikaciju"
+msgstr "Inačica ove aplikacije"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-#, fuzzy
 msgid "- New GDM login"
-msgstr "- Ugniježena gdm prijava"
+msgstr "- Nova gdm prijava"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Zaslon uslikan"
 
 #. Option parsing
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
-msgstr ""
-
-
-#, fuzzy
+msgstr "Uslikaj sliku zaslona"
 
 #, fuzzy
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr ""
+#~ "Vaša lozinka je prestala važiti.\n"
+#~ "Sada ju samo administrator sustava može promijeniti."
 
 #, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-#, fuzzy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME"
