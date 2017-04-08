@@ -3,17 +3,17 @@
 # update by Young-Ho, Cha <ganadist@chollian.net>, 2001, 2006.
 # update by ChiDeok, Hwang <hwang@mizi.co.kr>, 2001.
 # Eunju Kim <eukim@redhat.com>, 2007.
-# Changwoo Ryu <cwryu@debian.org>, 1999, 2002, 2004, 2006-2013, 2015-2016.
+# Changwoo Ryu <cwryu@debian.org>, 1999, 2002, 2004, 2006-2013, 2015-2017.
 #
 # 새로 번역하시는 분은 translator-credit에 추가하세요.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-12 18:45+0000\n"
-"PO-Revision-Date: 2016-03-13 04:17+0900\n"
+"POT-Creation-Date: 2017-03-31 21:48+0000\n"
+"PO-Revision-Date: 2017-04-08 23:13+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -21,6 +21,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "시스템 선택"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: XDMCP 버퍼를 만들지 못했습니다!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: XDMCP 헤더를 읽지 못했습니다!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: XDMCP 버전이 틀렸습니다!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: 주소를 파싱할 수 없습니다"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -67,23 +87,27 @@ msgstr ""
 "템 관리자에게 연락을 하거나 시스템 기록을 확인하십시오. 이 화면은 곧 사라질"
 "것 입니다. 문제가 해결되면 GDM을 다시 시작해 주십시오."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "디스플레이가 없습니다"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1114
 msgid "No session available"
 msgstr "세션이 없습니다"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:859
+msgid "Chooser session unavailable"
+msgstr "선택창에 세션이 없습니다"
+
+#: ../daemon/gdm-manager.c:869
 msgid "Can only be called before user is logged in"
 msgstr "사용자가 로그인하기 전에만 부를 수 있습니다"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:880
 msgid "Caller not GDM"
 msgstr "GDM에서 호출하지 않았습니다"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:890
 msgid "Unable to open private communication channel"
 msgstr "안전한 통신 채널을 열 수 없습니다"
 
@@ -152,7 +176,7 @@ msgstr "디스플레이 장치"
 msgid "The display device"
 msgstr "디스플레이 장치"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "인증 도우미 프로세스를 만들지 못했습니다."
 
@@ -164,36 +188,36 @@ msgstr "계정에 시간 제한이 걸려 있었고, 지금 그 제한이 지났
 msgid "Sorry, that didn't work. Please try again."
 msgstr "죄송하지만 동작하지 않습니다. 다시 시도하십시오."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "사용자 이름:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "사용자 계정이 없습니다"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "다른 사용자로 바꿀 수 없습니다"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "그놈 디스플레이 관리자 웨일랜드 세션 실행"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "소켓을 만들지 못했습니다!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "/etc/gdm/Xsession 래퍼 스크립트를 통해 프로그램을 실행합니다"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "TCP 소켓 연결을 받습니다"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "그놈 디스플레이 관리자 X 세션 실행"
 
@@ -298,13 +322,17 @@ msgstr "사용자 목록 위의 작은 그림에 대한 경로"
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr "로그인 화면에서 작은 이미지를 표시해, 시스템 관리자나 운영 체제 배포판 측에서 브랜드를 표시합니다."
+msgstr ""
+"로그인 화면에서 작은 이미지를 표시해, 시스템 관리자나 운영 체제 배포판 측에"
+"서 브랜드를 표시합니다."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr "대체 모드 로그인 화면에서 작은 이미지를 표시해, 시스템 관리자나 운영 체제 배포판 측에서 브랜드를 표시합니다."
+msgstr ""
+"대체 모드 로그인 화면에서 작은 이미지를 표시해, 시스템 관리자나 운영 체제 배"
+"포판 측에서 브랜드를 표시합니다."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -353,26 +381,6 @@ msgid ""
 msgstr ""
 "한 사용자가 인증을 시도하는 게 허용된 최대 횟수. 넘어가면 사용자 선택으로 돌"
 "아갑니다."
-
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "시스템 선택"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: XDMCP 버퍼를 만들지 못했습니다!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP 헤더를 읽지 못했습니다!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: XDMCP 버전이 틀렸습니다!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: 주소를 파싱할 수 없습니다"
 
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
