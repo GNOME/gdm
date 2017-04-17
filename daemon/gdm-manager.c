@@ -1976,9 +1976,10 @@ remove_user_session (GdmManager *manager,
 static void
 on_session_start_failed (GdmSession *session,
                          const char *service_name,
+                         const char *message,
                          GdmManager *manager)
 {
-        g_debug ("GdmManager: session failed to start");
+        g_debug ("GdmManager: session failed to start: %s", message);
         remove_user_session (manager, session);
 }
 
