@@ -309,10 +309,13 @@ endif
 		chown root:gdm $(DESTDIR)$(xauthdir) || : ; \
 	fi
 
-	if test -n "$(systemdsystemunit)" -a '!' -d $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); then \
+	if test '!' -d $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); then \
 		$(mkinstalldirs) $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); \
 		chmod 0755 $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); \
 		chown root:root $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR) || : ; \
+	fi
+
+	if test -n "$(systemdsystemunit)"; then \
 		$(INSTALL_DATA) $(builddir)/$(systemdsystemunit) $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR)/$(systemdsystemunit); \
 	fi
 
