@@ -938,11 +938,8 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                 g_debug ("GdmSession: not using invalid .dmrc session: %s", session_name);
                 g_free (self->priv->saved_session);
                 self->priv->saved_session = NULL;
-                return;
-        }
-
-        if (strcmp (session_name,
-                    get_default_session_name (self)) != 0) {
+        } else if (strcmp (session_name,
+                   get_default_session_name (self)) != 0) {
                 g_free (self->priv->saved_session);
                 self->priv->saved_session = g_strdup (session_name);
 
@@ -951,6 +948,9 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                                                                             session_name);
                 }
         }
+
+        update_session_type (self);
+
 }
 
 static GdmSessionConversation *
@@ -2295,8 +2295,9 @@ gdm_session_setup (GdmSession *self,
 
         g_return_if_fail (GDM_IS_SESSION (self));
 
+        update_session_type (self);
+
         send_setup (self, service_name);
-        gdm_session_defaults_changed (self);
 }
 
 
@@ -2309,11 +2310,12 @@ gdm_session_setup_for_user (GdmSession *self,
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (username != NULL);
 
+        update_session_type (self);
+
         gdm_session_select_user (self, username);
 
         self->priv->is_program_session = FALSE;
         send_setup_for_user (self, service_name);
-        gdm_session_defaults_changed (self);
 }
 
 void
