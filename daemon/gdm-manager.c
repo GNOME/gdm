@@ -1789,6 +1789,7 @@ on_start_user_session (StartUserSessionOperation *operation)
         gboolean doing_initial_setup = FALSE;
         gboolean starting_user_session_right_away = TRUE;
         GdmDisplay *display;
+        const char *session_id;
 
         g_debug ("GdmManager: start or jump to session");
 
@@ -1813,14 +1814,19 @@ on_start_user_session (StartUserSessionOperation *operation)
 
         g_object_get (G_OBJECT (display), "doing-initial-setup", &doing_initial_setup, NULL);
 
+        session_id = gdm_session_get_conversation_session_id (operation->session,
+                                                              operation->service_name);
+
         if (gdm_session_get_display_mode (operation->session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
                 /* In this case, the greeter's display is morphing into
                  * the user session display. Kill the greeter on this session
                  * and let the user session follow the same display. */
                 gdm_display_stop_greeter_session (display);
-                g_object_set (G_OBJECT (display), "session-class", "user", NULL);
+                g_object_set (G_OBJECT (display),
+                                "session-class", "user",
+                                "session-id", session_id,
+                                NULL);
         } else {
-                const char *session_id;
                 uid_t allowed_uid;
 
                 g_object_ref (display);
@@ -1857,8 +1863,6 @@ on_start_user_session (StartUserSessionOperation *operation)
                 }
 
                 /* Give the user session a new display object for bookkeeping purposes */
-                session_id = gdm_session_get_conversation_session_id (operation->session,
-                                                                      operation->service_name);
                 create_display_for_user_session (operation->manager,
                                                  operation->session,
                                                  session_id);
