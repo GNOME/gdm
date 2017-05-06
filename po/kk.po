@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm to kazakh\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-02-08 06:44+0000\n"
+"POT-Creation-Date: 2017-04-12 14:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -12,7 +12,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.12\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Жүйені таңдау"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XMCP: XDMCP буферін жасау мүмкін емес!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: XDMCP header оқу мүмкін емес!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XMDCP: XDMCP нұсқасы қате!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XMDCP: Адресті талдау мүмкін емес"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -60,23 +80,27 @@ msgstr ""
 "шығысын тексеріңіз. Бұл экран уақытша сөндіріледі. Мәселе шешілген кезде GDM "
 "қызметін қайта қосыңыз."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Қолжетерлік дисплей жоқ"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "қолжетерлік сессиялар жоқ"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+msgid "Chooser session unavailable"
+msgstr "Таңдаушы сессиясы қолжетерсіз"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Пайдаланушы кіргенге дейін ғана шақыруға болады"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "Шақырушы GDM емес"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Жеке хабарласу арнасын ашу мүмкін емес"
 
@@ -145,7 +169,7 @@ msgstr "Экран құрылғысы"
 msgid "The display device"
 msgstr "экран құрылғысы"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Аутентификациясының көмекші үрдісін жасау мүмкін емес"
 
@@ -157,36 +181,36 @@ msgstr "Тіркелгіңіз үшін берілген уақыт мерзім
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Кешіріңіз, бұл дұрыс емес болды. Қайтадан көріңіз."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Пайдаланушы:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "қолжетерлік пайдаланушы тіркелгілер жоқ"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Пайдаланушыға ауысу мүмкін емес"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME дисплейлер басқарушысының Wayland сессиясын жөнелткіші"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Сокет құру мүмкін емес!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "/etc/gdm/Xsession аймалау скрипті арқылы қолданбаны жөнелту"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "TCP сокетін тындау"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME дисплейлер басқарушысының X сессиясын жөнелткіші"
 
@@ -356,26 +380,6 @@ msgid ""
 msgstr ""
 "Пайдаланушыны таңдау сұхбатына қайта оралуға дейінгі пайдаланушы үшін қанша "
 "жүйеге кіру талабы рұқсат етіледі."
-
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Жүйені таңдау"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XMCP: XDMCP буферін жасау мүмкін емес!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP header оқу мүмкін емес!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XMDCP: XDMCP нұсқасы қате!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XMDCP: Адресті талдау мүмкін емес"
 
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
