@@ -2736,6 +2736,7 @@ finish_display (const char *id,
                 GdmDisplay *display,
                 GdmManager *manager)
 {
+        gdm_display_stop_greeter_session (display);
         if (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED)
                 gdm_display_unmanage (display);
         gdm_display_finish (display);
