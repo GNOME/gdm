@@ -12,15 +12,15 @@
 # Petr Tomeš <ptomes@gmail.com>, 2006.
 # Jakub Friedl <jfriedl@suse.cz>, 2007.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009, 2010, 2011, 2012.
-# Marek Černocký <marek@manet.cz>, 2013, 2015, 2016.
+# Marek Černocký <marek@manet.cz>, 2013, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Project-Id-Version: gdm gnome-3.24\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-02-27 06:45+0000\n"
-"PO-Revision-Date: 2016-02-27 18:12+0100\n"
+"POT-Creation-Date: 2017-04-12 14:42+0000\n"
+"PO-Revision-Date: 2017-06-20 16:14+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -30,6 +30,26 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Gtranslator 2.91.6\n"
 "X-Project-Style: gnome\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Vybrat systém"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Nelze vytvořit vyrovnávací paměť XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Nelze přečíst záhlaví XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Nesprávná verze XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Nelze zpracovat adresu"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -77,23 +97,27 @@ msgstr ""
 "systémovými záznamy. Mezitím bude tento displej zakázán. Až bude problém "
 "vyřešen, spusťte prosím GDM znovu."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Není dostupný žádný displej"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Není dostupné žádné sezení"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+msgid "Chooser session unavailable"
+msgstr "Vybrané sezení není dostupné"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Může být zavolán pouze před přihlášením uživatele"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "Volající není GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Nelze otevřít soukromý komunikační kanál"
 
@@ -162,7 +186,7 @@ msgstr "Zařízení displeje"
 msgid "The display device"
 msgstr "Zařízení displeje"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Nelze vytvořit obslužný proces ověření"
 
@@ -174,36 +198,36 @@ msgstr "Váš účet měl omezenou časovou platnost, která nyní vypršela."
 msgid "Sorry, that didn't work. Please try again."
 msgstr "Bohužel, ale nefunguje to. Zkuste to prosím znovu."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Uživatel:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "není dostupný žádný uživatelský účet"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Nelze změnit uživatele"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Spuštění sezení GNOME se správcem zobrazení Wayland"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Nelze vytvořit socket!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Spustit program skrz obalující skript /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Naslouchat na soketu TCP"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Spuštění sezení GNOME se správcem zobrazení X"
 
@@ -312,8 +336,8 @@ msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
 msgstr ""
-"Přihlašovací obrazovka může volitelně zobrazovat malý obrázek, který poskytuje "
-"správcům a distributorům možnost přidat své logo."
+"Přihlašovací obrazovka může volitelně zobrazovat malý obrázek, který "
+"poskytuje správcům a distributorům možnost přidat své logo."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
@@ -372,26 +396,6 @@ msgid ""
 msgstr ""
 "Kolikrát je uživateli povoleno pokusit se o ověření, než dojde k návratu do "
 "výběru uživatelů."
-
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Vybrat systém"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: Nelze vytvořit vyrovnávací paměť XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: Nelze přečíst záhlaví XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Nesprávná verze XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: Nelze zpracovat adresu"
 
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
