@@ -198,6 +198,11 @@ gdm.service: $(srcdir)/gdm.service.in
 systemdsystemunit += gdm.service
 CLEANFILES += gdm.service
 
+if INSTALL_SYSTEMD_UNITS
+systemdsystemunit_DATA=$(systemdsystemunit)
+systemdsystemunitdir=$(SYSTEMD_SYSTEM_UNIT_DIR)
+endif
+
 Xsession_files =
 if ENABLE_GDM_XSESSION
 
@@ -227,13 +232,7 @@ uninstall-hook:
 	$(DESTDIR)$(xauthdir) \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d
 
-	if test -n "$(systemdsystemunit)"; then \
-		rm -f $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR)/$(systemdsystemunit); \
-		rmdir $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR) || : ; \
-	fi
-
-
-install-data-hook: gdm.conf-custom $(Xsession_files) Init PostSession PreSession $(systemdsystemunit)
+install-data-hook: gdm.conf-custom $(Xsession_files) Init PostSession PreSession
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -307,16 +306,6 @@ endif
 		$(mkinstalldirs) $(DESTDIR)$(xauthdir); \
 		chmod 0711 $(DESTDIR)$(xauthdir); \
 		chown root:gdm $(DESTDIR)$(xauthdir) || : ; \
-	fi
-
-	if test '!' -d $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); then \
-		$(mkinstalldirs) $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); \
-		chmod 0755 $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); \
-		chown root:root $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR) || : ; \
-	fi
-
-	if test -n "$(systemdsystemunit)"; then \
-		$(INSTALL_DATA) $(builddir)/$(systemdsystemunit) $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR)/$(systemdsystemunit); \
 	fi
 
 	if test '!' -d $(DESTDIR)$(screenshotdir); then \

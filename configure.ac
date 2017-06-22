@@ -948,6 +948,8 @@ if test "x$with_systemdsystemunitdir" != xno; then
         AC_SUBST(SYSTEMD_SYSTEM_UNIT_DIR, [$with_systemdsystemunitdir])
 fi
 
+AM_CONDITIONAL(INSTALL_SYSTEMD_UNITS, test x$with_systemdsystemunitdir != xno)
+
 dnl ---------------------------------------------------------------------------
 dnl - Check for plymouth support
 dnl ---------------------------------------------------------------------------
