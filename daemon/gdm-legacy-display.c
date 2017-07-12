@@ -263,10 +263,31 @@ gdm_legacy_display_class_init (GdmLegacyDisplayClass *klass)
 }
 
 static void
+on_display_status_changed (GdmLegacyDisplay *self)
+{
+        int status;
+
+        status = gdm_display_get_status (self);
+
+        switch (status) {
+            case GDM_DISPLAY_UNMANAGED:
+                if (self->priv->server != NULL)
+                        gdm_server_stop (self->priv->server);
+                break;
+            default:
+                break;
+        }
+}
+
+static void
 gdm_legacy_display_init (GdmLegacyDisplay *legacy_display)
 {
 
         legacy_display->priv = GDM_LEGACY_DISPLAY_GET_PRIVATE (legacy_display);
+
+        g_signal_connect (legacy_display, "notify::status",
+                          G_CALLBACK (on_display_status_changed),
+                          NULL);
 }
 
 GdmDisplay *
