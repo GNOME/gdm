@@ -348,7 +348,6 @@ get_system_session_dirs (GdmSession *self)
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
-                NULL
         };
 
         static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
