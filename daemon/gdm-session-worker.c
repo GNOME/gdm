@@ -550,15 +550,15 @@ convert_to_utf8 (const char *str)
 static gboolean
 gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                                         const struct pam_message  *query,
-                                        char                     **response_text)
+                                        char                     **response)
 {
         char    *user_answer;
         gboolean res;
         char    *utf8_msg;
         char	*msg;
 
-        if (response_text != NULL) {
-                *response_text = NULL;
+        if (response != NULL) {
+                *response = NULL;
         }
 
         gdm_session_worker_update_username (worker);
@@ -611,8 +611,8 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                  * instead of g_malloc'd memory.  PAM_MAX_RESP_SIZE includes
                  * the '\0' terminating character, thus the "- 1".
                  */
-                if (res && response_text != NULL) {
-                        *response_text = strndup (user_answer, PAM_MAX_RESP_SIZE - 1);
+                if (res && response != NULL) {
+                        *response = strndup (user_answer, PAM_MAX_RESP_SIZE - 1);
                 }
 
                 memset (user_answer, '\0', strlen (user_answer));
@@ -681,17 +681,17 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
                                                   sizeof (struct pam_response));
         for (i = 0; i < number_of_messages; i++) {
                 gboolean got_response;
-                char    *response_text;
+                char    *response;
 
-                response_text = NULL;
+                response = NULL;
                 got_response = gdm_session_worker_process_pam_message (worker,
                                                                        messages[i],
-                                                                       &response_text);
+                                                                       &response);
                 if (!got_response) {
                         goto out;
                 }
 
-                replies[i].resp = response_text;
+                replies[i].resp = response;
                 replies[i].resp_retcode = PAM_SUCCESS;
         }
 
