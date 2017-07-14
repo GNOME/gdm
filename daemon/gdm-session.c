@@ -101,6 +101,7 @@ struct _GdmSessionPrivate
         char                 **conversation_environment;
 
         GdmDBusUserVerifier   *user_verifier_interface;
+        GHashTable            *user_verifier_extensions;
         GdmDBusGreeter        *greeter_interface;
         GdmDBusRemoteGreeter  *remote_greeter_interface;
         GdmDBusChooser        *chooser_interface;
@@ -1226,6 +1227,37 @@ begin_verification_conversation (GdmSession            *self,
         return conversation;
 }
 
+static void
+unexport_and_free_user_verifier_extension (GDBusInterfaceSkeleton *interface)
+{
+        g_dbus_interface_skeleton_unexport (interface);
+
+        g_object_run_dispose (G_OBJECT (interface));
+        g_object_unref (interface);
+}
+
+static gboolean
+gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifier_interface,
+                                             GDBusMethodInvocation  *invocation,
+                                             const char * const *    extensions,
+                                             GDBusConnection        *connection)
+{
+        GdmSession *self = g_object_get_data (G_OBJECT (connection), "gdm-session");
+        if (self->priv->user_verifier_extensions == NULL) {
+                self->priv->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                                              g_str_equal,
+                                                                              NULL,
+                                                                              (GDestroyNotify)
+                                                                              unexport_and_free_user_verifier_extension);
+        } else {
+                g_hash_table_remove_all (self->priv->user_verifier_extensions);
+        }
+
+
+        gdm_dbus_user_verifier_complete_enable_extensions (user_verifier_interface, invocation);
+
+        return TRUE;
+}
 static gboolean
 gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verifier_interface,
                                               GDBusMethodInvocation  *invocation,
@@ -1380,6 +1412,13 @@ export_user_verifier_interface (GdmSession      *self,
 {
         GdmDBusUserVerifier   *user_verifier_interface;
         user_verifier_interface = GDM_DBUS_USER_VERIFIER (gdm_dbus_user_verifier_skeleton_new ());
+
+        g_object_set_data (G_OBJECT (connection), "gdm-session", self);
+
+        g_signal_connect (user_verifier_interface,
+                          "handle-enable-extensions",
+                          G_CALLBACK (gdm_session_handle_client_enable_extensions),
+                          connection);
         g_signal_connect (user_verifier_interface,
                           "handle-begin-verification",
                           G_CALLBACK (gdm_session_handle_client_begin_verification),
@@ -2110,9 +2149,16 @@ send_setup (GdmSession *self,
         const char     *display_seat_id;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
+        const char    **extensions;
         GdmSessionConversation *conversation;
 
         g_assert (service_name != NULL);
+
+        if (self->priv->user_verifier_extensions != NULL) {
+                extensions = (const char **) g_hash_table_get_keys_as_array (self->priv->user_verifier_extensions, NULL);
+        } else {
+                extensions = NULL;
+        }
 
         if (self->priv->display_name != NULL) {
                 display_name = self->priv->display_name;
@@ -2146,6 +2192,7 @@ send_setup (GdmSession *self,
         if (conversation != NULL) {
                 gdm_dbus_worker_call_setup (conversation->worker_proxy,
                                             service_name,
+                                            extensions,
                                             display_name,
                                             display_x11_authority_file,
                                             display_device,
@@ -2157,6 +2204,8 @@ send_setup (GdmSession *self,
                                             (GAsyncReadyCallback) on_setup_complete_cb,
                                             conversation);
         }
+
+        g_free (extensions);
 }
 
 static void
@@ -2169,11 +2218,18 @@ send_setup_for_user (GdmSession *self,
         const char     *display_hostname;
         const char     *display_x11_authority_file;
         const char     *selected_user;
+        const char    **extensions;
         GdmSessionConversation *conversation;
 
         g_assert (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
+
+        if (self->priv->user_verifier_extensions != NULL) {
+                extensions = (const char **) g_hash_table_get_keys_as_array (self->priv->user_verifier_extensions, NULL);
+        } else {
+                extensions = NULL;
+        }
 
         if (self->priv->display_name != NULL) {
                 display_name = self->priv->display_name;
@@ -2211,6 +2267,7 @@ send_setup_for_user (GdmSession *self,
         if (conversation != NULL) {
                 gdm_dbus_worker_call_setup_for_user (conversation->worker_proxy,
                                                      service_name,
+                                                     extensions,
                                                      selected_user,
                                                      display_name,
                                                      display_x11_authority_file,
@@ -3424,6 +3481,8 @@ gdm_session_dispose (GObject *object)
                          g_hash_table_unref);
 
         g_clear_object (&self->priv->user_verifier_interface);
+        g_clear_pointer (&self->priv->user_verifier_extensions,
+                         g_hash_table_unref);
         g_clear_object (&self->priv->greeter_interface);
         g_clear_object (&self->priv->chooser_interface);
 
