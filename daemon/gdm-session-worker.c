@@ -61,6 +61,11 @@
 
 #include "gdm-common.h"
 #include "gdm-log.h"
+
+#ifdef SUPPORTS_PAM_EXTENSIONS
+#include "gdm-pam-extensions.h"
+#endif
+
 #include "gdm-session-worker.h"
 #include "gdm-session-glue.h"
 #include "gdm-session.h"
@@ -149,6 +154,7 @@ struct GdmSessionWorkerPrivate
         uid_t             uid;
         gid_t             gid;
         gboolean          password_is_required;
+        char            **extensions;
 
         int               cred_flags;
         int               login_vt;
@@ -176,6 +182,15 @@ struct GdmSessionWorkerPrivate
 
         GDBusMethodInvocation *pending_invocation;
 };
+
+#ifdef SUPPORTS_PAM_EXTENSIONS
+static char gdm_pam_extension_environment_block[_POSIX_ARG_MAX];
+
+static const char * const
+gdm_supported_pam_extensions[] = {
+        NULL
+};
+#endif
 
 enum {
         PROP_0,
@@ -519,6 +534,32 @@ gdm_session_worker_report_problem (GdmSessionWorker *worker,
                                                           NULL);
 }
 
+#ifdef SUPPORTS_PAM_EXTENSIONS
+static gboolean
+gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *worker,
+                                                 const struct pam_message  *query,
+                                                 char                     **response)
+{
+        GdmPamExtensionMessage *extended_message;
+        gboolean res;
+
+        extended_message = GDM_PAM_EXTENSION_MESSAGE_FROM_PAM_MESSAGE (query);
+
+        if (GDM_PAM_EXTENSION_MESSAGE_TRUNCATED (extended_message)) {
+                g_warning ("PAM service requested binary response for truncated query");
+                return FALSE;
+        }
+
+        if (GDM_PAM_EXTENSION_MESSAGE_INVALID_TYPE (extended_message)) {
+                g_warning ("PAM service requested binary response for unadvertised query type");
+                return FALSE;
+        }
+
+        g_debug ("GdmSessionWorker: received extended pam message of unknown type %u", (unsigned int) extended_message->type);
+        return FALSE;
+}
+#endif
+
 static char *
 convert_to_utf8 (const char *str)
 {
@@ -562,6 +603,11 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         }
 
         gdm_session_worker_update_username (worker);
+
+#ifdef SUPPORTS_PAM_EXTENSIONS
+        if (query->msg_style == PAM_BINARY_PROMPT)
+                return gdm_session_worker_process_extended_pam_message (worker, query, response);
+#endif
 
         g_debug ("GdmSessionWorker: received pam message of type %u with payload '%s'",
                  query->msg_style, query->msg);
@@ -991,16 +1037,17 @@ out:
 }
 
 static gboolean
-gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
-                                   const char       *service,
-                                   const char       *username,
-                                   const char       *hostname,
-                                   gboolean          display_is_local,
-                                   const char       *x11_display_name,
-                                   const char       *x11_authority_file,
-                                   const char       *display_device,
-                                   const char       *seat_id,
-                                   GError          **error)
+gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
+                                   const char         *service,
+                                   const char * const *extensions,
+                                   const char         *username,
+                                   const char         *hostname,
+                                   gboolean            display_is_local,
+                                   const char         *x11_display_name,
+                                   const char         *x11_authority_file,
+                                   const char         *display_device,
+                                   const char         *seat_id,
+                                   GError            **error)
 {
         struct pam_conv        pam_conversation;
         int                    error_code;
@@ -1012,6 +1059,12 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                  service ? service : "(null)",
                  username ? username : "(null)",
                  seat_id ? seat_id : "(null)");
+
+#ifdef SUPPORTS_PAM_EXTENSIONS
+        if (extensions != NULL) {
+                GDM_PAM_EXTENSION_ADVERTISE_SUPPORTED_EXTENSIONS (gdm_pam_extension_environment_block, extensions);
+        }
+#endif
 
         pam_conversation.conv = (GdmSessionWorkerPamNewMessagesFunc) gdm_session_worker_pam_new_messages_handler;
         pam_conversation.appdata_ptr = worker;
@@ -2451,6 +2504,7 @@ do_setup (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_initialize_pam (worker,
                                                  worker->priv->service,
+                                                 (const char **) worker->priv->extensions,
                                                  worker->priv->username,
                                                  worker->priv->hostname,
                                                  worker->priv->display_is_local,
@@ -2817,6 +2871,32 @@ gdm_session_worker_handle_open (GdmDBusWorker         *object,
         return TRUE;
 }
 
+static char **
+filter_extensions (const char * const *extensions)
+{
+        size_t i, j;
+        GPtrArray *array = NULL;
+        char **filtered_extensions = NULL;
+
+        array = g_ptr_array_new ();
+
+        for (i = 0; extensions[i] != NULL; i++) {
+                for (j = 0; gdm_supported_pam_extensions[j] != NULL; j++) {
+                        if (g_strcmp0 (extensions[i], gdm_supported_pam_extensions[j]) == 0) {
+                                g_ptr_array_add (array, g_strdup (gdm_supported_pam_extensions[j]));
+                                break;
+                        }
+                }
+        }
+        g_ptr_array_add (array, NULL);
+
+        filtered_extensions = g_strdupv ((char **) array->pdata);
+
+        g_ptr_array_free (array, TRUE);
+
+        return filtered_extensions;
+}
+
 static gboolean
 gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                                       GDBusMethodInvocation *invocation,
@@ -2833,6 +2913,8 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
         while (g_variant_iter_loop (&iter, "{sv}", &key, &value)) {
                 if (g_strcmp0 (key, "service") == 0) {
                         worker->priv->service = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "extensions") == 0) {
+                        worker->priv->extensions = filter_extensions (g_variant_get_strv (value, NULL));
                 } else if (g_strcmp0 (key, "username") == 0) {
                         worker->priv->username = g_strdup (g_variant_get_string (value, NULL));
                 } else if (g_strcmp0 (key, "is-program-session") == 0) {
@@ -3365,6 +3447,7 @@ gdm_session_worker_finalize (GObject *object)
         g_free (worker->priv->username);
         g_free (worker->priv->server_address);
         g_strfreev (worker->priv->arguments);
+        g_strfreev (worker->priv->extensions);
 
         g_hash_table_unref (worker->priv->reauthentication_requests);
 

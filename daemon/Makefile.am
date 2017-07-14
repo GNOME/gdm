@@ -4,6 +4,7 @@ AM_CPPFLAGS = \
 	-I.						\
 	-I..						\
 	-I$(top_srcdir)/common				\
+	-I$(top_srcdir)/pam-extensions			\
 	-I$(top_builddir)/common			\
 	-DBINDIR=\"$(bindir)\"				\
 	-DDATADIR=\"$(datadir)\"			\
@@ -132,6 +133,10 @@ gdm_session_worker_SOURCES = 			\
 	gdm-dbus-util.c				\
 	gdm-dbus-util.h				\
 	$(NULL)
+
+if SUPPORTS_PAM_EXTENSIONS
+gdm_session_worker_SOURCES += $(top_srcdir)/pam-extensions/gdm-pam-extensions.h
+endif
 
 nodist_gdm_session_worker_SOURCES =		\
 	gdm-session-glue.h			\

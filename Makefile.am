@@ -3,6 +3,7 @@ NULL =
 SUBDIRS = 			\
 	data			\
 	common 			\
+	pam-extensions		\
 	daemon 			\
 	libgdm 			\
 	utils 			\

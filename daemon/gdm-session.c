@@ -101,6 +101,7 @@ struct _GdmSessionPrivate
         char                 **conversation_environment;
 
         GdmDBusUserVerifier   *user_verifier_interface;
+        GHashTable            *user_verifier_extensions;
         GdmDBusGreeter        *greeter_interface;
         GdmDBusRemoteGreeter  *remote_greeter_interface;
         GdmDBusChooser        *chooser_interface;
@@ -1219,6 +1220,20 @@ begin_verification_conversation (GdmSession            *self,
 }
 
 static gboolean
+gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifier_interface,
+                                             GDBusMethodInvocation  *invocation,
+                                             const char * const *    extensions,
+                                             GDBusConnection        *connection)
+{
+        GdmSession *self = g_object_get_data (G_OBJECT (connection), "gdm-session");
+
+        g_hash_table_remove_all (self->priv->user_verifier_extensions);
+
+        gdm_dbus_user_verifier_complete_enable_extensions (user_verifier_interface, invocation);
+
+        return TRUE;
+}
+static gboolean
 gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verifier_interface,
                                               GDBusMethodInvocation  *invocation,
                                               const char             *service_name,
@@ -1372,6 +1387,13 @@ export_user_verifier_interface (GdmSession      *self,
 {
         GdmDBusUserVerifier   *user_verifier_interface;
         user_verifier_interface = GDM_DBUS_USER_VERIFIER (gdm_dbus_user_verifier_skeleton_new ());
+
+        g_object_set_data (G_OBJECT (connection), "gdm-session", self);
+
+        g_signal_connect (user_verifier_interface,
+                          "handle-enable-extensions",
+                          G_CALLBACK (gdm_session_handle_client_enable_extensions),
+                          connection);
         g_signal_connect (user_verifier_interface,
                           "handle-begin-verification",
                           G_CALLBACK (gdm_session_handle_client_begin_verification),
@@ -1811,6 +1833,15 @@ next_line:
 }
 
 static void
+unexport_and_free_user_verifier_extension (GDBusInterfaceSkeleton *interface)
+{
+        g_dbus_interface_skeleton_unexport (interface);
+
+        g_object_run_dispose (G_OBJECT (interface));
+        g_object_unref (interface);
+}
+
+static void
 gdm_session_init (GdmSession *self)
 {
         self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -1826,6 +1857,11 @@ gdm_session_init (GdmSession *self)
                                                          g_str_equal,
                                                          (GDestroyNotify) g_free,
                                                          (GDestroyNotify) g_free);
+        self->priv->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                                      g_str_equal,
+                                                                      NULL,
+                                                                      (GDestroyNotify)
+                                                                      unexport_and_free_user_verifier_extension);
 
         load_lang_config_file (self);
         setup_worker_server (self);
@@ -2099,14 +2135,19 @@ initialize (GdmSession *self,
             const char *username,
             const char *log_file)
 {
-        GVariantBuilder details;
-        GdmSessionConversation *conversation;
+        GVariantBuilder          details;
+        const char             **extensions;
+        GdmSessionConversation  *conversation;
 
         g_assert (service_name != NULL);
 
         g_variant_builder_init (&details, G_VARIANT_TYPE ("a{sv}"));
 
         g_variant_builder_add_parsed (&details, "{'service', <%s>}", service_name);
+        extensions = (const char **) g_hash_table_get_keys_as_array (self->priv->user_verifier_extensions, NULL);
+
+        g_variant_builder_add_parsed (&details, "{'extensions', <%^as>}", extensions);
+
         if (username != NULL)
                 g_variant_builder_add_parsed (&details, "{'username', <%s>}", username);
 
@@ -2148,6 +2189,8 @@ initialize (GdmSession *self,
                                                  (GAsyncReadyCallback) on_initialization_complete_cb,
                                                  conversation);
         }
+
+        g_free (extensions);
 }
 
 void
@@ -3294,6 +3337,8 @@ gdm_session_dispose (GObject *object)
                          g_hash_table_unref);
 
         g_clear_object (&self->priv->user_verifier_interface);
+        g_clear_pointer (&self->priv->user_verifier_extensions,
+                         g_hash_table_unref);
         g_clear_object (&self->priv->greeter_interface);
         g_clear_object (&self->priv->chooser_interface);
 
