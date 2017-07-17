@@ -41,7 +41,10 @@
 struct GdmClientPrivate
 {
         GdmManager         *manager;
+
         GdmUserVerifier    *user_verifier;
+        GHashTable         *user_verifier_extensions;
+
         GdmGreeter         *greeter;
         GdmRemoteGreeter   *remote_greeter;
         GdmChooser         *chooser;
@@ -49,6 +52,7 @@ struct GdmClientPrivate
         char               *address;
 
         GList              *pending_opens;
+        char              **enabled_extensions;
 };
 
 static void     gdm_client_class_init  (GdmClientClass *klass);
@@ -143,11 +147,127 @@ get_manager (GdmClient           *client,
 }
 
 static void
+complete_user_verifier_proxy_operation (GdmClient          *client,
+                                        GSimpleAsyncResult *operation_result)
+{
+        g_simple_async_result_complete_in_idle (operation_result);
+        g_object_unref (operation_result);
+}
+
+static void
+maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
+                                              GSimpleAsyncResult *operation_result)
+{
+        GHashTableIter iter;
+        gpointer key, value;
+
+        if (client->priv->user_verifier_extensions != NULL) {
+                g_hash_table_iter_init (&iter, client->priv->user_verifier_extensions);
+                while (g_hash_table_iter_next (&iter, &key, &value)) {
+                        if (value == NULL)
+                                return;
+                }
+        }
+
+        complete_user_verifier_proxy_operation (client, operation_result);
+}
+
+static void
+on_user_verifier_choice_list_proxy_created (GObject            *source,
+                                            GAsyncResult       *result,
+                                            GSimpleAsyncResult *operation_result)
+{
+        GdmClient                 *client;
+        GdmUserVerifierChoiceList *choice_list;
+        GError                    *error = NULL;
+
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+
+        choice_list = gdm_user_verifier_choice_list_proxy_new_finish (result, &error);
+
+        if (choice_list == NULL) {
+                g_debug ("Couldn't create UserVerifier ChoiceList proxy: %s", error->message);
+                g_clear_error (&error);
+                g_hash_table_remove (client->priv->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name);
+        } else {
+                g_hash_table_replace (client->priv->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
+        }
+
+        maybe_complete_user_verifier_proxy_operation (client, operation_result);
+}
+
+static void
+on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
+                                     GAsyncResult       *result,
+                                     GSimpleAsyncResult *operation_result)
+{
+        GdmClient *client;
+        GCancellable *cancellable;
+        GDBusConnection *connection;
+        GError    *error = NULL;
+        size_t     i;
+
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+
+        gdm_user_verifier_call_enable_extensions_finish (user_verifier, result, &error);
+
+        if (error != NULL) {
+                g_debug ("Couldn't enable user verifier extensions: %s",
+                         error->message);
+                g_clear_error (&error);
+                complete_user_verifier_proxy_operation (client, operation_result);
+                return;
+        }
+
+        connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (user_verifier));
+
+        for (i = 0; client->priv->enabled_extensions[i] != NULL; i++) {
+                g_debug ("Enabled extensions[%lu] = %s", i, client->priv->enabled_extensions[i]);
+                g_hash_table_insert (client->priv->user_verifier_extensions, client->priv->enabled_extensions[i], NULL);
+
+                if (strcmp (client->priv->enabled_extensions[i],
+                            gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
+                        g_hash_table_insert (client->priv->user_verifier_extensions, client->priv->enabled_extensions[i], NULL);
+                        gdm_user_verifier_choice_list_proxy_new (connection,
+                                                                 G_DBUS_PROXY_FLAGS_NONE,
+                                                                 NULL,
+                                                                 SESSION_DBUS_PATH,
+                                                                 cancellable,
+                                                                 (GAsyncReadyCallback)
+                                                                 on_user_verifier_choice_list_proxy_created,
+                                                                 operation_result);
+                } else {
+                        g_debug ("User verifier extension %s is unsupported", client->priv->enabled_extensions[i]);
+                        g_hash_table_remove (client->priv->user_verifier_extensions,
+                                             client->priv->enabled_extensions[i]);
+                }
+        }
+
+        if (g_hash_table_size (client->priv->user_verifier_extensions) == 0) {
+                g_debug ("No supported user verifier extensions");
+                complete_user_verifier_proxy_operation (client, operation_result);
+        }
+
+}
+
+static void
+free_interface_skeleton (GDBusInterfaceSkeleton *interface)
+{
+        if (interface == NULL)
+                return;
+
+        g_object_unref (interface);
+}
+
+static void
 on_user_verifier_proxy_created (GObject            *source,
                                 GAsyncResult       *result,
                                 GSimpleAsyncResult *operation_result)
 {
+        GdmClient       *self;
         GdmUserVerifier *user_verifier;
+        GCancellable    *cancellable = NULL;
         GError          *error = NULL;
 
         user_verifier = gdm_user_verifier_proxy_new_finish (result, &error);
@@ -164,8 +284,29 @@ on_user_verifier_proxy_created (GObject            *source,
                                                    user_verifier,
                                                    (GDestroyNotify)
                                                    g_object_unref);
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+
+        self = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        if (self->priv->enabled_extensions == NULL) {
+                g_debug ("no enabled extensions");
+                g_simple_async_result_complete_in_idle (operation_result);
+                g_object_unref (operation_result);
+                return;
+        }
+
+        self->priv->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                                      g_str_equal,
+                                                                      NULL,
+                                                                      (GDestroyNotify)
+                                                                      free_interface_skeleton);
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_user_verifier_call_enable_extensions (user_verifier,
+                                                  (const char * const *)
+                                                  self->priv->enabled_extensions,
+                                                  cancellable,
+                                                  (GAsyncReadyCallback)
+                                                  on_user_verifier_extensions_enabled,
+                                                  operation_result);
+
 }
 
 static void
@@ -688,6 +829,39 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                    (GWeakNotify)
                                    g_clear_object,
                                    &client->priv->connection);
+
+                if (client->priv->enabled_extensions != NULL) {
+                        gboolean res;
+
+                        client->priv->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                                                        g_str_equal,
+                                                                                        NULL,
+                                                                                        (GDestroyNotify)
+                                                                                        free_interface_skeleton);
+                        res = gdm_user_verifier_call_enable_extensions_sync (client->priv->user_verifier,
+                                                                            (const char * const *)
+                                                                             client->priv->enabled_extensions,
+                                                                             cancellable,
+                                                                             NULL);
+
+                        if (res) {
+                                size_t i;
+                                for (i = 0; client->priv->enabled_extensions[i] != NULL; i++) {
+                                            if (strcmp (client->priv->enabled_extensions[i],
+                                                        gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
+                                                        GdmUserVerifierChoiceList *choice_list_interface;
+                                                        choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (client->priv->connection,
+                                                                                                                              G_DBUS_PROXY_FLAGS_NONE,
+                                                                                                                              NULL,
+                                                                                                                              SESSION_DBUS_PATH,
+                                                                                                                              cancellable,
+                                                                                                                              NULL);
+                                                        if (choice_list_interface != NULL)
+                                                                    g_hash_table_insert (client->priv->user_verifier_extensions, client->priv->enabled_extensions[i], choice_list_interface);
+                                            }
+                                }
+                        }
+                }
         }
 
         return client->priv->user_verifier;
@@ -813,6 +987,26 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
                            &client->priv->manager);
 
         return g_object_ref (user_verifier);
+}
+
+/**
+ * gdm_client_get_user_verifier_choice_list:
+ * @client: a #GdmClient
+ *
+ * Gets a #GdmUserVerifierChoiceList object that can be used to
+ * verify a user's local account.
+ *
+ * Returns: (transfer none): #GdmUserVerifierChoiceList or %NULL if user
+ * verifier isn't yet fetched, or daemon doesn't support choice lists
+ */
+GdmUserVerifierChoiceList *
+gdm_client_get_user_verifier_choice_list (GdmClient *client)
+{
+        if (client->priv->user_verifier_extensions == NULL)
+                return NULL;
+
+        return g_hash_table_lookup (client->priv->user_verifier_extensions,
+                                    gdm_user_verifier_choice_list_interface_info ()->name);
 }
 
 static void
@@ -1483,6 +1677,7 @@ gdm_client_finalize (GObject *object)
         g_clear_object (&client->priv->manager);
         g_clear_object (&client->priv->connection);
 
+        g_strfreev (client->priv->enabled_extensions);
         g_free (client->priv->address);
 
         G_OBJECT_CLASS (gdm_client_parent_class)->finalize (object);
@@ -1500,4 +1695,21 @@ gdm_client_new (void)
         }
 
         return GDM_CLIENT (client_object);
+}
+
+
+/**
+ * gdm_client_set_enabled_extensions:
+ * @client: a #GdmClient
+ * @extensions: (array zero-terminated=1) (element-type utf8): a list of extensions
+ *
+ * Enables GDM's pam extensions.  Currently, only
+ * org.gnome.DisplayManager.UserVerifier.ChoiceList is supported.
+ */
+void
+gdm_client_set_enabled_extensions (GdmClient          *client,
+                                   const char * const *extensions)
+{
+        client->priv->enabled_extensions = g_strdupv ((char **) extensions);
+
 }
