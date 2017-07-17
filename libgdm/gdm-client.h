@@ -58,6 +58,8 @@ GType              gdm_client_get_type                 (void);
 GQuark             gdm_client_error_quark              (void);
 
 GdmClient         *gdm_client_new                      (void);
+void               gdm_client_set_enabled_extensions   (GdmClient *client,
+                                                        const char * const * extensions);
 
 void               gdm_client_open_reauthentication_channel (GdmClient     *client,
                                                              const char           *username,
@@ -84,6 +86,8 @@ GdmUserVerifier   *gdm_client_get_user_verifier_finish  (GdmClient     *client,
 GdmUserVerifier   *gdm_client_get_user_verifier_sync    (GdmClient *client,
                                                          GCancellable     *cancellable,
                                                          GError          **error);
+
+GdmUserVerifierChoiceList *gdm_client_get_user_verifier_choice_list  (GdmClient *client);
 
 void               gdm_client_get_greeter               (GdmClient     *client,
                                                          GCancellable         *cancellable,
