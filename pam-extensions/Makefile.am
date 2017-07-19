@@ -16,6 +16,31 @@ pkgconfig_DATA = gdm-pam-extensions.pc
 
 pam_extensions_includedir = $(includedir)/gdm
 pam_extensions_include_HEADERS = gdm-pam-extensions.h
+
+pam_gdm_testlist_la_SOURCES = \
+	pam_gdm_testlist.c \
+	$(NULL)
+
+pam_gdm_testlist_la_CFLAGS = \
+	$(PAM_CFLAGS) \
+	-DGDM_IN_TREE_BUILD=1 \
+	$(NULL)
+
+pam_gdm_testlist_la_LDFLAGS = \
+	-module \
+	-export-dynamic \
+	-avoid-version \
+	-shared \
+	$(NULL)
+
+pam_gdm_testlist_la_LIBADD = \
+	$(PAM_LIBS) \
+	$(NULL)
+
+
+noinst_LTLIBRARIES = \
+	pam_gdm_testlist.la \
+	$(NULL)
 endif
 
 EXTRA_DIST =                                                            \
