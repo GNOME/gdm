@@ -5,7 +5,7 @@
 # Nuriddin Aminagha <nuriddin@haydarlinux.org>, 2002.
 # Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>, 2004.
 # Djihed Afifi <djihed@gmail.com>, 2006, 2007.
-# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015.
+# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2017.
 # Usama Akkad <uak@aya.sy>, 2008.
 # M.Hanny Sabbagh <hannysabbagh@hotmail.com>, 2013.
 # Muhannad Alrusayni <muhannad.alrusayni@gmail.com>, 2016.
@@ -13,11 +13,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-06-20 19:07+0000\n"
-"PO-Revision-Date: ٢٠١٦-٠٦-٢١ ١٨:١٠+0300\n"
-"Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-23 16:13+0200\n"
+"PO-Revision-Date: 2017-07-23 16:15+0200\n"
+"Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +24,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Virtaal 1.0.0-beta1\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "اختر نظاما"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "‏XMCP: تعذّر إنشاء صِِوان XDMCP !"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "تعذّر قراءة ترويسة XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "‏XDMCP: إصدارة XDMCP خاطئة!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "‏XDMCP: تعذّر تحليل العنوان"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -58,8 +77,8 @@ msgstr "تعذر على النظام بدء شاشة ولوج جديدة."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
-msgstr "تعذّر إيجاد المستخدم \"%s\" على هذا النّظام"
+msgid "could not find user “%s” on system"
+msgstr "تعذّر إيجاد المستخدم ”%s“ على هذا النّظام"
 
 #: ../daemon/gdm-legacy-display.c:235
 msgid ""
@@ -72,34 +91,39 @@ msgstr ""
 "النظام أو مراجعة سجل النظام للتشخيص. سيغلق العرض في هذه الأثناء. الرجاء "
 "إعادة تشغيل م‌ع‌ج عند تصحيح الخطأ."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "لا توجد أي أجهزة عرض"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "لا توجد أي جلسات"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+#, fuzzy
+msgid "Chooser session unavailable"
+msgstr "لا توجد أي جلسات"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "لا يمكن استدعائه إلا قبل ولوج المستخدم"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "المُستدعي ليس م‌ع‌ج"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "تعذّر فتح قناة اتصال خاصة"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "كان الخادوم سيُوّلد من قبل المستخدم %s لكن ذلك المستخدم غير موجود"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "تعذّر ضبط معرّف المجموعة لـ %Id"
 
 #: ../daemon/gdm-server.c:408
@@ -109,7 +133,7 @@ msgstr "فشل initgroups () لِـ %s"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "تعذّر ضبط معرّف المستخدم لِـ %Id"
 
 #: ../daemon/gdm-server.c:492
@@ -125,7 +149,7 @@ msgstr "‏%s: خطأ ضبط %s كـ %s"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "‏%s:تعذّر ضبط أولوية الخادوم لتكون %Id: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -157,16 +181,16 @@ msgstr "جهاز العرض"
 msgid "The display device"
 msgstr "جهاز العرض"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1223
 msgid "Could not create authentication helper process"
 msgstr "تعذّر إنشاء عملية مساعد الاستيثاق"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "المدة الزمنية الموضوعة لحسابك انتهت."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "للأسف لم يُفلح هذا. أعِد المحاولة."
 
 #: ../daemon/gdm-session-worker.c:1037
@@ -182,23 +206,23 @@ msgstr "لا يُوجد حساب مستخدِم "
 msgid "Unable to change to user"
 msgstr "تعذّر الانتقال للمستخدم"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "مشغل جلسات وايلاند لمدير عرض جنوم"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "تعذّر إنشاء المقبس!"
 
-#: ../daemon/gdm-x-session.c:748
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "شغل البرنامج عبر سكربت ‎/etc/gdm/Xsession الالتفافي"
 
-#: ../daemon/gdm-x-session.c:749
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "أصغِ إلى مقبس TCP"
 
-#: ../daemon/gdm-x-session.c:760
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "مشغل جلسات س لمدير عرض جنوم"
 
@@ -219,8 +243,8 @@ msgstr "فشل إنشاء LogDir ‏%s: ‏%s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "لم أجد مستخدم م‌ع‌ج '%s'.إجهاض!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
+msgstr "لم أجد مستخدم م‌ع‌ج ”%s“.إجهاض!"
 
 #: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
@@ -228,8 +252,8 @@ msgstr "يجب أن لا يكون مستخدم م‌ع‌ج جذرا. إجهاض
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "لم أجد مجموعة GDM ‏'%s'. إجهاض!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "لم أجد مجموعة GDM ‏”%s“. إجهاض!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -366,26 +390,6 @@ msgstr ""
 "عدد مرات التي يُسمح فيها للمستخدم محاولة الاستيثاق، وذلك قبل ترك الأمر "
 "والعودة إلى صفحة اختيار المستخدمة."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "اختر نظاما"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "‏XMCP: تعذّر إنشاء صِِوان XDMCP !"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "تعذّر قراءة ترويسة XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "‏XDMCP: إصدارة XDMCP خاطئة!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "‏XDMCP: تعذّر تحليل العنوان"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "تعذّر إنشاء عرض عابر:"
@@ -417,8 +421,8 @@ msgstr "إصدارة هذا التطبيق"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- ولوج م‌ع‌ج جديد"
+msgid "— New GDM login"
+msgstr "— ولوج م‌ع‌ج جديد"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
