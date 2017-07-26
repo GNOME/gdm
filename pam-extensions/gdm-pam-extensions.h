@@ -130,4 +130,49 @@ typedef struct {
 
 #define GDM_PAM_EXTENSION_SUPPORTED(name) GDM_PAM_EXTENSION_LOOK_UP_TYPE(name, (unsigned char *) NULL)
 
+typedef struct {
+        const char *key;
+        const char *text;
+} GdmChoiceListItems;
+
+typedef struct {
+        size_t number_of_items;
+        GdmChoiceListItems items[];
+} GdmChoiceList;
+
+typedef struct {
+        GdmPamExtensionMessage header;
+
+        char *prompt_message;
+        GdmChoiceList list;
+} GdmPamExtensionChoiceListRequest;
+
+typedef struct {
+        GdmPamExtensionMessage header;
+
+        char *key;
+} GdmPamExtensionChoiceListResponse;
+
+#define GDM_PAM_EXTENSION_CHOICE_LIST "org.gnome.DisplayManager.UserVerifier.ChoiceList"
+
+#define GDM_CHOICE_LIST_SIZE(num_items) (offsetof(GdmChoiceList, items) + (num_items) * sizeof (GdmChoiceListItems))
+#define GDM_PAM_EXTENSION_CHOICE_LIST_REQUEST_SIZE(num_items) (offsetof(GdmPamExtensionChoiceListRequest, list) + GDM_CHOICE_LIST_SIZE((num_items)))
+#define GDM_PAM_EXTENSION_CHOICE_LIST_REQUEST_INIT(request, title, num_items) \
+{ \
+        int _n = num_items; \
+        GDM_PAM_EXTENSION_LOOK_UP_TYPE (GDM_PAM_EXTENSION_CHOICE_LIST, &request->header.type); \
+        request->header.length = htobe32 (GDM_PAM_EXTENSION_CHOICE_LIST_REQUEST_SIZE(_n)); \
+        request->prompt_message = title; \
+        request->list.number_of_items = _n; \
+}
+
+#define GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE sizeof (GdmPamExtensionChoiceListResponse)
+#define GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_INIT(response) \
+{ \
+        GDM_PAM_EXTENSION_LOOK_UP_TYPE (GDM_PAM_EXTENSION_CHOICE_LIST, &response->header.type); \
+        response->header.length = htobe32 (GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE); \
+        response->key = NULL; \
+}
+#define GDM_PAM_EXTENSION_REPLY_TO_CHOICE_LIST_RESPONSE(reply) ((GdmPamExtensionChoiceListResponse *) (void *) reply->resp)
+
 #endif

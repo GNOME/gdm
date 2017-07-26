@@ -681,6 +681,44 @@ set_pending_query (GdmSessionConversation *conversation,
 }
 
 static gboolean
+gdm_session_handle_choice_list_query (GdmDBusWorkerManager  *worker_manager_interface,
+                                      GDBusMethodInvocation *invocation,
+                                      const char            *service_name,
+                                      const char            *prompt_message,
+                                      GVariant              *query,
+                                      GdmSession            *self)
+{
+        GdmSessionConversation *conversation;
+        GdmDBusUserVerifierChoiceList *choice_list_interface = NULL;
+
+        g_debug ("GdmSession: choice query for service '%s'", service_name);
+
+        if (self->priv->user_verifier_extensions != NULL)
+                choice_list_interface = g_hash_table_lookup (self->priv->user_verifier_extensions,
+                                                             gdm_dbus_user_verifier_choice_list_interface_info ()->name);
+
+        if (choice_list_interface == NULL) {
+                g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_NOT_SUPPORTED,
+                                                       "ChoiceList interface not supported by client");
+                return TRUE;
+        }
+
+        conversation = find_conversation_by_name (self, service_name);
+        if (conversation != NULL) {
+                set_pending_query (conversation, invocation);
+
+                g_debug ("GdmSession: emitting choice query '%s'", prompt_message);
+                gdm_dbus_user_verifier_choice_list_emit_choice_query (choice_list_interface,
+                                                                      service_name,
+                                                                      prompt_message,
+                                                                      query);
+        }
+
+        return TRUE;
+}
+
+static gboolean
 gdm_session_handle_info_query (GdmDBusWorkerManager  *worker_manager_interface,
                                GDBusMethodInvocation *invocation,
                                const char            *service_name,
@@ -1137,6 +1175,10 @@ export_worker_manager_interface (GdmSession      *self,
                           "handle-problem",
                           G_CALLBACK (gdm_session_handle_problem),
                           self);
+        g_signal_connect (worker_manager_interface,
+                          "handle-choice-list-query",
+                          G_CALLBACK (gdm_session_handle_choice_list_query),
+                          self);
 
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (worker_manager_interface),
                                           connection,
@@ -1165,6 +1207,9 @@ unexport_worker_manager_interface (GdmSession           *self,
                                               self);
         g_signal_handlers_disconnect_by_func (worker_manager_interface,
                                               G_CALLBACK (gdm_session_handle_problem),
+                                              self);
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (gdm_session_handle_choice_list_query),
                                               self);
 }
 
@@ -1220,14 +1265,61 @@ begin_verification_conversation (GdmSession            *self,
 }
 
 static gboolean
+gdm_session_handle_client_select_choice (GdmDBusUserVerifierChoiceList    *choice_list_interface,
+                                         GDBusMethodInvocation            *invocation,
+                                         const char                       *service_name,
+                                         const char                       *answer,
+                                         GdmSession                       *self)
+{
+        g_debug ("GdmSession: user selected choice '%s'", answer);
+        gdm_dbus_user_verifier_choice_list_complete_select_choice (choice_list_interface, invocation);
+        gdm_session_answer_query (self, service_name, answer);
+        return TRUE;
+}
+
+static void
+export_user_verifier_choice_list_interface (GdmSession      *self,
+                                            GDBusConnection *connection)
+{
+        GdmDBusUserVerifierChoiceList   *interface;
+
+        interface = GDM_DBUS_USER_VERIFIER_CHOICE_LIST (gdm_dbus_user_verifier_choice_list_skeleton_new ());
+
+        g_signal_connect (interface,
+                          "handle-select-choice",
+                          G_CALLBACK (gdm_session_handle_client_select_choice),
+                          self);
+
+        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (interface),
+                                          connection,
+                                          GDM_SESSION_DBUS_OBJECT_PATH,
+                                          NULL);
+
+        g_hash_table_insert (self->priv->user_verifier_extensions,
+                             gdm_dbus_user_verifier_choice_list_interface_info ()->name,
+                             interface);
+}
+
+static gboolean
 gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifier_interface,
                                              GDBusMethodInvocation  *invocation,
                                              const char * const *    extensions,
                                              GDBusConnection        *connection)
 {
         GdmSession *self = g_object_get_data (G_OBJECT (connection), "gdm-session");
+        size_t i;
 
         g_hash_table_remove_all (self->priv->user_verifier_extensions);
+
+        for (i = 0; extensions[i] != NULL; i++) {
+                if (g_hash_table_lookup (self->priv->user_verifier_extensions, extensions[i]) != NULL)
+                        continue;
+
+                if (strcmp (extensions[i],
+                            gdm_dbus_user_verifier_choice_list_interface_info ()->name) == 0)
+                        export_user_verifier_choice_list_interface (self, connection);
+
+        }
 
         gdm_dbus_user_verifier_complete_enable_extensions (user_verifier_interface, invocation);
 

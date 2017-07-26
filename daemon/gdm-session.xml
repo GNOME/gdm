@@ -22,6 +22,12 @@
       <arg name="service_name" direction="in" type="s"/>
       <arg name="problem" direction="in" type="s"/>
     </method>
+    <method name="ChoiceListQuery">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="prompt_message" direction="in" type="s"/>
+      <arg name="query" direction="in" type="a{ss}"/>
+      <arg name="answer" direction="out" type="s"/>
+    </method>
   </interface>
   <interface name="org.gnome.DisplayManager.UserVerifier">
     <method name="EnableExtensions">
@@ -76,6 +82,17 @@
     </signal>
     <signal name="VerificationComplete">
       <arg name="service_name" type="s"/>
+    </signal>
+  </interface>
+  <interface name="org.gnome.DisplayManager.UserVerifier.ChoiceList">
+    <method name="SelectChoice">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="choice" direction="in" type="s"/>
+    </method>
+    <signal name="ChoiceQuery">
+      <arg name="service_name" type="s"/>
+      <arg name="prompt_message" type="s"/>
+      <arg name="list" type="a{ss}"/>
     </signal>
   </interface>
   <interface name="org.gnome.DisplayManager.Greeter">
