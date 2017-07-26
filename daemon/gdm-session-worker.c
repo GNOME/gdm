@@ -188,6 +188,7 @@ static char gdm_pam_extension_environment_block[_POSIX_ARG_MAX];
 
 static const char * const
 gdm_supported_pam_extensions[] = {
+        GDM_PAM_EXTENSION_CHOICE_LIST,
         NULL
 };
 #endif
@@ -536,6 +537,59 @@ gdm_session_worker_report_problem (GdmSessionWorker *worker,
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
 static gboolean
+gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
+                                        GdmChoiceList    *list,
+                                        char            **answerp)
+{
+        GVariantBuilder builder;
+        GVariant *choices_as_variant;
+        GError *error = NULL;
+        gboolean res;
+        size_t i;
+
+        g_debug ("GdmSessionWorker: presenting user with list of choices:");
+
+        g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
+
+        for (i = 0; i < list->number_of_items; i++) {
+                if (list->items[i].key == NULL) {
+                        g_warning ("choice list contains item with NULL key");
+                        g_variant_builder_clear (&builder);
+                        return FALSE;
+                }
+                g_debug ("GdmSessionWorker:        choices['%s'] = \"%s\"", list->items[i].key, list->items[i].text);
+                g_variant_builder_add (&builder, "{ss}", list->items[i].key, list->items[i].text);
+        }
+        g_debug ("GdmSessionWorker: (and waiting for reply)");
+
+        choices_as_variant = g_variant_builder_end (&builder);
+
+        res = gdm_dbus_worker_manager_call_choice_list_query_sync (worker->priv->manager,
+                                                                    worker->priv->service,
+                                                                    choices_as_variant,
+                                                                    answerp,
+                                                                    NULL,
+                                                                    &error);
+
+        if (! res) {
+                g_debug ("GdmSessionWorker: list request failed: %s", error->message);
+                g_clear_error (&error);
+        } else {
+                g_debug ("GdmSessionWorker: user selected '%s'", *answerp);
+        }
+
+        return res;
+}
+
+static gboolean
+gdm_session_worker_process_choice_list_request (GdmSessionWorker                   *worker,
+                                                GdmPamExtensionChoiceListRequest  *request,
+                                                GdmPamExtensionChoiceListResponse *response)
+{
+        return gdm_session_worker_ask_list_of_choices (worker, &request->list, &response->key);
+}
+
+static gboolean
 gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *worker,
                                                  const struct pam_message  *query,
                                                  char                     **response)
@@ -555,8 +609,30 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 return FALSE;
         }
 
-        g_debug ("GdmSessionWorker: received extended pam message of unknown type %u", (unsigned int) extended_message->type);
-        return FALSE;
+        if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->priv->extensions, GDM_PAM_EXTENSION_CHOICE_LIST)) {
+                GdmPamExtensionChoiceListRequest *list_request = (GdmPamExtensionChoiceListRequest *) extended_message;
+                GdmPamExtensionChoiceListResponse *list_response = malloc (GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE);
+
+                g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CHOICE_LIST);
+
+                GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_INIT (list_response);
+
+                res = gdm_session_worker_process_choice_list_request (worker, list_request, list_response);
+
+                if (! res) {
+                        g_free (list_response);
+                        return FALSE;
+                }
+
+                *response = GDM_PAM_EXTENSION_MESSAGE_TO_PAM_REPLY (list_response);
+                return TRUE;
+        } else {
+                g_debug ("GdmSessionWorker: received extended pam message of unknown type %u", (unsigned int) extended_message->type);
+                return FALSE;
+
+        }
+
+        return TRUE;
 }
 #endif
 
@@ -3413,3 +3489,4 @@ gdm_session_worker_new (const char *address,
 
         return GDM_SESSION_WORKER (object);
 }
+
