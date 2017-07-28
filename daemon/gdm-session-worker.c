@@ -2818,6 +2818,57 @@ gdm_session_worker_handle_open (GdmDBusWorker         *object,
 }
 
 static gboolean
+gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
+                                      GDBusMethodInvocation *invocation,
+                                      GVariant              *details)
+{
+        GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
+        GVariantIter      iter;
+        char             *key;
+        GVariant         *value;
+
+        validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
+
+        g_variant_iter_init (&iter, details);
+        while (g_variant_iter_loop (&iter, "{sv}", &key, &value)) {
+                if (g_strcmp0 (key, "service") == 0) {
+                        worker->priv->service = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "username") == 0) {
+                        worker->priv->username = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "is-program-session") == 0) {
+                        worker->priv->is_program_session = g_variant_get_boolean (value);
+                } else if (g_strcmp0 (key, "log-file") == 0) {
+                        worker->priv->log_file = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "x11-display-name") == 0) {
+                        worker->priv->x11_display_name = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "x11-authority-file") == 0) {
+                        worker->priv->x11_authority_file = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "console") == 0) {
+                        worker->priv->display_device = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "seat-id") == 0) {
+                        worker->priv->display_seat_id = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "hostname") == 0) {
+                        worker->priv->hostname = g_strdup (g_variant_get_string (value, NULL));
+                } else if (g_strcmp0 (key, "display-is-local") == 0) {
+                        worker->priv->display_is_local = g_variant_get_boolean (value);
+                } else if (g_strcmp0 (key, "display-is-initial") == 0) {
+                        worker->priv->display_is_initial = g_variant_get_boolean (value);
+                }
+        }
+
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::language-name",
+                                  G_CALLBACK (on_saved_language_name_read),
+                                  worker);
+
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::session-name",
+                                  G_CALLBACK (on_saved_session_name_read),
+                                  worker);
+        return TRUE;
+}
+
+static gboolean
 gdm_session_worker_handle_setup (GdmDBusWorker         *object,
                                  GDBusMethodInvocation *invocation,
                                  const char            *service,
@@ -3189,6 +3240,8 @@ gdm_session_worker_constructor (GType                  type,
 static void
 worker_interface_init (GdmDBusWorkerIface *interface)
 {
+        interface->handle_initialize = gdm_session_worker_handle_initialize;
+        /* The next three are for backward compat only */
         interface->handle_setup = gdm_session_worker_handle_setup;
         interface->handle_setup_for_user = gdm_session_worker_handle_setup_for_user;
         interface->handle_setup_for_program = gdm_session_worker_handle_setup_for_program;
