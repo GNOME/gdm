@@ -280,6 +280,11 @@ spawn_session (State        *state,
         gboolean             is_running = FALSE;
         int                  ret;
         char               **argv = NULL;
+        static const char  *session_variables[] = { "DISPLAY",
+                                                    "XAUTHORITY",
+                                                    "WAYLAND_DISPLAY",
+                                                    "WAYLAND_SOCKET",
+                                                    NULL };
 
         g_debug ("Running wayland session");
 
@@ -313,17 +318,19 @@ spawn_session (State        *state,
 
                         g_subprocess_launcher_setenv (launcher, environment_entry[0], environment_entry[1], FALSE);
                 }
+
+                /* Don't allow session specific environment variables from earlier sessions to
+                 * leak through */
+                for (i = 0; session_variables[i] != NULL; i++) {
+                        if (g_getenv (session_variables[i]) == NULL) {
+                                g_subprocess_launcher_unsetenv (launcher, session_variables[i]);
+                        }
+                }
         }
 
         if (state->bus_address != NULL) {
                 g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
         }
-
-        /* Don't allow session specific environment variables from earlier sessions to leak through */
-        g_subprocess_launcher_unsetenv (launcher, "DISPLAY");
-        g_subprocess_launcher_unsetenv (launcher, "XAUTHORITY");
-        g_subprocess_launcher_unsetenv (launcher, "WAYLAND_DISPLAY");
-        g_subprocess_launcher_unsetenv (launcher, "WAYLAND_SOCKET");
 
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) argv,
