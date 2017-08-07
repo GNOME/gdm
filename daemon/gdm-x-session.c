@@ -609,6 +609,7 @@ spawn_session (State        *state,
                                                      "XAUTHORITY",
                                                      "WAYLAND_DISPLAY",
                                                      "WAYLAND_SOCKET",
+                                                     "GNOME_SHELL_SESSION_MODE",
                                                      NULL };
 
         g_debug ("Running X session");
