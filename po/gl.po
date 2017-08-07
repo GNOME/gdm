@@ -14,21 +14,43 @@
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
-# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013, 2015, 2016.
+# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013, 2015, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm-master-po-gl-41637\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-23 20:05+0100\n"
-"PO-Revision-Date: 2016-02-23 20:07+0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gdm&ke"
+"ywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-22 19:09+0000\n"
+"PO-Revision-Date: 2017-08-07 15:02+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: gnome-l10n-gl@gnome.org\n"
+"Language-Team: Galician\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.7.1\n"
+"X-Project-Style: gnome\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Seleccionar o sistema"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: non é posíbel crear o búfer XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: non é posíbel ler a cabeceira XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: versión incorrecta de XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: non foi posíbel analizar o enderezo"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -61,7 +83,8 @@ msgstr "O sistema non pode iniciar unha pantalla de inicio de sesión nova."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
+#| msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "non foi posíbel atopar o usuario «%s» no sistema"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -76,34 +99,41 @@ msgstr ""
 "diagnosticar o problema. Mentres tanto esta pantalla ficará desactivada. "
 "Reinicie o GDM cando o problema estea corrixido."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Non hai ningunha pantalla dispoñíbel"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Non hai ningunha sesión dispoñíbel"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+#| msgid "No session available"
+msgid "Chooser session unavailable"
+msgstr "Non hai ningunha sesión dispoñíbel"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Só se pode chamar antes de que o usuario inicie a sesión"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "O solicitante non é GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Non foi posíbel abrir unha canle de comunicación privada"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+#| msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "O servidor íase iniciar co usuario %s, mais ese usuario non existe"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+#| msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Non foi posíbel definir o identificador de grupo como %d"
 
 #: ../daemon/gdm-server.c:408
@@ -113,7 +143,8 @@ msgstr "fallou o initgroups () para %s"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
+#| msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Non foi posíbel definir o identificador de usuario como %d"
 
 #: ../daemon/gdm-server.c:492
@@ -130,7 +161,8 @@ msgstr "%s: produciuse un erro ao configurar %s a %s"
 # Poño "Xserver" porque seica é o nome do executable
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+#| msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: non foi posíbel definir a prioridade do servidor como %d: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -162,48 +194,50 @@ msgstr "Dispositivo de pantalla"
 msgid "The display device"
 msgstr "O dispositivo de pantalla"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Non foi posíbel crear o proceso de axuda de autenticación"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#| msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "A súa conta obtivo un límite de tempo que foi superado agora."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+#| msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Desculpe, iso non funcionou. Ténteo de novo."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Nome de usuario:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "non hai ningunha conta de usuario dispoñíbel"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Non é posíbel cambiar a ese usuario"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Iniciador do xestor de sesión Wayland de pantalla de GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Non é posíbel crear o sócket!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Executa un programa mediante o script /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Escoitar nun socket TCP"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Iniciador do xestor de sesión X de pantalla de GNOME"
 
@@ -228,7 +262,8 @@ msgstr "Produciuse un fallo ao crear o LogDir %s: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
+#| msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Non é posíbel atopar o usuario do GDM '%s'. Interrompendo!"
 
 #: ../daemon/main.c:229
@@ -237,8 +272,9 @@ msgstr "O usuario do GDM non debería ser o superusuario. Interrompendo!"
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Non é posíbel atopar o grupo '%s' do GDM. Interrompendo!"
+#| msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "Non é posíbel atopar o grupo «%s» do GDM. Interrompendo!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -383,26 +419,6 @@ msgstr ""
 "O número de veces que un usuario pode intentar autenticarse, andes de que se "
 "volva de novo á selección de usuario."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Seleccionar o sistema"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: non é posíbel crear o búfer XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: non é posíbel ler a cabeceira XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: versión incorrecta de XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: non foi posíbel analizar o enderezo"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Non foi posíbel crear unha visualización transitoria: "
@@ -434,8 +450,9 @@ msgstr "Versión deste aplicativo"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- Novo inicio de sesión GDM"
+#| msgid "- New GDM login"
+msgid "— New GDM login"
+msgstr "— Novo inicio de sesión GDM"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
