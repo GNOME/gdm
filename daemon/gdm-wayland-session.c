@@ -324,6 +324,7 @@ spawn_session (State        *state,
         g_subprocess_launcher_unsetenv (launcher, "XAUTHORITY");
         g_subprocess_launcher_unsetenv (launcher, "WAYLAND_DISPLAY");
         g_subprocess_launcher_unsetenv (launcher, "WAYLAND_SOCKET");
+        g_subprocess_launcher_unsetenv (launcher, "GNOME_SHELL_SESSION_MODE");
 
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) argv,
