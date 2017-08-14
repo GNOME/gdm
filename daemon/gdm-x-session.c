@@ -643,8 +643,6 @@ spawn_session (State        *state,
                 g_subprocess_launcher_setenv (launcher, "WINDOWPATH", vt, TRUE);
         }
 
-        g_subprocess_launcher_unsetenv (launcher, "GNOME_SHELL_SESSION_MODE");
-
         if (run_script) {
                 subprocess = g_subprocess_launcher_spawn (launcher,
                                                           &error,
