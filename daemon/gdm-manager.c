@@ -721,8 +721,8 @@ out:
 }
 
 static GdmSession *
-get_user_session_for_display (GdmManager *self,
-                              GdmDisplay *display)
+find_user_session_for_display (GdmManager *self,
+                               GdmDisplay *display)
 {
 
         GList *node = self->priv->user_sessions;
@@ -782,7 +782,7 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                 }
         }
 
-        session = get_user_session_for_display (self, display);
+        session = find_user_session_for_display (self, display);
 
         if (session != NULL) {
                 GPid pid;
