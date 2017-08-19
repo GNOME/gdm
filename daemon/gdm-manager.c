@@ -123,9 +123,9 @@ static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
 static void     gdm_manager_dispose     (GObject         *object);
 
-static GdmSession *create_embryonic_user_session_for_display (GdmManager *manager,
-                                                              GdmDisplay *display,
-                                                              uid_t       allowed_user);
+static GdmSession *create_user_session_for_display (GdmManager *manager,
+                                                    GdmDisplay *display,
+                                                    uid_t       allowed_user);
 
 static void     start_user_session (GdmManager                *manager,
                                     StartUserSessionOperation *operation);
@@ -652,13 +652,13 @@ get_display_for_user_session (GdmSession *session)
 }
 
 static GdmSession *
-get_embryonic_user_session_for_display (GdmDisplay *display)
+get_user_session_for_display (GdmDisplay *display)
 {
         if (display == NULL) {
                 return NULL;
         }
 
-        return g_object_get_data (G_OBJECT (display), "gdm-embryonic-user-session");
+        return g_object_get_data (G_OBJECT (display), "gdm-user-session");
 }
 
 static gboolean
@@ -863,7 +863,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         }
 #endif
         if (session == NULL) {
-                session = get_embryonic_user_session_for_display (display);
+                session = get_user_session_for_display (display);
 
                 if (gdm_session_is_running (session)) {
                         g_dbus_method_invocation_return_error_literal (invocation,
@@ -1125,7 +1125,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                                          seat_id,
                                                          NULL);
         } else {
-                session = get_embryonic_user_session_for_display (display);
+                session = get_user_session_for_display (display);
         }
 
         if (session != NULL && gdm_session_is_running (session)) {
@@ -1470,7 +1470,7 @@ set_up_automatic_login_session (GdmManager *manager,
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
          */
-        session = create_embryonic_user_session_for_display (manager, display, 0);
+        session = create_user_session_for_display (manager, display, 0);
 
         g_object_get (G_OBJECT (display),
                       "is-initial", &is_initial,
@@ -1522,7 +1522,7 @@ set_up_greeter_session (GdmManager *manager,
                 return;
         }
 
-        create_embryonic_user_session_for_display (manager, display, passwd_entry->pw_uid);
+        create_user_session_for_display (manager, display, passwd_entry->pw_uid);
         gdm_display_start_greeter_session (display);
 }
 
@@ -1849,11 +1849,11 @@ on_start_user_session (StartUserSessionOperation *operation)
 
                 /* The user session is going to follow the session worker
                  * into the new display. Untie it from this display and
-                 * create a new embryonic session for a future user login. */
+                 * create a new session for a future user login. */
                 allowed_uid = gdm_session_get_allowed_user (operation->session);
-                g_object_set_data (G_OBJECT (display), "gdm-embryonic-user-session", NULL);
+                g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
                 g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
-                create_embryonic_user_session_for_display (operation->manager, display, allowed_uid);
+                create_user_session_for_display (operation->manager, display, allowed_uid);
 
                 if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0) {
                         /* remove the unused prepared greeter display since we're not going
@@ -2272,16 +2272,16 @@ on_session_reauthentication_started (GdmSession *session,
 }
 
 static void
-clean_embryonic_user_session (GdmSession *session)
+clean_user_session (GdmSession *session)
 {
         g_object_set_data (G_OBJECT (session), "gdm-display", NULL);
         g_object_unref (session);
 }
 
 static GdmSession *
-create_embryonic_user_session_for_display (GdmManager *manager,
-                                           GdmDisplay *display,
-                                           uid_t       allowed_user)
+create_user_session_for_display (GdmManager *manager,
+                                 GdmDisplay *display,
+                                 uid_t       allowed_user)
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
@@ -2381,10 +2381,10 @@ create_embryonic_user_session_for_display (GdmManager *manager,
                           manager);
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
         g_object_set_data_full (G_OBJECT (display),
-                                "gdm-embryonic-user-session",
+                                "gdm-user-session",
                                 g_object_ref (session),
                                 (GDestroyNotify)
-                                clean_embryonic_user_session);
+                                clean_user_session);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
         greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
