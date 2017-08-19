@@ -126,9 +126,9 @@ static void     gdm_manager_dispose     (GObject         *object);
 static GdmSession *create_user_session_for_display (GdmManager *manager,
                                                     GdmDisplay *display,
                                                     uid_t       allowed_user);
-
 static void     start_user_session (GdmManager                *manager,
                                     StartUserSessionOperation *operation);
+static void     clean_user_session (GdmSession *session);
 
 static gpointer manager_object = NULL;
 
@@ -1778,6 +1778,11 @@ create_display_for_user_session (GdmManager *self,
         gdm_display_store_add (self->priv->display_store,
                                display);
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
+        g_object_set_data_full (G_OBJECT (display),
+                                "gdm-user-session",
+                                g_object_ref (session),
+                                (GDestroyNotify)
+                                clean_user_session);
 }
 
 static gboolean
