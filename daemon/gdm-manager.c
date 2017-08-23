@@ -2048,8 +2048,8 @@ on_session_reauthenticated (GdmSession *session,
                                 gdm_display_unmanage (display);
                                 gdm_display_finish (display);
                         }
+                        g_free (session_id);
                 }
-                g_free (session_id);
         }
 
         /* There should already be a session running, so jump to its
