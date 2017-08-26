@@ -29,9 +29,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-03-31 21:48+0000\n"
+"Report-Msgid-Bugs-To: "
+"https://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-22 19:09+0000\n"
 "PO-Revision-Date: 2017-04-08 00:14+0200\n"
 "Last-Translator: Kris Thomsen <mail@kristhomsen.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -92,8 +92,9 @@ msgid "The system is unable to start up a new login screen."
 msgstr "Systemet var ude af stand til starte en ny logindskærm."
 
 #: ../daemon/gdm-display-access-file.c:300
-#, c-format
-msgid "could not find user \"%s\" on system"
+#, c-format, fuzzy
+#| msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "kunne ikke finde brugeren \"%s\" på systemet"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -112,35 +113,37 @@ msgstr ""
 msgid "No display available"
 msgstr "Ingen terminal tilgængelig"
 
-#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1114
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Ingen session tilgængelig"
 
-#: ../daemon/gdm-manager.c:859
+#: ../daemon/gdm-manager.c:860
 msgid "Chooser session unavailable"
 msgstr "Vælgersession er ikke tilgængelig"
 
-#: ../daemon/gdm-manager.c:869
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Kan kun kaldes før brugeren er logget ind"
 
-#: ../daemon/gdm-manager.c:880
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "Kaldeophav er ikke GDM"
 
-#: ../daemon/gdm-manager.c:890
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Kan ikke åbne den private kommunikationskanal"
 
 #: ../daemon/gdm-server.c:391
-#, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+#, c-format, fuzzy
+#| msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Serveren skulle være startet af brugeren %s, men den bruger eksisterer ikke"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
-#, c-format
-msgid "Couldn't set groupid to %d"
+#, c-format, fuzzy
+#| msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Kunne ikke sætte gruppe-id til %d"
 
 #: ../daemon/gdm-server.c:408
@@ -149,8 +152,9 @@ msgid "initgroups () failed for %s"
 msgstr "initgroups () mislykkedes for %s"
 
 #: ../daemon/gdm-server.c:414
-#, c-format
-msgid "Couldn't set userid to %d"
+#, c-format, fuzzy
+#| msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Kunne ikke sætte bruger-id til %d"
 
 #: ../daemon/gdm-server.c:492
@@ -165,8 +169,9 @@ msgid "%s: Error setting %s to %s"
 msgstr "%s: Fejl ved sætning af %s til %s"
 
 #: ../daemon/gdm-server.c:545
-#, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+#, c-format, fuzzy
+#| msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Server-prioritet kunne ikke angives til %d: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -204,11 +209,15 @@ msgid "Could not create authentication helper process"
 msgstr "Kunne ikke oprette proces for autentificeringshjælp"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#, fuzzy
+#| msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "Din konto fik en tidsgrænse, som nu er overskredet."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+#, fuzzy
+#| msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Beklager, det virkede ikke. Prøv igen."
 
 #: ../daemon/gdm-session-worker.c:1037
@@ -252,7 +261,7 @@ msgstr "Kan ikke skrive PID-filen %s: er muligvis løbet tør for diskplads: %s"
 #: ../daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr "Kunne ikke oprette \"ran once marker dir\" %s: %s"
+msgstr "Kunne ikke oprette “ran once marker dir” %s: %s"
 
 #: ../daemon/main.c:188
 #, c-format
@@ -260,8 +269,9 @@ msgid "Failed to create LogDir %s: %s"
 msgstr "Kunne ikke oprette LogDir %s: %s"
 
 #: ../daemon/main.c:223
-#, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
+#, c-format, fuzzy
+#| msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Kan ikke finde GDM-brugeren \"%s\". Afbryder!"
 
 #: ../daemon/main.c:229
@@ -269,8 +279,9 @@ msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM-brugeren må ikke være root. Afbryder!"
 
 #: ../daemon/main.c:235
-#, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
+#, c-format, fuzzy
+#| msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Kan ikke finde GDM-gruppen \"%s\". Afbryder!"
 
 #: ../daemon/main.c:241
@@ -338,8 +349,8 @@ msgid ""
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
 "Logindskærmen kan konfigureres til ikke at tillade adgangskode-godkendelse, "
-"og dermed tvinge brugeren til at bruge smartcard- eller fingeraftryks-"
-"godkendelse."
+"og dermed tvinge brugeren til at bruge smartcard- eller "
+"fingeraftryks-godkendelse."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Path to small image at top of user list"
@@ -394,10 +405,11 @@ msgid "Disable showing the restart buttons"
 msgstr "Deaktivér visning af genstart-knapper"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:17
-msgid "Set to true to disable showing the restart buttons in the login window."
+msgid ""
+"Set to true to disable showing the restart buttons in the login window."
 msgstr ""
-"Sæt til true for at deaktivere visning af genstartsknapperne i logind-"
-"vinduet."
+"Sæt til true for at deaktivere visning af genstartsknapperne i "
+"logind-vinduet."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:18
 msgid "Number of allowed authentication failures"
@@ -442,7 +454,9 @@ msgstr "Versionen af dette program"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
+#, fuzzy
+#| msgid "- New GDM login"
+msgid "— New GDM login"
 msgstr "- Nyt GDM-logind"
 
 #: ../utils/gdm-screenshot.c:212
@@ -462,3 +476,5 @@ msgstr "Tag et billede af skærmen"
 
 #~ msgid "Window management and compositing"
 #~ msgstr "Vindueshåndtering og -sammensætning"
+
+
