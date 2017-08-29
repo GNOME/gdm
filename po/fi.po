@@ -12,17 +12,17 @@
 # Ilkka Tuohela <hile@iki.fi>, 2005-2009.
 # Timo Jyrinki <timo.jyrinki@iki.fi>, 2010.
 # Juhani Numminen <juhaninumminen0@gmail.com>, 2013.
-# Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2012, 2013, 2014, 2015, 2016.
+# Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2012, 2013, 2014, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-05 06:46+0000\n"
-"PO-Revision-Date: 2016-03-05 19:52+0200\n"
+"POT-Creation-Date: 2017-06-22 19:09+0000\n"
+"PO-Revision-Date: 2017-08-29 12:39+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
-"Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
+"Language-Team: suomi <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,6 +30,26 @@ msgstr ""
 "X-Generator: Gtranslator 2.91.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-POT-Import-Date: 2012-02-19 15:15:58+0000\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Valitse järjestelmä"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: XDMCP-puskurin luonti epäonnistui!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: XDMCP-otsakkeen luku epäonnistui!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Väärä XDMCP-versio!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Osoitteen jäsennys epäonnistui"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -62,8 +82,9 @@ msgstr "Järjestelmä ei kykene käynnistämään uutta kirjautumisruutua."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
-msgstr "järjestelmästä ei löytynyt käyttäjää ”%s”"
+#| msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
+msgstr "järjestelmästä ei löytynyt käyttäjää “%s”"
 
 #: ../daemon/gdm-legacy-display.c:235
 msgid ""
@@ -77,35 +98,42 @@ msgstr ""
 "järjestelmälokia. Tämä näyttö poistetaan toistaiseksi käytöstä. Käynnistä "
 "GDM uudelleen, kun ongelma on korjattu."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Näyttöä ei ole käytettävissä"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Istuntoa ei ole käytettävissä"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+#| msgid "No session available"
+msgid "Chooser session unavailable"
+msgstr "Valitsinistuntoa ei ole käytettävissä"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "On kutsuttavissa ainoastaan ennen käyttäjän sisäänkirjautumista"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "Kutsuja ei ole GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Yksityisen kommunikaatiokanavan avaaminen epäonnistui"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+#| msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Palvelin käynnistettiin käyttäjänä %s, mutta käyttäjää ei ole olemassa"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Ryhmätunnusta ei voitu asettaa arvoon %d"
+#| msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
+msgstr "Ryhmätunnistetta ei voitu asettaa arvoon %d"
 
 #: ../daemon/gdm-server.c:408
 #, c-format
@@ -114,8 +142,9 @@ msgstr "initgroups() epäonnistui %s:lle"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
-msgstr "userid:tä ei voitu asettaa arvoon %d"
+#| msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
+msgstr "Käyttäjätunnistetta ei voitu asettaa arvoon %d"
 
 #: ../daemon/gdm-server.c:492
 #, c-format
@@ -130,7 +159,8 @@ msgstr "%s: Virhe asetettaessa %s arvoon %s"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+#| msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Palvelimen prioriteettia ei voitu asettaa arvoon %d: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -162,48 +192,50 @@ msgstr "Näyttölaite"
 msgid "The display device"
 msgstr "Näyttölaite"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Tunnistautumisen avustusprosessin luominen ei onnistunut"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
-msgstr "Tunnuksellesi annettiin aikaraja, joka on nyt ohitettu."
+#| msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Tunnuksellesi annettiin aikaraja, joka on nyt umpeutunut."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
-msgstr "Valitettavasti se ei toiminut. Yritä uudelleen."
+#| msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
+msgstr "Valitettavasti se ei kelvannut. Yritä uudelleen."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "käyttäjätiliä ei ole käytettävissä"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Käyttäjää ei voitu vaihtaa"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Gnomen kirjautumisikkunan Wayland-istunnon käynnistäjä"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Pistokkeen luonti epäonnistui!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Suorita ohjelma /etc/gdm/Xsession-wrapperiskriptin kautta"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Kuuntele TCP-sockettia"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Gnomen kirjautumisikkunan X-istunnon käynnistäjä"
 
@@ -224,8 +256,9 @@ msgstr "Lokihakemiston %s luominen epäonnistui: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "GDM-käyttäjää ”%s” ei löydy. Keskeytetään!"
+#| msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
+msgstr "GDM-käyttäjää “%s” ei löydy. Keskeytetään!"
 
 #: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
@@ -233,8 +266,9 @@ msgstr "Pääkäyttäjä ei voi olla GDM-käyttäjä. Keskeytetään!"
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "GDM-ryhmää ”%s” ei löydy. Keskeytetään!"
+#| msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "GDM-ryhmää “%s” ei löydy. Keskeytetään!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -309,10 +343,6 @@ msgid "Path to small image at top of user list"
 msgstr "Polku pieneen kuvaan käyttäjäluettelon yläpuolella"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
-#| msgid ""
-#| "The login screen can optionally show a small image at the top of its user "
-#| "list to provide site administrators and distributions a way to provide "
-#| "branding."
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -321,10 +351,6 @@ msgstr ""
 "pienen kuvan osana paikallisen ylläpitäjän tai jakelun brändäystä."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-#| msgid ""
-#| "The fallback login screen can optionally show a small image at the top of "
-#| "its user list to provide site administrators and distributions a way to "
-#| "provide branding."
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -384,26 +410,6 @@ msgstr ""
 "Käyttäjän sallittujen tunnistautumisyritysten lukumäärä, ennen kuin palataan "
 "käyttäjävalintaan."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Valitse järjestelmä"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: XDMCP-puskurin luonti epäonnistui!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP-otsakkeen luku epäonnistui!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Väärä XDMCP-versio!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: Osoitteen jäsennys epäonnistui"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Tilapäisnäytön käynnistys epäonnistui:"
@@ -435,8 +441,9 @@ msgstr "Tämän ohjelman versio"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- uusi GDM-sisäänkirjautuminen"
+#| msgid "- New GDM login"
+msgid "— New GDM login"
+msgstr "— uusi GDM-sisäänkirjautuminen"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
