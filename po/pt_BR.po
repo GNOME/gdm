@@ -29,10 +29,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-03-31 21:48+0000\n"
-"PO-Revision-Date: 2017-03-31 20:33-0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gdm&ke"
+"ywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-22 19:09+0000\n"
+"PO-Revision-Date: 2017-08-30 11:06-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -94,7 +94,8 @@ msgstr "O sistema não conseguiu abrir uma nova tela de login."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
+#| msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "não foi possível encontrar o usuário “%s” no sistema"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -113,37 +114,38 @@ msgstr ""
 msgid "No display available"
 msgstr "Nenhuma exibição disponível"
 
-#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1114
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Nenhuma sessão disponível"
 
-#: ../daemon/gdm-manager.c:859
-#| msgid "No session available"
+#: ../daemon/gdm-manager.c:860
 msgid "Chooser session unavailable"
 msgstr "Seletor de sessão não disponível"
 
-#: ../daemon/gdm-manager.c:869
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Somente pode ser chamado antes do usuário iniciar a sessão"
 
-#: ../daemon/gdm-manager.c:880
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "O solicitante não é GDM"
 
-#: ../daemon/gdm-manager.c:890
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Não foi possível abrir canal de comunicação privada"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+#| msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "O servidor deveria ter sido criado pelo usuário %s, mas tal usuário não "
 "existe"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+#| msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Não foi possível definir o groupid para %d"
 
 #: ../daemon/gdm-server.c:408
@@ -153,7 +155,8 @@ msgstr "initgroups () falhou para %s"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
+#| msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Não foi possível definir o userid para %d"
 
 #: ../daemon/gdm-server.c:492
@@ -169,7 +172,8 @@ msgstr "%s: Erro ao ajustar %s para %s"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+#| msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Não foi possível definir a prioridade do servidor para %d: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -206,11 +210,13 @@ msgid "Could not create authentication helper process"
 msgstr "Não foi possível criar o processo auxiliar de autenticação"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#| msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "Foi dada à sua conta um limite de tempo que acabou de passar."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+#| msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Desculpe, isto não funcionou. Por gentileza, tente novamente."
 
 #: ../daemon/gdm-session-worker.c:1037
@@ -258,15 +264,15 @@ msgstr ""
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Falha ao criar diretório %s marcador de executado uma vez: %s"
 
-# logdir é uma variável de configuração do GDM
 #: ../daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "Falha ao criar logdir %s: %s"
+msgstr "Falha ao criar LogDir %s: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
+#| msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Não foi possível localizar o usuário GDM “%s”. Abortando!"
 
 #: ../daemon/main.c:229
@@ -275,7 +281,8 @@ msgstr "O usuário GDM não deveria ser o administrador. Abortando!"
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
+#| msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Não foi possível localizar o grupo GDM “%s”. Abortando!"
 
 #: ../daemon/main.c:241
@@ -284,15 +291,15 @@ msgstr "O grupo GDM não deveria ser o administrador. Abortando!"
 
 #: ../daemon/main.c:318
 msgid "Make all warnings fatal"
-msgstr "Considerar todos avisos como fatais"
+msgstr "Considera todos avisos como fatais"
 
 #: ../daemon/main.c:319
 msgid "Exit after a time (for debugging)"
-msgstr "Sair depois de um tempo (para depuração)"
+msgstr "Sai depois de um tempo (para depuração)"
 
 #: ../daemon/main.c:320
 msgid "Print GDM version"
-msgstr "Imprimir a versão do GDM"
+msgstr "Imprime a versão do GDM"
 
 #: ../daemon/main.c:333
 msgid "GNOME Display Manager"
@@ -434,7 +441,7 @@ msgstr "Não foi possível ativar a sessão: "
 
 #: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
-msgstr "Somente o comando VERSION é suportado"
+msgstr "Só há suporte ao comando VERSION"
 
 #: ../utils/gdmflexiserver.c:45
 msgid "COMMAND"
@@ -443,7 +450,7 @@ msgstr "COMANDO"
 #: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
 #: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
-msgstr "Ignorado - mantido para compatibilidade"
+msgstr "Ignorado — mantido para compatibilidade"
 
 #: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -455,8 +462,9 @@ msgstr "Versão deste aplicativo"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- Novo início de sessão GDM"
+#| msgid "- New GDM login"
+msgid "— New GDM login"
+msgstr "— Novo início de sessão GDM"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
