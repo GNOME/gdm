@@ -4,15 +4,15 @@
 # This file is distributed under the same license as the gdm2 package.
 # Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2012-2013.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2013, 2015, 2016.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2013, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-25 19:00+0000\n"
-"PO-Revision-Date: 2016-03-26 13:57+0700\n"
+"POT-Creation-Date: 2017-09-02 06:40+0000\n"
+"PO-Revision-Date: 2017-09-04 14:22+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <gnome-vi-list@gnome.org>\n"
 "Language: vi\n"
@@ -21,6 +21,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Gtranslator 2.91.7\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Chọn hệ thống"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: không thể tạo vùng đệm XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Không thể đọc phần đầu XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XMDCP: Phiên bản XDMCP không đúng!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XMDCP: Không thể phân tích địa chỉ"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -53,8 +73,8 @@ msgstr "Hệ thống không thể mở màn hình đăng nhập mới."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
-msgstr "không tìm thấy người dùng \"%s\" trên hệ thống"
+msgid "could not find user “%s” on system"
+msgstr "không tìm thấy người dùng “%s” trên hệ thống"
 
 #: ../daemon/gdm-legacy-display.c:235
 msgid ""
@@ -68,36 +88,39 @@ msgstr ""
 "(nhật ký của hệ thống) để chẩn đoán lỗi. Trong khi đợi, bộ trình bày này sẽ "
 "bị tắt. Hãy khởi động lại GDM khi vấn đề đã được tháo gỡ."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Không có bộ hiển thị nào"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Không có phiên làm việc nào"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+msgid "Chooser session unavailable"
+msgstr "Bộ chọn phiên làm việc không sẵn có"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Chỉ có thể được gọi trước khi đăng nhập"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "Bên gọi không phải GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Không thể mở kênh truyền thông riêng"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
-"Máy phục vụ nên được người dùng %s khởi tạo, nhưng người dùng đó không tồn "
-"tại"
+"Máy phục vụ được người dùng %s khởi tạo, nhưng người dùng đó không tồn tại"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Không thể đặt mã số nhóm thành %d"
 
 #: ../daemon/gdm-server.c:408
@@ -107,7 +130,7 @@ msgstr "initgroups () bị lỗi đối với %s"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Không thể đặt mã số người dùng thành %d"
 
 #: ../daemon/gdm-server.c:492
@@ -123,7 +146,7 @@ msgstr "%s: Gặp lỗi khi đặt %s thành %s"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Không thể đặt mức ưu tiên của máy phục vụ thành %d: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -155,49 +178,49 @@ msgstr "Thiết bị hiển thị"
 msgid "The display device"
 msgstr "Thiết bị hiển thị, v.d. màn hình"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1223
 msgid "Could not create authentication helper process"
 msgstr "Không thể tạo tiến trình trợ giúp xác thực"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr ""
-"Tài khoản của bạn có đưa ra thời gian giới hạn, cái mà hiện tại đã vượt quá. "
+"Tài khoản của bạn có đưa ra thời gian giới hạn, cái mà hiện tại đã vượt quá."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Rất tiếc, nó không làm việc. Hãy thử lại lần nữa."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Tài khoản:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "không có sẵn tài khoản người dùng"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Không thể chuyển đổi sang người dùng"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bày Wayland GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Không thể tạo ổ cắm mạng!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Chạy chương trình thông qua văn lệnh bao /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Lắng nghe trên ổ cắm TCP"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bày X GNOME"
 
@@ -218,8 +241,8 @@ msgstr "Gặp lỗi khi tạo LogDir %s: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Không thể tìm thấy người dùng GDM \"%s\". Hủy bỏ!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
+msgstr "Không thể tìm thấy người dùng GDM “%s”. Hủy bỏ!"
 
 #: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
@@ -228,8 +251,8 @@ msgstr ""
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Không thể tìm thấy nhóm GDM \"%s\". Hủy bỏ!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "Không thể tìm thấy nhóm GDM “%s”. Hủy bỏ!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -364,26 +387,6 @@ msgstr ""
 "Số lần người dùng được phép xác thực, trước khi bỏ cuộc và quay lại cho "
 "người dùng chọn một thao tác khác."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Chọn hệ thống"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: không thể tạo vùng đệm XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: Không thể đọc phần đầu XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XMDCP: Phiên bản XDMCP không đúng!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XMDCP: Không thể phân tích địa chỉ"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Không thể tạo trình bày chuyển tiếp: "
@@ -415,7 +418,7 @@ msgstr "Phiên bản của ứng dụng này"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
+msgid "— New GDM login"
 msgstr "— Đăng nhập GDM mới"
 
 #: ../utils/gdm-screenshot.c:212
