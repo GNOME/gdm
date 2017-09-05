@@ -187,6 +187,8 @@ gdm_settings_finalize (GObject *object)
                 g_object_unref (settings->priv->backend);
         }
 
+        settings_object = NULL;
+
         G_OBJECT_CLASS (gdm_settings_parent_class)->finalize (object);
 }
 
