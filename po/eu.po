@@ -4,24 +4,45 @@
 #
 # Hizkuntza Politikarako Sailburuordetza <hizpol@ej-gv.es>, 2004, 2005.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2006,2007,2008, 2009, 2010.
-# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2011, 2012, 2013, 2015, 2016.
+# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2011, 2012, 2013, 2015, 2016, 2017.
 # Julen Ruiz Aizpuru <julenx@gmail.com>, 2011.
 # Asier Sarasua Garmendia <asiersar@yahoo.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-23 20:36+0100\n"
-"PO-Revision-Date: 2016-03-23 20:41+0100\n"
-"Last-Translator: dooteo <dooteo@zundan.com>\n"
-"Language-Team: Basque <librezale@librezale.org>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-22 19:09+0000\n"
+"PO-Revision-Date: 2017-07-25 16:38+0200\n"
+"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
+"Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 1.5\n"
 "X-Project-Style: gnome\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Hautatu sistema"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: ezin izan da XDMCP bufferra sortu!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XMCP: ezin izan da XDMCPren goiburua irakurri!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: XDMCPren bertsio okerra!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Ezin da helbidea analizatu"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -54,8 +75,8 @@ msgstr "Sistemak ezin du saio-hasierako pantaila abiarazi."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
-msgstr "ezin izan da \"%s\" erabiltzailea aurkitu sisteman"
+msgid "could not find user “%s” on system"
+msgstr "ezin izan da “%s“ erabiltzailea aurkitu sisteman"
 
 #: ../daemon/gdm-legacy-display.c:235
 msgid ""
@@ -69,36 +90,40 @@ msgstr ""
 "syslog-a arazteko. Bitartean pantaila hau desgaitu egingo da.  GDM "
 "berrabiarazi arazoa zuzendutakoan."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "Ez dago pantailarik erabilgarri"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "Ez dago saiorik erabilgarri"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+msgid "Chooser session unavailable"
+msgstr "Ez dago saio-hautatzailerik erabilgarri"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "Erabiltzaileak saioa hasi baino lehen soilik dei daiteke"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "Deitzailea ez da GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "Ezin da komunikazio pribatuaren kanala ireki"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Zerbitzaria %s erabiltzaileak abiarazi behar zuen, baina erabiltzaile hori "
 "ez da existitzen"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Ezin izan da groupid ezarri %d(e)n"
 
 #: ../daemon/gdm-server.c:408
@@ -108,7 +133,7 @@ msgstr "%s(r)en initgroups()-ek huts egin du"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Ezin izan da userid ezarri %d(e)n"
 
 #: ../daemon/gdm-server.c:492
@@ -124,7 +149,7 @@ msgstr "%s: Errorea %s %s(e)n ezartzean"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: zerbitzariaren lehentasuna ezin da %d balioarekin ezarri: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -156,48 +181,48 @@ msgstr "Pantailaren gailua"
 msgid "The display device"
 msgstr "Pantailaren gailua"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Ezin izan dira autentifikazio-izenak irakurri"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "Zure kontuari denbora-muga bat eman zitzaion, orain iraungitu dena."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Horrek ez du funtzionatzen. Saiatu berriro."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "ez dago erabiltzailearen konturik erabilgarri"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "Ezin da erabiltzailez aldatu"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOMEren pantaila-kudeatzailearen Wayland saioaren abiarazlea"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Ezin izan da socket-a sortu!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Exekutatu programa /etc/gdm/Xsession script doitzailearen bidez"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "Entzun TCP socket-ean"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOMEren pantaila-kudeatzailearen X saioaren abiarazlea"
 
@@ -220,8 +245,8 @@ msgstr "Huts egin du %s LogDir sortzeak: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Ezin da GDMren %s erabiltzailea aurkitu. Abortatu egingo da!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
+msgstr "Ezin da GDM-ren “%s“ erabiltzailea aurkitu. Abortatu egingo da!"
 
 #: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
@@ -231,8 +256,8 @@ msgstr ""
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Ezin da GDMren '%s' taldea aurkitu. Abortatu egingo da!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "Ezin da GDMren “%s“ taldea aurkitu. Abortatu egingo da!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -321,8 +346,7 @@ msgid ""
 "administrators and distributions a way to display branding."
 msgstr ""
 "Ordezko saio-hasieraren pantailak iruditxo bat erakuts dezake, guneen "
-"kudeatzaileei "
-"eta banaketei marka ezartzeko aukera emateko."
+"kudeatzaileei eta banaketei marka ezartzeko aukera emateko."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -375,26 +399,6 @@ msgstr ""
 "Erabiltzaile bat autentifikatzen saia daitekeen aldiak, bertan behera geratu "
 "eta erabiltzaile-hautapenera itzuli baino lehen."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Hautatu sistema"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: ezin izan da XDMCP bufferra sortu!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XMCP: ezin izan da XDMCPren goiburua irakurri!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: XDMCPren bertsio okerra!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: Ezin da helbidea analizatu"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Ezin da behin-behineko pantaila hasi: "
@@ -426,8 +430,8 @@ msgstr "Aplikazio honen bertsioa"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- GDM saio-hasiera berria"
+msgid "— New GDM login"
+msgstr "— GDM saio-hasiera berria"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
