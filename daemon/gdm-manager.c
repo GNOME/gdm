@@ -1573,10 +1573,13 @@ set_up_session (GdmManager *manager,
         ActUserManager *user_manager;
         ActUser *user;
         gboolean loaded;
+        gboolean is_initial_display = FALSE;
         gboolean autologin_enabled = FALSE;
         char *username = NULL;
 
-        if (!manager->priv->ran_once && display_is_on_seat0 (display))
+        g_object_get (G_OBJECT (display), "is-initial", &is_initial_display, NULL);
+
+        if (!manager->priv->ran_once && is_initial_display)
                 autologin_enabled = get_automatic_login_details (manager, &username);
 
         if (!autologin_enabled) {
