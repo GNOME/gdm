@@ -574,8 +574,8 @@ get_fallback_session_name (GdmSession *self)
                         }
 
                         if (get_session_command_for_file (self, base_name, NULL)) {
-
-                                g_sequence_insert_sorted (sessions, g_strdup (base_name), (GCompareDataFunc) g_strcmp0, NULL);
+                                name = g_strndup (base_name, strlen (base_name) - strlen (".desktop"));
+                                g_sequence_insert_sorted (sessions, name, (GCompareDataFunc) g_strcmp0, NULL);
                         }
                 } while (base_name != NULL);
 
@@ -590,22 +590,15 @@ get_fallback_session_name (GdmSession *self)
                 g_error ("GdmSession: no session desktop files installed, aborting...");
 
         do {
-               if (g_sequence_get (session)) {
-                       char *base_name;
-
-                       g_free (name);
-                       base_name = g_sequence_get (session);
-                       name = g_strndup (base_name,
-                                         strlen (base_name) -
-                                         strlen (".desktop"));
-
+               name = g_sequence_get (session);
+               if (name) {
                        break;
                }
                session = g_sequence_iter_next (session);
         } while (!g_sequence_iter_is_end (session));
 
         g_free (self->priv->fallback_session_name);
-        self->priv->fallback_session_name = name;
+        self->priv->fallback_session_name = g_strdup (name);
 
         g_sequence_free (sessions);
 
