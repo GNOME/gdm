@@ -450,7 +450,7 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 #ifdef ENABLE_WAYLAND_SUPPORT
                         gboolean wayland_enabled = FALSE;
                         if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
-                                if (wayland_enabled) {
+                                if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE) ) {
                                         session_type = "wayland";
                                 }
                         }
