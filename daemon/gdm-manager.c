@@ -2394,7 +2394,7 @@ create_user_session_for_display (GdmManager *manager,
                                 (GDestroyNotify)
                                 clean_user_session);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
         g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
 #endif
