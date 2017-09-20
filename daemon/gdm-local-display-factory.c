@@ -53,6 +53,7 @@ struct GdmLocalDisplayFactoryPrivate
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
         GHashTable      *used_display_numbers;
+        GHashTable      *seat_proxies;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
@@ -459,12 +460,31 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
                         is_initial = FALSE;
                 }
 
-                create_display (factory, seat, session_type, is_initial);
+                if (sd_seat_can_graphical (seat)) {
+                        create_display (factory, seat, session_type, is_initial);
+                }
         }
 
         g_variant_unref (result);
         g_variant_unref (array);
         return TRUE;
+}
+
+static void
+on_seat_can_graphical_changed (GDBusProxy *seat_proxy,
+                               GParamSpec *param_spec,
+                               gpointer    user_data)
+{
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        const char *seat;
+
+        seat = g_object_get_data (G_OBJECT (seat_proxy), "seat-id");
+
+        if (sd_seat_can_graphical (seat)) {
+                create_display (factory, seat, NULL, FALSE);
+        } else {
+                delete_display (factory, seat);
+        }
 }
 
 static void
@@ -476,10 +496,27 @@ on_seat_new (GDBusConnection *connection,
              GVariant        *parameters,
              gpointer         user_data)
 {
-        const char *seat;
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        GError *error = NULL;
+        const char *seat, *seat_path;
 
-        g_variant_get (parameters, "(&s&o)", &seat, NULL);
-        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, NULL, FALSE);
+        g_variant_get (parameters, "(&s&o)", &seat, &seat_path);
+        GDBusProxy *seat_proxy = g_dbus_proxy_new_sync (factory->priv->connection,
+                                                        "org.freedesktop.login1",
+                                                        seat_path,
+                                                        "org.freedesktop.login1.Seat",
+                                                        NULL,
+                                                        &error);
+        g_hash_table_insert (factory->priv->seat_proxies, g_strdup (seat), seat_proxy);
+        g_object_set_data_full (seat_proxy, "seat-id", g_strdup (seat), g_free);
+        g_signal_connect (seat_proxy,
+                          "notify::can-graphical",
+                          on_seat_can_graphical_changed,
+                          factory);
+
+        if (sd_seat_can_graphical (seat)) {
+                create_display (GDM_LOCAL_DISPLAY_FACTORY (factory), seat, NULL, FALSE);
+        }
 }
 
 static void
