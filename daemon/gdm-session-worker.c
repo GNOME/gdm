@@ -909,8 +909,10 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         gdm_session_worker_stop_auditor (worker);
 
-        if (worker->priv->login_vt != worker->priv->session_vt) {
-                jump_to_vt (worker, worker->priv->login_vt);
+        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
+                if (worker->priv->login_vt != worker->priv->session_vt) {
+                        jump_to_vt (worker, worker->priv->login_vt);
+                }
         }
 
         worker->priv->login_vt = 0;
@@ -1852,8 +1854,10 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         /* If we're in new vt mode, jump to the new vt now. There's no need to jump for
          * the other two modes: in the logind case, the session will activate itself when
          * ready, and in the reuse server case, we're already on the correct VT. */
-        if (worker->priv->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
-                jump_to_vt (worker, worker->priv->session_vt);
+        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
+                if (worker->priv->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
+                        jump_to_vt (worker, worker->priv->session_vt);
+                }
         }
 
         if (!worker->priv->is_program_session && !run_script (worker, GDMCONFDIR "/PostLogin")) {
