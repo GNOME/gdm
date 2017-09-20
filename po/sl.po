@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-05-05 14:06+0200\n"
-"PO-Revision-Date: 2017-05-05 14:07+0200\n"
+"POT-Creation-Date: 2017-09-19 23:22+0200\n"
+"PO-Revision-Date: 2017-09-19 23:23+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -76,7 +76,7 @@ msgstr "Ni mogoče začeti novega prijavnega zaslona."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "v sistemu ni mogoče najti uporabnika »%s«"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -101,7 +101,7 @@ msgstr "Na voljo ni nobene seje"
 
 #: ../daemon/gdm-manager.c:860
 msgid "Chooser session unavailable"
-msgstr "Na voljo ni nobene seje"
+msgstr "Seja izbirnika ni na voljo"
 
 #: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
@@ -117,14 +117,13 @@ msgstr "Ni mogoče odpreti zasebnega kanala za sporočanje"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
-"Strežnik bi moral biti oživljen preko uporabnika %s, vendar ta uporabnik ne "
-"obstaja"
+"Strežnik bi moral biti oživljen prek uporabnika %s, vendar ta ne obstaja"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Ni mogoče nastaviti groupid na %d"
 
 #: ../daemon/gdm-server.c:408
@@ -134,7 +133,7 @@ msgstr "initgrougs() ni uspel za %s"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Ni mogoče nastaviti userid na %d"
 
 #: ../daemon/gdm-server.c:492
@@ -150,7 +149,7 @@ msgstr "%s: napaka med nastavljanjem %s na %s"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: prednosti strežnika ni mogoče nastaviti na %d: %s"
 
 #: ../daemon/gdm-server.c:697
@@ -182,16 +181,16 @@ msgstr "Naprava zaslona"
 msgid "The display device"
 msgstr "Naprava za prikazovanje"
 
-#: ../daemon/gdm-session.c:1224
+#: ../daemon/gdm-session.c:1215
 msgid "Could not create authentication helper process"
 msgstr "Ni mogoče ustvariti opravila pomočnika overitve prijave"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "Računu je določen dovoljen čas, ki je sedaj pretekel."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Dejanje je spodletelo. Poskusite znova."
 
 #: ../daemon/gdm-session-worker.c:1037
@@ -207,7 +206,7 @@ msgstr "na voljo ni nobenega uporabniškega računa"
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
-#: ../daemon/gdm-wayland-session.c:470
+#: ../daemon/gdm-wayland-session.c:478
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Zaganjalnik seje Wayland za zaslon GNOME"
 
@@ -215,15 +214,15 @@ msgstr "Zaganjalnik seje Wayland za zaslon GNOME"
 msgid "Could not create socket!"
 msgstr "Ni mogoče ustvariti vtiča!"
 
-#: ../daemon/gdm-x-session.c:812
+#: ../daemon/gdm-x-session.c:826
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Zaženi program preko skripta zavijalnika /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:813
+#: ../daemon/gdm-x-session.c:827
 msgid "Listen on TCP socket"
 msgstr "Poslušaj vtič TCP"
 
-#: ../daemon/gdm-x-session.c:824
+#: ../daemon/gdm-x-session.c:838
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Zaganjalnik seje X za zaslon GNOME"
 
@@ -244,8 +243,8 @@ msgstr "Napaka med ustvarjanjem dnevniške mape %s: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Ni mogoče najti uporabnika GDM '%s'. Dejanje je prekinjeno!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
+msgstr "Ni mogoče najti uporabnika GDM »%s«. Dejanje je prekinjeno!"
 
 #: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
@@ -253,8 +252,8 @@ msgstr "Uporabnika GDM ni mogoče določiti kot skrbnika. Dejanje je prekinjeno!
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Ni mogoče najti skupine GDM '%s'. Dejanje je prekinjeno!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "Ni mogoče najti skupine GDM »%s«. Dejanje je prekinjeno!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -425,8 +424,8 @@ msgstr "Različica programa"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- nova prijava GDM"
+msgid "— New GDM login"
+msgstr "– nova prijava GDM"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
