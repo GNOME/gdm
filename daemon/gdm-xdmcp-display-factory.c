@@ -2050,8 +2050,7 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
 }
 
 static void
-on_client_disconnected (GdmSession *session,
-                        GdmDisplay *display)
+on_client_disconnected (GdmDisplay *display)
 {
         if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED)
                 return;
@@ -2115,11 +2114,11 @@ on_display_status_changed (GdmDisplay             *display,
                         g_signal_connect_object (G_OBJECT (session),
                                                  "client-disconnected",
                                                  G_CALLBACK (on_client_disconnected),
-                                                 display, 0);
+                                                 display, G_CONNECT_SWAPPED);
                         g_signal_connect_object (G_OBJECT (session),
                                                  "disconnected",
                                                  G_CALLBACK (on_client_disconnected),
-                                                 display, 0);
+                                                 display, G_CONNECT_SWAPPED);
                 }
                 break;
         default:
