@@ -285,7 +285,11 @@ on_conversation_started (GdmSession           *session,
         char             *log_path;
         char             *log_file;
 
-        log_file = g_strdup_printf ("%s-greeter.log", launch_environment->priv->x11_display_name);
+        if (launch_environment->priv->x11_display_name != NULL)
+                log_file = g_strdup_printf ("%s-greeter.log", launch_environment->priv->x11_display_name);
+        else
+                log_file = g_strdup ("greeter.log");
+
         log_path = g_build_filename (LOGDIR, log_file, NULL);
         g_free (log_file);
 
