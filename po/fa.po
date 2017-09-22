@@ -6,15 +6,15 @@
 # Alireza Kheirkhahan <kheirkhahan@gmail.com>, 2005.
 # Hedayat Vatankhah <hedayat@grad.com>, 2008.
 # Mahyar Moghimi <mahyar.moqimi@gmail.com>, 2010.
-# Arash Mousavi <mousavi.arash@gmail.com>, 2011, 2012, 2013, 2014, 2015.
+# Arash Mousavi <mousavi.arash@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-04-08 05:58+0000\n"
-"PO-Revision-Date: 2016-04-08 20:55+0430\n"
+"POT-Creation-Date: 2017-06-22 19:09+0000\n"
+"PO-Revision-Date: 2017-09-22 23:05+0330\n"
 "Last-Translator: Arash Mousavi <mousavi.arash@gmail.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -23,7 +23,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.3\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "انتخاب سیستم"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: ایجاد میان‌گیر XDMCP ممکن نبود!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: خواندن سرآیند XDMCP ممکن نبود!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Incorrect XDMCP version!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XMDCP: ناتوان در تجزیه‌ی نشانی"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -33,7 +53,7 @@ msgstr "دستگاه dev/urandom/ یک دستگاه نویسه‌ای نیست"
 #: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
-msgstr "شناسایی نشست جاری ممکن نبود"
+msgstr "شناسایی نشست جاری ممکن نبود."
 
 #: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
 #, c-format
@@ -56,7 +76,7 @@ msgstr "سیستم قادر به راه‌اندازی یک صفحه‌ی جدی
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "کاربر «%s» بر روی سیستم یافت نشد"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -66,38 +86,43 @@ msgid ""
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"بدلیل یک خطای داخلی، کارگزار X (محیط گرافیکی شما) آغاز نشد. لطفا با مدیر سیستم "
-"خود تماس بگیرید یا syslog خود را برای خطایابی بررسی کنید. ضمنا این نمایش "
-"غیرفعال خواهد شد. لطفا بعد از این‌که مشکل درست شد GDM را مجددا راه‌اندازی کنید."
+"بدلیل یک خطای داخلی، کارگزار X (محیط گرافیکی شما) آغاز نشد. لطفا با مدیر "
+"سیستم خود تماس بگیرید یا syslog خود را برای خطایابی بررسی کنید. ضمنا این "
+"نمایش غیرفعال خواهد شد. لطفا بعد از این‌که مشکل درست شد GDM را مجددا راه‌اندازی "
+"کنید."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:772
 msgid "No display available"
 msgstr "هیچ نمایشگری موجود نیست"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:841 ../daemon/gdm-manager.c:1117
 msgid "No session available"
 msgstr "هیچ نشستی موجود نیست"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:860
+msgid "Chooser session unavailable"
+msgstr "انتخابگر نشست موجود نیست"
+
+#: ../daemon/gdm-manager.c:872
 msgid "Can only be called before user is logged in"
 msgstr "تنها پس از اینکه کاربر وارد سیستم شد می‌تواند فراخوانی شود"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:883
 msgid "Caller not GDM"
 msgstr "کالر نه GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:893
 msgid "Unable to open private communication channel"
 msgstr "باز کردن کانال ارتباط خصوصی امکان‌پذیر نبود"
 
 #: ../daemon/gdm-server.c:391
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "کارگزار قرار بود که با کاربر %s راه‌اندازی شود ولی این کاربر وجود ندارد"
 
 #: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "تنظیم شناسه‌ی گروه به %Id ممکن نبود"
 
 #: ../daemon/gdm-server.c:408
@@ -107,8 +132,8 @@ msgstr "تابع initgroups () برای %s شکست خورد"
 
 #: ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set userid to %d"
-msgstr "تنظیم شناسه‌ی کاربر به %d ممکن نبود"
+msgid "Couldn’t set userid to %d"
+msgstr "تنظیم شناسه‌ی کاربر به %Id ممکن نبود"
 
 #: ../daemon/gdm-server.c:492
 #, c-format
@@ -123,8 +148,8 @@ msgstr "%s: Error setting %s to %s"
 
 #: ../daemon/gdm-server.c:545
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
+msgstr "%s: Server priority couldn’t be set to %d: %s"
 
 #: ../daemon/gdm-server.c:697
 #, c-format
@@ -155,48 +180,48 @@ msgstr "دستگاه نمایشگر"
 msgid "The display device"
 msgstr "دستگاه نمایشگر"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1224
 msgid "Could not create authentication helper process"
 msgstr "Could not create authentication helper process"
 
 #: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
-msgstr "برای حساب شما یک محدودیت زمانی داده شده است که اکنون به پایان رسید."
+msgid "Your account was given a time limit that’s now passed."
+msgstr "برای حساب شما یک محدودیت زمانی ثبت شده است که اکنون به پایان رسید."
 
 #: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "متاسفم، این کمکی نکرد. لطفا دوباره تلاش کنید."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1037
 msgid "Username:"
 msgstr "نام کاربر:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1539 ../daemon/gdm-session-worker.c:1556
 #, c-format
 msgid "no user account available"
 msgstr "هیچ حساب کاربری موجود نیست"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1583
 msgid "Unable to change to user"
 msgstr "ناتوان در تعویض کاربر"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:470
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "اجرا کننده‌ی نشست Wayland مدیر نمایش گنوم"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "ایجادسوکت «%s» ممکن نیست!"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:812
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "اجرای برنامه از طریق کدنوشته etc/gdm/Xsession/"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:813
 msgid "Listen on TCP socket"
 msgstr "گوش‌دادن به سوکت TCP"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:824
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "اجرا کننده‌ی نشست X مدیر نمایش گنوم"
 
@@ -217,8 +242,8 @@ msgstr "Failed to create LogDir %s: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "کاربر %s مربوط به GDM وجود ندارد. در حال ساقط کردن!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
+msgstr "کاربر %s مربوط به GDM پیدا نشد. در حال لغو!"
 
 #: ../daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
@@ -226,8 +251,8 @@ msgstr "کاربر GDM نباید کاربر ریشه باشد. در حال سا
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "گروه GDM با نام %s یافت نشد. در حال ساقط کردن!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
+msgstr "گروه GDM با نام %s پیدا نشد. در حال لغو!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
@@ -269,8 +294,8 @@ msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که از اثر انگشت استفاده "
-"کرده‌اند با استفاده از آن اثر انگشت‌ها اجازه‌ی ورود به سیستم بدهد."
+"صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که از اثر انگشت "
+"استفاده کرده‌اند با استفاده از آن اثر انگشت‌ها اجازه‌ی ورود به سیستم بدهد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
@@ -281,8 +306,8 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که کارت هوشمند دارند با "
-"استفاده از آن کارت‌های هوشمند اجازه‌ی ورود به سیستم بدهد."
+"صفحه ورود به سیستم می‌تواند به صورت اختیاری به کاربرانی که کارت هوشمند دارند "
+"با استفاده از آن کارت‌های هوشمند اجازه‌ی ورود به سیستم بدهد."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow passwords for login"
@@ -361,39 +386,19 @@ msgstr "تعداد مجاز شکست‌ها در تصدیق هویت"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:19
 msgid ""
-"The number of times a user is allowed to attempt authentication, before giving "
-"up and going back to user selection."
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
 msgstr ""
 "تعداد دفعاتی که کاربر می‌تواند برای تصدیق‌هویت، قبل از بازگشت به قسمت انتخاب "
 "کاربر، تلاش کند."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "انتخاب سیستم"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: ایجاد میان‌گیر XDMCP ممکن نبود!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: خواندن سرآیند XDMCP ممکن نبود!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Incorrect XDMCP version!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XMDCP: ناتوان در تجزیه‌ی نشانی"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
-msgstr "نمی‌توان نمایشگر گذرا را ساخت:"
+msgstr "نمی‌توان نمایشگر گذرا را ساخت: "
 
 #: ../libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
-msgstr "نمی‌توان نشست را فعال کرد:"
+msgstr "نمی‌توان نشست را فعال کرد: "
 
 #: ../utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
@@ -418,8 +423,8 @@ msgstr "نسخه‌ی این برنامه"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- ورود به سیستم جدید گنوم"
+msgid "— New GDM login"
+msgstr "— ورود به سیستم جدید گنوم"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
