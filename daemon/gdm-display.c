@@ -1455,10 +1455,129 @@ can_create_environment (const char *session_id)
         return session_exists;
 }
 
+#define ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT GDM_RUN_DIR "/gdm.ran-initial-setup"
+
+static gboolean
+already_done_initial_setup_on_this_boot (void)
+{
+        GError *error = NULL;
+
+        if (g_file_test (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT, G_FILE_TEST_EXISTS))
+                return TRUE;
+
+        if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                  "1",
+                                  1,
+                                  &error)) {
+                g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
+                           ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                           error->message);
+                g_clear_error (&error);
+        }
+
+        return FALSE;
+}
+
+static gboolean
+kernel_cmdline_initial_setup_argument (const gchar  *contents,
+                                       gchar       **initial_setup_argument,
+                                       GError      **error)
+{
+        GRegex *regex = NULL;
+        GMatchInfo *match_info = NULL;
+        gchar *match_group = NULL;
+
+        g_return_val_if_fail (initial_setup_argument != NULL, FALSE);
+
+        regex = g_regex_new ("\\bgnome.initial-setup=([^\\s]*)\\b", 0, 0, error);
+
+        if (!regex)
+            return FALSE;
+
+        if (!g_regex_match (regex, contents, 0, &match_info)) {
+                g_free (match_info);
+                g_free (regex);
+
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                             "Could not match gnome.initial-setup= in kernel cmdline");
+
+                return FALSE;
+        }
+
+        match_group = g_match_info_fetch (match_info, 1);
+
+        if (!match_group) {
+                g_free (match_info);
+                g_free (regex);
+
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                             "Could not match gnome.initial-setup= in kernel cmdline");
+
+                return FALSE;
+        }
+
+        *initial_setup_argument = match_group;
+
+        g_free (match_info);
+        g_free (regex);
+
+        return TRUE;
+}
+
+/* Function returns true if we had a force state in the kernel
+ * cmdline */
+static gboolean
+kernel_cmdline_initial_setup_force_state (gboolean *force_state)
+{
+        GError *error = NULL;
+        gchar *contents = NULL;
+        gchar *setup_argument = NULL;
+
+        g_return_val_if_fail (force_state != NULL, FALSE);
+
+        if (!g_file_get_contents ("/proc/cmdline", &contents, NULL, &error)) {
+                g_debug ("GdmDisplay: Could not check kernel parameters, not forcing initial setup: %s",
+                          error->message);
+                g_clear_error (&error);
+                return FALSE;
+        }
+
+        g_debug ("GdmDisplay: Checking kernel command buffer %s", contents);
+
+        if (!kernel_cmdline_initial_setup_argument (contents, &setup_argument, &error)) {
+                g_debug ("GdmDisplay: Failed to read kernel commandline: %s", error->message);
+                g_clear_pointer (&contents, g_free);
+                return FALSE;
+        }
+
+        g_clear_pointer (&contents, g_free);
+
+        /* Poor-man's check for truthy or falsey values */
+        *force_state = setup_argument[0] == '1';
+
+        g_free (setup_argument);
+        return TRUE;
+}
+
 static gboolean
 wants_initial_setup (GdmDisplay *self)
 {
         gboolean enabled = FALSE;
+        gboolean forced = FALSE;
+
+        if (already_done_initial_setup_on_this_boot ()) {
+                return FALSE;
+        }
+
+        if (kernel_cmdline_initial_setup_force_state (&forced)) {
+                if (forced) {
+                        g_debug ("GdmDisplay: Forcing gnome-initial-setup");
+                        return TRUE;
+                }
+
+                g_debug ("GdmDisplay: Forceing no gnome-initial-setup");
+                return FALSE;
+        }
 
         /* don't run initial-setup on remote displays
          */
