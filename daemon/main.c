@@ -309,7 +309,6 @@ main (int    argc,
         GMainLoop          *main_loop;
         GOptionContext     *context;
         GError             *error = NULL;
-        int                 ret;
         gboolean            res;
         static gboolean     do_timed_exit    = FALSE;
         static gboolean     print_version    = FALSE;
@@ -328,8 +327,6 @@ main (int    argc,
         textdomain (GETTEXT_PACKAGE);
         setlocale (LC_ALL, "");
 
-        ret = 1;
-
         context = g_option_context_new (_("GNOME Display Manager"));
         g_option_context_add_main_entries (context, entries, NULL);
         g_option_context_set_ignore_unknown_options (context, TRUE);
@@ -338,21 +335,21 @@ main (int    argc,
         res = g_option_context_parse (context, &argc, &argv, &error);
         g_option_context_free (context);
         if (! res) {
-                g_warning ("%s", error->message);
+                g_printerr ("Failed to parse options: %s\n", error->message);
                 g_error_free (error);
-                exit (1);
+                return 1;
         }
 
         if (print_version) {
                 g_print ("GDM %s\n", VERSION);
-                exit (1);
+                return 1;
         }
 
         /* XDM compliant error message */
         if (getuid () != 0) {
                 /* make sure the pid file doesn't get wiped */
-                g_warning (_("Only the root user can run GDM"));
-                exit (-1);
+                g_printerr ("%s\n", _("Only the root user can run GDM"));
+                return -1;
         }
 
         if (fatal_warnings) {
@@ -368,7 +365,7 @@ main (int    argc,
         settings = gdm_settings_new ();
         if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
-                goto out;
+                return 1;
         }
 
         gdm_log_set_debug (is_debug_set ());
@@ -408,14 +405,7 @@ main (int    argc,
 
         g_main_loop_unref (main_loop);
 
-        ret = 0;
-
- out:
-        if (error) {
-                g_printerr ("%s\n", error->message);
-                g_clear_error (&error);
-        }
-        return ret;
+        return 0;
 }
 
 static void
