@@ -226,8 +226,6 @@ gdm_SOURCES = 			\
 	gdm-session-worker-job.h	\
 	gdm-dbus-util.c			\
 	gdm-dbus-util.h			\
-	gdm-xerrors.c			\
-	gdm-xerrors.h			\
 	$(NULL)
 
 nodist_gdm_SOURCES = 			\

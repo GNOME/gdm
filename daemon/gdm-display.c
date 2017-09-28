@@ -35,6 +35,7 @@
 #include <glib-object.h>
 
 #include <xcb/xcb.h>
+#include <X11/Xlib.h>
 
 #include "gdm-common.h"
 #include "gdm-display.h"
@@ -47,7 +48,6 @@
 
 #include "gdm-launch-environment.h"
 #include "gdm-dbus-util.h"
-#include "gdm-xerrors.h"
 
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
