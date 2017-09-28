@@ -377,9 +377,8 @@ update_bus_environment (State        *state,
                         GCancellable *cancellable)
 {
         GVariantBuilder      builder;
-        GVariant            *reply = NULL;
-        GError              *error = NULL;
-        gboolean             environment_updated = FALSE;
+        g_autoptr(GVariant)  reply = NULL;
+        g_autoptr(GError)    error = NULL;
 
         g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
         g_variant_builder_add (&builder, "{ss}", "DISPLAY", state->display_name);
@@ -398,17 +397,10 @@ update_bus_environment (State        *state,
 
         if (reply == NULL) {
                 g_debug ("could not update activation environment: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
-        g_variant_unref (reply);
-
-        environment_updated = TRUE;
-
-out:
-        g_clear_error (&error);
-
-        return environment_updated;
+        return TRUE;
 }
 
 static gboolean

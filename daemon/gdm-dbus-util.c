@@ -109,9 +109,8 @@ gdm_dbus_get_pid_for_name (const char  *system_bus_name,
                            pid_t       *out_pid,
                            GError     **error)
 {
-        GDBusConnection *bus;
-        GVariant *reply;
-        gboolean retval = FALSE;
+        g_autoptr(GDBusConnection) bus = NULL;
+        g_autoptr(GVariant) reply = NULL;
         unsigned int v;
 
         bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, error);
@@ -130,18 +129,13 @@ gdm_dbus_get_pid_for_name (const char  *system_bus_name,
                                              -1,
                                              NULL, error);
         if (reply == NULL) {
-                goto out;
+                return FALSE;
         }
 
         g_variant_get (reply, "(u)", &v);
         *out_pid = v;
-        g_variant_unref (reply);
 
-        retval = TRUE;
- out:
-        g_object_unref (bus);
-
-        return retval;
+        return TRUE;
 }
 
 gboolean
@@ -149,9 +143,8 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                            uid_t       *out_uid,
                            GError     **error)
 {
-        GDBusConnection *bus;
-        GVariant *reply;
-        gboolean retval = FALSE;
+        g_autoptr(GDBusConnection) bus = NULL;
+        g_autoptr(GVariant) reply = NULL;
         unsigned int v;
 
         bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, error);
@@ -170,16 +163,11 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                                              -1,
                                              NULL, error);
         if (reply == NULL) {
-                goto out;
+                return FALSE;
         }
 
         g_variant_get (reply, "(u)", &v);
         *out_uid = v;
-        g_variant_unref (reply);
 
-        retval = TRUE;
- out:
-        g_object_unref (bus);
-
-        return retval;
+        return TRUE;
 }

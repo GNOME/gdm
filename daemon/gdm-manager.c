@@ -301,8 +301,8 @@ activate_session_id (GdmManager *manager,
                      const char *seat_id,
                      const char *session_id)
 {
-        GError *error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) reply = NULL;
 
         reply = g_dbus_connection_call_sync (manager->priv->connection,
                                              "org.freedesktop.login1",
@@ -318,11 +318,8 @@ activate_session_id (GdmManager *manager,
         if (reply == NULL) {
                 g_debug ("GdmManager: logind 'ActivateSessionOnSeat' %s raised:\n %s\n\n",
                          g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -331,8 +328,8 @@ static gboolean
 session_unlock (GdmManager *manager,
                 const char *ssid)
 {
-        GError *error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) reply = NULL;
 
         g_debug ("Unlocking session %s", ssid);
 
@@ -350,11 +347,8 @@ session_unlock (GdmManager *manager,
         if (reply == NULL) {
                 g_debug ("GdmManager: logind 'UnlockSession' %s raised:\n %s\n\n",
                          g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }

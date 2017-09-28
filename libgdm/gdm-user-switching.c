@@ -42,8 +42,8 @@ create_transient_display (GDBusConnection *connection,
                           GCancellable    *cancellable,
                           GError         **error)
 {
-        GVariant *reply;
-        const char     *value;
+        g_autoptr(GVariant) reply = NULL;
+        const char *value;
 
         reply = g_dbus_connection_call_sync (connection,
                                              "org.gnome.DisplayManager",
@@ -63,7 +63,6 @@ create_transient_display (GDBusConnection *connection,
         g_variant_get (reply, "(&o)", &value);
         g_debug ("Started %s", value);
 
-        g_variant_unref (reply);
         return TRUE;
 }
 
@@ -74,7 +73,7 @@ activate_session_id (GDBusConnection  *connection,
                      const char       *session_id,
                      GError          **error)
 {
-        GVariant *reply;
+        g_autoptr(GVariant) reply = NULL;
 
         reply = g_dbus_connection_call_sync (connection,
                                              "org.freedesktop.login1",
@@ -90,8 +89,6 @@ activate_session_id (GDBusConnection  *connection,
                 g_prefix_error (error, _("Unable to activate session: "));
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -264,7 +261,7 @@ gboolean
 gdm_goto_login_session_sync (GCancellable  *cancellable,
                              GError       **error)
 {
-        GDBusConnection *connection;
+        g_autoptr(GDBusConnection) connection = NULL;
         gboolean retval;
 
         connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, cancellable, error);
@@ -273,6 +270,5 @@ gdm_goto_login_session_sync (GCancellable  *cancellable,
 
         retval = goto_login_session (connection, cancellable, error);
 
-        g_object_unref (connection);
         return retval;
 }

@@ -79,23 +79,19 @@ on_got_manager (GdmManager          *manager,
                 GAsyncResult        *result,
                 GSimpleAsyncResult  *operation_result)
 {
-        GdmClient *client;
+        g_autoptr(GdmClient) client = NULL;
         GdmManager       *new_manager;
-        GError           *error;
+        g_autoptr(GError) error = NULL;
 
         client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
 
-        error = NULL;
         new_manager = gdm_manager_proxy_new_finish (result, &error);
 
         if (client->priv->manager == NULL) {
                 client->priv->manager = new_manager;
-
         } else {
                 g_object_ref (client->priv->manager);
                 g_object_unref (new_manager);
-
-                g_clear_error (&error);
         }
 
         if (error != NULL) {
@@ -109,7 +105,6 @@ on_got_manager (GdmManager          *manager,
 
         g_simple_async_result_complete_in_idle (operation_result);
         g_object_unref (operation_result);
-        g_object_unref (client);
 }
 
 static void
@@ -118,7 +113,7 @@ get_manager (GdmClient           *client,
              GAsyncReadyCallback  callback,
              gpointer             user_data)
 {
-        GSimpleAsyncResult *result;
+        g_autoptr(GSimpleAsyncResult) result = NULL;
 
         result = g_simple_async_result_new (G_OBJECT (client),
                                             callback,
@@ -132,7 +127,6 @@ get_manager (GdmClient           *client,
                                                            (GDestroyNotify)
                                                            g_object_unref);
                 g_simple_async_result_complete_in_idle (result);
-                g_object_unref (result);
                 return;
         }
 
@@ -143,7 +137,7 @@ get_manager (GdmClient           *client,
                                        cancellable,
                                        (GAsyncReadyCallback)
                                        on_got_manager,
-                                       result);
+                                       g_steal_pointer (&result));
 }
 
 static void
@@ -459,13 +453,12 @@ on_connected (GObject            *source_object,
               GAsyncResult       *result,
               GSimpleAsyncResult *operation_result)
 {
-        GDBusConnection *connection;
-        GError *error;
+        g_autoptr(GDBusConnection) connection = NULL;
+        g_autoptr(GError) error = NULL;
 
-        error = NULL;
         connection = g_dbus_connection_new_for_address_finish (result, &error);
         if (!connection) {
-                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_take_error (operation_result, g_steal_pointer (&error));
                 g_simple_async_result_complete_in_idle (operation_result);
                 g_object_unref (operation_result);
                 return;
@@ -477,7 +470,6 @@ on_connected (GObject            *source_object,
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
         g_object_unref (operation_result);
-        g_object_unref (connection);
 }
 
 static void
@@ -485,21 +477,19 @@ on_session_opened (GdmManager         *manager,
                    GAsyncResult       *result,
                    GSimpleAsyncResult *operation_result)
 {
-        GdmClient *client;
+        g_autoptr(GdmClient) client = NULL;
         GCancellable     *cancellable;
-        GError           *error;
+        g_autoptr(GError) error = NULL;
 
         client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
 
-        error = NULL;
         if (!gdm_manager_call_open_session_finish (manager,
                                                    &client->priv->address,
                                                    result,
                                                    &error)) {
-                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_take_error (operation_result, g_steal_pointer (&error));
                 g_simple_async_result_complete_in_idle (operation_result);
                 g_object_unref (operation_result);
-                g_object_unref (client);
                 return;
         }
 
@@ -511,7 +501,6 @@ on_session_opened (GdmManager         *manager,
                                            (GAsyncReadyCallback)
                                            on_connected,
                                            operation_result);
-        g_object_unref (client);
 }
 
 static void
@@ -586,7 +575,7 @@ gdm_client_open_connection (GdmClient           *client,
                             GAsyncReadyCallback  callback,
                             gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        g_autoptr(GSimpleAsyncResult) operation_result = NULL;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
@@ -606,7 +595,6 @@ gdm_client_open_connection (GdmClient           *client,
                                                        (GDestroyNotify)
                                                        g_object_unref);
             g_simple_async_result_complete_in_idle (operation_result);
-            g_object_unref (operation_result);
             return;
         }
 
@@ -615,10 +603,10 @@ gdm_client_open_connection (GdmClient           *client,
                          cancellable,
                          (GAsyncReadyCallback)
                          on_got_manager_for_opening_connection,
-                         operation_result);
+                         g_steal_pointer (&operation_result));
         } else {
                 client->priv->pending_opens = g_list_prepend (client->priv->pending_opens,
-                                                              operation_result);
+                                                              g_steal_pointer (&operation_result));
         }
 
 }
@@ -910,7 +898,7 @@ gdm_client_get_user_verifier (GdmClient           *client,
                               GAsyncReadyCallback  callback,
                               gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        g_autoptr(GSimpleAsyncResult) operation_result = NULL;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
@@ -930,7 +918,6 @@ gdm_client_get_user_verifier (GdmClient           *client,
                                                            (GDestroyNotify)
                                                            g_object_unref);
                 g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
                 return;
         }
 
@@ -938,7 +925,7 @@ gdm_client_get_user_verifier (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_user_verifier,
-                                    operation_result);
+                                    g_steal_pointer (&operation_result));
 }
 
 /**
@@ -1098,7 +1085,7 @@ gdm_client_get_greeter (GdmClient           *client,
                         GAsyncReadyCallback  callback,
                         gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        g_autoptr(GSimpleAsyncResult) operation_result = NULL;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
@@ -1118,7 +1105,6 @@ gdm_client_get_greeter (GdmClient           *client,
                                                            (GDestroyNotify)
                                                            g_object_unref);
                 g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
                 return;
         }
 
@@ -1126,7 +1112,7 @@ gdm_client_get_greeter (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_greeter,
-                                    operation_result);
+                                    g_steal_pointer (&operation_result));
 }
 
 /**
@@ -1296,7 +1282,7 @@ gdm_client_get_remote_greeter (GdmClient           *client,
                                GAsyncReadyCallback  callback,
                                gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        g_autoptr(GSimpleAsyncResult) operation_result = NULL;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
@@ -1316,7 +1302,6 @@ gdm_client_get_remote_greeter (GdmClient           *client,
                                                            (GDestroyNotify)
                                                            g_object_unref);
                 g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
                 return;
         }
 
@@ -1324,7 +1309,7 @@ gdm_client_get_remote_greeter (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_remote_greeter,
-                                    operation_result);
+                                    g_steal_pointer (&operation_result));
 }
 
 /**
@@ -1491,7 +1476,7 @@ gdm_client_get_chooser (GdmClient           *client,
                         GAsyncReadyCallback  callback,
                         gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        g_autoptr(GSimpleAsyncResult) operation_result = NULL;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
@@ -1511,7 +1496,6 @@ gdm_client_get_chooser (GdmClient           *client,
                                                            (GDestroyNotify)
                                                            g_object_unref);
                 g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
                 return;
         }
 
@@ -1519,7 +1503,7 @@ gdm_client_get_chooser (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_chooser,
-                                    operation_result);
+                                    g_steal_pointer (&operation_result));
 }
 
 /**

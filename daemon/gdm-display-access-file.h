@@ -55,6 +55,8 @@ struct _GdmDisplayAccessFileClass
         GObjectClass parent_class;
 };
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmDisplayAccessFile, g_object_unref)
+
 enum _GdmDisplayAccessFileError
 {
         GDM_DISPLAY_ACCESS_FILE_ERROR_GENERAL = 0,

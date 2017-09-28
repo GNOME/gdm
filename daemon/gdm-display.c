@@ -152,13 +152,10 @@ chown_recursively (GFile   *dir,
                    gid_t    gid,
                    GError **error)
 {
-        GFile *file = NULL;
-        GFileInfo *info = NULL;
-        GFileEnumerator *enumerator = NULL;
-        gboolean retval = FALSE;
+        g_autoptr(GFileEnumerator) enumerator = NULL;
 
         if (chown_file (dir, uid, gid, error) == FALSE) {
-                goto out;
+                return FALSE;
         }
 
         enumerator = g_file_enumerate_children (dir,
@@ -167,35 +164,31 @@ chown_recursively (GFile   *dir,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                                 NULL, error);
         if (!enumerator) {
-                goto out;
+                return FALSE;
         }
 
-        while ((info = g_file_enumerator_next_file (enumerator, NULL, error)) != NULL) {
+        while (TRUE) {
+                g_autoptr(GFileInfo) info = NULL;
+                g_autoptr(GFile) file = NULL;
+
+                info = g_file_enumerator_next_file (enumerator, NULL, error);
+                if (info == NULL) {
+                        return *error == NULL;
+                }
                 file = g_file_get_child (dir, g_file_info_get_name (info));
 
                 if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
                         if (chown_recursively (file, uid, gid, error) == FALSE) {
-                                goto out;
+                                return FALSE;
                         }
                 } else if (chown_file (file, uid, gid, error) == FALSE) {
-                        goto out;
+                        return FALSE;
                 }
 
-                g_clear_object (&file);
                 g_clear_object (&info);
         }
 
-        if (*error) {
-                goto out;
-        }
-
-        retval = TRUE;
-out:
-        g_clear_object (&file);
-        g_clear_object (&info);
-        g_clear_object (&enumerator);
-
-        return retval;
+        return TRUE;
 }
 
 GQuark
@@ -253,9 +246,9 @@ _create_access_file_for_user (GdmDisplay  *self,
 gboolean
 gdm_display_create_authority (GdmDisplay *self)
 {
-        GdmDisplayAccessFile *access_file;
-        GError               *error;
-        gboolean              res;
+        g_autoptr(GdmDisplayAccessFile) access_file = NULL;
+        g_autoptr(GError)               error = NULL;
+        gboolean                        res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
         g_return_val_if_fail (self->priv->access_file == NULL, FALSE);
@@ -265,7 +258,6 @@ gdm_display_create_authority (GdmDisplay *self)
 
         if (access_file == NULL) {
                 g_critical ("could not create display access file: %s", error->message);
-                g_error_free (error);
                 return FALSE;
         }
 
@@ -278,15 +270,12 @@ gdm_display_create_authority (GdmDisplay *self)
                                                    &error);
 
         if (! res) {
-
                 g_critical ("could not add display to access file: %s", error->message);
-                g_error_free (error);
                 gdm_display_access_file_close (access_file);
-                g_object_unref (access_file);
                 return FALSE;
         }
 
-        self->priv->access_file = access_file;
+        self->priv->access_file = g_steal_pointer (&access_file);
 
         return TRUE;
 }
@@ -311,9 +300,9 @@ gdm_display_add_user_authorization (GdmDisplay *self,
                                     char      **filename,
                                     GError    **error)
 {
-        GdmDisplayAccessFile *access_file;
-        GError               *access_file_error;
-        gboolean              res;
+        g_autoptr(GdmDisplayAccessFile) access_file = NULL;
+        g_autoptr(GError)               access_file_error = NULL;
+        gboolean                        res;
 
         int                       i;
         XHostAddress              host_entries[3];
@@ -341,7 +330,7 @@ gdm_display_add_user_authorization (GdmDisplay *self,
                                                     &access_file_error);
 
         if (access_file == NULL) {
-                g_propagate_error (error, access_file_error);
+                g_propagate_error (error, g_steal_pointer (&access_file_error));
                 return FALSE;
         }
 
@@ -354,14 +343,13 @@ gdm_display_add_user_authorization (GdmDisplay *self,
                 g_debug ("GdmDisplay: Unable to add user authorization for %s: %s",
                          username,
                          access_file_error->message);
-                g_propagate_error (error, access_file_error);
+                g_propagate_error (error, g_steal_pointer (&access_file_error));
                 gdm_display_access_file_close (access_file);
-                g_object_unref (access_file);
                 return FALSE;
         }
 
         *filename = gdm_display_access_file_get_path (access_file);
-        self->priv->user_access_file = access_file;
+        self->priv->user_access_file = g_steal_pointer (&access_file);
 
         g_debug ("GdmDisplay: Added user authorization for %s: %s", username, *filename);
         /* Remove access for the programs run by greeter now that the
@@ -539,9 +527,9 @@ gdm_display_real_prepare (GdmDisplay *self)
 static void
 look_for_existing_users_sync (GdmDisplay *self)
 {
-        GError *error = NULL;
-        GVariant *call_result;
-        GVariant *user_list;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) call_result = NULL;
+        g_autoptr(GVariant) user_list = NULL;
 
         self->priv->accountsservice_proxy = g_dbus_proxy_new_sync (self->priv->connection,
                                                                    0, NULL,
@@ -553,7 +541,7 @@ look_for_existing_users_sync (GdmDisplay *self)
 
         if (!self->priv->accountsservice_proxy) {
                 g_warning ("Failed to contact accountsservice: %s", error->message);
-                goto out;
+                return;
         }
 
         call_result = g_dbus_proxy_call_sync (self->priv->accountsservice_proxy,
@@ -566,15 +554,11 @@ look_for_existing_users_sync (GdmDisplay *self)
 
         if (!call_result) {
                 g_warning ("Failed to list cached users: %s", error->message);
-                goto out;
+                return;
         }
 
         g_variant_get (call_result, "(@ao)", &user_list);
         self->priv->have_existing_user_accounts = g_variant_n_children (user_list) > 0;
-        g_variant_unref (user_list);
-        g_variant_unref (call_result);
-out:
-        g_clear_error (&error);
 }
 
 gboolean
@@ -1360,14 +1344,8 @@ gdm_display_finalize (GObject *object)
         g_clear_object (&self->priv->object_skeleton);
         g_clear_object (&self->priv->connection);
         g_clear_object (&self->priv->accountsservice_proxy);
-
-        if (self->priv->access_file != NULL) {
-                g_object_unref (self->priv->access_file);
-        }
-
-        if (self->priv->user_access_file != NULL) {
-                g_object_unref (self->priv->user_access_file);
-        }
+        g_clear_object (&self->priv->access_file);
+        g_clear_object (&self->priv->user_access_file);
 
         if (self->priv->server_timer != NULL) {
                 g_timer_destroy (self->priv->server_timer);
@@ -1661,11 +1639,11 @@ gdm_display_start_greeter_session (GdmDisplay *self)
 static void
 chown_initial_setup_home_dir (void)
 {
-        GFile *dir;
-        GError *error;
-        char *gis_dir_path;
-        char *gis_uid_path;
-        char *gis_uid_contents;
+        g_autoptr(GFile) dir = NULL;
+        g_autoptr(GError) error = NULL;
+        g_autofree gchar *gis_dir_path = NULL;
+        g_autofree gchar *gis_uid_path = NULL;
+        g_autofree gchar *gis_uid_contents = NULL;
         struct passwd *pwe;
         uid_t uid;
 
@@ -1681,27 +1659,21 @@ chown_initial_setup_home_dir (void)
                                          NULL);
         if (!g_file_get_contents (gis_uid_path, &gis_uid_contents, NULL, NULL)) {
                 g_warning ("Unable to read %s", gis_uid_path);
-                goto out;
+                return;
         }
 
         uid = (uid_t) atoi (gis_uid_contents);
         pwe = getpwuid (uid);
         if (uid == 0 || pwe == NULL) {
                 g_warning ("UID '%s' in %s is not valid", gis_uid_contents, gis_uid_path);
-                goto out;
+                return;
         }
 
         error = NULL;
         dir = g_file_new_for_path (gis_dir_path);
         if (!chown_recursively (dir, pwe->pw_uid, pwe->pw_gid, &error)) {
                 g_warning ("Failed to change ownership for %s: %s", gis_dir_path, error->message);
-                g_error_free (error);
         }
-        g_object_unref (dir);
-out:
-        g_free (gis_uid_contents);
-        g_free (gis_uid_path);
-        g_free (gis_dir_path);
 }
 
 void

@@ -113,6 +113,8 @@ typedef struct
                                               const char   *service_name);
 } GdmSessionClass;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmSession, g_object_unref)
+
 GType            gdm_session_get_type                 (void);
 
 GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,

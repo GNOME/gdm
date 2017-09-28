@@ -316,8 +316,8 @@ static gboolean
 create_transient_display (GDBusConnection *connection,
                           GError         **error)
 {
-        GError *local_error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) local_error = NULL;
+        g_autoptr(GVariant) reply = NULL;
         const char     *value;
 
         reply = g_dbus_connection_call_sync (connection,
@@ -332,14 +332,13 @@ create_transient_display (GDBusConnection *connection,
                                              NULL, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to create transient display: %s", local_error->message);
-                g_propagate_error (error, local_error);
+                g_propagate_error (error, g_steal_pointer (&local_error));
                 return FALSE;
         }
 
         g_variant_get (reply, "(&o)", &value);
         g_debug ("Started %s", value);
 
-        g_variant_unref (reply);
         return TRUE;
 }
 
@@ -348,8 +347,8 @@ activate_session_id (GDBusConnection *connection,
                      const char      *seat_id,
                      const char      *session_id)
 {
-        GError *local_error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) local_error = NULL;
+        g_autoptr(GVariant) reply = NULL;
 
         reply = g_dbus_connection_call_sync (connection,
                                              "org.freedesktop.login1",
@@ -363,11 +362,8 @@ activate_session_id (GDBusConnection *connection,
                                              NULL, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to activate session: %s", local_error->message);
-                g_error_free (local_error);
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }

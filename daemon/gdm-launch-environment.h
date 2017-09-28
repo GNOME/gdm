@@ -63,6 +63,8 @@ typedef struct
                                     const char            *hostname);
 } GdmLaunchEnvironmentClass;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmLaunchEnvironment, g_object_unref)
+
 GType                 gdm_launch_environment_get_type           (void);
 
 gboolean              gdm_launch_environment_start              (GdmLaunchEnvironment *launch_environment);

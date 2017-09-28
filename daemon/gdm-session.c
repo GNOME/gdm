@@ -2184,10 +2184,10 @@ on_initialization_complete_cb (GdmDBusWorker *proxy,
 {
         GdmSessionConversation *conversation = user_data;
         GdmSession *self;
-        char *service_name;
+        const gchar *service_name;
 
-        GError *error = NULL;
-        GVariant *ret;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) ret = NULL;
 
         ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, &error);
 
@@ -2210,12 +2210,10 @@ on_initialization_complete_cb (GdmDBusWorker *proxy,
                                service_name);
 
                 gdm_session_authenticate (self, service_name);
-                g_variant_unref (ret);
 
         } else {
                 g_dbus_method_invocation_return_gerror (conversation->starting_invocation, error);
                 report_and_stop_conversation (self, service_name, error);
-                g_error_free (error);
         }
 
         g_clear_object (&conversation->starting_invocation);

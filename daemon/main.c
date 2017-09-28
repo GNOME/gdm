@@ -306,9 +306,9 @@ int
 main (int    argc,
       char **argv)
 {
-        GMainLoop          *main_loop;
+        g_autoptr(GMainLoop) main_loop = NULL;
         GOptionContext     *context;
-        GError             *error = NULL;
+        g_autoptr(GError)   error = NULL;
         gboolean            res;
         static gboolean     do_timed_exit    = FALSE;
         static gboolean     print_version    = FALSE;
@@ -336,7 +336,6 @@ main (int    argc,
         g_option_context_free (context);
         if (! res) {
                 g_printerr ("Failed to parse options: %s\n", error->message);
-                g_error_free (error);
                 return EXIT_FAILURE;
         }
 
@@ -402,8 +401,6 @@ main (int    argc,
 
         gdm_settings_direct_shutdown ();
         gdm_log_shutdown ();
-
-        g_main_loop_unref (main_loop);
 
         return EXIT_SUCCESS;
 }

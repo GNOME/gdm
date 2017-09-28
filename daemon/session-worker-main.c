@@ -74,9 +74,9 @@ int
 main (int    argc,
       char **argv)
 {
-        GMainLoop        *main_loop;
+        g_autoptr(GMainLoop) main_loop = NULL;
         GOptionContext   *context;
-        GdmSessionWorker *worker;
+        g_autoptr(GdmSessionWorker) worker = NULL;
         const char       *address;
         gboolean          is_for_reauth;
         static GOptionEntry entries []   = {
@@ -127,12 +127,6 @@ main (int    argc,
         g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         g_main_loop_run (main_loop);
-
-        if (worker != NULL) {
-                g_object_unref (worker);
-        }
-
-        g_main_loop_unref (main_loop);
 
         g_debug ("Worker finished");
 

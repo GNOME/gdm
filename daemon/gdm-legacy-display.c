@@ -93,7 +93,7 @@ static gboolean
 gdm_legacy_display_prepare (GdmDisplay *display)
 {
         GdmLegacyDisplay *self = GDM_LEGACY_DISPLAY (display);
-        GdmLaunchEnvironment *launch_environment;
+        g_autoptr(GdmLaunchEnvironment) launch_environment = NULL;
         char          *display_name;
         char          *seat_id;
         gboolean       doing_initial_setup = FALSE;
@@ -121,7 +121,6 @@ gdm_legacy_display_prepare (GdmDisplay *display)
         }
 
         g_object_set (self, "launch-environment", launch_environment, NULL);
-        g_object_unref (launch_environment);
 
         if (!gdm_display_create_authority (display)) {
                 g_warning ("Unable to set up access control for display %s",
@@ -144,8 +143,8 @@ on_server_ready (GdmServer       *server,
                 g_debug ("GdmDisplay: could not connect to display");
                 gdm_display_unmanage (GDM_DISPLAY (self));
         } else {
-                GdmLaunchEnvironment *launch_environment;
-                char *display_device;
+                g_autoptr(GdmLaunchEnvironment) launch_environment = NULL;
+                g_autofree gchar *display_device = NULL;
 
                 display_device = gdm_server_get_display_device (server);
 
@@ -156,8 +155,6 @@ on_server_ready (GdmServer       *server,
                               "x11-display-device",
                               display_device,
                               NULL);
-                g_clear_pointer(&display_device, g_free);
-                g_clear_object (&launch_environment);
 
                 g_debug ("GdmDisplay: connected to display");
                 g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);

@@ -48,6 +48,8 @@ typedef struct
         GdmDBusWorkerSkeletonClass parent_class;
 } GdmSessionWorkerClass;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmSessionWorker, g_object_unref)
+
 GType              gdm_session_worker_get_type                 (void);
 
 GdmSessionWorker * gdm_session_worker_new                      (const char *server_address,

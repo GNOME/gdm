@@ -305,10 +305,9 @@ on_conversation_stopped (GdmSession           *session,
                          const char           *service_name,
                          GdmLaunchEnvironment *launch_environment)
 {
-        GdmSession *conversation_session;
+        g_autoptr(GdmSession) conversation_session = NULL;
 
-        conversation_session = launch_environment->priv->session;
-        launch_environment->priv->session = NULL;
+        conversation_session = g_steal_pointer (&launch_environment->priv->session);
 
         g_debug ("GdmLaunchEnvironment: conversation stopped");
 
@@ -319,7 +318,6 @@ on_conversation_stopped (GdmSession           *session,
 
         if (conversation_session != NULL) {
                 gdm_session_close (conversation_session);
-                g_object_unref (conversation_session);
         }
 }
 
@@ -868,9 +866,7 @@ gdm_launch_environment_finalize (GObject *object)
 
         gdm_launch_environment_stop (launch_environment);
 
-        if (launch_environment->priv->session) {
-                g_object_unref (launch_environment->priv->session);
-        }
+        g_clear_object (&launch_environment->priv->session);
 
         g_free (launch_environment->priv->command);
         g_free (launch_environment->priv->user_name);

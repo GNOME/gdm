@@ -415,9 +415,9 @@ delete_display (GdmLocalDisplayFactory *factory,
 static gboolean
 gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 {
-        GError *error = NULL;
-        GVariant *result;
-        GVariant *array;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) result = NULL;
+        g_autoptr(GVariant) array = NULL;
         GVariantIter iter;
         const char *seat;
 
@@ -434,7 +434,6 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 
         if (!result) {
                 g_warning ("GdmLocalDisplayFactory: Failed to issue method call: %s", error->message);
-                g_clear_error (&error);
                 return FALSE;
         }
 
@@ -462,8 +461,6 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
                 create_display (factory, seat, session_type, is_initial);
         }
 
-        g_variant_unref (result);
-        g_variant_unref (array);
         return TRUE;
 }
 

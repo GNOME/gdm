@@ -203,7 +203,7 @@ load_a11y (void)
 int
 main (int argc, char *argv[])
 {
-        GdmChooserSession *session;
+        g_autoptr(GdmChooserSession) session = NULL;
         gboolean           res;
         GError            *error;
 
@@ -241,10 +241,6 @@ main (int argc, char *argv[])
         }
 
         gtk_main ();
-
-        if (session != NULL) {
-                g_object_unref (session);
-        }
 
         return 0;
 }

@@ -45,6 +45,8 @@ typedef struct
         GObjectClass   parent_class;
 } GdmChooserSessionClass;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmChooserSession, g_object_unref)
+
 GType                  gdm_chooser_session_get_type                       (void);
 
 GdmChooserSession    * gdm_chooser_session_new                            (void);
