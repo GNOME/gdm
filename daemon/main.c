@@ -340,7 +340,7 @@ main (int    argc,
         if (! res) {
                 g_warning ("%s", error->message);
                 g_error_free (error);
-                goto out;
+                exit (1);
         }
 
         if (print_version) {
