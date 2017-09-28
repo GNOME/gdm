@@ -348,6 +348,13 @@ main (int    argc,
                 exit (1);
         }
 
+        /* XDM compliant error message */
+        if (getuid () != 0) {
+                /* make sure the pid file doesn't get wiped */
+                g_warning (_("Only the root user can run GDM"));
+                exit (-1);
+        }
+
         if (fatal_warnings) {
                 GLogLevelFlags fatal_mask;
 
@@ -369,13 +376,6 @@ main (int    argc,
         gdm_daemon_lookup_user (&gdm_uid, &gdm_gid);
 
         gdm_daemon_ensure_dirs (gdm_uid, gdm_gid);
-
-        /* XDM compliant error message */
-        if (getuid () != 0) {
-                /* make sure the pid file doesn't get wiped */
-                g_warning (_("Only the root user can run GDM"));
-                exit (-1);
-        }
 
         /* Connect to the bus, own the name and start the manager */
         bus_reconnect ();
