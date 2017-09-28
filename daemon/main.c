@@ -359,11 +359,6 @@ main (int    argc,
         gdm_log_init ();
 
         settings = gdm_settings_new ();
-        if (settings == NULL) {
-                g_warning ("Unable to initialize settings");
-                goto out;
-        }
-
         if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
                 goto out;
