@@ -2434,7 +2434,7 @@ get_session_command (GdmSession *self)
         res = get_session_command_for_name (self, session_name, &command);
         if (! res) {
                 g_critical ("Cannot find a command for specified session: %s", session_name);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         return command;

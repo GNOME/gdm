@@ -2530,7 +2530,7 @@ register_manager (GdmManager *manager)
         if (manager->priv->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DISPLAYS_PATH);
@@ -2545,7 +2545,7 @@ register_manager (GdmManager *manager)
                             GDM_MANAGER_PATH,
                             error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         return TRUE;

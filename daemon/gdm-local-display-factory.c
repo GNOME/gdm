@@ -678,7 +678,7 @@ register_factory (GdmLocalDisplayFactory *factory)
         if (factory->priv->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         factory->priv->skeleton = GDM_DBUS_LOCAL_DISPLAY_FACTORY (gdm_dbus_local_display_factory_skeleton_new ());
@@ -694,7 +694,7 @@ register_factory (GdmLocalDisplayFactory *factory)
                                                &error)) {
                 g_critical ("error exporting LocalDisplayFactory object: %s", error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         return TRUE;

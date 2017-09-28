@@ -229,7 +229,7 @@ main (int argc, char *argv[])
         session = gdm_chooser_session_new ();
         if (session == NULL) {
                 g_critical ("Unable to create chooser session");
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         error = NULL;
@@ -237,7 +237,7 @@ main (int argc, char *argv[])
         if (! res) {
                 g_warning ("Unable to start chooser session: %s", error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         gtk_main ();

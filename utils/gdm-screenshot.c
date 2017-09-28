@@ -239,7 +239,7 @@ prepare_screenshot (void)
         char      *filename;
 
         if (!screenshot_grab_lock ()) {
-                exit (0);
+                exit (EXIT_SUCCESS);
         }
 
         win = GDK_ROOT_WINDOW ();
@@ -250,7 +250,7 @@ prepare_screenshot (void)
 
         if (screenshot == NULL) {
                 /* FIXME: dialog? */
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         play_sound_effect (win);
@@ -287,7 +287,7 @@ main (int argc, char *argv[])
         if (! res) {
                 g_warning ("%s", error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         prepare_screenshot ();

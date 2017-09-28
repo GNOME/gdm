@@ -337,19 +337,19 @@ main (int    argc,
         if (! res) {
                 g_printerr ("Failed to parse options: %s\n", error->message);
                 g_error_free (error);
-                return 1;
+                return EXIT_FAILURE;
         }
 
         if (print_version) {
                 g_print ("GDM %s\n", VERSION);
-                return 1;
+                return EXIT_SUCCESS;
         }
 
         /* XDM compliant error message */
         if (getuid () != 0) {
                 /* make sure the pid file doesn't get wiped */
                 g_printerr ("%s\n", _("Only the root user can run GDM"));
-                return -1;
+                return EXIT_FAILURE;
         }
 
         if (fatal_warnings) {
@@ -365,7 +365,7 @@ main (int    argc,
         settings = gdm_settings_new ();
         if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
-                return 1;
+                return EXIT_FAILURE;
         }
 
         gdm_log_set_debug (is_debug_set ());
@@ -405,7 +405,7 @@ main (int    argc,
 
         g_main_loop_unref (main_loop);
 
-        return 0;
+        return EXIT_SUCCESS;
 }
 
 static void
@@ -419,7 +419,7 @@ on_name_acquired (GDBusConnection *bus,
         manager = gdm_manager_new ();
         if (manager == NULL) {
                 g_warning ("Could not construct manager object");
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         g_debug ("Successfully connected to D-Bus");

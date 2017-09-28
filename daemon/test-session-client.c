@@ -125,7 +125,7 @@ on_secret_info_query (GdmDBusUserVerifier *user_verifier,
 
         if (tcsetattr (fileno (stdin), TCSAFLUSH, &ts1) != 0) {
                 fprintf (stderr, "Could not set terminal attributes\n");
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         answer[0] = '\0';
@@ -164,7 +164,7 @@ main (int   argc,
         system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (system_bus == NULL) {
                 g_critical ("Failed connecting to the system bus (this is pretty bad): %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         manager = GDM_DBUS_MANAGER (gdm_dbus_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
@@ -175,7 +175,7 @@ main (int   argc,
                                                                              &error));
         if (manager == NULL) {
                 g_critical ("Failed creating display proxy: %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         address = NULL;
@@ -186,7 +186,7 @@ main (int   argc,
                                                                   &error);
         if (address == NULL) {
                 g_critical ("Failed opening reauthentication channel: %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         connection = g_dbus_connection_new_for_address_sync (address,
@@ -196,7 +196,7 @@ main (int   argc,
                                                              &error);
         if (connection == NULL) {
                 g_critical ("Failed connecting to the manager: %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         user_verifier = GDM_DBUS_USER_VERIFIER (gdm_dbus_user_verifier_proxy_new_sync (connection,
@@ -207,7 +207,7 @@ main (int   argc,
                                                                                        &error));
         if (user_verifier == NULL) {
                 g_critical ("Failed creating user verifier proxy: %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         g_signal_connect (user_verifier,
@@ -246,7 +246,7 @@ main (int   argc,
                                                                            &error);
         if (!ok) {
                 g_critical ("Failed to start PAM session: %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
 

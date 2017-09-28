@@ -1920,7 +1920,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 if (setsid () < 0) {
                         g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group: %s",
                                  (guint) getpid (), g_strerror (errno));
-                        _exit (2);
+                        _exit (EXIT_FAILURE);
                 }
 
                 /* Take control of the tty
@@ -1935,12 +1935,12 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 if (setusercontext (NULL, passwd_entry, passwd_entry->pw_uid, LOGIN_SETALL) < 0) {
                         g_debug ("GdmSessionWorker: setusercontext() failed for user %s: %s",
                                  passwd_entry->pw_name, g_strerror (errno));
-                        _exit (1);
+                        _exit (EXIT_FAILURE);
                 }
 #else
                 if (setuid (worker->priv->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
-                        _exit (1);
+                        _exit (EXIT_FAILURE);
                 }
 #endif
 
@@ -2040,7 +2040,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                          worker->priv->arguments[0],
                          g_strerror (errno));
 
-                _exit (127);
+                _exit (EXIT_FAILURE);
         }
 
         if (worker->priv->session_tty_fd > 0) {
@@ -3150,7 +3150,7 @@ gdm_session_worker_constructor (GType                  type,
                 g_warning ("error opening connection: %s", error->message);
                 g_clear_error (&error);
 
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         worker->priv->manager = GDM_DBUS_WORKER_MANAGER (gdm_dbus_worker_manager_proxy_new_sync (worker->priv->connection,
@@ -3163,7 +3163,7 @@ gdm_session_worker_constructor (GType                  type,
                 g_warning ("error creating session proxy: %s", error->message);
                 g_clear_error (&error);
 
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (worker),
@@ -3171,7 +3171,7 @@ gdm_session_worker_constructor (GType                  type,
                                                GDM_WORKER_DBUS_PATH,
                                                &error)) {
                 g_warning ("Error while exporting object: %s", error->message);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->priv->manager), G_MAXINT);

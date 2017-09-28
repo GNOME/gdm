@@ -65,14 +65,6 @@ extern char **environ;
 
 #define GDM_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SERVER, GdmServerPrivate))
 
-/* These are the servstat values, also used as server
- * process exit codes */
-#define SERVER_TIMEOUT 2        /* Server didn't start */
-#define SERVER_DEAD 250         /* Server stopped */
-#define SERVER_PENDING 251      /* Server started but not ready for connections yet */
-#define SERVER_RUNNING 252      /* Server running and ready for connections */
-#define SERVER_ABORT 253        /* Server failed badly. Suspending display. */
-
 #define MAX_LOGS 5
 
 struct GdmServerPrivate
@@ -390,7 +382,7 @@ change_user (GdmServer *server)
         if (pwent == NULL) {
                 g_warning (_("Server was to be spawned by user %s but that user doesn’t exist"),
                            server->priv->user_name);
-                _exit (1);
+                _exit (EXIT_FAILURE);
         }
 
         g_debug ("GdmServer: Changing (uid:gid) for child process to (%d:%d)",
@@ -401,19 +393,19 @@ change_user (GdmServer *server)
                 if (setgid (pwent->pw_gid) < 0)  {
                         g_warning (_("Couldn’t set groupid to %d"),
                                    pwent->pw_gid);
-                        _exit (1);
+                        _exit (EXIT_FAILURE);
                 }
 
                 if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
                         g_warning (_("initgroups () failed for %s"),
                                    pwent->pw_name);
-                        _exit (1);
+                        _exit (EXIT_FAILURE);
                 }
 
                 if (setuid (pwent->pw_uid) < 0)  {
                         g_warning (_("Couldn’t set userid to %d"),
                                    (int)pwent->pw_uid);
-                        _exit (1);
+                        _exit (EXIT_FAILURE);
                 }
         } else {
                 gid_t groups[1] = { 0 };
@@ -512,19 +504,19 @@ server_child_setup (GdmServer *server)
         if (sigaction (SIGUSR1, &ign_signal, NULL) < 0) {
                 g_warning (_("%s: Error setting %s to %s"),
                            "gdm_server_spawn", "USR1", "SIG_IGN");
-                _exit (SERVER_ABORT);
+                _exit (EXIT_FAILURE);
         }
 
         if (sigaction (SIGTTIN, &ign_signal, NULL) < 0) {
                 g_warning (_("%s: Error setting %s to %s"),
                            "gdm_server_spawn", "TTIN", "SIG_IGN");
-                _exit (SERVER_ABORT);
+                _exit (EXIT_FAILURE);
         }
 
         if (sigaction (SIGTTOU, &ign_signal, NULL) < 0) {
                 g_warning (_("%s: Error setting %s to %s"),
                            "gdm_server_spawn", "TTOU", "SIG_IGN");
-                _exit (SERVER_ABORT);
+                _exit (EXIT_FAILURE);
         }
 
         /* And HUP and TERM are at SIG_DFL from gdm_unset_signals,

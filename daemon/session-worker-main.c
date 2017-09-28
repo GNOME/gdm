@@ -67,7 +67,7 @@ is_debug_set (void)
 static void
 on_sigterm_cb (int signal_number)
 {
-        _exit (0);
+        _exit (EXIT_SUCCESS);
 }
 
 int
@@ -102,12 +102,12 @@ main (int    argc,
         settings = gdm_settings_new ();
         if (settings == NULL) {
                 g_warning ("Unable to initialize settings");
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         gdm_log_set_debug (is_debug_set ());
@@ -115,7 +115,7 @@ main (int    argc,
         address = g_getenv ("GDM_SESSION_DBUS_ADDRESS");
         if (address == NULL) {
                 g_warning ("GDM_SESSION_DBUS_ADDRESS not set");
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         is_for_reauth = g_getenv ("GDM_SESSION_FOR_REAUTH") != NULL;

@@ -1103,7 +1103,7 @@ register_display (GdmDisplay *self)
         if (self->priv->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
                 g_error_free (error);
-                exit (1);
+                exit (EXIT_FAILURE);
         }
 
         self->priv->object_skeleton = g_dbus_object_skeleton_new (self->priv->id);
