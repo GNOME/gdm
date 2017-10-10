@@ -61,21 +61,8 @@
 
 static void
 record_set_username (UTMP       *u,
-                     const char *user_name)
+                     const char *username)
 {
-        const char *username;
-
-        /*
-         * It is possible that PAM failed before it mapped the user
-         * input into a valid username, so we fallback to try using
-         * "(unknown)"
-         */
-        if (user_name != NULL) {
-                username = user_name;
-        } else {
-                username = "(unknown)";
-        }
-
 #if defined(HAVE_UT_UT_USER)
         strncpy (u->ut_user,
                  username,

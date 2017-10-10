@@ -677,6 +677,11 @@ add_session_record (GdmManager    *manager,
         display_device = NULL;
 
         username = gdm_session_get_username (session);
+
+        if (username == NULL) {
+                goto out;
+        }
+
         g_object_get (G_OBJECT (session),
                       "display-name", &display_name,
                       "display-hostname", &hostname,
