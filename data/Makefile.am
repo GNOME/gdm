@@ -83,19 +83,8 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.schemas.in.in >gdm.schemas.in
 
-
-EXTRA_DIST += gnome-login.session.in
-
-gnome-login.session: $(srcdir)/gnome-login.session.in
-	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
-		-e 's,[@]CHECK_ACCELERATED_DIR[@],$(CHECK_ACCELERATED_DIR),g' \
-		< $< > $@.tmp && mv $@.tmp $@
-
 localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
-
-sessiondir = $(datadir)/gnome-session/sessions
-session_DATA =  gnome-login.session
 
 pam_redhat_files = \
 	pam-redhat/gdm-autologin.pam		\
@@ -191,7 +180,6 @@ CLEANFILES = 				\
 DISTCLEANFILES =			\
 	$(dbusconf_DATA)		\
 	gdm.schemas			\
-	gnome-login.session		\
 	$(NULL)
 
 MAINTAINERCLEANFILES =			\
