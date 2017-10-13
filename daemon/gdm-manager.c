@@ -2304,7 +2304,7 @@ create_user_session_for_display (GdmManager *manager,
         char       *display_auth_file = NULL;
         char       *display_seat_id = NULL;
         char       *display_id = NULL;
-#ifdef ENABLE_WAYLAND_SUPPORT
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         char       *display_session_type = NULL;
         gboolean    greeter_is_wayland;
 #endif
@@ -2316,7 +2316,7 @@ create_user_session_for_display (GdmManager *manager,
                       "remote-hostname", &remote_hostname,
                       "x11-authority-file", &display_auth_file,
                       "seat-id", &display_seat_id,
-#ifdef ENABLE_WAYLAND_SUPPORT
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
                       "session-type", &display_session_type,
 #endif
                       NULL);
