@@ -157,6 +157,9 @@ collect_sessions_from_directory (const char *dirname)
         GDir       *dir;
         const char *filename;
 
+        gboolean is_x11 = g_getenv ("WAYLAND_DISPLAY") == NULL &&
+                          g_getenv ("RUNNING_UNDER_GDM") != NULL;
+
         /* FIXME: add file monitor to directory */
 
         dir = g_dir_open (dirname, 0, NULL);
@@ -171,6 +174,21 @@ collect_sessions_from_directory (const char *dirname)
                 if (! g_str_has_suffix (filename, ".desktop")) {
                         continue;
                 }
+
+                if (is_x11 && g_str_has_suffix (filename, "-xorg.desktop")) {
+                        char *base_name = g_strndup (filename, strlen (filename) - strlen ("-xorg.desktop"));
+                        char *fallback_name = g_strconcat (base_name, ".desktop", NULL);
+                        g_free (base_name);
+                        char *fallback_path = g_build_filename (dirname, fallback_name, NULL);
+                        g_free (fallback_name);
+                        if (g_file_test (fallback_path, G_FILE_TEST_EXISTS)) {
+                                g_free (fallback_path);
+                                g_debug ("Running under X11, ignoring %s", filename);
+                                continue;
+                        }
+                        g_free (fallback_path);
+                }
+
                 id = g_strndup (filename, strlen (filename) - strlen (".desktop"));
 
                 full_path = g_build_filename (dirname, filename, NULL);
