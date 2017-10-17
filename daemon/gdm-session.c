@@ -2799,12 +2799,7 @@ gdm_session_start_session (GdmSession *self,
                                                            self->priv->selected_program);
                         }
                 } else {
-                        if (g_strcmp0 (self->priv->display_seat_id, "seat0") != 0) {
-                                program = g_strdup_printf ("dbus-run-session -- %s",
-                                                           self->priv->selected_program);
-                        } else {
-                                program = g_strdup (self->priv->selected_program);
-                        }
+                        program = g_strdup (self->priv->selected_program);
                 }
         }
 
