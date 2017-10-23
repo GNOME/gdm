@@ -1465,16 +1465,6 @@ already_done_initial_setup_on_this_boot (void)
         if (g_file_test (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT, G_FILE_TEST_EXISTS))
                 return TRUE;
 
-        if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                  "1",
-                                  1,
-                                  &error)) {
-                g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
-                           ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                           error->message);
-                g_clear_error (&error);
-        }
-
         return FALSE;
 }
 
@@ -1719,6 +1709,8 @@ out:
 void
 gdm_display_stop_greeter_session (GdmDisplay *self)
 {
+        GError *error = NULL;
+
         if (self->priv->launch_environment != NULL) {
 
                 g_signal_handlers_disconnect_by_func (self->priv->launch_environment,
@@ -1742,6 +1734,16 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
 
         if (self->priv->doing_initial_setup) {
                 chown_initial_setup_home_dir ();
+
+                if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                          "1",
+                                          1,
+                                          &error)) {
+                        g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
+                                   ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                   error->message);
+                        g_clear_error (&error);
+                }
         }
 }
 
