@@ -2992,25 +2992,25 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
         g_variant_iter_init (&iter, details);
         while (g_variant_iter_loop (&iter, "{sv}", &key, &value)) {
                 if (g_strcmp0 (key, "service") == 0) {
-                        worker->priv->service = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->service = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "extensions") == 0) {
                         worker->priv->extensions = filter_extensions (g_variant_get_strv (value, NULL));
                 } else if (g_strcmp0 (key, "username") == 0) {
-                        worker->priv->username = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->username = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "is-program-session") == 0) {
                         worker->priv->is_program_session = g_variant_get_boolean (value);
                 } else if (g_strcmp0 (key, "log-file") == 0) {
-                        worker->priv->log_file = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->log_file = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "x11-display-name") == 0) {
-                        worker->priv->x11_display_name = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->x11_display_name = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "x11-authority-file") == 0) {
-                        worker->priv->x11_authority_file = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->x11_authority_file = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "console") == 0) {
-                        worker->priv->display_device = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->display_device = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "seat-id") == 0) {
-                        worker->priv->display_seat_id = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->display_seat_id = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "hostname") == 0) {
-                        worker->priv->hostname = g_strdup (g_variant_get_string (value, NULL));
+                        worker->priv->hostname = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "display-is-local") == 0) {
                         worker->priv->display_is_local = g_variant_get_boolean (value);
                 } else if (g_strcmp0 (key, "display-is-initial") == 0) {
