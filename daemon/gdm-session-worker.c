@@ -2984,8 +2984,10 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
         GVariantIter      iter;
         char             *key;
         GVariant         *value;
+        gboolean          wait_for_settings = FALSE;
 
-        validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
+        if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE))
+                return TRUE;
 
         g_variant_iter_init (&iter, details);
         while (g_variant_iter_loop (&iter, "{sv}", &key, &value)) {
@@ -3016,15 +3018,36 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                 }
         }
 
-        g_signal_connect_swapped (worker->priv->user_settings,
-                                  "notify::language-name",
-                                  G_CALLBACK (on_saved_language_name_read),
-                                  worker);
+        worker->priv->pending_invocation = invocation;
 
-        g_signal_connect_swapped (worker->priv->user_settings,
-                                  "notify::session-name",
-                                  G_CALLBACK (on_saved_session_name_read),
+        if (!worker->priv->is_program_session) {
+                g_signal_connect_swapped (worker->priv->user_settings,
+                                          "notify::language-name",
+                                          G_CALLBACK (on_saved_language_name_read),
+                                          worker);
+
+                g_signal_connect_swapped (worker->priv->user_settings,
+                                          "notify::session-name",
+                                          G_CALLBACK (on_saved_session_name_read),
+                                          worker);
+
+                if (worker->priv->username) {
+                        wait_for_settings = !gdm_session_settings_load (worker->priv->user_settings,
+                                                                        worker->priv->username);
+                }
+        }
+
+        if (wait_for_settings) {
+                /* Load settings from accounts daemon before continuing
+                 */
+                g_signal_connect (G_OBJECT (worker->priv->user_settings),
+                                  "notify::is-loaded",
+                                  G_CALLBACK (on_settings_is_loaded_changed),
                                   worker);
+        } else {
+                queue_state_change (worker);
+        }
+
         return TRUE;
 }
 
