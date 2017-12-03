@@ -125,9 +125,6 @@ gdm_log_set_debug (gboolean debug)
 void
 gdm_log_init (void)
 {
-        const char *prg_name;
-        int         options;
-
         if (initialized)
                 return;
 
