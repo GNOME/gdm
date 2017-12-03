@@ -267,7 +267,7 @@ on_display_status_changed (GdmLegacyDisplay *self)
 {
         int status;
 
-        status = gdm_display_get_status (self);
+        status = gdm_display_get_status (GDM_DISPLAY (self));
 
         switch (status) {
             case GDM_DISPLAY_UNMANAGED:
