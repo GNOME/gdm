@@ -1460,8 +1460,6 @@ can_create_environment (const char *session_id)
 static gboolean
 already_done_initial_setup_on_this_boot (void)
 {
-        GError *error = NULL;
-
         if (g_file_test (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT, G_FILE_TEST_EXISTS))
                 return TRUE;
 
