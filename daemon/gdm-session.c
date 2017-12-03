@@ -69,6 +69,7 @@ typedef struct
         GPid                   worker_pid;
         char                  *service_name;
         GDBusMethodInvocation *starting_invocation;
+        gboolean               starting_guest;
         char                  *starting_username;
         GDBusMethodInvocation *pending_invocation;
         GdmDBusWorkerManager  *worker_manager_interface;
@@ -87,6 +88,7 @@ struct _GdmSessionPrivate
         char                *selected_session;
         char                *saved_session;
         char                *saved_language;
+        gboolean             selected_guest;
         char                *selected_user;
         char                *user_x11_authority_file;
 
@@ -637,8 +639,25 @@ gdm_session_select_user (GdmSession *self,
 
         g_debug ("GdmSession: Setting user: '%s'", text);
 
+        self->priv->selected_guest = FALSE;
         g_free (self->priv->selected_user);
         self->priv->selected_user = g_strdup (text);
+
+        g_free (self->priv->saved_session);
+        self->priv->saved_session = NULL;
+
+        g_free (self->priv->saved_language);
+        self->priv->saved_language = NULL;
+}
+
+void
+gdm_session_select_guest (GdmSession *self)
+{
+        g_debug ("GdmSession: Setting guest");
+
+        self->priv->selected_guest = TRUE;
+        g_free (self->priv->selected_user);
+        self->priv->selected_user = NULL;
 
         g_free (self->priv->saved_session);
         self->priv->saved_session = NULL;
@@ -1132,7 +1151,9 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
         }
 
         if (conversation->starting_invocation != NULL) {
-                if (conversation->starting_username != NULL) {
+                if (conversation->starting_guest) {
+                        gdm_session_setup_for_guest (self, conversation->service_name);
+                } else if (conversation->starting_username != NULL) {
                         gdm_session_setup_for_user (self, conversation->service_name, conversation->starting_username);
 
                         g_clear_pointer (&conversation->starting_username,
@@ -1337,6 +1358,7 @@ gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verif
 
         if (conversation != NULL) {
                 conversation->starting_invocation = g_object_ref (invocation);
+                conversation->starting_guest = FALSE;
                 conversation->starting_username = NULL;
         }
 
@@ -1356,7 +1378,26 @@ gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier    *u
 
         if (conversation != NULL) {
                 conversation->starting_invocation = g_object_ref (invocation);
+                conversation->starting_guest = FALSE;
                 conversation->starting_username = g_strdup (username);
+        }
+
+        return TRUE;
+}
+
+static gboolean
+gdm_session_handle_client_begin_verification_for_guest (GdmDBusUserVerifier    *user_verifier_interface,
+                                                        GDBusMethodInvocation  *invocation,
+                                                        GdmSession             *self)
+{
+        GdmSessionConversation *conversation;
+
+        conversation = begin_verification_conversation (self, invocation, "gdm-autologin");
+
+        if (conversation != NULL) {
+                conversation->starting_invocation = g_object_ref (invocation);
+                conversation->starting_guest = TRUE;
+                conversation->starting_username = NULL;
         }
 
         return TRUE;
@@ -1411,6 +1452,19 @@ gdm_session_handle_client_select_user (GdmDBusGreeter        *greeter_interface,
                                                        invocation);
         }
         gdm_session_select_user (self, username);
+        return TRUE;
+}
+
+static gboolean
+gdm_session_handle_client_select_guest (GdmDBusGreeter        *greeter_interface,
+                                        GDBusMethodInvocation *invocation,
+                                        GdmSession            *self)
+{
+        if (self->priv->greeter_interface != NULL) {
+                gdm_dbus_greeter_complete_select_guest (greeter_interface,
+                                                        invocation);
+        }
+        gdm_session_select_guest (self);
         return TRUE;
 }
 
@@ -1495,6 +1549,10 @@ export_user_verifier_interface (GdmSession      *self,
                           G_CALLBACK (gdm_session_handle_client_begin_verification_for_user),
                           self);
         g_signal_connect (user_verifier_interface,
+                          "handle-begin-verification-for-guest",
+                          G_CALLBACK (gdm_session_handle_client_begin_verification_for_guest),
+                          self);
+        g_signal_connect (user_verifier_interface,
                           "handle-answer-query",
                           G_CALLBACK (gdm_session_handle_client_answer_query),
                           self);
@@ -1530,6 +1588,10 @@ export_greeter_interface (GdmSession      *self,
         g_signal_connect (greeter_interface,
                           "handle-select-user",
                           G_CALLBACK (gdm_session_handle_client_select_user),
+                          self);
+        g_signal_connect (greeter_interface,
+                          "handle-select-guest",
+                          G_CALLBACK (gdm_session_handle_client_select_guest),
                           self);
         g_signal_connect (greeter_interface,
                           "handle-start-session-when-ready",
@@ -2224,6 +2286,7 @@ on_initialization_complete_cb (GdmDBusWorker *proxy,
 static void
 initialize (GdmSession *self,
             const char *service_name,
+            gboolean    guest,
             const char *username,
             const char *log_file)
 {
@@ -2239,6 +2302,9 @@ initialize (GdmSession *self,
         extensions = (const char **) g_hash_table_get_keys_as_array (self->priv->user_verifier_extensions, NULL);
 
         g_variant_builder_add_parsed (&details, "{'extensions', <%^as>}", extensions);
+
+        if (guest)
+                g_variant_builder_add_parsed (&details, "{'guest', <%b>}", guest);
 
         if (username != NULL)
                 g_variant_builder_add_parsed (&details, "{'username', <%s>}", username);
@@ -2294,7 +2360,7 @@ gdm_session_setup (GdmSession *self,
 
         update_session_type (self);
 
-        initialize (self, service_name, NULL, NULL);
+        initialize (self, service_name, FALSE, NULL, NULL);
 }
 
 
@@ -2312,7 +2378,20 @@ gdm_session_setup_for_user (GdmSession *self,
         gdm_session_select_user (self, username);
 
         self->priv->is_program_session = FALSE;
-        initialize (self, service_name, self->priv->selected_user, NULL);
+        initialize (self, service_name, FALSE, self->priv->selected_user, NULL);
+}
+
+void
+gdm_session_setup_for_guest (GdmSession *self,
+                             const char *service_name)
+{
+
+        g_return_if_fail (GDM_IS_SESSION (self));
+
+        update_session_type (self);
+
+        self->priv->is_program_session = FALSE;
+        initialize (self, service_name, TRUE, NULL, NULL);
 }
 
 void
@@ -2325,7 +2404,7 @@ gdm_session_setup_for_program (GdmSession *self,
         g_return_if_fail (GDM_IS_SESSION (self));
 
         self->priv->is_program_session = TRUE;
-        initialize (self, service_name, username, log_file);
+        initialize (self, service_name, FALSE, username, log_file);
 }
 
 void

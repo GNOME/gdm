@@ -148,6 +148,7 @@ struct GdmSessionWorkerPrivate
         char             *display_device;
         char             *display_seat_id;
         char             *hostname;
+        gboolean          guest;
         char             *username;
         char             *log_file;
         char             *session_id;
@@ -1779,6 +1780,31 @@ run_script (GdmSessionWorker *worker,
 }
 
 static void
+cleanup_account (GdmSessionWorker *worker)
+{
+        g_autoptr(GDBusConnection) connection = NULL;
+        g_autoptr(GVariant) reply = NULL;
+
+        if (!worker->priv->guest)
+                return;
+
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
+        if (connection == NULL)
+                return;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.Accounts",
+                                             "/org/freedesktop/Accounts",
+                                             "org.freedesktop.Accounts",
+                                             "DeleteGuest",
+                                             g_variant_new ("(x)", worker->priv->uid),
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, NULL);
+}
+
+static void
 session_worker_child_watch (GPid              pid,
                             int               status,
                             GdmSessionWorker *worker)
@@ -1792,6 +1818,7 @@ session_worker_child_watch (GPid              pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
+        cleanup_account (worker);
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
 
@@ -2573,6 +2600,56 @@ on_saved_session_name_read (GdmSessionWorker *worker)
         g_free (session_name);
 }
 
+static gboolean
+setup_account (GdmSessionWorker *worker, GError **error)
+{
+        g_autoptr(GDBusConnection) connection = NULL;
+        g_autoptr(GVariant) reply = NULL;
+        g_autoptr(GVariant) username_reply = NULL;
+        g_autoptr(GVariant) username_value = NULL;
+        const gchar *path;
+
+        if (!worker->priv->guest)
+                return TRUE;
+
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, error);
+        if (connection == NULL)
+                return FALSE;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.Accounts",
+                                             "/org/freedesktop/Accounts",
+                                             "org.freedesktop.Accounts",
+                                             "CreateGuest",
+                                             NULL, /* parameters */
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, error);
+        if (reply == NULL)
+                return FALSE;
+
+        g_variant_get (reply, "(&o)", &path);
+        username_reply = g_dbus_connection_call_sync (connection,
+                                                      "org.freedesktop.Accounts",
+                                                      path,
+                                                      "org.freedesktop.DBus.Properties",
+                                                      "Get",
+                                                      g_variant_new ("(ss)", "org.freedesktop.Accounts.User", "UserName"),
+                                                      G_VARIANT_TYPE ("(v)"),
+                                                      G_DBUS_CALL_FLAGS_NONE,
+                                                      -1,
+                                                      NULL, error);
+        if (username_reply == NULL)
+                return FALSE;
+
+        g_variant_get (username_reply, "(v)", &username_value);
+        g_free (worker->priv->username);
+        worker->priv->username = g_variant_dup_string (username_value, NULL);
+
+        return TRUE;
+}
+
 static void
 do_setup (GdmSessionWorker *worker)
 {
@@ -2580,6 +2657,10 @@ do_setup (GdmSessionWorker *worker)
         gboolean res;
 
         error = NULL;
+        if (!setup_account (worker, &error)) {
+                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+        }
+
         res = gdm_session_worker_initialize_pam (worker,
                                                  worker->priv->service,
                                                  (const char **) worker->priv->extensions,
@@ -2995,6 +3076,8 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                         worker->priv->service = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "extensions") == 0) {
                         worker->priv->extensions = filter_extensions (g_variant_get_strv (value, NULL));
+                } else if (g_strcmp0 (key, "guest") == 0) {
+                        worker->priv->guest = g_variant_get_boolean (value);
                 } else if (g_strcmp0 (key, "username") == 0) {
                         worker->priv->username = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "is-program-session") == 0) {

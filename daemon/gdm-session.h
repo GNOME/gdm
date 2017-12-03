@@ -152,6 +152,8 @@ void              gdm_session_setup                       (GdmSession *session,
 void              gdm_session_setup_for_user              (GdmSession *session,
                                                            const char *service_name,
                                                            const char *username);
+void              gdm_session_setup_for_guest             (GdmSession *session,
+                                                           const char *service_name);
 void              gdm_session_setup_for_program           (GdmSession *session,
                                                            const char *service_name,
                                                            const char *username,
@@ -184,6 +186,7 @@ void              gdm_session_select_session              (GdmSession *session,
                                                            const char *session_name);
 void              gdm_session_select_user                 (GdmSession *session,
                                                            const char *username);
+void              gdm_session_select_guest                (GdmSession *session);
 void              gdm_session_set_timed_login_details     (GdmSession *session,
                                                            const char *username,
                                                            int         delay);
