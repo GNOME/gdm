@@ -77,13 +77,13 @@ gdm_client_error_quark (void)
 static void
 on_got_manager (GdmManager          *manager,
                 GAsyncResult        *result,
-                GSimpleAsyncResult  *operation_result)
+                GTask               *task)
 {
         GdmClient *client;
         GdmManager       *new_manager;
         GError           *error;
 
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
 
         error = NULL;
         new_manager = gdm_manager_proxy_new_finish (result, &error);
@@ -99,16 +99,14 @@ on_got_manager (GdmManager          *manager,
         }
 
         if (error != NULL) {
-                g_simple_async_result_take_error (operation_result, error);
+                g_task_return_error (task, error);
         } else {
-                g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                           g_object_ref (client->priv->manager),
-                                                           (GDestroyNotify)
-                                                           g_object_unref);
+                g_task_return_pointer (task,
+                                       g_object_ref (client->priv->manager),
+                                       (GDestroyNotify) g_object_unref);
         }
 
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+        g_object_unref (task);
         g_object_unref (client);
 }
 
@@ -118,21 +116,18 @@ get_manager (GdmClient           *client,
              GAsyncReadyCallback  callback,
              gpointer             user_data)
 {
-        GSimpleAsyncResult *result;
+        GTask *task;
 
-        result = g_simple_async_result_new (G_OBJECT (client),
-                                            callback,
-                                            user_data,
-                                            get_manager);
-        g_simple_async_result_set_check_cancellable (result, cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
         if (client->priv->manager != NULL) {
-                g_simple_async_result_set_op_res_gpointer (result,
-                                                           g_object_ref (client->priv->manager),
-                                                           (GDestroyNotify)
-                                                           g_object_unref);
-                g_simple_async_result_complete_in_idle (result);
-                g_object_unref (result);
+                g_task_return_pointer (task,
+                                       g_object_ref (client->priv->manager),
+                                       (GDestroyNotify) g_object_unref);
+                g_object_unref (task);
                 return;
         }
 
@@ -143,20 +138,47 @@ get_manager (GdmClient           *client,
                                        cancellable,
                                        (GAsyncReadyCallback)
                                        on_got_manager,
-                                       result);
+                                       task);
+}
+
+typedef struct {
+        GTask           *task;
+        GdmUserVerifier *user_verifier;
+} UserVerifierData;
+
+static UserVerifierData *
+user_verifier_data_new (GTask *task, GdmUserVerifier *user_verifier)
+{
+        UserVerifierData *data;
+
+        data = g_slice_new (UserVerifierData);
+        data->task = g_object_ref (task);
+        data->user_verifier = g_object_ref (user_verifier);
+
+        return data;
+}
+
+static void
+user_verifier_data_free (UserVerifierData *data)
+{
+        g_object_unref (data->task);
+        g_object_unref (data->user_verifier);
+        g_slice_free (UserVerifierData, data);
 }
 
 static void
 complete_user_verifier_proxy_operation (GdmClient          *client,
-                                        GSimpleAsyncResult *operation_result)
+                                        UserVerifierData   *data)
 {
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+        g_task_return_pointer (data->task,
+                               g_object_ref (data->user_verifier),
+                               (GDestroyNotify) g_object_unref);
+        user_verifier_data_free (data);
 }
 
 static void
 maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
-                                              GSimpleAsyncResult *operation_result)
+                                              UserVerifierData   *data)
 {
         GHashTableIter iter;
         gpointer key, value;
@@ -169,19 +191,19 @@ maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
                 }
         }
 
-        complete_user_verifier_proxy_operation (client, operation_result);
+        complete_user_verifier_proxy_operation (client, data);
 }
 
 static void
 on_user_verifier_choice_list_proxy_created (GObject            *source,
                                             GAsyncResult       *result,
-                                            GSimpleAsyncResult *operation_result)
+                                            UserVerifierData   *data)
 {
         GdmClient                 *client;
         GdmUserVerifierChoiceList *choice_list;
         GError                    *error = NULL;
 
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
 
         choice_list = gdm_user_verifier_choice_list_proxy_new_finish (result, &error);
 
@@ -193,13 +215,13 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
                 g_hash_table_replace (client->priv->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
         }
 
-        maybe_complete_user_verifier_proxy_operation (client, operation_result);
+        maybe_complete_user_verifier_proxy_operation (client, data);
 }
 
 static void
 on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                      GAsyncResult       *result,
-                                     GSimpleAsyncResult *operation_result)
+                                     UserVerifierData   *data)
 {
         GdmClient *client;
         GCancellable *cancellable;
@@ -207,8 +229,8 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
         GError    *error = NULL;
         size_t     i;
 
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
+        cancellable = g_task_get_cancellable (data->task);
 
         gdm_user_verifier_call_enable_extensions_finish (user_verifier, result, &error);
 
@@ -216,7 +238,7 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                 g_debug ("Couldn't enable user verifier extensions: %s",
                          error->message);
                 g_clear_error (&error);
-                complete_user_verifier_proxy_operation (client, operation_result);
+                complete_user_verifier_proxy_operation (client, data);
                 return;
         }
 
@@ -236,7 +258,7 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                                                  cancellable,
                                                                  (GAsyncReadyCallback)
                                                                  on_user_verifier_choice_list_proxy_created,
-                                                                 operation_result);
+                                                                 data);
                 } else {
                         g_debug ("User verifier extension %s is unsupported", client->priv->enabled_extensions[i]);
                         g_hash_table_remove (client->priv->user_verifier_extensions,
@@ -246,7 +268,7 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
 
         if (g_hash_table_size (client->priv->user_verifier_extensions) == 0) {
                 g_debug ("No supported user verifier extensions");
-                complete_user_verifier_proxy_operation (client, operation_result);
+                complete_user_verifier_proxy_operation (client, data);
         }
 
 }
@@ -263,7 +285,7 @@ free_interface_skeleton (GDBusInterfaceSkeleton *interface)
 static void
 on_user_verifier_proxy_created (GObject            *source,
                                 GAsyncResult       *result,
-                                GSimpleAsyncResult *operation_result)
+                                GTask              *task)
 {
         GdmClient       *self;
         GdmUserVerifier *user_verifier;
@@ -272,24 +294,20 @@ on_user_verifier_proxy_created (GObject            *source,
 
         user_verifier = gdm_user_verifier_proxy_new_finish (result, &error);
         if (user_verifier == NULL) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
         g_debug ("UserVerifier %p created", user_verifier);
 
-        g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   user_verifier,
-                                                   (GDestroyNotify)
-                                                   g_object_unref);
-
-        self = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        self = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
         if (self->priv->enabled_extensions == NULL) {
                 g_debug ("no enabled extensions");
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_pointer (task,
+                                       user_verifier,
+                                       (GDestroyNotify) g_object_unref);
+                g_object_unref (task);
                 return;
         }
 
@@ -298,21 +316,21 @@ on_user_verifier_proxy_created (GObject            *source,
                                                                       NULL,
                                                                       (GDestroyNotify)
                                                                       free_interface_skeleton);
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_user_verifier_call_enable_extensions (user_verifier,
                                                   (const char * const *)
                                                   self->priv->enabled_extensions,
                                                   cancellable,
                                                   (GAsyncReadyCallback)
                                                   on_user_verifier_extensions_enabled,
-                                                  operation_result);
-
+                                                  user_verifier_data_new (task, user_verifier));
+        g_object_unref (user_verifier);
 }
 
 static void
 on_reauthentication_channel_connected (GObject            *source_object,
                                        GAsyncResult       *result,
-                                       GSimpleAsyncResult *operation_result)
+                                       GTask              *task)
 {
         GDBusConnection *connection;
         GCancellable *cancellable;
@@ -321,13 +339,12 @@ on_reauthentication_channel_connected (GObject            *source_object,
         error = NULL;
         connection = g_dbus_connection_new_for_address_finish (result, &error);
         if (!connection) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_user_verifier_proxy_new (connection,
                                      G_DBUS_PROXY_FLAGS_NONE,
                                      NULL,
@@ -335,14 +352,14 @@ on_reauthentication_channel_connected (GObject            *source_object,
                                      cancellable,
                                      (GAsyncReadyCallback)
                                      on_user_verifier_proxy_created,
-                                     operation_result);
+                                     task);
         g_object_unref (connection);
 }
 
 static void
 on_reauthentication_channel_opened (GdmManager         *manager,
                                     GAsyncResult       *result,
-                                    GSimpleAsyncResult *operation_result)
+                                    GTask              *task)
 {
         GCancellable *cancellable;
         char         *address;
@@ -353,48 +370,45 @@ on_reauthentication_channel_opened (GdmManager         *manager,
                                                                     &address,
                                                                     result,
                                                                     &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         g_dbus_connection_new_for_address (address,
                                            G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
                                            NULL,
                                            cancellable,
                                            (GAsyncReadyCallback)
                                            on_reauthentication_channel_connected,
-                                           operation_result);
+                                           task);
 }
 
 static void
 on_got_manager_for_reauthentication (GdmClient           *client,
                                      GAsyncResult        *result,
-                                     GSimpleAsyncResult  *operation_result)
+                                     GTask               *task)
 {
         GCancellable *cancellable;
         char         *username;
         GError       *error;
 
         error = NULL;
-        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                   &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+        if (!g_task_propagate_boolean (G_TASK (result), &error)) {
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
-        username = g_object_get_data (G_OBJECT (operation_result), "username");
+        cancellable = g_task_get_cancellable (task);
+        username = g_object_get_data (G_OBJECT (task), "username");
         gdm_manager_call_open_reauthentication_channel (client->priv->manager,
                                                         username,
                                                         cancellable,
                                                         (GAsyncReadyCallback)
                                                         on_reauthentication_channel_opened,
-                                                        operation_result);
+                                                        task);
 
 }
 
@@ -457,7 +471,7 @@ gdm_client_open_connection_sync (GdmClient      *client,
 static void
 on_connected (GObject            *source_object,
               GAsyncResult       *result,
-              GSimpleAsyncResult *operation_result)
+              GTask              *task)
 {
         GDBusConnection *connection;
         GError *error;
@@ -465,78 +479,72 @@ on_connected (GObject            *source_object,
         error = NULL;
         connection = g_dbus_connection_new_for_address_finish (result, &error);
         if (!connection) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   g_object_ref (connection),
-                                                   (GDestroyNotify)
-                                                   g_object_unref);
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+        g_task_return_pointer (task,
+                               g_object_ref (connection),
+                               (GDestroyNotify) g_object_unref);
+        g_object_unref (task);
         g_object_unref (connection);
 }
 
 static void
 on_session_opened (GdmManager         *manager,
                    GAsyncResult       *result,
-                   GSimpleAsyncResult *operation_result)
+                   GTask              *task)
 {
         GdmClient *client;
         GCancellable     *cancellable;
         GError           *error;
 
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
 
         error = NULL;
         if (!gdm_manager_call_open_session_finish (manager,
                                                    &client->priv->address,
                                                    result,
                                                    &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 g_object_unref (client);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         g_dbus_connection_new_for_address (client->priv->address,
                                            G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
                                            NULL,
                                            cancellable,
                                            (GAsyncReadyCallback)
                                            on_connected,
-                                           operation_result);
+                                           task);
         g_object_unref (client);
 }
 
 static void
 on_got_manager_for_opening_connection (GdmClient           *client,
                                        GAsyncResult        *result,
-                                       GSimpleAsyncResult  *operation_result)
+                                       GTask               *task)
 {
         GCancellable *cancellable;
         GError       *error;
 
         error = NULL;
-        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                   &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+        if (!g_task_propagate_boolean (G_TASK (result), &error)) {
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_manager_call_open_session (client->priv->manager,
                                        cancellable,
                                        (GAsyncReadyCallback)
                                        on_session_opened,
-                                       operation_result);
+                                       task);
 }
 
 static void
@@ -549,11 +557,10 @@ finish_pending_opens (GdmClient *client,
          node != NULL;
          node = node->next) {
 
-        GSimpleAsyncResult *pending_result = node->data;
+        GTask *task = node->data;
 
-        g_simple_async_result_set_from_error (pending_result, error);
-        g_simple_async_result_complete_in_idle (pending_result);
-        g_object_unref (pending_result);
+        g_task_return_error (task, error);
+        g_object_unref (task);
     }
     g_clear_pointer (&client->priv->pending_opens,
                      (GDestroyNotify) g_list_free);
@@ -564,16 +571,18 @@ gdm_client_open_connection_finish (GdmClient      *client,
                                    GAsyncResult   *result,
                                    GError        **error)
 {
+        g_autoptr(GDBusConnection) connection = NULL;
+
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                   error)) {
-            finish_pending_opens (client, *error);
-            return FALSE;
+        connection = g_task_propagate_pointer (G_TASK (result), error);
+        if (connection == NULL) {
+                finish_pending_opens (client, *error);
+                return FALSE;
         }
 
         if (client->priv->connection == NULL) {
-                client->priv->connection = g_object_ref (g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result)));
+                client->priv->connection = g_steal_pointer (&connection);
         }
 
         finish_pending_opens (client, NULL);
@@ -586,27 +595,20 @@ gdm_client_open_connection (GdmClient           *client,
                             GAsyncReadyCallback  callback,
                             gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        GTask *task;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
-        operation_result = g_simple_async_result_new (G_OBJECT (client),
-                                                      callback,
-                                                      user_data,
-                                                      gdm_client_open_connection);
-        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
-
-        g_object_set_data (G_OBJECT (operation_result),
-                           "cancellable",
-                           cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
         if (client->priv->connection != NULL) {
-            g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                       g_object_ref (client->priv->connection),
-                                                       (GDestroyNotify)
-                                                       g_object_unref);
-            g_simple_async_result_complete_in_idle (operation_result);
-            g_object_unref (operation_result);
+            g_task_return_pointer (task,
+                                   g_object_ref (client->priv->connection),
+                                   (GDestroyNotify) g_object_unref);
+            g_object_unref (task);
             return;
         }
 
@@ -615,10 +617,10 @@ gdm_client_open_connection (GdmClient           *client,
                          cancellable,
                          (GAsyncReadyCallback)
                          on_got_manager_for_opening_connection,
-                         operation_result);
+                         task);
         } else {
                 client->priv->pending_opens = g_list_prepend (client->priv->pending_opens,
-                                                              operation_result);
+                                                              task);
         }
 
 }
@@ -730,20 +732,16 @@ gdm_client_open_reauthentication_channel (GdmClient           *client,
                                           GAsyncReadyCallback  callback,
                                           gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        GTask *task;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
-        operation_result = g_simple_async_result_new (G_OBJECT (client),
-                                                      callback,
-                                                      user_data,
-                                                      gdm_client_open_reauthentication_channel);
-        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
-        g_object_set_data (G_OBJECT (operation_result),
-                           "cancellable",
-                           cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
-        g_object_set_data_full (G_OBJECT (operation_result),
+        g_object_set_data_full (G_OBJECT (task),
                                 "username",
                                 g_strdup (username),
                                 (GDestroyNotify)
@@ -753,7 +751,7 @@ gdm_client_open_reauthentication_channel (GdmClient           *client,
                      cancellable,
                      (GAsyncReadyCallback)
                      on_got_manager_for_reauthentication,
-                     operation_result);
+                     task);
 }
 
 /**
@@ -772,18 +770,9 @@ gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
                                                  GAsyncResult    *result,
                                                  GError         **error)
 {
-        GdmUserVerifier *user_verifier;
-
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                   error)) {
-                return NULL;
-        }
-
-        user_verifier = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-
-        return g_object_ref (user_verifier);
+        return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -870,20 +859,19 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
 static void
 on_connection_opened_for_user_verifier (GdmClient          *client,
                                         GAsyncResult       *result,
-                                        GSimpleAsyncResult *operation_result)
+                                        GTask              *task)
 {
         GCancellable *cancellable;
         GError       *error;
 
         error = NULL;
         if (!gdm_client_open_connection_finish (client, result, &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_user_verifier_proxy_new (client->priv->connection,
                                      G_DBUS_PROXY_FLAGS_NONE,
                                      NULL,
@@ -891,7 +879,7 @@ on_connection_opened_for_user_verifier (GdmClient          *client,
                                      cancellable,
                                      (GAsyncReadyCallback)
                                      on_user_verifier_proxy_created,
-                                     operation_result);
+                                     task);
 }
 
 /**
@@ -910,27 +898,20 @@ gdm_client_get_user_verifier (GdmClient           *client,
                               GAsyncReadyCallback  callback,
                               gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        GTask *task;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
-        operation_result = g_simple_async_result_new (G_OBJECT (client),
-                                                      callback,
-                                                      user_data,
-                                                      gdm_client_get_user_verifier);
-        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
-
-        g_object_set_data (G_OBJECT (operation_result),
-                           "cancellable",
-                           cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
         if (client->priv->user_verifier != NULL) {
-                g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                           g_object_ref (client->priv->user_verifier),
-                                                           (GDestroyNotify)
-                                                           g_object_unref);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_pointer (task,
+                                       g_object_ref (client->priv->user_verifier),
+                                       (GDestroyNotify) g_object_unref);
+                g_object_unref (task);
                 return;
         }
 
@@ -938,7 +919,7 @@ gdm_client_get_user_verifier (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_user_verifier,
-                                    operation_result);
+                                    task);
 }
 
 /**
@@ -961,14 +942,12 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (client->priv->user_verifier != NULL) {
+        if (client->priv->user_verifier != NULL)
                 return g_object_ref (client->priv->user_verifier);
-        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                          error)) {
-                return NULL;
-        }
 
-        user_verifier = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+        user_verifier = g_task_propagate_pointer (G_TASK (result), error);
+        if (user_verifier == NULL)
+                return NULL;
 
         client->priv->user_verifier = user_verifier;
 
@@ -986,7 +965,7 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
                            g_clear_object,
                            &client->priv->manager);
 
-        return g_object_ref (user_verifier);
+        return user_verifier;
 }
 
 /**
@@ -1032,25 +1011,22 @@ query_for_timed_login_requested_signal (GdmGreeter *greeter)
 static void
 on_greeter_proxy_created (GObject            *source,
                           GAsyncResult       *result,
-                          GSimpleAsyncResult *operation_result)
+                          GTask              *task)
 {
         GdmGreeter   *greeter;
         GError       *error = NULL;
 
         greeter = gdm_greeter_proxy_new_finish (result, &error);
         if (greeter == NULL) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   greeter,
-                                                   (GDestroyNotify)
-                                                   g_object_unref);
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+        g_task_return_pointer (task,
+                               greeter,
+                               (GDestroyNotify) g_object_unref);
+        g_object_unref (task);
 
         query_for_timed_login_requested_signal (greeter);
 }
@@ -1058,20 +1034,19 @@ on_greeter_proxy_created (GObject            *source,
 static void
 on_connection_opened_for_greeter (GdmClient          *client,
                                   GAsyncResult       *result,
-                                  GSimpleAsyncResult *operation_result)
+                                  GTask              *task)
 {
         GCancellable *cancellable;
         GError       *error;
 
         error = NULL;
         if (!gdm_client_open_connection_finish (client, result, &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_greeter_proxy_new (client->priv->connection,
                                G_DBUS_PROXY_FLAGS_NONE,
                                NULL,
@@ -1079,7 +1054,7 @@ on_connection_opened_for_greeter (GdmClient          *client,
                                cancellable,
                                (GAsyncReadyCallback)
                                on_greeter_proxy_created,
-                               operation_result);
+                               task);
 }
 
 /**
@@ -1098,27 +1073,20 @@ gdm_client_get_greeter (GdmClient           *client,
                         GAsyncReadyCallback  callback,
                         gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        GTask *task;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
-        operation_result = g_simple_async_result_new (G_OBJECT (client),
-                                                      callback,
-                                                      user_data,
-                                                      gdm_client_get_greeter);
-        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
-
-        g_object_set_data (G_OBJECT (operation_result),
-                           "cancellable",
-                           cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
         if (client->priv->greeter != NULL) {
-                g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                           g_object_ref (client->priv->greeter),
-                                                           (GDestroyNotify)
-                                                           g_object_unref);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_pointer (task,
+                                       g_object_ref (client->priv->greeter),
+                                       (GDestroyNotify) g_object_unref);
+                g_object_unref (task);
                 return;
         }
 
@@ -1126,7 +1094,7 @@ gdm_client_get_greeter (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_greeter,
-                                    operation_result);
+                                    task);
 }
 
 /**
@@ -1149,14 +1117,12 @@ gdm_client_get_greeter_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (client->priv->greeter != NULL) {
+        if (client->priv->greeter != NULL)
                 return g_object_ref (client->priv->greeter);
-        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                          error)) {
-                return NULL;
-        }
 
-        greeter = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+        greeter = g_task_propagate_pointer (G_TASK (result), error);
+        if (greeter == NULL)
+                return NULL;
 
         client->priv->greeter = greeter;
 
@@ -1174,7 +1140,7 @@ gdm_client_get_greeter_finish (GdmClient       *client,
                            g_clear_object,
                            &client->priv->manager);
 
-        return g_object_ref (greeter);
+        return greeter;
 }
 
 /**
@@ -1232,44 +1198,40 @@ gdm_client_get_greeter_sync (GdmClient     *client,
 static void
 on_remote_greeter_proxy_created (GObject            *object,
                                  GAsyncResult       *result,
-                                 GSimpleAsyncResult *operation_result)
+                                 GTask              *task)
 {
         GdmRemoteGreeter *remote_greeter;
         GError           *error = NULL;
 
         remote_greeter = gdm_remote_greeter_proxy_new_finish (result, &error);
         if (remote_greeter == NULL) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   remote_greeter,
-                                                   (GDestroyNotify)
-                                                   g_object_unref);
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+        g_task_return_pointer (task,
+                               remote_greeter,
+                               (GDestroyNotify) g_object_unref);
+        g_object_unref (task);
 }
 
 static void
 on_connection_opened_for_remote_greeter (GdmClient          *client,
                                          GAsyncResult       *result,
-                                         GSimpleAsyncResult *operation_result)
+                                         GTask              *task)
 {
         GCancellable *cancellable;
         GError       *error;
 
         error = NULL;
         if (!gdm_client_open_connection_finish (client, result, &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_remote_greeter_proxy_new (client->priv->connection,
                                       G_DBUS_PROXY_FLAGS_NONE,
                                       NULL,
@@ -1277,7 +1239,7 @@ on_connection_opened_for_remote_greeter (GdmClient          *client,
                                       cancellable,
                                       (GAsyncReadyCallback)
                                       on_remote_greeter_proxy_created,
-                                      operation_result);
+                                      task);
 }
 
 /**
@@ -1296,27 +1258,20 @@ gdm_client_get_remote_greeter (GdmClient           *client,
                                GAsyncReadyCallback  callback,
                                gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        GTask *task;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
-        operation_result = g_simple_async_result_new (G_OBJECT (client),
-                                                      callback,
-                                                      user_data,
-                                                      gdm_client_get_remote_greeter);
-        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
-
-        g_object_set_data (G_OBJECT (operation_result),
-                           "cancellable",
-                           cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
         if (client->priv->remote_greeter != NULL) {
-                g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                           g_object_ref (client->priv->remote_greeter),
-                                                           (GDestroyNotify)
-                                                           g_object_unref);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_pointer (task,
+                                       g_object_ref (client->priv->remote_greeter),
+                                       (GDestroyNotify) g_object_unref);
+                g_object_unref (task);
                 return;
         }
 
@@ -1324,7 +1279,7 @@ gdm_client_get_remote_greeter (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_remote_greeter,
-                                    operation_result);
+                                    task);
 }
 
 /**
@@ -1347,14 +1302,12 @@ gdm_client_get_remote_greeter_finish (GdmClient     *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (client->priv->remote_greeter != NULL) {
+        if (client->priv->remote_greeter != NULL)
                 return g_object_ref (client->priv->remote_greeter);
-        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                          error)) {
-                return NULL;
-        }
 
-        remote_greeter = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+        remote_greeter = g_task_propagate_pointer (G_TASK (result), error);
+        if (remote_greeter == NULL)
+                return NULL;
 
         client->priv->remote_greeter = remote_greeter;
 
@@ -1372,7 +1325,7 @@ gdm_client_get_remote_greeter_finish (GdmClient     *client,
                            g_clear_object,
                            &client->priv->manager);
 
-        return g_object_ref (remote_greeter);
+        return remote_greeter;
 }
 
 /**
@@ -1427,44 +1380,40 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
 static void
 on_chooser_proxy_created (GObject            *source,
                           GAsyncResult       *result,
-                          GSimpleAsyncResult *operation_result)
+                          GTask              *task)
 {
         GdmChooser   *chooser;
         GError       *error = NULL;
 
         chooser = gdm_chooser_proxy_new_finish (result, &error);
         if (chooser == NULL) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   chooser,
-                                                   (GDestroyNotify)
-                                                   g_object_unref);
-        g_simple_async_result_complete_in_idle (operation_result);
-        g_object_unref (operation_result);
+        g_task_return_pointer (task,
+                               chooser,
+                               (GDestroyNotify) g_object_unref);
+        g_object_unref (task);
 }
 
 static void
 on_connection_opened_for_chooser (GdmClient          *client,
                                   GAsyncResult       *result,
-                                  GSimpleAsyncResult *operation_result)
+                                  GTask              *task)
 {
         GCancellable *cancellable;
         GError       *error;
 
         error = NULL;
         if (!gdm_client_open_connection_finish (client, result, &error)) {
-                g_simple_async_result_take_error (operation_result, error);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_error (task, error);
+                g_object_unref (task);
                 return;
         }
 
-        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        cancellable = g_task_get_cancellable (task);
         gdm_chooser_proxy_new (client->priv->connection,
                                G_DBUS_PROXY_FLAGS_NONE,
                                NULL,
@@ -1472,7 +1421,7 @@ on_connection_opened_for_chooser (GdmClient          *client,
                                cancellable,
                                (GAsyncReadyCallback)
                                on_chooser_proxy_created,
-                               operation_result);
+                               task);
 }
 
 /**
@@ -1491,27 +1440,20 @@ gdm_client_get_chooser (GdmClient           *client,
                         GAsyncReadyCallback  callback,
                         gpointer             user_data)
 {
-        GSimpleAsyncResult *operation_result;
+        GTask *task;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
-        operation_result = g_simple_async_result_new (G_OBJECT (client),
-                                                      callback,
-                                                      user_data,
-                                                      gdm_client_get_chooser);
-        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
-
-        g_object_set_data (G_OBJECT (operation_result),
-                           "cancellable",
-                           cancellable);
+        task = g_task_new (G_OBJECT (client),
+                           cancellable,
+                           callback,
+                           user_data);
 
         if (client->priv->chooser != NULL) {
-                g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                           g_object_ref (client->priv->chooser),
-                                                           (GDestroyNotify)
-                                                           g_object_unref);
-                g_simple_async_result_complete_in_idle (operation_result);
-                g_object_unref (operation_result);
+                g_task_return_pointer (task,
+                                       g_object_ref (client->priv->chooser),
+                                       (GDestroyNotify) g_object_unref);
+                g_object_unref (task);
                 return;
         }
 
@@ -1519,7 +1461,7 @@ gdm_client_get_chooser (GdmClient           *client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_chooser,
-                                    operation_result);
+                                    task);
 }
 
 /**
@@ -1542,14 +1484,12 @@ gdm_client_get_chooser_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (client->priv->chooser != NULL) {
+        if (client->priv->chooser != NULL)
                 return g_object_ref (client->priv->chooser);
-        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-                                                          error)) {
-                return NULL;
-        }
 
-        chooser = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+        chooser = g_task_propagate_pointer (G_TASK (result), error);
+        if (chooser == NULL)
+                return NULL;
 
         client->priv->chooser = chooser;
 
@@ -1567,7 +1507,7 @@ gdm_client_get_chooser_finish (GdmClient       *client,
                            g_clear_object,
                            &client->priv->manager);
 
-        return g_object_ref (chooser);
+        return chooser;
 }
 
 /**
@@ -1711,5 +1651,4 @@ gdm_client_set_enabled_extensions (GdmClient          *client,
                                    const char * const *extensions)
 {
         client->priv->enabled_extensions = g_strdupv ((char **) extensions);
-
 }
