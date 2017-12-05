@@ -76,7 +76,7 @@ screenshot_grab_lock (void)
         cursor = gdk_cursor_new_for_display (gdk_display_get_default (), GDK_WATCH);
         gdk_pointer_grab (gtk_widget_get_window (selection_window), FALSE, 0, NULL,
                           cursor, GDK_CURRENT_TIME);
-        gdk_cursor_unref (cursor);
+        g_object_unref (cursor);
 
         result = TRUE;
 
