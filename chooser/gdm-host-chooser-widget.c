@@ -90,7 +90,7 @@ static void     gdm_host_chooser_widget_class_init  (GdmHostChooserWidgetClass *
 static void     gdm_host_chooser_widget_init        (GdmHostChooserWidget      *host_chooser_widget);
 static void     gdm_host_chooser_widget_finalize    (GObject                   *object);
 
-G_DEFINE_TYPE (GdmHostChooserWidget, gdm_host_chooser_widget, GTK_TYPE_VBOX)
+G_DEFINE_TYPE (GdmHostChooserWidget, gdm_host_chooser_widget, GTK_TYPE_BOX)
 
 #define GDM_XDMCP_PROTOCOL_VERSION 1001
 #define SCAN_TIMEOUT 30
