@@ -137,9 +137,9 @@ gdm_host_chooser_dialog_constructor (GType                  type,
         gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-                                GTK_STOCK_REFRESH, GTK_RESPONSE_APPLY,
-                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                GTK_STOCK_CONNECT, GTK_RESPONSE_OK,
+                                _("_Refresh"), GTK_RESPONSE_APPLY,
+                                _("_Cancel"), GTK_RESPONSE_CANCEL,
+                                _("C_onnect"), GTK_RESPONSE_OK,
                                 NULL);
 
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
