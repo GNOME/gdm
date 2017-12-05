@@ -12,6 +12,7 @@ gdm-manager-glue.c gdm-manager-glue.h : $(top_srcdir)/daemon/gdm-manager.xml Mak
 		--c-namespace Gdm				\
 		--interface-prefix=org.gnome.DisplayManager		\
 		--generate-c-code=gdm-manager-glue			\
+		--c-generate-autocleanup=all				\
 		--annotate "org.gnome.DisplayManager.Manager"		\
 		           "org.gtk.GDBus.C.Name" Manager		\
 		$(top_srcdir)/daemon/gdm-manager.xml
@@ -21,6 +22,7 @@ gdm-client-glue.c gdm-client-glue.h : $(top_srcdir)/daemon/gdm-session.xml Makef
 		--c-namespace Gdm				\
 		--interface-prefix=org.gnome.DisplayManager		\
 		--generate-c-code=gdm-client-glue			\
+		--c-generate-autocleanup=all				\
 		--annotate "org.gnome.DisplayManager.UserVerifier"	\
 		           "org.gtk.GDBus.C.Name" UserVerifier	\
 		--annotate "org.gnome.DisplayManager.Greeter"		\

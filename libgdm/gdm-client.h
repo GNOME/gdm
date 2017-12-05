@@ -122,6 +122,10 @@ GdmChooser        *gdm_client_get_chooser_sync          (GdmClient *client,
                                                          GCancellable     *cancellable,
                                                          GError          **error);
 
+#if GLIB_CHECK_VERSION(2, 44, 0)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmClient, g_object_unref)
+#endif
+
 G_END_DECLS
 
 #endif /* __GDM_CLIENT_H */
