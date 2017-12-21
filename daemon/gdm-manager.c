@@ -1241,8 +1241,8 @@ get_timed_login_details (GdmManager *manager,
 }
 
 static gboolean
-get_automatic_login_details (GdmManager *manager,
-                             char      **usernamep)
+get_automatic_login_details_legacy (GdmManager *manager,
+                                    char      **usernamep)
 {
         gboolean res;
         gboolean enabled;
@@ -1280,6 +1280,64 @@ get_automatic_login_details (GdmManager *manager,
         }
 
         return enabled;
+}
+
+static gchar *
+get_automatic_login_user (GdmManager *manager)
+{
+        g_autoptr(GDBusProxy) accountsservice_proxy = NULL;
+        g_autoptr(GVariant) result = NULL;
+        g_autoptr(GVariantIter) iter = NULL;
+        const gchar *path;
+        g_autoptr(GError) error = NULL;
+
+        accountsservice_proxy = g_dbus_proxy_new_sync (manager->priv->connection,
+                                                       0, NULL,
+                                                       "org.freedesktop.Accounts",
+                                                       "/org/freedesktop/Accounts",
+                                                       "org.freedesktop.Accounts",
+                                                       NULL,
+                                                       &error);
+        if (!accountsservice_proxy) {
+                g_warning ("Failed to contact accountsservice: %s", error->message);
+                return NULL;
+        }
+
+        /* If AccountsService doesn't support this property, fall back to old method */
+        result = g_dbus_proxy_get_cached_property (accountsservice_proxy, "AutomaticLoginUsers");
+        if (!result) {
+                char *username;
+                if (!get_automatic_login_details_legacy (manager, &username)) {
+                        return NULL;
+                }
+                return username;
+        }
+        if (!g_variant_is_of_type (result, G_VARIANT_TYPE ("ao"))) {
+                return NULL;
+        }
+
+        g_variant_get (result, "ao", &iter);
+        if (g_variant_iter_next (iter, "&o", &path)) {
+                g_autoptr(GDBusProxy) proxy = NULL;
+                g_autoptr(GVariant) username = NULL;
+
+                proxy = g_dbus_proxy_new_sync (manager->priv->connection,
+                                               0, NULL,
+                                               "org.freedesktop.Accounts",
+                                               path,
+                                               "org.freedesktop.Accounts.User",
+                                               NULL,
+                                               &error);
+                if (proxy == NULL) {
+                        g_warning ("Failed to get automatic login details from AccountsService for user %s: %s", path, error->message);
+                        return NULL;
+                }
+
+                username = g_dbus_proxy_get_cached_property (proxy, "UserName");
+                return g_variant_dup_string (username, NULL);
+        }
+
+        return NULL;
 }
 
 static void
@@ -1577,17 +1635,14 @@ set_up_session (GdmManager *manager,
         ActUser *user;
         gboolean loaded;
         gboolean is_initial_display = FALSE;
-        gboolean autologin_enabled = FALSE;
-        char *username = NULL;
+        g_autofree gchar *username = NULL;
 
         g_object_get (G_OBJECT (display), "is-initial", &is_initial_display, NULL);
 
         if (!manager->priv->ran_once && is_initial_display)
-                autologin_enabled = get_automatic_login_details (manager, &username);
+                username = get_automatic_login_user (manager);
 
-        if (!autologin_enabled) {
-                g_free (username);
-
+        if (username == NULL) {
 #ifdef HAVE_LIBXDMCP
                 if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
                         set_up_chooser_session (manager, display);
@@ -1612,7 +1667,7 @@ set_up_session (GdmManager *manager,
                 operation = g_new (UsernameLookupOperation, 1);
                 operation->manager = g_object_ref (manager);
                 operation->display = g_object_ref (display);
-                operation->username = username;
+                operation->username = g_steal_pointer (&username);
 
                 g_signal_connect (user,
                                   "notify::is-loaded",
@@ -2214,8 +2269,7 @@ on_session_conversation_started (GdmSession *session,
                                  GdmManager *manager)
 {
         GdmDisplay *display;
-        gboolean    enabled;
-        char       *username;
+        g_autofree gchar *username = NULL;
 
         g_debug ("GdmManager: session conversation started for service %s", service_name);
 
@@ -2234,9 +2288,8 @@ on_session_conversation_started (GdmSession *session,
                 return;
         }
 
-        enabled = get_automatic_login_details (manager, &username);
-
-        if (! enabled) {
+        username = get_automatic_login_user (manager);
+        if (username == NULL) {
                 return;
         }
 
@@ -2245,8 +2298,6 @@ on_session_conversation_started (GdmSession *session,
         /* service_name will be "gdm-autologin"
          */
         gdm_session_setup_for_user (session, service_name, username);
-
-        g_free (username);
 }
 
 static void
