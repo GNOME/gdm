@@ -594,8 +594,13 @@ gdm_get_script_environment (const char *username,
         }
 
         /* Runs as root */
-        g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (display_x11_authority_file));
-        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (display_name));
+        if (display_x11_authority_file) {
+                g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (display_x11_authority_file));
+        }
+
+        if (display_name) {
+                g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (display_name));
+        }
         g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (GDM_SESSION_DEFAULT_PATH));
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
 
