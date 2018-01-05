@@ -33,6 +33,8 @@
                 expr;                \
         } while G_UNLIKELY (errno == EINTR);
 
+#define GDM_SYSTEMD_SESSION_REQUIRE_ONLINE 0
+
 GQuark gdm_common_error_quark (void);
 #define GDM_COMMON_ERROR gdm_common_error_quark()
 
@@ -46,6 +48,11 @@ int            gdm_wait_on_and_disown_pid (int pid,
                                            int timeout);
 int            gdm_signal_pid            (int pid,
                                           int signal);
+
+gboolean       gdm_find_display_session_for_uid (const uid_t uid,
+                                                 char      **out_session_id,
+                                                 GError    **error);
+
 gboolean       gdm_get_pwent_for_name    (const char     *name,
                                           struct passwd **pwentp);
 
