@@ -191,6 +191,7 @@ goto_login_session (GDBusConnection  *connection,
         char           *our_session;
         char           *session_id;
         char           *seat_id;
+        GError         *local_error = NULL;
 
         ret = FALSE;
         session_id = NULL;
@@ -202,11 +203,8 @@ goto_login_session (GDBusConnection  *connection,
         /* Note that we mostly use free () here, instead of g_free ()
          * since the data allocated is from libsystemd-logind, which
          * does not use GLib's g_malloc (). */
-
-        res = sd_pid_get_session (0, &our_session);
-        if (res < 0) {
-                g_debug ("failed to determine own session: %s", strerror (-res));
-                g_set_error (error, GDM_CLIENT_ERROR, 0, _("Could not identify the current session."));
+        if (!gdm_find_display_session_for_uid (getuid (), &our_session, &local_error)) {
+                g_propagate_prefixed_error (error, local_error, _("Could not identify the current session: "));
 
                 return FALSE;
         }
