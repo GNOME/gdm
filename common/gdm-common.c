@@ -459,6 +459,7 @@ goto_login_session (GDBusConnection  *connection,
         char           *our_session;
         char           *session_id;
         char           *seat_id;
+        GError         *local_error = NULL;
 
         ret = FALSE;
         session_id = NULL;
@@ -471,10 +472,8 @@ goto_login_session (GDBusConnection  *connection,
          * since the data allocated is from libsystemd-logind, which
          * does not use GLib's g_malloc (). */
 
-        res = sd_pid_get_session (0, &our_session);
-        if (res < 0) {
-                g_debug ("failed to determine own session: %s", strerror (-res));
-                g_set_error (error, GDM_COMMON_ERROR, 0, _("Could not identify the current session."));
+        if (!gdm_find_display_session_for_uid (getuid (), &our_session, &local_error)) {
+                g_propagate_prefixed_error (error, local_error, _("Could not identify the current session: "));
 
                 return FALSE;
         }
@@ -817,4 +816,74 @@ gdm_shell_expand (const char *str,
                 }
         }
         return g_string_free (s, FALSE);
+}
+
+gboolean
+gdm_find_display_session_for_uid (const uid_t uid,
+                                  char      **out_session_id,
+                                  GError    **error)
+{
+        const gchar * const graphical_session_types[] = { "wayland", "x11", "mir", NULL };
+        const gchar * const active_states[] = { "active", "online", NULL };
+        g_autofree gchar *local_session_id = NULL;
+        g_autofree gchar *type = NULL;
+        g_autofree gchar *state = NULL;
+        int saved_errno;
+
+        g_return_val_if_fail (out_session_id != NULL, FALSE);
+
+        if ((saved_errno = sd_uid_get_display (uid, &local_session_id)) < 0) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Couldn't get display: %s (%s)",
+                             g_strerror (-saved_errno),
+                             local_session_id);
+                return FALSE;
+        }
+
+        if ((saved_errno = sd_session_get_type (local_session_id, &type)) < 0) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Couldn't get type for session '%s': %s",
+                             local_session_id,
+                             g_strerror (-saved_errno));
+                return FALSE;
+        }
+
+        if (!g_strv_contains (graphical_session_types, type)) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Session '%s' is not a graphical session (type: '%s')",
+                             local_session_id,
+                             type);
+                return FALSE;
+        }
+
+        /* display sessions can be 'closing' if they are logged out but some
+         * processes are lingering; we shouldn't consider these */
+        if ((saved_errno = sd_session_get_state (local_session_id, &state)) < 0) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Couldn't get state for session '%s': %s",
+                             local_session_id,
+                             g_strerror (-saved_errno));
+                return FALSE;
+        }
+
+        if (!g_strv_contains (active_states, state)) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Session '%s' is not active",
+                             local_session_id);
+                return FALSE;
+        }
+
+        *out_session_id = g_steal_pointer (&local_session_id);
+
+        return TRUE;
 }

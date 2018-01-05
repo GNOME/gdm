@@ -66,6 +66,7 @@ libgdm_la_LDFLAGS =                                                    \
         $(END_OF_LIST)
 
 libgdm_la_LIBADD =                                                     \
+        $(top_builddir)/common/libgdmcommon.la                         \
         $(LIBGDM_LIBS)                                                 \
         $(SYSTEMD_LIBS)                                                \
         $(END_OF_LIST)

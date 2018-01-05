@@ -446,6 +446,34 @@ get_seat_id_for_session_id (const char  *session_id,
 }
 
 static char *
+find_greeter_session_for_uid (uid_t uid)
+{
+        g_autofree gchar *class = NULL;
+        gchar *session_id = NULL;
+        g_auto(GStrv) sessions = NULL;
+        int n_sessions;
+        int saved_errno;
+
+        n_sessions = sd_uid_get_sessions (uid, 1, &sessions);
+
+        for (int i = 0; i < n_sessions; ++i) {
+                if ((saved_errno = sd_session_get_class (sessions[i], &class)) < 0) {
+                        g_critical ("Couldn't get class for session '%s': %s",
+                                    sessions[i],
+                                    g_strerror (-saved_errno));
+                        continue;
+                }
+
+                if (g_strcmp0 (class, "greeter") == 0) {
+                        session_id = g_strdup (sessions[i]);
+                        break;
+                }
+        }
+
+        return session_id;
+}
+
+static char *
 get_tty_for_session_id (const char  *session_id,
                         GError     **error)
 {
@@ -514,15 +542,29 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 goto out;
         }
 
-        session_id = get_session_id_for_pid (pid, &error);
+        ret = gdm_find_display_session_for_uid (caller_uid, &session_id, &error);
 
         if (session_id == NULL) {
-                g_debug ("GdmManager: Error while retrieving session id for sender: %s",
+                g_debug ("GdmManager: Error while retrieving session id for sender: %s, trying fallback.",
                          error->message);
-                g_error_free (error);
-                goto out;
+                g_clear_pointer (&error, g_error_free);
+
+                /* No display session for the user - we're probably the
+                 * greeter; look for a greeter session */
+                session_id = find_greeter_session_for_uid (caller_uid);
+                if (session_id == NULL) {
+                        /* Hmm, no, OK, let's look at the PID */
+                        g_debug ("GdmManager: Error while retrieving session id for user %d, looking at pid.",
+                                 caller_uid);
+                        session_id = get_session_id_for_pid (pid, &error);
+                        if (session_id == NULL) {
+                                g_debug ("GdmManager: Error while retrieving session id for pid %d, failing.",
+                                         pid);
+                                goto out;
+                        }
+                }
         }
- 
+
         if (out_session_id != NULL) {
                 *out_session_id = g_strdup (session_id);
         }
