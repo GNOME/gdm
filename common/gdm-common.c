@@ -484,6 +484,7 @@ goto_login_session (GDBusConnection  *connection,
         char           *our_session;
         char           *session_id;
         char           *seat_id;
+        GError         *local_error = NULL;
 
         ret = FALSE;
         session_id = NULL;
@@ -496,10 +497,8 @@ goto_login_session (GDBusConnection  *connection,
          * since the data allocated is from libsystemd-logind, which
          * does not use GLib's g_malloc (). */
 
-        res = sd_pid_get_session (0, &our_session);
-        if (res < 0) {
-                g_debug ("failed to determine own session: %s", strerror (-res));
-                g_set_error (error, GDM_COMMON_ERROR, 0, _("Could not identify the current session."));
+        if (!gdm_find_display_session_for_uid (getuid (), &our_session, &local_error)) {
+                g_propagate_prefixed_error (error, local_error, _("Could not identify the current session: "));
 
                 return FALSE;
         }
@@ -842,4 +841,114 @@ gdm_shell_expand (const char *str,
                 }
         }
         return g_string_free (s, FALSE);
+}
+
+static gboolean
+_systemd_session_is_graphical (const char *session_id)
+{
+        const gchar * const graphical_session_types[] = { "wayland", "x11", "mir", NULL };
+        int saved_errno;
+        g_autofree gchar *type = NULL;
+
+        saved_errno = sd_session_get_type (session_id, &type);
+        if (saved_errno < 0) {
+                g_warning ("Couldn't get type for session '%s': %s",
+                           session_id,
+                           g_strerror (-saved_errno));
+                return FALSE;
+        }
+
+        if (!g_strv_contains (graphical_session_types, type)) {
+                g_debug ("Session '%s' is not a graphical session (type: '%s')",
+                         session_id,
+                         type);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+_systemd_session_is_active (const char *session_id)
+{
+        const gchar * const active_states[] = { "active", "online", NULL };
+        int saved_errno;
+        g_autofree gchar *state = NULL;
+
+        /*
+         * display sessions can be 'closing' if they are logged out but some
+         * processes are lingering; we shouldn't consider these (this is
+         * checking for a race condition since we specified
+         * GDM_SYSTEMD_SESSION_REQUIRE_ONLINE)
+         */
+        saved_errno = sd_session_get_state (session_id, &state);
+        if (saved_errno < 0) {
+                g_warning ("Couldn't get state for session '%s': %s",
+                           session_id,
+                           g_strerror (-saved_errno));
+                return FALSE;
+        }
+
+        if (!g_strv_contains (active_states, state)) {
+                g_debug ("Session '%s' is not active or online", session_id);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+gboolean
+gdm_find_display_session_for_uid (const uid_t uid,
+                                  char      **out_session_id,
+                                  GError    **error)
+{
+        char *local_session_id = NULL;
+        g_auto(GStrv) sessions = NULL;
+        int n_sessions;
+
+        g_return_val_if_fail (out_session_id != NULL, FALSE);
+
+        g_debug ("Finding a graphical session for user %d", uid);
+
+        n_sessions = sd_uid_get_sessions (uid,
+                                          GDM_SYSTEMD_SESSION_REQUIRE_ONLINE,
+                                          &sessions);
+
+        if (n_sessions < 0) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Failed to get sessions for user %d",
+                             uid);
+                return FALSE;
+        }
+
+        for (int i = 0; i < n_sessions; ++i) {
+                g_debug ("Considering session '%s'", sessions[i]);
+
+                if (!_systemd_session_is_graphical (sessions[i]))
+                        continue;
+
+                if (!_systemd_session_is_active (sessions[i]))
+                        continue;
+
+                /*
+                 * We get the sessions from newest to oldest, so take the last
+                 * one we find that's good
+                 */
+                local_session_id = sessions[i];
+        }
+
+        if (local_session_id == NULL) {
+                g_set_error (error,
+                             GDM_COMMON_ERROR,
+                             0,
+                             "Could not find a graphical session for user %d",
+                             uid);
+                return FALSE;
+        }
+
+        *out_session_id = g_strdup (local_session_id);
+
+        return TRUE;
 }
