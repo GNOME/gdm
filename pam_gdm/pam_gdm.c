@@ -47,7 +47,7 @@ pam_sm_authenticate (pam_handle_t  *pamh,
                 return PAM_AUTHINFO_UNAVAIL;
 
         r = keyctl_read_alloc (serial, &cached_password);
-        if (r < 0)
+        if (r < 0 || r != strlen (cached_password))
                 return PAM_AUTHINFO_UNAVAIL;
 
         r = pam_set_item (pamh, PAM_AUTHTOK, cached_password);
