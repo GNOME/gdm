@@ -82,12 +82,10 @@ struct GdmManagerPrivate
         GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
         gboolean                xdmcp_enabled;
-        GCancellable           *cancellable;
 
         gboolean                started;
         gboolean                show_local_greeter;
 
-        GDBusProxy               *bus_proxy;
         GDBusConnection          *connection;
         GDBusObjectManagerServer *object_manager;
 
