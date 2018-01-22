@@ -1424,6 +1424,24 @@ fi
 AC_SUBST(GDM_SCREENSHOT_DIR)
 
 dnl ---------------------------------------------------------------------------
+dnl - runtime conf
+dnl ---------------------------------------------------------------------------
+
+withval=""
+AC_ARG_WITH(runtime_conf,
+            AS_HELP_STRING([--with-runtime-conf=<FILENAME>],
+                           [FILENAME to give to runtime configuration file @<:@default=GDM_RUN_DIR/custom.conf@:>@]))
+
+if test x$withval != x; then
+	GDM_RUNTIME_CONF="$withval"
+else
+	GDM_RUNTIME_CONF="$GDM_RUN_DIR/custom.conf"
+fi
+
+AC_SUBST(GDM_RUNTIME_CONF)
+
+
+dnl ---------------------------------------------------------------------------
 dnl - Finish
 dnl ---------------------------------------------------------------------------
 

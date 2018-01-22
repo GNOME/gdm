@@ -46,11 +46,89 @@ struct GdmSettingsDesktopBackendPrivate
         guint       save_id;
 };
 
+enum {
+        PROP_0,
+        PROP_FILENAME,
+};
+
 static void     gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass);
 static void     gdm_settings_desktop_backend_init       (GdmSettingsDesktopBackend      *settings_desktop_backend);
 static void     gdm_settings_desktop_backend_finalize   (GObject                        *object);
 
 G_DEFINE_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM_TYPE_SETTINGS_BACKEND)
+
+static void
+_gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
+                                             const char                *filename)
+{
+        gboolean res;
+        GError  *error;
+        char *contents;
+
+        backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
+
+        g_free (backend->priv->filename);
+        backend->priv->filename = g_strdup (filename);
+
+        backend->priv->key_file = g_key_file_new ();
+
+        error = NULL;
+        res = g_key_file_load_from_file (backend->priv->key_file,
+                                         backend->priv->filename,
+                                         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
+                                         &error);
+        if (! res) {
+                g_warning ("Unable to load file '%s': %s", backend->priv->filename, error->message);
+        }
+
+        contents = g_key_file_to_data (backend->priv->key_file, NULL, NULL);
+
+        if (contents != NULL) {
+                g_debug ("GdmSettings: %s is:\n%s\n", backend->priv->filename, contents);
+                g_free (contents);
+        }
+
+}
+
+static void
+gdm_settings_desktop_backend_set_property (GObject      *object,
+                                           guint         prop_id,
+                                           const GValue *value,
+                                           GParamSpec   *pspec)
+{
+        GdmSettingsDesktopBackend *self;
+
+        self = GDM_SETTINGS_DESKTOP_BACKEND (object);
+
+        switch (prop_id) {
+                case PROP_FILENAME:
+                        _gdm_settings_desktop_backend_set_file_name (self, g_value_get_string (value));
+                        break;
+                default:
+                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                        break;
+        }
+}
+
+static void
+gdm_settings_desktop_backend_get_property (GObject      *object,
+                                           guint         prop_id,
+                                           GValue       *value,
+                                           GParamSpec   *pspec)
+{
+        GdmSettingsDesktopBackend *self;
+
+        self = GDM_SETTINGS_DESKTOP_BACKEND (object);
+
+        switch (prop_id) {
+                case PROP_FILENAME:
+                        g_value_set_string (value, self->priv->filename);
+                        break;
+                default:
+                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                        break;
+        }
+}
 
 static gboolean
 parse_key_string (const char *keystring,
@@ -308,41 +386,27 @@ gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
         GObjectClass            *object_class = G_OBJECT_CLASS (klass);
         GdmSettingsBackendClass *backend_class = GDM_SETTINGS_BACKEND_CLASS (klass);
 
+        object_class->get_property = gdm_settings_desktop_backend_get_property;
+        object_class->set_property = gdm_settings_desktop_backend_set_property;
         object_class->finalize = gdm_settings_desktop_backend_finalize;
 
         backend_class->get_value = gdm_settings_desktop_backend_get_value;
         backend_class->set_value = gdm_settings_desktop_backend_set_value;
 
         g_type_class_add_private (klass, sizeof (GdmSettingsDesktopBackendPrivate));
+
+        g_object_class_install_property (object_class,
+                                         PROP_FILENAME,
+                                         g_param_spec_string ("filename",
+                                                              "File Name",
+                                                              "The name of the configuration file",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 gdm_settings_desktop_backend_init (GdmSettingsDesktopBackend *backend)
 {
-        gboolean res;
-        GError  *error;
-        char *contents;
-
-        backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
-
-        backend->priv->key_file = g_key_file_new ();
-        backend->priv->filename = g_strdup (GDM_CUSTOM_CONF);
-
-        error = NULL;
-        res = g_key_file_load_from_file (backend->priv->key_file,
-                                         backend->priv->filename,
-                                         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
-                                         &error);
-        if (! res) {
-                g_warning ("Unable to load file '%s': %s", backend->priv->filename, error->message);
-        }
-
-        contents = g_key_file_to_data (backend->priv->key_file, NULL, NULL);
-
-        if (contents != NULL) {
-                g_debug ("GdmSettings: %s is:\n%s\n", backend->priv->filename, contents);
-                g_free (contents);
-        }
 }
 
 static void
@@ -365,11 +429,15 @@ gdm_settings_desktop_backend_finalize (GObject *object)
 }
 
 GdmSettingsBackend *
-gdm_settings_desktop_backend_new (void)
+gdm_settings_desktop_backend_new (const char* filename)
 {
         GObject *object;
 
-        object = g_object_new (GDM_TYPE_SETTINGS_DESKTOP_BACKEND, NULL);
+        if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
+                return NULL;
 
+        object = g_object_new (GDM_TYPE_SETTINGS_DESKTOP_BACKEND,
+                               "filename", filename,
+                               NULL);
         return GDM_SETTINGS_BACKEND (object);
 }

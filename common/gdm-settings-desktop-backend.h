@@ -49,7 +49,7 @@ typedef struct
 
 GType                      gdm_settings_desktop_backend_get_type        (void);
 
-GdmSettingsBackend        *gdm_settings_desktop_backend_new             (void);
+GdmSettingsBackend        *gdm_settings_desktop_backend_new             (const char* filename);
 
 G_END_DECLS
 

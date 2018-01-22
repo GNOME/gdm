@@ -43,7 +43,7 @@
 
 struct GdmSettingsPrivate
 {
-        GdmSettingsBackend *backend;
+        GList *backends;
 };
 
 enum {
@@ -80,15 +80,28 @@ gdm_settings_get_value (GdmSettings *settings,
 {
         GError  *local_error;
         gboolean res;
+        GList   *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
 
         local_error = NULL;
-        res = gdm_settings_backend_get_value (settings->priv->backend,
-                                              key,
-                                              value,
-                                              &local_error);
+
+        for (l = settings->priv->backends; l; l = g_list_next (l)) {
+                GdmSettingsBackend *backend = l->data;
+
+                if (local_error) {
+                        g_error_free (local_error);
+                        local_error = NULL;
+                }
+
+                res = gdm_settings_backend_get_value (backend,
+                                                      key,
+                                                      value,
+                                                      &local_error);
+                if (res)
+                        break;
+        }
         if (! res) {
                 g_propagate_error (error, local_error);
         }
@@ -104,6 +117,7 @@ gdm_settings_set_value (GdmSettings *settings,
 {
         GError  *local_error;
         gboolean res;
+        GList   *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
@@ -111,10 +125,23 @@ gdm_settings_set_value (GdmSettings *settings,
         g_debug ("Setting value %s", key);
 
         local_error = NULL;
-        res = gdm_settings_backend_set_value (settings->priv->backend,
-                                              key,
-                                              value,
-                                              &local_error);
+
+        for (l = settings->priv->backends; l; l = g_list_next (l)) {
+                GdmSettingsBackend *backend = l->data;
+
+                if (local_error) {
+                        g_error_free (local_error);
+                        local_error = NULL;
+                }
+
+                res = gdm_settings_backend_set_value (backend,
+                                                      key,
+                                                      value,
+                                                      &local_error);
+                if (res)
+                        break;
+        }
+
         if (! res) {
                 g_propagate_error (error, local_error);
         }
@@ -162,13 +189,27 @@ backend_value_changed (GdmSettingsBackend *backend,
 static void
 gdm_settings_init (GdmSettings *settings)
 {
+        GList *l;
+        GdmSettingsBackend *backend;
+
         settings->priv = GDM_SETTINGS_GET_PRIVATE (settings);
 
-        settings->priv->backend = gdm_settings_desktop_backend_new ();
-        g_signal_connect (settings->priv->backend,
-                          "value-changed",
-                          G_CALLBACK (backend_value_changed),
-                          settings);
+        backend = gdm_settings_desktop_backend_new (GDM_CUSTOM_CONF);
+        if (backend)
+                settings->priv->backends = g_list_prepend (NULL, backend);
+
+        backend = gdm_settings_desktop_backend_new (GDM_RUNTIME_CONF);
+        if (backend)
+                settings->priv->backends = g_list_prepend (settings->priv->backends, backend);
+
+        for (l = settings->priv->backends; l; l = g_list_next (l)) {
+                backend = l->data;
+
+                g_signal_connect (backend,
+                                  "value-changed",
+                                  G_CALLBACK (backend_value_changed),
+                                  settings);
+        }
 }
 
 static void
@@ -183,9 +224,9 @@ gdm_settings_finalize (GObject *object)
 
         g_return_if_fail (settings->priv != NULL);
 
-        if (settings->priv->backend != NULL) {
-                g_object_unref (settings->priv->backend);
-        }
+        g_list_foreach (settings->priv->backends, (GFunc) g_object_unref, NULL);
+        g_list_free (settings->priv->backends);
+        settings->priv->backends = NULL;
 
         settings_object = NULL;
 
