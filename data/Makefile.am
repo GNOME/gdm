@@ -161,12 +161,16 @@ if ENABLE_ARCH_PAM_CONFIG
 pam_files = $(pam_arch_files)
 endif
 
+udevrulesdir = $(prefix)/lib/udev/rules.d
+udevrules_DATA = 61-gdm.rules
+
 EXTRA_DIST +=			\
 	$(dconf_db_files)	\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
 	$(localealias_DATA)	\
+	$(udevrules_DATA)	\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\

@@ -1,0 +1,2 @@
+# disable Wayland on Cirrus chipsets
+ATTR{vendor}=="0x1013", ATTR{device}=="0x00b8", ATTR{subsystem_vendor}=="0x1af4", ATTR{subsystem_device}=="0x1100", RUN+="/bin/sh -c '/bin/mkdir /run/gdm ; /usr/bin/printf \"[daemon]\nWaylandEnable=false\" >> /run/gdm/custom.conf'"
