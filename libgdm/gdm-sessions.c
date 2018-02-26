@@ -48,6 +48,16 @@ static GHashTable *gdm_available_sessions_map;
 
 static gboolean gdm_sessions_map_is_initialized = FALSE;
 
+static void
+gdm_session_file_free (GdmSessionFile *session)
+{
+  g_free (session->id);
+  g_free (session->path);
+  g_free (session->translated_name);
+  g_free (session->translated_comment);
+  g_free (session);
+}
+
 /* adapted from gnome-menus desktop-entries.c */
 static gboolean
 key_file_is_relevant (GKeyFile     *key_file)
@@ -223,7 +233,7 @@ collect_sessions (void)
 
         if (gdm_available_sessions_map == NULL) {
                 gdm_available_sessions_map = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                                    g_free, g_free);
+                                                                    g_free, (GDestroyNotify)gdm_session_file_free);
         }
 
         for (i = 0; xorg_search_dirs [i] != NULL; i++) {
