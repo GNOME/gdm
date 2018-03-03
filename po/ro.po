@@ -5,13 +5,14 @@
 # Mișu Moldovan <dumol@gnome.ro>, 2003 - 2009.
 # Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009, 2010, 2011.
 # Adi Roiban <adi@roiban.ro>, 2009
-# Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>, 2014, 2015.
+# Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>, 2014, 2015, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2015-06-14 14:52+0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gdm&ke"
+"ywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-12-05 02:14+0000\n"
+"PO-Revision-Date: 2018-01-07 21:19+0200\n"
 "Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Gnome Romanian Translation Team\n"
 "Language: ro\n"
@@ -22,6 +23,38 @@ msgstr ""
 "20)) ? 1 : 2);;\n"
 "X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
+
+#: ../chooser/gdm-host-chooser-dialog.c:140
+msgid "_Refresh"
+msgstr "_Reîmprospătează"
+
+#: ../chooser/gdm-host-chooser-dialog.c:141
+msgid "_Cancel"
+msgstr "_Anulează"
+
+#: ../chooser/gdm-host-chooser-dialog.c:142
+msgid "C_onnect"
+msgstr "C_onectează"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "Selectare sistem"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Nu s-a putut crea un buffer XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Nu s-a putut citi antetul XDMCP!"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Versiune XDMCP incorectă!"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Nu s-a putut prelucra adresa"
 
 #: ../common/gdm-common.c:298
 #, c-format
@@ -54,7 +87,8 @@ msgstr "Sistemul nu poate porni un ecran de autentificare nou."
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
+#| msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "Utilizatorul „%s” nu a putut fi găsit în sistem"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -69,63 +103,72 @@ msgstr ""
 "pentru diagnoză. Între timp acest afișaj va fi dezactivat. Reporniți GDM "
 "când problema este corectată."
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:777
 msgid "No display available"
 msgstr "Niciun afișaj disponibil"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:846 ../daemon/gdm-manager.c:1122
 msgid "No session available"
 msgstr "Nicio sesiune disponibilă"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:865
+#| msgid "No session available"
+msgid "Chooser session unavailable"
+msgstr "Comutatorul de sesiune este indisponibil"
+
+#: ../daemon/gdm-manager.c:877
 msgid "Can only be called before user is logged in"
 msgstr "Poate fi executat doar înainte ca utilizatorul să fie autentificat"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:888
 msgid "Caller not GDM"
 msgstr "Apelantul nu este GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:898
 msgid "Unable to open private communication channel"
 msgstr "Nu s-a putut deschide un canal de comunicare privat"
 
-#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-server.c:383
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+#| msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Serverul trebuia pornit de utilizatorul %s, dar acesta nu există"
 
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
+#: ../daemon/gdm-server.c:394 ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set groupid to %d"
+#| msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "groupid nu a putut fi stabilit ca fiind %d"
 
-#: ../daemon/gdm-server.c:395
+#: ../daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () a eșuat pentru %s"
 
-#: ../daemon/gdm-server.c:401
+#: ../daemon/gdm-server.c:406
 #, c-format
-msgid "Couldn't set userid to %d"
+#| msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "userid nu a putut fi stabilit ca fiind %d"
 
-#: ../daemon/gdm-server.c:479
+#: ../daemon/gdm-server.c:484
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nu s-a putut deschide fișierul jurnal pentru afișajul %s!"
 
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
+#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
+#: ../daemon/gdm-server.c:517
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Eroare în stabilirea a „%s” ca fiind %s"
 
-#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:537
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+#| msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Prioritatea serverului nu a putut fi stabilită ca fiind %d: %s"
 
-#: ../daemon/gdm-server.c:684
+#: ../daemon/gdm-server.c:689
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comandă de server nulă pentru afișajul %s"
@@ -154,52 +197,50 @@ msgstr "Dispozitiv de tip afișaj"
 msgid "The display device"
 msgstr "Dispozitivul de tip afișaj"
 
-#: ../daemon/gdm-session.c:1193
+#: ../daemon/gdm-session.c:1261
 msgid "Could not create authentication helper process"
 msgstr "Nu s-a putut crea procesul ajutător de autentificare"
 
-#: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#: ../daemon/gdm-session-worker.c:766
+#| msgid "Your account was given a time limit that's now passed."
+msgid "Your account was given a time limit that’s now passed."
 msgstr "Contul dumneavoastră a primit o limită de timp care acum a expirat."
 
-#: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+#: ../daemon/gdm-session-worker.c:773
+#| msgid "Sorry, that didn't work. Please try again."
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Nu a funcționat. Încercați din nou."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1170
 msgid "Username:"
 msgstr "Nume de utilizator:"
 
-#: ../daemon/gdm-session-worker.c:1142
-msgid "Your password has expired, please change it now."
-msgstr "Parola dumneavoastră a expirat, schimbați-o acum."
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
+#: ../daemon/gdm-session-worker.c:1672 ../daemon/gdm-session-worker.c:1689
 #, c-format
 msgid "no user account available"
 msgstr "niciun cont de utilizator disponibil"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: ../daemon/gdm-session-worker.c:1716
 msgid "Unable to change to user"
 msgstr "Nu se poate schimba utilizatorul"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:478
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Administratorul de afișaje GNOME - Lansatorul de sesiune Wayland"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Nu s-a putut crea un socket!"
 
-#: ../daemon/gdm-x-session.c:686
+#: ../daemon/gdm-x-session.c:826
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Rulați programul prin scriptul încadrator /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:687
+#: ../daemon/gdm-x-session.c:827
 msgid "Listen on TCP socket"
 msgstr "Ascultă la soclul TCP"
 
-#: ../daemon/gdm-x-session.c:698
+#: ../daemon/gdm-x-session.c:838
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Administratorul de afișaje GNOME - Lansatorul de sesiune X"
 
@@ -222,7 +263,8 @@ msgstr "Crearea dosarului jurnal %s a eșuat: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
+#| msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Utilizatorul GDM „%s” nu a fost găsit. Se renunță!"
 
 #: ../daemon/main.c:229
@@ -231,49 +273,40 @@ msgstr "Utilizatorul GDM nu trebuie să fie root. Se renunță!"
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
+#| msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Grupul GDM „%s” nu a fost găsit. Se renunță!"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Grupul GDM nu trebuie să fie root. Se renunță!"
 
-#: ../daemon/main.c:318
+#: ../daemon/main.c:317
 msgid "Make all warnings fatal"
 msgstr "Consideră orice eroare ca fiind fatală"
 
-#: ../daemon/main.c:319
+#: ../daemon/main.c:318
 msgid "Exit after a time (for debugging)"
 msgstr "Ieși după un anumit timp (pentru depanare)"
 
-#: ../daemon/main.c:320
+#: ../daemon/main.c:319
 msgid "Print GDM version"
 msgstr "Arată versiunea GDM"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:330
 msgid "GNOME Display Manager"
 msgstr "Administrator afișaje GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:381
+#: ../daemon/main.c:351
 msgid "Only the root user can run GDM"
 msgstr "Doar administratorul (root) poate porni GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
+#: ../daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Proces ajutător al sesiunii administratorului de afișaje GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-msgid "GNOME Shell"
-msgstr "Interfața GNOME"
-
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
-msgstr "Administrarea și compunerea ferestrelor"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -318,24 +351,28 @@ msgid "Path to small image at top of user list"
 msgstr "Locația imaginii din vârful listei de utilizatori"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#| msgid ""
+#| "The login screen can optionally show a small image at the top of its user "
+#| "list to provide site administrators and distributions a way to provide "
+#| "branding."
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Ecranul de autentificare poate afișa o imagine mică în vârful listei sale de "
-"utilizatori pentru ca distribuitorii și administratorii să poată marca un "
-"brand."
+"Ecranul de autentificare poate afișa o imagine mică pentru ca distribuitorii "
+"și administratorii să poată afișa un brand."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#| msgid ""
+#| "The fallback login screen can optionally show a small image at the top of "
+#| "its user list to provide site administrators and distributions a way to "
+#| "provide branding."
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
-"Ecranul de autentificare de rezervă poate afișa o imagine mică în vârful "
-"listei sale de utilizatori pentru ca distribuitorii și administratorii să "
-"poată marca un brand."
+"Ecranul de autentificare de rezervă poate afișa o imagine mică pentru ca "
+"distribuitorii și administratorii să poată afișa un brand."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Avoid showing user list"
@@ -387,26 +424,6 @@ msgstr ""
 "De câte ori unui utilizator îi este permis să încerce autentificarea înainte "
 "de a reveni la selecția utilizatorilor"
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Selectare sistem"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: Nu s-a putut crea un buffer XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: Nu s-a putut citi antetul XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Versiune XDMCP incorectă!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: Nu s-a putut prelucra adresa"
-
 # Nu e un „monitor” în sine, ci un obiect afișaj al X11 care e creat temporar după ce utilizatorul iese din sesiunea lui, până înainte de a intra în a altuia.
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
@@ -439,8 +456,9 @@ msgstr "Versiunea acestei aplicații"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- Autentificare nouă GDM"
+#| msgid "- New GDM login"
+msgid "— New GDM login"
+msgstr "— Autentificare nouă GDM"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -451,12 +469,11 @@ msgstr "S-a capturat ecranul"
 msgid "Take a picture of the screen"
 msgstr "Capturează imaginea ecranului"
 
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr "Parola dumneavoastră a expirat, schimbați-o acum."
 
+#~ msgid "GNOME Shell"
+#~ msgstr "Interfața GNOME"
 
-
-
-
-
-
-
-
+#~ msgid "Window management and compositing"
+#~ msgstr "Administrarea și compunerea ferestrelor"
