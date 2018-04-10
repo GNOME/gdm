@@ -2510,6 +2510,13 @@ gdm_manager_start (GdmManager *manager)
 #ifdef HAVE_LIBXDMCP
         /* Accept remote connections */
         if (manager->priv->xdmcp_enabled) {
+#ifdef WITH_PLYMOUTH
+                /* Quit plymouth if xdmcp is the only display */
+                if (!manager->priv->show_local_greeter && manager->priv->plymouth_is_running) {
+                        plymouth_quit_with_transition ();
+                        manager->priv->plymouth_is_running = FALSE;
+                }
+#endif
                 if (manager->priv->xdmcp_factory != NULL) {
                         g_debug ("GdmManager: Accepting XDMCP connections...");
                         gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
