@@ -329,7 +329,6 @@ main (int    argc,
 
         context = g_option_context_new (_("GNOME Display Manager"));
         g_option_context_add_main_entries (context, entries, NULL);
-        g_option_context_set_ignore_unknown_options (context, TRUE);
 
         error = NULL;
         res = g_option_context_parse (context, &argc, &argv, &error);
