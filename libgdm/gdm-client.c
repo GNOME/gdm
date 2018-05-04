@@ -454,7 +454,6 @@ gdm_client_open_connection_sync (GdmClient      *client,
                                                                                    NULL,
                                                                                    cancellable,
                                                                                    error);
-
                 if (client->priv->connection == NULL) {
                         g_clear_object (&client->priv->manager);
                         g_clear_pointer (&client->priv->address, g_free);
@@ -698,12 +697,9 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
-        if (user_verifier != NULL) {
-                g_object_weak_ref (G_OBJECT (user_verifier),
-                                   (GWeakNotify)
-                                   g_object_unref,
-                                   connection);
+        g_object_unref (connection);
 
+        if (user_verifier != NULL) {
                 g_object_weak_ref (G_OBJECT (user_verifier),
                                    (GWeakNotify)
                                    g_clear_object,
@@ -814,10 +810,6 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                    (GWeakNotify)
                                    g_clear_object,
                                    &client->priv->manager);
-                g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
-                                   (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
 
                 if (client->priv->enabled_extensions != NULL) {
                         gboolean res;
@@ -954,11 +946,6 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
         g_object_add_weak_pointer (G_OBJECT (client->priv->user_verifier),
                                    (gpointer *)
                                    &client->priv->user_verifier);
-
-        g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
-                           (GWeakNotify)
-                           g_object_unref,
-                           client->priv->connection);
 
         g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
                            (GWeakNotify)
@@ -1132,11 +1119,6 @@ gdm_client_get_greeter_finish (GdmClient       *client,
 
         g_object_weak_ref (G_OBJECT (client->priv->greeter),
                            (GWeakNotify)
-                           g_object_unref,
-                           client->priv->connection);
-
-        g_object_weak_ref (G_OBJECT (client->priv->greeter),
-                           (GWeakNotify)
                            g_clear_object,
                            &client->priv->manager);
 
@@ -1184,10 +1166,6 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                                    (GWeakNotify)
                                    g_clear_object,
                                    &client->priv->manager);
-                g_object_weak_ref (G_OBJECT (client->priv->greeter),
-                                   (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
 
                 query_for_timed_login_requested_signal (client->priv->greeter);
         }
@@ -1317,11 +1295,6 @@ gdm_client_get_remote_greeter_finish (GdmClient     *client,
 
         g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
                            (GWeakNotify)
-                           g_object_unref,
-                           client->priv->connection);
-
-        g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
-                           (GWeakNotify)
                            g_clear_object,
                            &client->priv->manager);
 
@@ -1368,10 +1341,6 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
                                    (GWeakNotify)
                                    g_clear_object,
                                    &client->priv->manager);
-                g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
-                                   (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
         }
 
         return client->priv->remote_greeter;
@@ -1499,11 +1468,6 @@ gdm_client_get_chooser_finish (GdmClient       *client,
 
         g_object_weak_ref (G_OBJECT (client->priv->chooser),
                            (GWeakNotify)
-                           g_object_unref,
-                           client->priv->connection);
-
-        g_object_weak_ref (G_OBJECT (client->priv->chooser),
-                           (GWeakNotify)
                            g_clear_object,
                            &client->priv->manager);
 
@@ -1551,10 +1515,6 @@ gdm_client_get_chooser_sync (GdmClient     *client,
                                    (GWeakNotify)
                                    g_clear_object,
                                    &client->priv->manager);
-                g_object_weak_ref (G_OBJECT (client->priv->chooser),
-                                   (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
         }
 
         return client->priv->chooser;
