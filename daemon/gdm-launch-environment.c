@@ -137,6 +137,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 "LC_PAPER",
                 "LC_TELEPHONE",
                 "LC_TIME",
+                "PATH",
                 "WINDOWPATH",
                 "XCURSOR_PATH",
                 "XDG_CONFIG_DIRS",
@@ -214,8 +215,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
         }
-
-        g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
 
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
 
