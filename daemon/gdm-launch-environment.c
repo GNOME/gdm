@@ -122,6 +122,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         GHashTable    *hash;
         struct passwd *pwent;
         static const char *const optional_environment[] = {
+                "GI_TYPELIB_PATH",
                 "LANG",
                 "LANGUAGE",
                 "LC_ADDRESS",
@@ -137,6 +138,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 "LC_PAPER",
                 "LC_TELEPHONE",
                 "LC_TIME",
+                "LD_LIBRARY_PATH",
                 "PATH",
                 "WINDOWPATH",
                 "XCURSOR_PATH",
