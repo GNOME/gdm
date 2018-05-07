@@ -121,12 +121,26 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 {
         GHashTable    *hash;
         struct passwd *pwent;
-        static const char * const optional_environment[] = {
-                "LANG", "LANGUAGE", "LC_CTYPE", "LC_NUMERIC", "LC_TIME",
-                "LC_COLLATE", "LC_MONETARY", "LC_MESSAGES", "LC_PAPER",
-                "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE", "LC_MEASUREMENT",
-                "LC_IDENTIFICATION", "LC_ALL", "WINDOWPATH", "XCURSOR_PATH",
-                "XDG_CONFIG_DIRS", NULL
+        static const char *const optional_environment[] = {
+                "LANG",
+                "LANGUAGE",
+                "LC_ADDRESS",
+                "LC_ALL",
+                "LC_COLLATE",
+                "LC_CTYPE",
+                "LC_IDENTIFICATION",
+                "LC_MEASUREMENT",
+                "LC_MESSAGES",
+                "LC_MONETARY",
+                "LC_NAME",
+                "LC_NUMERIC",
+                "LC_PAPER",
+                "LC_TELEPHONE",
+                "LC_TIME",
+                "WINDOWPATH",
+                "XCURSOR_PATH",
+                "XDG_CONFIG_DIRS",
+                NULL
         };
         char *system_data_dirs;
         int i;
