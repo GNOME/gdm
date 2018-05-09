@@ -460,6 +460,10 @@ gdm_client_open_connection_sync (GdmClient      *client,
                         g_clear_pointer (&client->priv->address, g_free);
                         goto out;
                 }
+
+                g_object_add_weak_pointer (G_OBJECT (client->priv->connection),
+                                           (gpointer *)
+                                           &client->priv->connection);
         } else {
                 client->priv->connection = g_object_ref (client->priv->connection);
         }
@@ -583,6 +587,8 @@ gdm_client_open_connection_finish (GdmClient      *client,
 
         if (client->priv->connection == NULL) {
                 client->priv->connection = g_steal_pointer (&connection);
+                g_object_add_weak_pointer (G_OBJECT (client->priv->connection),
+                                           (gpointer *) &client->priv->connection);
         } else if (client->priv->connection == connection) {
                 connection = NULL;
         }
@@ -1614,6 +1620,12 @@ gdm_client_finalize (GObject *object)
                 g_object_remove_weak_pointer (G_OBJECT (client->priv->chooser),
                                               (gpointer *)
                                               &client->priv->chooser);
+        }
+
+        if (client->priv->connection != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->priv->connection),
+                                              (gpointer *)
+                                              &client->priv->connection);
         }
 
         g_clear_object (&client->priv->manager);
