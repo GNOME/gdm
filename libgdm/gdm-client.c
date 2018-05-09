@@ -583,6 +583,8 @@ gdm_client_open_connection_finish (GdmClient      *client,
 
         if (client->priv->connection == NULL) {
                 client->priv->connection = g_steal_pointer (&connection);
+        } else if (client->priv->connection == connection) {
+                connection = NULL;
         }
 
         finish_pending_opens (client, NULL);
