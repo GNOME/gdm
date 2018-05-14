@@ -391,11 +391,13 @@ on_got_manager_for_reauthentication (GdmClient           *client,
                                      GTask               *task)
 {
         GCancellable *cancellable;
+        GdmManager   *manager;
         char         *username;
         GError       *error;
 
         error = NULL;
-        if (!g_task_propagate_boolean (G_TASK (result), &error)) {
+        manager = g_task_propagate_pointer (G_TASK (result), &error);
+        if (manager == NULL) {
                 g_task_return_error (task, error);
                 g_object_unref (task);
                 return;
@@ -534,10 +536,12 @@ on_got_manager_for_opening_connection (GdmClient           *client,
                                        GTask               *task)
 {
         GCancellable *cancellable;
+        GdmManager   *manager;
         GError       *error;
 
         error = NULL;
-        if (!g_task_propagate_boolean (G_TASK (result), &error)) {
+        manager = g_task_propagate_pointer (G_TASK (result), &error);
+        if (manager == NULL) {
                 g_task_return_error (task, error);
                 g_object_unref (task);
                 return;
