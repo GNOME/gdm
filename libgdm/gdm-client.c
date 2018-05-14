@@ -51,7 +51,6 @@ struct GdmClientPrivate
         GDBusConnection    *connection;
         char               *address;
 
-        GList              *pending_opens;
         char              **enabled_extensions;
 };
 
@@ -421,52 +420,49 @@ gdm_client_open_connection_sync (GdmClient      *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (client->priv->manager == NULL) {
-                client->priv->manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                                            G_DBUS_PROXY_FLAGS_NONE,
-                                                                            "org.gnome.DisplayManager",
-                                                                            "/org/gnome/DisplayManager/Manager",
-                                                                            cancellable,
-                                                                            error);
-
-                if (client->priv->manager == NULL) {
-                        goto out;
-                }
-        } else {
-                client->priv->manager = g_object_ref (client->priv->manager);
+        if (client->priv->connection != NULL) {
+                g_object_ref (client->priv->connection);
+                return TRUE;
         }
+
+        client->priv->manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                                    G_DBUS_PROXY_FLAGS_NONE,
+                                                                    "org.gnome.DisplayManager",
+                                                                    "/org/gnome/DisplayManager/Manager",
+                                                                    cancellable,
+                                                                    error);
+
+        if (client->priv->manager == NULL) {
+                goto out;
+        }
+
+        ret = gdm_manager_call_open_session_sync (client->priv->manager,
+                                                  &client->priv->address,
+                                                  cancellable,
+                                                  error);
+
+        if (!ret) {
+                g_clear_object (&client->priv->manager);
+                goto out;
+        }
+
+        g_debug ("GdmClient: connecting to address: %s", client->priv->address);
+
+        client->priv->connection = g_dbus_connection_new_for_address_sync (client->priv->address,
+                                                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                                           NULL,
+                                                                           cancellable,
+                                                                           error);
 
         if (client->priv->connection == NULL) {
-                ret = gdm_manager_call_open_session_sync (client->priv->manager,
-                                                          &client->priv->address,
-                                                          cancellable,
-                                                          error);
-
-                if (!ret) {
-                        g_clear_object (&client->priv->manager);
-                        goto out;
-                }
-
-                g_debug ("GdmClient: connecting to address: %s", client->priv->address);
-
-                client->priv->connection = g_dbus_connection_new_for_address_sync (client->priv->address,
-                                                                                   G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                                                                   NULL,
-                                                                                   cancellable,
-                                                                                   error);
-
-                if (client->priv->connection == NULL) {
-                        g_clear_object (&client->priv->manager);
-                        g_clear_pointer (&client->priv->address, g_free);
-                        goto out;
-                }
-
-                g_object_add_weak_pointer (G_OBJECT (client->priv->connection),
-                                           (gpointer *)
-                                           &client->priv->connection);
-        } else {
-                client->priv->connection = g_object_ref (client->priv->connection);
+                g_clear_object (&client->priv->manager);
+                g_clear_pointer (&client->priv->address, g_free);
+                goto out;
         }
+
+        g_object_add_weak_pointer (G_OBJECT (client->priv->connection),
+                                   (gpointer *)
+                                   &client->priv->connection);
 
  out:
         return client->priv->connection != NULL;
@@ -551,25 +547,6 @@ on_got_manager_for_opening_connection (GdmClient           *client,
                                        task);
 }
 
-static void
-finish_pending_opens (GdmClient *client,
-                      GError    *error)
-{
-    GList *node;
-
-    for (node = client->priv->pending_opens;
-         node != NULL;
-         node = node->next) {
-
-        GTask *task = node->data;
-
-        g_task_return_error (task, error);
-        g_object_unref (task);
-    }
-    g_clear_pointer (&client->priv->pending_opens,
-                     (GDestroyNotify) g_list_free);
-}
-
 static gboolean
 gdm_client_open_connection_finish (GdmClient      *client,
                                    GAsyncResult   *result,
@@ -581,7 +558,6 @@ gdm_client_open_connection_finish (GdmClient      *client,
 
         connection = g_task_propagate_pointer (G_TASK (result), error);
         if (connection == NULL) {
-                finish_pending_opens (client, *error);
                 return FALSE;
         }
 
@@ -593,7 +569,6 @@ gdm_client_open_connection_finish (GdmClient      *client,
                 connection = NULL;
         }
 
-        finish_pending_opens (client, NULL);
         return TRUE;
 }
 
@@ -620,17 +595,11 @@ gdm_client_open_connection (GdmClient           *client,
             return;
         }
 
-        if (client->priv->pending_opens == NULL) {
-            get_manager (client,
-                         cancellable,
-                         (GAsyncReadyCallback)
-                         on_got_manager_for_opening_connection,
-                         task);
-        } else {
-                client->priv->pending_opens = g_list_prepend (client->priv->pending_opens,
-                                                              task);
-        }
-
+        get_manager (client,
+                     cancellable,
+                     (GAsyncReadyCallback)
+                     on_got_manager_for_opening_connection,
+                     task);
 }
 
 /**
