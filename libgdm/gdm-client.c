@@ -824,8 +824,8 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                    &client->priv->manager);
                 g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
                                    (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
+                                   g_object_unref,
+                                   client->priv->connection);
 
                 if (client->priv->enabled_extensions != NULL) {
                         gboolean res;
@@ -1194,8 +1194,8 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                                    &client->priv->manager);
                 g_object_weak_ref (G_OBJECT (client->priv->greeter),
                                    (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
+                                   g_object_unref,
+                                   client->priv->connection);
 
                 query_for_timed_login_requested_signal (client->priv->greeter);
         }
@@ -1378,8 +1378,8 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
                                    &client->priv->manager);
                 g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
                                    (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
+                                   g_object_unref,
+                                   client->priv->connection);
         }
 
         return client->priv->remote_greeter;
@@ -1561,8 +1561,8 @@ gdm_client_get_chooser_sync (GdmClient     *client,
                                    &client->priv->manager);
                 g_object_weak_ref (G_OBJECT (client->priv->chooser),
                                    (GWeakNotify)
-                                   g_clear_object,
-                                   &client->priv->connection);
+                                   g_object_unref,
+                                   client->priv->connection);
         }
 
         return client->priv->chooser;
