@@ -598,9 +598,6 @@ gdm_display_access_file_remove_display (GdmDisplayAccessFile  *file,
                                        number,
                                        name_length,
                                        name);
-        g_free (address);
-        g_free (number);
-        g_free (name);
 
         if (auth_entry != NULL) {
                 XauDisposeAuth (auth_entry);
@@ -625,6 +622,9 @@ gdm_display_access_file_remove_display (GdmDisplayAccessFile  *file,
                 }
         }
 
+        g_free (address);
+        g_free (number);
+        g_free (name);
 
         if (result == FALSE) {
                 g_set_error (error,
