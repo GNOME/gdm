@@ -1952,6 +1952,19 @@ get_greeter_display_from_session (GdmManager *manager, GdmSession *session)
         return display;
 }
 
+static gboolean
+display_is_wayland(GdmDisplay *display)
+{
+#ifdef ENABLE_WAYLAND_SUPPORT
+        char       *session_type = NULL;
+
+        g_object_get (G_OBJECT (display), "session-type", &session_type, NULL);
+        return g_strcmp0 (session_type, "wayland") == 0;
+#else
+        return FALSE;
+#endif
+}
+
 static void
 on_session_authentication_failed (GdmSession *session,
                                   const char *service_name,
@@ -1996,6 +2009,12 @@ on_user_session_started (GdmSession      *session,
                 }
         }
 #endif
+
+        if (gdm_session_get_display_mode (session) != GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
+                GdmDisplay *display = get_greeter_display_from_session (manager, session);
+                if (display && display_is_wayland (display))
+                        gdm_display_schedule_kill_greeter (display, 5);
+        }
 }
 
 static void
@@ -2070,14 +2089,16 @@ on_session_reauthenticated (GdmSession *session,
                             const char *service_name,
                             GdmManager *manager)
 {
+        GdmDisplay *display = get_greeter_display_from_session (manager, session);
         gboolean fail_if_already_switched = FALSE;
 
-        if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                GdmDisplay *display = get_greeter_display_from_session (manager, session);
-                if (display) {
+        if (display) {
+                if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
                         gdm_display_stop_greeter_session (display);
                         gdm_display_unmanage (display);
                         gdm_display_finish (display);
+                } else if (display_is_wayland (display)) {
+                        gdm_display_schedule_kill_greeter (display, 5);
                 }
         }
 
