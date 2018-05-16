@@ -185,6 +185,19 @@ store_display (GdmLocalDisplayFactory *factory,
         gdm_display_store_add (store, display);
 }
 
+static gboolean
+gdm_local_display_factory_use_wayland (void)
+{
+#ifdef ENABLE_WAYLAND_SUPPORT
+        gboolean wayland_enabled = FALSE;
+        if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
+                if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE) )
+                        return TRUE;
+        }
+#endif
+        return FALSE;
+}
+
 /*
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
@@ -447,14 +460,8 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 
                 if (g_strcmp0 (seat, "seat0") == 0) {
                         is_initial = TRUE;
-#ifdef ENABLE_WAYLAND_SUPPORT
-                        gboolean wayland_enabled = FALSE;
-                        if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
-                                if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE) ) {
-                                        session_type = "wayland";
-                                }
-                        }
-#endif
+                        if (gdm_local_display_factory_use_wayland ())
+                                session_type = "wayland";
                 } else {
                         is_initial = FALSE;
                 }
