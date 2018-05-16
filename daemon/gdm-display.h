@@ -133,6 +133,8 @@ gboolean            gdm_display_remove_user_authorization      (GdmDisplay *disp
                                                                 GError    **error);
 void                gdm_display_start_greeter_session          (GdmDisplay  *display);
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
+void                gdm_display_schedule_kill_greeter          (GdmDisplay  *display, guint seconds);
+void                gdm_display_cancel_scheduled_kill_greeter  (GdmDisplay  *display);
 
 gboolean            gdm_display_connect                        (GdmDisplay *self);
 

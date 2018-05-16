@@ -88,6 +88,7 @@ struct GdmDisplayPrivate
 
         /* this spawns and controls the greeter session */
         GdmLaunchEnvironment *launch_environment;
+        guint                 kill_greeter_id;
 
         guint                 is_local : 1;
         guint                 is_initial : 1;
@@ -1169,6 +1170,7 @@ gdm_display_dispose (GObject *object)
                 g_source_remove (self->priv->finish_idle_id);
                 self->priv->finish_idle_id = 0;
         }
+        gdm_display_cancel_scheduled_kill_greeter (self);
         g_clear_object (&self->priv->launch_environment);
 
         g_warn_if_fail (self->priv->status != GDM_DISPLAY_MANAGED);
@@ -1742,6 +1744,34 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
                                    error->message);
                         g_clear_error (&error);
                 }
+        }
+}
+
+static gboolean
+gdm_display_kill_greeter (GdmDisplay *self)
+{
+        gdm_display_stop_greeter_session (self);
+        gdm_display_unmanage (self);
+        gdm_display_finish (self);
+
+        self->priv->kill_greeter_id = 0;
+        return FALSE;
+}
+
+void
+gdm_display_schedule_kill_greeter (GdmDisplay *self, guint seconds)
+{
+        gdm_display_cancel_scheduled_kill_greeter (self);
+        self->priv->kill_greeter_id =
+                g_timeout_add_seconds (seconds, (GSourceFunc)gdm_display_kill_greeter, self);
+}
+
+void
+gdm_display_cancel_scheduled_kill_greeter (GdmDisplay *self)
+{
+        if (self->priv->kill_greeter_id != 0) {
+                g_source_remove (self->priv->kill_greeter_id);
+                self->priv->kill_greeter_id = 0;
         }
 }
 
