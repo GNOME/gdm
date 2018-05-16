@@ -221,6 +221,8 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
 #ifdef ENABLE_USER_DISPLAY_SERVER
         display = gdm_local_display_new ();
+        if (gdm_local_display_factory_use_wayland ())
+                g_object_set (G_OBJECT (display), "session-type", "wayland", NULL);
 #else
         if (display == NULL) {
                 guint32 num;
