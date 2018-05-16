@@ -77,9 +77,6 @@ gboolean              gdm_display_access_file_add_display_with_cookie (GdmDispla
                                                                        const char            *cookie,
                                                                        gsize                  cookie_size,
                                                                        GError               **error);
-gboolean              gdm_display_access_file_remove_display          (GdmDisplayAccessFile  *file,
-                                                                       GdmDisplay            *display,
-                                                                       GError               **error);
 
 void                  gdm_display_access_file_close                   (GdmDisplayAccessFile  *file);
 char                 *gdm_display_access_file_get_path                (GdmDisplayAccessFile  *file);
