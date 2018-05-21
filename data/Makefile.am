@@ -150,6 +150,11 @@ endif
 udevrulesdir = $(prefix)/lib/udev/rules.d
 udevrules_DATA = 61-gdm.rules
 
+EXTRA_DIST += $(srcdir)/61-gdm.rules.in
+61-gdm.rules: $(srcdir)/61-gdm.rules.in
+	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		< $< > $@.tmp && mv $@.tmp $@
+
 EXTRA_DIST +=			\
 	$(dconf_db_files)	\
 	$(schemas_in_files)	\
