@@ -15,49 +15,81 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-02-04 18:46+0000\n"
-"PO-Revision-Date: 2016-01-19 18:47-0700\n"
-"Last-Translator: Jeff Bai <jeffbai@aosc.xyz>\n"
+"POT-Creation-Date: 2018-01-09 23:24+0000\n"
+"PO-Revision-Date: 2018-02-03 23:04+0800\n"
+"Last-Translator: Mingcong Bai <jeffbai@aosc.xyz>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 2.0.2\n"
 
-#: ../common/gdm-common.c:298
+#: ../chooser/gdm-host-chooser-dialog.c:140
+msgid "_Refresh"
+msgstr "刷新(_R)"
+
+#: ../chooser/gdm-host-chooser-dialog.c:141
+msgid "_Cancel"
+msgstr "取消(_C)"
+
+#: ../chooser/gdm-host-chooser-dialog.c:142
+msgid "C_onnect"
+msgstr "连接(_O)"
+
+#: ../chooser/gdm-host-chooser-dialog.c:147
+msgid "Select System"
+msgstr "选择系统"
+
+#: ../chooser/gdm-host-chooser-widget.c:254
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP：无法创建 XDMCP 缓冲区！"
+
+#: ../chooser/gdm-host-chooser-widget.c:260
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP：无法读取 XDMCP 头信息！"
+
+#: ../chooser/gdm-host-chooser-widget.c:266
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XMDCP：XDMCP 版本错误！"
+
+#: ../chooser/gdm-host-chooser-widget.c:272
+msgid "XDMCP: Unable to parse address"
+msgstr "XMDCP：无法解析地址"
+
+#: ../common/gdm-common.c:317
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符设备"
 
-#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
+#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:209
 #, c-format
 msgid "Could not identify the current session."
 msgstr "无法识别当前会话。"
 
-#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
+#: ../common/gdm-common.c:496 ../libgdm/gdm-user-switching.c:218
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "无法识别当前位置。"
 
-#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
+#: ../common/gdm-common.c:506 ../libgdm/gdm-user-switching.c:228
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr "系统无法确定是否应当切换到一个已经登录的屏幕还是启动一个新登录屏幕。"
 
-#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
+#: ../common/gdm-common.c:514 ../libgdm/gdm-user-switching.c:236
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "系统无法启动新登录屏幕。"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
-msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "无法在系统中找到用户“%s”"
 
 #: ../daemon/gdm-legacy-display.c:235
@@ -70,63 +102,67 @@ msgstr ""
 "由于内部错误无法启动 X 服务器(您的图形界面)。请与系统管理员联系或检查系统日志"
 "以便进行诊断。在此期间该显示将被禁用。请在问题更正以后重新启动 GDM。"
 
-#: ../daemon/gdm-manager.c:766
+#: ../daemon/gdm-manager.c:775
 msgid "No display available"
 msgstr "无可用的显示"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: ../daemon/gdm-manager.c:844 ../daemon/gdm-manager.c:1120
 msgid "No session available"
 msgstr "无可用的会话"
 
-#: ../daemon/gdm-manager.c:844
+#: ../daemon/gdm-manager.c:863
+msgid "Chooser session unavailable"
+msgstr "选择器会话不可用"
+
+#: ../daemon/gdm-manager.c:875
 msgid "Can only be called before user is logged in"
 msgstr "只能在用户登录前被调用"
 
-#: ../daemon/gdm-manager.c:854
+#: ../daemon/gdm-manager.c:886
 msgid "Caller not GDM"
 msgstr "调用者不是 GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: ../daemon/gdm-manager.c:896
 msgid "Unable to open private communication channel"
 msgstr "无法打开专用通信通道"
 
-#: ../daemon/gdm-server.c:391
+#: ../daemon/gdm-server.c:383
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "服务器是以用户 %s 身份创建的，但此用户不存在"
 
-#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
+#: ../daemon/gdm-server.c:394 ../daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "无法将组 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:408
+#: ../daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() 执行 %s 失败"
 
-#: ../daemon/gdm-server.c:414
+#: ../daemon/gdm-server.c:406
 #, c-format
-msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "无法将用户 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:492
+#: ../daemon/gdm-server.c:484
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：无法打开显示屏 %s 的日志文件！"
 
-#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
-#: ../daemon/gdm-server.c:525
+#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
+#: ../daemon/gdm-server.c:517
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：将 %s 设为 %s 出错"
 
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:537
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s：服务器优先级无法设为 %d：%s"
 
-#: ../daemon/gdm-server.c:697
+#: ../daemon/gdm-server.c:689
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：显示画面 %s 的服务器命令为空"
@@ -155,48 +191,48 @@ msgstr "显示设备"
 msgid "The display device"
 msgstr "显示设备"
 
-#: ../daemon/gdm-session.c:1205
+#: ../daemon/gdm-session.c:1261
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
-#: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#: ../daemon/gdm-session-worker.c:766
+msgid "Your account was given a time limit that’s now passed."
 msgstr "你的帐号设有时间限制，已超过限定时间。"
 
-#: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
-msgstr "抱歉，没有奏效，请再试一次。"
+#: ../daemon/gdm-session-worker.c:773
+msgid "Sorry, that didn’t work. Please try again."
+msgstr "抱歉，登录失败，请再试一次。"
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1170
 msgid "Username:"
 msgstr "用户名："
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
+#: ../daemon/gdm-session-worker.c:1672 ../daemon/gdm-session-worker.c:1689
 #, c-format
 msgid "no user account available"
 msgstr "无可用用户帐户"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: ../daemon/gdm-session-worker.c:1716
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: ../daemon/gdm-wayland-session.c:478
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME 显示管理器 Wayland 会话启动器"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: ../daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "无法创建套接字！"
 
-#: ../daemon/gdm-x-session.c:734
+#: ../daemon/gdm-x-session.c:826
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "通过 /etc/gdm/Xsession 包装脚本运行程序"
 
-#: ../daemon/gdm-x-session.c:735
+#: ../daemon/gdm-x-session.c:827
 msgid "Listen on TCP socket"
 msgstr "监听 TCP 套接字"
 
-#: ../daemon/gdm-x-session.c:746
+#: ../daemon/gdm-x-session.c:838
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME 显示管理器 X 会话启动器"
 
@@ -217,7 +253,7 @@ msgstr "无法创建 LogDir %s: %s"
 
 #: ../daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "找不到 GDM 用户“%s”。中止！"
 
 #: ../daemon/main.c:229
@@ -226,31 +262,31 @@ msgstr "GDM 用户不能为 root。中止！"
 
 #: ../daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "找不到 GDM 组“%s”。中止！"
 
 #: ../daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM 组不能为 root。中止！"
 
-#: ../daemon/main.c:318
+#: ../daemon/main.c:317
 msgid "Make all warnings fatal"
 msgstr "设置所有警告为致命错误"
 
-#: ../daemon/main.c:319
+#: ../daemon/main.c:318
 msgid "Exit after a time (for debugging)"
 msgstr "一段时间后退出(用于调试)"
 
-#: ../daemon/main.c:320
+#: ../daemon/main.c:319
 msgid "Print GDM version"
 msgstr "打印 GDM 版本"
 
-#: ../daemon/main.c:333
+#: ../daemon/main.c:330
 msgid "GNOME Display Manager"
 msgstr "GNOME 显示管理器"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:381
+#: ../daemon/main.c:351
 msgid "Only the root user can run GDM"
 msgstr "只有 root 用户才能运行 GDM"
 
@@ -351,26 +387,6 @@ msgid ""
 "giving up and going back to user selection."
 msgstr "放弃并返回用户选择界面前，允许某个用户尝试认证的次数。"
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "选择系统"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP：无法创建 XDMCP 缓冲区！"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP：无法读取 XDMCP 头信息！"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XMDCP：XDMCP 版本错误！"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XMDCP：无法解析地址"
-
 #: ../libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "无法创建过渡显示界面："
@@ -402,8 +418,8 @@ msgstr "该应用程序版本"
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
-msgstr "- 新 GDM 登录"
+msgid "— New GDM login"
+msgstr "— 新 GDM 登录"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
