@@ -213,7 +213,9 @@ gdm_session_record_login (GPid                  session_pid,
         /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
         g_debug ("Adding or updating utmp record for login");
+        setutxent();
         pututxline (&session_record);
+        endutxent();
 #elif defined(HAVE_LOGIN)
 	login (&session_record);
 #endif
@@ -256,7 +258,9 @@ gdm_session_record_logout (GPid                  session_pid,
         /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
         g_debug ("Adding or updating utmp record for logout");
+        setutxent();
         pututxline (&session_record);
+        endutxent();
 #elif defined(HAVE_LOGOUT)
         logout (session_record.ut_line);
 #endif
