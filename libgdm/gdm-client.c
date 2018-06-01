@@ -604,7 +604,7 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                GCancellable  *cancellable,
                                                GError       **error)
 {
-        GDBusConnection *connection;
+        g_autoptr(GDBusConnection) connection = NULL;
         g_autoptr(GdmManager) manager = NULL;
         GdmUserVerifier *user_verifier = NULL;
         gboolean         ret;
