@@ -390,7 +390,7 @@ on_got_manager_for_reauthentication (GdmClient           *client,
                                                         (GAsyncReadyCallback)
                                                         on_reauthentication_channel_opened,
                                                         task);
-
+        g_object_unref (manager);
 }
 
 static GDBusConnection *
@@ -527,6 +527,8 @@ on_got_manager_for_opening_connection (GdmClient           *client,
                                        (GAsyncReadyCallback)
                                        on_session_opened,
                                        task);
+
+        g_object_unref (manager);
 }
 
 static GDBusConnection *
