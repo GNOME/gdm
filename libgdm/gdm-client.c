@@ -536,7 +536,7 @@ gdm_client_get_connection_finish (GdmClient      *client,
                                   GAsyncResult   *result,
                                   GError        **error)
 {
-        GDBusConnection *connection = NULL;
+        GDBusConnection *connection;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
@@ -551,7 +551,7 @@ gdm_client_get_connection_finish (GdmClient      *client,
                                            (gpointer *) &client->priv->connection);
         }
 
-        return g_object_ref (connection);
+        return connection;
 }
 
 static void
