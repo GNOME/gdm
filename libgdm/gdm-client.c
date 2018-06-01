@@ -606,9 +606,9 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
 {
         g_autoptr(GDBusConnection) connection = NULL;
         g_autoptr(GdmManager) manager = NULL;
+        g_autofree char *address = NULL;
         GdmUserVerifier *user_verifier = NULL;
         gboolean         ret;
-        char            *address;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
@@ -620,7 +620,7 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                       error);
 
         if (manager == NULL) {
-                goto out;
+                return NULL;
         }
 
         ret = gdm_manager_call_open_reauthentication_channel_sync (manager,
@@ -630,10 +630,10 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                                    error);
 
         if (!ret) {
-                goto out;
+                return NULL;
         }
 
-        g_debug ("GdmClient: connecting to address: %s", client->priv->address);
+        g_debug ("GdmClient: connecting to address: %s", address);
 
         connection = g_dbus_connection_new_for_address_sync (address,
                                                              G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
@@ -642,10 +642,8 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                              error);
 
         if (connection == NULL) {
-                g_free (address);
-                goto out;
+                return NULL;
         }
-        g_free (address);
 
         user_verifier = gdm_user_verifier_proxy_new_sync (connection,
                                                           G_DBUS_PROXY_FLAGS_NONE,
@@ -654,7 +652,6 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
- out:
         return user_verifier;
 }
 
