@@ -46,7 +46,6 @@ struct GdmClientPrivate
         GdmGreeter         *greeter;
         GdmRemoteGreeter   *remote_greeter;
         GdmChooser         *chooser;
-        char               *address;
 
         char              **enabled_extensions;
 };
@@ -420,6 +419,7 @@ gdm_client_get_connection_sync (GdmClient      *client,
                                 GError        **error)
 {
         g_autoptr(GdmManager) manager = NULL;
+        g_autofree char *address = NULL;
         GDBusConnection *connection;
         gboolean ret;
 
@@ -439,32 +439,26 @@ gdm_client_get_connection_sync (GdmClient      *client,
                                                       error);
 
         if (manager == NULL) {
-                goto out;
+                return NULL;
         }
 
         ret = gdm_manager_call_open_session_sync (manager,
-                                                  &client->priv->address,
+                                                  &address,
                                                   cancellable,
                                                   error);
 
         if (!ret) {
-                goto out;
+                return NULL;
         }
 
-        g_debug ("GdmClient: connecting to address: %s", client->priv->address);
+        g_debug ("GdmClient: connecting to address: %s", address);
 
-        connection = g_dbus_connection_new_for_address_sync (client->priv->address,
+        connection = g_dbus_connection_new_for_address_sync (address,
                                                              G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
                                                              NULL,
                                                              cancellable,
                                                              error);
 
-        if (connection == NULL) {
-                g_clear_pointer (&client->priv->address, g_free);
-                goto out;
-        }
-
- out:
         return connection;
 }
 
@@ -497,6 +491,7 @@ on_session_opened (GdmManager         *manager,
                    GTask              *task)
 {
         GdmClient *client;
+        g_autofree char  *address = NULL;
         GCancellable     *cancellable;
         GError           *error;
 
@@ -504,7 +499,7 @@ on_session_opened (GdmManager         *manager,
 
         error = NULL;
         if (!gdm_manager_call_open_session_finish (manager,
-                                                   &client->priv->address,
+                                                   &address,
                                                    result,
                                                    &error)) {
                 g_task_return_error (task, error);
@@ -514,7 +509,7 @@ on_session_opened (GdmManager         *manager,
         }
 
         cancellable = g_task_get_cancellable (task);
-        g_dbus_connection_new_for_address (client->priv->address,
+        g_dbus_connection_new_for_address (address,
                                            G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
                                            NULL,
                                            cancellable,
@@ -1526,7 +1521,6 @@ gdm_client_finalize (GObject *object)
         }
 
         g_strfreev (client->priv->enabled_extensions);
-        g_free (client->priv->address);
 
         G_OBJECT_CLASS (gdm_client_parent_class)->finalize (object);
 }
