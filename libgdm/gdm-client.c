@@ -46,7 +46,6 @@ struct GdmClientPrivate
         GdmGreeter         *greeter;
         GdmRemoteGreeter   *remote_greeter;
         GdmChooser         *chooser;
-        GDBusConnection    *connection;
         char               *address;
 
         char              **enabled_extensions;
@@ -69,6 +68,28 @@ gdm_client_error_quark (void)
                 error_quark = g_quark_from_static_string ("gdm-client");
 
         return error_quark;
+}
+
+static GDBusConnection *
+gdm_client_get_open_connection (GdmClient *client)
+{
+        GDBusProxy *proxy = NULL;
+
+        if (client->priv->user_verifier != NULL) {
+                proxy = G_DBUS_PROXY (client->priv->user_verifier);
+        } else if (client->priv->greeter != NULL) {
+                proxy = G_DBUS_PROXY (client->priv->greeter);
+        } else if (client->priv->remote_greeter != NULL) {
+                proxy = G_DBUS_PROXY (client->priv->remote_greeter);
+        } else if (client->priv->chooser != NULL) {
+                proxy = G_DBUS_PROXY (client->priv->chooser);
+        }
+
+        if (proxy != NULL) {
+                return g_dbus_proxy_get_connection (proxy);
+        }
+
+        return NULL;
 }
 
 static void
@@ -399,12 +420,15 @@ gdm_client_get_connection_sync (GdmClient      *client,
                                 GError        **error)
 {
         g_autoptr(GdmManager) manager = NULL;
+        GDBusConnection *connection;
         gboolean ret;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
-        if (client->priv->connection != NULL) {
-                return g_object_ref (client->priv->connection);
+        connection = gdm_client_get_open_connection (client);
+
+        if (connection != NULL) {
+                return g_object_ref (connection);
         }
 
         manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
@@ -429,23 +453,19 @@ gdm_client_get_connection_sync (GdmClient      *client,
 
         g_debug ("GdmClient: connecting to address: %s", client->priv->address);
 
-        client->priv->connection = g_dbus_connection_new_for_address_sync (client->priv->address,
-                                                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                                                           NULL,
-                                                                           cancellable,
-                                                                           error);
+        connection = g_dbus_connection_new_for_address_sync (client->priv->address,
+                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                             NULL,
+                                                             cancellable,
+                                                             error);
 
-        if (client->priv->connection == NULL) {
+        if (connection == NULL) {
                 g_clear_pointer (&client->priv->address, g_free);
                 goto out;
         }
 
-        g_object_add_weak_pointer (G_OBJECT (client->priv->connection),
-                                   (gpointer *)
-                                   &client->priv->connection);
-
  out:
-        return client->priv->connection;
+        return connection;
 }
 
 static void
@@ -545,12 +565,6 @@ gdm_client_get_connection_finish (GdmClient      *client,
                 return NULL;
         }
 
-        if (client->priv->connection == NULL) {
-                client->priv->connection = connection;
-                g_object_add_weak_pointer (G_OBJECT (client->priv->connection),
-                                           (gpointer *) &client->priv->connection);
-        }
-
         return connection;
 }
 
@@ -561,6 +575,7 @@ gdm_client_get_connection (GdmClient           *client,
                             gpointer             user_data)
 {
         GTask *task;
+        GDBusConnection *connection;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
 
@@ -569,9 +584,10 @@ gdm_client_get_connection (GdmClient           *client,
                            callback,
                            user_data);
 
-        if (client->priv->connection != NULL) {
+        connection = gdm_client_get_open_connection (client);
+        if (connection != NULL) {
             g_task_return_pointer (task,
-                                   g_object_ref (client->priv->connection),
+                                   g_object_ref (connection),
                                    (GDestroyNotify) g_object_unref);
             g_object_unref (task);
             return;
@@ -775,7 +791,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                             if (strcmp (client->priv->enabled_extensions[i],
                                                         gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
                                                         GdmUserVerifierChoiceList *choice_list_interface;
-                                                        choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (client->priv->connection,
+                                                        choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (connection,
                                                                                                                               G_DBUS_PROXY_FLAGS_NONE,
                                                                                                                               NULL,
                                                                                                                               SESSION_DBUS_PATH,
@@ -1508,14 +1524,6 @@ gdm_client_finalize (GObject *object)
                                               (gpointer *)
                                               &client->priv->chooser);
         }
-
-        if (client->priv->connection != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->priv->connection),
-                                              (gpointer *)
-                                              &client->priv->connection);
-        }
-
-        g_clear_object (&client->priv->connection);
 
         g_strfreev (client->priv->enabled_extensions);
         g_free (client->priv->address);
