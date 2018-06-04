@@ -423,7 +423,7 @@ gdm_client_get_connection_sync (GdmClient      *client,
         GDBusConnection *connection;
         gboolean ret;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         connection = gdm_client_get_open_connection (client);
 
@@ -553,7 +553,7 @@ gdm_client_get_connection_finish (GdmClient      *client,
 {
         GDBusConnection *connection;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         connection = g_task_propagate_pointer (G_TASK (result), error);
         if (connection == NULL) {
@@ -621,7 +621,7 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
         GdmUserVerifier *user_verifier = NULL;
         gboolean         ret;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
                                                       G_DBUS_PROXY_FLAGS_NONE,
@@ -722,7 +722,7 @@ gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
                                                  GAsyncResult    *result,
                                                  GError         **error)
 {
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         return g_task_propagate_pointer (G_TASK (result), error);
 }
@@ -890,7 +890,7 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 {
         GdmUserVerifier *user_verifier;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         if (client->priv->user_verifier != NULL)
                 return g_object_ref (client->priv->user_verifier);
@@ -1058,7 +1058,7 @@ gdm_client_get_greeter_finish (GdmClient       *client,
 {
         GdmGreeter *greeter;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         if (client->priv->greeter != NULL)
                 return g_object_ref (client->priv->greeter);
@@ -1232,7 +1232,7 @@ gdm_client_get_remote_greeter_finish (GdmClient     *client,
 {
         GdmRemoteGreeter *remote_greeter;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         if (client->priv->remote_greeter != NULL)
                 return g_object_ref (client->priv->remote_greeter);
@@ -1403,7 +1403,7 @@ gdm_client_get_chooser_finish (GdmClient       *client,
 {
         GdmChooser *chooser;
 
-        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         if (client->priv->chooser != NULL)
                 return g_object_ref (client->priv->chooser);
