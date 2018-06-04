@@ -1392,6 +1392,7 @@ gdm_session_worker_update_environment_from_passwd_info (GdmSessionWorker *worker
         gdm_session_worker_set_environment_variable (worker, "USER", worker->priv->username);
         gdm_session_worker_set_environment_variable (worker, "USERNAME", worker->priv->username);
         gdm_session_worker_set_environment_variable (worker, "HOME", home);
+        gdm_session_worker_set_environment_variable (worker, "PWD", home);
         gdm_session_worker_set_environment_variable (worker, "SHELL", shell);
 }
 
