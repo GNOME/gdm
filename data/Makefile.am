@@ -35,9 +35,6 @@ dbusconfdir = $(DBUS_SYS_DIR)
 dbusconf_in_files = gdm.conf.in
 dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
 
-@INTLTOOL_SCHEMAS_RULE@
-@INTLTOOL_XML_NOMERGE_RULE@
-
 # dconf database and profile
 dconf_db_files = \
 	dconf/defaults/00-upstream-settings		\
@@ -57,8 +54,7 @@ gsettings_SCHEMAS = org.gnome.login-screen.gschema.xml
 schemasdir = $(pkgdatadir)
 schemas_in_files = gdm.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
-
-gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
+$(schemas_DATA): $(schemas_in_files)
 	sed	-e 's,[@]GDMPREFETCHCMD[@],$(GDMPREFETCHCMD),g' \
 		-e 's,[@]GDM_CUSTOM_CONF[@],$(GDM_CUSTOM_CONF),g' \
 		-e 's,[@]GDM_USER_PATH[@],$(GDM_USER_PATH),g' \
@@ -81,7 +77,7 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]logdir[@],$(logdir),g' \
 		-e 's,[@]pixmapdir[@],$(pixmapdir),g' \
 		-e 's,[@]sbindir[@],$(sbindir),g' \
-		<$(srcdir)/gdm.schemas.in.in >gdm.schemas.in
+		<$(srcdir)/gdm.schemas.in >gdm.schemas
 
 
 EXTRA_DIST += gnome-login.session.in
@@ -168,19 +164,18 @@ EXTRA_DIST += $(srcdir)/61-gdm.rules.in
 
 EXTRA_DIST +=			\
 	$(dconf_db_files)	\
+	$(gsettings_SCHEMAS)	\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
 	$(localealias_DATA)	\
 	$(udevrules_DATA)	\
-	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
 	Init.in 		\
 	PreSession.in 		\
 	PostSession.in 		\
 	PostLogin 		\
-	org.gnome.login-screen.gschema.xml.in \
 	$(NULL)
 
 CLEANFILES = 				\
@@ -189,7 +184,6 @@ CLEANFILES = 				\
 	Init				\
 	PreSession			\
 	PostSession			\
-	$(gsettings_SCHEMAS)		\
 	greeter-dconf-defaults		\
 	$(NULL)
 

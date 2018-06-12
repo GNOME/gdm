@@ -50,7 +50,8 @@ enable_documentation=yes
 AM_CONDITIONAL(ENABLE_DOCUMENTATION, test x$enable_documentation = xyes)
 
 # i18n stuff
-IT_PROG_INTLTOOL([0.40.0])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.8])
 
 GETTEXT_PACKAGE=gdm
 AC_SUBST(GETTEXT_PACKAGE)
