@@ -59,6 +59,7 @@ struct GdmLocalDisplayFactoryPrivate
 
         guint            seat_new_id;
         guint            seat_removed_id;
+        guint            purge_displays_id;
 };
 
 enum {
@@ -249,7 +250,6 @@ on_display_status_changed (GdmDisplay             *display,
                            GdmLocalDisplayFactory *factory)
 {
         int              status;
-        GdmDisplayStore *store;
         int              num;
         char            *seat_id = NULL;
         char            *session_type = NULL;
@@ -258,8 +258,6 @@ on_display_status_changed (GdmDisplay             *display,
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
-
-        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         g_object_get (display,
                       "seat-id", &seat_id,
@@ -278,7 +276,7 @@ on_display_status_changed (GdmDisplay             *display,
                 if (num != -1) {
                         g_hash_table_remove (factory->priv->used_display_numbers, GUINT_TO_POINTER (num));
                 }
-                gdm_display_store_remove (store, display);
+                gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
 
                 /* if this is a local display, do a full resync.  Only
                  * seats without displays will get created anyway.  This
@@ -295,7 +293,7 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->used_display_numbers
                    so that it doesn't get reused */
-                gdm_display_store_remove (store, display);
+                gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
 
                 /* Create a new equivalent display if it was static */
                 if (is_local) {
@@ -763,6 +761,11 @@ gdm_local_display_factory_finalize (GObject *object)
         g_hash_table_destroy (factory->priv->used_display_numbers);
 
         gdm_local_display_factory_stop_monitor (factory);
+
+        if (factory->priv->purge_displays_id != 0) {
+                g_source_remove (factory->priv->purge_displays_id);
+                factory->priv->purge_displays_id = 0;
+        }
 
         G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->finalize (object);
 }
