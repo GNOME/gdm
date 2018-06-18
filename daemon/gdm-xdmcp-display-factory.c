@@ -2066,14 +2066,11 @@ on_display_status_changed (GdmDisplay             *display,
                            GdmXdmcpDisplayFactory *factory)
 {
         int              status;
-        GdmDisplayStore *store;
         GdmLaunchEnvironment *launch_environment;
         GdmSession *session;
         GdmAddress *address;
         gint32  session_number;
         int display_number;
-
-        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         launch_environment = NULL;
         g_object_get (display, "launch-environment", &launch_environment, NULL);
@@ -2095,10 +2092,10 @@ on_display_status_changed (GdmDisplay             *display,
                               NULL);
                 gdm_xdmcp_send_alive (factory, address, display_number, session_number);
 
-                gdm_display_store_remove (store, display);
+                gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
                 break;
         case GDM_DISPLAY_FAILED:
-                gdm_display_store_remove (store, display);
+                gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
                 break;
         case GDM_DISPLAY_UNMANAGED:
                 if (session != NULL) {
