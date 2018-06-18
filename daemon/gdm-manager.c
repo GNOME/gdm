@@ -1413,8 +1413,10 @@ activate_login_window_session_on_seat (GdmManager *self,
                 return;
         }
 
-        activate_session_id (self, seat_id, session_id);
-        g_free (session_id);
+        if (session_id) {
+                activate_session_id (self, seat_id, session_id);
+                g_free (session_id);
+        }
 }
 
 static void
