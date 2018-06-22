@@ -1421,7 +1421,7 @@ maybe_activate_other_session (GdmManager *self,
                               GdmDisplay *old_display)
 {
         char *seat_id = NULL;
-        char *session_id;
+        char *session_id = NULL;
         int ret;
 
         g_object_get (G_OBJECT (old_display),
@@ -1440,6 +1440,8 @@ maybe_activate_other_session (GdmManager *self,
                 if (display == NULL) {
                         activate_login_window_session_on_seat (self, seat_id);
                 }
+
+                g_free (session_id);
         }
 
         g_free (seat_id);
