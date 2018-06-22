@@ -13,15 +13,8 @@ if test -z $AUTORECONF; then
         exit 1
 fi
 
-INTLTOOLIZE=`which intltoolize`
-if test -z $INTLTOOLIZE; then
-        echo "*** No intltoolize found, please install the intltool package ***"
-        exit 1
-fi
-
 set -e
 
-intltoolize --force --copy --automake 
 autoreconf --force --install --verbose
 
 cd $olddir
