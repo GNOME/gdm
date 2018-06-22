@@ -1345,6 +1345,10 @@ get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_class (sessions[i], &service_class);
                 if (res < 0) {
+                        if (res == -ENOENT || res == -ENXIO) {
+                                continue;
+                        }
+
                         g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
@@ -1359,6 +1363,9 @@ get_login_window_session_id (const char  *seat_id,
 
                 ret = sd_session_get_state (sessions[i], &state);
                 if (ret < 0) {
+                        if (res == -ENOENT || res == -ENXIO)
+                                continue;
+
                         g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
@@ -1372,6 +1379,8 @@ get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_service (sessions[i], &service_id);
                 if (res < 0) {
+                        if (res == -ENOENT || res == -ENXIO)
+                                continue;
                         g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
