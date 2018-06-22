@@ -1437,7 +1437,7 @@ maybe_activate_other_session (GdmManager *self,
                                                   lookup_by_session_id,
                                                   (gpointer) session_id);
 
-                if (display == NULL) {
+                if (display == NULL || gdm_display_get_status (display) == GDM_DISPLAY_FINISHED) {
                         activate_login_window_session_on_seat (self, seat_id);
                 }
 
