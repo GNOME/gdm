@@ -61,7 +61,7 @@ dnl ---------------------------------------------------------------------------
 dnl - Dependencies
 dnl ---------------------------------------------------------------------------
 
-GLIB_REQUIRED_VERSION=2.36.0
+GLIB_REQUIRED_VERSION=2.44.0
 GTK_REQUIRED_VERSION=2.91.1
 LIBCANBERRA_GTK_REQUIRED_VERSION=0.4
 ACCOUNTS_SERVICE_REQUIRED_VERSION=0.6.35
