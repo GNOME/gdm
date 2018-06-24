@@ -36,10 +36,6 @@
 
 #include "gdm-common.h"
 
-#ifndef HAVE_MKDTEMP
-#include "mkdtemp.h"
-#endif
-
 #include <systemd/sd-login.h>
 
 #define GDM_DBUS_NAME                            "org.gnome.DisplayManager"
@@ -47,12 +43,6 @@
 #define GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE "org.gnome.DisplayManager.LocalDisplayFactory"
 
 G_DEFINE_QUARK (gdm-common-error, gdm_common_error);
-
-const char *
-gdm_make_temp_dir (char *template)
-{
-        return mkdtemp (template);
-}
 
 gboolean
 gdm_clear_close_on_exec_flag (int fd)

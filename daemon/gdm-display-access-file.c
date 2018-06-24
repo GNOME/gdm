@@ -310,7 +310,7 @@ _create_xauth_file_for_user (const char  *username,
         g_debug ("GdmDisplayAccessFile: creating xauth directory %s", template);
         /* Initially create with mode 01700 then later chmod after we create database */
         errno = 0;
-        dir_name = gdm_make_temp_dir (template);
+        dir_name = g_mkdtemp (template);
         if (dir_name == NULL) {
                 g_set_error (error,
                              G_FILE_ERROR,
