@@ -186,16 +186,6 @@ AC_ARG_ENABLE(gdm-xsession,
               enable_gdm_xsession=no)
 AM_CONDITIONAL(ENABLE_GDM_XSESSION, test x$enable_gdm_xsession = xyes)
 
-AC_ARG_ENABLE(split-authentication,
-	      AS_HELP_STRING([--enable-split-authentication],
-                             [Enable multiple simultaneous PAM conversations during login @<:@default=yes@:>@]),,
-              enable_split_authentication=yes)
-AM_CONDITIONAL(ENABLE_SPLIT_AUTHENTICATION, test x$enable_split_authentication = xyes)
-
-if test x$enable_split_authentication = xyes; then
-  AC_DEFINE(ENABLE_SPLIT_AUTHENTICATION, 1, [Define if split authentication is enabled])
-fi
-
 AC_ARG_ENABLE(user-display-server,
 	      AS_HELP_STRING([--enable-user-display-server],
                              [Enable running X server as user @<:@default=yes@:>@]),,
