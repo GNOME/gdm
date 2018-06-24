@@ -49,8 +49,6 @@ gboolean       gdm_get_pwent_for_name    (const char     *name,
 
 gboolean       gdm_clear_close_on_exec_flag (int fd);
 
-const char *   gdm_make_temp_dir         (char    *template);
-
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
 gboolean       gdm_goto_login_session    (GError **error);

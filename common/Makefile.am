@@ -33,12 +33,6 @@ noinst_LTLIBRARIES = 		\
 gdmdir = $(datadir)/gdm
 gdm_DATA = gdb-cmd
 
-if MKDTEMP_MISSING
-MKDTEMP_FILES = mkdtemp.c mkdtemp.h
-else
-MKDTEMP_FILES =
-endif
-
 libgdmcommon_la_SOURCES =	\
 	gdm-address.h		\
 	gdm-address.c		\
@@ -59,7 +53,6 @@ libgdmcommon_la_SOURCES =	\
 	gdm-settings-direct.h	\
 	gdm-log.h		\
 	gdm-log.c		\
-	$(MKDTEMP_FILES) 	\
 	$(NULL)
 
 libgdmcommon_la_CPPFLAGS = 		\
@@ -94,7 +87,5 @@ test_log_LDADD =		\
 	$(NULL)
 
 EXTRA_DIST = 			\
-	mkdtemp.c 		\
-	mkdtemp.h		\
 	$(gdm_DATA)		\
 	$(NULL)
