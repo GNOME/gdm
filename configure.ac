@@ -568,12 +568,6 @@ AC_CHECK_HEADER(login_cap.h, [
 AC_CHECK_HEADERS(sys/sockio.h, [
 		 AC_DEFINE(HAVE_SYS_SOCKIO_H, 1, [Define if we have sys/sockio.h])])
 
-#
-# Check for libgen.h
-#
-AC_CHECK_HEADERS(libgen.h, [
-		 AC_DEFINE(HAVE_LIBGEN_H, 1, [Define if we have libgen.h])])
-
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for POSIX version of getpwnam_r
