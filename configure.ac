@@ -330,7 +330,6 @@ AC_CHECK_TYPE(socklen_t,,
 #include <sys/socket.h>
 #endif
 )
-AC_CHECK_HEADERS(sys/sockio.h)
 AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 
 dnl checks needed for Darwin compatibility to linux **environ.
