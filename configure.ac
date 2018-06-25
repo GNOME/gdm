@@ -330,7 +330,6 @@ AC_CHECK_TYPE(socklen_t,,
 #include <sys/socket.h>
 #endif
 )
-AC_CHECK_HEADERS(sys/sockio.h)
 AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 
 dnl checks needed for Darwin compatibility to linux **environ.
@@ -536,24 +535,6 @@ AC_CHECK_LIB(keyutils, keyctl_read, [
 ])
 AC_SUBST(KEYUTILS_LIBS)
 AC_SUBST(KEYUTILS_CFLAGS)
-
-dnl Check if we can use the setpenv function to add specialvariable
-dnl to the environment (such as the /etc/environment file under AIX)
-AC_LINK_IFELSE([
-	AC_LANG_PROGRAM([[
-		#ifdef HAVE_USERSEC_H
-		#include <usersec.h>
-		#endif
-		]],[[
-		return (setpenv(NULL, (PENV_INIT | PENV_NOEXEC), NULL, NULL));
-		]])],
-	can_use_setpenv=yes,
-	can_use_setpenv=no)
-
-if test x$can_use_setpenv = xyes ; then
-	AC_DEFINE(CAN_USE_SETPENV,,[Define this variable if the code to use
-		the setpenv function can be compiled and used])
-fi
 
 #
 # Can we use BSD's setusercontext
@@ -784,46 +765,6 @@ LIBS="$OLD_LIBS"
 fi
 
 AC_SUBST(LIBWRAP_LIBS)
-
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for XFT2 (for gdm-settings-daemon)
-dnl ---------------------------------------------------------------------------
-
-if $PKG_CONFIG --exists xft ; then
-  AC_DEFINE(HAVE_XFT2,,[Define if Xft functionality is available])
-fi
-
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for Xinput
-dnl ---------------------------------------------------------------------------
-
-have_xinput=
-AC_CHECK_LIB(Xi, XOpenDevice, XINPUT_LIBS=-lXi)
-if test "x$XINPUT_LIBS" = x; then
-  save_LIBS="$LIBS"
-  for xinputpath in $x_libraries /usr/X11R6/lib /usr/openwin/lib; do
-    LIBS="-L$xinputpath -lXi"
-    if test x$os_solaris = xyes ; then
-       XINPUT_RPATH_FLAGS="-R$xinputpath"
-    fi
-    AC_MSG_CHECKING(for -lXi in $xinputpath)
-    AC_TRY_LINK([], [XOpenDevice()], [
-	AC_MSG_RESULT(yes)
-	XINPUT_LIBS="$XINPUT_RPATH_FLAGS -L$xinputpath -lXi"
-        LIBS="$save_LIBS"
-	break],[AC_MSG_RESULT(no)])
-  done
-  if test "x$XINPUT_LIBS" = x; then
-    AC_MSG_ERROR(Couldn't find the XInput library. Check config.log for details)
-  fi
-fi
-AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
-if test "x$have_xinput" = xyes; then
-   AC_DEFINE(HAVE_XINPUT, 1, [Define if have xinput])
-   X_EXTRA_LIBS="$X_EXTRA_LIBS $XINPUT_LIBS"
-fi
 
 
 dnl ---------------------------------------------------------------------------
@@ -1170,12 +1111,6 @@ AC_SUBST(EXTRA_FLEXI_LIBS)
 AC_SUBST(EXTRA_DYNAMIC_LIBS)
 AC_SUBST(EXTRA_SETUP_LIBS)
 AC_SUBST(EXTRA_TEST_LIBS)
-
-# Check for Solaris logindevperm support
-#
-AC_CHECK_LIB(devinfo, di_devperm_login, [
-                        AC_DEFINE(HAVE_LOGINDEVPERM)
-                            PAM_LIBS="$PAM_LIBS -ldevinfo" ])
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for X Server location
