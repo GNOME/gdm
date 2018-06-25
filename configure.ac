@@ -787,15 +787,6 @@ AC_SUBST(LIBWRAP_LIBS)
 
 
 dnl ---------------------------------------------------------------------------
-dnl - Check for XFT2 (for gdm-settings-daemon)
-dnl ---------------------------------------------------------------------------
-
-if $PKG_CONFIG --exists xft ; then
-  AC_DEFINE(HAVE_XFT2,,[Define if Xft functionality is available])
-fi
-
-
-dnl ---------------------------------------------------------------------------
 dnl - Check for Xinput
 dnl ---------------------------------------------------------------------------
 
