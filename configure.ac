@@ -787,37 +787,6 @@ AC_SUBST(LIBWRAP_LIBS)
 
 
 dnl ---------------------------------------------------------------------------
-dnl - Check for Xinput
-dnl ---------------------------------------------------------------------------
-
-have_xinput=
-AC_CHECK_LIB(Xi, XOpenDevice, XINPUT_LIBS=-lXi)
-if test "x$XINPUT_LIBS" = x; then
-  save_LIBS="$LIBS"
-  for xinputpath in $x_libraries /usr/X11R6/lib /usr/openwin/lib; do
-    LIBS="-L$xinputpath -lXi"
-    if test x$os_solaris = xyes ; then
-       XINPUT_RPATH_FLAGS="-R$xinputpath"
-    fi
-    AC_MSG_CHECKING(for -lXi in $xinputpath)
-    AC_TRY_LINK([], [XOpenDevice()], [
-	AC_MSG_RESULT(yes)
-	XINPUT_LIBS="$XINPUT_RPATH_FLAGS -L$xinputpath -lXi"
-        LIBS="$save_LIBS"
-	break],[AC_MSG_RESULT(no)])
-  done
-  if test "x$XINPUT_LIBS" = x; then
-    AC_MSG_ERROR(Couldn't find the XInput library. Check config.log for details)
-  fi
-fi
-AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
-if test "x$have_xinput" = xyes; then
-   AC_DEFINE(HAVE_XINPUT, 1, [Define if have xinput])
-   X_EXTRA_LIBS="$X_EXTRA_LIBS $XINPUT_LIBS"
-fi
-
-
-dnl ---------------------------------------------------------------------------
 dnl - Check for Xinerama
 dnl ---------------------------------------------------------------------------
 
