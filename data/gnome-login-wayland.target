@@ -1,0 +1,8 @@
+[Unit]
+Description=User systemd services for the GDM graphical session (wayland)
+Requires=graphical-session-pre.target
+# start/tear down graphical session target along with our session
+BindsTo=graphical-session.target
+# session leader -- if this dies, die along with it
+BindsTo=gnome-session@gnome-login.service
+Wants=gnome-shell-wayland.target gnome-settings-daemon-gdm-wayland.target
