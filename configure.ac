@@ -254,10 +254,17 @@ AC_ARG_WITH(tcp-wrappers,
                            [Use TCP Wrappers @<:@default=auto@:>@]),,
             with_tcp_wrappers=auto)
 
+
 AC_ARG_WITH([udevdir],
             AS_HELP_STRING([--with-udevdir=DIR],
                            [Directory for udev files]),
                 [with_udevdir=$withval], [with_udevdir=$($PKG_CONFIG --variable=udevdir udev)])
+
+AC_ARG_WITH([systemduserunitdir],
+            AS_HELP_STRING([--with-systemduserunitdir=DIR],
+                           [Directory for systemd user service files]),
+                [with_systemduserunitdir=$withval], [with_systemduserunitdir=$($PKG_CONFIG --variable=systemduserunitdir systemd)])
+
 AC_ARG_WITH([systemdsystemunitdir],
             AS_HELP_STRING([--with-systemdsystemunitdir=DIR],
                            [Directory for systemd service files]),
@@ -870,10 +877,18 @@ AC_PATH_PROG(SYSTEMD_X_SERVER, systemd-multi-seat-x, [/lib/systemd/systemd-multi
 AC_SUBST(SYSTEMD_X_SERVER)
 AC_DEFINE_UNQUOTED(SYSTEMD_X_SERVER,"$SYSTEMD_X_SERVER",[Path to systemd X server wrapper])
 
+
 if test "x$with_udevdir" != xno; then
         AC_SUBST(UDEV_DIR, [$with_udevdir])
 fi
 AM_CONDITIONAL(INSTALL_UDEV_RULES, test x$with_udevdir != xno)
+
+if test "x$with_systemduserunitdir" = xno; then
+        AC_MSG_ERROR([systemd --user support is required])
+else
+        AC_SUBST(SYSTEMD_USER_UNIT_DIR, [$with_systemduserunitdir])
+fi
+
 
 if test "x$with_systemdsystemunitdir" != xno; then
         AC_SUBST(SYSTEMD_SYSTEM_UNIT_DIR, [$with_systemdsystemunitdir])
@@ -1526,6 +1541,7 @@ echo \
         SELinux support:          ${use_selinux}
         systemd unit dir:         ${with_systemdsystemunitdir}
         udev dir:                 ${with_udevdir}
+        systemd user unit dir:    ${with_systemduserunitdir}
         plymouth support:         ${use_plymouth}
         wayland support:          ${enable_wayland_support}
         Build with RBAC:          ${msg_rbac_shutdown}
