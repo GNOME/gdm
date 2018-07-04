@@ -948,13 +948,32 @@ create_gnome_session_environment (const char *session_id,
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
 
         args = g_ptr_array_new ();
-        g_ptr_array_add (args, "gnome-session");
 
-        if (debug) {
-                g_ptr_array_add (args, "--debug");
-        }
+        if (session_id == NULL) {
+                /* XXX: we only run gnome-session-systemd for the default
+                 * sessions at the minute - we should support passing a pair of
+                 * unit names into this function */
+                g_ptr_array_add (args, "gnome-session-systemd");
 
-        if (session_id != NULL) {
+                if (debug) {
+                        g_ptr_array_add (args, "--debug");
+                }
+
+                /* the default is to start gnome-login{-wayland,}.target. If
+                 * systemd isn't running, gnome-session-systemd will fall back.
+                 * */
+                if (g_strcmp0 (session_type, "wayland") == 0) {
+                        g_ptr_array_add (args, "gnome-login-wayland.target");
+                } else {
+                        g_ptr_array_add (args, "gnome-login.target");
+                }
+        } else {
+                g_ptr_array_add (args, "gnome-session");
+
+                if (debug) {
+                        g_ptr_array_add (args, "--debug");
+                }
+
                 g_ptr_array_add (args, " --session");
                 g_ptr_array_add (args, (char *) session_id);
         }
