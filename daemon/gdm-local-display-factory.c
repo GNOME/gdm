@@ -217,6 +217,19 @@ create_new_display (GdmLocalDisplayFactory *factory,
 }
 
 static gboolean
+display_is_greeter (GdmDisplay *display)
+{
+        char *session_class;
+        gboolean is_greeter;
+
+        g_object_get (display, "session-class", &session_class, NULL);
+        is_greeter = (g_strcmp0 (session_class, "greeter") == 0);
+        g_free (session_class);
+
+        return is_greeter;
+}
+
+static gboolean
 lookup_by_seat_id (const char *id,
                    GdmDisplay *display,
                    gpointer    user_data)
@@ -232,6 +245,17 @@ lookup_by_seat_id (const char *id,
         g_free(current);
 
         return res;
+}
+
+static gboolean
+lookup_greeter_by_seat_id (const char *id,
+                           GdmDisplay *display,
+                           gpointer    user_data)
+{
+        if (display_is_greeter (display))
+                return lookup_by_seat_id (id, display, user_data);
+        else
+                return FALSE;
 }
 
 /*
@@ -395,12 +419,18 @@ create_display (GdmLocalDisplayFactory *factory,
                 const char             *session_type,
                 gboolean                initial)
 {
-        GdmDisplayStore *store;
+        GdmDisplayStore *store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         GdmDisplay      *display = NULL;
 
-        /* Ensure we don't create the same display more than once */
-        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
-        display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+        /*
+         * seat0 has VCs so it can have multiple sessions open, for seat0
+         * ensure we don't create multiple greeters, for other seats ensure
+         * we don't create the same display more than once.
+         */
+        if (g_strcmp0 (seat_id, "seat0") == 0)
+                display = gdm_display_store_find (store, lookup_greeter_by_seat_id, (gpointer) seat_id);
+        else
+                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
         if (display != NULL) {
                 return NULL;
         }
