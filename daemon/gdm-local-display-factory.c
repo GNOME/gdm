@@ -331,13 +331,23 @@ on_display_status_changed (GdmDisplay             *display,
                 }
                 gdm_display_store_remove (store, display);
 
-                /* if this is a local display, recreate the display */
-                if (is_local) {
-                        /* reset num failures */
-                        factory->priv->num_failures = 0;
+                /* if this is not a local display, don't recreate it */
+                if (!is_local)
+                        break;
 
-                        create_new_display (factory, seat_id);
-                }
+                /* reset num failures */
+                factory->priv->num_failures = 0;
+
+                /*
+                 * If the display was on seat0 and it was a greeter display and
+                 * there are other displays on seat 0 do not re-create the disp.
+                 */
+                if (g_strcmp0 (seat_id, "seat0") == 0 &&
+                    display_is_greeter (display) &&
+                    gdm_display_store_find (store, lookup_by_seat_id, seat_id))
+                        break;
+
+                create_new_display (factory, seat_id);
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->used_display_numbers
