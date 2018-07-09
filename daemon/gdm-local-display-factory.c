@@ -198,6 +198,24 @@ gdm_local_display_factory_use_wayland (void)
         return FALSE;
 }
 
+static gboolean
+lookup_by_seat_id (const char *id,
+                   GdmDisplay *display,
+                   gpointer    user_data)
+{
+        const char *looking_for = user_data;
+        char *current;
+        gboolean res;
+
+        g_object_get (G_OBJECT (display), "seat-id", &current, NULL);
+
+        res = g_strcmp0 (current, looking_for) == 0;
+
+        g_free(current);
+
+        return res;
+}
+
 /*
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
@@ -345,24 +363,6 @@ on_display_status_changed (GdmDisplay             *display,
 
         g_free (seat_id);
         g_free (session_type);
-}
-
-static gboolean
-lookup_by_seat_id (const char *id,
-                   GdmDisplay *display,
-                   gpointer    user_data)
-{
-        const char *looking_for = user_data;
-        char *current;
-        gboolean res;
-
-        g_object_get (G_OBJECT (display), "seat-id", &current, NULL);
-
-        res = g_strcmp0 (current, looking_for) == 0;
-
-        g_free(current);
-
-        return res;
 }
 
 static GdmDisplay *
