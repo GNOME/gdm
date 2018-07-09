@@ -53,12 +53,14 @@ struct GdmLocalDisplayFactoryPrivate
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
         GHashTable      *used_display_numbers;
+        GIOChannel	*tty0_active_chan;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
 
         guint            seat_new_id;
         guint            seat_removed_id;
+        guint            tty0_active_id;
 };
 
 enum {
@@ -548,6 +550,30 @@ on_seat_removed (GDBusConnection *connection,
         delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
 }
 
+static gboolean
+on_tty0_active (GIOChannel *source,
+                GIOCondition condition,
+                gpointer data)
+{
+        GIOStatus status;
+        gchar *str = NULL;
+        int vc;
+
+        g_io_channel_seek_position (source, 0, G_SEEK_SET, NULL);
+
+        status = g_io_channel_read_line (source, &str, NULL, NULL, NULL);
+        if (status != G_IO_STATUS_NORMAL || !str)
+                return TRUE;
+
+        if (sscanf(str, "tty%d", &vc) != 1)
+                return TRUE;
+
+        if (vc == atoi (GDM_INITIAL_VT))
+                create_new_display (data, "seat0");
+
+        return TRUE;
+}
+
 static void
 gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
 {
@@ -571,6 +597,18 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                              on_seat_removed,
                                                                              g_object_ref (factory),
                                                                              g_object_unref);
+        /*
+         * This only fails on really old (pre 2010) kernels, in that case we simply
+         * do not auto-respawn the greeter on a manual switch to the gdm vt.
+         */
+        factory->priv->tty0_active_chan = g_io_channel_new_file ("/sys/class/tty/tty0/active", "r", NULL);
+        if (factory->priv->tty0_active_chan) {
+                factory->priv->tty0_active_id =
+                        g_io_add_watch (factory->priv->tty0_active_chan,
+                                        G_IO_PRI,
+                                        on_tty0_active,
+                                        factory);
+        }
 }
 
 static void
@@ -585,6 +623,12 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 g_dbus_connection_signal_unsubscribe (factory->priv->connection,
                                                       factory->priv->seat_removed_id);
                 factory->priv->seat_removed_id = 0;
+        }
+        if (factory->priv->tty0_active_id) {
+                g_source_remove (factory->priv->tty0_active_id);
+                factory->priv->tty0_active_id = 0;
+                g_io_channel_unref (factory->priv->tty0_active_chan);
+                factory->priv->tty0_active_chan = NULL;
         }
 }
 
