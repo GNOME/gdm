@@ -198,6 +198,24 @@ gdm_local_display_factory_use_wayland (void)
         return FALSE;
 }
 
+static GdmDisplay *
+create_new_display (GdmLocalDisplayFactory *factory,
+                    const char             *seat_id)
+{
+        const char *session_type = NULL;
+        gboolean is_initial;
+
+        if (g_strcmp0 (seat_id, "seat0") == 0) {
+                is_initial = TRUE;
+                if (gdm_local_display_factory_use_wayland ())
+                        session_type = "wayland";
+        } else {
+                is_initial = FALSE;
+        }
+
+        return create_display (factory, seat_id, session_type, is_initial);
+}
+
 static gboolean
 lookup_by_seat_id (const char *id,
                    GdmDisplay *display,
@@ -456,20 +474,8 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
         array = g_variant_get_child_value (result, 0);
         g_variant_iter_init (&iter, array);
 
-        while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL)) {
-                gboolean is_initial;
-                const char *session_type = NULL;
-
-                if (g_strcmp0 (seat, "seat0") == 0) {
-                        is_initial = TRUE;
-                        if (gdm_local_display_factory_use_wayland ())
-                                session_type = "wayland";
-                } else {
-                        is_initial = FALSE;
-                }
-
-                create_display (factory, seat, session_type, is_initial);
-        }
+        while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL))
+                create_new_display (factory, seat);
 
         g_variant_unref (result);
         g_variant_unref (array);
