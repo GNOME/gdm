@@ -35,6 +35,7 @@
 struct GdmDisplayFactoryPrivate
 {
         GdmDisplayStore *display_store;
+        guint            purge_displays_id;
 };
 
 enum {
@@ -57,6 +58,41 @@ gdm_display_factory_error_quark (void)
         }
 
         return ret;
+}
+
+static gboolean
+purge_display (char       *id,
+               GdmDisplay *display,
+               gpointer    user_data)
+{
+        int status;
+
+        status = gdm_display_get_status (display);
+
+        switch (status) {
+        case GDM_DISPLAY_FINISHED:
+        case GDM_DISPLAY_FAILED:
+                return TRUE;
+        default:
+                return FALSE;
+        }
+}
+
+static void
+purge_displays (GdmDisplayFactory *factory)
+{
+        factory->priv->purge_displays_id = 0;
+        gdm_display_store_foreach_remove (factory->priv->display_store,
+                                          (GdmDisplayStoreFunc)purge_display,
+                                          NULL);
+}
+
+void
+gdm_display_factory_queue_purge_displays (GdmDisplayFactory *factory)
+{
+        if (factory->priv->purge_displays_id == 0) {
+                factory->priv->purge_displays_id = g_idle_add ((GSourceFunc) purge_displays, factory);
+        }
 }
 
 GdmDisplayStore *
@@ -186,6 +222,11 @@ gdm_display_factory_finalize (GObject *object)
         factory = GDM_DISPLAY_FACTORY (object);
 
         g_return_if_fail (factory->priv != NULL);
+
+        if (factory->priv->purge_displays_id != 0) {
+                g_source_remove (factory->priv->purge_displays_id);
+                factory->priv->purge_displays_id = 0;
+        }
 
         G_OBJECT_CLASS (gdm_display_factory_parent_class)->finalize (object);
 }
