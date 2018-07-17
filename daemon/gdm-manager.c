@@ -1337,7 +1337,7 @@ get_login_window_session_id (const char  *seat_id,
 
         if (sessions == NULL || sessions[0] == NULL) {
                 *session_id = NULL;
-                ret = TRUE;
+                ret = FALSE;
                 goto out;
         }
 
@@ -1398,7 +1398,7 @@ get_login_window_session_id (const char  *seat_id,
         }
 
         *session_id = NULL;
-        ret = TRUE;
+        ret = FALSE;
 
 out:
         if (sessions) {
