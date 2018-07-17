@@ -59,7 +59,6 @@ struct GdmLocalDisplayFactoryPrivate
 
         guint            seat_new_id;
         guint            seat_removed_id;
-        guint            purge_displays_id;
 };
 
 enum {
@@ -761,11 +760,6 @@ gdm_local_display_factory_finalize (GObject *object)
         g_hash_table_destroy (factory->priv->used_display_numbers);
 
         gdm_local_display_factory_stop_monitor (factory);
-
-        if (factory->priv->purge_displays_id != 0) {
-                g_source_remove (factory->priv->purge_displays_id);
-                factory->priv->purge_displays_id = 0;
-        }
 
         G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->finalize (object);
 }
