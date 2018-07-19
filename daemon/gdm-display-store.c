@@ -76,15 +76,10 @@ stored_display_new (GdmDisplayStore *store,
 static void
 stored_display_free (StoredDisplay *stored_display)
 {
-        char *id;
-
-        gdm_display_get_id (stored_display->display, &id, NULL);
-
         g_signal_emit (G_OBJECT (stored_display->store),
                        signals[DISPLAY_REMOVED],
                        0,
-                       id);
-        g_free (id);
+                       stored_display->display);
 
         g_debug ("GdmDisplayStore: Unreffing display: %p",
                  stored_display->display);
@@ -281,9 +276,9 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
                               G_STRUCT_OFFSET (GdmDisplayStoreClass, display_removed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+                              1, G_TYPE_OBJECT);
 
         g_type_class_add_private (klass, sizeof (GdmDisplayStorePrivate));
 }

@@ -49,7 +49,7 @@ typedef struct
         void          (* display_added)    (GdmDisplayStore *display_store,
                                             const char      *id);
         void          (* display_removed)  (GdmDisplayStore *display_store,
-                                            const char      *id);
+                                            GdmDisplay      *display);
 } GdmDisplayStoreClass;
 
 typedef enum
