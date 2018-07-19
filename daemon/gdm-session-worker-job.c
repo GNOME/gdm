@@ -117,12 +117,19 @@ session_worker_job_setup_journal_fds (void)
 static void
 session_worker_job_child_setup (GdmSessionWorkerJob *session_worker_job)
 {
+        sigset_t mask;
         session_worker_job_setup_journal_fds ();
 
         /* Terminate the process when the parent dies */
 #ifdef HAVE_SYS_PRCTL_H
         prctl (PR_SET_PDEATHSIG, SIGTERM);
 #endif
+        /*
+         * Reset signal mask to default since it was altered by the
+         * manager process
+         */
+        sigemptyset (&mask);
+        sigprocmask (SIG_SETMASK, &mask, NULL);
 }
 
 static void
