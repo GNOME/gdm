@@ -1109,18 +1109,18 @@ register_display (GdmDisplay *self)
         self->priv->object_skeleton = g_dbus_object_skeleton_new (self->priv->id);
         self->priv->display_skeleton = GDM_DBUS_DISPLAY (gdm_dbus_display_skeleton_new ());
 
-        g_signal_connect (self->priv->display_skeleton, "handle-get-id",
-                          G_CALLBACK (handle_get_id), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-remote-hostname",
-                          G_CALLBACK (handle_get_remote_hostname), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-seat-id",
-                          G_CALLBACK (handle_get_seat_id), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-get-x11-display-name",
-                          G_CALLBACK (handle_get_x11_display_name), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-is-local",
-                          G_CALLBACK (handle_is_local), self);
-        g_signal_connect (self->priv->display_skeleton, "handle-is-initial",
-                          G_CALLBACK (handle_is_initial), self);
+        g_signal_connect_object (self->priv->display_skeleton, "handle-get-id",
+                                 G_CALLBACK (handle_get_id), self, 0);
+        g_signal_connect_object (self->priv->display_skeleton, "handle-get-remote-hostname",
+                                 G_CALLBACK (handle_get_remote_hostname), self, 0);
+        g_signal_connect_object (self->priv->display_skeleton, "handle-get-seat-id",
+                                 G_CALLBACK (handle_get_seat_id), self, 0);
+        g_signal_connect_object (self->priv->display_skeleton, "handle-get-x11-display-name",
+                                 G_CALLBACK (handle_get_x11_display_name), self, 0);
+        g_signal_connect_object (self->priv->display_skeleton, "handle-is-local",
+                                 G_CALLBACK (handle_is_local), self, 0);
+        g_signal_connect_object (self->priv->display_skeleton, "handle-is-initial",
+                                 G_CALLBACK (handle_is_initial), self, 0);
 
         g_dbus_object_skeleton_add_interface (self->priv->object_skeleton,
                                               G_DBUS_INTERFACE_SKELETON (self->priv->display_skeleton));
