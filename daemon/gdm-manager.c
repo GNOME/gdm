@@ -1541,19 +1541,18 @@ on_display_status_changed (GdmDisplay *display,
 
 static void
 on_display_removed (GdmDisplayStore *display_store,
-                    const char      *id,
+                    GdmDisplay      *display,
                     GdmManager      *manager)
 {
-        GdmDisplay *display;
+        char    *id;
 
-        display = gdm_display_store_lookup (display_store, id);
-        if (display != NULL) {
-                g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+        gdm_display_get_id (display, &id, NULL);
+        g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+        g_free (id);
 
-                g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), manager);
+        g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), manager);
 
-                g_signal_emit (manager, signals[DISPLAY_REMOVED], 0, id);
-        }
+        g_signal_emit (manager, signals[DISPLAY_REMOVED], 0, display);
 }
 
 static void
@@ -2535,9 +2534,9 @@ gdm_manager_class_init (GdmManagerClass *klass)
                               G_STRUCT_OFFSET (GdmManagerClass, display_removed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+                              1, G_TYPE_OBJECT);
 
         g_object_class_install_property (object_class,
                                          PROP_XDMCP_ENABLED,

@@ -805,18 +805,11 @@ on_display_added (GdmDisplayStore        *display_store,
 
 static void
 on_display_removed (GdmDisplayStore        *display_store,
-                    const char             *id,
+                    GdmDisplay             *display,
                     GdmLocalDisplayFactory *factory)
 {
-        GdmDisplay *display;
-
-        display = gdm_display_store_lookup (display_store, id);
-
-        if (display != NULL) {
-                g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), factory);
-                g_object_weak_unref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
-
-        }
+        g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), factory);
+        g_object_weak_unref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
 }
 
 static gboolean

@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 
+#include "gdm-display.h"
 #include "gdm-manager-glue.h"
 
 G_BEGIN_DECLS
@@ -50,7 +51,7 @@ typedef struct
         void          (* display_added)    (GdmManager      *manager,
                                             const char      *id);
         void          (* display_removed)  (GdmManager      *manager,
-                                            const char      *id);
+                                            GdmDisplay      *display);
 } GdmManagerClass;
 
 typedef enum
