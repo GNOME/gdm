@@ -1,0 +1,20 @@
+stages:
+  - build
+
+build-fedora:
+  image: fedora:28
+  stage: build
+  before_script:
+    - dnf -y install which gettext libtool automake autoconf systemd git
+        gobject-introspection-devel libattr-devel systemd-devel check-devel
+        libselinux-devel iso-codes-devel libXdmcp-devel libcanberra-devel
+        dconf  keyutils-libs-devel libdmx-devel libXau-devel plymouth-devel
+        xorg-x11-server-devel xorg-x11-server-Xorg desktop-file-utils
+        audit-libs-devel nss-devel pam-devel accountsservice-devel gtk3-devel
+  script:
+    - ./autogen.sh
+    - make -j
+    - make -j check
+    - make -j distcheck
+  except:
+    - tags
