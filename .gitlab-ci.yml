@@ -1,0 +1,16 @@
+stages:
+  - build
+
+build-fedora:
+  image: fedora:28
+  stage: build
+  before_script:
+    - dnf update -y && dnf install -y 'dnf-command(builddep)' redhat-rpm-config
+    - dnf builddep -y gdm
+  script:
+    - ./autogen.sh
+    - make -j
+    - make -j check
+    - make -j distcheck
+  except:
+    - tags
