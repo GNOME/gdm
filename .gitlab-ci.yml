@@ -1,0 +1,46 @@
+stages:
+  - build
+
+build-fedora:
+  image: fedora:28
+  stage: build
+  before_script:
+    - dnf -y install
+        accountsservice-devel
+        audit-libs-devel
+        autoconf
+        automake
+        check-devel
+        dconf
+        desktop-file-utils
+        gettext-devel
+        gobject-introspection-devel
+        gtk3-devel
+        iso-codes-devel
+        keyutils-libs-devel
+        libXau-devel
+        libXdmcp-devel
+        libattr-devel
+        libcanberra-devel
+        libdmx-devel
+        libselinux-devel
+        libtool
+        make
+        nss-devel
+        pam-devel
+        plymouth-devel
+        redhat-rpm-config
+        systemd
+        systemd-devel
+        which
+        xorg-x11-server-Xorg
+        xorg-x11-server-devel
+        yelp-devel
+
+  script:
+    - ./autogen.sh
+    - make -j
+    - make -j check
+    - make -j distcheck
+  except:
+    - tags
