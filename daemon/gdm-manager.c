@@ -1345,10 +1345,6 @@ get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_class (sessions[i], &service_class);
                 if (res < 0) {
-                        if (res == -ENOENT || res == -ENXIO) {
-                                continue;
-                        }
-
                         g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
@@ -1363,9 +1359,6 @@ get_login_window_session_id (const char  *seat_id,
 
                 ret = sd_session_get_state (sessions[i], &state);
                 if (ret < 0) {
-                        if (res == -ENOENT || res == -ENXIO)
-                                continue;
-
                         g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
@@ -1379,8 +1372,6 @@ get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_service (sessions[i], &service_id);
                 if (res < 0) {
-                        if (res == -ENOENT || res == -ENXIO)
-                                continue;
                         g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
@@ -1410,50 +1401,6 @@ out:
         }
 
         return ret;
-}
-
-static void
-activate_login_window_session_on_seat (GdmManager *self,
-                                       const char *seat_id)
-{
-        char *session_id;
-
-        if (!get_login_window_session_id (seat_id, &session_id)) {
-                return;
-        }
-
-        activate_session_id (self, seat_id, session_id);
-}
-
-static void
-maybe_activate_other_session (GdmManager *self,
-                              GdmDisplay *old_display)
-{
-        char *seat_id = NULL;
-        char *session_id = NULL;
-        int ret;
-
-        g_object_get (G_OBJECT (old_display),
-                      "seat-id", &seat_id,
-                      NULL);
-
-        ret = sd_seat_get_active (seat_id, &session_id, NULL);
-
-        if (ret == 0) {
-                GdmDisplay *display;
-
-                display = gdm_display_store_find (self->priv->display_store,
-                                                  lookup_by_session_id,
-                                                  (gpointer) session_id);
-
-                if (display == NULL || gdm_display_get_status (display) == GDM_DISPLAY_FINISHED) {
-                        activate_login_window_session_on_seat (self, seat_id);
-                }
-
-                g_free (session_id);
-        }
-
-        g_free (seat_id);
 }
 
 static const char *
@@ -1701,7 +1648,6 @@ on_display_status_changed (GdmDisplay *display,
                                 manager->priv->ran_once = TRUE;
                         }
                         maybe_start_pending_initial_login (manager, display);
-                        maybe_activate_other_session (manager, display);
                         break;
                 default:
                         break;

@@ -28,6 +28,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include <systemd/sd-login.h>
+
 #include "gdm-common.h"
 #include "gdm-manager.h"
 #include "gdm-display-factory.h"
@@ -253,6 +255,7 @@ on_display_status_changed (GdmDisplay             *display,
         int              num;
         char            *seat_id = NULL;
         char            *session_type = NULL;
+        char            *session_class = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
 
@@ -266,6 +269,7 @@ on_display_status_changed (GdmDisplay             *display,
                       "is-initial", &is_initial,
                       "is-local", &is_local,
                       "session-type", &session_type,
+                      "session-class", &session_class,
                       NULL);
 
         status = gdm_display_get_status (display);
@@ -285,7 +289,7 @@ on_display_status_changed (GdmDisplay             *display,
                  * ensures we get a new login screen when the user logs out,
                  * if there isn't one.
                  */
-                if (is_local) {
+                if (is_local && g_strcmp0 (session_class, "greeter") != 0) {
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
@@ -330,6 +334,7 @@ on_display_status_changed (GdmDisplay             *display,
 
         g_free (seat_id);
         g_free (session_type);
+        g_free (session_class);
 }
 
 static gboolean
@@ -350,6 +355,131 @@ lookup_by_seat_id (const char *id,
         return res;
 }
 
+static gboolean
+activate_session_id (GdmLocalDisplayFactory *self,
+                     const char             *seat_id,
+                     const char             *session_id)
+{
+        GError *error = NULL;
+        GVariant *reply;
+
+        reply = g_dbus_connection_call_sync (self->priv->connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "ActivateSessionOnSeat",
+                                             g_variant_new ("(ss)", session_id, seat_id),
+                                             NULL, /* expected reply */
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             &error);
+        if (reply == NULL) {
+                g_debug ("GdmManager: logind 'ActivateSessionOnSeat' %s raised:\n %s\n\n",
+                         g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        g_variant_unref (reply);
+
+        return TRUE;
+}
+
+static gboolean
+get_login_window_session_id (const char  *seat_id,
+                             char       **session_id)
+{
+        gboolean   ret;
+        int        res, i;
+        char     **sessions;
+        char      *service_id;
+        char      *service_class;
+        char      *state;
+
+        res = sd_seat_get_sessions (seat_id, &sessions, NULL, NULL);
+        if (res < 0) {
+                g_debug ("Failed to determine sessions: %s", strerror (-res));
+                return FALSE;
+        }
+
+        if (sessions == NULL || sessions[0] == NULL) {
+                *session_id = NULL;
+                ret = TRUE;
+                goto out;
+        }
+
+        for (i = 0; sessions[i]; i ++) {
+
+                res = sd_session_get_class (sessions[i], &service_class);
+                if (res < 0) {
+                        if (res == -ENOENT || res == -ENXIO) {
+                                continue;
+                        }
+
+                        g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_class, "greeter") != 0) {
+                        free (service_class);
+                        continue;
+                }
+
+                free (service_class);
+
+                ret = sd_session_get_state (sessions[i], &state);
+                if (ret < 0) {
+                        if (res == -ENOENT || res == -ENXIO)
+                                continue;
+
+                        g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (g_strcmp0 (state, "closing") == 0) {
+                        free (state);
+                        continue;
+                }
+                free (state);
+
+                res = sd_session_get_service (sessions[i], &service_id);
+                if (res < 0) {
+                        if (res == -ENOENT || res == -ENXIO)
+                                continue;
+                        g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_id, "gdm-launch-environment") == 0) {
+                        *session_id = g_strdup (sessions[i]);
+                        ret = TRUE;
+
+                        free (service_id);
+                        goto out;
+                }
+
+                free (service_id);
+        }
+
+        *session_id = NULL;
+        ret = FALSE;
+
+out:
+        if (sessions) {
+                for (i = 0; sessions[i]; i ++) {
+                        free (sessions[i]);
+                }
+
+                free (sessions);
+        }
+
+        return ret;
+}
+
 static GdmDisplay *
 create_display (GdmLocalDisplayFactory *factory,
                 const char             *seat_id,
@@ -358,12 +488,33 @@ create_display (GdmLocalDisplayFactory *factory,
 {
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
+        char            *active_session_id = NULL;
+        int              ret;
 
-        /* Ensure we don't create the same display more than once */
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
-        display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
-        if (display != NULL) {
-                return NULL;
+
+        ret = sd_seat_get_active (seat_id, &active_session_id, NULL);
+
+        if (ret == 0) {
+                char *login_session_id = NULL;
+
+                /* If we already have a login window, switch to it */
+                if (get_login_window_session_id (seat_id, &login_session_id)) {
+                        if (g_strcmp0 (active_session_id, login_session_id) != 0) {
+                                activate_session_id (factory, seat_id, login_session_id);
+                        }
+                        g_clear_pointer (&login_session_id, g_free);
+                        g_clear_pointer (&active_session_id, g_free);
+                        return NULL;
+                }
+                g_clear_pointer (&active_session_id, g_free);
+        } else {
+                /* Ensure we don't create the same display more than once */
+                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+
+                if (display != NULL) {
+                        return NULL;
+                }
         }
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
