@@ -1287,53 +1287,6 @@ maybe_start_pending_initial_login (GdmManager *manager,
         g_free (user_session_seat_id);
 }
 
-static void
-activate_login_window_session_on_seat (GdmManager *self,
-                                       const char *seat_id)
-{
-        char *session_id;
-
-        if (!gdm_get_login_window_session_id (seat_id, &session_id)) {
-                return;
-        }
-
-        if (session_id) {
-                gdm_activate_session_by_id (self, seat_id, session_id);
-                g_free (session_id);
-        }
-}
-
-static void
-maybe_activate_other_session (GdmManager *self,
-                              GdmDisplay *old_display)
-{
-        char *seat_id = NULL;
-        char *session_id = NULL;
-        int ret;
-
-        g_object_get (G_OBJECT (old_display),
-                      "seat-id", &seat_id,
-                      NULL);
-
-        ret = sd_seat_get_active (seat_id, &session_id, NULL);
-
-        if (ret == 0) {
-                GdmDisplay *display;
-
-                display = gdm_display_store_find (self->priv->display_store,
-                                                  lookup_by_session_id,
-                                                  (gpointer) session_id);
-
-                if (display == NULL || gdm_display_get_status (display) == GDM_DISPLAY_FINISHED) {
-                        activate_login_window_session_on_seat (self, seat_id);
-                }
-
-                g_free (session_id);
-        }
-
-        g_free (seat_id);
-}
-
 static const char *
 get_username_for_greeter_display (GdmManager *manager,
                                   GdmDisplay *display)
@@ -1579,7 +1532,6 @@ on_display_status_changed (GdmDisplay *display,
                                 manager->priv->ran_once = TRUE;
                         }
                         maybe_start_pending_initial_login (manager, display);
-                        maybe_activate_other_session (manager, display);
                         break;
                 default:
                         break;
