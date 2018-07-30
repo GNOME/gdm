@@ -28,6 +28,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include <systemd/sd-login.h>
+
 #include "gdm-common.h"
 #include "gdm-manager.h"
 #include "gdm-display-factory.h"
@@ -267,6 +269,7 @@ on_display_status_changed (GdmDisplay             *display,
         int              num;
         char            *seat_id = NULL;
         char            *session_type = NULL;
+        char            *session_class = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
 
@@ -278,6 +281,7 @@ on_display_status_changed (GdmDisplay             *display,
                       "is-initial", &is_initial,
                       "is-local", &is_local,
                       "session-type", &session_type,
+                      "session-class", &session_class,
                       NULL);
 
         status = gdm_display_get_status (display);
@@ -297,7 +301,7 @@ on_display_status_changed (GdmDisplay             *display,
                  * ensures we get a new login screen when the user logs out,
                  * if there isn't one.
                  */
-                if (is_local) {
+                if (is_local && g_strcmp0 (session_class, "greeter") != 0) {
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
@@ -342,6 +346,7 @@ on_display_status_changed (GdmDisplay             *display,
 
         g_free (seat_id);
         g_free (session_type);
+        g_free (session_class);
 }
 
 static gboolean
@@ -370,12 +375,33 @@ create_display (GdmLocalDisplayFactory *factory,
 {
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
+        char            *active_session_id = NULL;
+        int              ret;
 
-        /* Ensure we don't create the same display more than once */
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
-        display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
-        if (display != NULL) {
-                return NULL;
+
+        ret = sd_seat_get_active (seat_id, &active_session_id, NULL);
+
+        if (ret == 0) {
+                char *login_session_id = NULL;
+
+                /* If we already have a login window, switch to it */
+                if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
+                        if (g_strcmp0 (active_session_id, login_session_id) != 0) {
+                                gdm_activate_session_by_id (factory->priv->connection, seat_id, login_session_id);
+                        }
+                        g_clear_pointer (&login_session_id, g_free);
+                        g_clear_pointer (&active_session_id, g_free);
+                        return NULL;
+                }
+                g_clear_pointer (&active_session_id, g_free);
+        } else {
+                /* Ensure we don't create the same display more than once */
+                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+
+                if (display != NULL) {
+                        return NULL;
+                }
         }
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
