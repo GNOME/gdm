@@ -51,6 +51,8 @@ gboolean       gdm_clear_close_on_exec_flag (int fd);
 
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
+gboolean       gdm_get_login_window_session_id (const char  *seat_id,
+                                                char       **session_id);
 gboolean       gdm_goto_login_session    (GError **error);
 
 GPtrArray     *gdm_get_script_environment (const char *username,
