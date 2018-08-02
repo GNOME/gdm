@@ -22,6 +22,8 @@
 #define _GDM_COMMON_H
 
 #include <glib-unix.h>
+#include <gio/gio.h>
+
 #include <pwd.h>
 #include <errno.h>
 
@@ -51,6 +53,8 @@ gboolean       gdm_clear_close_on_exec_flag (int fd);
 
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
+gboolean       gdm_get_login_window_session_id (const char  *seat_id,
+                                                char       **session_id);
 gboolean       gdm_goto_login_session    (GError **error);
 
 GPtrArray     *gdm_get_script_environment (const char *username,
@@ -68,6 +72,10 @@ gboolean      gdm_shell_var_is_valid_char (char c,
 char *        gdm_shell_expand            (const char *str,
                                            GdmExpandVarFunc expand_func,
                                            gpointer user_data);
+
+gboolean      gdm_activate_session_by_id (GDBusConnection *connection,
+                                          const char      *seat_id,
+                                          const char      *session_id);
 
 G_END_DECLS
 

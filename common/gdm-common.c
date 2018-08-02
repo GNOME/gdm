@@ -352,10 +352,10 @@ create_transient_display (GDBusConnection *connection,
         return TRUE;
 }
 
-static gboolean
-activate_session_id (GDBusConnection *connection,
-                     const char      *seat_id,
-                     const char      *session_id)
+gboolean
+gdm_activate_session_by_id (GDBusConnection *connection,
+                            const char      *seat_id,
+                            const char      *session_id)
 {
         GError *local_error = NULL;
         GVariant *reply;
@@ -381,13 +381,14 @@ activate_session_id (GDBusConnection *connection,
         return TRUE;
 }
 
-static gboolean
-get_login_window_session_id (const char  *seat_id,
-                             char       **session_id)
+gboolean
+gdm_get_login_window_session_id (const char  *seat_id,
+		                 char       **session_id)
 {
         gboolean   ret;
         int        res, i;
         char     **sessions;
+        char      *service_id;
         char      *service_class;
         char      *state;
 
@@ -399,13 +400,19 @@ get_login_window_session_id (const char  *seat_id,
 
         if (sessions == NULL || sessions[0] == NULL) {
                 *session_id = NULL;
-                ret = TRUE;
+                ret = FALSE;
                 goto out;
         }
 
         for (i = 0; sessions[i]; i ++) {
+
                 res = sd_session_get_class (sessions[i], &service_class);
                 if (res < 0) {
+                        if (res == -ENOENT) {
+                                free (service_class);
+                                continue;
+                        }
+
                         g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
                         goto out;
@@ -431,21 +438,35 @@ get_login_window_session_id (const char  *seat_id,
                 }
                 free (state);
 
-                *session_id = g_strdup (sessions[i]);
-                ret = TRUE;
-                break;
+                res = sd_session_get_service (sessions[i], &service_id);
+                if (res < 0) {
+                        g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
 
+                if (strcmp (service_id, "gdm-launch-environment") == 0) {
+                        *session_id = g_strdup (sessions[i]);
+                        ret = TRUE;
+
+                        free (service_id);
+                        goto out;
+                }
+
+                free (service_id);
         }
 
         *session_id = NULL;
-        ret = TRUE;
+        ret = FALSE;
 
 out:
-        for (i = 0; sessions[i]; i ++) {
-                free (sessions[i]);
-        }
+        if (sessions) {
+                for (i = 0; sessions[i]; i ++) {
+                        free (sessions[i]);
+                }
 
-        free (sessions);
+                free (sessions);
+        }
 
         return ret;
 }
@@ -506,9 +527,9 @@ goto_login_session (GDBusConnection  *connection,
                 return FALSE;
         }
 
-        res = get_login_window_session_id (seat_id, &session_id);
+        res = gdm_get_login_window_session_id (seat_id, &session_id);
         if (res && session_id != NULL) {
-                res = activate_session_id (connection, seat_id, session_id);
+                res = gdm_activate_session_by_id (connection, seat_id, session_id);
 
                 if (res) {
                         ret = TRUE;
