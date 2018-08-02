@@ -295,37 +295,6 @@ is_login_session (GdmManager  *self,
 }
 
 static gboolean
-activate_session_id (GdmManager *manager,
-                     const char *seat_id,
-                     const char *session_id)
-{
-        GError *error = NULL;
-        GVariant *reply;
-
-        reply = g_dbus_connection_call_sync (manager->priv->connection,
-                                             "org.freedesktop.login1",
-                                             "/org/freedesktop/login1",
-                                             "org.freedesktop.login1.Manager",
-                                             "ActivateSessionOnSeat",
-                                             g_variant_new ("(ss)", session_id, seat_id),
-                                             NULL, /* expected reply */
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
-        if (reply == NULL) {
-                g_debug ("GdmManager: logind 'ActivateSessionOnSeat' %s raised:\n %s\n\n",
-                         g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        g_variant_unref (reply);
-
-        return TRUE;
-}
-
-static gboolean
 session_unlock (GdmManager *manager,
                 const char *ssid)
 {
@@ -621,7 +590,7 @@ switch_to_compatible_user_session (GdmManager *manager,
         if (existing_session != NULL) {
                 ssid_to_activate = gdm_session_get_session_id (existing_session);
                 if (seat_id != NULL) {
-                        res = activate_session_id (manager, seat_id, ssid_to_activate);
+                        res = gdm_activate_session_by_id (manager->priv->connection, seat_id, ssid_to_activate);
                         if (! res) {
                                 g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
                                 goto out;
@@ -1329,7 +1298,7 @@ activate_login_window_session_on_seat (GdmManager *self,
         }
 
         if (session_id) {
-                activate_session_id (self, seat_id, session_id);
+                gdm_activate_session_by_id (self, seat_id, session_id);
                 g_free (session_id);
         }
 }

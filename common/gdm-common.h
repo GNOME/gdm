@@ -22,6 +22,8 @@
 #define _GDM_COMMON_H
 
 #include <glib-unix.h>
+#include <gio/gio.h>
+
 #include <pwd.h>
 #include <errno.h>
 
@@ -70,6 +72,10 @@ gboolean      gdm_shell_var_is_valid_char (char c,
 char *        gdm_shell_expand            (const char *str,
                                            GdmExpandVarFunc expand_func,
                                            gpointer user_data);
+
+gboolean      gdm_activate_session_by_id (GDBusConnection *connection,
+                                          const char      *seat_id,
+                                          const char      *session_id);
 
 G_END_DECLS
 
