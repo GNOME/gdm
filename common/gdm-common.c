@@ -352,10 +352,10 @@ create_transient_display (GDBusConnection *connection,
         return TRUE;
 }
 
-static gboolean
-activate_session_id (GDBusConnection *connection,
-                     const char      *seat_id,
-                     const char      *session_id)
+gboolean
+gdm_activate_session_by_id (GDBusConnection *connection,
+                            const char      *seat_id,
+                            const char      *session_id)
 {
         GError *local_error = NULL;
         GVariant *reply;
@@ -529,7 +529,7 @@ goto_login_session (GDBusConnection  *connection,
 
         res = gdm_get_login_window_session_id (seat_id, &session_id);
         if (res && session_id != NULL) {
-                res = activate_session_id (connection, seat_id, session_id);
+                res = gdm_activate_session_by_id (connection, seat_id, session_id);
 
                 if (res) {
                         ret = TRUE;
