@@ -395,7 +395,7 @@ create_display (GdmLocalDisplayFactory *factory,
                         return NULL;
                 }
                 g_clear_pointer (&active_session_id, g_free);
-        } else {
+        } else if (!sd_seat_can_multi_session (seat_id)) {
                 /* Ensure we don't create the same display more than once */
                 display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
 
