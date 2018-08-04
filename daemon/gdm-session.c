@@ -343,6 +343,8 @@ get_system_session_dirs (GdmSession *self)
 {
         GArray *search_array = NULL;
         char **search_dirs;
+        int i;
+        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
 
         static const char *x_search_dirs[] = {
                 "/etc/X11/sessions/",
@@ -355,13 +357,28 @@ get_system_session_dirs (GdmSession *self)
 
         search_array = g_array_new (TRUE, TRUE, sizeof (char *));
 
+        for (i = 0; system_data_dirs[i]; i++) {
+                gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+                g_array_append_val (search_array, dir);
+        }
+
         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
 
 #ifdef ENABLE_WAYLAND_SUPPORT
         if (!self->priv->ignore_wayland) {
 #ifdef ENABLE_USER_DISPLAY_SERVER
                 g_array_prepend_val (search_array, wayland_search_dir);
+
+                for (i = 0; system_data_dirs[i]; i++) {
+                        gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+                        g_array_insert_val (search_array, i, dir);
+                }
 #else
+                for (i = 0; system_data_dirs[i]; i++) {
+                        gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+                        g_array_append_val (search_array, dir);
+                }
+
                 g_array_append_val (search_array, wayland_search_dir);
 #endif
         }
