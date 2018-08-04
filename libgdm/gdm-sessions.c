@@ -162,7 +162,7 @@ load_session_file (const char              *id,
 }
 
 static void
-collect_sessions_from_directory (const char *dirname)
+collect_sessions_from_directory (const char *dirname, void *user_data)
 {
         GDir       *dir;
         const char *filename;
@@ -216,19 +216,30 @@ static void
 collect_sessions (void)
 {
         int         i;
-        const char *xorg_search_dirs[] = {
-                "/etc/X11/sessions/",
-                DMCONFDIR "/Sessions/",
-                DATADIR "/gdm/BuiltInSessions/",
-                DATADIR "/xsessions/",
-                NULL
-        };
+        GPtrArray *xorg_search_dirs = g_ptr_array_new ();
+        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
+
+        g_ptr_array_add (xorg_search_dirs, g_strdup ("/etc/X11/sessions/"));
+        g_ptr_array_add (xorg_search_dirs, g_strdup (DMCONFDIR "/Sessions/"));
+        g_ptr_array_add (xorg_search_dirs, g_strdup (DATADIR "/gdm/BuiltInSessions/"));
+        g_ptr_array_add (xorg_search_dirs, g_strdup (DATADIR "/xsessions/"));
+
+        for (i = 0; system_data_dirs[i]; i++) {
+                g_ptr_array_add (xorg_search_dirs, g_build_filename (system_data_dirs[i], "xsessions", NULL));
+        }
+
+        g_ptr_array_add (xorg_search_dirs, NULL);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        const char *wayland_search_dirs[] = {
-                DATADIR "/wayland-sessions/",
-                NULL
-        };
+        GPtrArray *wayland_search_dirs = g_ptr_array_new ();
+
+        g_ptr_array_add (wayland_search_dirs, g_strdup (DATADIR "/wayland-sessions/"));
+
+        for (i = 0; system_data_dirs[i]; i++) {
+                g_ptr_array_add (wayland_search_dirs, g_build_filename (system_data_dirs[i], "wayland-sessions", NULL));
+        }
+
+        g_ptr_array_add (wayland_search_dirs, NULL);
 #endif
 
         if (gdm_available_sessions_map == NULL) {
@@ -236,9 +247,9 @@ collect_sessions (void)
                                                                     g_free, (GDestroyNotify)gdm_session_file_free);
         }
 
-        for (i = 0; xorg_search_dirs [i] != NULL; i++) {
-                collect_sessions_from_directory (xorg_search_dirs [i]);
-        }
+        g_ptr_array_foreach (xorg_search_dirs, (GFunc) collect_sessions_from_directory, NULL);
+
+        g_ptr_array_free (xorg_search_dirs, TRUE);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
 #ifdef ENABLE_USER_DISPLAY_SERVER
@@ -247,9 +258,9 @@ collect_sessions (void)
         }
 #endif
 
-        for (i = 0; wayland_search_dirs [i] != NULL; i++) {
-                collect_sessions_from_directory (wayland_search_dirs [i]);
-        }
+        g_ptr_array_foreach (wayland_search_dirs, (GFunc) collect_sessions_from_directory, NULL);
+
+        g_ptr_array_free (wayland_search_dirs, TRUE);
 #endif
 }
 
