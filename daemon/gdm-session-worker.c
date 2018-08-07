@@ -1210,9 +1210,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 
         /* Temporarily set PAM_TTY with the currently active VT (login screen) 
            PAM_TTY will be reset with the users VT right before the user session is opened */
-        ensure_login_vt (worker);
-        g_snprintf (tty_string, 256, "/dev/tty%d", worker->priv->login_vt);
-        pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+        if (ensure_login_vt (worker)) {
+                g_snprintf (tty_string, 256, "/dev/tty%d", worker->priv->login_vt);
+                pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+        }
         if (!display_is_local)
                 worker->priv->password_is_required = TRUE;
 
