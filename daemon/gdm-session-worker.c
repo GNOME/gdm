@@ -968,6 +968,8 @@ jump_to_vt (GdmSessionWorker  *worker,
 {
         int fd;
         int active_vt_tty_fd;
+        int active_vt = -1;
+        struct vt_stat vt_state = { 0 };
 
         g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
         active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
@@ -993,12 +995,20 @@ jump_to_vt (GdmSessionWorker  *worker,
 
         handle_terminal_vt_switches (worker, fd);
 
-        if (ioctl (fd, VT_ACTIVATE, vt_number) < 0) {
-                g_debug ("GdmSessionWorker: couldn't initiate jump to VT %d: %m",
-                         vt_number);
-        } else if (ioctl (fd, VT_WAITACTIVE, vt_number) < 0) {
-                g_debug ("GdmSessionWorker: couldn't finalize jump to VT %d: %m",
-                         vt_number);
+        if (ioctl (fd, VT_GETSTATE, &vt_state) <= 0) {
+                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
+        } else {
+                active_vt = vt_state.v_active;
+        }
+
+        if (active_vt != vt_number) {
+                if (ioctl (fd, VT_ACTIVATE, vt_number) < 0) {
+                        g_debug ("GdmSessionWorker: couldn't initiate jump to VT %d: %m",
+                                 vt_number);
+                } else if (ioctl (fd, VT_WAITACTIVE, vt_number) < 0) {
+                        g_debug ("GdmSessionWorker: couldn't finalize jump to VT %d: %m",
+                                 vt_number);
+                }
         }
 
         close (active_vt_tty_fd);
