@@ -622,6 +622,12 @@ on_vt_changed (GIOChannel    *source,
 
         g_strchomp (tty_of_active_vt);
 
+        /* don't do anything if we're on the same VT we were before */
+        if (g_strcmp0 (tty_of_active_vt, factory->priv->tty_of_active_vt) == 0) {
+                g_debug ("GdmLocalDisplayFactory: VT changed to the same VT, ignoring");
+                return G_SOURCE_CONTINUE;
+        }
+
         tty_of_previous_vt = g_steal_pointer (&factory->priv->tty_of_active_vt);
         factory->priv->tty_of_active_vt = g_steal_pointer (&tty_of_active_vt);
 
