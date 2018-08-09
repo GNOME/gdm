@@ -87,6 +87,9 @@ static void     on_display_status_changed               (GdmDisplay             
 
 static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
 static gpointer local_display_factory_object = NULL;
+static gboolean lookup_by_session_id (const char *id,
+                                      GdmDisplay *display,
+                                      gpointer    user_data);
 
 G_DEFINE_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
@@ -392,12 +395,20 @@ create_display (GdmLocalDisplayFactory *factory,
 
                 /* If we already have a login window, switch to it */
                 if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
-                        if (g_strcmp0 (active_session_id, login_session_id) != 0) {
-                                gdm_activate_session_by_id (factory->priv->connection, seat_id, login_session_id);
+                        GdmDisplay *display;
+
+                        display = gdm_display_store_find (store,
+                                                          lookup_by_session_id,
+                                                          (gpointer) login_session_id);
+                        if (display != NULL && gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
+                                if (g_strcmp0 (active_session_id, login_session_id) != 0) {
+                                        gdm_activate_session_by_id (factory->priv->connection, seat_id, login_session_id);
+                                }
+                                g_clear_pointer (&login_session_id, g_free);
+                                g_clear_pointer (&active_session_id, g_free);
+                                return NULL;
                         }
                         g_clear_pointer (&login_session_id, g_free);
-                        g_clear_pointer (&active_session_id, g_free);
-                        return NULL;
                 }
                 g_clear_pointer (&active_session_id, g_free);
         } else if (!sd_seat_can_multi_session (seat_id)) {
