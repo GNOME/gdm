@@ -386,6 +386,8 @@ create_display (GdmLocalDisplayFactory *factory,
         char            *active_session_id = NULL;
         int              ret;
 
+        g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
+                 session_type? : "X11", seat_id);
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         ret = sd_seat_get_active (seat_id, &active_session_id, NULL);
@@ -402,6 +404,8 @@ create_display (GdmLocalDisplayFactory *factory,
                                                           (gpointer) login_session_id);
                         if (display != NULL && gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
                                 if (g_strcmp0 (active_session_id, login_session_id) != 0) {
+                                        g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
+                                                 login_session_id);
                                         gdm_activate_session_by_id (factory->priv->connection, seat_id, login_session_id);
                                 }
                                 g_clear_pointer (&login_session_id, g_free);
@@ -475,6 +479,7 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
         GVariantIter iter;
         const char *seat;
 
+        g_debug ("GdmLocalDisplayFactory: enumerating seats from logind");
         result = g_dbus_connection_call_sync (factory->priv->connection,
                                               "org.freedesktop.login1",
                                               "/org/freedesktop/login1",
