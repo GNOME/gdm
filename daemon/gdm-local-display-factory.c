@@ -375,6 +375,21 @@ lookup_by_seat_id (const char *id,
         return res;
 }
 
+static gboolean
+lookup_prepared_display_by_seat_id (const char *id,
+                                    GdmDisplay *display,
+                                    gpointer    user_data)
+{
+        int status;
+
+        status = gdm_display_get_status (display);
+
+        if (status != GDM_DISPLAY_PREPARED)
+                return FALSE;
+
+        return lookup_by_seat_id (id, display, user_data);
+}
+
 static GdmDisplay *
 create_display (GdmLocalDisplayFactory *factory,
                 const char             *seat_id,
@@ -389,6 +404,17 @@ create_display (GdmLocalDisplayFactory *factory,
         g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                  session_type? : "X11", seat_id);
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        if (sd_seat_can_multi_session (seat_id))
+                display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
+        else
+                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+
+        /* Ensure we don't create the same display more than once */
+        if (display != NULL) {
+                g_debug ("GdmLocalDisplayFactory: display already created");
+                return NULL;
+        }
 
         ret = sd_seat_get_active (seat_id, &active_session_id, NULL);
 
@@ -415,13 +441,6 @@ create_display (GdmLocalDisplayFactory *factory,
                         g_clear_pointer (&login_session_id, g_free);
                 }
                 g_clear_pointer (&active_session_id, g_free);
-        } else if (!sd_seat_can_multi_session (seat_id)) {
-                /* Ensure we don't create the same display more than once */
-                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
-
-                if (display != NULL) {
-                        return NULL;
-                }
         }
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
