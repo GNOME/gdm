@@ -60,10 +60,13 @@ gboolean            gdm_session_settings_save               (GdmSessionSettings 
 gboolean            gdm_session_settings_is_loaded          (GdmSessionSettings  *settings);
 char               *gdm_session_settings_get_language_name  (GdmSessionSettings *settings);
 char               *gdm_session_settings_get_session_name   (GdmSessionSettings *settings);
+char               *gdm_session_settings_get_session_type   (GdmSessionSettings *settings);
 void                gdm_session_settings_set_language_name  (GdmSessionSettings *settings,
                                                              const char         *language_name);
 void                gdm_session_settings_set_session_name   (GdmSessionSettings *settings,
                                                              const char         *session_name);
+void                gdm_session_settings_set_session_type   (GdmSessionSettings *settings,
+                                                             const char         *session_type);
 
 G_END_DECLS
 #endif /* GDM_SESSION_SETTINGS_H */
