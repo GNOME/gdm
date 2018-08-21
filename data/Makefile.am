@@ -99,10 +99,22 @@ gdm-simple-chooser.desktop: $(srcdir)/gdm-simple-chooser.desktop.in
 
 gnome-greeter.desktop: $(srcdir)/gnome-greeter.desktop.in
 	sed	-e 's,[@]gdmdatadir[@],$(gdmdatadir),g' \
+		-e 's,[@]EXTRA_ARGS[@],,g' \
+		< $< > $@.tmp && mv $@.tmp $@
+
+gnome-greeter-debug.desktop: $(srcdir)/gnome-greeter.desktop.in
+	sed	-e 's,[@]gdmdatadir[@],$(gdmdatadir),g' \
+		-e 's,[@]EXTRA_ARGS[@],--debug,g' \
 		< $< > $@.tmp && mv $@.tmp $@
 
 gnome-initial-setup.desktop: $(srcdir)/gnome-initial-setup.desktop.in
 	sed	-e 's,[@]gdmdatadir[@],$(gdmdatadir),g' \
+		-e 's,[@]EXTRA_ARGS[@],,g' \
+		< $< > $@.tmp && mv $@.tmp $@
+
+gnome-initial-setup-debug.desktop: $(srcdir)/gnome-initial-setup.desktop.in
+	sed	-e 's,[@]gdmdatadir[@],$(gdmdatadir),g' \
+		-e 's,[@]EXTRA_ARGS[@],--debug,g' \
 		< $< > $@.tmp && mv $@.tmp $@
 
 localealiasdir = $(gdmdatadir)
@@ -112,14 +124,18 @@ gdmxsessionsdir = $(gdmdatadir)/greeter/xsessions
 gdmxsessions_DATA = \
 	gdm-simple-chooser.desktop	\
 	gnome-greeter.desktop		\
+	gnome-greeter-debug.desktop		\
 	gnome-initial-setup.desktop	\
+	gnome-initial-setup-debug.desktop	\
 	$(NULL)
 
 gdmwaylandsessionsdir = $(gdmdatadir)/greeter/wayland-sessions
 gdmwaylandsessions_DATA = \
 	gdm-simple-chooser.desktop	\
 	gnome-greeter.desktop		\
+	gnome-greeter-debug.desktop		\
 	gnome-initial-setup.desktop	\
+	gnome-initial-setup-debug.desktop	\
 	$(NULL)
 
 sessiondir = $(datadir)/gnome-session/sessions
@@ -224,7 +240,9 @@ DISTCLEANFILES =			\
 	gdm.schemas			\
 	gdm-simple-chooser.desktop	\
 	gnome-greeter.session		\
+	gnome-greeter-debug.session	\
 	gnome-initial-setup.desktop	\
+	gnome-initial-setup-debug.desktop \
 	gnome-login.session		\
 	$(NULL)
 

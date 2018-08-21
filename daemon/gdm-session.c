@@ -182,6 +182,7 @@ enum {
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
 #endif
 static void update_session_type (GdmSession *self);
+static char *get_session_filename (GdmSession *self);
 static void set_session_type (GdmSession *self,
                               const char *session_type);
 static guint signals [LAST_SIGNAL] = { 0, };
@@ -514,6 +515,26 @@ out:
         return ret;
 }
 
+static char *
+get_session_filename_for_session (GdmSession *self,
+                                  const char *session_name)
+{
+        gboolean debug = FALSE;
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+
+        if (debug) {
+                g_autofree char *filename = NULL;
+                filename = g_strconcat (session_name, "-debug.desktop", NULL);
+
+                if (get_session_command_for_file (self, filename, NULL)) {
+                        return g_steal_pointer (&filename);
+                }
+        }
+
+        return g_strconcat (session_name, ".desktop", NULL);
+}
+
 static gboolean
 get_session_command_for_name (GdmSession  *self,
                               const char  *name,
@@ -522,7 +543,7 @@ get_session_command_for_name (GdmSession  *self,
         gboolean res;
         char    *filename;
 
-        filename = g_strdup_printf ("%s.desktop", name);
+        filename = get_session_filename_for_session (self, name);
         res = get_session_command_for_file (self, filename, command);
         g_free (filename);
 
@@ -2478,7 +2499,7 @@ get_session_desktop_names (GdmSession *self)
         GKeyFile *keyfile;
         gchar *desktop_names = NULL;
 
-        filename = g_strdup_printf ("%s.desktop", get_session_name (self));
+        filename = get_session_filename (self);
         g_debug ("GdmSession: getting desktop names for file '%s'", filename);
         keyfile = load_key_file_for_file (self, filename, NULL);
         if (keyfile != NULL) {
@@ -3017,7 +3038,7 @@ gdm_session_get_conversation_session_id (GdmSession *self,
 static char *
 get_session_filename (GdmSession *self)
 {
-        return g_strdup_printf ("%s.desktop", get_session_name (self));
+        return get_session_filename_for_session (self, get_session_name (self));
 }
 
 #ifdef ENABLE_WAYLAND_SUPPORT
