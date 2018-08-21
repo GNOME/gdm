@@ -178,8 +178,6 @@ void              gdm_session_close                       (GdmSession *session);
 void              gdm_session_answer_query                (GdmSession *session,
                                                            const char *service_name,
                                                            const char *text);
-void              gdm_session_select_program              (GdmSession *session,
-                                                           const char *command_line);
 void              gdm_session_select_session              (GdmSession *session,
                                                            const char *session_name);
 void              gdm_session_select_user                 (GdmSession *session,
