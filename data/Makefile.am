@@ -15,6 +15,7 @@ workingdir = $(GDM_WORKING_DIR)
 xauthdir = $(GDM_XAUTH_DIR)
 screenshotdir = $(GDM_SCREENSHOT_DIR)
 cachedir = $(localstatedir)/cache/gdm
+gdmdatadir = $(datadir)/gdm
 
 Init: $(srcdir)/Init.in
 	sed	-e 's,[@]X_PATH[@],$(X_PATH),g' \
@@ -80,15 +81,46 @@ $(schemas_DATA): $(schemas_in_files)
 		<$(srcdir)/gdm.schemas.in >gdm.schemas
 
 
-EXTRA_DIST += gnome-login.session.in
+EXTRA_DIST += \
+	gdm-simple-chooser.desktop.in	\
+	gnome-greeter.desktop.in	\
+	gnome-initial-setup.desktop.in	\
+	gnome-login.session.in		\
+	$(NULL)
 
 gnome-login.session: $(srcdir)/gnome-login.session.in
 	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
 		-e 's,[@]CHECK_ACCELERATED_DIR[@],$(CHECK_ACCELERATED_DIR),g' \
 		< $< > $@.tmp && mv $@.tmp $@
 
-localealiasdir = $(datadir)/gdm
+gdm-simple-chooser.desktop: $(srcdir)/gdm-simple-chooser.desktop.in
+	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		< $< > $@.tmp && mv $@.tmp $@
+
+gnome-greeter.desktop: $(srcdir)/gnome-greeter.desktop.in
+	sed	-e 's,[@]gdmdatadir[@],$(gdmdatadir),g' \
+		< $< > $@.tmp && mv $@.tmp $@
+
+gnome-initial-setup.desktop: $(srcdir)/gnome-initial-setup.desktop.in
+	sed	-e 's,[@]gdmdatadir[@],$(gdmdatadir),g' \
+		< $< > $@.tmp && mv $@.tmp $@
+
+localealiasdir = $(gdmdatadir)
 localealias_DATA = locale.alias
+
+gdmxsessionsdir = $(gdmdatadir)/greeter/xsessions
+gdmxsessions_DATA = \
+	gdm-simple-chooser.desktop	\
+	gnome-greeter.desktop		\
+	gnome-initial-setup.desktop	\
+	$(NULL)
+
+gdmwaylandsessionsdir = $(gdmdatadir)/greeter/wayland-sessions
+gdmwaylandsessions_DATA = \
+	gdm-simple-chooser.desktop	\
+	gnome-greeter.desktop		\
+	gnome-initial-setup.desktop	\
+	$(NULL)
 
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA =  gnome-login.session
@@ -190,6 +222,9 @@ CLEANFILES = 				\
 DISTCLEANFILES =			\
 	$(dbusconf_DATA)		\
 	gdm.schemas			\
+	gdm-simple-chooser.desktop	\
+	gnome-greeter.desktop		\
+	gnome-initial-setup.desktop	\
 	gnome-login.session		\
 	$(NULL)
 
