@@ -89,7 +89,6 @@ struct _GdmSession
         GObject              parent;
 
         /* per open scope */
-        char                *selected_program;
         char                *selected_session;
         char                *saved_session;
         char                *saved_session_type;
@@ -2847,10 +2846,6 @@ get_session_desktop_names (GdmSession *self)
         GKeyFile *keyfile;
         gchar *desktop_names = NULL;
 
-        if (self->selected_program != NULL) {
-                return g_strdup ("GNOME-Greeter:GNOME");
-        }
-
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
         g_debug ("GdmSession: getting desktop names for file '%s'", filename);
         keyfile = load_key_file_for_file (self, filename, NULL, NULL);
@@ -2916,17 +2911,15 @@ set_up_session_environment (GdmSession *self)
         gchar *desktop_names;
         char *locale;
 
-        if (self->selected_program == NULL) {
-                gdm_session_set_environment_variable (self,
-                                                      "GDMSESSION",
-                                                      get_session_name (self));
-                gdm_session_set_environment_variable (self,
-                                                      "DESKTOP_SESSION",
-                                                      get_session_name (self));
-                gdm_session_set_environment_variable (self,
-                                                      "XDG_SESSION_DESKTOP",
-                                                      get_session_name (self));
-        }
+        gdm_session_set_environment_variable (self,
+                                              "GDMSESSION",
+                                              get_session_name (self));
+        gdm_session_set_environment_variable (self,
+                                              "DESKTOP_SESSION",
+                                              get_session_name (self));
+        gdm_session_set_environment_variable (self,
+                                              "XDG_SESSION_DESKTOP",
+                                              get_session_name (self));
 
         desktop_names = get_session_desktop_names (self);
         if (desktop_names != NULL) {
@@ -3115,6 +3108,7 @@ on_start_program_cb (GdmDBusWorker *worker,
         }
 }
 
+
 void
 gdm_session_start_session (GdmSession *self,
                            const char *service_name)
@@ -3123,9 +3117,10 @@ gdm_session_start_session (GdmSession *self,
         GdmSessionDisplayMode   display_mode;
         gboolean                is_x11 = TRUE;
         gboolean                run_launcher = FALSE;
+        gboolean                run_xsession_script;
         gboolean                allow_remote_connections = FALSE;
-        char                   *command;
-        char                   *program;
+        g_autofree char        *command = NULL;
+        g_autofree char        *program = NULL;
         gboolean               register_session;
 
         g_return_if_fail (GDM_IS_SESSION (self));
@@ -3155,54 +3150,32 @@ gdm_session_start_session (GdmSession *self,
 
         register_session = !gdm_session_session_registers (self);
 
-        if (self->selected_program == NULL) {
-                gboolean run_xsession_script;
+        command = get_session_command (self);
 
-                command = get_session_command (self);
+        run_xsession_script = !gdm_session_bypasses_xsession (self);
 
-                run_xsession_script = !gdm_session_bypasses_xsession (self);
-
-                if (self->display_is_local) {
-                        gboolean disallow_tcp = TRUE;
-                        gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disallow_tcp);
-                        allow_remote_connections = !disallow_tcp;
-                } else {
-                        allow_remote_connections = TRUE;
-                }
-
-                if (run_launcher) {
-                        if (is_x11) {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
-                                                           register_session ? "--register-session " : "",
-                                                           run_xsession_script? "--run-script " : "",
-                                                           allow_remote_connections? "--allow-remote-connections " : "",
-                                                           command);
-                        } else {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
-                                                           register_session ? "--register-session " : "",
-                                                           command);
-                        }
-                } else if (run_xsession_script) {
-                        program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
-                } else {
-                        program = g_strdup (command);
-                }
-
-                g_free (command);
+        if (self->display_is_local) {
+                gboolean disallow_tcp = TRUE;
+                gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disallow_tcp);
+                allow_remote_connections = !disallow_tcp;
         } else {
-                if (run_launcher) {
-                        if (is_x11) {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s\"%s\"",
-                                                           register_session ? "--register-session " : "",
-                                                           self->selected_program);
-                        } else {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
-                                                           register_session ? "--register-session " : "",
-                                                           self->selected_program);
-                        }
+                allow_remote_connections = TRUE;
+        }
+
+        if (run_launcher) {
+                if (is_x11) {
+                        program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
+                                                   register_session ? "--register-session " : "",
+                                                   run_xsession_script? "--run-script " : "",
+                                                   allow_remote_connections? "--allow-remote-connections " : "",
+                                                   command);
                 } else {
-                        program = g_strdup (self->selected_program);
+                        program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                                   register_session ? "--register-session " : "",
+                                                   command);
                 }
+        } else if (run_xsession_script) {
+                program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
         }
 
         set_up_session_environment (self);
@@ -3213,7 +3186,6 @@ gdm_session_start_session (GdmSession *self,
                                             conversation->worker_cancellable,
                                             (GAsyncReadyCallback) on_start_program_cb,
                                             conversation);
-        g_free (program);
 }
 
 static void
@@ -3690,17 +3662,6 @@ gdm_session_get_display_mode (GdmSession *self)
 #endif
         return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
 #endif
-}
-
-void
-gdm_session_select_program (GdmSession *self,
-                            const char *text)
-{
-        g_return_if_fail (GDM_IS_SESSION (self));
-
-        g_free (self->selected_program);
-
-        self->selected_program = g_strdup (text);
 }
 
 void
