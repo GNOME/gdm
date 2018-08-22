@@ -10,6 +10,8 @@ AM_CPPFLAGS = \
 	-DDATADIR=\"$(datadir)\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\" 		\
+	-DGDM_RUN_DIR=\"$(GDM_RUN_DIR)\"		\
+	-DGDM_RUNTIME_CONF=\"$(GDM_RUNTIME_CONF)\"	\
 	-DGDM_SCREENSHOT_DIR=\""$(GDM_SCREENSHOT_DIR)"\"\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)					\
@@ -31,6 +33,10 @@ bin_PROGRAMS = \
 	gdm-screenshot		\
 	$(NULL)
 
+libexec_PROGRAMS = \
+	gdm-disable-wayland	\
+	$(NULL)
+
 gdmflexiserver_LDADD =		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(GTK_LIBS)		\
@@ -47,6 +53,14 @@ gdm_screenshot_LDADD =		\
 	$(CANBERRA_GTK_LIBS)	\
 	$(XLIB_LIBS)		\
 	$(COMMON_LIBS)		\
+	$(NULL)
+
+gdm_disable_wayland_LDADD =	\
+	$(COMMON_LIBS)		\
+	$(NULL)
+
+gdm_disable_wayland_SOURCES =	\
+	gdm-disable-wayland.c	\
 	$(NULL)
 
 CLEANFILES = 			\
