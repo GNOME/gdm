@@ -1,2 +1,19 @@
-# disable Wayland on Cirrus chipsets
+# disable Wayland on unsupported chipsets
+
+# cirrus
 ATTR{vendor}=="0x1013", ATTR{device}=="0x00b8", ATTR{subsystem_vendor}=="0x1af4", ATTR{subsystem_device}=="0x1100", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0522", RUN+="@libexecdir@/gdm-disable-wayland"
+
+# mgag200
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0524", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0530", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0532", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0533", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0534", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0536", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x102b", ATTR{device}=="0x0538", RUN+="@libexecdir@/gdm-disable-wayland"
+
+# aspeed
+ATTR{vendor}=="0x1a03", ATTR{device}=="0x2010", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x1a03", ATTR{device}=="0x2000", RUN+="@libexecdir@/gdm-disable-wayland"
+
