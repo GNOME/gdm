@@ -215,6 +215,9 @@ collect_sessions_from_directory (const char *dirname)
 static void
 collect_sessions (void)
 {
+        GArray     *xorg_search_array = NULL;
+        GArray     *wayland_search_array = NULL;
+        gchar      *session_dir = NULL;
         int         i;
         const char *xorg_search_dirs[] = {
                 "/etc/X11/sessions/",
@@ -224,11 +227,31 @@ collect_sessions (void)
                 NULL
         };
 
+        xorg_search_array = g_array_new (TRUE, TRUE, sizeof (char *));
+
+        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
+
+        for (i = 0; system_data_dirs[i]; i++) {
+                session_dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+                g_array_append_val (xorg_search_array, session_dir);
+        }
+
+        g_array_append_vals (xorg_search_array, xorg_search_dirs, G_N_ELEMENTS (xorg_search_dirs));
+
 #ifdef ENABLE_WAYLAND_SUPPORT
         const char *wayland_search_dirs[] = {
                 DATADIR "/wayland-sessions/",
                 NULL
         };
+
+        wayland_search_array = g_array_new (TRUE, TRUE, sizeof (char *));
+
+        for (i = 0; system_data_dirs[i]; i++) {
+                session_dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+                g_array_append_val (wayland_search_array, session_dir);
+        }
+
+        g_array_append_vals (wayland_search_array, wayland_search_dirs, G_N_ELEMENTS (wayland_search_dirs));
 #endif
 
         if (gdm_available_sessions_map == NULL) {
@@ -236,20 +259,25 @@ collect_sessions (void)
                                                                     g_free, (GDestroyNotify)gdm_session_file_free);
         }
 
-        for (i = 0; xorg_search_dirs [i] != NULL; i++) {
-                collect_sessions_from_directory (xorg_search_dirs [i]);
+        for (i = 0; i < xorg_search_array->len; i++) {
+                collect_sessions_from_directory (g_array_index (xorg_search_array, gchar*, i));
         }
+
+        g_array_free (xorg_search_array, TRUE);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
 #ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_getenv ("WAYLAND_DISPLAY") == NULL && g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+                g_array_free (wayland_search_array, TRUE);
                 return;
         }
 #endif
 
-        for (i = 0; wayland_search_dirs [i] != NULL; i++) {
-                collect_sessions_from_directory (wayland_search_dirs [i]);
+        for (i = 0; i < wayland_search_array->len; i++) {
+                collect_sessions_from_directory (g_array_index (wayland_search_array, gchar*, i));
         }
+
+        g_array_free (wayland_search_array, TRUE);
 #endif
 }
 
