@@ -185,6 +185,8 @@ static gboolean gdm_session_is_wayland_session (GdmSession *self);
 static void update_session_type (GdmSession *self);
 static void set_session_type (GdmSession *self,
                               const char *session_type);
+static void close_conversation (GdmSessionConversation *conversation);
+
 static guint signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
@@ -1820,6 +1822,8 @@ setup_outside_server (GdmSession *self)
 static void
 free_conversation (GdmSessionConversation *conversation)
 {
+        close_conversation (conversation);
+
         if (conversation->job != NULL) {
                 g_warning ("Freeing conversation '%s' with active job", conversation->service_name);
         }
