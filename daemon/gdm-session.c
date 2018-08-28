@@ -1820,6 +1820,8 @@ setup_outside_server (GdmSession *self)
 static void
 free_conversation (GdmSessionConversation *conversation)
 {
+        close_conversation (conversation);
+
         if (conversation->job != NULL) {
                 g_warning ("Freeing conversation '%s' with active job", conversation->service_name);
         }
