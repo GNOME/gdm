@@ -1,2 +1,4 @@
 # disable Wayland on Cirrus chipsets
 ATTR{vendor}=="0x1013", ATTR{device}=="0x00b8", ATTR{subsystem_vendor}=="0x1af4", ATTR{subsystem_device}=="0x1100", RUN+="@libexecdir@/gdm-disable-wayland"
+# disable Wayland on Hi1710 chipsets
+ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", RUN+="@libexecdir@/gdm-disable-wayland"
