@@ -383,7 +383,7 @@ gdm_activate_session_by_id (GDBusConnection *connection,
 
 gboolean
 gdm_get_login_window_session_id (const char  *seat_id,
-		                 char       **session_id)
+                                 char       **session_id)
 {
         gboolean   ret;
         int        res, i;
