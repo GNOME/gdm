@@ -371,7 +371,7 @@ is_remote_session (GdmManager  *self,
         seat = NULL;
         ret = sd_session_get_seat (session_id, &seat);
 
-        if (ret < 0 && ret != -ENOENT) {
+        if (ret < 0 && ret != -ENXIO) {
                 g_debug ("GdmManager: Error while retrieving seat for session %s: %s",
                          session_id, strerror (-ret));
         }
@@ -396,7 +396,7 @@ get_seat_id_for_session_id (const char  *session_id,
         seat = NULL;
         ret = sd_session_get_seat (session_id, &seat);
 
-        if (ret == -ENOENT) {
+        if (ret == -ENXIO) {
                 out_seat = NULL;
         } else if (ret < 0) {
                 g_set_error (error,
@@ -423,7 +423,7 @@ get_tty_for_session_id (const char  *session_id,
 
         ret = sd_session_get_tty (session_id, &tty);
 
-        if (ret == -ENOENT) {
+        if (ret == -ENXIO) {
                 out_tty = NULL;
         } else if (ret < 0) {
                 g_set_error (error,
