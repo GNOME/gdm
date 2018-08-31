@@ -268,6 +268,36 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         return ret;
 }
 
+static gboolean
+finish_display_on_seat_if_waiting (GdmDisplayStore *display_store,
+                                   GdmDisplay      *display,
+                                   const char      *seat_id)
+{
+        if (gdm_display_get_status (display) != GDM_DISPLAY_WAITING_TO_FINISH)
+                return FALSE;
+
+        g_debug ("GdmLocalDisplayFactory: finish background display\n");
+        gdm_display_stop_greeter_session (display);
+        gdm_display_unmanage (display);
+        gdm_display_finish (display);
+
+        return FALSE;
+}
+
+static void
+finish_waiting_displays_on_seat (GdmLocalDisplayFactory *factory,
+                                 const char             *seat_id)
+{
+        GdmDisplayStore *store;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        gdm_display_store_foreach (store,
+                                   (GdmDisplayStoreFunc) finish_display_on_seat_if_waiting,
+                                   (gpointer)
+                                   seat_id);
+}
+
 static void
 on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
@@ -346,6 +376,9 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
+                finish_waiting_displays_on_seat (factory, seat_id);
+                break;
+        case GDM_DISPLAY_WAITING_TO_FINISH:
                 break;
         default:
                 g_assert_not_reached ();
@@ -583,7 +616,7 @@ lookup_by_session_id (const char *id,
 }
 
 static void
-maybe_stop_greeter_display (GdmDisplay *display)
+maybe_stop_greeter_in_background (GdmDisplay *display)
 {
         g_autofree char *display_session_type = NULL;
 
@@ -603,10 +636,8 @@ maybe_stop_greeter_display (GdmDisplay *display)
                 return;
         }
 
-        g_debug ("GdmLocalDisplayFactory: killing login window since its now unused");
-        gdm_display_stop_greeter_session (display);
-        gdm_display_unmanage (display);
-        gdm_display_finish (display);
+        g_debug ("GdmLocalDisplayFactory: killing login window once its unused");
+        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
 }
 
 static gboolean
@@ -700,7 +731,7 @@ on_vt_changed (GIOChannel    *source,
                                                                   (gpointer) login_session_id);
 
                                 if (display != NULL)
-                                        maybe_stop_greeter_display (display);
+                                        maybe_stop_greeter_in_background (display);
                         } else {
                                 g_debug ("GdmLocalDisplayFactory: VT not switched from login window");
                         }

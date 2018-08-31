@@ -40,6 +40,7 @@ typedef enum {
         GDM_DISPLAY_UNMANAGED = 0,
         GDM_DISPLAY_PREPARED,
         GDM_DISPLAY_MANAGED,
+        GDM_DISPLAY_WAITING_TO_FINISH,
         GDM_DISPLAY_FINISHED,
         GDM_DISPLAY_FAILED,
 } GdmDisplayStatus;
