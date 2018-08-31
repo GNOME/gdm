@@ -383,7 +383,7 @@ gdm_activate_session_by_id (GDBusConnection *connection,
 
 gboolean
 gdm_get_login_window_session_id (const char  *seat_id,
-		                 char       **session_id)
+                                 char       **session_id)
 {
         gboolean   ret;
         int        res, i;
@@ -408,10 +408,8 @@ gdm_get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_class (sessions[i], &service_class);
                 if (res < 0) {
-                        if (res == -ENOENT) {
-                                free (service_class);
+                        if (res == -ENOENT)
                                 continue;
-                        }
 
                         g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
