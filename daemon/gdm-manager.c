@@ -89,8 +89,6 @@ struct GdmManagerPrivate
         GDBusConnection          *connection;
         GDBusObjectManagerServer *object_manager;
 
-        StartUserSessionOperation *initial_login_operation;
-
 #ifdef  WITH_PLYMOUTH
         guint                     plymouth_is_running : 1;
 #endif
@@ -371,7 +369,7 @@ is_remote_session (GdmManager  *self,
         seat = NULL;
         ret = sd_session_get_seat (session_id, &seat);
 
-        if (ret < 0 && ret != -ENOENT) {
+        if (ret < 0 && ret != -ENXIO) {
                 g_debug ("GdmManager: Error while retrieving seat for session %s: %s",
                          session_id, strerror (-ret));
         }
@@ -396,7 +394,7 @@ get_seat_id_for_session_id (const char  *session_id,
         seat = NULL;
         ret = sd_session_get_seat (session_id, &seat);
 
-        if (ret == -ENOENT) {
+        if (ret == -ENXIO) {
                 out_seat = NULL;
         } else if (ret < 0) {
                 g_set_error (error,
@@ -423,7 +421,7 @@ get_tty_for_session_id (const char  *session_id,
 
         ret = sd_session_get_tty (session_id, &tty);
 
-        if (ret == -ENOENT) {
+        if (ret == -ENXIO) {
                 out_tty = NULL;
         } else if (ret < 0) {
                 g_set_error (error,
@@ -1251,42 +1249,6 @@ get_automatic_login_details (GdmManager *manager,
         return enabled;
 }
 
-static void
-maybe_start_pending_initial_login (GdmManager *manager,
-                                   GdmDisplay *greeter_display)
-{
-        StartUserSessionOperation *operation;
-        char *greeter_seat_id = NULL;
-        char *user_session_seat_id = NULL;
-
-        /* There may be a user session waiting to be started.
-         * This would happen if we couldn't start it earlier because
-         * the login screen X server was coming up and two X servers
-         * can't be started on the same seat at the same time.
-         */
-
-        if (manager->priv->initial_login_operation == NULL) {
-                return;
-        }
-
-        operation = manager->priv->initial_login_operation;
-
-        g_object_get (G_OBJECT (greeter_display),
-                      "seat-id", &greeter_seat_id,
-                      NULL);
-        g_object_get (G_OBJECT (operation->session),
-                      "display-seat-id", &user_session_seat_id,
-                      NULL);
-
-        if (g_strcmp0 (greeter_seat_id, user_session_seat_id) == 0) {
-                start_user_session (manager, operation);
-                manager->priv->initial_login_operation = NULL;
-        }
-
-        g_free (greeter_seat_id);
-        g_free (user_session_seat_id);
-}
-
 static const char *
 get_username_for_greeter_display (GdmManager *manager,
                                   GdmDisplay *display)
@@ -1464,17 +1426,6 @@ set_up_session (GdmManager *manager,
 }
 
 static void
-greeter_display_started (GdmManager *manager,
-                         GdmDisplay *display)
-{
-        if (manager->priv->ran_once) {
-                return;
-        }
-
-        maybe_start_pending_initial_login (manager, display);
-}
-
-static void
 on_display_status_changed (GdmDisplay *display,
                            GParamSpec *arg1,
                            GdmManager *manager)
@@ -1484,10 +1435,12 @@ on_display_status_changed (GdmDisplay *display,
         char       *session_type = NULL;
 #ifdef WITH_PLYMOUTH
         gboolean    display_is_local = FALSE;
+        gboolean    doing_initial_setup = FALSE;
         gboolean    quit_plymouth = FALSE;
 
         g_object_get (display,
                       "is-local", &display_is_local,
+                      "doing-initial-setup", &doing_initial_setup,
                       NULL);
         quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
 #endif
@@ -1513,10 +1466,6 @@ on_display_status_changed (GdmDisplay *display,
                                         set_up_session (manager, display);
                                 g_free (session_class);
                         }
-
-                        if (status == GDM_DISPLAY_MANAGED) {
-                                greeter_display_started (manager, display);
-                        }
                         break;
                 case GDM_DISPLAY_FAILED:
                 case GDM_DISPLAY_UNMANAGED:
@@ -1528,10 +1477,9 @@ on_display_status_changed (GdmDisplay *display,
                         }
 #endif
 
-                        if (status == GDM_DISPLAY_FINISHED || g_strcmp0 (session_type, "x11") == 0) {
+                        if (!doing_initial_setup && (status == GDM_DISPLAY_FINISHED || g_strcmp0 (session_type, "x11") == 0)) {
                                 manager->priv->ran_once = TRUE;
                         }
-                        maybe_start_pending_initial_login (manager, display);
                         break;
                 default:
                         break;
@@ -1638,7 +1586,6 @@ on_start_user_session (StartUserSessionOperation *operation)
         gboolean migrated;
         gboolean fail_if_already_switched = TRUE;
         gboolean doing_initial_setup = FALSE;
-        gboolean starting_user_session_right_away = TRUE;
         GdmDisplay *display;
         const char *session_id;
 
@@ -1686,14 +1633,6 @@ on_start_user_session (StartUserSessionOperation *operation)
                         gdm_display_stop_greeter_session (display);
                         gdm_display_unmanage (display);
                         gdm_display_finish (display);
-
-                        /* We can't start the user session until the finished display
-                         * starts to respawn (since starting an X server and bringing
-                         * one down at the same time is a no go)
-                         */
-                        g_assert (self->priv->initial_login_operation == NULL);
-                        self->priv->initial_login_operation = operation;
-                        starting_user_session_right_away = FALSE;
                 } else {
                         g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
                 }
@@ -1719,9 +1658,7 @@ on_start_user_session (StartUserSessionOperation *operation)
                                                  session_id);
         }
 
-        if (starting_user_session_right_away) {
-                start_user_session (operation->manager, operation);
-        }
+        start_user_session (operation->manager, operation);
 
  out:
         return G_SOURCE_REMOVE;
