@@ -975,6 +975,13 @@ jump_to_vt (GdmSessionWorker  *worker,
         active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
 
         if (worker->priv->session_tty_fd != -1) {
+                static const char *clear_screen_escape_sequence = "\33[H\33[2J";
+
+                /* let's make sure the new VT is clear */
+                write (worker->priv->session_tty_fd,
+                       clear_screen_escape_sequence,
+                       sizeof (clear_screen_escape_sequence));
+
                 fd = worker->priv->session_tty_fd;
 
                 g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
