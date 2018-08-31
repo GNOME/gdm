@@ -2144,7 +2144,7 @@ create_user_session_for_display (GdmManager *manager,
         char       *display_seat_id = NULL;
         char       *display_id = NULL;
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
-        char       *display_session_type = NULL;
+        g_autofree char *display_session_type = NULL;
         gboolean    greeter_is_wayland;
 #endif
 
