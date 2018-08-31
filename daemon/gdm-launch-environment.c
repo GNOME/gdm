@@ -978,6 +978,7 @@ gdm_create_greeter_launch_environment (const char *display_name,
 GdmLaunchEnvironment *
 gdm_create_initial_setup_launch_environment (const char *display_name,
                                              const char *seat_id,
+                                             const char *session_type,
                                              const char *display_hostname,
                                              gboolean    display_is_local)
 {
@@ -985,7 +986,7 @@ gdm_create_initial_setup_launch_environment (const char *display_name,
                                                  INITIAL_SETUP_USERNAME,
                                                  display_name,
                                                  seat_id,
-                                                 NULL,
+                                                 session_type,
                                                  INITIAL_SETUP_SESSION_MODE,
                                                  display_hostname,
                                                  display_is_local);

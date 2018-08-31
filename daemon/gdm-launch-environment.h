@@ -77,6 +77,7 @@ GdmLaunchEnvironment *gdm_create_greeter_launch_environment (const char *display
                                                              gboolean    display_is_local);
 GdmLaunchEnvironment *gdm_create_initial_setup_launch_environment (const char *display_name,
                                                                    const char *seat_id,
+                                                                   const char *session_type,
                                                                    const char *display_hostname,
                                                                    gboolean    display_is_local);
 GdmLaunchEnvironment *gdm_create_chooser_launch_environment (const char *display_name,

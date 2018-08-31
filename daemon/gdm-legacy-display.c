@@ -115,9 +115,10 @@ gdm_legacy_display_prepare (GdmDisplay *display)
                                                                             TRUE);
         } else {
                 launch_environment = gdm_create_initial_setup_launch_environment (display_name,
-                                                                                seat_id,
-                                                                                NULL,
-                                                                                TRUE);
+                                                                                  seat_id,
+                                                                                  NULL,
+                                                                                  NULL,
+                                                                                  TRUE);
         }
 
         g_object_set (self, "launch-environment", launch_environment, NULL);

@@ -110,11 +110,6 @@ gdm_local_display_prepare (GdmDisplay *display)
         }
 
         g_debug ("doing initial setup? %s", doing_initial_setup? "yes" : "no");
-        if (doing_initial_setup && g_strcmp0 (session_type, "wayland") == 0) {
-                g_debug ("initial setup doesn't have a wayland session, failing back to X11");
-                failed = TRUE;
-                goto out;
-        }
 
         if (!doing_initial_setup) {
                 launch_environment = gdm_create_greeter_launch_environment (NULL,
@@ -124,9 +119,10 @@ gdm_local_display_prepare (GdmDisplay *display)
                                                                             TRUE);
         } else {
                 launch_environment = gdm_create_initial_setup_launch_environment (NULL,
-                                                                                seat_id,
-                                                                                NULL,
-                                                                                TRUE);
+                                                                                  seat_id,
+                                                                                  session_type,
+                                                                                  NULL,
+                                                                                  TRUE);
         }
 
         g_object_set (self, "launch-environment", launch_environment, NULL);

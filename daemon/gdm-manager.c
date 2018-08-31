@@ -1588,6 +1588,9 @@ on_start_user_session (StartUserSessionOperation *operation)
         gboolean doing_initial_setup = FALSE;
         GdmDisplay *display;
         const char *session_id;
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+        g_autofree char *display_session_type = NULL;
+#endif
 
         g_debug ("GdmManager: start or jump to session");
 
@@ -1610,7 +1613,12 @@ on_start_user_session (StartUserSessionOperation *operation)
 
         display = get_display_for_user_session (operation->session);
 
-        g_object_get (G_OBJECT (display), "doing-initial-setup", &doing_initial_setup, NULL);
+        g_object_get (G_OBJECT (display),
+                      "doing-initial-setup", &doing_initial_setup,
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+                      "session-type", &display_session_type,
+#endif
+                      NULL);
 
         session_id = gdm_session_get_conversation_session_id (operation->session,
                                                               operation->service_name);
@@ -1629,10 +1637,18 @@ on_start_user_session (StartUserSessionOperation *operation)
 
                 g_object_ref (display);
                 if (doing_initial_setup) {
-                        g_debug ("GdmManager: closing down initial setup display");
-                        gdm_display_stop_greeter_session (display);
-                        gdm_display_unmanage (display);
-                        gdm_display_finish (display);
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+                        if (g_strcmp0 (display_session_type, "wayland") == 0) {
+                                g_debug ("GdmManager: closing down initial setup display in background");
+                                g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
+                        }
+#endif
+                        if (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
+                                g_debug ("GdmManager: closing down initial setup display");
+                                gdm_display_stop_greeter_session (display);
+                                gdm_display_unmanage (display);
+                                gdm_display_finish (display);
+                        }
                 } else {
                         g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
                 }
