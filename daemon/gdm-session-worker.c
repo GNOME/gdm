@@ -1002,7 +1002,7 @@ jump_to_vt (GdmSessionWorker  *worker,
 
         handle_terminal_vt_switches (worker, fd);
 
-        if (ioctl (fd, VT_GETSTATE, &vt_state) <= 0) {
+        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
                 g_debug ("GdmSessionWorker: couldn't get current VT: %m");
         } else {
                 active_vt = vt_state.v_active;
