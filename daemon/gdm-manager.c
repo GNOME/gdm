@@ -1433,14 +1433,13 @@ on_display_status_changed (GdmDisplay *display,
         int         status;
         int         display_number = -1;
         char       *session_type = NULL;
+        gboolean    doing_initial_setup = FALSE;
 #ifdef WITH_PLYMOUTH
         gboolean    display_is_local = FALSE;
-        gboolean    doing_initial_setup = FALSE;
         gboolean    quit_plymouth = FALSE;
 
         g_object_get (display,
                       "is-local", &display_is_local,
-                      "doing-initial-setup", &doing_initial_setup,
                       NULL);
         quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
 #endif
@@ -1448,6 +1447,7 @@ on_display_status_changed (GdmDisplay *display,
         g_object_get (display,
                       "x11-display-number", &display_number,
                       "session-type", &session_type,
+                      "doing-initial-setup", &doing_initial_setup,
                       NULL);
 
         status = gdm_display_get_status (display);
