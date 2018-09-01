@@ -602,7 +602,6 @@ on_seat_removed (GDBusConnection *connection,
         delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
 }
 
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
 static gboolean
 lookup_by_session_id (const char *id,
                       GdmDisplay *display,
@@ -615,6 +614,7 @@ lookup_by_session_id (const char *id,
         return g_strcmp0 (current, looking_for) == 0;
 }
 
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
 static void
 maybe_stop_greeter_in_background (GdmDisplay *display)
 {
