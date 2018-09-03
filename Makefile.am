@@ -30,4 +30,4 @@ EXTRA_DIST = \
 DISTCLEANFILES = \
 	$(NULL)
 
-AM_DISTCHECK_CONFIGURE_FLAGS = --enable-split-authentication --enable-introspection --without-systemdsystemunitdir
+AM_DISTCHECK_CONFIGURE_FLAGS = --enable-split-authentication --enable-introspection --without-systemdsystemunitdir --without-udevdir
