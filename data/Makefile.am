@@ -154,7 +154,7 @@ if ENABLE_ARCH_PAM_CONFIG
 pam_files = $(pam_arch_files)
 endif
 
-udevrulesdir = $(UDEV_RULES_DIR)/rules.d
+udevrulesdir = $(UDEV_DIR)/rules.d
 udevrules_DATA = 61-gdm.rules
 
 EXTRA_DIST += $(srcdir)/61-gdm.rules.in

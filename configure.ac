@@ -268,10 +268,10 @@ AC_ARG_ENABLE(wayland-support,
                              [Enable support for wayland sessions  @<:@default=auto@:>@]),
               [enable_wayland_support=$enableval],
               [enable_wayland_support=yes])
-AC_ARG_WITH([udevrulesdir],
-            AS_HELP_STRING([--with-udevrulesdir=DIR],
-                           [Directory for udev rules files]),
-                [with_udevrulesdir=$withval], [with_udevrulesdir=$($PKG_CONFIG --variable=udevdir udev)])
+AC_ARG_WITH([udevdir],
+            AS_HELP_STRING([--with-udevdir=DIR],
+                           [Directory for udev files]),
+                [with_udevdir=$withval], [with_udevdir=$($PKG_CONFIG --variable=udevdir udev)])
 
 AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
@@ -877,8 +877,8 @@ fi
 
 AM_CONDITIONAL(INSTALL_SYSTEMD_UNITS, test x$with_systemdsystemunitdir != xno)
 
-if test "x$with_udevrulesdir" != xno; then
-        AC_SUBST(UDEV_RULES_DIR, [$with_udevrulesdir])
+if test "x$with_udevdir" != xno; then
+        AC_SUBST(UDEV_DIR, [$with_udevdir])
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -1525,7 +1525,7 @@ echo \
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${use_selinux}
         systemd unit dir:         ${with_systemdsystemunitdir}
-        udev rules dir:           ${with_udevrulesdir}
+        udev dir:                 ${with_udevdir}
         plymouth support:         ${use_plymouth}
         wayland support:          ${enable_wayland_support}
         Build with RBAC:          ${msg_rbac_shutdown}
