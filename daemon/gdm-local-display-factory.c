@@ -447,6 +447,8 @@ create_display (GdmLocalDisplayFactory *factory,
         /* Ensure we don't create the same display more than once */
         if (display != NULL) {
                 g_debug ("GdmLocalDisplayFactory: display already created");
+                if (gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)
+                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
                 return NULL;
         }
 
@@ -462,7 +464,10 @@ create_display (GdmLocalDisplayFactory *factory,
                         display = gdm_display_store_find (store,
                                                           lookup_by_session_id,
                                                           (gpointer) login_session_id);
-                        if (display != NULL && gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
+                        if (display != NULL &&
+                            (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED ||
+                             gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)) {
+                                g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
                                 if (g_strcmp0 (active_session_id, login_session_id) != 0) {
                                         g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
                                                  login_session_id);
