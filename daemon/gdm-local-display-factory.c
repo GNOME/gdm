@@ -774,19 +774,6 @@ on_vt_changed (GIOChannel    *source,
                 return G_SOURCE_CONTINUE;
         }
 
-        ret = sd_seat_get_active ("seat0", &active_session_id, NULL);
-
-        if (ret == 0) {
-                g_autofree char *state = NULL;
-                ret = sd_session_get_state (active_session_id, &state);
-
-                /* if there's something already running on the active VT then bail */
-                if (ret == 0 && g_strcmp0 (state, "closing") != 0) {
-                        g_debug ("GdmLocalDisplayFactory: initial VT is in use, so ignoring");
-                        return G_SOURCE_CONTINUE;
-                }
-        }
-
         if (gdm_local_display_factory_use_wayland ())
                 session_type = "wayland";
 
