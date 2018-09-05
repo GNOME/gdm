@@ -919,7 +919,7 @@ main (int    argc,
                 goto out;
         }
 
-        g_timeout_add_seconds (2, (GSourceFunc) on_registration_delay_complete, state);
+        g_timeout_add_seconds (4, (GSourceFunc) on_registration_delay_complete, state);
 
         g_main_loop_run (state->main_loop);
 
