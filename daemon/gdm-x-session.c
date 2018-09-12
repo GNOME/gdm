@@ -810,21 +810,6 @@ on_sigterm (State *state)
         return G_SOURCE_CONTINUE;
 }
 
-static gboolean
-on_registration_delay_complete (State *state)
-{
-        gboolean ret;
-
-        ret = register_display (state, state->cancellable);
-
-        if (!ret) {
-                g_printerr ("Unable to register display with display manager\n");
-                g_main_loop_quit (state->main_loop);
-        }
-
-        return G_SOURCE_REMOVE;
-}
-
 int
 main (int    argc,
       char **argv)
@@ -911,6 +896,14 @@ main (int    argc,
                 goto out;
         }
 
+        ret = register_display (state, state->cancellable);
+
+        if (!ret) {
+                g_printerr ("Unable to register display with display manager\n");
+                exit_status = EX_SOFTWARE;
+                goto out;
+        }
+
         ret = spawn_session (state, run_script, state->cancellable);
 
         if (!ret) {
@@ -918,8 +911,6 @@ main (int    argc,
                 exit_status = EX_SOFTWARE;
                 goto out;
         }
-
-        g_timeout_add_seconds (2, (GSourceFunc) on_registration_delay_complete, state);
 
         g_main_loop_run (state->main_loop);
 

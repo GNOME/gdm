@@ -49,6 +49,7 @@
 #define GDM_MANAGER_DBUS_NAME               "org.gnome.DisplayManager.LocalDisplayFactory"
 
 #define MAX_DISPLAY_FAILURES 5
+#define WAIT_TO_FINISH_TIMEOUT 10 /* seconds */
 
 struct GdmLocalDisplayFactoryPrivate
 {
@@ -65,6 +66,7 @@ struct GdmLocalDisplayFactoryPrivate
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         char            *tty_of_active_vt;
         guint            active_vt_watch_id;
+        guint            wait_to_finish_timeout_id;
 #endif
 };
 
@@ -376,7 +378,6 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
-                finish_waiting_displays_on_seat (factory, seat_id);
                 break;
         case GDM_DISPLAY_WAITING_TO_FINISH:
                 break;
@@ -615,8 +616,17 @@ lookup_by_session_id (const char *id,
 }
 
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+static gboolean
+wait_to_finish_timeout (GdmLocalDisplayFactory *factory)
+{
+        finish_waiting_displays_on_seat (factory, "seat0");
+        factory->priv->wait_to_finish_timeout_id = 0;
+        return G_SOURCE_REMOVE;
+}
+
 static void
-maybe_stop_greeter_in_background (GdmDisplay *display)
+maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
+                                  GdmDisplay             *display)
 {
         g_autofree char *display_session_type = NULL;
 
@@ -638,6 +648,15 @@ maybe_stop_greeter_in_background (GdmDisplay *display)
 
         g_debug ("GdmLocalDisplayFactory: killing login window once its unused");
         g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
+
+        /* We stop the greeter after a timeout to avoid flicker */
+        if (factory->priv->wait_to_finish_timeout_id != 0)
+                g_source_remove (factory->priv->wait_to_finish_timeout_id);
+
+        factory->priv->wait_to_finish_timeout_id =
+                g_timeout_add_seconds (WAIT_TO_FINISH_TIMEOUT,
+                                       (GSourceFunc)wait_to_finish_timeout,
+                                       factory);
 }
 
 static gboolean
@@ -731,7 +750,7 @@ on_vt_changed (GIOChannel    *source,
                                                                   (gpointer) login_session_id);
 
                                 if (display != NULL)
-                                        maybe_stop_greeter_in_background (display);
+                                        maybe_stop_greeter_in_background (factory, display);
                         } else {
                                 g_debug ("GdmLocalDisplayFactory: VT not switched from login window");
                         }
@@ -825,6 +844,10 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 factory->priv->seat_removed_id = 0;
         }
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+        if (factory->priv->wait_to_finish_timeout_id != 0) {
+                g_source_remove (factory->priv->wait_to_finish_timeout_id);
+                factory->priv->wait_to_finish_timeout_id = 0;
+        }
         if (factory->priv->active_vt_watch_id) {
                 g_source_remove (factory->priv->active_vt_watch_id);
                 factory->priv->active_vt_watch_id = 0;
