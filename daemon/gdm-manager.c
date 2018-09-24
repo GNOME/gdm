@@ -1273,7 +1273,6 @@ set_up_automatic_login_session (GdmManager *manager,
 {
         GdmSession *session;
         char       *display_session_type = NULL;
-        gboolean is_initial;
 
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
@@ -1281,12 +1280,11 @@ set_up_automatic_login_session (GdmManager *manager,
         session = create_user_session_for_display (manager, display, 0);
 
         g_object_get (G_OBJECT (display),
-                      "is-initial", &is_initial,
                       "session-type", &display_session_type,
                       NULL);
 
         g_object_set (G_OBJECT (session),
-                      "display-is-initial", is_initial,
+                      "display-is-initial", FALSE,
                       NULL);
 
         g_debug ("GdmManager: Starting automatic login conversation");
