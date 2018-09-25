@@ -456,7 +456,10 @@ create_display (GdmLocalDisplayFactory *factory,
                 display = gdm_display_store_find (store,
                                                   lookup_by_session_id,
                                                   (gpointer) login_session_id);
-                if (display != NULL && gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
+                if (display != NULL &&
+                    (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED ||
+                     gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)) {
+                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
                         g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
                                  login_session_id);
                         gdm_activate_session_by_id (factory->priv->connection, seat_id, login_session_id);
