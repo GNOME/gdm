@@ -78,6 +78,7 @@ struct GdmManagerPrivate
 #ifdef HAVE_LIBXDMCP
         GdmXdmcpDisplayFactory *xdmcp_factory;
 #endif
+        GdmDisplay             *automatic_login_display;
         GList                  *user_sessions;
         GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
@@ -92,7 +93,7 @@ struct GdmManagerPrivate
 #ifdef  WITH_PLYMOUTH
         guint                     plymouth_is_running : 1;
 #endif
-        guint                     ran_once : 1;
+        guint                     did_automatic_login : 1;
 };
 
 enum {
@@ -1272,7 +1273,6 @@ set_up_automatic_login_session (GdmManager *manager,
 {
         GdmSession *session;
         char       *display_session_type = NULL;
-        gboolean is_initial;
 
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
@@ -1280,12 +1280,11 @@ set_up_automatic_login_session (GdmManager *manager,
         session = create_user_session_for_display (manager, display, 0);
 
         g_object_get (G_OBJECT (display),
-                      "is-initial", &is_initial,
                       "session-type", &display_session_type,
                       NULL);
 
         g_object_set (G_OBJECT (session),
-                      "display-is-initial", is_initial,
+                      "display-is-initial", FALSE,
                       NULL);
 
         g_debug ("GdmManager: Starting automatic login conversation");
@@ -1380,13 +1379,20 @@ set_up_session (GdmManager *manager,
         ActUserManager *user_manager;
         ActUser *user;
         gboolean loaded;
-        gboolean is_initial_display = FALSE;
+        gboolean seat_can_autologin = FALSE, seat_did_autologin = FALSE;
         gboolean autologin_enabled = FALSE;
+        g_autofree char *seat_id = NULL;
         char *username = NULL;
 
-        g_object_get (G_OBJECT (display), "is-initial", &is_initial_display, NULL);
+        g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
 
-        if (!manager->priv->ran_once && is_initial_display)
+        if (g_strcmp0 (seat_id, "seat0") == 0)
+                seat_can_autologin = TRUE;
+
+        if (manager->priv->did_automatic_login || manager->priv->automatic_login_display != NULL)
+                seat_did_autologin = TRUE;
+
+        if (seat_can_autologin && !seat_did_autologin)
                 autologin_enabled = get_automatic_login_details (manager, &username);
 
         if (!autologin_enabled) {
@@ -1477,8 +1483,18 @@ on_display_status_changed (GdmDisplay *display,
                         }
 #endif
 
-                        if (!doing_initial_setup && (status == GDM_DISPLAY_FINISHED || g_strcmp0 (session_type, "x11") == 0)) {
-                                manager->priv->ran_once = TRUE;
+                        if (display == manager->priv->automatic_login_display) {
+                                g_clear_weak_pointer (&manager->priv->automatic_login_display);
+
+                                manager->priv->did_automatic_login = TRUE;
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+                                if (g_strcmp0 (session_type, "wayland") != 0 && status == GDM_DISPLAY_FAILED) {
+                                        /* we're going to fall back to X11, so try to autologin again
+                                         */
+                                        manager->priv->did_automatic_login = FALSE;
+                                }
+#endif
                         }
                         break;
                 default:
@@ -1661,17 +1677,21 @@ on_start_user_session (StartUserSessionOperation *operation)
                 g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
                 create_user_session_for_display (operation->manager, display, allowed_uid);
 
+                /* Give the user session a new display object for bookkeeping purposes */
+                create_display_for_user_session (operation->manager,
+                                                 operation->session,
+                                                 session_id);
+
+
                 if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0) {
                         /* remove the unused prepared greeter display since we're not going
                          * to have a greeter */
                         gdm_display_store_remove (self->priv->display_store, display);
                         g_object_unref (display);
-                }
 
-                /* Give the user session a new display object for bookkeeping purposes */
-                create_display_for_user_session (operation->manager,
-                                                 operation->session,
-                                                 session_id);
+			self->priv->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
+			g_object_add_weak_pointer (G_OBJECT (display), (gpointer *) &self->priv->automatic_login_display);
+                }
         }
 
         start_user_session (operation->manager, operation);
@@ -2564,6 +2584,8 @@ gdm_manager_dispose (GObject *object)
         manager = GDM_MANAGER (object);
 
         g_return_if_fail (manager->priv != NULL);
+
+        g_clear_weak_pointer (&manager->priv->automatic_login_display);
 
 #ifdef HAVE_LIBXDMCP
         g_clear_object (&manager->priv->xdmcp_factory);
