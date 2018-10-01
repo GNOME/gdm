@@ -1689,8 +1689,8 @@ on_start_user_session (StartUserSessionOperation *operation)
                         gdm_display_store_remove (self->priv->display_store, display);
                         g_object_unref (display);
 
-			self->priv->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
-			g_object_add_weak_pointer (G_OBJECT (display), (gpointer *) &self->priv->automatic_login_display);
+                        self->priv->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
+                        g_object_add_weak_pointer (G_OBJECT (self->priv->automatic_login_display), (gpointer *) &self->priv->automatic_login_display);
                 }
         }
 
