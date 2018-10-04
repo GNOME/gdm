@@ -486,26 +486,29 @@ create_display (GdmLocalDisplayFactory *factory,
 {
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
-        char            *active_session_id = NULL;
         int              ret;
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        ret = sd_seat_get_active (seat_id, &active_session_id, NULL);
-
-        if (ret == 0) {
+        if (sd_seat_can_multi_session (seat_id)) {
                 char *login_session_id = NULL;
 
                 /* If we already have a login window, switch to it */
                 if (get_login_window_session_id (seat_id, &login_session_id)) {
-                        if (g_strcmp0 (active_session_id, login_session_id) != 0) {
+                        char *active_session_id = NULL;
+
+                        ret = sd_seat_get_active (seat_id, &active_session_id, NULL);
+
+                        if (ret == 0 && g_strcmp0 (active_session_id, login_session_id) != 0) {
                                 activate_session_id (factory, seat_id, login_session_id);
+
+                                g_clear_pointer (&login_session_id, g_free);
+                                g_clear_pointer (&active_session_id, g_free);
+                                return NULL;
                         }
+
                         g_clear_pointer (&login_session_id, g_free);
-                        g_clear_pointer (&active_session_id, g_free);
-                        return NULL;
                 }
-                g_clear_pointer (&active_session_id, g_free);
         } else {
                 /* Ensure we don't create the same display more than once */
                 display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
