@@ -55,6 +55,7 @@ struct GdmLocalDisplayFactoryPrivate
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
         GHashTable      *used_display_numbers;
+        GHashTable      *seat_proxies;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
@@ -86,6 +87,11 @@ static void     on_display_status_changed               (GdmDisplay             
                                                          GdmLocalDisplayFactory      *factory);
 
 static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
+
+static gboolean create_seat_proxy (GdmLocalDisplayFactory *self,
+                                   const char             *seat_id,
+                                   const char             *seat_path);
+
 static gpointer local_display_factory_object = NULL;
 static gboolean lookup_by_session_id (const char *id,
                                       GdmDisplay *display,
@@ -403,6 +409,7 @@ create_display (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                  session_type? : "X11", seat_id);
+
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         if (sd_seat_can_multi_session (seat_id))
@@ -496,7 +503,7 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
         GVariant *result;
         GVariant *array;
         GVariantIter iter;
-        const char *seat;
+        const char *seat, *path;
 
         g_debug ("GdmLocalDisplayFactory: enumerating seats from logind");
         result = g_dbus_connection_call_sync (factory->priv->connection,
@@ -519,7 +526,7 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
         array = g_variant_get_child_value (result, 0);
         g_variant_iter_init (&iter, array);
 
-        while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL)) {
+        while (g_variant_iter_loop (&iter, "(&s&o)", &seat, &path)) {
                 gboolean is_initial;
                 const char *session_type = NULL;
 
@@ -531,11 +538,99 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
                         is_initial = FALSE;
                 }
 
+                if (!create_seat_proxy (factory, seat, path))
+                        continue;
+
+		if (!sd_seat_can_graphical (seat)) {
+			g_debug ("GdmLocalDisplayFactory: seat %s not ready for graphical displays", seat);
+			continue;
+		}
+
                 create_display (factory, seat, session_type, is_initial);
         }
 
         g_variant_unref (result);
         g_variant_unref (array);
+        return TRUE;
+}
+
+static void
+on_seat_proxy_properties_changed (GDBusProxy  *proxy,
+                                  GVariant    *changed_properties,
+                                  char       **invalidated_properties,
+                                  gpointer     user_data)
+{
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        g_autoptr (GVariant) value = NULL;
+        const char *seat;
+
+        value = g_variant_lookup_value (changed_properties, "CanGraphical", G_VARIANT_TYPE_BOOLEAN);
+
+        if (!value)
+                return;
+
+        g_debug ("GdmLocalDisplayFactory: CanGraphical changed");
+
+        seat = g_object_get_data (G_OBJECT (proxy), "seat-id");
+
+        if (!seat)
+                return;
+
+        if (g_variant_get_boolean (value)) {
+                gboolean is_initial;
+                const char *session_type = NULL;
+
+                g_debug ("GdmLocalDisplayFactory: seat '%s' now graphical", seat);
+
+                if (g_strcmp0 (seat, "seat0") == 0) {
+                        is_initial = TRUE;
+                        if (gdm_local_display_factory_use_wayland ())
+                                session_type = "wayland";
+                } else {
+                        is_initial = FALSE;
+                }
+
+                create_display (factory, seat, session_type, is_initial);
+        } else {
+                g_debug ("GdmLocalDisplayFactory: seat '%s' no longer graphical", seat);
+                delete_display (factory, seat);
+        }
+}
+
+static gboolean
+create_seat_proxy (GdmLocalDisplayFactory *self,
+                   const char             *seat,
+                   const char             *path)
+{
+        g_autoptr (GDBusProxy) proxy = NULL;
+        g_autoptr (GError) error = NULL;
+
+        g_debug ("GdmLocalDisplayFactory: creating seat proxy for seat '%s' with path '%s'",
+                 seat, path);
+
+        proxy = g_dbus_proxy_new_sync (self->priv->connection,
+                                       G_DBUS_PROXY_FLAGS_NONE,
+                                       NULL,
+                                       "org.freedesktop.login1",
+                                       path,
+                                       "org.freedesktop.login1.Seat",
+                                       NULL,
+                                       &error);
+
+        if (proxy == NULL) {
+                g_debug ("GdmLocalDisplayFactory: failed to get proxy to seat '%s' from logind: %s",
+                         seat, error->message);
+                return FALSE;
+        }
+
+        g_hash_table_insert (self->priv->seat_proxies, g_strdup (seat), g_object_ref (proxy));
+        g_object_set_data_full (G_OBJECT (proxy), "seat-id", g_strdup (seat), (GDestroyNotify) g_free);
+        g_signal_connect_object (G_OBJECT (proxy),
+                                 "g-properties-changed",
+                                 G_CALLBACK (on_seat_proxy_properties_changed),
+                                 self,
+                                 0);
+
         return TRUE;
 }
 
@@ -548,10 +643,22 @@ on_seat_new (GDBusConnection *connection,
              GVariant        *parameters,
              gpointer         user_data)
 {
-        const char *seat;
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        const char *seat, *path;
 
-        g_variant_get (parameters, "(&s&o)", &seat, NULL);
-        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, NULL, FALSE);
+        g_variant_get (parameters, "(&s&o)", &seat, &path);
+
+        g_debug ("GdmLocalDisplayFactory: new seat '%s' available", seat);
+
+        if (!create_seat_proxy (factory, seat, path))
+                return;
+
+	if (!sd_seat_can_graphical (seat)) {
+		g_debug ("GdmLocalDisplayFactory: but not yet ready for graphical displays");
+		return;
+	}
+
+        create_display (factory, seat, NULL, FALSE);
 }
 
 static void
@@ -563,10 +670,15 @@ on_seat_removed (GDBusConnection *connection,
                  GVariant        *parameters,
                  gpointer         user_data)
 {
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
         const char *seat;
 
         g_variant_get (parameters, "(&s&o)", &seat, NULL);
-        delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+
+        g_debug ("GdmLocalDisplayFactory: seat '%s' no longer available", seat);
+
+        g_hash_table_remove (factory->priv->seat_proxies, (gpointer) seat);
+        delete_display (factory, seat);
 }
 
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
@@ -728,6 +840,11 @@ on_vt_changed (GIOChannel    *source,
                         return G_SOURCE_CONTINUE;
                 }
         }
+
+	if (!sd_seat_can_graphical ("seat0")) {
+		g_debug ("GdmLocalDisplayFactory: seat0 not yet ready for graphical displays");
+		return G_SOURCE_CONTINUE;
+	}
 
         if (gdm_local_display_factory_use_wayland ())
                 session_type = "wayland";
@@ -1002,6 +1119,7 @@ gdm_local_display_factory_init (GdmLocalDisplayFactory *factory)
         factory->priv = GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE (factory);
 
         factory->priv->used_display_numbers = g_hash_table_new (NULL, NULL);
+        factory->priv->seat_proxies = g_hash_table_new_full (NULL, NULL, g_free, g_object_unref);
 }
 
 static void
@@ -1015,6 +1133,8 @@ gdm_local_display_factory_finalize (GObject *object)
         factory = GDM_LOCAL_DISPLAY_FACTORY (object);
 
         g_return_if_fail (factory->priv != NULL);
+
+        g_hash_table_destroy (factory->priv->seat_proxies);
 
         g_clear_object (&factory->priv->connection);
         g_clear_object (&factory->priv->skeleton);
