@@ -49,7 +49,6 @@
 #include "gdm-launch-environment.h"
 #include "gdm-dbus-util.h"
 
-#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 
 #define GDM_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY, GdmDisplayPrivate))
@@ -126,77 +125,6 @@ static void     _gdm_display_set_status (GdmDisplay *self,
                                          int         status);
 static gboolean wants_initial_setup (GdmDisplay *self);
 G_DEFINE_ABSTRACT_TYPE (GdmDisplay, gdm_display, G_TYPE_OBJECT)
-
-static gboolean
-chown_file (GFile   *file,
-            uid_t    uid,
-            gid_t    gid,
-            GError **error)
-{
-        if (!g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_UID, uid,
-                                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                          NULL, error)) {
-                return FALSE;
-        }
-        if (!g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_GID, gid,
-                                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                          NULL, error)) {
-                return FALSE;
-        }
-        return TRUE;
-}
-
-static gboolean
-chown_recursively (GFile   *dir,
-                   uid_t    uid,
-                   gid_t    gid,
-                   GError **error)
-{
-        GFile *file = NULL;
-        GFileInfo *info = NULL;
-        GFileEnumerator *enumerator = NULL;
-        gboolean retval = FALSE;
-
-        if (chown_file (dir, uid, gid, error) == FALSE) {
-                goto out;
-        }
-
-        enumerator = g_file_enumerate_children (dir,
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE","
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                NULL, error);
-        if (!enumerator) {
-                goto out;
-        }
-
-        while ((info = g_file_enumerator_next_file (enumerator, NULL, error)) != NULL) {
-                file = g_file_get_child (dir, g_file_info_get_name (info));
-
-                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-                        if (chown_recursively (file, uid, gid, error) == FALSE) {
-                                goto out;
-                        }
-                } else if (chown_file (file, uid, gid, error) == FALSE) {
-                        goto out;
-                }
-
-                g_clear_object (&file);
-                g_clear_object (&info);
-        }
-
-        if (*error) {
-                goto out;
-        }
-
-        retval = TRUE;
-out:
-        g_clear_object (&file);
-        g_clear_object (&info);
-        g_clear_object (&enumerator);
-
-        return retval;
-}
 
 GQuark
 gdm_display_error_quark (void)
@@ -1658,52 +1586,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         g_free (auth_file);
 }
 
-static void
-chown_initial_setup_home_dir (void)
-{
-        GFile *dir;
-        GError *error;
-        char *gis_dir_path;
-        char *gis_uid_path;
-        char *gis_uid_contents;
-        struct passwd *pwe;
-        uid_t uid;
-
-        if (!gdm_get_pwent_for_name (INITIAL_SETUP_USERNAME, &pwe)) {
-                g_warning ("Unknown user %s", INITIAL_SETUP_USERNAME);
-                return;
-        }
-
-        gis_dir_path = g_strdup (pwe->pw_dir);
-
-        gis_uid_path = g_build_filename (gis_dir_path,
-                                         "gnome-initial-setup-uid",
-                                         NULL);
-        if (!g_file_get_contents (gis_uid_path, &gis_uid_contents, NULL, NULL)) {
-                g_warning ("Unable to read %s", gis_uid_path);
-                goto out;
-        }
-
-        uid = (uid_t) atoi (gis_uid_contents);
-        pwe = getpwuid (uid);
-        if (uid == 0 || pwe == NULL) {
-                g_warning ("UID '%s' in %s is not valid", gis_uid_contents, gis_uid_path);
-                goto out;
-        }
-
-        error = NULL;
-        dir = g_file_new_for_path (gis_dir_path);
-        if (!chown_recursively (dir, pwe->pw_uid, pwe->pw_gid, &error)) {
-                g_warning ("Failed to change ownership for %s: %s", gis_dir_path, error->message);
-                g_error_free (error);
-        }
-        g_object_unref (dir);
-out:
-        g_free (gis_uid_contents);
-        g_free (gis_uid_path);
-        g_free (gis_dir_path);
-}
-
 void
 gdm_display_stop_greeter_session (GdmDisplay *self)
 {
@@ -1728,20 +1610,6 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
                                                       self);
                 gdm_launch_environment_stop (self->priv->launch_environment);
                 g_clear_object (&self->priv->launch_environment);
-        }
-
-        if (self->priv->doing_initial_setup) {
-                chown_initial_setup_home_dir ();
-
-                if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                          "1",
-                                          1,
-                                          &error)) {
-                        g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
-                                   ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                   error->message);
-                        g_clear_error (&error);
-                }
         }
 }
 
