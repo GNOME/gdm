@@ -3078,9 +3078,11 @@ static void
 update_session_type (GdmSession *self)
 {
 #ifdef ENABLE_WAYLAND_SUPPORT
-        gboolean is_wayland_session;
+        gboolean is_wayland_session = FALSE;
 
-        is_wayland_session = gdm_session_is_wayland_session (self);
+        if (!self->priv->ignore_wayland)
+                is_wayland_session = gdm_session_is_wayland_session (self);
+
         if (is_wayland_session) {
                 set_session_type (self, "wayland");
         } else {
