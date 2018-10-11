@@ -90,9 +90,9 @@ static void     on_display_status_changed               (GdmDisplay             
 
 static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
 
-static gboolean create_seat_proxy (GdmLocalDisplayFactory *self,
-                                   const char             *seat_id,
-                                   const char             *seat_path);
+static GDBusProxy *create_seat_proxy (GdmLocalDisplayFactory *self,
+                                      const char             *seat_id,
+                                      const char             *seat_path);
 
 static gpointer local_display_factory_object = NULL;
 static gboolean lookup_by_session_id (const char *id,
@@ -552,6 +552,8 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 
         while (g_variant_iter_loop (&iter, "(&s&o)", &seat, &path)) {
                 gboolean is_initial;
+                g_autoptr (GDBusProxy) proxy = NULL;
+                g_autoptr (GVariant) can_graphical = NULL;
                 const char *session_type = NULL;
 
                 if (g_strcmp0 (seat, "seat0") == 0) {
@@ -562,12 +564,25 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
                         is_initial = FALSE;
                 }
 
-                if (!create_seat_proxy (factory, seat, path))
-                        continue;
+                proxy = create_seat_proxy (factory, seat, path);
 
-                if (!sd_seat_can_graphical (seat)) {
+                if (proxy == NULL) {
+                        g_debug ("GdmLocalDisplayFactory: can't make a proxy for seat '%s'", seat);
+                        return FALSE;
+                }
+
+                can_graphical = g_dbus_proxy_get_cached_property (proxy, "CanGraphical");
+
+                if (can_graphical == NULL) {
+                        g_debug ("GdmLocalDisplayFactory: can't read CanGraphical property");
+                        return FALSE;
+                }
+
+                if (!g_variant_get_boolean (can_graphical)) {
                         g_debug ("GdmLocalDisplayFactory: seat %s not ready for graphical displays", seat);
                         continue;
+                } else {
+                        g_debug ("GdmLocalDisplayFactory: seat %s ready for graphical displays", seat);
                 }
 
                 create_display (factory, seat, session_type, is_initial);
@@ -621,7 +636,7 @@ on_seat_proxy_properties_changed (GDBusProxy  *proxy,
         }
 }
 
-static gboolean
+static GDBusProxy *
 create_seat_proxy (GdmLocalDisplayFactory *self,
                    const char             *seat,
                    const char             *path)
@@ -631,6 +646,13 @@ create_seat_proxy (GdmLocalDisplayFactory *self,
 
         g_debug ("GdmLocalDisplayFactory: creating seat proxy for seat '%s' with path '%s'",
                  seat, path);
+
+        proxy = G_DBUS_PROXY (g_hash_table_lookup (self->priv->seat_proxies, seat));
+
+        if (proxy != NULL) {
+                g_debug ("GdmLocalDisplayFactory: we already had one, re-using that");
+                return g_object_ref (g_steal_pointer (&proxy));
+        }
 
         proxy = g_dbus_proxy_new_sync (self->priv->connection,
                                        G_DBUS_PROXY_FLAGS_NONE,
@@ -644,7 +666,7 @@ create_seat_proxy (GdmLocalDisplayFactory *self,
         if (proxy == NULL) {
                 g_debug ("GdmLocalDisplayFactory: failed to get proxy to seat '%s' from logind: %s",
                          seat, error->message);
-                return FALSE;
+                return NULL;
         }
 
         g_hash_table_insert (self->priv->seat_proxies, g_strdup (seat), g_object_ref (proxy));
@@ -655,7 +677,7 @@ create_seat_proxy (GdmLocalDisplayFactory *self,
                                  self,
                                  0);
 
-        return TRUE;
+        return g_steal_pointer (&proxy);
 }
 
 static void
@@ -668,18 +690,31 @@ on_seat_new (GDBusConnection *connection,
              gpointer         user_data)
 {
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        g_autoptr (GDBusProxy) proxy = NULL;
+        g_autoptr (GVariant) variant = NULL;
         const char *seat, *path;
 
         g_variant_get (parameters, "(&s&o)", &seat, &path);
 
         g_debug ("GdmLocalDisplayFactory: new seat '%s' available", seat);
 
-        if (!create_seat_proxy (factory, seat, path))
+        proxy = create_seat_proxy (factory, seat, path);
+
+        if (proxy == NULL)
                 return;
 
-        if (!sd_seat_can_graphical (seat)) {
+        variant = g_dbus_proxy_get_cached_property (proxy, "CanGraphical");
+
+        if (variant == NULL) {
+                g_debug ("GdmLocalDisplayFactory: can't read CanGraphical property");
+                return;
+        }
+
+        if (!g_variant_get_boolean (variant)) {
                 g_debug ("GdmLocalDisplayFactory: but not yet ready for graphical displays");
                 return;
+        } else {
+                g_debug ("GdmLocalDisplayFactory: which is ready for graphical displays");
         }
 
         create_display (factory, seat, NULL, FALSE);
@@ -780,6 +815,8 @@ on_vt_changed (GIOChannel    *source,
         g_autofree char *tty_of_active_vt = NULL;
         g_autofree char *login_session_id = NULL;
         g_autofree char *active_session_id = NULL;
+        g_autoptr (GDBusProxy) seat_proxy = NULL;
+        g_autoptr (GVariant) can_graphical = NULL;
         const char *session_type = NULL;
         int ret;
 
@@ -876,7 +913,21 @@ on_vt_changed (GIOChannel    *source,
                 return G_SOURCE_CONTINUE;
         }
 
-        if (!sd_seat_can_graphical ("seat0")) {
+        seat_proxy = G_DBUS_PROXY (g_hash_table_lookup (factory->priv->seat_proxies, "seat0"));
+
+        if (seat_proxy == NULL) {
+                g_debug ("GdmLocalDisplayFactory: couldn't get proxy for seat0");
+                return G_SOURCE_CONTINUE;
+        }
+
+        can_graphical = g_dbus_proxy_get_cached_property (seat_proxy, "CanGraphical");
+
+        if (can_graphical == NULL) {
+                g_debug ("GdmLocalDisplayFactory: can't read CanGraphical property");
+                return G_SOURCE_CONTINUE;
+        }
+
+        if (!g_variant_get_boolean (can_graphical)) {
                 g_debug ("GdmLocalDisplayFactory: seat0 not yet ready for graphical displays");
                 return G_SOURCE_CONTINUE;
         }
