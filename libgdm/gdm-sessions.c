@@ -111,6 +111,14 @@ key_file_is_relevant (GKeyFile     *key_file)
         return TRUE;
 }
 
+static gboolean
+find_session_with_same_name (const char     *id,
+                             GdmSessionFile *session,
+                             const char     *translated_name)
+{
+        return g_strcmp0 (session->translated_name, translated_name) == 0;
+}
+
 static void
 load_session_file (const char              *id,
                    const char              *path)
@@ -118,7 +126,7 @@ load_session_file (const char              *id,
         GKeyFile          *key_file;
         GError            *error;
         gboolean           res;
-        GdmSessionFile    *session;
+        GdmSessionFile    *session, *session_with_same_name;
 
         key_file = g_key_file_new ();
 
@@ -153,6 +161,13 @@ load_session_file (const char              *id,
 
         session->translated_name = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Name", NULL, NULL);
         session->translated_comment = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Comment", NULL, NULL);
+
+        session_with_same_name = g_hash_table_find (gdm_available_sessions_map,
+                                                    (GHRFunc) find_session_with_same_name,
+                                                    session->translated_name);
+
+        if (session_with_same_name != NULL)
+                g_hash_table_remove (gdm_available_sessions_map, session_with_same_name->id);
 
         g_hash_table_insert (gdm_available_sessions_map,
                              g_strdup (id),
