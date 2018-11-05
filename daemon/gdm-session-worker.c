@@ -1574,12 +1574,7 @@ load_env_func (const char *var,
                gpointer user_data)
 {
         GdmSessionWorker *worker = user_data;
-        char *expanded;
-
-        expanded = gdm_shell_expand (value, get_var_cb, worker);
-        expanded = g_strchomp (expanded);
-        gdm_session_worker_set_environment_variable (worker, var, expanded);
-        g_free (expanded);
+        gdm_session_worker_set_environment_variable (worker, var, value);
 }
 
 static gboolean
@@ -2078,7 +2073,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 #endif
 
                 if (!worker->priv->is_program_session) {
-                        gdm_load_env_d (load_env_func, worker);
+                        gdm_load_env_d (load_env_func, get_var_cb, worker);
                 }
 
                 environment = gdm_session_worker_get_environment (worker);

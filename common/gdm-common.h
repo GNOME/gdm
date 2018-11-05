@@ -92,6 +92,7 @@ gboolean      gdm_activate_session_by_id (GDBusConnection *connection,
                                           const char      *session_id);
 
 void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
+                                           GdmExpandVarFunc  expand_func,
                                            gpointer          user_data);
 
 G_END_DECLS

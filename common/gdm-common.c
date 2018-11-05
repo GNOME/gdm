@@ -960,12 +960,14 @@ gdm_find_display_session (GPid        pid,
 static void
 load_env_file (GFile *file,
                GdmLoadEnvVarFunc load_env_func,
+               GdmExpandVarFunc  expand_func,
                gpointer user_data)
 {
         gchar *contents;
         gchar **lines;
         gchar *line, *p;
         gchar *var, *var_end;
+        gchar *expanded;
         char *filename;
         int i;
 
@@ -998,7 +1000,10 @@ load_env_file (GFile *file,
                         while (g_ascii_isspace (*p))
                                 p++;
 
-                        load_env_func (var, p, user_data);
+                        expanded = gdm_shell_expand (p, expand_func, user_data);
+                        expanded = g_strchomp (expanded);
+                        load_env_func (var, expanded, user_data);
+                        g_free (expanded);
                 }
                 g_strfreev (lines);
         }
@@ -1014,6 +1019,7 @@ compare_str (gconstpointer  a,
 static void
 gdm_load_env_dir (GFile *dir,
                   GdmLoadEnvVarFunc load_env_func,
+                  GdmExpandVarFunc  expand_func,
                   gpointer user_data)
 {
         GFileInfo *info = NULL;
@@ -1049,7 +1055,7 @@ gdm_load_env_dir (GFile *dir,
         for (i = 0; i < names->len; i++) {
                 name = g_ptr_array_index (names, i);
                 file = g_file_get_child (dir, name);
-                load_env_file (file, load_env_func, user_data);
+                load_env_file (file, load_env_func, expand_func, user_data);
                 g_object_unref (file);
         }
 
@@ -1060,15 +1066,16 @@ gdm_load_env_dir (GFile *dir,
 
 void
 gdm_load_env_d (GdmLoadEnvVarFunc load_env_func,
+                GdmExpandVarFunc  expand_func,
                 gpointer user_data)
 {
         GFile *dir;
 
         dir = g_file_new_for_path (DATADIR "/gdm/env.d");
-        gdm_load_env_dir (dir, load_env_func, user_data);
+        gdm_load_env_dir (dir, load_env_func, expand_func, user_data);
         g_object_unref (dir);
 
         dir = g_file_new_for_path (GDMCONFDIR "/env.d");
-        gdm_load_env_dir (dir, load_env_func, user_data);
+        gdm_load_env_dir (dir, load_env_func, expand_func, user_data);
         g_object_unref (dir);
 }
