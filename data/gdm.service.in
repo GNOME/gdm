@@ -28,8 +28,7 @@ BusName=org.gnome.DisplayManager
 StandardOutput=syslog
 StandardError=inherit
 EnvironmentFile=-@LANG_CONFIG_FILE@
-ExecReload=/bin/kill -SIGHUP $MAINPI
-KeyringMode=shared
+ExecReload=/bin/kill -SIGHUP $MAINPID
 
 [Install]
 Alias=display-manager.service
