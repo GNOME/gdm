@@ -29,6 +29,7 @@ StandardOutput=syslog
 StandardError=inherit
 EnvironmentFile=-@LANG_CONFIG_FILE@
 ExecReload=/bin/kill -SIGHUP $MAINPID
+KeyringMode=shared
 
 [Install]
 Alias=display-manager.service
