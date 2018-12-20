@@ -45,6 +45,7 @@
 #include "gdm-settings-keys.h"
 
 static GdmSettings *settings = NULL;
+static GdmSessionWorker *worker = NULL;
 
 static gboolean
 on_sigusr1_cb (gpointer user_data)
@@ -67,6 +68,8 @@ is_debug_set (void)
 static void
 on_sigterm_cb (int signal_number)
 {
+        if (worker != NULL)
+                gdm_session_worker_close_session (worker);
         _exit (EXIT_SUCCESS);
 }
 
@@ -76,7 +79,6 @@ main (int    argc,
 {
         GMainLoop        *main_loop;
         GOptionContext   *context;
-        GdmSessionWorker *worker;
         const char       *address;
         gboolean          is_for_reauth;
         static GOptionEntry entries []   = {

@@ -79,6 +79,7 @@
 #endif
 
 #include "gdm-session-settings.h"
+#include "gdm-dbus-util.h"
 
 #define GDM_SESSION_WORKER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerPrivate))
 
@@ -3571,4 +3572,46 @@ gdm_session_worker_new (const char *address,
                                NULL);
 
         return GDM_SESSION_WORKER (object);
+}
+
+void
+gdm_session_worker_close_session (GdmSessionWorker *worker)
+{
+        GError *error = NULL;
+        GVariant *reply;
+        GDBusConnection *connection = NULL;
+
+        if (worker->priv->session_id == NULL ) {
+                return;
+        }
+
+        g_debug ("GdmSessionWorker: Close session user %s id %s\n",
+                  worker->priv->username, worker->priv->session_id);
+        connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+        if (connection == NULL) {
+                g_debug ("GdmSessionWorker: Error connecting to D-Bus address: %s\n", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "TerminateSession",
+                                             g_variant_new ("(s)", worker->priv->session_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             1000,
+                                             NULL,
+                                             &error);
+        if (reply == NULL) {
+                g_debug ("GdmSessionWorker: user %s  logind 'TerminateSession' %s raised:\n %s\n",
+                         worker->priv->username, g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
+        }
+
+        g_free (worker->priv->session_id);
+        worker->priv->session_id = NULL;
+        return;
 }
