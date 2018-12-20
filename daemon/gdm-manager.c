@@ -604,7 +604,7 @@ switch_to_compatible_user_session (GdmManager *manager,
         gboolean    ret;
         const char *username;
         const char *seat_id;
-        const char *ssid_to_activate;
+        const char *ssid_to_activate = NULL;
         GdmSession *existing_session;
 
         ret = FALSE;
@@ -612,29 +612,42 @@ switch_to_compatible_user_session (GdmManager *manager,
         username = gdm_session_get_username (session);
         seat_id = gdm_session_get_display_seat_id (session);
 
-        if (!fail_if_already_switched) {
-                session = NULL;
+        if (!fail_if_already_switched)
+                ssid_to_activate = gdm_session_get_session_id (session);
+
+        if (ssid_to_activate == NULL) {
+                if (!seat_id || !sd_seat_can_multi_session (seat_id)) {
+                        g_debug ("GdmManager: unable to activate existing sessions from login screen unless on seat0");
+                        goto out;
+                }
+
+                if (!fail_if_already_switched) {
+                        session = NULL;
+                }
+
+                existing_session = find_session_for_user_on_seat (manager, username, seat_id, session);
+
+                if (existing_session != NULL) {
+                        ssid_to_activate = gdm_session_get_session_id (existing_session);
+                }
         }
 
-        existing_session = find_session_for_user_on_seat (manager, username, seat_id, session);
-
-        if (existing_session != NULL) {
-                ssid_to_activate = gdm_session_get_session_id (existing_session);
-                if (seat_id != NULL) {
-                        res = activate_session_id (manager, seat_id, ssid_to_activate);
-                        if (! res) {
-                                g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
-                                goto out;
-                        }
-                }
-
-                res = session_unlock (manager, ssid_to_activate);
-                if (!res) {
-                        /* this isn't fatal */
-                        g_debug ("GdmManager: unable to unlock session: %s", ssid_to_activate);
-                }
-        } else {
+        if (ssid_to_activate == NULL) {
                 goto out;
+        }
+
+        if (seat_id != NULL) {
+                res = activate_session_id (manager, seat_id, ssid_to_activate);
+                if (! res) {
+                        g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
+                        goto out;
+                }
+        }
+
+        res = session_unlock (manager, ssid_to_activate);
+        if (!res) {
+                /* this isn't fatal */
+                g_debug ("GdmManager: unable to unlock session: %s", ssid_to_activate);
         }
 
         ret = TRUE;
@@ -1091,6 +1104,20 @@ open_temporary_reauthentication_channel (GdmManager            *self,
 }
 
 static gboolean
+remote_users_can_log_in_more_than_once (GdmManager *manager)
+{
+        gboolean enabled;
+
+        enabled = FALSE;
+
+        gdm_settings_direct_get_boolean (GDM_KEY_ALLOW_MULTIPLE_SESSIONS_PER_USER, &enabled);
+
+	g_debug ("GdmDisplay: Remote users allowed to log in more than once: %s", enabled? "yes" : "no");
+
+        return enabled;
+}
+
+static gboolean
 gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager,
                                                   GDBusMethodInvocation *invocation,
                                                   const char            *username)
@@ -1120,6 +1147,14 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                                                _("No session available"));
 
                 return TRUE;
+        }
+
+        if (is_login_screen && is_remote && remote_users_can_log_in_more_than_once (self)) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Login screen creates new sessions for remote connections");
+		return TRUE;
         }
 
         if (is_login_screen) {

@@ -55,6 +55,7 @@ G_BEGIN_DECLS
 #define GDM_KEY_MAX_WAIT_INDIRECT "xdmcp/MaxWaitIndirect"
 #define GDM_KEY_PING_INTERVAL "xdmcp/PingIntervalSeconds"
 #define GDM_KEY_WILLING "xdmcp/Willing"
+#define GDM_KEY_ALLOW_MULTIPLE_SESSIONS_PER_USER "xdmcp/AllowMultipleSessionsPerUser"
 
 #define GDM_KEY_MULTICAST "chooser/Multicast"
 #define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr"
