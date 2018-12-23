@@ -44,10 +44,9 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#define GDM_LOCAL_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayPrivate))
-
-struct GdmLocalDisplayPrivate
+struct _GdmLocalDisplay
 {
+        GdmDisplay           parent;
         GdmDBusLocalDisplay *skeleton;
 };
 
@@ -67,10 +66,10 @@ gdm_local_display_constructor (GType                  type,
                                                                                                    n_construct_properties,
                                                                                                    construct_properties));
 
-        display->priv->skeleton = GDM_DBUS_LOCAL_DISPLAY (gdm_dbus_local_display_skeleton_new ());
+        display->skeleton = GDM_DBUS_LOCAL_DISPLAY (gdm_dbus_local_display_skeleton_new ());
 
         g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
-                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+                                              G_DBUS_INTERFACE_SKELETON (display->skeleton));
 
         return G_OBJECT (display);
 }
@@ -80,7 +79,7 @@ gdm_local_display_finalize (GObject *object)
 {
         GdmLocalDisplay *display = GDM_LOCAL_DISPLAY (object);
 
-        g_clear_object (&display->priv->skeleton);
+        g_clear_object (&display->skeleton);
 
         G_OBJECT_CLASS (gdm_local_display_parent_class)->finalize (object);
 }
@@ -149,15 +148,11 @@ gdm_local_display_class_init (GdmLocalDisplayClass *klass)
         object_class->finalize = gdm_local_display_finalize;
 
         display_class->prepare = gdm_local_display_prepare;
-
-        g_type_class_add_private (klass, sizeof (GdmLocalDisplayPrivate));
 }
 
 static void
 gdm_local_display_init (GdmLocalDisplay *local_display)
 {
-
-        local_display->priv = GDM_LOCAL_DISPLAY_GET_PRIVATE (local_display);
 }
 
 GdmDisplay *
