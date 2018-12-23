@@ -35,13 +35,6 @@
 
 #include "gdm-settings-backend.h"
 
-#define GDM_SETTINGS_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS_BACKEND, GdmSettingsBackendPrivate))
-
-struct GdmSettingsBackendPrivate
-{
-        gpointer dummy;
-};
-
 enum {
         VALUE_CHANGED,
         LAST_SIGNAL
@@ -156,27 +149,17 @@ gdm_settings_backend_class_init (GdmSettingsBackendClass *klass)
                               G_TYPE_STRING,
                               G_TYPE_STRING,
                               G_TYPE_STRING);
-
-        g_type_class_add_private (klass, sizeof (GdmSettingsBackendPrivate));
 }
 
 static void
 gdm_settings_backend_init (GdmSettingsBackend *settings_backend)
 {
-        settings_backend->priv = GDM_SETTINGS_BACKEND_GET_PRIVATE (settings_backend);
 }
 
 static void
 gdm_settings_backend_finalize (GObject *object)
 {
-        GdmSettingsBackend *settings_backend;
-
-        g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_SETTINGS_BACKEND (object));
-
-        settings_backend = GDM_SETTINGS_BACKEND (object);
-
-        g_return_if_fail (settings_backend->priv != NULL);
 
         G_OBJECT_CLASS (gdm_settings_backend_parent_class)->finalize (object);
 }
