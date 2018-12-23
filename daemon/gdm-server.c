@@ -63,12 +63,12 @@
 
 extern char **environ;
 
-#define GDM_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SERVER, GdmServerPrivate))
-
 #define MAX_LOGS 5
 
-struct GdmServerPrivate
+struct _GdmServer
 {
+        GObject  parent;
+
         char    *command;
         GPid     pid;
 
@@ -127,9 +127,9 @@ gdm_server_ready (GdmServer *server)
         g_debug ("GdmServer: Got USR1 from X server - emitting READY");
 
         gdm_run_script (GDMCONFDIR "/Init", GDM_USERNAME,
-                        server->priv->display_name,
+                        server->display_name,
                         NULL, /* hostname */
-                        server->priv->auth_file);
+                        server->auth_file);
 
         g_signal_emit (server, signals[READY], 0);
 }
@@ -150,7 +150,7 @@ got_sigusr1 (gpointer user_data)
         for (l = active_servers; l; l = l->next) {
                 GdmServer *server = l->data;
 
-                if (server->priv->pid == pid)
+                if (server->pid == pid)
                         gdm_server_ready (server);
         }
 
@@ -207,7 +207,7 @@ gdm_server_init_command (GdmServer *server)
         const char *debug_options;
         const char *verbosity = "";
 
-        if (server->priv->command != NULL) {
+        if (server->command != NULL) {
                 return;
         }
 
@@ -247,16 +247,16 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
-        if (server->priv->display_seat_id == NULL ||
-            strcmp (server->priv->display_seat_id, "seat0") == 0) {
+        if (server->display_seat_id == NULL ||
+            strcmp (server->display_seat_id, "seat0") == 0) {
                 goto fallback;
         }
 
-        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
+        server->command = g_strdup_printf (SYSTEMD_X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
         return;
 
 fallback:
-        server->priv->command = g_strdup_printf (X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
+        server->command = g_strdup_printf (X_SERVER X_SERVER_ARG_FORMAT, verbosity, debug_options);
 
 }
 
@@ -275,7 +275,7 @@ gdm_server_resolve_command_line (GdmServer  *server,
 
         gdm_server_init_command (server);
 
-        g_shell_parse_argv (server->priv->command, &argc, &argv, NULL);
+        g_shell_parse_argv (server->command, &argc, &argv, NULL);
 
         for (len = 0; argv != NULL && argv[len] != NULL; len++) {
                 char *arg = argv[len];
@@ -299,17 +299,17 @@ gdm_server_resolve_command_line (GdmServer  *server,
         }
 
         /* server number is the FIRST argument, before any others */
-        argv[1] = g_strdup (server->priv->display_name);
+        argv[1] = g_strdup (server->display_name);
         len++;
 
-        if (server->priv->auth_file != NULL) {
+        if (server->auth_file != NULL) {
                 argv[len++] = g_strdup ("-auth");
-                argv[len++] = g_strdup (server->priv->auth_file);
+                argv[len++] = g_strdup (server->auth_file);
         }
 
-        if (server->priv->display_seat_id != NULL) {
+        if (server->display_seat_id != NULL) {
                 argv[len++] = g_strdup ("-seat");
-                argv[len++] = g_strdup (server->priv->display_seat_id);
+                argv[len++] = g_strdup (server->display_seat_id);
         }
 
         /* If we were compiled with Xserver >= 1.17 we need to specify
@@ -318,12 +318,12 @@ gdm_server_resolve_command_line (GdmServer  *server,
          * -nolisten tcp to disable listening on tcp sockets.
          */
 #ifdef HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY
-        if (!server->priv->disable_tcp && ! query_in_arglist) {
+        if (!server->disable_tcp && ! query_in_arglist) {
                 argv[len++] = g_strdup ("-listen");
                 argv[len++] = g_strdup ("tcp");
         }
 #else
-        if (server->priv->disable_tcp && ! query_in_arglist) {
+        if (server->disable_tcp && ! query_in_arglist) {
                 argv[len++] = g_strdup ("-nolisten");
                 argv[len++] = g_strdup ("tcp");
         }
@@ -374,14 +374,14 @@ change_user (GdmServer *server)
 {
         struct passwd *pwent;
 
-        if (server->priv->user_name == NULL) {
+        if (server->user_name == NULL) {
                 return;
         }
 
-        gdm_get_pwent_for_name (server->priv->user_name, &pwent);
+        gdm_get_pwent_for_name (server->user_name, &pwent);
         if (pwent == NULL) {
                 g_warning (_("Server was to be spawned by user %s but that user doesn’t exist"),
-                           server->priv->user_name);
+                           server->user_name);
                 _exit (EXIT_FAILURE);
         }
 
@@ -431,10 +431,10 @@ gdm_server_setup_journal_fds (GdmServer *server)
         char *identifier;
         gsize size;
 
-        size = strlen (prefix) + strlen (server->priv->display_name) + 1;
+        size = strlen (prefix) + strlen (server->display_name) + 1;
         identifier = g_alloca (size);
         strcpy (identifier, prefix);
-        strcat (identifier, server->priv->display_name);
+        strcat (identifier, server->display_name);
         identifier[size - 1] = '\0';
 
         out = sd_journal_stream_fd (identifier, LOG_INFO, FALSE);
@@ -462,8 +462,8 @@ gdm_server_setup_logfile (GdmServer *server)
         char            *log_file;
         char            *log_path;
 
-        log_file = g_strdup_printf ("%s.log", server->priv->display_name);
-        log_path = g_build_filename (server->priv->log_dir, log_file, NULL);
+        log_file = g_strdup_printf ("%s.log", server->display_name);
+        log_path = g_build_filename (server->log_dir, log_file, NULL);
         g_free (log_file);
 
         /* Rotate the X server logs */
@@ -483,7 +483,7 @@ gdm_server_setup_logfile (GdmServer *server)
         } else {
                 g_warning (_("%s: Could not open log file for display %s!"),
                            "gdm_server_spawn",
-                           server->priv->display_name);
+                           server->display_name);
         }
 }
 
@@ -532,11 +532,11 @@ server_child_setup (GdmServer *server)
         prctl (PR_SET_PDEATHSIG, SIGTERM);
 #endif
 
-        if (server->priv->priority != 0) {
-                if (setpriority (PRIO_PROCESS, 0, server->priv->priority)) {
+        if (server->priority != 0) {
+                if (setpriority (PRIO_PROCESS, 0, server->priority)) {
                         g_warning (_("%s: Server priority couldn’t be set to %d: %s"),
                                    "gdm_server_spawn",
-                                   server->priv->priority,
+                                   server->priority,
                                    g_strerror (errno));
                 }
         }
@@ -575,12 +575,12 @@ get_server_environment (GdmServer *server)
         }
 
         /* modify environment here */
-        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->priv->display_name));
+        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (server->display_name));
 
-        if (server->priv->user_name != NULL) {
+        if (server->user_name != NULL) {
                 struct passwd *pwent;
 
-                gdm_get_pwent_for_name (server->priv->user_name, &pwent);
+                gdm_get_pwent_for_name (server->user_name, &pwent);
 
                 if (pwent->pw_dir != NULL
                     && g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS)) {
@@ -612,7 +612,7 @@ server_add_xserver_args (GdmServer *server,
         int    i;
 
         len = *argc;
-        g_shell_parse_argv (server->priv->session_args, &count, &args, NULL);
+        g_shell_parse_argv (server->session_args, &count, &args, NULL);
         *argv = g_renew (char *, *argv, len + count + 1);
 
         for (i=0; i < count;i++) {
@@ -649,8 +649,8 @@ server_child_watch (GPid       pid,
                 g_signal_emit (server, signals [DIED], 0, num);
         }
 
-        g_spawn_close_pid (server->priv->pid);
-        server->priv->pid = -1;
+        g_spawn_close_pid (server->pid);
+        server->pid = -1;
 
         g_object_unref (server);
 }
@@ -680,7 +680,7 @@ gdm_server_spawn (GdmServer    *server,
                                          &argc,
                                          &argv);
 
-        if (server->priv->session_args) {
+        if (server->session_args) {
                 server_add_xserver_args (server, &argc, &argv);
         }
 
@@ -688,7 +688,7 @@ gdm_server_spawn (GdmServer    *server,
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
                              _("%s: Empty server command for display %s"),
                              "gdm_server_spawn",
-                             server->priv->display_name);
+                             server->display_name);
                 goto out;
         }
 
@@ -713,16 +713,16 @@ gdm_server_spawn (GdmServer    *server,
                                        G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
                                        (GSpawnChildSetupFunc)server_child_setup,
                                        server,
-                                       &server->priv->pid,
+                                       &server->pid,
                                        NULL,
                                        NULL,
                                        NULL,
                                        error))
                 goto out;
 
-        g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->priv->pid);
+        g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->pid);
 
-        server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
+        server->child_watch_id = g_child_watch_add (server->pid,
                                                           (GChildWatchFunc)server_child_watch,
                                                           server);
 
@@ -752,7 +752,7 @@ gdm_server_start (GdmServer *server)
         GError **error = &local_error;
 
         /* Hardcode the VT for the initial X server, but nothing else */
-        if (server->priv->is_initial) {
+        if (server->is_initial) {
                 vtarg = "vt" GDM_INITIAL_VT;
         }
 
@@ -775,8 +775,8 @@ server_died (GdmServer *server)
 {
         int exit_status;
 
-        g_debug ("GdmServer: Waiting on process %d", server->priv->pid);
-        exit_status = gdm_wait_on_pid (server->priv->pid);
+        g_debug ("GdmServer: Waiting on process %d", server->pid);
+        exit_status = gdm_wait_on_pid (server->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmServer: Wait on child process failed");
@@ -784,12 +784,12 @@ server_died (GdmServer *server)
                 /* exited normally */
         }
 
-        g_spawn_close_pid (server->priv->pid);
-        server->priv->pid = -1;
+        g_spawn_close_pid (server->pid);
+        server->pid = -1;
 
-        if (server->priv->display_device != NULL) {
-                g_free (server->priv->display_device);
-                server->priv->display_device = NULL;
+        if (server->display_device != NULL) {
+                g_free (server->display_device);
+                server->display_device = NULL;
                 g_object_notify (G_OBJECT (server), "display-device");
         }
 
@@ -801,19 +801,19 @@ gdm_server_stop (GdmServer *server)
 {
         int res;
 
-        if (server->priv->pid <= 1) {
+        if (server->pid <= 1) {
                 return TRUE;
         }
 
         /* remove watch source before we can wait on child */
-        if (server->priv->child_watch_id > 0) {
-                g_source_remove (server->priv->child_watch_id);
-                server->priv->child_watch_id = 0;
+        if (server->child_watch_id > 0) {
+                g_source_remove (server->child_watch_id);
+                server->child_watch_id = 0;
         }
 
         g_debug ("GdmServer: Stopping server");
 
-        res = gdm_signal_pid (server->priv->pid, SIGTERM);
+        res = gdm_signal_pid (server->pid, SIGTERM);
         if (res < 0) {
         } else {
                 server_died (server);
@@ -827,46 +827,46 @@ static void
 _gdm_server_set_display_name (GdmServer  *server,
                               const char *name)
 {
-        g_free (server->priv->display_name);
-        server->priv->display_name = g_strdup (name);
+        g_free (server->display_name);
+        server->display_name = g_strdup (name);
 }
 
 static void
 _gdm_server_set_display_seat_id (GdmServer  *server,
                                  const char *name)
 {
-        g_free (server->priv->display_seat_id);
-        server->priv->display_seat_id = g_strdup (name);
+        g_free (server->display_seat_id);
+        server->display_seat_id = g_strdup (name);
 }
 
 static void
 _gdm_server_set_auth_file (GdmServer  *server,
                            const char *auth_file)
 {
-        g_free (server->priv->auth_file);
-        server->priv->auth_file = g_strdup (auth_file);
+        g_free (server->auth_file);
+        server->auth_file = g_strdup (auth_file);
 }
 
 static void
 _gdm_server_set_user_name (GdmServer  *server,
                            const char *name)
 {
-        g_free (server->priv->user_name);
-        server->priv->user_name = g_strdup (name);
+        g_free (server->user_name);
+        server->user_name = g_strdup (name);
 }
 
 static void
 _gdm_server_set_disable_tcp (GdmServer  *server,
                              gboolean    disabled)
 {
-        server->priv->disable_tcp = disabled;
+        server->disable_tcp = disabled;
 }
 
 static void
 _gdm_server_set_is_initial (GdmServer  *server,
                             gboolean    initial)
 {
-        server->priv->is_initial = initial;
+        server->is_initial = initial;
 }
 
 static void
@@ -916,26 +916,26 @@ gdm_server_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_DISPLAY_NAME:
-                g_value_set_string (value, self->priv->display_name);
+                g_value_set_string (value, self->display_name);
                 break;
         case PROP_DISPLAY_SEAT_ID:
-                g_value_set_string (value, self->priv->display_seat_id);
+                g_value_set_string (value, self->display_seat_id);
                 break;
         case PROP_DISPLAY_DEVICE:
                 g_value_take_string (value,
                                      gdm_server_get_display_device (self));
                 break;
         case PROP_AUTH_FILE:
-                g_value_set_string (value, self->priv->auth_file);
+                g_value_set_string (value, self->auth_file);
                 break;
         case PROP_USER_NAME:
-                g_value_set_string (value, self->priv->user_name);
+                g_value_set_string (value, self->user_name);
                 break;
         case PROP_DISABLE_TCP:
-                g_value_set_boolean (value, self->priv->disable_tcp);
+                g_value_set_boolean (value, self->disable_tcp);
                 break;
         case PROP_IS_INITIAL:
-                g_value_set_boolean (value, self->priv->is_initial);
+                g_value_set_boolean (value, self->is_initial);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -952,13 +952,11 @@ gdm_server_class_init (GdmServerClass *klass)
         object_class->set_property = gdm_server_set_property;
         object_class->finalize = gdm_server_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmServerPrivate));
-
         signals [READY] =
                 g_signal_new ("ready",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmServerClass, ready),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -968,7 +966,7 @@ gdm_server_class_init (GdmServerClass *klass)
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmServerClass, exited),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -979,7 +977,7 @@ gdm_server_class_init (GdmServerClass *klass)
                 g_signal_new ("died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmServerClass, died),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -1042,11 +1040,9 @@ gdm_server_class_init (GdmServerClass *klass)
 static void
 gdm_server_init (GdmServer *server)
 {
-        server->priv = GDM_SERVER_GET_PRIVATE (server);
+        server->pid = -1;
 
-        server->priv->pid = -1;
-
-        server->priv->log_dir = g_strdup (LOGDIR);
+        server->log_dir = g_strdup (LOGDIR);
 }
 
 static void
@@ -1059,18 +1055,16 @@ gdm_server_finalize (GObject *object)
 
         server = GDM_SERVER (object);
 
-        g_return_if_fail (server->priv != NULL);
-
         gdm_server_stop (server);
 
-        g_free (server->priv->command);
-        g_free (server->priv->user_name);
-        g_free (server->priv->session_args);
-        g_free (server->priv->log_dir);
-        g_free (server->priv->display_name);
-        g_free (server->priv->display_seat_id);
-        g_free (server->priv->display_device);
-        g_free (server->priv->auth_file);
+        g_free (server->command);
+        g_free (server->user_name);
+        g_free (server->session_args);
+        g_free (server->log_dir);
+        g_free (server->display_name);
+        g_free (server->display_seat_id);
+        g_free (server->display_device);
+        g_free (server->auth_file);
 
         G_OBJECT_CLASS (gdm_server_parent_class)->finalize (object);
 }
