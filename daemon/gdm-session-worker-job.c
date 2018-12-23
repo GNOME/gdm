@@ -52,10 +52,10 @@
 
 extern char **environ;
 
-#define GDM_SESSION_WORKER_JOB_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_WORKER_JOB, GdmSessionWorkerJobPrivate))
-
-struct GdmSessionWorkerJobPrivate
+struct _GdmSessionWorkerJob
 {
+        GObject         parent;
+
         char           *command;
         GPid            pid;
         gboolean        for_reauth;
@@ -146,8 +146,8 @@ session_worker_job_child_watch (GPid                 pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
-        g_spawn_close_pid (job->priv->pid);
-        job->priv->pid = -1;
+        g_spawn_close_pid (job->pid);
+        job->pid = -1;
 
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
@@ -179,8 +179,8 @@ copy_environment_to_hash (GdmSessionWorkerJob *job,
         char **environment;
         gint   i;
 
-        if (job->priv->environment != NULL) {
-                environment = g_strdupv (job->priv->environment);
+        if (job->environment != NULL) {
+                environment = g_strdupv (job->environment);
         } else {
                 environment = g_get_environ ();
         }
@@ -211,7 +211,7 @@ get_job_arguments (GdmSessionWorkerJob *job,
         args = NULL;
         argv = NULL;
         error = NULL;
-        if (! g_shell_parse_argv (job->priv->command, NULL, &argv, &error)) {
+        if (! g_shell_parse_argv (job->command, NULL, &argv, &error)) {
                 g_warning ("Could not parse command: %s", error->message);
                 g_error_free (error);
                 goto out;
@@ -242,9 +242,9 @@ get_job_environment (GdmSessionWorkerJob *job)
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
         copy_environment_to_hash (job, hash);
 
-        g_hash_table_insert (hash, g_strdup ("GDM_SESSION_DBUS_ADDRESS"), g_strdup (job->priv->server_address));
+        g_hash_table_insert (hash, g_strdup ("GDM_SESSION_DBUS_ADDRESS"), g_strdup (job->server_address));
 
-        if (job->priv->for_reauth) {
+        if (job->for_reauth) {
                 g_hash_table_insert (hash, g_strdup ("GDM_SESSION_FOR_REAUTH"), g_strdup ("1"));
         }
 
@@ -268,7 +268,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
         ret = FALSE;
 
         g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s %s",
-                 name != NULL? name : "", session_worker_job->priv->command);
+                 name != NULL? name : "", session_worker_job->command);
 
         args = get_job_arguments (session_worker_job, name);
 
@@ -284,7 +284,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                                         G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_FILE_AND_ARGV_ZERO,
                                         (GSpawnChildSetupFunc)session_worker_job_child_setup,
                                         session_worker_job,
-                                        &session_worker_job->priv->pid,
+                                        &session_worker_job->pid,
                                         NULL,
                                         NULL,
                                         NULL,
@@ -298,16 +298,16 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
 
         if (! ret) {
                 g_warning ("Could not start command '%s': %s",
-                           session_worker_job->priv->command,
+                           session_worker_job->command,
                            error->message);
                 g_error_free (error);
         } else {
-                g_debug ("GdmSessionWorkerJob: : SessionWorkerJob on pid %d", (int)session_worker_job->priv->pid);
+                g_debug ("GdmSessionWorkerJob: : SessionWorkerJob on pid %d", (int)session_worker_job->pid);
         }
 
-        session_worker_job->priv->child_watch_id = g_child_watch_add (session_worker_job->priv->pid,
-                                                                      (GChildWatchFunc)session_worker_job_child_watch,
-                                                                      session_worker_job);
+        session_worker_job->child_watch_id = g_child_watch_add (session_worker_job->pid,
+                                                                (GChildWatchFunc)session_worker_job_child_watch,
+                                                                session_worker_job);
 
         return ret;
 }
@@ -336,8 +336,8 @@ handle_session_worker_job_death (GdmSessionWorkerJob *session_worker_job)
 {
         int exit_status;
 
-        g_debug ("GdmSessionWorkerJob: Waiting on process %d", session_worker_job->priv->pid);
-        exit_status = gdm_wait_on_and_disown_pid (session_worker_job->priv->pid, 5);
+        g_debug ("GdmSessionWorkerJob: Waiting on process %d", session_worker_job->pid);
+        exit_status = gdm_wait_on_and_disown_pid (session_worker_job->pid, 5);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmSessionWorkerJob: Wait on child process failed");
@@ -345,8 +345,8 @@ handle_session_worker_job_death (GdmSessionWorkerJob *session_worker_job)
                 /* exited normally */
         }
 
-        g_spawn_close_pid (session_worker_job->priv->pid);
-        session_worker_job->priv->pid = -1;
+        g_spawn_close_pid (session_worker_job->pid);
+        session_worker_job->pid = -1;
 
         g_debug ("GdmSessionWorkerJob: SessionWorkerJob died");
 }
@@ -354,14 +354,14 @@ handle_session_worker_job_death (GdmSessionWorkerJob *session_worker_job)
 void
 gdm_session_worker_job_stop_now (GdmSessionWorkerJob *session_worker_job)
 {
-        if (session_worker_job->priv->pid <= 1) {
+        if (session_worker_job->pid <= 1) {
                 return;
         }
 
         /* remove watch source before we can wait on child */
-        if (session_worker_job->priv->child_watch_id > 0) {
-                g_source_remove (session_worker_job->priv->child_watch_id);
-                session_worker_job->priv->child_watch_id = 0;
+        if (session_worker_job->child_watch_id > 0) {
+                g_source_remove (session_worker_job->child_watch_id);
+                session_worker_job->child_watch_id = 0;
         }
 
         gdm_session_worker_job_stop (session_worker_job);
@@ -373,13 +373,13 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
 {
         int res;
 
-        if (session_worker_job->priv->pid <= 1) {
+        if (session_worker_job->pid <= 1) {
                 return;
         }
 
-        g_debug ("GdmSessionWorkerJob: Stopping job pid:%d", session_worker_job->priv->pid);
+        g_debug ("GdmSessionWorkerJob: Stopping job pid:%d", session_worker_job->pid);
 
-        res = gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
+        res = gdm_signal_pid (session_worker_job->pid, SIGTERM);
 
         if (res < 0) {
                 g_warning ("Unable to kill session worker process");
@@ -390,7 +390,7 @@ GPid
 gdm_session_worker_job_get_pid (GdmSessionWorkerJob *session_worker_job)
 {
         g_return_val_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job), 0);
-        return session_worker_job->priv->pid;
+        return session_worker_job->pid;
 }
 
 void
@@ -399,8 +399,8 @@ gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_j
 {
         g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
 
-        g_free (session_worker_job->priv->server_address);
-        session_worker_job->priv->server_address = g_strdup (address);
+        g_free (session_worker_job->server_address);
+        session_worker_job->server_address = g_strdup (address);
 }
 
 void
@@ -409,7 +409,7 @@ gdm_session_worker_job_set_for_reauth (GdmSessionWorkerJob *session_worker_job,
 {
         g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
 
-        session_worker_job->priv->for_reauth = for_reauth;
+        session_worker_job->for_reauth = for_reauth;
 }
 
 void
@@ -418,7 +418,7 @@ gdm_session_worker_job_set_environment (GdmSessionWorkerJob *session_worker_job,
 {
         g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
 
-        session_worker_job->priv->environment = g_strdupv ((char **) environment);
+        session_worker_job->environment = g_strdupv ((char **) environment);
 }
 
 static void
@@ -459,13 +459,13 @@ gdm_session_worker_job_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_SERVER_ADDRESS:
-                g_value_set_string (value, self->priv->server_address);
+                g_value_set_string (value, self->server_address);
                 break;
         case PROP_FOR_REAUTH:
-                g_value_set_boolean (value, self->priv->for_reauth);
+                g_value_set_boolean (value, self->for_reauth);
                 break;
         case PROP_ENVIRONMENT:
-                g_value_set_pointer (value, self->priv->environment);
+                g_value_set_pointer (value, self->environment);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -497,8 +497,6 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
         object_class->constructor = gdm_session_worker_job_constructor;
         object_class->finalize = gdm_session_worker_job_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmSessionWorkerJobPrivate));
-
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,
                                          g_param_spec_string ("server-address",
@@ -523,7 +521,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionWorkerJobClass, started),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -533,7 +531,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionWorkerJobClass, exited),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -545,7 +543,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                 g_signal_new ("died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionWorkerJobClass, died),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -557,12 +555,9 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
 static void
 gdm_session_worker_job_init (GdmSessionWorkerJob *session_worker_job)
 {
+        session_worker_job->pid = -1;
 
-        session_worker_job->priv = GDM_SESSION_WORKER_JOB_GET_PRIVATE (session_worker_job);
-
-        session_worker_job->priv->pid = -1;
-
-        session_worker_job->priv->command = g_strdup (LIBEXECDIR "/gdm-session-worker");
+        session_worker_job->command = g_strdup (LIBEXECDIR "/gdm-session-worker");
 }
 
 static void
@@ -575,12 +570,10 @@ gdm_session_worker_job_finalize (GObject *object)
 
         session_worker_job = GDM_SESSION_WORKER_JOB (object);
 
-        g_return_if_fail (session_worker_job->priv != NULL);
-
         gdm_session_worker_job_stop (session_worker_job);
 
-        g_free (session_worker_job->priv->command);
-        g_free (session_worker_job->priv->server_address);
+        g_free (session_worker_job->command);
+        g_free (session_worker_job->server_address);
 
         G_OBJECT_CLASS (gdm_session_worker_job_parent_class)->finalize (object);
 }

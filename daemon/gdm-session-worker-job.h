@@ -26,34 +26,9 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SESSION_WORKER_JOB         (gdm_session_worker_job_get_type ())
-#define GDM_SESSION_WORKER_JOB(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SESSION_WORKER_JOB, GdmSessionWorkerJob))
-#define GDM_SESSION_WORKER_JOB_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SESSION_WORKER_JOB, GdmSessionWorkerJobClass))
-#define GDM_IS_SESSION_WORKER_JOB(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SESSION_WORKER_JOB))
-#define GDM_IS_SESSION_WORKER_JOB_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SESSION_WORKER_JOB))
-#define GDM_SESSION_WORKER_JOB_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SESSION_WORKER_JOB, GdmSessionWorkerJobClass))
+#define GDM_TYPE_SESSION_WORKER_JOB (gdm_session_worker_job_get_type ())
+G_DECLARE_FINAL_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, GDM, SESSION_WORKER_JOB, GObject)
 
-typedef struct GdmSessionWorkerJobPrivate GdmSessionWorkerJobPrivate;
-
-typedef struct
-{
-        GObject                 parent;
-        GdmSessionWorkerJobPrivate *priv;
-} GdmSessionWorkerJob;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-
-        void (* started)           (GdmSessionWorkerJob  *session_worker_job);
-        void (* exited)            (GdmSessionWorkerJob  *session_worker_job,
-                                    int                   exit_code);
-
-        void (* died)              (GdmSessionWorkerJob  *session_worker_job,
-                                    int                   signal_number);
-} GdmSessionWorkerJobClass;
-
-GType                   gdm_session_worker_job_get_type           (void);
 GdmSessionWorkerJob *   gdm_session_worker_job_new                (void);
 void                    gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_job,
                                                                    const char          *server_address);
