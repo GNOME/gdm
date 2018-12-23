@@ -30,13 +30,11 @@
 #include "gdm-display-factory.h"
 #include "gdm-display-store.h"
 
-#define GDM_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY_FACTORY, GdmDisplayFactoryPrivate))
-
-struct GdmDisplayFactoryPrivate
+typedef struct _GdmDisplayFactoryPrivate
 {
         GdmDisplayStore *display_store;
         guint            purge_displays_id;
-};
+} GdmDisplayFactoryPrivate;
 
 enum {
         PROP_0,
@@ -47,7 +45,7 @@ static void     gdm_display_factory_class_init  (GdmDisplayFactoryClass *klass);
 static void     gdm_display_factory_init        (GdmDisplayFactory      *factory);
 static void     gdm_display_factory_finalize    (GObject                *object);
 
-G_DEFINE_ABSTRACT_TYPE (GdmDisplayFactory, gdm_display_factory, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GdmDisplayFactory, gdm_display_factory, G_TYPE_OBJECT)
 
 GQuark
 gdm_display_factory_error_quark (void)
@@ -81,8 +79,11 @@ purge_display (char       *id,
 static void
 purge_displays (GdmDisplayFactory *factory)
 {
-        factory->priv->purge_displays_id = 0;
-        gdm_display_store_foreach_remove (factory->priv->display_store,
+        GdmDisplayFactoryPrivate *priv;
+
+        priv = gdm_display_factory_get_instance_private (factory);
+        priv->purge_displays_id = 0;
+        gdm_display_store_foreach_remove (priv->display_store,
                                           (GdmDisplayStoreFunc)purge_display,
                                           NULL);
 }
@@ -90,17 +91,23 @@ purge_displays (GdmDisplayFactory *factory)
 void
 gdm_display_factory_queue_purge_displays (GdmDisplayFactory *factory)
 {
-        if (factory->priv->purge_displays_id == 0) {
-                factory->priv->purge_displays_id = g_idle_add ((GSourceFunc) purge_displays, factory);
+        GdmDisplayFactoryPrivate *priv;
+
+        priv = gdm_display_factory_get_instance_private (factory);
+        if (priv->purge_displays_id == 0) {
+                priv->purge_displays_id = g_idle_add ((GSourceFunc) purge_displays, factory);
         }
 }
 
 GdmDisplayStore *
 gdm_display_factory_get_display_store (GdmDisplayFactory *factory)
 {
+        GdmDisplayFactoryPrivate *priv;
+
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), NULL);
 
-        return factory->priv->display_store;
+        priv = gdm_display_factory_get_instance_private (factory);
+        return priv->display_store;
 }
 
 gboolean
@@ -135,13 +142,13 @@ static void
 gdm_display_factory_set_display_store (GdmDisplayFactory *factory,
                                        GdmDisplayStore   *display_store)
 {
-        if (factory->priv->display_store != NULL) {
-                g_object_unref (factory->priv->display_store);
-                factory->priv->display_store = NULL;
-        }
+        GdmDisplayFactoryPrivate *priv;
+
+        priv = gdm_display_factory_get_instance_private (factory);
+        g_clear_object (&priv->display_store);
 
         if (display_store != NULL) {
-                factory->priv->display_store = g_object_ref (display_store);
+                priv->display_store = g_object_ref (display_store);
         }
 }
 
@@ -172,12 +179,14 @@ gdm_display_factory_get_property (GObject    *object,
                                   GParamSpec *pspec)
 {
         GdmDisplayFactory *self;
+        GdmDisplayFactoryPrivate *priv;
 
         self = GDM_DISPLAY_FACTORY (object);
+        priv = gdm_display_factory_get_instance_private (self);
 
         switch (prop_id) {
         case PROP_DISPLAY_STORE:
-                g_value_set_object (value, self->priv->display_store);
+                g_value_set_object (value, priv->display_store);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -201,31 +210,30 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
                                                               "display store",
                                                               GDM_TYPE_DISPLAY_STORE,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-        g_type_class_add_private (klass, sizeof (GdmDisplayFactoryPrivate));
 }
 
 static void
 gdm_display_factory_init (GdmDisplayFactory *factory)
 {
-        factory->priv = GDM_DISPLAY_FACTORY_GET_PRIVATE (factory);
 }
 
 static void
 gdm_display_factory_finalize (GObject *object)
 {
         GdmDisplayFactory *factory;
+        GdmDisplayFactoryPrivate *priv;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_DISPLAY_FACTORY (object));
 
         factory = GDM_DISPLAY_FACTORY (object);
+        priv = gdm_display_factory_get_instance_private (factory);
 
-        g_return_if_fail (factory->priv != NULL);
+        g_return_if_fail (priv != NULL);
 
-        if (factory->priv->purge_displays_id != 0) {
-                g_source_remove (factory->priv->purge_displays_id);
-                factory->priv->purge_displays_id = 0;
+        if (priv->purge_displays_id != 0) {
+                g_source_remove (priv->purge_displays_id);
+                priv->purge_displays_id = 0;
         }
 
         G_OBJECT_CLASS (gdm_display_factory_parent_class)->finalize (object);
