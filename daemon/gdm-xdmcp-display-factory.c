@@ -71,8 +71,6 @@ int allow_severity = LOG_INFO;
 int deny_severity = LOG_WARNING;
 #endif
 
-#define GDM_XDMCP_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_XDMCP_DISPLAY_FACTORY, GdmXdmcpDisplayFactoryPrivate))
-
 #define DEFAULT_PORT                  177
 #define DEFAULT_USE_MULTICAST         FALSE
 #define DEFAULT_MULTICAST_ADDRESS     "ff02::1"
@@ -162,8 +160,10 @@ typedef struct {
         GdmXdmcpDisplayFactory *xdmcp_display_factory;
 } ManagedForward;
 
-struct GdmXdmcpDisplayFactoryPrivate
+struct _GdmXdmcpDisplayFactory
 {
+        GdmDisplayFactory parent;
+
         GSList          *forward_queries;
         GSList          *managed_forwards;
         GSList          *indirect_clients;
@@ -269,8 +269,8 @@ get_next_session_serial (GdmXdmcpDisplayFactory *factory)
         gint32 serial;
 
  again:
-        if (factory->priv->session_serial != G_MAXINT32) {
-                serial = factory->priv->session_serial++;
+        if (factory->session_serial != G_MAXINT32) {
+                serial = factory->session_serial++;
         } else {
                 serial = g_random_int ();
         }
@@ -561,10 +561,10 @@ setup_multicast (GdmXdmcpDisplayFactory *factory)
 
                                 mreq.ipv6mr_interface = ifindex;
                                 inet_pton (AF_INET6,
-                                           factory->priv->multicast_address,
+                                           factory->multicast_address,
                                            &mreq.ipv6mr_multiaddr);
 
-                                setsockopt (factory->priv->socket_fd,
+                                setsockopt (factory->socket_fd,
                                             IPPROTO_IPV6,
                                             IPV6_JOIN_GROUP,
                                             &mreq,
@@ -598,24 +598,24 @@ open_port (GdmXdmcpDisplayFactory *factory)
         struct sockaddr_storage serv_sa = { 0 };
 
         g_debug ("GdmXdmcpDisplayFactory: Start up on host %s, port %d",
-                 factory->priv->hostname ? factory->priv->hostname : "(null)",
-                 factory->priv->port);
+                 factory->hostname ? factory->hostname : "(null)",
+                 factory->port);
 
         /* Open socket for communications */
 #ifdef ENABLE_IPV6
-        factory->priv->socket_fd = do_bind (factory->priv->port, AF_INET6, &serv_sa);
-        if (factory->priv->socket_fd < 0)
+        factory->socket_fd = do_bind (factory->port, AF_INET6, &serv_sa);
+        if (factory->socket_fd < 0)
 #endif
-                factory->priv->socket_fd = do_bind (factory->priv->port, AF_INET, &serv_sa);
+                factory->socket_fd = do_bind (factory->port, AF_INET, &serv_sa);
 
-        if G_UNLIKELY (factory->priv->socket_fd < 0) {
+        if G_UNLIKELY (factory->socket_fd < 0) {
                 g_warning (_("Could not create socket!"));
                 return FALSE;
         }
 
-        fd_set_close_on_exec (factory->priv->socket_fd);
+        fd_set_close_on_exec (factory->socket_fd);
 
-        if (factory->priv->use_multicast) {
+        if (factory->use_multicast) {
                 setup_multicast (factory);
         }
 
@@ -763,12 +763,12 @@ get_willing_output (GdmXdmcpDisplayFactory *factory)
         output = NULL;
         buf[0] = '\0';
 
-        if (factory->priv->willing_script == NULL) {
+        if (factory->willing_script == NULL) {
                 goto out;
         }
 
         argv = NULL;
-        if (! g_shell_parse_argv (factory->priv->willing_script, NULL, &argv, NULL)) {
+        if (! g_shell_parse_argv (factory->willing_script, NULL, &argv, NULL)) {
                 goto out;
         }
 
@@ -778,7 +778,7 @@ get_willing_output (GdmXdmcpDisplayFactory *factory)
                 goto out;
         }
 
-        fd = popen (factory->priv->willing_script, "r");
+        fd = popen (factory->willing_script, "r");
         if (fd == NULL) {
                 goto out;
         }
@@ -821,12 +821,12 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
                 if (s != NULL) {
                         last_status = s;
                 } else {
-                        last_status = g_strdup (factory->priv->sysid);
+                        last_status = g_strdup (factory->sysid);
                 }
         }
 
         if (! gdm_address_is_local (address) &&
-            gdm_xdmcp_num_displays_from_host (factory, address) >= factory->priv->max_displays_per_host) {
+            gdm_xdmcp_num_displays_from_host (factory, address) >= factory->max_displays_per_host) {
                 /*
                  * Don't translate, this goes over the wire to servers where we
                  * don't know the charset or language, so it must be ascii
@@ -841,17 +841,17 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
 
         header.opcode   = (CARD16) WILLING;
         header.length   = 6 + serv_authlist.authentication.length;
-        header.length  += factory->priv->servhost.length + status.length;
+        header.length  += factory->servhost.length + status.length;
         header.version  = XDM_PROTOCOL_VERSION;
-        XdmcpWriteHeader (&factory->priv->buf, &header);
+        XdmcpWriteHeader (&factory->buf, &header);
 
         /* Hardcoded authentication */
-        XdmcpWriteARRAY8 (&factory->priv->buf, &serv_authlist.authentication);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &factory->priv->servhost);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &status);
+        XdmcpWriteARRAY8 (&factory->buf, &serv_authlist.authentication);
+        XdmcpWriteARRAY8 (&factory->buf, &factory->servhost);
+        XdmcpWriteARRAY8 (&factory->buf, &status);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
@@ -890,14 +890,14 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
         status.length = strlen ((char *) status.data);
 
         header.opcode = (CARD16) UNWILLING;
-        header.length = 4 + factory->priv->servhost.length + status.length;
+        header.length = 4 + factory->servhost.length + status.length;
         header.version = XDM_PROTOCOL_VERSION;
-        XdmcpWriteHeader (&factory->priv->buf, &header);
+        XdmcpWriteHeader (&factory->buf, &header);
 
-        XdmcpWriteARRAY8 (&factory->priv->buf, &factory->priv->servhost);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &status);
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpWriteARRAY8 (&factory->buf, &factory->servhost);
+        XdmcpWriteARRAY8 (&factory->buf, &status);
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
@@ -1000,13 +1000,13 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
                 header.length += 2 + authlist->data[i].length;
         }
 
-        XdmcpWriteHeader (&factory->priv->buf, &header);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &addr);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &port);
-        XdmcpWriteARRAYofARRAY8 (&factory->priv->buf, authlist);
+        XdmcpWriteHeader (&factory->buf, &header);
+        XdmcpWriteARRAY8 (&factory->buf, &addr);
+        XdmcpWriteARRAY8 (&factory->buf, &port);
+        XdmcpWriteARRAYofARRAY8 (&factory->buf, authlist);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (ic->chosen_address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (ic->chosen_address)));
 
@@ -1034,7 +1034,7 @@ handle_direct_query (GdmXdmcpDisplayFactory  *factory,
         int           i;
         int           res;
 
-        res = XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authlist);
+        res = XdmcpReadARRAYofARRAY8 (&factory->buf, &clnt_authlist);
         if G_UNLIKELY (! res) {
                 g_warning ("Could not extract authlist from packet");
                 return;
@@ -1088,7 +1088,7 @@ indirect_client_create (GdmXdmcpDisplayFactory *factory,
         ic = g_new0 (IndirectClient, 1);
         ic->dsp_address = gdm_address_copy (dsp_address);
 
-        factory->priv->indirect_clients = g_slist_prepend (factory->priv->indirect_clients, ic);
+        factory->indirect_clients = g_slist_prepend (factory->indirect_clients, ic);
 
         return ic;
 }
@@ -1101,7 +1101,7 @@ indirect_client_destroy (GdmXdmcpDisplayFactory *factory,
                 return;
         }
 
-        factory->priv->indirect_clients = g_slist_remove (factory->priv->indirect_clients, ic);
+        factory->indirect_clients = g_slist_remove (factory->indirect_clients, ic);
 
         ic->acctime = 0;
 
@@ -1137,7 +1137,7 @@ indirect_client_lookup_by_chosen (GdmXdmcpDisplayFactory *factory,
 
         ret = NULL;
 
-        for (li = factory->priv->indirect_clients; li != NULL; li = li->next) {
+        for (li = factory->indirect_clients; li != NULL; li = li->next) {
                 IndirectClient *ic = li->data;
 
                 if (ic != NULL
@@ -1178,7 +1178,7 @@ indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
         curtime = time (NULL);
         ret = NULL;
 
-        qlist = g_slist_copy (factory->priv->indirect_clients);
+        qlist = g_slist_copy (factory->indirect_clients);
 
         for (li = qlist; li != NULL; li = li->next) {
                 IndirectClient *ic;
@@ -1204,7 +1204,7 @@ indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
                         break;
                 }
 
-                if (ic->acctime > 0 && curtime > ic->acctime + factory->priv->max_wait_indirect) {
+                if (ic->acctime > 0 && curtime > ic->acctime + factory->max_wait_indirect) {
                         g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
                                  host ? host : "(null)", serv ? serv : "(null)");
 
@@ -1246,19 +1246,19 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
                 return;
         }
 
-        if (! factory->priv->honor_indirect) {
+        if (! factory->honor_indirect) {
                 /* ignore it */
                 return;
         }
 
-        if (factory->priv->num_sessions > factory->priv->max_displays ||
+        if (factory->num_sessions > factory->max_displays ||
             (!gdm_address_is_local (address) &&
-             gdm_xdmcp_num_displays_from_host (factory, address) > factory->priv->max_displays_per_host)) {
+             gdm_xdmcp_num_displays_from_host (factory, address) > factory->max_displays_per_host)) {
                 g_debug ("GdmXdmcpDisplayFactory: reached maximum number of clients - ignoring indirect query");
                 return;
         }
 
-        res = XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authlist);
+        res = XdmcpReadARRAYofARRAY8 (&factory->buf, &clnt_authlist);
         if G_UNLIKELY (! res) {
                 g_warning ("Could not extract authlist from packet");
                 return;
@@ -1342,7 +1342,7 @@ forward_query_destroy (GdmXdmcpDisplayFactory *factory,
                 return;
         }
 
-        factory->priv->forward_queries = g_slist_remove (factory->priv->forward_queries, q);
+        factory->forward_queries = g_slist_remove (factory->forward_queries, q);
 
         q->acctime = 0;
 
@@ -1370,7 +1370,7 @@ remove_oldest_forward (GdmXdmcpDisplayFactory *factory)
         GSList       *li;
         ForwardQuery *oldest = NULL;
 
-        for (li = factory->priv->forward_queries; li != NULL; li = li->next) {
+        for (li = factory->forward_queries; li != NULL; li = li->next) {
                 ForwardQuery *query = li->data;
 
                 if (oldest == NULL || query->acctime < oldest->acctime) {
@@ -1394,7 +1394,7 @@ forward_query_create (GdmXdmcpDisplayFactory *factory,
         ForwardQuery *q;
         int           count;
 
-        count = g_slist_length (factory->priv->forward_queries);
+        count = g_slist_length (factory->forward_queries);
 
         while (count > GDM_MAX_FORWARD_QUERIES && remove_oldest_forward (factory)) {
                 count--;
@@ -1404,7 +1404,7 @@ forward_query_create (GdmXdmcpDisplayFactory *factory,
         q->dsp_address = gdm_address_copy (dsp_address);
         q->from_address = gdm_address_copy (mgr_address);
 
-        factory->priv->forward_queries = g_slist_prepend (factory->priv->forward_queries, q);
+        factory->forward_queries = g_slist_prepend (factory->forward_queries, q);
 
         return q;
 }
@@ -1421,7 +1421,7 @@ forward_query_lookup (GdmXdmcpDisplayFactory *factory,
         curtime = time (NULL);
         ret = NULL;
 
-        qlist = g_slist_copy (factory->priv->forward_queries);
+        qlist = g_slist_copy (factory->forward_queries);
 
         for (li = qlist; li != NULL; li = li->next) {
                 ForwardQuery *q;
@@ -1568,12 +1568,12 @@ gdm_xdmcp_whack_queued_managed_forwards (GdmXdmcpDisplayFactory *factory,
 {
         GSList *li;
 
-        for (li = factory->priv->managed_forwards; li != NULL; li = li->next) {
+        for (li = factory->managed_forwards; li != NULL; li = li->next) {
                 ManagedForward *mf = li->data;
 
                 if (gdm_address_equal (mf->manager, address) &&
                     gdm_address_equal (mf->origin, origin)) {
-                        factory->priv->managed_forwards = g_slist_remove_link (factory->priv->managed_forwards, li);
+                        factory->managed_forwards = g_slist_remove_link (factory->managed_forwards, li);
                         g_slist_free_1 (li);
                         g_source_remove (mf->handler);
                         /* mf freed by glib */
@@ -1613,14 +1613,14 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         }
 
         /* Read display address */
-        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_addr)) {
+        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->buf, &clnt_addr)) {
                 g_warning ("%s: Could not read display address",
                            "gdm_xdmcp_handle_forward_query");
                 return;
         }
 
         /* Read display port */
-        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_port)) {
+        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->buf, &clnt_port)) {
                 XdmcpDisposeARRAY8 (&clnt_addr);
                 g_warning ("%s: Could not read display port number",
                            "gdm_xdmcp_handle_forward_query");
@@ -1628,7 +1628,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         }
 
         /* Extract array of authentication names from Xdmcp packet */
-        if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authlist)) {
+        if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->buf, &clnt_authlist)) {
                 XdmcpDisposeARRAY8 (&clnt_addr);
                 XdmcpDisposeARRAY8 (&clnt_port);
                 g_warning ("%s: Could not extract authlist from packet",
@@ -1716,11 +1716,11 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpDisplayFactory *factory,
         header.opcode = (CARD16) GDM_XDMCP_MANAGED_FORWARD;
         header.length = 4 + addr.length;
         header.version = GDM_XDMCP_PROTOCOL_VERSION;
-        XdmcpWriteHeader (&factory->priv->buf, &header);
+        XdmcpWriteHeader (&factory->buf, &header);
 
-        XdmcpWriteARRAY8 (&factory->priv->buf, &addr);
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpWriteARRAY8 (&factory->buf, &addr);
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
@@ -1730,15 +1730,15 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpDisplayFactory *factory,
 static gboolean
 managed_forward_handler (ManagedForward *mf)
 {
-        if (mf->xdmcp_display_factory->priv->socket_fd > 0) {
+        if (mf->xdmcp_display_factory->socket_fd > 0) {
                 gdm_xdmcp_really_send_managed_forward (mf->xdmcp_display_factory,
                                                        mf->manager,
                                                        mf->origin);
         }
 
         mf->times++;
-        if (mf->xdmcp_display_factory->priv->socket_fd <= 0 || mf->times >= 2) {
-                mf->xdmcp_display_factory->priv->managed_forwards = g_slist_remove (mf->xdmcp_display_factory->priv->managed_forwards, mf);
+        if (mf->xdmcp_display_factory->socket_fd <= 0 || mf->times >= 2) {
+                mf->xdmcp_display_factory->managed_forwards = g_slist_remove (mf->xdmcp_display_factory->managed_forwards, mf);
                 mf->handler = 0;
                 /* mf freed by glib */
                 return FALSE;
@@ -1775,7 +1775,7 @@ gdm_xdmcp_send_managed_forward (GdmXdmcpDisplayFactory *factory,
                                           (GSourceFunc)managed_forward_handler,
                                           mf,
                                           (GDestroyNotify)managed_forward_free);
-        factory->priv->managed_forwards = g_slist_prepend (factory->priv->managed_forwards, mf);
+        factory->managed_forwards = g_slist_prepend (factory->managed_forwards, mf);
 }
 
 static void
@@ -1798,11 +1798,11 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
         header.opcode = (CARD16) GDM_XDMCP_GOT_MANAGED_FORWARD;
         header.length = 4 + addr.length;
         header.version = GDM_XDMCP_PROTOCOL_VERSION;
-        XdmcpWriteHeader (&factory->priv->buf, &header);
+        XdmcpWriteHeader (&factory->buf, &header);
 
-        XdmcpWriteARRAY8 (&factory->priv->buf, &addr);
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpWriteARRAY8 (&factory->buf, &addr);
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
@@ -1818,9 +1818,9 @@ count_sessions (const char             *id,
                 status = gdm_display_get_status (display);
 
                 if (status == GDM_DISPLAY_MANAGED) {
-                        factory->priv->num_sessions++;
+                        factory->num_sessions++;
                 } else if (status == GDM_DISPLAY_UNMANAGED) {
-                        factory->priv->num_pending_sessions++;
+                        factory->num_pending_sessions++;
                 }
         }
 
@@ -1832,8 +1832,8 @@ gdm_xdmcp_recount_sessions (GdmXdmcpDisplayFactory *factory)
 {
         GdmDisplayStore *store;
 
-        factory->priv->num_sessions = 0;
-        factory->priv->num_pending_sessions = 0;
+        factory->num_sessions = 0;
+        factory->num_pending_sessions = 0;
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_foreach (store,
@@ -1856,7 +1856,7 @@ purge_displays (const char             *id,
                 acctime = gdm_display_get_creation_time (display);
 
                 if (status == GDM_DISPLAY_UNMANAGED &&
-                    currtime > acctime + factory->priv->max_wait) {
+                    currtime > acctime + factory->max_wait) {
                         /* return TRUE to remove display */
                         return TRUE;
                 }
@@ -1971,13 +1971,13 @@ gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
         header.length    += 2 + authentype.length;
         header.length    += 2 + authendata.length;
 
-        XdmcpWriteHeader (&factory->priv->buf, &header);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &status);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &authentype);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &authendata);
+        XdmcpWriteHeader (&factory->buf, &header);
+        XdmcpWriteARRAY8 (&factory->buf, &status);
+        XdmcpWriteARRAY8 (&factory->buf, &authentype);
+        XdmcpWriteARRAY8 (&factory->buf, &authendata);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
@@ -2138,7 +2138,7 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                 hostname ? hostname : "(null)", displaynum);
 
         use_chooser = FALSE;
-        if (factory->priv->honor_indirect) {
+        if (factory->honor_indirect) {
                 IndirectClient *ic;
 
                 ic = indirect_client_lookup (factory, address);
@@ -2182,7 +2182,7 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
 
-        factory->priv->num_pending_sessions++;
+        factory->num_pending_sessions++;
  out:
 
         return display;
@@ -2208,15 +2208,15 @@ gdm_xdmcp_send_accept (GdmXdmcpDisplayFactory *factory,
         header.length    += 2 + authorization_name->length;
         header.length    += 2 + authorization_data->length;
 
-        XdmcpWriteHeader (&factory->priv->buf, &header);
-        XdmcpWriteCARD32 (&factory->priv->buf, session_id);
-        XdmcpWriteARRAY8 (&factory->priv->buf, authentication_name);
-        XdmcpWriteARRAY8 (&factory->priv->buf, authentication_data);
-        XdmcpWriteARRAY8 (&factory->priv->buf, authorization_name);
-        XdmcpWriteARRAY8 (&factory->priv->buf, authorization_data);
+        XdmcpWriteHeader (&factory->buf, &header);
+        XdmcpWriteCARD32 (&factory->buf, session_id);
+        XdmcpWriteARRAY8 (&factory->buf, authentication_name);
+        XdmcpWriteARRAY8 (&factory->buf, authentication_data);
+        XdmcpWriteARRAY8 (&factory->buf, authorization_name);
+        XdmcpWriteARRAY8 (&factory->buf, authorization_data);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
@@ -2265,21 +2265,21 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         gdm_xdmcp_displays_purge (factory); /* Purge pending displays */
 
         /* Remote display number */
-        if G_UNLIKELY (! XdmcpReadCARD16 (&factory->priv->buf, &clnt_dspnum)) {
+        if G_UNLIKELY (! XdmcpReadCARD16 (&factory->buf, &clnt_dspnum)) {
                 g_warning ("%s: Could not read Display Number",
                            "gdm_xdmcp_handle_request");
                 goto out;
         }
 
         /* We don't care about connection type. Address says it all */
-        if G_UNLIKELY (! XdmcpReadARRAY16 (&factory->priv->buf, &clnt_conntyp)) {
+        if G_UNLIKELY (! XdmcpReadARRAY16 (&factory->buf, &clnt_conntyp)) {
                 g_warning ("%s: Could not read Connection Type",
                            "gdm_xdmcp_handle_request");
                 goto out;
         }
 
         /* This is TCP/IP - we don't care */
-        if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_addr)) {
+        if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->buf, &clnt_addr)) {
                 g_warning ("%s: Could not read Client Address",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAY16 (&clnt_conntyp);
@@ -2287,7 +2287,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         }
 
         /* Read authentication type */
-        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_authname)) {
+        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->buf, &clnt_authname)) {
                 g_warning ("%s: Could not read Authentication Names",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
@@ -2296,7 +2296,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         }
 
         /* Read authentication data */
-        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_authdata)) {
+        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->buf, &clnt_authdata)) {
                 g_warning ("%s: Could not read Authentication Data",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
@@ -2306,7 +2306,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         }
 
         /* Read and select from supported authorization list */
-        if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authorization_names)) {
+        if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->buf, &clnt_authorization_names)) {
                 g_warning ("%s: Could not read Authorization List",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAY8 (&clnt_authdata);
@@ -2325,7 +2325,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         }
 
         /* Manufacturer ID */
-        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_manufacturer)) {
+        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->buf, &clnt_manufacturer)) {
                 g_warning ("%s: Could not read Manufacturer ID",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAY8 (&clnt_authname);
@@ -2369,19 +2369,19 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         {
                 char *s = g_strndup ((char *) clnt_manufacturer.data, clnt_manufacturer.length);
                 g_debug ("GdmXdmcpDisplayFactory: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
-                         factory->priv->num_pending_sessions,
-                         factory->priv->max_pending_displays,
-                         factory->priv->num_sessions,
-                         factory->priv->max_displays,
+                         factory->num_pending_sessions,
+                         factory->max_pending_displays,
+                         factory->num_sessions,
+                         factory->max_displays,
                          s != NULL ? s : "");
                 g_free (s);
         }
 
         /* Check if ok to manage display */
         if (mitauth &&
-            factory->priv->num_sessions < factory->priv->max_displays &&
+            factory->num_sessions < factory->max_displays &&
             (gdm_address_is_local (address) ||
-             gdm_xdmcp_num_displays_from_host (factory, address) < factory->priv->max_displays_per_host)) {
+             gdm_xdmcp_num_displays_from_host (factory, address) < factory->max_displays_per_host)) {
                 entered = TRUE;
         }
 
@@ -2390,7 +2390,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                 /* Check if we are already talking to this host */
                 display_dispose_check (factory, hostname, clnt_dspnum);
 
-                if (factory->priv->num_pending_sessions >= factory->priv->max_pending_displays) {
+                if (factory->num_pending_sessions >= factory->max_pending_displays) {
                         g_debug ("GdmXdmcpDisplayFactory: maximum pending");
                         /* Don't translate, this goes over the wire to servers where we
                          * don't know the charset or language, so it must be ascii */
@@ -2458,7 +2458,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                         gdm_xdmcp_send_decline (factory,
                                                 address,
                                                 "Only MIT-MAGIC-COOKIE-1 supported");
-                } else if (factory->priv->num_sessions >= factory->priv->max_displays) {
+                } else if (factory->num_sessions >= factory->max_displays) {
                         g_warning ("Maximum number of open XDMCP sessions reached");
                         gdm_xdmcp_send_decline (factory,
                                                 address,
@@ -2545,12 +2545,12 @@ gdm_xdmcp_send_failed (GdmXdmcpDisplayFactory *factory,
         header.opcode  = (CARD16) FAILED;
         header.length  = 6 + status.length;
 
-        XdmcpWriteHeader (&factory->priv->buf, &header);
-        XdmcpWriteCARD32 (&factory->priv->buf, sessid);
-        XdmcpWriteARRAY8 (&factory->priv->buf, &status);
+        XdmcpWriteHeader (&factory->buf, &header);
+        XdmcpWriteCARD32 (&factory->buf, sessid);
+        XdmcpWriteARRAY8 (&factory->buf, &status);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
@@ -2570,11 +2570,11 @@ gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
         header.opcode  = (CARD16) REFUSE;
         header.length  = 4;
 
-        XdmcpWriteHeader (&factory->priv->buf, &header);
-        XdmcpWriteCARD32 (&factory->priv->buf, sessid);
+        XdmcpWriteHeader (&factory->buf, &header);
+        XdmcpWriteCARD32 (&factory->buf, sessid);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
@@ -2616,21 +2616,21 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
         }
 
         /* SessionID */
-        if G_UNLIKELY (! XdmcpReadCARD32 (&factory->priv->buf, &clnt_sessid)) {
+        if G_UNLIKELY (! XdmcpReadCARD32 (&factory->buf, &clnt_sessid)) {
                 g_warning ("%s: Could not read Session ID",
                            "gdm_xdmcp_handle_manage");
                 goto out;
         }
 
         /* Remote display number */
-        if G_UNLIKELY (! XdmcpReadCARD16 (&factory->priv->buf, &clnt_dspnum)) {
+        if G_UNLIKELY (! XdmcpReadCARD16 (&factory->buf, &clnt_dspnum)) {
                 g_warning ("%s: Could not read Display Number",
                            "gdm_xdmcp_handle_manage");
                 goto out;
         }
 
         /* Display Class */
-        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_dspclass)) {
+        if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->buf, &clnt_dspclass)) {
                 g_warning ("%s: Could not read Display Class",
                            "gdm_xdmcp_handle_manage");
                 goto out;
@@ -2658,7 +2658,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                         name ? name : "(null)");
                 g_free (name);
 
-                if (factory->priv->honor_indirect) {
+                if (factory->honor_indirect) {
                         IndirectClient *ic;
 
                         ic = indirect_client_lookup (factory, address);
@@ -2688,8 +2688,8 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                         forward_query_destroy (factory, fq);
                 }
 
-                factory->priv->num_sessions++;
-                factory->priv->num_pending_sessions--;
+                factory->num_sessions++;
+                factory->num_pending_sessions--;
 
                 /* Start greeter/session */
                 if (! gdm_display_manage (display)) {
@@ -2736,7 +2736,7 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
         g_free (host);
 
         /* Hostname */
-        if G_UNLIKELY ( ! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_address)) {
+        if G_UNLIKELY ( ! XdmcpReadARRAY8 (&factory->buf, &clnt_address)) {
                 g_warning ("%s: Could not read address",
                            "gdm_xdmcp_handle_managed_forward");
                 return;
@@ -2786,7 +2786,7 @@ gdm_xdmcp_handle_got_managed_forward (GdmXdmcpDisplayFactory *factory,
         g_free (host);
 
         /* Hostname */
-        if G_UNLIKELY ( ! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_address)) {
+        if G_UNLIKELY ( ! XdmcpReadARRAY8 (&factory->buf, &clnt_address)) {
                 g_warning ("%s: Could not read address",
                            "gdm_xdmcp_handle_got_managed_forward");
                 return;
@@ -2842,12 +2842,12 @@ gdm_xdmcp_send_alive (GdmXdmcpDisplayFactory *factory,
         header.opcode = (CARD16) ALIVE;
         header.length = 5;
 
-        XdmcpWriteHeader (&factory->priv->buf, &header);
-        XdmcpWriteCARD8 (&factory->priv->buf, send_running);
-        XdmcpWriteCARD32 (&factory->priv->buf, send_sessid);
+        XdmcpWriteHeader (&factory->buf, &header);
+        XdmcpWriteCARD8 (&factory->buf, send_running);
+        XdmcpWriteCARD32 (&factory->buf, send_sessid);
 
-        XdmcpFlush (factory->priv->socket_fd,
-                    &factory->priv->buf,
+        XdmcpFlush (factory->socket_fd,
+                    &factory->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
@@ -2877,14 +2877,14 @@ gdm_xdmcp_handle_keepalive (GdmXdmcpDisplayFactory *factory,
         g_free (host);
 
         /* Remote display number */
-        if G_UNLIKELY (! XdmcpReadCARD16 (&factory->priv->buf, &clnt_dspnum)) {
+        if G_UNLIKELY (! XdmcpReadCARD16 (&factory->buf, &clnt_dspnum)) {
                 g_warning ("%s: Could not read Display Number",
                            "gdm_xdmcp_handle_keepalive");
                 return;
         }
 
         /* SessionID */
-        if G_UNLIKELY (! XdmcpReadCARD32 (&factory->priv->buf, &clnt_sessid)) {
+        if G_UNLIKELY (! XdmcpReadCARD32 (&factory->buf, &clnt_sessid)) {
                 g_warning ("%s: Could not read Session ID",
                            "gdm_xdmcp_handle_keepalive");
                 return;
@@ -2950,13 +2950,13 @@ decode_packet (GIOChannel             *source,
 
         ss_len = (int) sizeof (clnt_ss);
 
-        res = XdmcpFill (factory->priv->socket_fd, &factory->priv->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
+        res = XdmcpFill (factory->socket_fd, &factory->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
                 g_debug ("GdmXdmcpDisplayFactory: Could not create XDMCP buffer!");
                 return TRUE;
         }
 
-        res = XdmcpReadHeader (&factory->priv->buf, &header);
+        res = XdmcpReadHeader (&factory->buf, &header);
         if G_UNLIKELY (! res) {
                 g_warning ("GdmXdmcpDisplayFactory: Could not read XDMCP header!");
                 return TRUE;
@@ -3047,29 +3047,29 @@ gdm_xdmcp_display_factory_start (GdmDisplayFactory *base_factory)
         gboolean                res;
 
         g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory), FALSE);
-        g_return_val_if_fail (factory->priv->socket_fd == -1, FALSE);
+        g_return_val_if_fail (factory->socket_fd == -1, FALSE);
 
         /* read configuration */
         res = gdm_settings_direct_get_uint           (GDM_KEY_UDP_PORT,
-                                                      &(factory->priv->port));
+                                                      &(factory->port));
         res = res && gdm_settings_direct_get_boolean (GDM_KEY_MULTICAST,
-                                                      &(factory->priv->use_multicast));
+                                                      &(factory->use_multicast));
         res = res && gdm_settings_direct_get_string  (GDM_KEY_MULTICAST_ADDR,
-                                                      &(factory->priv->multicast_address));
+                                                      &(factory->multicast_address));
         res = res && gdm_settings_direct_get_boolean (GDM_KEY_INDIRECT,
-                                                      &(factory->priv->honor_indirect));
+                                                      &(factory->honor_indirect));
         res = res && gdm_settings_direct_get_uint    (GDM_KEY_DISPLAYS_PER_HOST,
-                                                      &(factory->priv->max_displays_per_host));
+                                                      &(factory->max_displays_per_host));
         res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_SESSIONS,
-                                                      &(factory->priv->max_displays));
+                                                      &(factory->max_displays));
         res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_PENDING,
-                                                      &(factory->priv->max_pending_displays));
+                                                      &(factory->max_pending_displays));
         res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT,
-                                                      &(factory->priv->max_wait));
+                                                      &(factory->max_wait));
         res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT_INDIRECT,
-                                                      &(factory->priv->max_wait_indirect));
+                                                      &(factory->max_wait_indirect));
         res = res && gdm_settings_direct_get_string  (GDM_KEY_WILLING,
-                                                      &(factory->priv->willing_script));
+                                                      &(factory->willing_script));
 
         if (! res) {
                 return res;
@@ -3082,12 +3082,12 @@ gdm_xdmcp_display_factory_start (GdmDisplayFactory *base_factory)
 
         g_debug ("GdmXdmcpDisplayFactory: Starting to listen on XDMCP port");
 
-        ioc = g_io_channel_unix_new (factory->priv->socket_fd);
+        ioc = g_io_channel_unix_new (factory->socket_fd);
 
         g_io_channel_set_encoding (ioc, NULL, NULL);
         g_io_channel_set_buffered (ioc, FALSE);
 
-        factory->priv->socket_watch_id = g_io_add_watch_full (ioc,
+        factory->socket_watch_id = g_io_add_watch_full (ioc,
                                                               G_PRIORITY_DEFAULT,
                                                               G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
                                                               (GIOFunc)decode_packet,
@@ -3104,16 +3104,16 @@ gdm_xdmcp_display_factory_stop (GdmDisplayFactory *base_factory)
         GdmXdmcpDisplayFactory *factory = GDM_XDMCP_DISPLAY_FACTORY (base_factory);
 
         g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory), FALSE);
-        g_return_val_if_fail (factory->priv->socket_fd != -1, FALSE);
+        g_return_val_if_fail (factory->socket_fd != -1, FALSE);
 
-        if (factory->priv->socket_watch_id > 0) {
-                g_source_remove (factory->priv->socket_watch_id);
-                factory->priv->socket_watch_id = 0;
+        if (factory->socket_watch_id > 0) {
+                g_source_remove (factory->socket_watch_id);
+                factory->socket_watch_id = 0;
         }
 
-        if (factory->priv->socket_fd > 0) {
-                VE_IGNORE_EINTR (close (factory->priv->socket_fd));
-                factory->priv->socket_fd = -1;
+        if (factory->socket_fd > 0) {
+                VE_IGNORE_EINTR (close (factory->socket_fd));
+                factory->socket_fd = -1;
         }
 
         return TRUE;
@@ -3125,7 +3125,7 @@ gdm_xdmcp_display_factory_set_port (GdmXdmcpDisplayFactory *factory,
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->port = port;
+        factory->port = port;
 }
 
 static void
@@ -3134,7 +3134,7 @@ gdm_xdmcp_display_factory_set_use_multicast (GdmXdmcpDisplayFactory *factory,
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->use_multicast = use_multicast;
+        factory->use_multicast = use_multicast;
 }
 
 static void
@@ -3143,8 +3143,8 @@ gdm_xdmcp_display_factory_set_multicast_address (GdmXdmcpDisplayFactory *factory
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        g_free (factory->priv->multicast_address);
-        factory->priv->multicast_address = g_strdup (address);
+        g_free (factory->multicast_address);
+        factory->multicast_address = g_strdup (address);
 }
 
 static void
@@ -3153,7 +3153,7 @@ gdm_xdmcp_display_factory_set_honor_indirect (GdmXdmcpDisplayFactory *factory,
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->honor_indirect = honor_indirect;
+        factory->honor_indirect = honor_indirect;
 }
 
 static void
@@ -3162,7 +3162,7 @@ gdm_xdmcp_display_factory_set_max_displays_per_host (GdmXdmcpDisplayFactory *fac
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->max_displays_per_host = num;
+        factory->max_displays_per_host = num;
 }
 
 static void
@@ -3171,7 +3171,7 @@ gdm_xdmcp_display_factory_set_max_displays (GdmXdmcpDisplayFactory *factory,
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->max_displays = num;
+        factory->max_displays = num;
 }
 
 static void
@@ -3180,7 +3180,7 @@ gdm_xdmcp_display_factory_set_max_pending_displays (GdmXdmcpDisplayFactory *fact
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->max_pending_displays = num;
+        factory->max_pending_displays = num;
 }
 
 static void
@@ -3189,7 +3189,7 @@ gdm_xdmcp_display_factory_set_max_wait (GdmXdmcpDisplayFactory *factory,
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->max_wait = num;
+        factory->max_wait = num;
 }
 
 static void
@@ -3198,7 +3198,7 @@ gdm_xdmcp_display_factory_set_max_wait_indirect (GdmXdmcpDisplayFactory *factory
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        factory->priv->max_wait_indirect = num;
+        factory->max_wait_indirect = num;
 }
 
 static void
@@ -3207,8 +3207,8 @@ gdm_xdmcp_display_factory_set_willing_script (GdmXdmcpDisplayFactory *factory,
 {
         g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
 
-        g_free (factory->priv->willing_script);
-        factory->priv->willing_script = g_strdup (script);
+        g_free (factory->willing_script);
+        factory->willing_script = g_strdup (script);
 }
 
 static void
@@ -3270,34 +3270,34 @@ gdm_xdmcp_display_factory_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_PORT:
-                g_value_set_uint (value, self->priv->port);
+                g_value_set_uint (value, self->port);
                 break;
         case PROP_USE_MULTICAST:
-                g_value_set_boolean (value, self->priv->use_multicast);
+                g_value_set_boolean (value, self->use_multicast);
                 break;
         case PROP_MULTICAST_ADDRESS:
-                g_value_set_string (value, self->priv->multicast_address);
+                g_value_set_string (value, self->multicast_address);
                 break;
         case PROP_HONOR_INDIRECT:
-                g_value_set_boolean (value, self->priv->honor_indirect);
+                g_value_set_boolean (value, self->honor_indirect);
                 break;
         case PROP_MAX_DISPLAYS_PER_HOST:
-                g_value_set_uint (value, self->priv->max_displays_per_host);
+                g_value_set_uint (value, self->max_displays_per_host);
                 break;
         case PROP_MAX_DISPLAYS:
-                g_value_set_uint (value, self->priv->max_displays);
+                g_value_set_uint (value, self->max_displays);
                 break;
         case PROP_MAX_PENDING_DISPLAYS:
-                g_value_set_uint (value, self->priv->max_pending_displays);
+                g_value_set_uint (value, self->max_pending_displays);
                 break;
         case PROP_MAX_WAIT:
-                g_value_set_uint (value, self->priv->max_wait);
+                g_value_set_uint (value, self->max_wait);
                 break;
         case PROP_MAX_WAIT_INDIRECT:
-                g_value_set_uint (value, self->priv->max_wait_indirect);
+                g_value_set_uint (value, self->max_wait_indirect);
                 break;
         case PROP_WILLING_SCRIPT:
-                g_value_set_string (value, self->priv->willing_script);
+                g_value_set_string (value, self->willing_script);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -3400,8 +3400,6 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             G_MAXINT,
                                                             DEFAULT_MAX_WAIT_INDIRECT,
                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
-        g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayFactoryPrivate));
 }
 
 static void
@@ -3410,11 +3408,9 @@ gdm_xdmcp_display_factory_init (GdmXdmcpDisplayFactory *factory)
         char           hostbuf[1024];
         struct utsname name;
 
-        factory->priv = GDM_XDMCP_DISPLAY_FACTORY_GET_PRIVATE (factory);
+        factory->socket_fd = -1;
 
-        factory->priv->socket_fd = -1;
-
-        factory->priv->session_serial = g_random_int ();
+        factory->session_serial = g_random_int ();
 
         /* Fetch and store local hostname in XDMCP friendly format */
         hostbuf[1023] = '\0';
@@ -3424,15 +3420,15 @@ gdm_xdmcp_display_factory_init (GdmXdmcpDisplayFactory *factory)
         }
 
         uname (&name);
-        factory->priv->sysid = g_strconcat (name.sysname,
+        factory->sysid = g_strconcat (name.sysname,
                                             " ",
                                             name.release,
                                             NULL);
 
-        factory->priv->hostname = g_strdup (hostbuf);
+        factory->hostname = g_strdup (hostbuf);
 
-        factory->priv->servhost.data   = (CARD8 *) g_strdup (hostbuf);
-        factory->priv->servhost.length = strlen ((char *) factory->priv->servhost.data);
+        factory->servhost.data   = (CARD8 *) g_strdup (hostbuf);
+        factory->servhost.length = strlen ((char *) factory->servhost.data);
 }
 
 static void
@@ -3445,24 +3441,24 @@ gdm_xdmcp_display_factory_finalize (GObject *object)
 
         factory = GDM_XDMCP_DISPLAY_FACTORY (object);
 
-        g_return_if_fail (factory->priv != NULL);
+        g_return_if_fail (factory != NULL);
 
-        if (factory->priv->socket_watch_id > 0) {
-                g_source_remove (factory->priv->socket_watch_id);
+        if (factory->socket_watch_id > 0) {
+                g_source_remove (factory->socket_watch_id);
         }
 
-        if (factory->priv->socket_fd > 0) {
-                close (factory->priv->socket_fd);
-                factory->priv->socket_fd = -1;
+        if (factory->socket_fd > 0) {
+                close (factory->socket_fd);
+                factory->socket_fd = -1;
         }
 
-        g_slist_free (factory->priv->forward_queries);
-        g_slist_free (factory->priv->managed_forwards);
+        g_slist_free (factory->forward_queries);
+        g_slist_free (factory->managed_forwards);
 
-        g_free (factory->priv->sysid);
-        g_free (factory->priv->hostname);
-        g_free (factory->priv->multicast_address);
-        g_free (factory->priv->willing_script);
+        g_free (factory->sysid);
+        g_free (factory->hostname);
+        g_free (factory->multicast_address);
+        g_free (factory->willing_script);
 
         /* FIXME: Free servhost */
 
