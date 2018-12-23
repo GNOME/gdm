@@ -25,27 +25,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_CHOOSER_SESSION         (gdm_chooser_session_get_type ())
-#define GDM_CHOOSER_SESSION(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_CHOOSER_SESSION, GdmChooserSession))
-#define GDM_CHOOSER_SESSION_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_CHOOSER_SESSION, GdmChooserSessionClass))
-#define GDM_IS_CHOOSER_SESSION(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_CHOOSER_SESSION))
-#define GDM_IS_CHOOSER_SESSION_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_CHOOSER_SESSION))
-#define GDM_CHOOSER_SESSION_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_CHOOSER_SESSION, GdmChooserSessionClass))
-
-typedef struct GdmChooserSessionPrivate GdmChooserSessionPrivate;
-
-typedef struct
-{
-        GObject                   parent;
-        GdmChooserSessionPrivate *priv;
-} GdmChooserSession;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-} GdmChooserSessionClass;
-
-GType                  gdm_chooser_session_get_type                       (void);
+#define GDM_TYPE_CHOOSER_SESSION (gdm_chooser_session_get_type ())
+G_DECLARE_FINAL_TYPE (GdmChooserSession, gdm_chooser_session, GDM, CHOOSER_SESSION, GObject)
 
 GdmChooserSession    * gdm_chooser_session_new                            (void);
 
