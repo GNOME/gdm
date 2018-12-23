@@ -32,31 +32,10 @@
 #include "gdm-session-auditor.h"
 
 G_BEGIN_DECLS
+
 #define GDM_TYPE_SESSION_SOLARIS_AUDITOR (gdm_session_solaris_auditor_get_type ())
-#define GDM_SESSION_SOLARIS_AUDITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDM_TYPE_SESSION_SOLARIS_AUDITOR, GdmSessionSolarisAuditor))
-#define GDM_SESSION_SOLARIS_AUDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_SESSION_SOLARIS_AUDITOR, GdmSessionSolarisAuditorClass))
-#define GDM_IS_SESSION_SOLARIS_AUDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION_SOLARIS_AUDITOR))
-#define GDM_IS_SESSION_SOLARIS_AUDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_SOLARIS_AUDITOR))
-#define GDM_SESSION_SOLARIS_AUDITOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_SOLARIS_AUDITOR, GdmSessionSolarisAuditorClass))
-#define GDM_SESSION_SOLARIS_AUDITOR_ERROR (gdm_session_solaris_auditor_error_quark ())
-typedef struct _GdmSessionSolarisAuditor        GdmSessionSolarisAuditor;
-typedef struct _GdmSessionSolarisAuditorClass   GdmSessionSolarisAuditorClass;
-typedef struct _GdmSessionSolarisAuditorPrivate GdmSessionSolarisAuditorPrivate;
+G_DECLARE_FINAL_TYPE (GdmSessionSolarisAuditor, gdm_session_solaris_auditor, GDM, SESSION_SOLARIS_AUDITOR, GdmSessionAuditor)
 
-struct _GdmSessionSolarisAuditor
-{
-        GdmSessionAuditor                parent;
-
-        /*< private > */
-        GdmSessionSolarisAuditorPrivate *priv;
-};
-
-struct _GdmSessionSolarisAuditorClass
-{
-        GdmSessionAuditorClass parent_class;
-};
-
-GType              gdm_session_solaris_auditor_get_type                       (void);
 GdmSessionAuditor *gdm_session_solaris_auditor_new                            (const char *hostname,
                                                                                const char *display_device);
 G_END_DECLS
