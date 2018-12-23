@@ -27,30 +27,9 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_HOST_CHOOSER_WIDGET         (gdm_host_chooser_widget_get_type ())
-#define GDM_HOST_CHOOSER_WIDGET(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_HOST_CHOOSER_WIDGET, GdmHostChooserWidget))
-#define GDM_HOST_CHOOSER_WIDGET_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_HOST_CHOOSER_WIDGET, GdmHostChooserWidgetClass))
-#define GDM_IS_HOST_CHOOSER_WIDGET(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_HOST_CHOOSER_WIDGET))
-#define GDM_IS_HOST_CHOOSER_WIDGET_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_HOST_CHOOSER_WIDGET))
-#define GDM_HOST_CHOOSER_WIDGET_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_HOST_CHOOSER_WIDGET, GdmHostChooserWidgetClass))
+#define GDM_TYPE_HOST_CHOOSER_WIDGET (gdm_host_chooser_widget_get_type ())
+G_DECLARE_FINAL_TYPE (GdmHostChooserWidget, gdm_host_chooser_widget, GDM, HOST_CHOOSER_WIDGET, GtkBox)
 
-typedef struct GdmHostChooserWidgetPrivate GdmHostChooserWidgetPrivate;
-
-typedef struct
-{
-        GtkVBox                      parent;
-        GdmHostChooserWidgetPrivate *priv;
-} GdmHostChooserWidget;
-
-typedef struct
-{
-        GtkVBoxClass   parent_class;
-
-        /* signals */
-        void (* host_activated)        (GdmHostChooserWidget *widget);
-} GdmHostChooserWidgetClass;
-
-GType                  gdm_host_chooser_widget_get_type           (void);
 GtkWidget *            gdm_host_chooser_widget_new                (int                   kind_mask);
 
 void                   gdm_host_chooser_widget_set_kind_mask      (GdmHostChooserWidget *widget,
