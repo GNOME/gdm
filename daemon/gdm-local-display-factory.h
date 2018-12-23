@@ -29,25 +29,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_LOCAL_DISPLAY_FACTORY         (gdm_local_display_factory_get_type ())
-#define GDM_LOCAL_DISPLAY_FACTORY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactory))
-#define GDM_LOCAL_DISPLAY_FACTORY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryClass))
-#define GDM_IS_LOCAL_DISPLAY_FACTORY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY))
-#define GDM_IS_LOCAL_DISPLAY_FACTORY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LOCAL_DISPLAY_FACTORY))
-#define GDM_LOCAL_DISPLAY_FACTORY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryClass))
-
-typedef struct GdmLocalDisplayFactoryPrivate GdmLocalDisplayFactoryPrivate;
-
-typedef struct
-{
-        GdmDisplayFactory              parent;
-        GdmLocalDisplayFactoryPrivate *priv;
-} GdmLocalDisplayFactory;
-
-typedef struct
-{
-        GdmDisplayFactoryClass   parent_class;
-} GdmLocalDisplayFactoryClass;
+#define GDM_TYPE_LOCAL_DISPLAY_FACTORY (gdm_local_display_factory_get_type ())
+G_DECLARE_FINAL_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM, LOCAL_DISPLAY_FACTORY, GdmDisplayFactory)
 
 typedef enum
 {
@@ -57,7 +40,6 @@ typedef enum
 #define GDM_LOCAL_DISPLAY_FACTORY_ERROR gdm_local_display_factory_error_quark ()
 
 GQuark                     gdm_local_display_factory_error_quark              (void);
-GType                      gdm_local_display_factory_get_type                 (void);
 
 GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore        *display_store);
 
