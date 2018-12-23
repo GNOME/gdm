@@ -39,11 +39,11 @@
 
 #include "gdm-settings-desktop-backend.h"
 
-#define GDM_SETTINGS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS, GdmSettingsPrivate))
-
-struct GdmSettingsPrivate
+struct _GdmSettings
 {
-        GList *backends;
+        GObject   parent;
+
+        GList    *backends;
 };
 
 enum {
@@ -87,7 +87,7 @@ gdm_settings_get_value (GdmSettings *settings,
 
         local_error = NULL;
 
-        for (l = settings->priv->backends; l; l = g_list_next (l)) {
+        for (l = settings->backends; l; l = g_list_next (l)) {
                 GdmSettingsBackend *backend = l->data;
 
                 if (local_error) {
@@ -126,7 +126,7 @@ gdm_settings_set_value (GdmSettings *settings,
 
         local_error = NULL;
 
-        for (l = settings->priv->backends; l; l = g_list_next (l)) {
+        for (l = settings->backends; l; l = g_list_next (l)) {
                 GdmSettingsBackend *backend = l->data;
 
                 if (local_error) {
@@ -160,7 +160,7 @@ gdm_settings_class_init (GdmSettingsClass *klass)
                 g_signal_new ("value-changed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmSettingsClass, value_changed),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_generic,
@@ -169,8 +169,6 @@ gdm_settings_class_init (GdmSettingsClass *klass)
                               G_TYPE_STRING,
                               G_TYPE_STRING,
                               G_TYPE_STRING);
-
-        g_type_class_add_private (klass, sizeof (GdmSettingsPrivate));
 }
 
 static void
@@ -192,17 +190,15 @@ gdm_settings_init (GdmSettings *settings)
         GList *l;
         GdmSettingsBackend *backend;
 
-        settings->priv = GDM_SETTINGS_GET_PRIVATE (settings);
-
         backend = gdm_settings_desktop_backend_new (GDM_CUSTOM_CONF);
         if (backend)
-                settings->priv->backends = g_list_prepend (NULL, backend);
+                settings->backends = g_list_prepend (NULL, backend);
 
         backend = gdm_settings_desktop_backend_new (GDM_RUNTIME_CONF);
         if (backend)
-                settings->priv->backends = g_list_prepend (settings->priv->backends, backend);
+                settings->backends = g_list_prepend (settings->backends, backend);
 
-        for (l = settings->priv->backends; l; l = g_list_next (l)) {
+        for (l = settings->backends; l; l = g_list_next (l)) {
                 backend = l->data;
 
                 g_signal_connect (backend,
@@ -222,11 +218,11 @@ gdm_settings_finalize (GObject *object)
 
         settings = GDM_SETTINGS (object);
 
-        g_return_if_fail (settings->priv != NULL);
+        g_return_if_fail (settings != NULL);
 
-        g_list_foreach (settings->priv->backends, (GFunc) g_object_unref, NULL);
-        g_list_free (settings->priv->backends);
-        settings->priv->backends = NULL;
+        g_list_foreach (settings->backends, (GFunc) g_object_unref, NULL);
+        g_list_free (settings->backends);
+        settings->backends = NULL;
 
         settings_object = NULL;
 

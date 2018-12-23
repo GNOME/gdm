@@ -26,30 +26,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SETTINGS         (gdm_settings_get_type ())
-#define GDM_SETTINGS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SETTINGS, GdmSettings))
-#define GDM_SETTINGS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SETTINGS, GdmSettingsClass))
-#define GDM_IS_SETTINGS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SETTINGS))
-#define GDM_IS_SETTINGS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SETTINGS))
-#define GDM_SETTINGS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SETTINGS, GdmSettingsClass))
-
-typedef struct GdmSettingsPrivate GdmSettingsPrivate;
-
-typedef struct
-{
-        GObject             parent;
-        GdmSettingsPrivate *priv;
-} GdmSettings;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-
-        void          (* value_changed)    (GdmSettings *settings,
-                                            const char  *key,
-                                            const char  *old_value,
-                                            const char **new_value);
-} GdmSettingsClass;
+#define GDM_TYPE_SETTINGS (gdm_settings_get_type ())
+G_DECLARE_FINAL_TYPE (GdmSettings, gdm_settings, GDM, SETTINGS, GObject)
 
 typedef enum
 {
@@ -60,7 +38,6 @@ typedef enum
 #define GDM_SETTINGS_ERROR gdm_settings_error_quark ()
 
 GQuark              gdm_settings_error_quark                    (void);
-GType               gdm_settings_get_type                       (void);
 
 GdmSettings *       gdm_settings_new                            (void);
 
