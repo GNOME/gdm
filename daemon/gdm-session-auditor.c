@@ -34,12 +34,12 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-struct _GdmSessionAuditorPrivate
+typedef struct _GdmSessionAuditorPrivate
 {
         char *username;
         char *hostname;
         char *display_device;
-};
+} GdmSessionAuditorPrivate;
 
 static void gdm_session_auditor_finalize (GObject *object);
 static void gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *
@@ -61,7 +61,7 @@ enum {
         PROP_DISPLAY_DEVICE
 };
 
-G_DEFINE_TYPE (GdmSessionAuditor, gdm_session_auditor, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GdmSessionAuditor, gdm_session_auditor, G_TYPE_OBJECT)
 
 static void
 gdm_session_auditor_class_init (GdmSessionAuditorClass *auditor_class)
@@ -73,8 +73,6 @@ gdm_session_auditor_class_init (GdmSessionAuditorClass *auditor_class)
         object_class->finalize = gdm_session_auditor_finalize;
 
         gdm_session_auditor_class_install_properties (auditor_class);
-
-        g_type_class_add_private (auditor_class, sizeof (GdmSessionAuditorPrivate));
 }
 
 static void
@@ -108,23 +106,21 @@ gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_cl
 static void
 gdm_session_auditor_init (GdmSessionAuditor *auditor)
 {
-        auditor->priv = G_TYPE_INSTANCE_GET_PRIVATE (auditor,
-                                                     GDM_TYPE_SESSION_AUDITOR,
-                                                     GdmSessionAuditorPrivate);
-
 }
 
 static void
 gdm_session_auditor_finalize (GObject *object)
 {
         GdmSessionAuditor *auditor;
+        GdmSessionAuditorPrivate *priv;
         GObjectClass *parent_class;
 
         auditor = GDM_SESSION_AUDITOR (object);
+		priv = gdm_session_auditor_get_instance_private (auditor);
 
-        g_free (auditor->priv->username);
-        g_free (auditor->priv->hostname);
-        g_free (auditor->priv->display_device);
+        g_free (priv->username);
+        g_free (priv->hostname);
+        g_free (priv->display_device);
 
         parent_class = G_OBJECT_CLASS (gdm_session_auditor_parent_class);
 
@@ -137,15 +133,19 @@ void
 gdm_session_auditor_set_username (GdmSessionAuditor *auditor,
                                   const char        *username)
 {
+        GdmSessionAuditorPrivate *priv;
+
         g_return_if_fail (GDM_IS_SESSION_AUDITOR (auditor));
 
-        if (username == auditor->priv->username) {
+		priv = gdm_session_auditor_get_instance_private (auditor);
+
+        if (username == priv->username) {
                 return;
         }
 
-        if ((username == NULL || auditor->priv->username == NULL) ||
-            strcmp (username, auditor->priv->username) != 0) {
-                auditor->priv->username = g_strdup (username);
+        if ((username == NULL || priv->username == NULL) ||
+            strcmp (username, priv->username) != 0) {
+                priv->username = g_strdup (username);
                 g_object_notify (G_OBJECT (auditor), "username");
         }
 }
@@ -154,34 +154,51 @@ static void
 gdm_session_auditor_set_hostname (GdmSessionAuditor *auditor,
                                   const char        *hostname)
 {
+        GdmSessionAuditorPrivate *priv;
+
         g_return_if_fail (GDM_IS_SESSION_AUDITOR (auditor));
-        auditor->priv->hostname = g_strdup (hostname);
+
+		priv = gdm_session_auditor_get_instance_private (auditor);
+        priv->hostname = g_strdup (hostname);
 }
 
 static void
 gdm_session_auditor_set_display_device (GdmSessionAuditor *auditor,
                                         const char        *display_device)
 {
+        GdmSessionAuditorPrivate *priv;
+
         g_return_if_fail (GDM_IS_SESSION_AUDITOR (auditor));
-        auditor->priv->display_device = g_strdup (display_device);
+
+		priv = gdm_session_auditor_get_instance_private (auditor);
+        priv->display_device = g_strdup (display_device);
 }
 
 static char *
 gdm_session_auditor_get_username (GdmSessionAuditor *auditor)
 {
-        return g_strdup (auditor->priv->username);
+        GdmSessionAuditorPrivate *priv;
+
+		priv = gdm_session_auditor_get_instance_private (auditor);
+        return g_strdup (priv->username);
 }
 
 static char *
 gdm_session_auditor_get_hostname (GdmSessionAuditor *auditor)
 {
-        return g_strdup (auditor->priv->hostname);
+        GdmSessionAuditorPrivate *priv;
+
+		priv = gdm_session_auditor_get_instance_private (auditor);
+        return g_strdup (priv->hostname);
 }
 
 static char *
 gdm_session_auditor_get_display_device (GdmSessionAuditor *auditor)
 {
-        return g_strdup (auditor->priv->display_device);
+        GdmSessionAuditorPrivate *priv;
+
+		priv = gdm_session_auditor_get_instance_private (auditor);
+        return g_strdup (priv->display_device);
 }
 
 static void

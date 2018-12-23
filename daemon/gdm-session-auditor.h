@@ -30,24 +30,9 @@
 #include <glib-object.h>
 
 G_BEGIN_DECLS
+
 #define GDM_TYPE_SESSION_AUDITOR (gdm_session_auditor_get_type ())
-#define GDM_SESSION_AUDITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDM_TYPE_SESSION_AUDITOR, GdmSessionAuditor))
-#define GDM_SESSION_AUDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_SESSION_AUDITOR, GdmSessionAuditorClass))
-#define GDM_IS_SESSION_AUDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION_AUDITOR))
-#define GDM_IS_SESSION_AUDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_AUDITOR))
-#define GDM_SESSION_AUDITOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_AUDITOR, GdmSessionAuditorClass))
-#define GDM_SESSION_AUDITOR_ERROR (gdm_session_auditor_error_quark ())
-typedef struct _GdmSessionAuditor GdmSessionAuditor;
-typedef struct _GdmSessionAuditorClass GdmSessionAuditorClass;
-typedef struct _GdmSessionAuditorPrivate GdmSessionAuditorPrivate;
-
-struct _GdmSessionAuditor
-{
-        GObject                   parent;
-
-        /*< private > */
-        GdmSessionAuditorPrivate *priv;
-};
+G_DECLARE_DERIVABLE_TYPE (GdmSessionAuditor, gdm_session_auditor, GDM, SESSION_AUDITOR, GObject)
 
 struct _GdmSessionAuditorClass
 {
@@ -63,7 +48,6 @@ struct _GdmSessionAuditorClass
         void               (* report_logout)                  (GdmSessionAuditor *auditor);
 };
 
-GType                     gdm_session_auditor_get_type           (void);
 GdmSessionAuditor        *gdm_session_auditor_new                (const char *hostname,
                                                                   const char *display_device);
 void                      gdm_session_auditor_set_username (GdmSessionAuditor *auditor,
