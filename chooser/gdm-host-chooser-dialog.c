@@ -33,10 +33,10 @@
 #include "gdm-host-chooser-dialog.h"
 #include "gdm-host-chooser-widget.h"
 
-#define GDM_HOST_CHOOSER_DIALOG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_HOST_CHOOSER_DIALOG, GdmHostChooserDialogPrivate))
-
-struct GdmHostChooserDialogPrivate
+struct _GdmHostChooserDialog
 {
+        GtkDialog  parent;
+
         GtkWidget *chooser_widget;
         int        kind_mask;
 };
@@ -48,7 +48,6 @@ enum {
 
 static void     gdm_host_chooser_dialog_class_init  (GdmHostChooserDialogClass *klass);
 static void     gdm_host_chooser_dialog_init        (GdmHostChooserDialog      *host_chooser_dialog);
-static void     gdm_host_chooser_dialog_finalize    (GObject                   *object);
 
 G_DEFINE_TYPE (GdmHostChooserDialog, gdm_host_chooser_dialog, GTK_TYPE_DIALOG)
 
@@ -59,7 +58,7 @@ gdm_host_chooser_dialog_get_host (GdmHostChooserDialog *dialog)
 
         g_return_val_if_fail (GDM_IS_HOST_CHOOSER_DIALOG (dialog), NULL);
 
-        host = gdm_host_chooser_widget_get_host (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
+        host = gdm_host_chooser_widget_get_host (GDM_HOST_CHOOSER_WIDGET (dialog->chooser_widget));
 
         return host;
 }
@@ -68,8 +67,8 @@ static void
 _gdm_host_chooser_dialog_set_kind_mask (GdmHostChooserDialog *dialog,
                                         int                   kind_mask)
 {
-        if (dialog->priv->kind_mask != kind_mask) {
-                dialog->priv->kind_mask = kind_mask;
+        if (dialog->kind_mask != kind_mask) {
+                dialog->kind_mask = kind_mask;
         }
 }
 
@@ -112,7 +111,7 @@ on_response (GdmHostChooserDialog *dialog,
 {
         switch (response_id) {
         case GTK_RESPONSE_APPLY:
-                gdm_host_chooser_widget_refresh (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
+                gdm_host_chooser_widget_refresh (GDM_HOST_CHOOSER_WIDGET (dialog->chooser_widget));
                 g_signal_stop_emission_by_name (dialog, "response");
                 break;
         default:
@@ -132,9 +131,9 @@ gdm_host_chooser_dialog_constructor (GType                  type,
                                                                                                                            construct_properties));
 
 
-        dialog->priv->chooser_widget = gdm_host_chooser_widget_new (dialog->priv->kind_mask);
-        gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), dialog->priv->chooser_widget, TRUE, TRUE, 0);
-        gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
+        dialog->chooser_widget = gdm_host_chooser_widget_new (dialog->kind_mask);
+        gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), dialog->chooser_widget, TRUE, TRUE, 0);
+        gtk_container_set_border_width (GTK_CONTAINER (dialog->chooser_widget), 5);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 _("_Refresh"), GTK_RESPONSE_APPLY,
@@ -174,7 +173,6 @@ gdm_host_chooser_dialog_class_init (GdmHostChooserDialogClass *klass)
         object_class->set_property = gdm_host_chooser_dialog_set_property;
         object_class->constructor = gdm_host_chooser_dialog_constructor;
         object_class->dispose = gdm_host_chooser_dialog_dispose;
-        object_class->finalize = gdm_host_chooser_dialog_finalize;
 
         g_object_class_install_property (object_class,
                                          PROP_KIND_MASK,
@@ -185,29 +183,11 @@ gdm_host_chooser_dialog_class_init (GdmHostChooserDialogClass *klass)
                                                            G_MAXINT,
                                                            0,
                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
-        g_type_class_add_private (klass, sizeof (GdmHostChooserDialogPrivate));
 }
 
 static void
 gdm_host_chooser_dialog_init (GdmHostChooserDialog *dialog)
 {
-        dialog->priv = GDM_HOST_CHOOSER_DIALOG_GET_PRIVATE (dialog);
-}
-
-static void
-gdm_host_chooser_dialog_finalize (GObject *object)
-{
-        GdmHostChooserDialog *host_chooser_dialog;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_HOST_CHOOSER_DIALOG (object));
-
-        host_chooser_dialog = GDM_HOST_CHOOSER_DIALOG (object);
-
-        g_return_if_fail (host_chooser_dialog->priv != NULL);
-
-        G_OBJECT_CLASS (gdm_host_chooser_dialog_parent_class)->finalize (object);
 }
 
 GtkWidget *
