@@ -36,10 +36,10 @@
 
 #include "gdm-settings-desktop-backend.h"
 
-#define GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS_DESKTOP_BACKEND, GdmSettingsDesktopBackendPrivate))
-
-struct GdmSettingsDesktopBackendPrivate
+struct _GdmSettingsDesktopBackend
 {
+        GdmSettingsBackend parent;
+
         char       *filename;
         GKeyFile   *key_file;
         gboolean    dirty;
@@ -65,26 +65,24 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
         GError  *error;
         char *contents;
 
-        backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
+        g_free (backend->filename);
+        backend->filename = g_strdup (filename);
 
-        g_free (backend->priv->filename);
-        backend->priv->filename = g_strdup (filename);
-
-        backend->priv->key_file = g_key_file_new ();
+        backend->key_file = g_key_file_new ();
 
         error = NULL;
-        res = g_key_file_load_from_file (backend->priv->key_file,
-                                         backend->priv->filename,
+        res = g_key_file_load_from_file (backend->key_file,
+                                         backend->filename,
                                          G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
                                          &error);
         if (! res) {
-                g_warning ("Unable to load file '%s': %s", backend->priv->filename, error->message);
+                g_warning ("Unable to load file '%s': %s", backend->filename, error->message);
         }
 
-        contents = g_key_file_to_data (backend->priv->key_file, NULL, NULL);
+        contents = g_key_file_to_data (backend->key_file, NULL, NULL);
 
         if (contents != NULL) {
-                g_debug ("GdmSettings: %s is:\n%s\n", backend->priv->filename, contents);
+                g_debug ("GdmSettings: %s is:\n%s\n", backend->filename, contents);
                 g_free (contents);
         }
 
@@ -122,7 +120,7 @@ gdm_settings_desktop_backend_get_property (GObject      *object,
 
         switch (prop_id) {
                 case PROP_FILENAME:
-                        g_value_set_string (value, self->priv->filename);
+                        g_value_set_string (value, self->filename);
                         break;
                 default:
                         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -249,7 +247,7 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
 
         /*g_debug ("Getting key: %s %s %s", g, k, l);*/
         local_error = NULL;
-        val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+        val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->key_file,
                                     g,
                                     k,
                                     &local_error);
@@ -279,14 +277,14 @@ save_settings (GdmSettingsDesktopBackend *backend)
         char     *contents;
         gsize     length;
 
-        if (! backend->priv->dirty) {
+        if (! backend->dirty) {
                 return;
         }
 
-        g_debug ("Saving settings to %s", backend->priv->filename);
+        g_debug ("Saving settings to %s", backend->filename);
 
         local_error = NULL;
-        contents = g_key_file_to_data (backend->priv->key_file, &length, &local_error);
+        contents = g_key_file_to_data (backend->key_file, &length, &local_error);
         if (local_error != NULL) {
                 g_warning ("Unable to save settings: %s", local_error->message);
                 g_error_free (local_error);
@@ -294,7 +292,7 @@ save_settings (GdmSettingsDesktopBackend *backend)
         }
 
         local_error = NULL;
-        g_file_set_contents (backend->priv->filename,
+        g_file_set_contents (backend->filename,
                              contents,
                              length,
                              &local_error);
@@ -307,30 +305,30 @@ save_settings (GdmSettingsDesktopBackend *backend)
 
         g_free (contents);
 
-        backend->priv->dirty = FALSE;
+        backend->dirty = FALSE;
 }
 
 static gboolean
 save_settings_timer (GdmSettingsDesktopBackend *backend)
 {
         save_settings (backend);
-        backend->priv->save_id = 0;
+        backend->save_id = 0;
         return FALSE;
 }
 
 static void
 queue_save (GdmSettingsDesktopBackend *backend)
 {
-        if (! backend->priv->dirty) {
+        if (! backend->dirty) {
                 return;
         }
 
-        if (backend->priv->save_id != 0) {
+        if (backend->save_id != 0) {
                 /* already pending */
                 return;
         }
 
-        backend->priv->save_id = g_timeout_add_seconds (5, (GSourceFunc)save_settings_timer, backend);
+        backend->save_id = g_timeout_add_seconds (5, (GSourceFunc)save_settings_timer, backend);
 }
 
 static gboolean
@@ -355,7 +353,7 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
         }
 
         local_error = NULL;
-        old_val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+        old_val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->key_file,
                                         g,
                                         k,
                                         &local_error);
@@ -365,12 +363,12 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
 
         /*g_debug ("Setting key: %s %s %s", g, k, l);*/
         local_error = NULL;
-        g_key_file_set_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+        g_key_file_set_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->key_file,
                               g,
                               k,
                               value);
 
-        GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->dirty = TRUE;
+        GDM_SETTINGS_DESKTOP_BACKEND (backend)->dirty = TRUE;
         queue_save (GDM_SETTINGS_DESKTOP_BACKEND (backend));
 
         gdm_settings_backend_value_changed (backend, key, old_val, value);
@@ -392,8 +390,6 @@ gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
 
         backend_class->get_value = gdm_settings_desktop_backend_get_value;
         backend_class->set_value = gdm_settings_desktop_backend_set_value;
-
-        g_type_class_add_private (klass, sizeof (GdmSettingsDesktopBackendPrivate));
 
         g_object_class_install_property (object_class,
                                          PROP_FILENAME,
@@ -419,11 +415,9 @@ gdm_settings_desktop_backend_finalize (GObject *object)
 
         backend = GDM_SETTINGS_DESKTOP_BACKEND (object);
 
-        g_return_if_fail (backend->priv != NULL);
-
         save_settings (backend);
-        g_key_file_free (backend->priv->key_file);
-        g_free (backend->priv->filename);
+        g_key_file_free (backend->key_file);
+        g_free (backend->filename);
 
         G_OBJECT_CLASS (gdm_settings_desktop_backend_parent_class)->finalize (object);
 }
