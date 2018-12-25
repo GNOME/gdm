@@ -209,7 +209,7 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
                                                               "display store",
                                                               "display store",
                                                               GDM_TYPE_DISPLAY_STORE,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void

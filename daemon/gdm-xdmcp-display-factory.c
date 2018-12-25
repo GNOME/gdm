@@ -3326,35 +3326,35 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_PORT,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_USE_MULTICAST,
                                          g_param_spec_boolean ("use-multicast",
                                                                NULL,
                                                                NULL,
                                                                DEFAULT_USE_MULTICAST,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_MULTICAST_ADDRESS,
                                          g_param_spec_string ("multicast-address",
                                                               "multicast-address",
                                                               "multicast-address",
                                                               DEFAULT_MULTICAST_ADDRESS,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_HONOR_INDIRECT,
                                          g_param_spec_boolean ("honor-indirect",
                                                                NULL,
                                                                NULL,
                                                                DEFAULT_HONOR_INDIRECT,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_WILLING_SCRIPT,
                                          g_param_spec_string ("willing-script",
                                                               "willing-script",
                                                               "willing-script",
                                                               DEFAULT_WILLING_SCRIPT,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_MAX_DISPLAYS_PER_HOST,
                                          g_param_spec_uint ("max-displays-per-host",
@@ -3363,7 +3363,7 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_MAX_DISPLAYS_PER_HOST,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_MAX_DISPLAYS,
                                          g_param_spec_uint ("max-displays",
@@ -3372,7 +3372,7 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_MAX_DISPLAYS,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_MAX_PENDING_DISPLAYS,
                                          g_param_spec_uint ("max-pending-displays",
@@ -3381,7 +3381,7 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_MAX_PENDING_DISPLAYS,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_MAX_WAIT,
                                          g_param_spec_uint ("max-wait",
@@ -3390,7 +3390,7 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_MAX_WAIT,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_MAX_WAIT_INDIRECT,
                                          g_param_spec_uint ("max-wait-indirect",
@@ -3399,7 +3399,7 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_MAX_WAIT_INDIRECT,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static void

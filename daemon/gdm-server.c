@@ -991,28 +991,28 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               "name",
                                                               "name",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("display-seat-id",
                                                               "Seat ID",
                                                               "ID of the seat this display is running on",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_DEVICE,
                                          g_param_spec_string ("display-device",
                                                               "Display Device",
                                                               "Path to terminal display is running on",
                                                               NULL,
-                                                              G_PARAM_READABLE));
+                                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_AUTH_FILE,
                                          g_param_spec_string ("auth-file",
                                                               "Authorization File",
                                                               "Path to X authorization file",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_USER_NAME,
@@ -1020,21 +1020,21 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               "user name",
                                                               "user name",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISABLE_TCP,
                                          g_param_spec_boolean ("disable-tcp",
                                                                NULL,
                                                                NULL,
                                                                TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_IS_INITIAL,
                                          g_param_spec_boolean ("is-initial",
                                                                NULL,
                                                                NULL,
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static void
