@@ -397,7 +397,7 @@ gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
                                                               "File Name",
                                                               "The name of the configuration file",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void
