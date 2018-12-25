@@ -3761,7 +3761,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                             "verification mode",
                                                             GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                             GDM_SESSION_VERIFICATION_MODE_LOGIN,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_ALLOWED_USER,
                                          g_param_spec_uint ("allowed-user",
@@ -3770,13 +3770,13 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                             0,
                                                             G_MAXUINT,
                                                             0,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_CONVERSATION_ENVIRONMENT,
                                          g_param_spec_pointer ("conversation-environment",
                                                                "conversation environment",
                                                                "conversation environment",
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_SESSION_TYPE,
@@ -3784,42 +3784,42 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               NULL,
                                                               NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE));
+                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
                                          g_param_spec_string ("display-name",
                                                               "display name",
                                                               "display name",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
                                                               "display hostname",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("display-is-local",
                                                                "display is local",
                                                                "display is local",
                                                                TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_INITIAL,
                                          g_param_spec_boolean ("display-is-initial",
                                                                "display is initial",
                                                                "display is initial",
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("display-x11-authority-file",
                                                               "display x11 authority file",
                                                               "display x11 authority file",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         /* not construct only */
         g_object_class_install_property (object_class,
                                          PROP_USER_X11_AUTHORITY_FILE,
@@ -3827,14 +3827,14 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               "",
                                                               "",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_DEVICE,
                                          g_param_spec_string ("display-device",
                                                               "display device",
                                                               "display device",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
@@ -3842,7 +3842,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               "display seat id",
                                                               "display seat id",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
 #ifdef ENABLE_WAYLAND_SUPPORT
         g_object_class_install_property (object_class,
@@ -3851,7 +3851,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                "ignore wayland",
                                                                "ignore wayland",
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 #endif
 }
 

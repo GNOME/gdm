@@ -203,14 +203,14 @@ gdm_chooser_host_class_init (GdmChooserHostClass *klass)
                                                              "address",
                                                              "address",
                                                              GDM_TYPE_ADDRESS,
-                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DESCRIPTION,
                                          g_param_spec_string ("description",
                                                               "description",
                                                               "description",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_KIND,
@@ -220,14 +220,14 @@ gdm_chooser_host_class_init (GdmChooserHostClass *klass)
                                                            0,
                                                            G_MAXINT,
                                                            0,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_WILLING,
                                          g_param_spec_boolean ("willing",
                                                                "willing",
                                                                "willing",
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static void

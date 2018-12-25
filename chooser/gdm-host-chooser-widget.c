@@ -774,7 +774,7 @@ gdm_host_chooser_widget_class_init (GdmHostChooserWidgetClass *klass)
                                                            0,
                                                            G_MAXINT,
                                                            0,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         signals [HOST_ACTIVATED] = g_signal_new ("host-activated",
                                                  G_TYPE_FROM_CLASS (object_class),

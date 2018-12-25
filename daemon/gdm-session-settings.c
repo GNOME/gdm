@@ -90,17 +90,17 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
 
         param_spec = g_param_spec_string ("session-name", "Session Name",
                                         "The name of the session",
-                                        NULL, G_PARAM_READWRITE);
+                                        NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_SESSION_NAME, param_spec);
 
         param_spec = g_param_spec_string ("language-name", "Language Name",
                                         "The name of the language",
                                         NULL,
-                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_LANGUAGE_NAME, param_spec);
 
         param_spec = g_param_spec_boolean ("is-loaded", NULL, NULL,
-                                           FALSE, G_PARAM_READABLE);
+                                           FALSE, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_IS_LOADED, param_spec);
 }
 

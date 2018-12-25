@@ -245,7 +245,7 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
                                                              "Remote address",
                                                              "Remote address",
                                                              GDM_TYPE_ADDRESS,
-                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_SESSION_NUMBER,
@@ -255,7 +255,7 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
                                                            G_MININT,
                                                            G_MAXINT,
                                                            0,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
 }
 

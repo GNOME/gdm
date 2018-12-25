@@ -715,84 +715,84 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                             "verification mode",
                                                             GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                             GDM_SESSION_VERIFICATION_MODE_LOGIN,
-                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_SESSION_TYPE,
                                          g_param_spec_string ("session-type",
                                                               NULL,
                                                               NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE));
+                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_SESSION_MODE,
                                          g_param_spec_string ("session-mode",
                                                               NULL,
                                                               NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE));
+                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_NAME,
                                          g_param_spec_string ("x11-display-name",
                                                               "name",
                                                               "name",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("x11-display-seat-id",
                                                               "seat id",
                                                               "seat id",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("x11-display-hostname",
                                                               "hostname",
                                                               "hostname",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_DEVICE,
                                          g_param_spec_string ("x11-display-device",
                                                               "device",
                                                               "device",
                                                               NULL,
-                                                              G_PARAM_READWRITE));
+                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("x11-display-is-local",
                                                                "is local",
                                                                "is local",
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("x11-authority-file",
                                                               "authority file",
                                                               "authority file",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_USER_NAME,
                                          g_param_spec_string ("user-name",
                                                               "user name",
                                                               "user name",
                                                               GDM_USERNAME,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_RUNTIME_DIR,
                                          g_param_spec_string ("runtime-dir",
                                                               "runtime dir",
                                                               "runtime dir",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_COMMAND,
                                          g_param_spec_string ("command",
                                                               "command",
                                                               "command",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         signals [OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
