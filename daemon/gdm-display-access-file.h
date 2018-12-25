@@ -30,30 +30,13 @@
 #include "gdm-display.h"
 
 G_BEGIN_DECLS
-#define GDM_TYPE_DISPLAY_ACCESS_FILE            (gdm_display_access_file_get_type ())
-#define GDM_DISPLAY_ACCESS_FILE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDM_TYPE_DISPLAY_ACCESS_FILE, GdmDisplayAccessFile))
-#define GDM_DISPLAY_ACCESS_FILE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_DISPLAY_ACCESS_FILE, GdmDisplayAccessFileClass))
-#define GDM_IS_DISPLAY_ACCESS_FILE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_DISPLAY_ACCESS_FILE))
-#define GDM_IS_DISPLAY_ACCESS_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_DISPLAY_ACCESS_FILE))
-#define GDM_DISPLAY_ACCESS_FILE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_DISPLAY_ACCESS_FILE, GdmDisplayAccessFileClass))
+
+#define GDM_TYPE_DISPLAY_ACCESS_FILE (gdm_display_access_file_get_type ())
+G_DECLARE_FINAL_TYPE (GdmDisplayAccessFile, gdm_display_access_file, GDM, DISPLAY_ACCESS_FILE, GObject)
+
 #define GDM_DISPLAY_ACCESS_FILE_ERROR           (gdm_display_access_file_error_quark ())
 
-typedef struct _GdmDisplayAccessFile GdmDisplayAccessFile;
-typedef struct _GdmDisplayAccessFileClass GdmDisplayAccessFileClass;
-typedef struct _GdmDisplayAccessFilePrivate GdmDisplayAccessFilePrivate;
 typedef enum _GdmDisplayAccessFileError GdmDisplayAccessFileError;
-
-struct _GdmDisplayAccessFile
-{
-        GObject parent;
-
-        GdmDisplayAccessFilePrivate *priv;
-};
-
-struct _GdmDisplayAccessFileClass
-{
-        GObjectClass parent_class;
-};
 
 enum _GdmDisplayAccessFileError
 {
@@ -62,7 +45,6 @@ enum _GdmDisplayAccessFileError
 };
 
 GQuark                gdm_display_access_file_error_quark             (void);
-GType                 gdm_display_access_file_get_type                (void);
 
 GdmDisplayAccessFile *gdm_display_access_file_new                     (const char            *username);
 gboolean              gdm_display_access_file_open                    (GdmDisplayAccessFile  *file,
