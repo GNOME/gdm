@@ -31,28 +31,13 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_XDMCP_DISPLAY         (gdm_xdmcp_display_get_type ())
-#define GDM_XDMCP_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_XDMCP_DISPLAY, GdmXdmcpDisplay))
-#define GDM_XDMCP_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_XDMCP_DISPLAY, GdmXdmcpDisplayClass))
-#define GDM_IS_XDMCP_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_XDMCP_DISPLAY))
-#define GDM_IS_XDMCP_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_XDMCP_DISPLAY))
-#define GDM_XDMCP_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_XDMCP_DISPLAY, GdmXdmcpDisplayClass))
+#define GDM_TYPE_XDMCP_DISPLAY (gdm_xdmcp_display_get_type ())
+G_DECLARE_DERIVABLE_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM, XDMCP_DISPLAY, GdmDisplay)
 
-typedef struct GdmXdmcpDisplayPrivate GdmXdmcpDisplayPrivate;
-
-typedef struct
-{
-        GdmDisplay              parent;
-        GdmXdmcpDisplayPrivate *priv;
-} GdmXdmcpDisplay;
-
-typedef struct
+struct _GdmXdmcpDisplayClass
 {
         GdmDisplayClass   parent_class;
-
-} GdmXdmcpDisplayClass;
-
-GType                     gdm_xdmcp_display_get_type                 (void);
+};
 
 gint32                    gdm_xdmcp_display_get_session_number       (GdmXdmcpDisplay         *display);
 GdmAddress              * gdm_xdmcp_display_get_remote_address       (GdmXdmcpDisplay         *display);

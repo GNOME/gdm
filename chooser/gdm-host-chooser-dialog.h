@@ -28,26 +28,7 @@
 G_BEGIN_DECLS
 
 #define GDM_TYPE_HOST_CHOOSER_DIALOG         (gdm_host_chooser_dialog_get_type ())
-#define GDM_HOST_CHOOSER_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_HOST_CHOOSER_DIALOG, GdmHostChooserDialog))
-#define GDM_HOST_CHOOSER_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_HOST_CHOOSER_DIALOG, GdmHostChooserDialogClass))
-#define GDM_IS_HOST_CHOOSER_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_HOST_CHOOSER_DIALOG))
-#define GDM_IS_HOST_CHOOSER_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_HOST_CHOOSER_DIALOG))
-#define GDM_HOST_CHOOSER_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_HOST_CHOOSER_DIALOG, GdmHostChooserDialogClass))
-
-typedef struct GdmHostChooserDialogPrivate GdmHostChooserDialogPrivate;
-
-typedef struct
-{
-        GtkDialog                    parent;
-        GdmHostChooserDialogPrivate *priv;
-} GdmHostChooserDialog;
-
-typedef struct
-{
-        GtkDialogClass   parent_class;
-} GdmHostChooserDialogClass;
-
-GType                  gdm_host_chooser_dialog_get_type           (void);
+G_DECLARE_FINAL_TYPE (GdmHostChooserDialog, gdm_host_chooser_dialog, GDM, HOST_CHOOSER_DIALOG, GtkDialog)
 
 GtkWidget            * gdm_host_chooser_dialog_new                (int                   kind_mask);
 void                   gdm_host_chooser_dialog_set_kind_mask      (GdmHostChooserDialog *dialog,

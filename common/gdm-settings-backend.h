@@ -26,22 +26,10 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SETTINGS_BACKEND         (gdm_settings_backend_get_type ())
-#define GDM_SETTINGS_BACKEND(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SETTINGS_BACKEND, GdmSettingsBackend))
-#define GDM_SETTINGS_BACKEND_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SETTINGS_BACKEND, GdmSettingsBackendClass))
-#define GDM_IS_SETTINGS_BACKEND(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SETTINGS_BACKEND))
-#define GDM_IS_SETTINGS_BACKEND_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SETTINGS_BACKEND))
-#define GDM_SETTINGS_BACKEND_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SETTINGS_BACKEND, GdmSettingsBackendClass))
+#define GDM_TYPE_SETTINGS_BACKEND (gdm_settings_backend_get_type ())
+G_DECLARE_DERIVABLE_TYPE (GdmSettingsBackend, gdm_settings_backend, GDM, SETTINGS_BACKEND, GObject)
 
-typedef struct GdmSettingsBackendPrivate GdmSettingsBackendPrivate;
-
-typedef struct
-{
-        GObject             parent;
-        GdmSettingsBackendPrivate *priv;
-} GdmSettingsBackend;
-
-typedef struct
+struct _GdmSettingsBackendClass
 {
         GObjectClass   parent_class;
 
@@ -60,7 +48,7 @@ typedef struct
                                             const char  *key,
                                             const char  *old_value,
                                             const char **new_value);
-} GdmSettingsBackendClass;
+};
 
 typedef enum
 {
@@ -71,7 +59,6 @@ typedef enum
 #define GDM_SETTINGS_BACKEND_ERROR gdm_settings_backend_error_quark ()
 
 GQuark              gdm_settings_backend_error_quark            (void);
-GType               gdm_settings_backend_get_type               (void);
 
 gboolean            gdm_settings_backend_get_value              (GdmSettingsBackend *settings_backend,
                                                                  const char  *key,

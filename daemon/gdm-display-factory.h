@@ -28,28 +28,16 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_DISPLAY_FACTORY         (gdm_display_factory_get_type ())
-#define GDM_DISPLAY_FACTORY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_DISPLAY_FACTORY, GdmDisplayFactory))
-#define GDM_DISPLAY_FACTORY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_DISPLAY_FACTORY, GdmDisplayFactoryClass))
-#define GDM_IS_DISPLAY_FACTORY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_DISPLAY_FACTORY))
-#define GDM_IS_DISPLAY_FACTORY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_DISPLAY_FACTORY))
-#define GDM_DISPLAY_FACTORY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_DISPLAY_FACTORY, GdmDisplayFactoryClass))
+#define GDM_TYPE_DISPLAY_FACTORY (gdm_display_factory_get_type ())
+G_DECLARE_DERIVABLE_TYPE (GdmDisplayFactory, gdm_display_factory, GDM, DISPLAY_FACTORY, GObject)
 
-typedef struct GdmDisplayFactoryPrivate GdmDisplayFactoryPrivate;
-
-typedef struct
-{
-        GObject                   parent;
-        GdmDisplayFactoryPrivate *priv;
-} GdmDisplayFactory;
-
-typedef struct
+struct _GdmDisplayFactoryClass
 {
         GObjectClass   parent_class;
 
         gboolean (*start)                  (GdmDisplayFactory *factory);
         gboolean (*stop)                   (GdmDisplayFactory *factory);
-} GdmDisplayFactoryClass;
+};
 
 typedef enum
 {

@@ -27,28 +27,9 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_LEGACY_DISPLAY         (gdm_legacy_display_get_type ())
-#define GDM_LEGACY_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplay))
-#define GDM_LEGACY_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplayClass))
-#define GDM_IS_LEGACY_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LEGACY_DISPLAY))
-#define GDM_IS_LEGACY_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LEGACY_DISPLAY))
-#define GDM_LEGACY_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplayClass))
+#define GDM_TYPE_LEGACY_DISPLAY (gdm_legacy_display_get_type ())
+G_DECLARE_FINAL_TYPE (GdmLegacyDisplay, gdm_legacy_display, GDM, LEGACY_DISPLAY, GdmDisplay)
 
-typedef struct GdmLegacyDisplayPrivate GdmLegacyDisplayPrivate;
-
-typedef struct
-{
-        GdmDisplay               parent;
-        GdmLegacyDisplayPrivate *priv;
-} GdmLegacyDisplay;
-
-typedef struct
-{
-        GdmDisplayClass   parent_class;
-
-} GdmLegacyDisplayClass;
-
-GType               gdm_legacy_display_get_type                (void);
 GdmDisplay *        gdm_legacy_display_new                     (int display_number);
 
 

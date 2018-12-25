@@ -27,14 +27,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_DISPLAY         (gdm_display_get_type ())
-#define GDM_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_DISPLAY, GdmDisplay))
-#define GDM_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_DISPLAY, GdmDisplayClass))
-#define GDM_IS_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_DISPLAY))
-#define GDM_IS_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_DISPLAY))
-#define GDM_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_DISPLAY, GdmDisplayClass))
-
-typedef struct GdmDisplayPrivate GdmDisplayPrivate;
+#define GDM_TYPE_DISPLAY (gdm_display_get_type ())
+G_DECLARE_DERIVABLE_TYPE (GdmDisplay, gdm_display, GDM, DISPLAY, GObject)
 
 typedef enum {
         GDM_DISPLAY_UNMANAGED = 0,
@@ -45,20 +39,14 @@ typedef enum {
         GDM_DISPLAY_FAILED,
 } GdmDisplayStatus;
 
-typedef struct
-{
-        GObject            parent;
-        GdmDisplayPrivate *priv;
-} GdmDisplay;
-
-typedef struct
+struct _GdmDisplayClass
 {
         GObjectClass   parent_class;
 
         /* methods */
         gboolean (*prepare) (GdmDisplay *display);
         void     (*manage)  (GdmDisplay *self);
-} GdmDisplayClass;
+};
 
 typedef enum
 {
@@ -70,7 +58,6 @@ typedef enum
 #define GDM_DISPLAY_ERROR gdm_display_error_quark ()
 
 GQuark              gdm_display_error_quark                    (void);
-GType               gdm_display_get_type                       (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);

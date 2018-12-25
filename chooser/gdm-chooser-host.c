@@ -33,10 +33,10 @@
 #include "gdm-address.h"
 #include "gdm-chooser-host.h"
 
-#define GDM_CHOOSER_HOST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_CHOOSER_HOST, GdmChooserHostPrivate))
-
-struct GdmChooserHostPrivate
+struct _GdmChooserHost
 {
+        GObject            parent;
+
         GdmAddress        *address;
         char              *description;
         GdmChooserHostKind kind;
@@ -62,7 +62,7 @@ gdm_chooser_host_get_address (GdmChooserHost *host)
 {
         g_return_val_if_fail (GDM_IS_CHOOSER_HOST (host), NULL);
 
-        return host->priv->address;
+        return host->address;
 }
 
 G_CONST_RETURN char *
@@ -70,7 +70,7 @@ gdm_chooser_host_get_description (GdmChooserHost *host)
 {
         g_return_val_if_fail (GDM_IS_CHOOSER_HOST (host), NULL);
 
-        return host->priv->description;
+        return host->description;
 }
 
 GdmChooserHostKind
@@ -78,7 +78,7 @@ gdm_chooser_host_get_kind (GdmChooserHost *host)
 {
         g_return_val_if_fail (GDM_IS_CHOOSER_HOST (host), 0);
 
-        return host->priv->kind;
+        return host->kind;
 }
 
 gboolean
@@ -86,37 +86,37 @@ gdm_chooser_host_get_willing (GdmChooserHost *host)
 {
         g_return_val_if_fail (GDM_IS_CHOOSER_HOST (host), FALSE);
 
-        return host->priv->willing;
+        return host->willing;
 }
 
 static void
 _gdm_chooser_host_set_address (GdmChooserHost *host,
                                GdmAddress     *address)
 {
-        if (host->priv->address != NULL) {
-                gdm_address_free (host->priv->address);
+        if (host->address != NULL) {
+                gdm_address_free (host->address);
         }
 
         g_assert (address != NULL);
 
         gdm_address_debug (address);
-        host->priv->address = gdm_address_copy (address);
+        host->address = gdm_address_copy (address);
 }
 
 static void
 _gdm_chooser_host_set_description (GdmChooserHost *host,
                                    const char     *description)
 {
-        g_free (host->priv->description);
-        host->priv->description = g_strdup (description);
+        g_free (host->description);
+        host->description = g_strdup (description);
 }
 
 static void
 _gdm_chooser_host_set_kind (GdmChooserHost *host,
                             int             kind)
 {
-        if (host->priv->kind != kind) {
-                host->priv->kind = kind;
+        if (host->kind != kind) {
+                host->kind = kind;
         }
 }
 
@@ -124,8 +124,8 @@ static void
 _gdm_chooser_host_set_willing (GdmChooserHost *host,
                                gboolean        willing)
 {
-        if (host->priv->willing != willing) {
-                host->priv->willing = willing;
+        if (host->willing != willing) {
+                host->willing = willing;
         }
 }
 
@@ -170,16 +170,16 @@ gdm_chooser_host_get_property (GObject    *object,
 
         switch (param_id) {
         case PROP_ADDRESS:
-                g_value_set_boxed (value, host->priv->address);
+                g_value_set_boxed (value, host->address);
                 break;
         case PROP_DESCRIPTION:
-                g_value_set_string (value, host->priv->description);
+                g_value_set_string (value, host->description);
                 break;
         case PROP_KIND:
-                g_value_set_int (value, host->priv->kind);
+                g_value_set_int (value, host->kind);
                 break;
         case PROP_WILLING:
-                g_value_set_boolean (value, host->priv->willing);
+                g_value_set_boolean (value, host->willing);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -228,15 +228,11 @@ gdm_chooser_host_class_init (GdmChooserHostClass *klass)
                                                                "willing",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
-
-        g_type_class_add_private (klass, sizeof (GdmChooserHostPrivate));
 }
 
 static void
 gdm_chooser_host_init (GdmChooserHost *widget)
 {
-        widget->priv = GDM_CHOOSER_HOST_GET_PRIVATE (widget);
 }
 
 static void
@@ -249,10 +245,8 @@ gdm_chooser_host_finalize (GObject *object)
 
         host = GDM_CHOOSER_HOST (object);
 
-        g_return_if_fail (host->priv != NULL);
-
-        g_free (host->priv->description);
-        gdm_address_free (host->priv->address);
+        g_free (host->description);
+        gdm_address_free (host->address);
 
         G_OBJECT_CLASS (gdm_chooser_host_parent_class)->finalize (object);
 }

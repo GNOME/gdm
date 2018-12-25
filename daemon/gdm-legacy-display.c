@@ -45,10 +45,10 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#define GDM_LEGACY_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LEGACY_DISPLAY, GdmLegacyDisplayPrivate))
-
-struct GdmLegacyDisplayPrivate
+struct _GdmLegacyDisplay
 {
+        GdmDisplay           parent;
+
         GdmDBusLocalDisplay *skeleton;
 
         GdmServer           *server;
@@ -70,10 +70,10 @@ gdm_legacy_display_constructor (GType                  type,
                                                                                                      n_construct_properties,
                                                                                                      construct_properties));
 
-        display->priv->skeleton = GDM_DBUS_LOCAL_DISPLAY (gdm_dbus_local_display_skeleton_new ());
+        display->skeleton = GDM_DBUS_LOCAL_DISPLAY (gdm_dbus_local_display_skeleton_new ());
 
         g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
-                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+                                              G_DBUS_INTERFACE_SKELETON (display->skeleton));
 
         return G_OBJECT (display);
 }
@@ -83,8 +83,8 @@ gdm_legacy_display_finalize (GObject *object)
 {
         GdmLegacyDisplay *display = GDM_LEGACY_DISPLAY (object);
 
-        g_clear_object (&display->priv->skeleton);
-        g_clear_object (&display->priv->server);
+        g_clear_object (&display->skeleton);
+        g_clear_object (&display->server);
 
         G_OBJECT_CLASS (gdm_legacy_display_parent_class)->finalize (object);
 }
@@ -205,7 +205,7 @@ gdm_legacy_display_manage (GdmDisplay *display)
                       "is-initial", &is_initial,
                       NULL);
 
-        self->priv->server = gdm_server_new (display_name, seat_id, auth_file, is_initial);
+        self->server = gdm_server_new (display_name, seat_id, auth_file, is_initial);
 
         g_free (display_name);
         g_free (auth_file);
@@ -213,25 +213,25 @@ gdm_legacy_display_manage (GdmDisplay *display)
 
         disable_tcp = TRUE;
         if (gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disable_tcp)) {
-                g_object_set (self->priv->server,
+                g_object_set (self->server,
                               "disable-tcp", disable_tcp,
                               NULL);
         }
 
-        g_signal_connect (self->priv->server,
+        g_signal_connect (self->server,
                           "exited",
                           G_CALLBACK (on_server_exited),
                           self);
-        g_signal_connect (self->priv->server,
+        g_signal_connect (self->server,
                           "died",
                           G_CALLBACK (on_server_died),
                           self);
-        g_signal_connect (self->priv->server,
+        g_signal_connect (self->server,
                           "ready",
                           G_CALLBACK (on_server_ready),
                           self);
 
-        res = gdm_server_start (self->priv->server);
+        res = gdm_server_start (self->server);
         if (! res) {
                 g_warning (_("Could not start the X "
                              "server (your graphical environment) "
@@ -259,8 +259,6 @@ gdm_legacy_display_class_init (GdmLegacyDisplayClass *klass)
 
         display_class->prepare = gdm_legacy_display_prepare;
         display_class->manage = gdm_legacy_display_manage;
-
-        g_type_class_add_private (klass, sizeof (GdmLegacyDisplayPrivate));
 }
 
 static void
@@ -272,8 +270,8 @@ on_display_status_changed (GdmLegacyDisplay *self)
 
         switch (status) {
             case GDM_DISPLAY_UNMANAGED:
-                if (self->priv->server != NULL)
-                        gdm_server_stop (self->priv->server);
+                if (self->server != NULL)
+                        gdm_server_stop (self->server);
                 break;
             default:
                 break;
@@ -283,9 +281,6 @@ on_display_status_changed (GdmLegacyDisplay *self)
 static void
 gdm_legacy_display_init (GdmLegacyDisplay *legacy_display)
 {
-
-        legacy_display->priv = GDM_LEGACY_DISPLAY_GET_PRIVATE (legacy_display);
-
         g_signal_connect (legacy_display, "notify::status",
                           G_CALLBACK (on_display_status_changed),
                           NULL);

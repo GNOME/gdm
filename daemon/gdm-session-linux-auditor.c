@@ -37,8 +37,9 @@
 
 #include "gdm-common.h"
 
-struct _GdmSessionLinuxAuditorPrivate
+struct _GdmSessionLinuxAuditor
 {
+        GdmSessionAuditor parent;
         int audit_fd;
 };
 
@@ -73,12 +74,12 @@ log_user_message (GdmSessionAuditor *auditor,
 
         if (pw != NULL) {
                 g_snprintf (buf, sizeof (buf), "uid=%d", pw->pw_uid);
-                audit_log_user_message (linux_auditor->priv->audit_fd, type,
+                audit_log_user_message (linux_auditor->audit_fd, type,
                                         buf, hostname, NULL, display_device,
                                         result);
         } else {
                 g_snprintf (buf, sizeof (buf), "acct=%s", username);
-                audit_log_user_message (linux_auditor->priv->audit_fd, type,
+                audit_log_user_message (linux_auditor->audit_fd, type,
                                         buf, hostname, NULL, display_device,
                                         result);
         }
@@ -122,18 +123,12 @@ gdm_session_linux_auditor_class_init (GdmSessionLinuxAuditorClass *klass)
         auditor_class->report_login = gdm_session_linux_auditor_report_login;
         auditor_class->report_login_failure = gdm_session_linux_auditor_report_login_failure;
         auditor_class->report_logout = gdm_session_linux_auditor_report_logout;
-
-        g_type_class_add_private (auditor_class, sizeof (GdmSessionLinuxAuditorPrivate));
 }
 
 static void
 gdm_session_linux_auditor_init (GdmSessionLinuxAuditor *auditor)
 {
-        auditor->priv = G_TYPE_INSTANCE_GET_PRIVATE (auditor,
-                                                     GDM_TYPE_SESSION_LINUX_AUDITOR,
-                                                     GdmSessionLinuxAuditorPrivate);
-
-        auditor->priv->audit_fd = audit_open ();
+        auditor->audit_fd = audit_open ();
 }
 
 static void
@@ -144,7 +139,7 @@ gdm_session_linux_auditor_finalize (GObject *object)
 
         linux_auditor = GDM_SESSION_LINUX_AUDITOR (object);
 
-        close (linux_auditor->priv->audit_fd);
+        close (linux_auditor->audit_fd);
 
         parent_class = G_OBJECT_CLASS (gdm_session_linux_auditor_parent_class);
         if (parent_class->finalize != NULL) {

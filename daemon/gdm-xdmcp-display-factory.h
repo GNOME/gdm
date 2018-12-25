@@ -29,25 +29,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_XDMCP_DISPLAY_FACTORY         (gdm_xdmcp_display_factory_get_type ())
-#define GDM_XDMCP_DISPLAY_FACTORY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_XDMCP_DISPLAY_FACTORY, GdmXdmcpDisplayFactory))
-#define GDM_XDMCP_DISPLAY_FACTORY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_XDMCP_DISPLAY_FACTORY, GdmXdmcpDisplayFactoryClass))
-#define GDM_IS_XDMCP_DISPLAY_FACTORY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_XDMCP_DISPLAY_FACTORY))
-#define GDM_IS_XDMCP_DISPLAY_FACTORY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_XDMCP_DISPLAY_FACTORY))
-#define GDM_XDMCP_DISPLAY_FACTORY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_XDMCP_DISPLAY_FACTORY, GdmXdmcpDisplayFactoryClass))
-
-typedef struct GdmXdmcpDisplayFactoryPrivate GdmXdmcpDisplayFactoryPrivate;
-
-typedef struct
-{
-        GdmDisplayFactory              parent;
-        GdmXdmcpDisplayFactoryPrivate *priv;
-} GdmXdmcpDisplayFactory;
-
-typedef struct
-{
-        GdmDisplayFactoryClass   parent_class;
-} GdmXdmcpDisplayFactoryClass;
+#define GDM_TYPE_XDMCP_DISPLAY_FACTORY (gdm_xdmcp_display_factory_get_type ())
+G_DECLARE_FINAL_TYPE (GdmXdmcpDisplayFactory, gdm_xdmcp_display_factory, GDM, XDMCP_DISPLAY_FACTORY, GdmDisplayFactory)
 
 typedef enum
 {
@@ -57,7 +40,6 @@ typedef enum
 #define GDM_XDMCP_DISPLAY_FACTORY_ERROR gdm_xdmcp_display_factory_error_quark ()
 
 GQuark                     gdm_xdmcp_display_factory_error_quark      (void);
-GType                      gdm_xdmcp_display_factory_get_type         (void);
 
 GdmXdmcpDisplayFactory *   gdm_xdmcp_display_factory_new              (GdmDisplayStore        *display_store);
 

@@ -38,8 +38,10 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-struct _GdmSessionSolarisAuditorPrivate
+struct GdmSessionSolarisAuditor
 {
+        GdmSessionAuditor parent;
+
         adt_session_data_t *audit_session_handle;
 
         guint password_change_initiated : 1;
@@ -64,8 +66,8 @@ gdm_session_solaris_auditor_report_password_changed (GdmSessionAuditor *auditor)
         GdmSessionSolarisAuditor *solaris_auditor;
 
         solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
-        solaris_auditor->priv->password_change_initiated = TRUE;
-        solaris_auditor->priv->password_changed = TRUE;
+        solaris_auditor->password_change_initiated = TRUE;
+        solaris_auditor->password_changed = TRUE;
 }
 
 static void
@@ -74,8 +76,8 @@ gdm_session_solaris_auditor_report_password_change_failure (GdmSessionAuditor *a
         GdmSessionSolarisAuditor *solaris_auditor;
 
         solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
-        solaris_auditor->priv->password_change_initiated = TRUE;
-        solaris_auditor->priv->password_changed = FALSE;
+        solaris_auditor->password_change_initiated = TRUE;
+        solaris_auditor->password_changed = FALSE;
 }
 
 static void
@@ -84,7 +86,7 @@ gdm_session_solaris_auditor_report_user_accredited (GdmSessionAuditor *auditor)
         GdmSessionSolarisAuditor *solaris_auditor;
 
         solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
-        solaris_auditor->priv->user_accredited = TRUE;
+        solaris_auditor->user_accredited = TRUE;
 }
 
 static void
@@ -96,7 +98,7 @@ gdm_session_solaris_auditor_report_login (GdmSessionAuditor *auditor)
 
        solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
 
-       g_return_if_fail (solaris_auditor->priv->username != NULL);
+       g_return_if_fail (solaris_auditor->username != NULL);
 
        adt_ah = NULL;
        if (adt_start_session (&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
@@ -105,12 +107,12 @@ gdm_session_solaris_auditor_report_login (GdmSessionAuditor *auditor)
                goto cleanup;
        }
 
-       if (adt_set_user (adt_ah, solaris_auditor->priv->uid,
-           solaris_auditor->priv->gid, solaris_auditor->priv->uid,
-           solaris_auditor->priv->gid, NULL, ADT_USER) != 0) {
+       if (adt_set_user (adt_ah, solaris_auditor->uid,
+           solaris_auditor->gid, solaris_auditor->uid,
+           solaris_auditor->gid, NULL, ADT_USER) != 0) {
                syslog (LOG_AUTH | LOG_ALERT,
                        "adt_set_user (ADT_login, %s): %m",
-                       solaris_auditor->priv->username);
+                       solaris_auditor->username);
        }
 
        event = adt_alloc_event (adt_ah, ADT_login);
@@ -121,9 +123,9 @@ gdm_session_solaris_auditor_report_login (GdmSessionAuditor *auditor)
                        "adt_put_event (ADT_login, ADT_SUCCESS): %m");
        }
 
-       if (solaris_auditor->priv->password_changed) {
+       if (solaris_auditor->password_changed) {
 
-               g_assert (solaris_auditor->priv->password_change_initiated);
+               g_assert (solaris_auditor->password_change_initiated);
 
                /* Also audit password change */
                adt_free_event (event);
@@ -142,7 +144,7 @@ gdm_session_solaris_auditor_report_login (GdmSessionAuditor *auditor)
        adt_free_event (event);
 
 cleanup:
-       solaris_auditor->priv->audit_session_handle = adt_ah;
+       solaris_auditor->audit_session_handle = adt_ah;
 }
 
 static void
@@ -162,7 +164,7 @@ gdm_session_solaris_auditor_report_login_failure (GdmSessionAuditor *auditor,
                       "hostname", &hostname,
                       "display-device", &display_device, NULL);
 
-        if (solaris_auditor->priv->user_accredited) {
+        if (solaris_auditor->user_accredited) {
                 if (adt_start_session (&ah, NULL, ADT_USE_PROC_DATA) != 0) {
                         syslog (LOG_AUTH | LOG_ALERT,
                                 "adt_start_session (ADT_login, ADT_FAILURE): %m");
@@ -191,15 +193,15 @@ gdm_session_solaris_auditor_report_login_failure (GdmSessionAuditor *auditor,
                 }
 
                 if (adt_set_user (ah,
-                                  solaris_auditor->priv->username != NULL ? solaris_auditor->priv->uid : ADT_NO_ATTRIB,
-                                  solaris_auditor->priv->username != NULL ? solaris_auditor->priv->gid : ADT_NO_ATTRIB,
-                                  solaris_auditor->priv->username != NULL ? solaris_auditor->priv->uid : ADT_NO_ATTRIB,
-                                  solaris_auditor->priv->username != NULL ? solaris_auditor->priv->gid : ADT_NO_ATTRIB,
+                                  solaris_auditor->username != NULL ? solaris_auditor->uid : ADT_NO_ATTRIB,
+                                  solaris_auditor->username != NULL ? solaris_auditor->gid : ADT_NO_ATTRIB,
+                                  solaris_auditor->username != NULL ? solaris_auditor->uid : ADT_NO_ATTRIB,
+                                  solaris_auditor->username != NULL ? solaris_auditor->gid : ADT_NO_ATTRIB,
                                   tid, ADT_NEW) != 0) {
 
                         syslog (LOG_AUTH | LOG_ALERT,
                                 "adt_set_user (%s): %m",
-                                solaris_auditor->priv->username != NULL ? solaris_auditor->priv->username : "ADT_NO_ATTRIB");
+                                solaris_auditor->username != NULL ? solaris_auditor->username : "ADT_NO_ATTRIB");
                 }
         }
 
@@ -216,7 +218,7 @@ gdm_session_solaris_auditor_report_login_failure (GdmSessionAuditor *auditor,
                         pam_error_string);
         }
 
-        if (solaris_auditor->priv->password_change_initiated) {
+        if (solaris_auditor->password_change_initiated) {
                 /* Also audit password change */
                 adt_free_event (event);
 
@@ -227,7 +229,7 @@ gdm_session_solaris_auditor_report_login_failure (GdmSessionAuditor *auditor,
                         goto done;
                 }
 
-                if (solaris_auditor->priv->password_changed) {
+                if (solaris_auditor->password_changed) {
                         if (adt_put_event (event, ADT_SUCCESS,
                                            ADT_SUCCESS) != 0) {
 
@@ -272,7 +274,7 @@ gdm_session_solaris_auditor_report_logout (GdmSessionAuditor *auditor)
 
         solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
 
-        adt_ah = solaris_auditor->priv->audit_session_handle;
+        adt_ah = solaris_auditor->audit_session_handle;
 
         event = adt_alloc_event (adt_ah, ADT_logout);
         if (event == NULL) {
@@ -294,7 +296,7 @@ gdm_session_solaris_auditor_report_logout (GdmSessionAuditor *auditor)
         }
 
         (void) adt_end_session (adt_ah);
-        solaris_auditor->priv->audit_session_handle = NULL;
+        solaris_auditor->audit_session_handle = NULL;
 }
 
 static void
@@ -314,8 +316,6 @@ gdm_session_solaris_auditor_class_init (GdmSessionSolarisAuditorClass *klass)
         auditor_class->report_login = gdm_session_solaris_auditor_report_login;
         auditor_class->report_login_failure = gdm_session_solaris_auditor_report_login_failure;
         auditor_class->report_logout = gdm_session_solaris_auditor_report_logout;
-
-        g_type_class_add_private (auditor_class, sizeof (GdmSessionSolarisAuditorPrivate));
 }
 
 static void
@@ -329,14 +329,14 @@ on_username_set (GdmSessionSolarisAuditor *auditor)
         gdm_get_pwent_for_name (username, &passwd_entry);
 
         if (passwd_entry != NULL) {
-                auditor->priv->uid = passwd_entry->pw_uid;
-                auditor->priv->gid = passwd_entry->pw_gid;
-                auditor->priv->username = g_strdup (passwd_entry->pw_name);
+                auditor->uid = passwd_entry->pw_uid;
+                auditor->gid = passwd_entry->pw_gid;
+                auditor->username = g_strdup (passwd_entry->pw_name);
         } else {
-                g_free (auditor->priv->username);
-                auditor->priv->username = NULL;
-                auditor->priv->uid = (uid_t) -1;
-                auditor->priv->gid = (gid_t) -1;
+                g_free (auditor->username);
+                auditor->username = NULL;
+                auditor->uid = (uid_t) -1;
+                auditor->gid = (gid_t) -1;
         }
 
         g_free (username);
@@ -345,15 +345,11 @@ on_username_set (GdmSessionSolarisAuditor *auditor)
 static void
 gdm_session_solaris_auditor_init (GdmSessionSolarisAuditor *auditor)
 {
-        auditor->priv = G_TYPE_INSTANCE_GET_PRIVATE (auditor,
-                                                     GDM_TYPE_SESSION_SOLARIS_AUDITOR,
-                                                     GdmSessionSolarisAuditorPrivate);
-
         g_signal_connect (G_OBJECT (auditor), "notify::username",
                           G_CALLBACK (on_username_set), NULL);
 
-        auditor->priv->uid = (uid_t) -1;
-        auditor->priv->gid = (gid_t) -1;
+        auditor->uid = (uid_t) -1;
+        auditor->gid = (gid_t) -1;
 }
 
 static void
@@ -364,8 +360,8 @@ gdm_session_solaris_auditor_finalize (GObject *object)
 
         solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (object);
 
-        g_free (solaris_auditor->priv->username);
-        solaris_auditor->priv->username = NULL;
+        g_free (solaris_auditor->username);
+        solaris_auditor->username = NULL;
 
         parent_class = G_OBJECT_CLASS (gdm_session_solaris_auditor_parent_class);
 

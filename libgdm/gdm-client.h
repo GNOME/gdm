@@ -27,26 +27,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_CLIENT         (gdm_client_get_type ())
-#define GDM_CLIENT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_CLIENT, GdmClient))
-#define GDM_CLIENT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_CLIENT, GdmClientClass))
-#define GDM_IS_CLIENT(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_CLIENT))
-#define GDM_IS_CLIENT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_CLIENT))
-#define GDM_CLIENT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_CLIENT, GdmClientClass))
-
-typedef struct GdmClientPrivate GdmClientPrivate;
-
-typedef struct
-{
-        GObject                  parent;
-        GdmClientPrivate *priv;
-} GdmClient;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-
-} GdmClientClass;
+#define GDM_TYPE_CLIENT (gdm_client_get_type ())
+G_DECLARE_FINAL_TYPE (GdmClient, gdm_client, GDM, CLIENT, GObject)
 
 #define GDM_CLIENT_ERROR (gdm_client_error_quark ())
 
@@ -54,7 +36,6 @@ typedef enum _GdmClientError {
         GDM_CLIENT_ERROR_GENERIC = 0,
 } GdmClientError;
 
-GType              gdm_client_get_type                 (void);
 GQuark             gdm_client_error_quark              (void);
 
 GdmClient         *gdm_client_new                      (void);
@@ -121,10 +102,6 @@ GdmChooser        *gdm_client_get_chooser_finish        (GdmClient *client,
 GdmChooser        *gdm_client_get_chooser_sync          (GdmClient *client,
                                                          GCancellable     *cancellable,
                                                          GError          **error);
-
-#if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmClient, g_object_unref)
-#endif
 
 G_END_DECLS
 

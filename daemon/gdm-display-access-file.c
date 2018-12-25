@@ -41,8 +41,10 @@
 #include "gdm-display-access-file.h"
 #include "gdm-common.h"
 
-struct _GdmDisplayAccessFilePrivate
+struct _GdmDisplayAccessFile
 {
+        GObject parent;
+
         char *username;
         FILE *fp;
         char *path;
@@ -79,11 +81,11 @@ gdm_display_access_file_get_property (GObject    *object,
 
         switch (prop_id) {
             case PROP_USERNAME:
-                g_value_set_string (value, access_file->priv->username);
+                g_value_set_string (value, access_file->username);
                 break;
 
             case PROP_PATH:
-                g_value_set_string (value, access_file->priv->path);
+                g_value_set_string (value, access_file->path);
                 break;
 
             default:
@@ -103,8 +105,8 @@ gdm_display_access_file_set_property (GObject      *object,
 
         switch (prop_id) {
             case PROP_USERNAME:
-                g_assert (access_file->priv->username == NULL);
-                access_file->priv->username = g_value_dup_string (value);
+                g_assert (access_file->username == NULL);
+                access_file->username = g_value_dup_string (value);
                 break;
 
             default:
@@ -136,15 +138,11 @@ gdm_display_access_file_class_init (GdmDisplayAccessFileClass *access_file_class
                                           NULL,
                                           G_PARAM_READABLE);
         g_object_class_install_property (object_class, PROP_PATH, param_spec);
-        g_type_class_add_private (access_file_class, sizeof (GdmDisplayAccessFilePrivate));
 }
 
 static void
 gdm_display_access_file_init (GdmDisplayAccessFile *access_file)
 {
-        access_file->priv = G_TYPE_INSTANCE_GET_PRIVATE (access_file,
-                                                         GDM_TYPE_DISPLAY_ACCESS_FILE,
-                                                         GdmDisplayAccessFilePrivate);
 }
 
 static void
@@ -156,14 +154,14 @@ gdm_display_access_file_finalize (GObject *object)
         file = GDM_DISPLAY_ACCESS_FILE (object);
         parent_class = G_OBJECT_CLASS (gdm_display_access_file_parent_class);
 
-        if (file->priv->fp != NULL) {
+        if (file->fp != NULL) {
             gdm_display_access_file_close (file);
         }
-        g_assert (file->priv->path == NULL);
+        g_assert (file->path == NULL);
 
-        if (file->priv->username != NULL) {
-                g_free (file->priv->username);
-                file->priv->username = NULL;
+        if (file->username != NULL) {
+                g_free (file->username);
+                file->username = NULL;
                 g_object_notify (object, "username");
         }
 
@@ -405,15 +403,15 @@ gdm_display_access_file_open (GdmDisplayAccessFile  *file,
         GError *create_error;
 
         g_return_val_if_fail (file != NULL, FALSE);
-        g_return_val_if_fail (file->priv->fp == NULL, FALSE);
-        g_return_val_if_fail (file->priv->path == NULL, FALSE);
+        g_return_val_if_fail (file->fp == NULL, FALSE);
+        g_return_val_if_fail (file->path == NULL, FALSE);
 
         create_error = NULL;
-        file->priv->fp = _create_xauth_file_for_user (file->priv->username,
-                                                      &file->priv->path,
-                                                      &create_error);
+        file->fp = _create_xauth_file_for_user (file->username,
+                                                &file->path,
+                                                &create_error);
 
-        if (file->priv->fp == NULL) {
+        if (file->fp == NULL) {
                 g_propagate_error (error, create_error);
                 return FALSE;
         }
@@ -475,7 +473,7 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
         gboolean display_added;
 
         g_return_val_if_fail (file != NULL, FALSE);
-        g_return_val_if_fail (file->priv->path != NULL, FALSE);
+        g_return_val_if_fail (file->path != NULL, FALSE);
         g_return_val_if_fail (cookie != NULL, FALSE);
 
         add_error = NULL;
@@ -514,7 +512,7 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
         gboolean display_added;
 
         g_return_val_if_fail (file != NULL, FALSE);
-        g_return_val_if_fail (file->priv->path != NULL, FALSE);
+        g_return_val_if_fail (file->path != NULL, FALSE);
         g_return_val_if_fail (cookie != NULL, FALSE);
 
         _get_auth_info_for_display (file, display,
@@ -532,8 +530,8 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
         /* FIXME: We should lock the file in case the X server is
          * trying to use it, too.
          */
-        if (!XauWriteAuth (file->priv->fp, &auth_entry)
-            || fflush (file->priv->fp) == EOF) {
+        if (!XauWriteAuth (file->fp, &auth_entry)
+            || fflush (file->fp) == EOF) {
                 g_set_error (error,
                         G_FILE_ERROR,
                         g_file_error_from_errno (errno),
@@ -550,8 +548,8 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
         if (auth_entry.family == FamilyLocal) {
                 auth_entry.family = FamilyWild;
 
-                if (XauWriteAuth (file->priv->fp, &auth_entry)
-                    && fflush (file->priv->fp) != EOF) {
+                if (XauWriteAuth (file->fp, &auth_entry)
+                    && fflush (file->fp) != EOF) {
                         display_added = TRUE;
                 }
         }
@@ -569,20 +567,20 @@ gdm_display_access_file_close (GdmDisplayAccessFile  *file)
         char *auth_dir;
 
         g_return_if_fail (file != NULL);
-        g_return_if_fail (file->priv->fp != NULL);
-        g_return_if_fail (file->priv->path != NULL);
+        g_return_if_fail (file->fp != NULL);
+        g_return_if_fail (file->path != NULL);
 
         errno = 0;
-        if (g_unlink (file->priv->path) != 0) {
+        if (g_unlink (file->path) != 0) {
                 g_warning ("GdmDisplayAccessFile: Unable to remove X11 authority database '%s': %s",
-                           file->priv->path,
+                           file->path,
                            g_strerror (errno));
         }
 
         /* still try to remove dir even if file remove failed,
            may have already been removed by someone else */
         /* we own the parent directory too */
-        auth_dir = g_path_get_dirname (file->priv->path);
+        auth_dir = g_path_get_dirname (file->path);
         if (auth_dir != NULL) {
                 errno = 0;
                 if (g_rmdir (auth_dir) != 0) {
@@ -593,16 +591,16 @@ gdm_display_access_file_close (GdmDisplayAccessFile  *file)
                 g_free (auth_dir);
         }
 
-        g_free (file->priv->path);
-        file->priv->path = NULL;
+        g_free (file->path);
+        file->path = NULL;
         g_object_notify (G_OBJECT (file), "path");
 
-        fclose (file->priv->fp);
-        file->priv->fp = NULL;
+        fclose (file->fp);
+        file->fp = NULL;
 }
 
 char *
 gdm_display_access_file_get_path (GdmDisplayAccessFile *access_file)
 {
-        return g_strdup (access_file->priv->path);
+        return g_strdup (access_file->path);
 }

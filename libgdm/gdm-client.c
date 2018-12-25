@@ -34,12 +34,12 @@
 #include "gdm-client-glue.h"
 #include "gdm-manager-glue.h"
 
-#define GDM_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_CLIENT, GdmClientPrivate))
-
 #define SESSION_DBUS_PATH      "/org/gnome/DisplayManager/Session"
 
-struct GdmClientPrivate
+struct _GdmClient
 {
+        GObject             parent;
+
         GdmUserVerifier    *user_verifier;
         GHashTable         *user_verifier_extensions;
 
@@ -50,8 +50,6 @@ struct GdmClientPrivate
         char              **enabled_extensions;
 };
 
-static void     gdm_client_class_init  (GdmClientClass *klass);
-static void     gdm_client_init        (GdmClient      *client);
 static void     gdm_client_finalize    (GObject        *object);
 
 G_DEFINE_TYPE (GdmClient, gdm_client, G_TYPE_OBJECT);
@@ -74,14 +72,14 @@ gdm_client_get_open_connection (GdmClient *client)
 {
         GDBusProxy *proxy = NULL;
 
-        if (client->priv->user_verifier != NULL) {
-                proxy = G_DBUS_PROXY (client->priv->user_verifier);
-        } else if (client->priv->greeter != NULL) {
-                proxy = G_DBUS_PROXY (client->priv->greeter);
-        } else if (client->priv->remote_greeter != NULL) {
-                proxy = G_DBUS_PROXY (client->priv->remote_greeter);
-        } else if (client->priv->chooser != NULL) {
-                proxy = G_DBUS_PROXY (client->priv->chooser);
+        if (client->user_verifier != NULL) {
+                proxy = G_DBUS_PROXY (client->user_verifier);
+        } else if (client->greeter != NULL) {
+                proxy = G_DBUS_PROXY (client->greeter);
+        } else if (client->remote_greeter != NULL) {
+                proxy = G_DBUS_PROXY (client->remote_greeter);
+        } else if (client->chooser != NULL) {
+                proxy = G_DBUS_PROXY (client->chooser);
         }
 
         if (proxy != NULL) {
@@ -177,8 +175,8 @@ maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
         GHashTableIter iter;
         gpointer key, value;
 
-        if (client->priv->user_verifier_extensions != NULL) {
-                g_hash_table_iter_init (&iter, client->priv->user_verifier_extensions);
+        if (client->user_verifier_extensions != NULL) {
+                g_hash_table_iter_init (&iter, client->user_verifier_extensions);
                 while (g_hash_table_iter_next (&iter, &key, &value)) {
                         if (value == NULL)
                                 return;
@@ -203,9 +201,9 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
 
         if (choice_list == NULL) {
                 g_debug ("Couldn't create UserVerifier ChoiceList proxy: %s", error->message);
-                g_hash_table_remove (client->priv->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name);
+                g_hash_table_remove (client->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name);
         } else {
-                g_hash_table_replace (client->priv->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
+                g_hash_table_replace (client->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
         }
 
         maybe_complete_user_verifier_proxy_operation (client, data);
@@ -236,13 +234,13 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
 
         connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (user_verifier));
 
-        for (i = 0; client->priv->enabled_extensions[i] != NULL; i++) {
-                g_debug ("Enabled extensions[%lu] = %s", i, client->priv->enabled_extensions[i]);
-                g_hash_table_insert (client->priv->user_verifier_extensions, client->priv->enabled_extensions[i], NULL);
+        for (i = 0; client->enabled_extensions[i] != NULL; i++) {
+                g_debug ("Enabled extensions[%lu] = %s", i, client->enabled_extensions[i]);
+                g_hash_table_insert (client->user_verifier_extensions, client->enabled_extensions[i], NULL);
 
-                if (strcmp (client->priv->enabled_extensions[i],
+                if (strcmp (client->enabled_extensions[i],
                             gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
-                        g_hash_table_insert (client->priv->user_verifier_extensions, client->priv->enabled_extensions[i], NULL);
+                        g_hash_table_insert (client->user_verifier_extensions, client->enabled_extensions[i], NULL);
                         gdm_user_verifier_choice_list_proxy_new (connection,
                                                                  G_DBUS_PROXY_FLAGS_NONE,
                                                                  NULL,
@@ -252,13 +250,13 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                                                  on_user_verifier_choice_list_proxy_created,
                                                                  data);
                 } else {
-                        g_debug ("User verifier extension %s is unsupported", client->priv->enabled_extensions[i]);
-                        g_hash_table_remove (client->priv->user_verifier_extensions,
-                                             client->priv->enabled_extensions[i]);
+                        g_debug ("User verifier extension %s is unsupported", client->enabled_extensions[i]);
+                        g_hash_table_remove (client->user_verifier_extensions,
+                                             client->enabled_extensions[i]);
                 }
         }
 
-        if (g_hash_table_size (client->priv->user_verifier_extensions) == 0) {
+        if (g_hash_table_size (client->user_verifier_extensions) == 0) {
                 g_debug ("No supported user verifier extensions");
                 complete_user_verifier_proxy_operation (client, data);
         }
@@ -294,7 +292,7 @@ on_user_verifier_proxy_created (GObject            *source,
         g_debug ("UserVerifier %p created", user_verifier);
 
         self = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
-        if (self->priv->enabled_extensions == NULL) {
+        if (self->enabled_extensions == NULL) {
                 g_debug ("no enabled extensions");
                 g_task_return_pointer (task,
                                        g_steal_pointer (&user_verifier),
@@ -302,7 +300,7 @@ on_user_verifier_proxy_created (GObject            *source,
                 return;
         }
 
-        self->priv->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+        self->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
                                                                       g_str_equal,
                                                                       NULL,
                                                                       (GDestroyNotify)
@@ -310,7 +308,7 @@ on_user_verifier_proxy_created (GObject            *source,
         cancellable = g_task_get_cancellable (task);
         gdm_user_verifier_call_enable_extensions (user_verifier,
                                                   (const char * const *)
-                                                  self->priv->enabled_extensions,
+                                                  self->enabled_extensions,
                                                   cancellable,
                                                   (GAsyncReadyCallback)
                                                   on_user_verifier_extensions_enabled,
@@ -718,8 +716,8 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
 {
         g_autoptr(GDBusConnection) connection = NULL;
 
-        if (client->priv->user_verifier != NULL) {
-                return g_object_ref (client->priv->user_verifier);
+        if (client->user_verifier != NULL) {
+                return g_object_ref (client->user_verifier);
         }
 
         connection = gdm_client_get_connection_sync (client, cancellable, error);
@@ -728,35 +726,35 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->priv->user_verifier = gdm_user_verifier_proxy_new_sync (connection,
+        client->user_verifier = gdm_user_verifier_proxy_new_sync (connection,
                                                                         G_DBUS_PROXY_FLAGS_NONE,
                                                                         NULL,
                                                                         SESSION_DBUS_PATH,
                                                                         cancellable,
                                                                         error);
 
-        if (client->priv->user_verifier != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->priv->user_verifier),
+        if (client->user_verifier != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->user_verifier),
                                            (gpointer *)
-                                           &client->priv->user_verifier);
-                if (client->priv->enabled_extensions != NULL) {
+                                           &client->user_verifier);
+                if (client->enabled_extensions != NULL) {
                         gboolean res;
 
-                        client->priv->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                        client->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
                                                                                         g_str_equal,
                                                                                         NULL,
                                                                                         (GDestroyNotify)
                                                                                         free_interface_skeleton);
-                        res = gdm_user_verifier_call_enable_extensions_sync (client->priv->user_verifier,
+                        res = gdm_user_verifier_call_enable_extensions_sync (client->user_verifier,
                                                                             (const char * const *)
-                                                                             client->priv->enabled_extensions,
+                                                                             client->enabled_extensions,
                                                                              cancellable,
                                                                              NULL);
 
                         if (res) {
                                 size_t i;
-                                for (i = 0; client->priv->enabled_extensions[i] != NULL; i++) {
-                                            if (strcmp (client->priv->enabled_extensions[i],
+                                for (i = 0; client->enabled_extensions[i] != NULL; i++) {
+                                            if (strcmp (client->enabled_extensions[i],
                                                         gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
                                                         GdmUserVerifierChoiceList *choice_list_interface;
                                                         choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (connection,
@@ -766,14 +764,14 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                                                                                               cancellable,
                                                                                                                               NULL);
                                                         if (choice_list_interface != NULL)
-                                                                    g_hash_table_insert (client->priv->user_verifier_extensions, client->priv->enabled_extensions[i], choice_list_interface);
+                                                                    g_hash_table_insert (client->user_verifier_extensions, client->enabled_extensions[i], choice_list_interface);
                                             }
                                 }
                         }
                 }
         }
 
-        return client->priv->user_verifier;
+        return client->user_verifier;
 }
 
 static void
@@ -827,9 +825,9 @@ gdm_client_get_user_verifier (GdmClient           *client,
                            callback,
                            user_data);
 
-        if (client->priv->user_verifier != NULL) {
+        if (client->user_verifier != NULL) {
                 g_task_return_pointer (task,
-                                       g_object_ref (client->priv->user_verifier),
+                                       g_object_ref (client->user_verifier),
                                        (GDestroyNotify) g_object_unref);
                 return;
         }
@@ -861,18 +859,18 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        if (client->priv->user_verifier != NULL)
-                return g_object_ref (client->priv->user_verifier);
+        if (client->user_verifier != NULL)
+                return g_object_ref (client->user_verifier);
 
         user_verifier = g_task_propagate_pointer (G_TASK (result), error);
         if (user_verifier == NULL)
                 return NULL;
 
-        client->priv->user_verifier = user_verifier;
+        client->user_verifier = user_verifier;
 
-        g_object_add_weak_pointer (G_OBJECT (client->priv->user_verifier),
+        g_object_add_weak_pointer (G_OBJECT (client->user_verifier),
                                    (gpointer *)
-                                   &client->priv->user_verifier);
+                                   &client->user_verifier);
 
         return user_verifier;
 }
@@ -890,10 +888,10 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 GdmUserVerifierChoiceList *
 gdm_client_get_user_verifier_choice_list (GdmClient *client)
 {
-        if (client->priv->user_verifier_extensions == NULL)
+        if (client->user_verifier_extensions == NULL)
                 return NULL;
 
-        return g_hash_table_lookup (client->priv->user_verifier_extensions,
+        return g_hash_table_lookup (client->user_verifier_extensions,
                                     gdm_user_verifier_choice_list_interface_info ()->name);
 }
 
@@ -991,9 +989,9 @@ gdm_client_get_greeter (GdmClient           *client,
                            callback,
                            user_data);
 
-        if (client->priv->greeter != NULL) {
+        if (client->greeter != NULL) {
                 g_task_return_pointer (task,
-                                       g_object_ref (client->priv->greeter),
+                                       g_object_ref (client->greeter),
                                        (GDestroyNotify) g_object_unref);
                 return;
         }
@@ -1025,18 +1023,18 @@ gdm_client_get_greeter_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        if (client->priv->greeter != NULL)
-                return g_object_ref (client->priv->greeter);
+        if (client->greeter != NULL)
+                return g_object_ref (client->greeter);
 
         greeter = g_task_propagate_pointer (G_TASK (result), error);
         if (greeter == NULL)
                 return NULL;
 
-        client->priv->greeter = greeter;
+        client->greeter = greeter;
 
-        g_object_add_weak_pointer (G_OBJECT (client->priv->greeter),
+        g_object_add_weak_pointer (G_OBJECT (client->greeter),
                                    (gpointer *)
-                                   &client->priv->greeter);
+                                   &client->greeter);
 
         return greeter;
 }
@@ -1061,8 +1059,8 @@ gdm_client_get_greeter_sync (GdmClient     *client,
 {
         g_autoptr(GDBusConnection) connection = NULL;
 
-        if (client->priv->greeter != NULL) {
-                return g_object_ref (client->priv->greeter);
+        if (client->greeter != NULL) {
+                return g_object_ref (client->greeter);
         }
 
         connection = gdm_client_get_connection_sync (client, cancellable, error);
@@ -1071,22 +1069,22 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->priv->greeter = gdm_greeter_proxy_new_sync (connection,
+        client->greeter = gdm_greeter_proxy_new_sync (connection,
                                                             G_DBUS_PROXY_FLAGS_NONE,
                                                             NULL,
                                                             SESSION_DBUS_PATH,
                                                             cancellable,
                                                             error);
 
-        if (client->priv->greeter != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->priv->greeter),
+        if (client->greeter != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->greeter),
                                            (gpointer *)
-                                           &client->priv->greeter);
+                                           &client->greeter);
 
-                query_for_timed_login_requested_signal (client->priv->greeter);
+                query_for_timed_login_requested_signal (client->greeter);
         }
 
-        return client->priv->greeter;
+        return client->greeter;
 }
 
 static void
@@ -1161,9 +1159,9 @@ gdm_client_get_remote_greeter (GdmClient           *client,
                            callback,
                            user_data);
 
-        if (client->priv->remote_greeter != NULL) {
+        if (client->remote_greeter != NULL) {
                 g_task_return_pointer (task,
-                                       g_object_ref (client->priv->remote_greeter),
+                                       g_object_ref (client->remote_greeter),
                                        (GDestroyNotify) g_object_unref);
                 return;
         }
@@ -1195,18 +1193,18 @@ gdm_client_get_remote_greeter_finish (GdmClient     *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        if (client->priv->remote_greeter != NULL)
-                return g_object_ref (client->priv->remote_greeter);
+        if (client->remote_greeter != NULL)
+                return g_object_ref (client->remote_greeter);
 
         remote_greeter = g_task_propagate_pointer (G_TASK (result), error);
         if (remote_greeter == NULL)
                 return NULL;
 
-        client->priv->remote_greeter = remote_greeter;
+        client->remote_greeter = remote_greeter;
 
-        g_object_add_weak_pointer (G_OBJECT (client->priv->remote_greeter),
+        g_object_add_weak_pointer (G_OBJECT (client->remote_greeter),
                                    (gpointer *)
-                                   &client->priv->remote_greeter);
+                                   &client->remote_greeter);
 
         return remote_greeter;
 }
@@ -1230,8 +1228,8 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
 {
         g_autoptr(GDBusConnection) connection = NULL;
 
-        if (client->priv->remote_greeter != NULL) {
-                return g_object_ref (client->priv->remote_greeter);
+        if (client->remote_greeter != NULL) {
+                return g_object_ref (client->remote_greeter);
         }
 
         connection = gdm_client_get_connection_sync (client, cancellable, error);
@@ -1240,20 +1238,20 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->priv->remote_greeter = gdm_remote_greeter_proxy_new_sync (connection,
+        client->remote_greeter = gdm_remote_greeter_proxy_new_sync (connection,
                                                                           G_DBUS_PROXY_FLAGS_NONE,
                                                                           NULL,
                                                                           SESSION_DBUS_PATH,
                                                                           cancellable,
                                                                           error);
 
-        if (client->priv->remote_greeter != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->priv->remote_greeter),
+        if (client->remote_greeter != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->remote_greeter),
                                            (gpointer *)
-                                           &client->priv->remote_greeter);
+                                           &client->remote_greeter);
         }
 
-        return client->priv->remote_greeter;
+        return client->remote_greeter;
 }
 
 static void
@@ -1329,9 +1327,9 @@ gdm_client_get_chooser (GdmClient           *client,
                            callback,
                            user_data);
 
-        if (client->priv->chooser != NULL) {
+        if (client->chooser != NULL) {
                 g_task_return_pointer (task,
-                                       g_object_ref (client->priv->chooser),
+                                       g_object_ref (client->chooser),
                                        (GDestroyNotify) g_object_unref);
                 return;
         }
@@ -1363,18 +1361,18 @@ gdm_client_get_chooser_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        if (client->priv->chooser != NULL)
-                return g_object_ref (client->priv->chooser);
+        if (client->chooser != NULL)
+                return g_object_ref (client->chooser);
 
         chooser = g_task_propagate_pointer (G_TASK (result), error);
         if (chooser == NULL)
                 return NULL;
 
-        client->priv->chooser = chooser;
+        client->chooser = chooser;
 
-        g_object_add_weak_pointer (G_OBJECT (client->priv->chooser),
+        g_object_add_weak_pointer (G_OBJECT (client->chooser),
                                    (gpointer *)
-                                   &client->priv->chooser);
+                                   &client->chooser);
 
         return chooser;
 }
@@ -1398,8 +1396,8 @@ gdm_client_get_chooser_sync (GdmClient     *client,
 {
         g_autoptr(GDBusConnection) connection = NULL;
 
-        if (client->priv->chooser != NULL) {
-                return g_object_ref (client->priv->chooser);
+        if (client->chooser != NULL) {
+                return g_object_ref (client->chooser);
         }
 
         connection = gdm_client_get_connection_sync (client, cancellable, error);
@@ -1408,20 +1406,20 @@ gdm_client_get_chooser_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->priv->chooser = gdm_chooser_proxy_new_sync (connection,
+        client->chooser = gdm_chooser_proxy_new_sync (connection,
                                                             G_DBUS_PROXY_FLAGS_NONE,
                                                             NULL,
                                                             SESSION_DBUS_PATH,
                                                             cancellable,
                                                             error);
 
-        if (client->priv->chooser != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->priv->chooser),
+        if (client->chooser != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->chooser),
                                            (gpointer *)
-                                           &client->priv->chooser);
+                                           &client->chooser);
         }
 
-        return client->priv->chooser;
+        return client->chooser;
 }
 
 static void
@@ -1430,16 +1428,11 @@ gdm_client_class_init (GdmClientClass *klass)
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_client_finalize;
-
-        g_type_class_add_private (klass, sizeof (GdmClientPrivate));
-
 }
 
 static void
 gdm_client_init (GdmClient *client)
 {
-
-        client->priv = GDM_CLIENT_GET_PRIVATE (client);
 }
 
 static void
@@ -1452,33 +1445,33 @@ gdm_client_finalize (GObject *object)
 
         client = GDM_CLIENT (object);
 
-        g_return_if_fail (client->priv != NULL);
+        g_return_if_fail (client != NULL);
 
-        if (client->priv->user_verifier != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->priv->user_verifier),
+        if (client->user_verifier != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->user_verifier),
                                               (gpointer *)
-                                              &client->priv->user_verifier);
+                                              &client->user_verifier);
         }
 
-        if (client->priv->greeter != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->priv->greeter),
+        if (client->greeter != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->greeter),
                                               (gpointer *)
-                                              &client->priv->greeter);
+                                              &client->greeter);
         }
 
-        if (client->priv->remote_greeter != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->priv->remote_greeter),
+        if (client->remote_greeter != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->remote_greeter),
                                               (gpointer *)
-                                              &client->priv->remote_greeter);
+                                              &client->remote_greeter);
         }
 
-        if (client->priv->chooser != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->priv->chooser),
+        if (client->chooser != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->chooser),
                                               (gpointer *)
-                                              &client->priv->chooser);
+                                              &client->chooser);
         }
 
-        g_strfreev (client->priv->enabled_extensions);
+        g_strfreev (client->enabled_extensions);
 
         G_OBJECT_CLASS (gdm_client_parent_class)->finalize (object);
 }
@@ -1510,5 +1503,5 @@ void
 gdm_client_set_enabled_extensions (GdmClient          *client,
                                    const char * const *extensions)
 {
-        client->priv->enabled_extensions = g_strdupv ((char **) extensions);
+        client->enabled_extensions = g_strdupv ((char **) extensions);
 }

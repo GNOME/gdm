@@ -27,13 +27,7 @@
 G_BEGIN_DECLS
 
 #define GDM_TYPE_SESSION (gdm_session_get_type ())
-#define GDM_SESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDM_TYPE_SESSION, GdmSession))
-#define GDM_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_SESSION, GdmSessionClass))
-#define GDM_IS_SESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION))
-#define GDM_IS_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION))
-#define GDM_SESSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION, GdmSessionClass))
-
-typedef struct _GdmSessionPrivate GdmSessionPrivate;
+G_DECLARE_FINAL_TYPE (GdmSession, gdm_session, GDM, SESSION, GObject)
 
 typedef enum
 {
@@ -61,59 +55,6 @@ typedef enum {
 
 GdmSessionDisplayMode gdm_session_display_mode_from_string (const char *str);
 const char * gdm_session_display_mode_to_string (GdmSessionDisplayMode mode);
-
-typedef struct
-{
-        GObject            parent;
-        GdmSessionPrivate *priv;
-} GdmSession;
-
-typedef struct
-{
-        GObjectClass parent_class;
-
-        /* Signals */
-        void (* client_ready_for_session_to_start) (GdmSession   *session,
-                                                    const char   *service_name,
-                                                    gboolean      client_is_ready);
-
-        void (* cancelled)                   (GdmSession   *session);
-        void (* client_rejected)             (GdmSession   *session);
-        void (* client_connected)            (GdmSession   *session);
-        void (* client_disconnected)         (GdmSession   *session);
-        void (* disconnected)                (GdmSession   *session);
-        void (* verification_complete)       (GdmSession   *session,
-                                              const char   *service_name);
-        void (* authentication_failed)       (GdmSession   *session,
-                                              const char   *service_name,
-                                              GPid          worker_pid);
-        void (* session_opened)              (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *session_id);
-        void (* session_started)             (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *session_id,
-                                              int           pid);
-        void (* session_start_failed)        (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *message);
-        void (* session_exited)              (GdmSession   *session,
-                                              int           exit_code);
-        void (* session_died)                (GdmSession   *session,
-                                              int           signal_number);
-        void (* reauthentication_started)    (GdmSession   *session,
-                                              GPid          pid_of_caller);
-        void (* reauthenticated)             (GdmSession   *session,
-                                              const char   *service_name);
-        void (* conversation_started)        (GdmSession   *session,
-                                              const char   *service_name);
-        void (* conversation_stopped)        (GdmSession   *session,
-                                              const char   *service_name);
-        void (* setup_complete)              (GdmSession   *session,
-                                              const char   *service_name);
-} GdmSessionClass;
-
-GType            gdm_session_get_type                 (void);
 
 GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,
                                                        uid_t         allowed_user,

@@ -27,27 +27,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SETTINGS_DESKTOP_BACKEND         (gdm_settings_desktop_backend_get_type ())
-#define GDM_SETTINGS_DESKTOP_BACKEND(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SETTINGS_DESKTOP_BACKEND, GdmSettingsDesktopBackend))
-#define GDM_SETTINGS_DESKTOP_BACKEND_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SETTINGS_DESKTOP_BACKEND, GdmSettingsDesktopBackendClass))
-#define GDM_IS_SETTINGS_DESKTOP_BACKEND(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SETTINGS_DESKTOP_BACKEND))
-#define GDM_IS_SETTINGS_DESKTOP_BACKEND_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SETTINGS_DESKTOP_BACKEND))
-#define GDM_SETTINGS_DESKTOP_BACKEND_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SETTINGS_DESKTOP_BACKEND, GdmSettingsDesktopBackendClass))
-
-typedef struct GdmSettingsDesktopBackendPrivate GdmSettingsDesktopBackendPrivate;
-
-typedef struct
-{
-        GdmSettingsBackend                parent;
-        GdmSettingsDesktopBackendPrivate *priv;
-} GdmSettingsDesktopBackend;
-
-typedef struct
-{
-        GdmSettingsBackendClass   parent_class;
-} GdmSettingsDesktopBackendClass;
-
-GType                      gdm_settings_desktop_backend_get_type        (void);
+#define GDM_TYPE_SETTINGS_DESKTOP_BACKEND (gdm_settings_desktop_backend_get_type ())
+G_DECLARE_FINAL_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM, SETTINGS_DESKTOP_BACKEND, GdmSettingsBackend)
 
 GdmSettingsBackend        *gdm_settings_desktop_backend_new             (const char* filename);
 

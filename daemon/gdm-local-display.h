@@ -28,27 +28,8 @@
 G_BEGIN_DECLS
 
 #define GDM_TYPE_LOCAL_DISPLAY         (gdm_local_display_get_type ())
-#define GDM_LOCAL_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplay))
-#define GDM_LOCAL_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayClass))
-#define GDM_IS_LOCAL_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LOCAL_DISPLAY))
-#define GDM_IS_LOCAL_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LOCAL_DISPLAY))
-#define GDM_LOCAL_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LOCAL_DISPLAY, GdmLocalDisplayClass))
+G_DECLARE_FINAL_TYPE (GdmLocalDisplay, gdm_local_display, GDM, LOCAL_DISPLAY, GdmDisplay)
 
-typedef struct GdmLocalDisplayPrivate GdmLocalDisplayPrivate;
-
-typedef struct
-{
-        GdmDisplay               parent;
-        GdmLocalDisplayPrivate *priv;
-} GdmLocalDisplay;
-
-typedef struct
-{
-        GdmDisplayClass   parent_class;
-
-} GdmLocalDisplayClass;
-
-GType               gdm_local_display_get_type                (void);
 GdmDisplay *        gdm_local_display_new                     (void);
 
 

@@ -26,33 +26,9 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SERVER         (gdm_server_get_type ())
-#define GDM_SERVER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SERVER, GdmServer))
-#define GDM_SERVER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SERVER, GdmServerClass))
-#define GDM_IS_SERVER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SERVER))
-#define GDM_IS_SERVER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SERVER))
-#define GDM_SERVER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SERVER, GdmServerClass))
+#define GDM_TYPE_SERVER (gdm_server_get_type ())
+G_DECLARE_FINAL_TYPE (GdmServer, gdm_server, GDM, SERVER, GObject);
 
-typedef struct GdmServerPrivate GdmServerPrivate;
-
-typedef struct
-{
-        GObject           parent;
-        GdmServerPrivate *priv;
-} GdmServer;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-
-        void (* ready)             (GdmServer *server);
-        void (* exited)            (GdmServer *server,
-                                    int        exit_code);
-        void (* died)              (GdmServer *server,
-                                    int        signal_number);
-} GdmServerClass;
-
-GType               gdm_server_get_type  (void);
 GdmServer *         gdm_server_new       (const char *display_id,
                                           const char *seat_id,
                                           const char *auth_file,
