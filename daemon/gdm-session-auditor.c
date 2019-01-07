@@ -87,19 +87,19 @@ gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_cl
 
         param_spec = g_param_spec_string ("username", _("Username"),
                                         _("The username"),
-                                        NULL, G_PARAM_READWRITE);
+                                        NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_USERNAME, param_spec);
 
         param_spec = g_param_spec_string ("hostname", _("Hostname"),
                                         _("The hostname"),
                                         NULL,
-                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_HOSTNAME, param_spec);
 
         param_spec = g_param_spec_string ("display-device", _("Display Device"),
                                         _("The display device"),
                                         NULL,
-                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_DISPLAY_DEVICE, param_spec);
 }
 
