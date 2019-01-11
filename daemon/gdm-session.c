@@ -857,6 +857,7 @@ on_opened (GdmDBusWorker *worker,
                                  (GDestroyNotify) g_free);
 
                 conversation->session_id = g_strdup (session_id);
+                gdm_session_worker_job_set_session_id (conversation->job, session_id);
 
                 if (self->priv->greeter_interface != NULL) {
                         gdm_dbus_greeter_emit_session_opened (self->priv->greeter_interface,

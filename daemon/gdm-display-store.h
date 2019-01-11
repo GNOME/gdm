@@ -86,6 +86,8 @@ GdmDisplay *        gdm_display_store_find                     (GdmDisplayStore 
                                                                 GdmDisplayStoreFunc predicate,
                                                                 gpointer            user_data);
 
+GList *             gdm_display_store_get_displays             (GdmDisplayStore    *store);
+
 
 G_END_DECLS
 

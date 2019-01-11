@@ -136,6 +136,35 @@ typedef struct
         gpointer            user_data;
 } FindClosure;
 
+static void
+copy_func (StoredDisplay *stored_display,
+           FindClosure   *closure)
+{
+        closure->user_data = g_list_append (closure->user_data,
+                                            stored_display->display);
+}
+
+GList *
+gdm_display_store_get_displays (GdmDisplayStore    *store)
+{
+        GList *displays = NULL;
+        GList *store_displays = NULL;
+        FindClosure  closure;
+        g_return_val_if_fail (store != NULL, NULL);
+
+        store_displays = g_hash_table_get_values (store->priv->displays);
+
+        closure.user_data = displays;
+
+        g_list_foreach (store_displays,
+                        (GFunc) copy_func,
+                        &closure);
+        displays = closure.user_data;
+
+        g_list_free (store_displays);
+        return displays;
+}
+
 static gboolean
 find_func (const char    *id,
            StoredDisplay *stored_display,

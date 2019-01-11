@@ -47,6 +47,7 @@
 #include <glib-object.h>
 
 #include "gdm-common.h"
+#include "gdm-dbus-util.h"
 
 #include "gdm-session-worker-job.h"
 
@@ -64,6 +65,7 @@ struct GdmSessionWorkerJobPrivate
 
         char           *server_address;
         char          **environment;
+        char           *session_id;
 };
 
 enum {
@@ -71,6 +73,7 @@ enum {
         PROP_SERVER_ADDRESS,
         PROP_ENVIRONMENT,
         PROP_FOR_REAUTH,
+        PROP_SESSION_ID,
 };
 
 enum {
@@ -351,6 +354,42 @@ handle_session_worker_job_death (GdmSessionWorkerJob *session_worker_job)
         g_debug ("GdmSessionWorkerJob: SessionWorkerJob died");
 }
 
+static void
+gdm_session_worker_close_session (GdmSessionWorkerJob *session_worker_job)
+{
+        GError *error = NULL;
+        GVariant *reply;
+        GDBusConnection *connection = NULL;
+
+        g_debug ("GdmSessionWorkerJob: Close session id %s\n",
+                 session_worker_job->priv->session_id);
+
+        connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+        if (connection == NULL) {
+                g_debug ("GdmSessionWorkerJob: Error connecting to D-Bus address: %s\n", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "TerminateSession",
+                                             g_variant_new ("(s)", session_worker_job->priv->session_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             &error);
+        if (reply == NULL) {
+                g_debug ("GdmSessionWorkerJob: logind 'TerminateSession': %s\n", error->message);
+                g_error_free (error);
+        }
+
+        return;
+}
+
 void
 gdm_session_worker_job_stop_now (GdmSessionWorkerJob *session_worker_job)
 {
@@ -377,6 +416,9 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
                 return;
         }
 
+        if (session_worker_job->priv->session_id != NULL)
+                gdm_session_worker_close_session (session_worker_job);
+
         g_debug ("GdmSessionWorkerJob: Stopping job pid:%d", session_worker_job->priv->pid);
 
         res = gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
@@ -401,6 +443,16 @@ gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_j
 
         g_free (session_worker_job->priv->server_address);
         session_worker_job->priv->server_address = g_strdup (address);
+}
+
+void
+gdm_session_worker_job_set_session_id (GdmSessionWorkerJob *session_worker_job,
+                                       const char          *session_id)
+{
+        g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
+
+        g_free (session_worker_job->priv->session_id);
+        session_worker_job->priv->session_id = g_strdup (session_id);
 }
 
 void
@@ -440,6 +492,9 @@ gdm_session_worker_job_set_property (GObject      *object,
                 break;
         case PROP_ENVIRONMENT:
                 gdm_session_worker_job_set_environment (self, g_value_get_pointer (value));
+                break;
+        case PROP_SESSION_ID:
+                gdm_session_worker_job_set_session_id (self, g_value_get_string (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -581,6 +636,7 @@ gdm_session_worker_job_finalize (GObject *object)
 
         g_free (session_worker_job->priv->command);
         g_free (session_worker_job->priv->server_address);
+        g_free (session_worker_job->priv->session_id);
 
         G_OBJECT_CLASS (gdm_session_worker_job_parent_class)->finalize (object);
 }

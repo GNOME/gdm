@@ -2695,9 +2695,7 @@ unexport_display (const char *id,
 }
 
 static void
-finish_display (const char *id,
-                GdmDisplay *display,
-                GdmManager *manager)
+finish_display (GdmDisplay *display)
 {
         gdm_display_stop_greeter_session (display);
         if (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED)
@@ -2709,6 +2707,8 @@ static void
 gdm_manager_dispose (GObject *object)
 {
         GdmManager *manager;
+        GList      *user_sessions = NULL;
+        GList      *displays = NULL;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_MANAGER (object));
@@ -2730,9 +2730,12 @@ gdm_manager_dispose (GObject *object)
                          (GDestroyNotify)
                          g_hash_table_unref);
 
-        g_list_foreach (manager->priv->user_sessions,
+        user_sessions = g_list_copy (manager->priv->user_sessions);
+        g_list_foreach (user_sessions,
                         (GFunc) gdm_session_close,
                         NULL);
+        g_list_free (user_sessions);
+
         g_list_free_full (manager->priv->user_sessions, (GDestroyNotify) g_object_unref);
         manager->priv->user_sessions = NULL;
 
@@ -2750,9 +2753,11 @@ gdm_manager_dispose (GObject *object)
                 g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (manager));
         }
 
-        gdm_display_store_foreach (manager->priv->display_store,
-                                   (GdmDisplayStoreFunc) finish_display,
-                                   manager);
+        displays = gdm_display_store_get_displays (manager->priv->display_store);
+        g_list_foreach (displays,
+                        (GFunc) finish_display,
+                        NULL);
+        g_list_free (displays);
 
         gdm_display_store_clear (manager->priv->display_store);
 

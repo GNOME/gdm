@@ -61,6 +61,8 @@ void                    gdm_session_worker_job_set_for_reauth (GdmSessionWorkerJ
                                                                gboolean             for_reauth);
 void                    gdm_session_worker_job_set_environment    (GdmSessionWorkerJob *session_worker_job,
                                                                    const char * const  *environment);
+void                    gdm_session_worker_job_set_session_id (GdmSessionWorkerJob *session_worker_job,
+                                                               const char          *session_id);
 gboolean                gdm_session_worker_job_start              (GdmSessionWorkerJob *session_worker_job,
                                                                    const char          *name);
 void                    gdm_session_worker_job_stop               (GdmSessionWorkerJob *session_worker_job);
