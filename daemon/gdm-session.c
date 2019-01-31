@@ -1416,6 +1416,21 @@ gdm_session_handle_client_select_session (GdmDBusGreeter         *greeter_interf
                                           const char             *session,
                                           GdmSession             *self)
 {
+        if (gdm_session_is_running (self)) {
+                const char *username;
+
+                username = gdm_session_get_username (self);
+                g_debug ("GdmSession: refusing to select session %s since it's already running (for user %s)",
+                         session,
+                         username);
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_INVALID_ARGS,
+                                                       "Session already running for user %s",
+                                                       username);
+                return TRUE;
+        }
+
         if (self->greeter_interface != NULL) {
                 gdm_dbus_greeter_complete_select_session (greeter_interface,
                                                           invocation);
@@ -1430,6 +1445,22 @@ gdm_session_handle_client_select_user (GdmDBusGreeter        *greeter_interface,
                                        const char            *username,
                                        GdmSession            *self)
 {
+        if (gdm_session_is_running (self)) {
+                const char *session_username;
+
+                session_username = gdm_session_get_username (self);
+                g_debug ("GdmSession: refusing to select user %s, since session (%p) already running (for user %s)",
+                          username,
+                          self,
+                          session_username);
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_INVALID_ARGS,
+                                                       "Session already running for user %s",
+                                                       session_username);
+                return TRUE;
+        }
+
         if (self->greeter_interface != NULL) {
                 gdm_dbus_greeter_complete_select_user (greeter_interface,
                                                        invocation);
@@ -1446,6 +1477,20 @@ gdm_session_handle_client_start_session_when_ready (GdmDBusGreeter        *greet
                                                     gboolean               client_is_ready,
                                                     GdmSession            *self)
 {
+        if (gdm_session_is_running (self)) {
+                const char *username;
+
+                username = gdm_session_get_username (self);
+                g_debug ("GdmSession: refusing to start session (%p), since it's already running (for user %s)",
+                         self,
+                         username);
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_INVALID_ARGS,
+                                                       "Session already running for user %s",
+                                                       username);
+                return TRUE;
+        }
 
         if (self->greeter_interface != NULL) {
                 gdm_dbus_greeter_complete_start_session_when_ready (greeter_interface,
@@ -1464,6 +1509,20 @@ gdm_session_handle_get_timed_login_details (GdmDBusGreeter        *greeter_inter
                                             GDBusMethodInvocation *invocation,
                                             GdmSession            *self)
 {
+        if (gdm_session_is_running (self)) {
+                const char *username;
+
+                username = gdm_session_get_username (self);
+                g_debug ("GdmSession: refusing to give timed login details, session (%p) already running (for user %s)",
+                         self,
+                         username);
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_INVALID_ARGS,
+                                                       "Session already running for user %s",
+                                                       username);
+                return TRUE;
+        }
 
         if (self->greeter_interface != NULL) {
                 gdm_dbus_greeter_complete_get_timed_login_details (greeter_interface,
@@ -1486,6 +1545,22 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                                             const char            *username,
                                             GdmSession            *self)
 {
+        const char *session_username;
+
+        if (gdm_session_is_running (self)) {
+                session_username = gdm_session_get_username (self);
+                g_debug ("GdmSession: refusing auto login operation, session (%p) already running for user %s (%s requested)",
+                         self,
+                         session_username,
+                         username);
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_INVALID_ARGS,
+                                                       "Session already owned by user %s",
+                                                       session_username);
+                return TRUE;
+        }
+
         if (self->greeter_interface != NULL) {
                 gdm_dbus_greeter_complete_begin_auto_login (greeter_interface,
                                                             invocation);
