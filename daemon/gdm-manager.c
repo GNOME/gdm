@@ -336,23 +336,40 @@ find_session_for_user_on_seat (GdmManager *manager,
 
         for (node = manager->priv->user_sessions; node != NULL; node = node->next) {
                 GdmSession *candidate_session = node->data;
-                const char *candidate_username, *candidate_seat_id;
+                const char *candidate_username, *candidate_seat_id, *candidate_session_id;
 
-                if (candidate_session == dont_count_session)
-                        continue;
+                candidate_session_id = gdm_session_get_session_id (candidate_session);
 
-                if (!gdm_session_is_running (candidate_session))
+                if (candidate_session == dont_count_session) {
+                        g_debug ("GdmSession: Ignoring session %s as requested",
+                                 candidate_session_id);
                         continue;
+                }
+
+                if (!gdm_session_is_running (candidate_session)) {
+                        g_debug ("GdmSession: Ignoring session %s as it isn't running",
+                                 candidate_session_id);
+                        continue;
+                }
 
                 candidate_username = gdm_session_get_username (candidate_session);
                 candidate_seat_id = gdm_session_get_display_seat_id (candidate_session);
 
+                g_debug ("GdmManager: Considering session %s on seat %s belonging to user %s",
+                         candidate_session_id,
+                         candidate_seat_id,
+                         candidate_username);
+
                 if (g_strcmp0 (candidate_username, username) == 0 &&
                     g_strcmp0 (candidate_seat_id, seat_id) == 0) {
+                        g_debug ("GdmManager: yes, found session %s", candidate_session_id);
                         return candidate_session;
                 }
+
+                g_debug ("GdmManager: no, will not use session %s", candidate_session_id);
         }
 
+        g_debug ("GdmManager: no matching sessions found");
         return NULL;
 }
 
@@ -836,8 +853,12 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
 #endif
         if (session == NULL) {
                 session = get_user_session_for_display (display);
+                g_debug ("GdmSession: Considering session %s for username %s",
+                         gdm_session_get_session_id (session),
+                         gdm_session_get_username (session));
 
                 if (gdm_session_is_running (session)) {
+                        g_debug ("GdmSession: the session is running, and therefore can't be used");
                         g_dbus_method_invocation_return_error_literal (invocation,
                                                                        G_DBUS_ERROR,
                                                                        G_DBUS_ERROR_ACCESS_DENIED,
@@ -1013,6 +1034,10 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                    environment);
         g_strfreev (environment);
 
+        g_debug ("GdmSession: Created session for temporary reauthentication channel for user %d (seat %s)",
+                 (int) uid,
+                 seat_id);
+
         g_object_set_data_full (G_OBJECT (session),
                                 "caller-session-id",
                                 g_strdup (session_id),
@@ -1092,11 +1117,13 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         }
 
         if (is_login_screen) {
+                g_debug ("GdmManager: looking for login screen session for user %s on seat %s", username, seat_id);
                 session = find_session_for_user_on_seat (self,
                                                          username,
                                                          seat_id,
                                                          NULL);
         } else {
+                g_debug ("GdmManager: looking for user session on display");
                 session = get_user_session_for_display (display);
         }
 
@@ -2050,7 +2077,7 @@ on_session_client_connected (GdmSession      *session,
         gboolean enabled;
         gboolean allow_timed_login = FALSE;
 
-        g_debug ("GdmManager: client connected");
+        g_debug ("GdmManager: client with pid %d connected", (int) pid_of_client);
 
         display = get_display_for_user_session (session);
 
@@ -2096,7 +2123,7 @@ on_session_client_disconnected (GdmSession   *session,
                                 GPid          pid_of_client,
                                 GdmManager   *manager)
 {
-        g_debug ("GdmManager: client disconnected");
+        g_debug ("GdmManager: client with pid %d disconnected", (int) pid_of_client);
 }
 
 typedef struct
@@ -2163,9 +2190,10 @@ on_session_conversation_started (GdmSession *session,
         gboolean    enabled;
         char       *username;
 
-        g_debug ("GdmManager: session conversation started for service %s", service_name);
+        g_debug ("GdmManager: session conversation started for service %s on session", service_name);
 
         if (g_strcmp0 (service_name, "gdm-autologin") != 0) {
+                g_debug ("GdmManager: ignoring session conversation since its not automatic login conversation");
                 return;
         }
 
@@ -2275,6 +2303,12 @@ create_user_session_for_display (GdmManager *manager,
                                    display_auth_file,
                                    display_is_local,
                                    NULL);
+
+        g_debug ("GdmSession: Created user session for user %d on display %s (seat %s)",
+                 (int) allowed_user,
+                 display_id,
+                 display_seat_id);
+
         g_free (display_name);
         g_free (remote_hostname);
         g_free (display_auth_file);

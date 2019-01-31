@@ -656,7 +656,10 @@ gdm_session_select_user (GdmSession *self,
                          const char *text)
 {
 
-        g_debug ("GdmSession: Setting user: '%s'", text);
+        g_debug ("GdmSession: selecting user '%s' for session '%s' (%p)",
+                 text,
+                 gdm_session_get_session_id (self),
+                 self);
 
         g_free (self->selected_user);
         self->selected_user = g_strdup (text);
@@ -1431,6 +1434,7 @@ gdm_session_handle_client_select_user (GdmDBusGreeter        *greeter_interface,
                 gdm_dbus_greeter_complete_select_user (greeter_interface,
                                                        invocation);
         }
+        g_debug ("GdmSession: client selected user '%s' on session (%p)", username, self);
         gdm_session_select_user (self, username);
         return TRUE;
 }
@@ -1487,7 +1491,10 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                                                             invocation);
         }
 
-        g_debug ("GdmSession: begin auto login for user '%s'", username);
+        g_debug ("GdmSession: client requesting automatic login for user '%s' on session '%s' (%p)",
+                 username,
+                 gdm_session_get_session_id (self),
+                 self);
 
         gdm_session_setup_for_user (self, "gdm-autologin", username);
 
@@ -1788,7 +1795,9 @@ setup_outside_server (GdmSession *self)
         GDBusServer *server;
         GError *error = NULL;
 
-        g_debug ("GdmSession: Creating D-Bus server for greeters and such");
+         g_debug ("GdmSession: Creating D-Bus server for greeters and such for session %s (%p)",
+                  gdm_session_get_session_id (self),
+                  self);
 
         observer = g_dbus_auth_observer_new ();
         g_signal_connect_object (observer,
@@ -2168,7 +2177,7 @@ gdm_session_start_conversation (GdmSession *self,
                 conversation->job = NULL;
         }
 
-        g_debug ("GdmSession: starting conversation %s", service_name);
+        g_debug ("GdmSession: starting conversation %s for session (%p)", service_name, self);
 
         conversation = start_conversation (self, service_name);
 
@@ -2327,6 +2336,10 @@ gdm_session_setup_for_user (GdmSession *self,
 
         update_session_type (self);
 
+        g_debug ("GdmSession: Set up service %s for username %s on session (%p)",
+                 service_name,
+                 username,
+                 self);
         gdm_session_select_user (self, username);
 
         self->is_program_session = FALSE;
@@ -2956,6 +2969,10 @@ gdm_session_start_reauthentication (GdmSession *session,
         GdmSessionConversation *conversation = session->session_conversation;
 
         g_return_if_fail (conversation != NULL);
+
+        g_debug ("GdmSession: starting reauthentication for session %s for client with pid %d",
+                 conversation->session_id,
+                 (int) uid_of_caller);
 
         conversation->reauth_pid_of_caller = pid_of_caller;
 
