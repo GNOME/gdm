@@ -2079,6 +2079,14 @@ on_session_client_connected (GdmSession      *session,
 
         g_debug ("GdmManager: client with pid %d connected", (int) pid_of_client);
 
+        if (gdm_session_is_running (session)) {
+                const char *session_username;
+                session_username = gdm_session_get_username (session);
+                g_debug ("GdmManager: ignoring connection, since session already running (for user %s)",
+                         session_username);
+                return;
+        }
+
         display = get_display_for_user_session (session);
 
         if (display == NULL) {
