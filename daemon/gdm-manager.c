@@ -1815,7 +1815,8 @@ on_start_user_session (StartUserSessionOperation *operation)
                                                  session_id);
 
 
-                if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0) {
+                if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
+	            !gdm_session_client_is_connected (operation->session)) {
                         /* remove the unused prepared greeter display since we're not going
                          * to have a greeter */
                         gdm_display_store_remove (self->priv->display_store, display);
