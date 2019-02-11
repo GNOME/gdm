@@ -2766,6 +2766,25 @@ send_session_type (GdmSession *self,
                                                        session_type,
                                                        conversation->worker_cancellable,
                                                        NULL, NULL);
+
+        /* If the session type is x11, then set GDK_BACKEND to x11 as well.
+         * This is so gnome-session-check-accelerated from an XDMCP connection doesn't
+         * try to use the wayland display running on the local console for the gdm
+         * user login screen session.
+         *
+         * That's the only case where we let a user log in more than once, so it's
+         * the only situation that matters.
+         *
+         * We can drop this code if we ever switch the login screen to use systemd's
+         * DynamicUser feature.
+         */
+        if (g_strcmp0 (session_type, "x11") == 0) {
+                gdm_dbus_worker_call_set_environment_variable (conversation->worker_proxy,
+                                                               "GDK_BACKEND",
+                                                               "x11",
+                                                               conversation->worker_cancellable,
+                                                               NULL, NULL);
+        }
 }
 
 void
