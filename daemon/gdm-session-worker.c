@@ -34,6 +34,7 @@
 #include <errno.h>
 #include <grp.h>
 #include <pwd.h>
+#include <signal.h>
 
 #include <security/pam_appl.h>
 
@@ -181,6 +182,8 @@ struct GdmSessionWorkerPrivate
         GdmSessionSettings *user_settings;
 
         GDBusMethodInvocation *pending_invocation;
+
+        GMainLoop          *main_loop;
 };
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
@@ -197,6 +200,7 @@ enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
         PROP_IS_REAUTH_SESSION,
+        PROP_MAIN_LOOP,
 };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
@@ -2456,6 +2460,13 @@ gdm_session_worker_set_is_reauth_session (GdmSessionWorker *worker,
 }
 
 static void
+gdm_session_worker_set_main_loop (GdmSessionWorker *worker,
+                                  GMainLoop        *main_loop)
+{
+        worker->priv->main_loop = main_loop;
+}
+
+static void
 gdm_session_worker_set_property (GObject      *object,
                                 guint         prop_id,
                                 const GValue *value,
@@ -2471,6 +2482,9 @@ gdm_session_worker_set_property (GObject      *object,
                 break;
         case PROP_IS_REAUTH_SESSION:
                 gdm_session_worker_set_is_reauth_session (self, g_value_get_boolean (value));
+                break;
+        case PROP_MAIN_LOOP:
+                gdm_session_worker_set_main_loop (self, g_value_get_pointer (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2494,6 +2508,9 @@ gdm_session_worker_get_property (GObject    *object,
                 break;
         case PROP_IS_REAUTH_SESSION:
                 g_value_set_boolean (value, self->priv->is_reauth_session);
+                break;
+        case PROP_MAIN_LOOP:
+                g_value_set_pointer (value, self->priv->main_loop);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2764,6 +2781,16 @@ do_open_session (GdmSessionWorker *worker)
         worker->priv->pending_invocation = NULL;
 }
 
+static gboolean
+on_shutdown_signal_cb (gpointer user_data)
+{
+        GMainLoop *mainloop = user_data;
+
+        g_main_loop_quit (mainloop);
+
+        return FALSE;
+}
+
 static void
 do_start_session (GdmSessionWorker *worker)
 {
@@ -2773,6 +2800,9 @@ do_start_session (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_start_session (worker, &error);
         if (res) {
+                g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, worker->priv->main_loop);
+                g_unix_signal_add (SIGINT, on_shutdown_signal_cb,  worker->priv->main_loop);
+
                 gdm_dbus_worker_complete_start_program (GDM_DBUS_WORKER (worker),
                                                         worker->priv->pending_invocation,
                                                         worker->priv->child_pid);
@@ -3471,6 +3501,13 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
                                                                "is reauth session",
                                                               FALSE,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
+                                         PROP_MAIN_LOOP,
+                                         g_param_spec_pointer ("main-loop",
+                                                               "main loop",
+                                                               "main loop",
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -3561,13 +3598,15 @@ gdm_session_worker_finalize (GObject *object)
 
 GdmSessionWorker *
 gdm_session_worker_new (const char *address,
-                        gboolean    is_reauth_session)
+                        gboolean    is_reauth_session,
+                        GMainLoop   *main_loop)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SESSION_WORKER,
                                "server-address", address,
                                "is-reauth-session", is_reauth_session,
+                               "main-loop", main_loop,
                                NULL);
 
         return GDM_SESSION_WORKER (object);

@@ -51,6 +51,7 @@ typedef struct
 GType              gdm_session_worker_get_type                 (void);
 
 GdmSessionWorker * gdm_session_worker_new                      (const char *server_address,
-                                                                gboolean    is_for_reauth) G_GNUC_MALLOC;
+                                                                gboolean    is_for_reauth,
+                                                                GMainLoop  *main_loop) G_GNUC_MALLOC;
 G_END_DECLS
 #endif /* GDM_SESSION_WORKER_H */

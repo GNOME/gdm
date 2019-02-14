@@ -64,12 +64,6 @@ is_debug_set (void)
         return debug;
 }
 
-static void
-on_sigterm_cb (int signal_number)
-{
-        _exit (EXIT_SUCCESS);
-}
-
 int
 main (int    argc,
       char **argv)
@@ -82,8 +76,6 @@ main (int    argc,
         static GOptionEntry entries []   = {
                 { NULL }
         };
-
-        signal (SIGTERM, on_sigterm_cb);
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         textdomain (GETTEXT_PACKAGE);
@@ -120,9 +112,9 @@ main (int    argc,
 
         is_for_reauth = g_getenv ("GDM_SESSION_FOR_REAUTH") != NULL;
 
-        worker = gdm_session_worker_new (address, is_for_reauth);
-
         main_loop = g_main_loop_new (NULL, FALSE);
+
+        worker = gdm_session_worker_new (address, is_for_reauth, main_loop);
 
         g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
