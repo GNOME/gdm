@@ -5,9 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gdm&k"
-"eywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-10-20 16:41+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
+"POT-Creation-Date: 2018-11-06 21:47+0000\n"
 "PO-Revision-Date: 2018-02-26 11:20+0100\n"
 "Last-Translator: GunChleoc <fios@foramnagaidhlig.net>\n"
 "Language-Team: Fòram na Gàidhlig\n"
@@ -20,449 +19,402 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../chooser/gdm-host-chooser-dialog.c:147
+#: chooser/gdm-host-chooser-dialog.c:140
+msgid "_Refresh"
+msgstr "_Ath-nuadhaich"
+
+#: chooser/gdm-host-chooser-dialog.c:141
+msgid "_Cancel"
+msgstr "_Sguir dheth"
+
+#: chooser/gdm-host-chooser-dialog.c:142
+msgid "C_onnect"
+msgstr "_Ceangail"
+
+#: chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Tagh siostam"
 
-#: ../chooser/gdm-host-chooser-widget.c:254
+#: chooser/gdm-host-chooser-widget.c:254
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: Cha deach leinn bufair XDMCP a chruthachadh!"
 
-#: ../chooser/gdm-host-chooser-widget.c:260
+#: chooser/gdm-host-chooser-widget.c:260
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Cha deach leinn am bann-cinn XDMCP a leughadh!"
 
-#: ../chooser/gdm-host-chooser-widget.c:266
+#: chooser/gdm-host-chooser-widget.c:266
 msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Seo an tionndadh cearr de XDMCP!"
+msgstr "XDMCP: Tionndadh ceàrr de XDMCP!"
 
-#: ../chooser/gdm-host-chooser-widget.c:272
+#: chooser/gdm-host-chooser-widget.c:272
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Cha ghabh an seòladh a pharsadh"
 
-#: ../common/gdm-common.c:298
-#, c-format
+#: common/gdm-common.c:307
 msgid "/dev/urandom is not a character device"
-msgstr "Chan e uidheam caractair a tha sa /dev/urandom"
+msgstr "Chan eil /dev/urandom ’na uidheam caractair"
 
-#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
-#, c-format
+#: common/gdm-common.c:502 libgdm/gdm-user-switching.c:209
 msgid "Could not identify the current session."
 msgstr "Cha b’ urrainn dhuinn an seisean làithreach aithneachadh."
 
-#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
-#, c-format
+#: common/gdm-common.c:511 libgdm/gdm-user-switching.c:218
 msgid "Could not identify the current seat."
-msgstr "Cha b’ urrainn dhuinn an suidhe làithreach aithneachadh."
+msgstr "Cha b’ urrainn dhuinn an t-àite-suidhe làithreach aithneachadh."
 
-#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
-#, c-format
+#: common/gdm-common.c:521 libgdm/gdm-user-switching.c:228
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
-msgstr ""
-"Chan urrainn dhan t-siostam faighinn a-mach co-dhiù an gearr e leum gu sgrìn "
-"clàraidh a-steach a tha ann mar-thà no an tòisich e tè ùr."
+msgstr "Chan urrainn dhan t-siostam aithneachadh am bu chòir dha leum a ghearradh gu sgrìn clàraidh a-steach làithreach no an tòisicheadh e air tè ùr."
 
-#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
-#, c-format
+#: common/gdm-common.c:529 libgdm/gdm-user-switching.c:236
 msgid "The system is unable to start up a new login screen."
-msgstr "Chan urrainn dhan t-siostam sgrìn clàraidh a-steach ùr a thòiseachadh."
+msgstr "Chan urrainn dhan t-siostam sgrìn clàraidh a-steach ùr a chur gu dol."
 
-#: ../daemon/gdm-display-access-file.c:300
+#: daemon/gdm-display-access-file.c:300
 #, c-format
-#| msgid "could not find user \"%s\" on system"
 msgid "could not find user “%s” on system"
-msgstr "Cha deach an cleachdaiche “%s” a lorg air an t-siostam"
+msgstr "cha deach an cleachdaiche “%s” a lorg air an t-siostam"
 
-#: ../daemon/gdm-legacy-display.c:235
+#: daemon/gdm-legacy-display.c:236
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
-msgstr ""
-"Cha b’ urrainn dhuinn am frithealaiche X (seo an eadar-aghaidh grafaigeach "
-"agad) a thòiseachadh ri linn mearachd taobh a-staigh. Cuir fios gu rianaire "
-"an t-siostaim agad no thoir sùil air a’ syslog agad gus an trioblaid a "
-"sgrùdadh. Thèid an t-uidheam-taisbeanaidh seo a chur à comas san eadar-àm. "
-"Tòisich GDM às ùr nuair a bhios an duilgheadas air a chàradh."
+msgstr "Cha b’ urrainn dhuinn am frithealaiche X (seo an eadar-aghaidh grafaigeach agad) a thòiseachadh ri linn mearachd taobh a-staigh. Cuir fios gu rianaire an t-siostaim agad no thoir sùil air a’ syslog agad gus an trioblaid a sgrùdadh. Thèid an t-uidheam-taisbeanaidh seo a chur à comas san eadar-àm. Tòisich GDM às ùr nuair a bhios an duilgheadas air a chàradh."
 
-#: ../daemon/gdm-manager.c:777
+#: daemon/gdm-manager.c:744
 msgid "No display available"
 msgstr "Chan eil uidheam-taisbeanaidh ri fhaighinn"
 
-#: ../daemon/gdm-manager.c:846 ../daemon/gdm-manager.c:1122
+#: daemon/gdm-manager.c:813 daemon/gdm-manager.c:1089
 msgid "No session available"
 msgstr "Chan eil seisean ri fhaighinn"
 
-#: ../daemon/gdm-manager.c:865
-#| msgid "No session available"
+#: daemon/gdm-manager.c:832
 msgid "Chooser session unavailable"
-msgstr "Chan eil seisean ri fhaighinn"
+msgstr "Chan eil seisean taghaidh ri fhaighinn"
 
-#: ../daemon/gdm-manager.c:877
+#: daemon/gdm-manager.c:844
 msgid "Can only be called before user is logged in"
-msgstr "Cha ghabh seo a ghairm mus do rinn cleachdaiche clàradh a-steach"
+msgstr "Cha ghabh seo a ghairm ach mus do rinn cleachdaiche clàradh a-steach"
 
-#: ../daemon/gdm-manager.c:888
+#: daemon/gdm-manager.c:855
 msgid "Caller not GDM"
-msgstr "Cha deach seo gairm le GDM"
+msgstr "Cha deach seo a ghairm le GDM"
 
-#: ../daemon/gdm-manager.c:898
+#: daemon/gdm-manager.c:865
 msgid "Unable to open private communication channel"
 msgstr "Cha deach leinn sianail conaltraidh phrìobhaideach fhosgladh"
 
-#: ../daemon/gdm-server.c:383
+#: daemon/gdm-server.c:383
 #, c-format
-#| msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
-msgstr ""
-"Bha frithealaiche gu bhith sìoladh leis a’ chleachdaiche %s ach chan eil an "
-"cleachdaiche seo ann"
+msgstr "Bha frithealaiche gu bhith sìoladh leis a’ chleachdaiche %s ach chan eil an cleachdaiche seo ann"
 
-#: ../daemon/gdm-server.c:394 ../daemon/gdm-server.c:414
+#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
-#| msgid "Couldn't set groupid to %d"
 msgid "Couldn’t set groupid to %d"
 msgstr "Cha deach leinn groupid a shuidheachadh air %d"
 
-#: ../daemon/gdm-server.c:400
+#: daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Dh’fhàillig le initgroups () airson %s"
 
-#: ../daemon/gdm-server.c:406
+#: daemon/gdm-server.c:406
 #, c-format
-#| msgid "Couldn't set userid to %d"
 msgid "Couldn’t set userid to %d"
 msgstr "Cha deach leinn userid a shuidheachadh air %d"
 
-#: ../daemon/gdm-server.c:484
+#: daemon/gdm-server.c:484
 #, c-format
 msgid "%s: Could not open log file for display %s!"
-msgstr ""
-"%s: Cha b’ urrainn dhuinn am faidhle loga airson an uidheim thaisbeanaidh %s "
-"fhosgladh!"
+msgstr "%s: Cha b’ urrainn dhuinn am faidhle loga airson an uidheim thaisbeanaidh %s fhosgladh!"
 
-#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
-#: ../daemon/gdm-server.c:517
+#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Mearachd a’ suidheachadh %s air %s"
 
-#: ../daemon/gdm-server.c:537
+#: daemon/gdm-server.c:537
 #, c-format
-#| msgid "%s: Server priority couldn't be set to %d: %s"
 msgid "%s: Server priority couldn’t be set to %d: %s"
-msgstr ""
-"%s: Cha b’ urrainn duinn prìomhachas an fhrithealaiche a shuidheachadh air %"
-"d: %s"
+msgstr "%s: Cha b’ urrainn duinn prìomhachas an fhrithealaiche a shuidheachadh air %d: %s"
 
-#: ../daemon/gdm-server.c:689
+#: daemon/gdm-server.c:689
 #, c-format
 msgid "%s: Empty server command for display %s"
-msgstr "%s: Àithne an fhrithealaiche falamh airson an uidheim thaisbeanaidh %s"
+msgstr "%s: Àithne frithealaiche fhalamh airson an uidheim thaisbeanaidh %s"
 
-#: ../daemon/gdm-session-auditor.c:90
+#: daemon/gdm-session-auditor.c:90
 msgid "Username"
 msgstr "Ainm-cleachdaiche"
 
-#: ../daemon/gdm-session-auditor.c:91
+#: daemon/gdm-session-auditor.c:91
 msgid "The username"
 msgstr "Ainm a’ chleachdaiche"
 
-#: ../daemon/gdm-session-auditor.c:95
+#: daemon/gdm-session-auditor.c:95
 msgid "Hostname"
 msgstr "Ainm-òstair"
 
-#: ../daemon/gdm-session-auditor.c:96
+#: daemon/gdm-session-auditor.c:96
 msgid "The hostname"
 msgstr "Ainm an òstair"
 
-#: ../daemon/gdm-session-auditor.c:101
+#: daemon/gdm-session-auditor.c:101
 msgid "Display Device"
 msgstr "Uidheam taisbeanaidh"
 
-#: ../daemon/gdm-session-auditor.c:102
+#: daemon/gdm-session-auditor.c:102
 msgid "The display device"
 msgstr "An t-uidheam taisbeanaidh"
 
-#: ../daemon/gdm-session.c:1215
+#: daemon/gdm-session.c:1280
 msgid "Could not create authentication helper process"
-msgstr ""
-"Cha b’ urrainn dhuinn pròiseas taice airson an dearbhaidh a chruthachadh"
+msgstr "Cha b’ urrainn dhuinn pròiseas taice airson an dearbhaidh a chruthachadh"
 
-#: ../daemon/gdm-session-worker.c:642
-#| msgid "Your account was given a time limit that's now passed."
+#: daemon/gdm-session-worker.c:766
 msgid "Your account was given a time limit that’s now passed."
-msgstr ""
-"Chaidh crìochan ùine a thoirt dhan chunntas agad a tha air falbh ort a-nis."
+msgstr "Chaidh crìochan ùine a thoirt dhan chunntas agad a tha air falbh ort a-nis."
 
-#: ../daemon/gdm-session-worker.c:649
-#| msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:773
 msgid "Sorry, that didn’t work. Please try again."
-msgstr "Tha sinn duilich ach cha do dh’obraich seo. Am feuch thu ris a-rithist?"
+msgstr "Tha sinn duilich ach cha do dh’obraich sin. Am feuch thu ris a-rithist?"
 
-#: ../daemon/gdm-session-worker.c:1039
+#: daemon/gdm-session-worker.c:1187
 msgid "Username:"
 msgstr "Ainm-cleachdaiche:"
 
-#: ../daemon/gdm-session-worker.c:1541 ../daemon/gdm-session-worker.c:1558
-#, c-format
+#: daemon/gdm-session-worker.c:1691 daemon/gdm-session-worker.c:1708
 msgid "no user account available"
 msgstr "chan eil cunntas cleachdaiche ri làimh"
 
-#: ../daemon/gdm-session-worker.c:1585
+#: daemon/gdm-session-worker.c:1735
 msgid "Unable to change to user"
 msgstr "Chan urrainn dhuinn leum a ghearradh dhan chleachdaiche"
 
-#: ../daemon/gdm-wayland-session.c:478
+#: daemon/gdm-wayland-session.c:478
 msgid "GNOME Display Manager Wayland Session Launcher"
-msgstr ""
-"Lòinsear sheiseanan Wayland aig manaidsear uidheaman taisbeanaidh GNOME"
+msgstr "Lòinsear sheiseanan Wayland aig manaidsear uidheaman taisbeanaidh GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:612
+#: daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Cha b’ urrainn dhuinn socaid a chruthachadh!"
 
-#: ../daemon/gdm-x-session.c:826
+#: daemon/gdm-x-session.c:826
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Ruith am prògram tro sgriobt pasgaidh /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:827
+#: daemon/gdm-x-session.c:827
 msgid "Listen on TCP socket"
 msgstr "Èist ri socaid TCP"
 
-#: ../daemon/gdm-x-session.c:838
+#: daemon/gdm-x-session.c:838
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Lòinsear sheiseanan X aig manaidsear uidheaman taisbeanaidh GNOME"
 
-#: ../daemon/main.c:125 ../daemon/main.c:138
+#: daemon/main.c:125 daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr ""
-"Cha ghabh sgrìobhadh san fhaidhle PID %s: dh’fhaoidte gu bheil rum air an "
-"diosga a dhìth: %s"
+msgstr "Cha ghabh sgrìobhadh san fhaidhle PID %s: dh’fhaoidte gu bheil an rùm air an diosga ro ghann: %s"
 
-#: ../daemon/main.c:182
+#: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Dh’fhàillig le cruthachadh ran once marker dir %s: %s"
 
-#: ../daemon/main.c:188
+#: daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Dh’fhàillig le cruthachadh LogDir %s: %s"
 
-#: ../daemon/main.c:223
+#: daemon/main.c:223
 #, c-format
-#| msgid "Can't find the GDM user '%s'. Aborting!"
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Cha ghabh an cleachdaiche GDM “%s” a lorg. A’ sgur dheth!"
 
-#: ../daemon/main.c:229
+#: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Cha bu chòir dhan chleachdaiche GDM a bhith ’na root. A’ sgur dheth!"
 
-#: ../daemon/main.c:235
+#: daemon/main.c:235
 #, c-format
-#| msgid "Can't find the GDM group '%s'. Aborting!"
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Cha ghabh am buidheann GDM “%s” a lorg. A’ sgur dheth!"
 
-#: ../daemon/main.c:241
+#: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Cha bu chòir dhan bhuidheann GDM a bhith ’na root. A’ sgur dheth!"
 
-#: ../daemon/main.c:317
+#: daemon/main.c:317
 msgid "Make all warnings fatal"
 msgstr "Dèan gach rabhadh marbhtach"
 
-#: ../daemon/main.c:318
+#: daemon/main.c:318
 msgid "Exit after a time (for debugging)"
-msgstr "Fàg an ceann greis (airson dì-bhugachadh)"
+msgstr "Fàg an ceann greis (a chùm dì-bhugachaidh)"
 
-#: ../daemon/main.c:319
+#: daemon/main.c:319
 msgid "Print GDM version"
 msgstr "Seall an tionndadh de GDM"
 
-#: ../daemon/main.c:330
+#: daemon/main.c:330
 msgid "GNOME Display Manager"
 msgstr "Manaidsear uidheaman taisbeanaidh GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:351
+#: daemon/main.c:350
 msgid "Only the root user can run GDM"
 msgstr "Chan urrainn ach dhan chleachdaiche a bhios ’na root GDM a ruith"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:94
+#: daemon/session-worker-main.c:94
 msgid "GNOME Display Manager Session Worker"
 msgstr "Obraiche sheiseanan aig manaidsear uidheaman taisbeanaidh GNOME"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+#: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr ""
-"Co dhiubh am bi leughadairean luirg-mheòir ceadaichte gus clàradh a-steach "
-"gus nach bi"
+msgstr "Co dhiubh am bi leughadairean luirg-mheòir ceadaichte airson clàradh a-steach gus nach bi"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+#: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
-msgstr ""
-"Tha roghainn ann airson na sgrìn clàraidh a-steach gum faod cleachdaichean a "
-"chlàraidh an lorgan-meòir na lorgan ud a chleachdadh gus clàradh a-steach."
+msgstr "Gabhaidh roghainn a chur ris an sgrìn clàraidh a-steach gum faod cleachdaichean a chlàraich an lorgan-meòir na lorgan ud a chleachdadh gus clàradh a-steach."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
-msgstr ""
-"Co dhiubh am bi leughadairean cairtean tapaidh ceadaichte gus clàradh "
-"a-steach gus nach bi"
+msgstr "Co dhiubh am bi leughadairean smartcard ceadaichte gus clàradh a-steach gus nach bi"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+#: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
-msgstr ""
-"Tha roghainn ann airson na sgrìn clàraidh a-steach gum faod cleachdaichean "
-"aig a bheil smartcard na smartcards aca a chleachdadh gus clàradh a-steach."
+msgstr "Gabhaidh roghainn a chur ris an sgrìn clàraidh a-steach gum faod cleachdaichean aig a bheil smartcard an smartcard aca a chleachdadh gus clàradh a-steach."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
-msgstr ""
-"Co dhiubh am bi faclan-faire ceadaichte gus clàradh a-steach gus nach bi"
+msgstr "Co dhiubh am bi faclan-faire ceadaichte gus clàradh a-steach gus nach bi"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: data/org.gnome.login-screen.gschema.xml:29
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
-msgstr ""
-"Gabhaidh an sgrìn clàraidh a-steach rèiteachadh ach nach ceadaich i "
-"dearbhadh le facal-faire ’s gun toir i air a’ chleachdaiche clàradh a-steach "
-"le lorg-meòir no smartcard."
+msgstr "Gabhaidh an sgrìn clàraidh a-steach rèiteachadh ach nach ceadaich i dearbhadh le facal-faire ’s gun doir i air a’ chleachdaiche clàradh a-steach le lorg-meòir no smartcard."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: data/org.gnome.login-screen.gschema.xml:36
+#: data/org.gnome.login-screen.gschema.xml:46
 msgid "Path to small image at top of user list"
-msgstr "Slighe dhan dhealbh bheag air barr liosta nan cleachdaichean"
+msgstr "Slighe dhan dhealbh bheag air bàrr liosta nan cleachdaichean"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: data/org.gnome.login-screen.gschema.xml:39
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr ""
-"Ma thogras tu, faodaidh an sgrìn clàraidh a-steach dealbh beag a "
-"shealltainn. Leigidh seo le rianairean an t-siostaim ’s sgaoilidhean an "
-"suaicheantas a thoirt seachad."
+msgstr "Gabhaidh roghainn a chur ris an sgrìn clàraidh a-steach gun seall e dealbh beag a leigeas le rianairean an t-siostaim ’s le sgaoilidhean an suaicheantas a nochdadh."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr ""
-"Ma thogras tu, faodaidh an sgrìn clàraidh a-steach èiginneach dealbh beag a "
-"shealltainn. Leigidh seo le rianairean an t-siostaim ’s sgaoilidhean an "
-"suaicheantas a thoirt seachad."
+msgstr "Gabhaidh roghainn a chur ris an sgrìn clàraidh a-steach èiginneach gun seall e dealbh beag a leigeas le rianairean an t-siostaim ’s le sgaoilidhean an suaicheantas a nochdadh."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: data/org.gnome.login-screen.gschema.xml:56
 msgid "Avoid showing user list"
 msgstr "Na nochd liosta nan cleachdaichean"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: data/org.gnome.login-screen.gschema.xml:59
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
-msgstr ""
-"Nochdaidh an sgrìn clàraidh a-steach liosta dhe na cleachdaichean a "
-"dh’fhaodas clàradh a-seach a ghnàth. Toglaich an roghainn seo ach nach nochd "
-"liosta nan cleachdaichean."
+msgstr "Nochdaidh an sgrìn clàraidh a-steach liosta dhe na cleachdaichean a dh’fhaodas clàradh a-steach a ghnàth. Gabhaidh an roghainn seo a chur dheth ach nach nochd liosta nan cleachdaichean."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
 msgstr "Seall teachdaireachd na brataich"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: data/org.gnome.login-screen.gschema.xml:69
 msgid "Set to true to show the banner message text."
 msgstr "Suidhich seo air “true” ach an nochd teacsa na brataich."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: data/org.gnome.login-screen.gschema.xml:75
 msgid "Banner message text"
 msgstr "Teacsa na brataich"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: data/org.gnome.login-screen.gschema.xml:78
 msgid "Text banner message to show in the login window."
 msgstr "Teacsa na brataich a nochdas air uinneag a’ chlàraidh a-steach."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid "Disable showing the restart buttons"
 msgstr "Cuir na putanan ath-thòiseachaidh à comas"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: data/org.gnome.login-screen.gschema.xml:87
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Ma tha seo air “true”, cha nochd na putanan ath-thòiseachaidh air uinneag a’ "
-"chlàraidh a-steach."
+msgstr "Ma tha seo air “true”, cha nochd na putanan ath-thòiseachaidh air uinneag a’ chlàraidh a-steach."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
+#: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
 msgstr "Cò mheud turas a dh’fhaodas dearbhadh fhàilligeadh"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
+#: data/org.gnome.login-screen.gschema.xml:96
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
-msgstr ""
-"An t-uiread de thursan a dh’fhaodas cleachdaiche an dearbhadh fheuchainn mus "
-"tèid a leigeil seachad ’s tilleadh gu taghadh a’ chleachdaiche."
+msgstr "An t-uiread de thursan a dh’fhaodas cleachdaiche an dearbhadh fheuchainn mus dèid a leigeil seachad ’s a thilleadh gu taghadh a’ chleachdaiche."
 
-#: ../libgdm/gdm-user-switching.c:59
+#: libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Cha b’ urrainn dhuinn an t-uidheam-taisbeanaidh sealach a cruthachadh: "
 
-#: ../libgdm/gdm-user-switching.c:90
+#: libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Cha b’ urrainn dhuinn an t-seisean a ghnìomhachadh: "
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Cha chuirear taic ach ris an àithne VERSION"
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "ÀITHNE"
 
-#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
-#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
+#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
+#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
-msgstr "Air a leigeil seachad — cha chum sinn e ach a chum co-chòrdalachd"
+msgstr "Chaidh a leigeil seachad  – chan eil seo ann ach a chùm co-chòrdalachd"
 
-#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
+#: utils/gdmflexiserver.c:48 utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Às-chur an dì-bhugachaidh"
 
-#: ../utils/gdmflexiserver.c:52
+#: utils/gdmflexiserver.c:52
 msgid "Version of this application"
-msgstr "Tionndadh a’ phrògraim seo"
+msgstr "Tionndadh na h-aplacaid seo"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:137
-#| msgid "- New GDM login"
+#: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
 msgstr "– Clàradh a-steach GDM ùr"
 
-#: ../utils/gdm-screenshot.c:212
+#: utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "Chaidh an glacadh-sgrìn a thogail"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:279
+#: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Tog dealbh dhen sgrìn"
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr ""
+
 #~ "Dh'fhalbh an ùine air an fhacal-fhaire agad, an atharraich thu e an-"
 #~ "dràsta?"
 
