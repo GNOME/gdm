@@ -146,6 +146,16 @@ find_func (const char    *id,
                                    closure->user_data);
 }
 
+static void
+foreach_func (const char    *id,
+              StoredDisplay *stored_display,
+              FindClosure   *closure)
+{
+        return closure->predicate (id,
+                                   stored_display->display,
+                                   closure->user_data);
+}
+
 void
 gdm_display_store_foreach (GdmDisplayStore    *store,
                            GdmDisplayStoreFunc func,
@@ -159,9 +169,9 @@ gdm_display_store_foreach (GdmDisplayStore    *store,
         closure.predicate = func;
         closure.user_data = user_data;
 
-        g_hash_table_find (store->priv->displays,
-                           (GHRFunc) find_func,
-                           &closure);
+        g_hash_table_foreach (store->priv->displays,
+                              (GHFunc) foreach_func,
+                              &closure);
 }
 
 GdmDisplay *
