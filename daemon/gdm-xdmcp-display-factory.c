@@ -666,7 +666,7 @@ typedef struct {
         int         count;
 } CountDisplayData;
 
-static gboolean
+static void
 count_displays_from_host (const char       *id,
                           GdmDisplay       *display,
                           CountDisplayData *data)
@@ -680,8 +680,6 @@ count_displays_from_host (const char       *id,
                         data->count++;
                 }
         }
-
-        return TRUE;
 }
 
 static int
@@ -1807,7 +1805,7 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
                     (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
 
-static gboolean
+static void
 count_sessions (const char             *id,
                 GdmDisplay             *display,
                 GdmXdmcpDisplayFactory *factory)
@@ -1823,8 +1821,6 @@ count_sessions (const char             *id,
                         factory->num_pending_sessions++;
                 }
         }
-
-        return TRUE;
 }
 
 static void

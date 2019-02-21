@@ -2424,15 +2424,12 @@ gdm_manager_error_quark (void)
         return ret;
 }
 
-static gboolean
+static void
 listify_display_ids (const char *id,
                      GdmDisplay *display,
                      GPtrArray **array)
 {
         g_ptr_array_add (*array, g_strdup (id));
-
-        /* return FALSE to continue */
-        return FALSE;
 }
 
 /*
