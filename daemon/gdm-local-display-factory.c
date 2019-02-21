@@ -270,20 +270,18 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         return ret;
 }
 
-static gboolean
+static void
 finish_display_on_seat_if_waiting (GdmDisplayStore *display_store,
                                    GdmDisplay      *display,
                                    const char      *seat_id)
 {
         if (gdm_display_get_status (display) != GDM_DISPLAY_WAITING_TO_FINISH)
-                return FALSE;
+                return;
 
         g_debug ("GdmLocalDisplayFactory: finish background display\n");
         gdm_display_stop_greeter_session (display);
         gdm_display_unmanage (display);
         gdm_display_finish (display);
-
-        return FALSE;
 }
 
 static void
