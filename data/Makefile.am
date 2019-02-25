@@ -168,10 +168,8 @@ EXTRA_DIST +=			\
 	$(dconf_db_files)	\
 	$(gsettings_SCHEMAS)	\
 	$(schemas_in_files)	\
-	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
 	$(localealias_DATA)	\
-	$(udevrules_DATA)	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
 	Init.in 		\
@@ -181,8 +179,11 @@ EXTRA_DIST +=			\
 	$(NULL)
 
 CLEANFILES = 				\
+	61-gdm.rules			\
 	Xsession			\
 	gdm.conf-custom			\
+	gdm.schemas			\
+	gnome-login.session		\
 	Init				\
 	PreSession			\
 	PostSession			\
@@ -191,8 +192,6 @@ CLEANFILES = 				\
 
 DISTCLEANFILES =			\
 	$(dbusconf_DATA)		\
-	gdm.schemas			\
-	gnome-login.session		\
 	$(NULL)
 
 MAINTAINERCLEANFILES =			\

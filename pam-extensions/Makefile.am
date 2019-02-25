@@ -19,5 +19,9 @@ pam_extensions_include_HEADERS = gdm-pam-extensions.h
 endif
 
 EXTRA_DIST =                                                            \
+        gdm-pam-extensions.pc.in                                        \
+        $(NULL)
+
+CLEANFILES =                                                            \
         gdm-pam-extensions.pc                                           \
         $(NULL)

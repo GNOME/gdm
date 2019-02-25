@@ -85,7 +85,9 @@ nodist_libgdm_la_SOURCES = 	\
 	$(END_OF_LIST)
 
 pkgconfigdir = $(libdir)/pkgconfig
-dist_pkgconfig_DATA = gdm.pc
+pkgconfig_DATA = gdm.pc
+
+CLEANFILES += gdm.pc
 
 -include $(INTROSPECTION_MAKEFILE)
 
