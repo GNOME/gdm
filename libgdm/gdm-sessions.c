@@ -239,7 +239,6 @@ collect_sessions (void)
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
-                NULL
         };
 
         xorg_search_array = g_array_new (TRUE, TRUE, sizeof (char *));
@@ -256,7 +255,6 @@ collect_sessions (void)
 #ifdef ENABLE_WAYLAND_SUPPORT
         const char *wayland_search_dirs[] = {
                 DATADIR "/wayland-sessions/",
-                NULL
         };
 
         wayland_search_array = g_array_new (TRUE, TRUE, sizeof (char *));
