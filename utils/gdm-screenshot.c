@@ -82,7 +82,7 @@ screenshot_grab_lock (void)
 
  out:
         XUngrabServer (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
-        gdk_flush ();
+        gdk_display_flush (gdk_display_get_default ());
 
         return result;
 }
@@ -95,7 +95,7 @@ screenshot_release_lock (void)
                 gtk_widget_destroy (selection_window);
                 selection_window = NULL;
         }
-        gdk_flush ();
+        gdk_display_flush (gdk_display_get_default ());
 }
 
 /*  * Copyright (C) 2001-2006  Jonathan Blandford <jrb@alum.mit.edu> */
