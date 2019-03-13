@@ -136,7 +136,8 @@ G_DEFINE_TYPE_WITH_CODE (GdmManager,
                          gdm_manager,
                          GDM_DBUS_TYPE_MANAGER_SKELETON,
                          G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_MANAGER,
-                                                manager_interface_init));
+                                                manager_interface_init)
+                         G_ADD_PRIVATE (GdmManager));
 
 #ifdef WITH_PLYMOUTH
 static gboolean
@@ -2720,8 +2721,6 @@ gdm_manager_class_init (GdmManagerClass *klass)
                                                                NULL,
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-
-        g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
 }
 
 static void
