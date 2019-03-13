@@ -57,8 +57,6 @@
 
 extern char **environ;
 
-#define GDM_LAUNCH_ENVIRONMENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LAUNCH_ENVIRONMENT, GdmLaunchEnvironmentPrivate))
-
 struct GdmLaunchEnvironmentPrivate
 {
         GdmSession     *session;
@@ -113,7 +111,7 @@ static void     gdm_launch_environment_class_init    (GdmLaunchEnvironmentClass 
 static void     gdm_launch_environment_init          (GdmLaunchEnvironment      *launch_environment);
 static void     gdm_launch_environment_finalize      (GObject                   *object);
 
-G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 
 static GHashTable *
 build_launch_environment (GdmLaunchEnvironment *launch_environment,
@@ -706,8 +704,6 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
         object_class->set_property = gdm_launch_environment_set_property;
         object_class->finalize = gdm_launch_environment_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmLaunchEnvironmentPrivate));
-
         g_object_class_install_property (object_class,
                                          PROP_VERIFICATION_MODE,
                                          g_param_spec_enum ("verification-mode",
@@ -863,7 +859,7 @@ static void
 gdm_launch_environment_init (GdmLaunchEnvironment *launch_environment)
 {
 
-        launch_environment->priv = GDM_LAUNCH_ENVIRONMENT_GET_PRIVATE (launch_environment);
+        launch_environment->priv = gdm_launch_environment_get_instance_private (launch_environment);
 
         launch_environment->priv->command = NULL;
         launch_environment->priv->session = NULL;
