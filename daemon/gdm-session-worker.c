@@ -3196,7 +3196,7 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
 
         g_debug ("GdmSessionWorker: start program: %s", text);
 
-        g_clear_pointer (&worker->priv->arguments, (GDestroyNotify) g_strfreev);
+        g_clear_pointer (&worker->priv->arguments, g_strfreev);
         if (! g_shell_parse_argv (text, NULL, &worker->priv->arguments, &parse_error)) {
                 g_dbus_method_invocation_take_error (invocation, parse_error);
                 return TRUE;
