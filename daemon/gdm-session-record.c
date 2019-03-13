@@ -64,16 +64,22 @@ record_set_username (UTMP       *u,
                      const char *username)
 {
 #if defined(HAVE_UT_UT_USER)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
         strncpy (u->ut_user,
                  username,
                  sizeof (u->ut_user));
+#pragma GCC diagnostic pop
         g_debug ("using ut_user %.*s",
                  (int) sizeof (u->ut_user),
                  u->ut_user);
 #elif defined(HAVE_UT_UT_NAME)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
         strncpy (u->ut_name,
                  username,
                  sizeof (u->ut_name));
+#pragma GCC diagnostic pop
         g_debug ("using ut_name %.*s",
                  (int) sizeof (u->ut_name),
                  u->ut_name);
@@ -136,7 +142,10 @@ record_set_host (UTMP       *u,
         }
 
         if (hostname != NULL) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
                 strncpy (u->ut_host, hostname, sizeof (u->ut_host));
+#pragma GCC diagnostic pop
                 g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
 #ifdef HAVE_UT_UT_SYSLEN
                 u->ut_syslen = MIN (strlen (hostname), sizeof (u->ut_host));
@@ -158,13 +167,19 @@ record_set_line (UTMP       *u,
          */
         if (display_device != NULL
             && g_str_has_prefix (display_device, "/dev/")) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
                 strncpy (u->ut_line,
                          display_device + strlen ("/dev/"),
                          sizeof (u->ut_line));
+#pragma GCC diagnostic pop
         } else if (x11_display_name != NULL) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
                 strncpy (u->ut_line,
                          x11_display_name,
                          sizeof (u->ut_line));
+#pragma GCC diagnostic pop
         }
 
         g_debug ("using ut_line %.*s", (int) sizeof (u->ut_line), u->ut_line);
