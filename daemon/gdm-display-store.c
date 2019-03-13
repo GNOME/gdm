@@ -33,8 +33,6 @@
 #include "gdm-display-store.h"
 #include "gdm-display.h"
 
-#define GDM_DISPLAY_STORE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY_STORE, GdmDisplayStorePrivate))
-
 struct GdmDisplayStorePrivate
 {
         GHashTable *displays;
@@ -58,7 +56,7 @@ static void     gdm_display_store_class_init    (GdmDisplayStoreClass *klass);
 static void     gdm_display_store_init          (GdmDisplayStore      *display_store);
 static void     gdm_display_store_finalize      (GObject              *object);
 
-G_DEFINE_TYPE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
 
 static StoredDisplay *
 stored_display_new (GdmDisplayStore *store,
@@ -289,15 +287,13 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE,
                               1, G_TYPE_OBJECT);
-
-        g_type_class_add_private (klass, sizeof (GdmDisplayStorePrivate));
 }
 
 static void
 gdm_display_store_init (GdmDisplayStore *store)
 {
 
-        store->priv = GDM_DISPLAY_STORE_GET_PRIVATE (store);
+        store->priv = gdm_display_store_get_instance_private (store);
 
         store->priv->displays = g_hash_table_new_full (g_str_hash,
                                                        g_str_equal,
