@@ -105,6 +105,7 @@ screenshot_get_pixbuf (Window w)
         GdkWindow *window;
         GdkWindow *root;
         GdkPixbuf *screenshot;
+        GdkRectangle monitor_geometry;
         int        x_real_orig;
         int        y_real_orig;
         int        x_orig;
@@ -122,6 +123,9 @@ screenshot_get_pixbuf (Window w)
         root = gdk_x11_window_foreign_new_for_display (gdk_display_get_default (), GDK_ROOT_WINDOW ());
         gdk_window_get_geometry (window, NULL, NULL, &real_width, &real_height);
         gdk_window_get_origin (window, &x_real_orig, &y_real_orig);
+        gdk_monitor_get_geometry (gdk_display_get_primary_monitor (
+                                  gdk_display_get_default ()),
+                                  &monitor_geometry);
 
         x_orig = x_real_orig;
         y_orig = y_real_orig;
@@ -137,11 +141,11 @@ screenshot_get_pixbuf (Window w)
                 y_orig = 0;
         }
 
-        if (x_orig + width > gdk_screen_width ()) {
-                width = gdk_screen_width () - x_orig;
+        if (x_orig + width > monitor_geometry.width) {
+                width = monitor_geometry.width - x_orig;
         }
-        if (y_orig + height > gdk_screen_height ()) {
-                height = gdk_screen_height () - y_orig;
+        if (y_orig + height > monitor_geometry.height) {
+                height = monitor_geometry.height - y_orig;
         }
 
         screenshot = gdk_pixbuf_get_from_window (root,
