@@ -2796,10 +2796,8 @@ gdm_manager_dispose (GObject *object)
 #endif
         g_clear_object (&manager->priv->local_factory);
         g_clear_pointer (&manager->priv->open_reauthentication_requests,
-                         (GDestroyNotify)
                          g_hash_table_unref);
         g_clear_pointer (&manager->priv->transient_sessions,
-                         (GDestroyNotify)
                          g_hash_table_unref);
 
         g_list_foreach (manager->priv->user_sessions,
