@@ -3163,7 +3163,7 @@ gdm_session_is_wayland_session (GdmSession *self)
         g_debug ("GdmSession: checking if file '%s' is wayland session: %s", filename, is_wayland_session? "yes" : "no");
 
 out:
-        g_clear_pointer (&key_file, (GDestroyNotify) g_key_file_free);
+        g_clear_pointer (&key_file, g_key_file_free);
         g_free (filename);
         return is_wayland_session;
 }
