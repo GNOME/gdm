@@ -111,14 +111,6 @@ key_file_is_relevant (GKeyFile     *key_file)
         return TRUE;
 }
 
-static gboolean
-find_session_with_same_name (const char     *id,
-                             GdmSessionFile *session,
-                             const char     *translated_name)
-{
-        return g_strcmp0 (session->translated_name, translated_name) == 0;
-}
-
 static void
 load_session_file (const char              *id,
                    const char              *path)
@@ -126,7 +118,7 @@ load_session_file (const char              *id,
         GKeyFile          *key_file;
         GError            *error;
         gboolean           res;
-        GdmSessionFile    *session, *session_with_same_name;
+        GdmSessionFile    *session;
 
         key_file = g_key_file_new ();
 
@@ -162,18 +154,34 @@ load_session_file (const char              *id,
         session->translated_name = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Name", NULL, NULL);
         session->translated_comment = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Comment", NULL, NULL);
 
-        session_with_same_name = g_hash_table_find (gdm_available_sessions_map,
-                                                    (GHRFunc) find_session_with_same_name,
-                                                    session->translated_name);
-
-        if (session_with_same_name != NULL)
-                g_hash_table_remove (gdm_available_sessions_map, session_with_same_name->id);
-
         g_hash_table_insert (gdm_available_sessions_map,
                              g_strdup (id),
                              session);
  out:
         g_key_file_free (key_file);
+}
+
+static gboolean
+remove_duplicate_sessions (gpointer key,
+                           gpointer value,
+                           gpointer user_data)
+{
+        gboolean already_known;
+        const char *id;
+        GHashTable *names_seen_before;
+        GdmSessionFile *session;
+
+        id = (const char *) key;
+        names_seen_before = (GHashTable *) user_data;
+        session = (GdmSessionFile *) value;
+        already_known = !g_hash_table_add (names_seen_before, session->translated_name);
+
+        if (already_known)
+                g_debug ("GdmSession: Removing %s (%s) as we already have a session by this name",
+                         session->id,
+                         session->path);
+
+        return already_known;
 }
 
 static void
@@ -230,6 +238,7 @@ collect_sessions_from_directory (const char *dirname)
 static void
 collect_sessions (void)
 {
+        g_autoptr(GHashTable) names_seen_before = NULL;
         GArray     *xorg_search_array = NULL;
         GArray     *wayland_search_array = NULL;
         gchar      *session_dir = NULL;
@@ -240,6 +249,8 @@ collect_sessions (void)
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
         };
+
+        names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
 
         xorg_search_array = g_array_new (TRUE, TRUE, sizeof (char *));
 
@@ -291,6 +302,10 @@ collect_sessions (void)
         }
 
         g_array_free (wayland_search_array, TRUE);
+
+        g_hash_table_foreach_remove (gdm_available_sessions_map,
+                                     remove_duplicate_sessions,
+                                     names_seen_before);
 #endif
 }
 
