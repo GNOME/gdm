@@ -302,11 +302,11 @@ collect_sessions (void)
         }
 
         g_array_free (wayland_search_array, TRUE);
+#endif
 
         g_hash_table_foreach_remove (gdm_available_sessions_map,
                                      remove_duplicate_sessions,
                                      names_seen_before);
-#endif
 }
 
 /**
