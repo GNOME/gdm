@@ -167,11 +167,9 @@ remove_duplicate_sessions (gpointer key,
                            gpointer user_data)
 {
         gboolean already_known;
-        const char *id;
         GHashTable *names_seen_before;
         GdmSessionFile *session;
 
-        id = (const char *) key;
         names_seen_before = (GHashTable *) user_data;
         session = (GdmSessionFile *) value;
         already_known = !g_hash_table_add (names_seen_before, session->translated_name);
