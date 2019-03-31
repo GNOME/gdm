@@ -64,16 +64,12 @@ record_set_username (UTMP       *u,
                      const char *username)
 {
 #if defined(HAVE_UT_UT_USER)
-        strncpy (u->ut_user,
-                 username,
-                 sizeof (u->ut_user));
+        memccpy (u->ut_user, username, '\0', sizeof (u->ut_user));
         g_debug ("using ut_user %.*s",
                  (int) sizeof (u->ut_user),
                  u->ut_user);
 #elif defined(HAVE_UT_UT_NAME)
-        strncpy (u->ut_name,
-                 username,
-                 sizeof (u->ut_name));
+        memccpy (u->ut_name, username, '\0', sizeof (u->ut_name));
         g_debug ("using ut_name %.*s",
                  (int) sizeof (u->ut_name),
                  u->ut_name);
@@ -136,7 +132,7 @@ record_set_host (UTMP       *u,
         }
 
         if (hostname != NULL) {
-                strncpy (u->ut_host, hostname, sizeof (u->ut_host));
+                memccpy (u->ut_host, hostname, '\0', sizeof (u->ut_host));
                 g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
 #ifdef HAVE_UT_UT_SYSLEN
                 u->ut_syslen = MIN (strlen (hostname), sizeof (u->ut_host));
@@ -158,12 +154,14 @@ record_set_line (UTMP       *u,
          */
         if (display_device != NULL
             && g_str_has_prefix (display_device, "/dev/")) {
-                strncpy (u->ut_line,
+                memccpy (u->ut_line,
                          display_device + strlen ("/dev/"),
+                         '\0',
                          sizeof (u->ut_line));
         } else if (x11_display_name != NULL) {
-                strncpy (u->ut_line,
+                memccpy (u->ut_line,
                          x11_display_name,
+                         '\0',
                          sizeof (u->ut_line));
         }
 
