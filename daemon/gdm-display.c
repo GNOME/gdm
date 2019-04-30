@@ -51,6 +51,8 @@
 
 #define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 
+#define DISPLAY_FAIL_THRESHOLD 3
+
 typedef struct _GdmDisplayPrivate
 {
         GObject               parent;
@@ -696,8 +698,10 @@ gdm_display_unmanage (GdmDisplay *self)
         }
 
         elapsed = g_timer_elapsed (priv->server_timer, NULL);
-        if (elapsed < 3) {
-                g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
+        g_debug ("GdmDisplay: display lasted %lf seconds", elapsed);
+        if (elapsed < DISPLAY_FAIL_THRESHOLD) {
+                g_warning ("GdmDisplay: Less than the %d second threshold, failing",
+                           DISPLAY_FAIL_THRESHOLD);
                 _gdm_display_set_status (self, GDM_DISPLAY_FAILED);
         } else {
                 _gdm_display_set_status (self, GDM_DISPLAY_UNMANAGED);
