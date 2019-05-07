@@ -66,7 +66,6 @@ struct _GdmLocalDisplayFactory
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
         guint            active_vt_watch_id;
-        guint            wait_to_finish_timeout_id;
 #endif
 };
 
@@ -299,6 +298,25 @@ finish_waiting_displays_on_seat (GdmLocalDisplayFactory *factory,
 }
 
 static void
+on_session_registered_cb (GObject *gobject,
+                          GParamSpec *pspec,
+                          gpointer user_data)
+{
+        GdmDisplay *display = GDM_DISPLAY (gobject);
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        gboolean registered;
+
+        g_object_get (display, "session-registered", &registered, NULL);
+
+        if (!registered)
+                return;
+
+        g_debug ("GdmLocalDisplayFactory: session registered on display, looking for any background displays to kill");
+
+        finish_waiting_displays_on_seat (factory, "seat0");
+}
+
+static void
 on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
                            GdmLocalDisplayFactory *factory)
@@ -376,6 +394,13 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
+#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+                g_signal_connect_object (display,
+                                         "notify::session-registered",
+                                         G_CALLBACK (on_session_registered_cb),
+                                         factory,
+                                         0);
+#endif
                 break;
         case GDM_DISPLAY_WAITING_TO_FINISH:
                 break;
@@ -604,14 +629,6 @@ lookup_by_session_id (const char *id,
 }
 
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
-static gboolean
-wait_to_finish_timeout (GdmLocalDisplayFactory *factory)
-{
-        finish_waiting_displays_on_seat (factory, "seat0");
-        factory->wait_to_finish_timeout_id = 0;
-        return G_SOURCE_REMOVE;
-}
-
 static void
 maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
                                   GdmDisplay             *display)
@@ -643,16 +660,8 @@ maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
         }
 
         g_debug ("GdmLocalDisplayFactory: killing login window once its unused");
+
         g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
-
-        /* We stop the greeter after a timeout to avoid flicker */
-        if (factory->wait_to_finish_timeout_id != 0)
-                g_source_remove (factory->wait_to_finish_timeout_id);
-
-        factory->wait_to_finish_timeout_id =
-                g_timeout_add_seconds (WAIT_TO_FINISH_TIMEOUT,
-                                       (GSourceFunc)wait_to_finish_timeout,
-                                       factory);
 }
 
 static gboolean
@@ -748,7 +757,6 @@ on_vt_changed (GIOChannel    *source,
                                 display = gdm_display_store_find (store,
                                                                   lookup_by_session_id,
                                                                   (gpointer) login_session_id);
-
                                 if (display != NULL)
                                         maybe_stop_greeter_in_background (factory, display);
                         } else {
@@ -831,10 +839,6 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 factory->seat_removed_id = 0;
         }
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
-        if (factory->wait_to_finish_timeout_id != 0) {
-                g_source_remove (factory->wait_to_finish_timeout_id);
-                factory->wait_to_finish_timeout_id = 0;
-        }
         if (factory->active_vt_watch_id) {
                 g_source_remove (factory->active_vt_watch_id);
                 factory->active_vt_watch_id = 0;
