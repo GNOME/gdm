@@ -66,7 +66,6 @@ typedef struct _GdmDisplayPrivate
         char                 *x11_display_name;
         int                   status;
         time_t                creation_time;
-        GTimer               *server_timer;
 
         char                 *x11_cookie;
         gsize                 x11_cookie_size;
@@ -600,8 +599,6 @@ gdm_display_manage (GdmDisplay *self)
                 }
         }
 
-        g_timer_start (priv->server_timer);
-
         if (g_strcmp0 (priv->session_class, "greeter") == 0) {
                 if (GDM_DISPLAY_GET_CLASS (self)->manage != NULL) {
                         GDM_DISPLAY_GET_CLASS (self)->manage (self);
@@ -673,7 +670,6 @@ gboolean
 gdm_display_unmanage (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        gdouble elapsed;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
@@ -682,8 +678,6 @@ gdm_display_unmanage (GdmDisplay *self)
         g_debug ("GdmDisplay: unmanage display");
 
         gdm_display_disconnect (self);
-
-        g_timer_stop (priv->server_timer);
 
         if (priv->user_access_file != NULL) {
                 gdm_display_access_file_close (priv->user_access_file);
@@ -697,9 +691,8 @@ gdm_display_unmanage (GdmDisplay *self)
                 priv->access_file = NULL;
         }
 
-        elapsed = g_timer_elapsed (priv->server_timer, NULL);
-        if (elapsed < 3) {
-                g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
+        if (!priv->registered) {
+                g_warning ("GdmDisplay: Session never registered, failing");
                 _gdm_display_set_status (self, GDM_DISPLAY_FAILED);
         } else {
                 _gdm_display_set_status (self, GDM_DISPLAY_UNMANAGED);
@@ -1408,7 +1401,6 @@ gdm_display_init (GdmDisplay *self)
         priv = gdm_display_get_instance_private (self);
 
         priv->creation_time = time (NULL);
-        priv->server_timer = g_timer_new ();
 }
 
 static void
@@ -1444,10 +1436,6 @@ gdm_display_finalize (GObject *object)
 
         if (priv->user_access_file != NULL) {
                 g_object_unref (priv->user_access_file);
-        }
-
-        if (priv->server_timer != NULL) {
-                g_timer_destroy (priv->server_timer);
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
