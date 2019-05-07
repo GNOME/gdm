@@ -753,7 +753,7 @@ gdm_server_start (GdmServer *server)
 
         /* Hardcode the VT for the initial X server, but nothing else */
         if (server->is_initial) {
-                vtarg = "vt" GDM_INITIAL_VT;
+                vtarg = "vt" G_STRINGIFY (GDM_INITIAL_VT);
         }
 
         /* fork X server process */
