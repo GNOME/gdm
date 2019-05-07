@@ -51,6 +51,7 @@ typedef struct
 
         GSubprocess     *bus_subprocess;
         GDBusConnection *bus_connection;
+        GdmDBusManager  *display_manager_proxy;
         char            *bus_address;
 
         char           **environment;
@@ -58,6 +59,8 @@ typedef struct
         GSubprocess  *session_subprocess;
         char         *session_command;
         int           session_exit_status;
+
+        guint         register_session_id;
 
         GMainLoop    *main_loop;
 
@@ -737,30 +740,15 @@ static gboolean
 register_display (State        *state,
                   GCancellable *cancellable)
 {
-        GdmDBusManager  *manager = NULL;
         GError          *error = NULL;
         gboolean         registered = FALSE;
         GVariantBuilder  details;
-
-        manager = gdm_dbus_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                           G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
-                                                           G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
-                                                           "org.gnome.DisplayManager",
-                                                           "/org/gnome/DisplayManager/Manager",
-                                                           cancellable,
-                                                           &error);
-
-        if (!manager) {
-                g_debug ("could not contact display manager: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
 
         g_variant_builder_init (&details, G_VARIANT_TYPE ("a{ss}"));
         g_variant_builder_add (&details, "{ss}", "session-type", "x11");
         g_variant_builder_add (&details, "{ss}", "x11-display-name", state->display_name);
 
-        registered = gdm_dbus_manager_call_register_display_sync (manager,
+        registered = gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
                                                                   g_variant_builder_end (&details),
                                                                   cancellable,
                                                                   &error);
@@ -769,8 +757,6 @@ register_display (State        *state,
                 g_error_free (error);
         }
 
-out:
-        g_clear_object (&manager);
         return registered;
 }
 
@@ -795,6 +781,7 @@ clear_state (State **out_state)
         g_clear_pointer (&state->auth_file, g_free);
         g_clear_pointer (&state->display_name, g_free);
         g_clear_pointer (&state->main_loop, g_main_loop_unref);
+        g_clear_handle_id (&state->register_session_id, g_source_remove);
         *out_state = NULL;
 }
 
@@ -810,6 +797,49 @@ on_sigterm (State *state)
         return G_SOURCE_CONTINUE;
 }
 
+static gboolean
+register_session_timeout_cb (gpointer user_data)
+{
+        State *state;
+        GError *error = NULL;
+
+        state = (State *) user_data;
+
+        gdm_dbus_manager_call_register_session_sync (state->display_manager_proxy,
+                                                     g_variant_new ("a{sv}", NULL),
+                                                     state->cancellable,
+                                                     &error);
+
+        if (error != NULL) {
+                g_warning ("Could not register session: %s", error->message);
+                g_error_free (error);
+        }
+
+        return G_SOURCE_REMOVE;
+}
+
+static gboolean
+connect_to_display_manager (State *state)
+{
+        g_autoptr (GError) error = NULL;
+
+        state->display_manager_proxy = gdm_dbus_manager_proxy_new_for_bus_sync (
+                G_BUS_TYPE_SYSTEM,
+                G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES | G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
+                "org.gnome.DisplayManager",
+                "/org/gnome/DisplayManager/Manager",
+                state->cancellable,
+                &error);
+
+        if (state->display_manager_proxy == NULL) {
+                g_printerr ("gdm-x-session: could not contact display manager: %s\n",
+                            error->message);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
 int
 main (int    argc,
       char **argv)
@@ -822,9 +852,12 @@ main (int    argc,
         gboolean         debug = FALSE;
         gboolean         ret;
         int              exit_status = EX_OK;
+        static gboolean  register_session = FALSE;
+
         static GOptionEntry entries []   = {
                 { "run-script", 'r', 0, G_OPTION_ARG_NONE, &run_script, N_("Run program through /etc/gdm/Xsession wrapper script"), NULL },
                 { "allow-remote-connections", 'a', 0, G_OPTION_ARG_NONE, &allow_remote_connections, N_("Listen on TCP socket"), NULL },
+                { "register-session", 0, 0, G_OPTION_ARG_NONE, &register_session, "Register session after a delay", NULL },
                 { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", "" },
                 { NULL }
         };
@@ -896,6 +929,7 @@ main (int    argc,
                 goto out;
         }
 
+
         ret = register_display (state, state->cancellable);
 
         if (!ret) {
@@ -904,12 +938,24 @@ main (int    argc,
                 goto out;
         }
 
+        if (!connect_to_display_manager (state))
+                goto out;
+
         ret = spawn_session (state, run_script, state->cancellable);
 
         if (!ret) {
                 g_printerr ("Unable to run session\n");
                 exit_status = EX_SOFTWARE;
                 goto out;
+        }
+
+        if (register_session) {
+                g_debug ("gdm-x-session: Will register session in %d seconds", REGISTER_SESSION_TIMEOUT);
+                state->register_session_id = g_timeout_add_seconds (REGISTER_SESSION_TIMEOUT,
+                                                                    register_session_timeout_cb,
+                                                                    state);
+        } else {
+                g_debug ("gdm-x-session: Session will register itself");
         }
 
         g_main_loop_run (state->main_loop);

@@ -66,7 +66,7 @@ struct _GdmLocalDisplayFactory
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
         guint            active_vt_watch_id;
-        guint            wait_to_finish_timeout_id;
+        guint            wait_to_register_id;
 #endif
 };
 
@@ -605,19 +605,59 @@ lookup_by_session_id (const char *id,
 
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
 static gboolean
-wait_to_finish_timeout (GdmLocalDisplayFactory *factory)
+lookup_by_vt (const char *id,
+              GdmDisplay *display,
+              gpointer user_data)
 {
+        unsigned int vt_to_find = *(unsigned int *) user_data;
+        unsigned int vt;
+        int ret;
+        const char *display_session_id;
+
+        display_session_id = gdm_display_get_session_id (display);
+
+        ret = sd_session_get_vt (display_session_id, &vt);
+
+        if (ret < 0) {
+                g_debug ("Couldn't look up session %s: %s",
+                         display_session_id,
+                         strerror (-ret));
+                return FALSE;
+        }
+
+        return (vt_to_find == vt);
+}
+
+static void
+on_session_registered_cb (GObject *gobject,
+                          GParamSpec *pspec,
+                          gpointer user_data)
+{
+        GdmDisplay *display = GDM_DISPLAY (gobject);
+        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
+        gboolean registered;
+
+        g_object_get (display, "session-registered", &registered, NULL);
+
+        if (!registered)
+                return;
+
+        g_debug ("GdmLocalDisplayFactory: session registered on display, killing login screen");
+
         finish_waiting_displays_on_seat (factory, "seat0");
-        factory->wait_to_finish_timeout_id = 0;
-        return G_SOURCE_REMOVE;
+
+        g_signal_handler_disconnect (factory, factory->wait_to_register_id);
+        factory->wait_to_register_id = 0;
 }
 
 static void
 maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
-                                  GdmDisplay             *display)
+                                  GdmDisplay             *display,
+                                  GdmDisplay             *new_display)
 {
         g_autofree char *display_session_type = NULL;
         gboolean doing_initial_setup = FALSE;
+        gboolean registered;
 
         if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED) {
                 g_debug ("GdmLocalDisplayFactory: login window not in managed state, so ignoring");
@@ -642,17 +682,36 @@ maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
                 return;
         }
 
+        g_debug ("GdmLocalDisplayFactory: old display: %p, new display: %p",
+                 display,
+                 new_display);
+
         g_debug ("GdmLocalDisplayFactory: killing login window once its unused");
+
         g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
 
-        /* We stop the greeter after a timeout to avoid flicker */
-        if (factory->wait_to_finish_timeout_id != 0)
-                g_source_remove (factory->wait_to_finish_timeout_id);
+        /* We stop the greeter once the new session has started fully, when it
+         * registers with us */
+        g_object_get (G_OBJECT (new_display),
+                      "session-registered", &registered,
+                      NULL);
 
-        factory->wait_to_finish_timeout_id =
-                g_timeout_add_seconds (WAIT_TO_FINISH_TIMEOUT,
-                                       (GSourceFunc)wait_to_finish_timeout,
-                                       factory);
+        if (registered) {
+                g_debug ("GdmLocalDisplayFactory: new display already registered, killing greeter");
+                finish_waiting_displays_on_seat (factory, "seat0");
+                return;
+        }
+
+        g_debug ("GdmLocalDisplayFactory: new display not yet registered, waiting to kill greeter");
+
+        if (factory->wait_to_register_id != 0)
+                g_signal_handler_disconnect (new_display, factory->wait_to_register_id);
+
+        factory->wait_to_register_id = g_signal_connect_object (new_display,
+                                                                "notify::session-registered",
+                                                                G_CALLBACK (on_session_registered_cb),
+                                                                factory,
+                                                                0);
 }
 
 static gboolean
@@ -741,6 +800,7 @@ on_vt_changed (GIOChannel    *source,
                         if (login_window_vt == previous_vt) {
                                 GdmDisplayStore *store;
                                 GdmDisplay *display;
+                                GdmDisplay *new_display = NULL;
 
                                 g_debug ("GdmLocalDisplayFactory: VT switched from login window");
 
@@ -748,9 +808,12 @@ on_vt_changed (GIOChannel    *source,
                                 display = gdm_display_store_find (store,
                                                                   lookup_by_session_id,
                                                                   (gpointer) login_session_id);
+                                new_display = gdm_display_store_find (store,
+                                                                      lookup_by_vt,
+                                                                      (gpointer) &new_vt);
 
                                 if (display != NULL)
-                                        maybe_stop_greeter_in_background (factory, display);
+                                        maybe_stop_greeter_in_background (factory, display, new_display);
                         } else {
                                 g_debug ("GdmLocalDisplayFactory: VT not switched from login window");
                         }
@@ -831,10 +894,6 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 factory->seat_removed_id = 0;
         }
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
-        if (factory->wait_to_finish_timeout_id != 0) {
-                g_source_remove (factory->wait_to_finish_timeout_id);
-                factory->wait_to_finish_timeout_id = 0;
-        }
         if (factory->active_vt_watch_id) {
                 g_source_remove (factory->active_vt_watch_id);
                 factory->active_vt_watch_id = 0;
