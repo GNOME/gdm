@@ -93,6 +93,7 @@ typedef struct _GdmDisplayPrivate
         guint                 allow_timed_login : 1;
         guint                 have_existing_user_accounts : 1;
         guint                 doing_initial_setup : 1;
+        guint                 session_registered : 1;
 } GdmDisplayPrivate;
 
 enum {
@@ -115,6 +116,7 @@ enum {
         PROP_ALLOW_TIMED_LOGIN,
         PROP_HAVE_EXISTING_USER_ACCOUNTS,
         PROP_DOING_INITIAL_SETUP,
+        PROP_SESSION_REGISTERED,
 };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
@@ -872,6 +874,17 @@ _gdm_display_set_is_local (GdmDisplay     *self,
 }
 
 static void
+_gdm_display_set_session_registered (GdmDisplay     *self,
+                                     gboolean        registered)
+{
+        GdmDisplayPrivate *priv;
+
+        priv = gdm_display_get_instance_private (self);
+        g_debug ("GdmDisplay: session registered: %s", registered? "yes" : "no");
+        priv->session_registered = registered;
+}
+
+static void
 _gdm_display_set_launch_environment (GdmDisplay           *self,
                                      GdmLaunchEnvironment *launch_environment)
 {
@@ -959,6 +972,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_IS_INITIAL:
                 _gdm_display_set_is_initial (self, g_value_get_boolean (value));
                 break;
+        case PROP_SESSION_REGISTERED:
+                _gdm_display_set_session_registered (self, g_value_get_boolean (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1030,6 +1046,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_DOING_INITIAL_SETUP:
                 g_value_set_boolean (value, priv->doing_initial_setup);
+                break;
+        case PROP_SESSION_REGISTERED:
+                g_value_set_boolean (value, priv->session_registered);
                 break;
         case PROP_ALLOW_TIMED_LOGIN:
                 g_value_set_boolean (value, priv->allow_timed_login);
@@ -1355,6 +1374,14 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                FALSE,
                                                                G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_SESSION_REGISTERED,
+                                         g_param_spec_boolean ("session-registered",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
         g_object_class_install_property (object_class,
                                          PROP_LAUNCH_ENVIRONMENT,
                                          g_param_spec_object ("launch-environment",
