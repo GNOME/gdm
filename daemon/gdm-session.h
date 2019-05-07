@@ -76,6 +76,7 @@ const char       *gdm_session_get_display_device          (GdmSession     *sessi
 const char       *gdm_session_get_display_seat_id         (GdmSession     *session);
 const char       *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
+gboolean          gdm_session_session_registers           (GdmSession     *session);
 GdmSessionDisplayMode gdm_session_get_display_mode  (GdmSession     *session);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
