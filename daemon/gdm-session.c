@@ -2837,6 +2837,7 @@ gdm_session_start_session (GdmSession *self,
         gboolean                allow_remote_connections = FALSE;
         char                   *command;
         char                   *program;
+        char                   *register_session;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (self->session_conversation == NULL);
@@ -2862,6 +2863,8 @@ gdm_session_start_session (GdmSession *self,
                 run_launcher = TRUE;
         }
 
+        register_session = !gdm_session_session_registers (self) ? "--register-session " : "";
+
         if (self->selected_program == NULL) {
                 gboolean run_xsession_script;
 
@@ -2879,12 +2882,14 @@ gdm_session_start_session (GdmSession *self,
 
                 if (run_launcher) {
                         if (is_x11) {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s %s\"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
+                                                           register_session,
                                                            run_xsession_script? "--run-script " : "",
                                                            allow_remote_connections? "--allow-remote-connections " : "",
                                                            command);
                         } else {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session \"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                                           register_session,
                                                            command);
                         }
                 } else if (run_xsession_script) {
@@ -2897,10 +2902,12 @@ gdm_session_start_session (GdmSession *self,
         } else {
                 if (run_launcher) {
                         if (is_x11) {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session \"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s\"%s\"",
+                                                           register_session,
                                                            self->selected_program);
                         } else {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session \"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                                           register_session,
                                                            self->selected_program);
                         }
                 } else {
@@ -3175,6 +3182,38 @@ update_session_type (GdmSession *self)
                 set_session_type (self, NULL);
         }
 #endif
+}
+
+gboolean
+gdm_session_session_registers (GdmSession *self)
+{
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GKeyFile) key_file = NULL;
+        gboolean session_registers = FALSE;
+        g_autofree char *filename = NULL;
+
+        g_return_val_if_fail (self != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+
+        filename = get_session_filename (self);
+
+        key_file = load_key_file_for_file (self, filename, NULL);
+
+        session_registers = g_key_file_get_boolean (key_file,
+                                                    G_KEY_FILE_DESKTOP_GROUP,
+                                                    "X-GDM-SessionRegisters",
+                                                    &error);
+        if (!session_registers &&
+            error != NULL &&
+            !g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+                g_warning ("GdmSession: Couldn't read session file '%s'", filename);
+                return FALSE;
+        }
+
+        g_debug ("GdmSession: '%s' %s self", filename,
+                 session_registers ? "registers" : "does not register");
+
+        return session_registers;
 }
 
 gboolean

@@ -66,7 +66,6 @@ typedef struct _GdmDisplayPrivate
         char                 *x11_display_name;
         int                   status;
         time_t                creation_time;
-        GTimer               *server_timer;
 
         char                 *x11_cookie;
         gsize                 x11_cookie_size;
@@ -93,6 +92,7 @@ typedef struct _GdmDisplayPrivate
         guint                 allow_timed_login : 1;
         guint                 have_existing_user_accounts : 1;
         guint                 doing_initial_setup : 1;
+        guint                 registered : 1;
 } GdmDisplayPrivate;
 
 enum {
@@ -115,6 +115,7 @@ enum {
         PROP_ALLOW_TIMED_LOGIN,
         PROP_HAVE_EXISTING_USER_ACCOUNTS,
         PROP_DOING_INITIAL_SETUP,
+        PROP_REGISTERED,
 };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
@@ -598,8 +599,6 @@ gdm_display_manage (GdmDisplay *self)
                 }
         }
 
-        g_timer_start (priv->server_timer);
-
         if (g_strcmp0 (priv->session_class, "greeter") == 0) {
                 if (GDM_DISPLAY_GET_CLASS (self)->manage != NULL) {
                         GDM_DISPLAY_GET_CLASS (self)->manage (self);
@@ -671,7 +670,6 @@ gboolean
 gdm_display_unmanage (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        gdouble elapsed;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
@@ -680,8 +678,6 @@ gdm_display_unmanage (GdmDisplay *self)
         g_debug ("GdmDisplay: unmanage display");
 
         gdm_display_disconnect (self);
-
-        g_timer_stop (priv->server_timer);
 
         if (priv->user_access_file != NULL) {
                 gdm_display_access_file_close (priv->user_access_file);
@@ -695,9 +691,8 @@ gdm_display_unmanage (GdmDisplay *self)
                 priv->access_file = NULL;
         }
 
-        elapsed = g_timer_elapsed (priv->server_timer, NULL);
-        if (elapsed < 3) {
-                g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
+        if (!priv->registered) {
+                g_warning ("GdmDisplay: Session never registered, failing");
                 _gdm_display_set_status (self, GDM_DISPLAY_FAILED);
         } else {
                 _gdm_display_set_status (self, GDM_DISPLAY_UNMANAGED);
@@ -872,6 +867,17 @@ _gdm_display_set_is_local (GdmDisplay     *self,
 }
 
 static void
+_gdm_display_set_registered (GdmDisplay     *self,
+                            gboolean        registered)
+{
+        GdmDisplayPrivate *priv;
+
+        priv = gdm_display_get_instance_private (self);
+        g_debug ("GdmDisplay: registered: %s", registered? "yes" : "no");
+        priv->registered = registered;
+}
+
+static void
 _gdm_display_set_launch_environment (GdmDisplay           *self,
                                      GdmLaunchEnvironment *launch_environment)
 {
@@ -959,6 +965,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_IS_INITIAL:
                 _gdm_display_set_is_initial (self, g_value_get_boolean (value));
                 break;
+        case PROP_REGISTERED:
+                _gdm_display_set_registered (self, g_value_get_boolean (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1030,6 +1039,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_DOING_INITIAL_SETUP:
                 g_value_set_boolean (value, priv->doing_initial_setup);
+                break;
+        case PROP_REGISTERED:
+                g_value_set_boolean (value, priv->registered);
                 break;
         case PROP_ALLOW_TIMED_LOGIN:
                 g_value_set_boolean (value, priv->allow_timed_login);
@@ -1356,6 +1368,14 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                FALSE,
                                                                G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
+                                         PROP_REGISTERED,
+                                         g_param_spec_boolean ("registered",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
                                          PROP_LAUNCH_ENVIRONMENT,
                                          g_param_spec_object ("launch-environment",
                                                               NULL,
@@ -1381,7 +1401,6 @@ gdm_display_init (GdmDisplay *self)
         priv = gdm_display_get_instance_private (self);
 
         priv->creation_time = time (NULL);
-        priv->server_timer = g_timer_new ();
 }
 
 static void
@@ -1417,10 +1436,6 @@ gdm_display_finalize (GObject *object)
 
         if (priv->user_access_file != NULL) {
                 g_object_unref (priv->user_access_file);
-        }
-
-        if (priv->server_timer != NULL) {
-                g_timer_destroy (priv->server_timer);
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
@@ -1659,7 +1674,7 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         priv = gdm_display_get_instance_private (self);
         g_return_if_fail (g_strcmp0 (priv->session_class, "greeter") == 0);
 
-        g_debug ("GdmDisplay: Running greeter");
+        g_debug ("GdmDisplay: Running greeter", self);
 
         display_name = NULL;
         seat_id = NULL;
@@ -1720,7 +1735,6 @@ void
 gdm_display_stop_greeter_session (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        GError *error = NULL;
 
         priv = gdm_display_get_instance_private (self);
 
