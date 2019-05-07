@@ -804,6 +804,35 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
 }
 
 static gboolean
+gdm_manager_handle_register_session (GdmDBusManager        *manager,
+                                     GDBusMethodInvocation *invocation,
+                                     GVariant              *details)
+{
+        GdmManager      *self = GDM_MANAGER (manager);
+        GdmDisplay      *display;
+        const char      *sender;
+        GDBusConnection *connection;
+
+        sender = g_dbus_method_invocation_get_sender (invocation);
+        connection = g_dbus_method_invocation_get_connection (invocation);
+
+        get_display_and_details_for_bus_sender (self, connection, sender, &display,
+                                                NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+        g_debug ("GdmManager: trying to register new session on display %p", display);
+
+        if (display != NULL)
+                g_object_set (G_OBJECT (display), "registered", TRUE, NULL);
+        else
+                g_debug ("GdmManager: No display, not registering");
+
+        gdm_dbus_manager_complete_register_session (GDM_DBUS_MANAGER (manager),
+                                                    invocation);
+
+        return TRUE;
+}
+
+static gboolean
 gdm_manager_handle_open_session (GdmDBusManager        *manager,
                                  GDBusMethodInvocation *invocation)
 {
@@ -1159,6 +1188,7 @@ static void
 manager_interface_init (GdmDBusManagerIface *interface)
 {
         interface->handle_register_display = gdm_manager_handle_register_display;
+        interface->handle_register_session = gdm_manager_handle_register_session;
         interface->handle_open_session = gdm_manager_handle_open_session;
         interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
 }
