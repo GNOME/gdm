@@ -747,13 +747,13 @@ gboolean
 gdm_server_start (GdmServer *server)
 {
         gboolean res = FALSE;
-        const char *vtarg = NULL;
+        g_autofree char *vtarg = NULL;
         GError *local_error = NULL;
         GError **error = &local_error;
 
         /* Hardcode the VT for the initial X server, but nothing else */
         if (server->is_initial) {
-                vtarg = "vt" GDM_INITIAL_VT;
+                vtarg = g_strdup_printf ("vt%u", GDM_INITIAL_VT);
         }
 
         /* fork X server process */

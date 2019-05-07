@@ -1416,12 +1416,12 @@ AC_ARG_WITH(initial-vt,
         AS_HELP_STRING([--with-initial-vt=<nr>],
                 [Initial virtual terminal to use]))
 if ! test -z "$with_initial_vt"; then
-        GDM_INITIAL_VT="$with_initial_vt"
+        GDM_INITIAL_VT=$with_initial_vt
 else
-        GDM_INITIAL_VT="1"
+        GDM_INITIAL_VT=1
 fi
 AC_SUBST(GDM_INITIAL_VT)
-AC_DEFINE_UNQUOTED(GDM_INITIAL_VT, "$GDM_INITIAL_VT", [Initial Virtual Terminal])
+AC_DEFINE_UNQUOTED(GDM_INITIAL_VT, $GDM_INITIAL_VT, [Initial Virtual Terminal])
 
 # Set configuration choices.
 #
