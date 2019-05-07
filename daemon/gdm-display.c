@@ -1735,7 +1735,6 @@ void
 gdm_display_stop_greeter_session (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        GError *error = NULL;
 
         priv = gdm_display_get_instance_private (self);
 
