@@ -64,7 +64,7 @@ struct _GdmLocalDisplayFactory
         guint            seat_removed_id;
 
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
-        char            *tty_of_active_vt;
+        unsigned int     active_vt;
         guint            active_vt_watch_id;
         guint            wait_to_finish_timeout_id;
 #endif
@@ -661,13 +661,12 @@ on_vt_changed (GIOChannel    *source,
                GdmLocalDisplayFactory *factory)
 {
         GIOStatus status;
-        static const char *tty_of_initial_vt = "tty" GDM_INITIAL_VT;
-        g_autofree char *tty_of_previous_vt = NULL;
         g_autofree char *tty_of_active_vt = NULL;
         g_autofree char *login_session_id = NULL;
         g_autofree char *active_session_id = NULL;
+        unsigned int previous_vt, new_vt;
         const char *session_type = NULL;
-        int ret;
+        int ret, n_returned;
 
         g_debug ("GdmLocalDisplayFactory: received VT change event");
         g_io_channel_seek_position (source, 0, G_SEEK_SET, NULL);
@@ -703,38 +702,43 @@ on_vt_changed (GIOChannel    *source,
 
         g_strchomp (tty_of_active_vt);
 
+        errno = 0;
+        n_returned = sscanf (tty_of_active_vt, "tty%u", &new_vt);
+
+        if (n_returned != 1 || errno != 0) {
+                g_critical ("GdmLocalDisplayFactory: Couldn't read active VT (got '%s')",
+                            tty_of_active_vt);
+                return G_SOURCE_CONTINUE;
+        }
+
         /* don't do anything if we're on the same VT we were before */
-        if (g_strcmp0 (tty_of_active_vt, factory->tty_of_active_vt) == 0) {
+        if (new_vt == factory->active_vt) {
                 g_debug ("GdmLocalDisplayFactory: VT changed to the same VT, ignoring");
                 return G_SOURCE_CONTINUE;
         }
 
-        tty_of_previous_vt = g_steal_pointer (&factory->tty_of_active_vt);
-        factory->tty_of_active_vt = g_steal_pointer (&tty_of_active_vt);
+        previous_vt = factory->active_vt;
+        factory->active_vt = new_vt;
 
         /* don't do anything at start up */
-        if (tty_of_previous_vt == NULL) {
-                g_debug ("GdmLocalDisplayFactory: VT is %s at startup",
-                         factory->tty_of_active_vt);
+        if (previous_vt == 0) {
+                g_debug ("GdmLocalDisplayFactory: VT is %u at startup",
+                         factory->active_vt);
                 return G_SOURCE_CONTINUE;
         }
 
-        g_debug ("GdmLocalDisplayFactory: VT changed from %s to %s",
-                 tty_of_previous_vt, factory->tty_of_active_vt);
+        g_debug ("GdmLocalDisplayFactory: VT changed from %u to %u",
+                 previous_vt, factory->active_vt);
 
         /* if the old VT was running a wayland login screen kill it
          */
         if (gdm_get_login_window_session_id ("seat0", &login_session_id)) {
-                unsigned int vt;
+                unsigned int login_window_vt;
 
-                ret = sd_session_get_vt (login_session_id, &vt);
-                if (ret == 0 && vt != 0) {
-                        g_autofree char *tty_of_login_window_vt = NULL;
-
-                        tty_of_login_window_vt = g_strdup_printf ("tty%u", vt);
-
-                        g_debug ("GdmLocalDisplayFactory: tty of login window is %s", tty_of_login_window_vt);
-                        if (g_strcmp0 (tty_of_login_window_vt, tty_of_previous_vt) == 0) {
+                ret = sd_session_get_vt (login_session_id, &login_window_vt);
+                if (ret == 0 && login_window_vt != 0) {
+                        g_debug ("GdmLocalDisplayFactory: VT of login window is %u", login_window_vt);
+                        if (login_window_vt == previous_vt) {
                                 GdmDisplayStore *store;
                                 GdmDisplay *display;
 
@@ -757,7 +761,7 @@ on_vt_changed (GIOChannel    *source,
          * on it (unless a login screen is already running elsewhere, then
          * jump to that login screen)
          */
-        if (strcmp (factory->tty_of_active_vt, tty_of_initial_vt) != 0) {
+        if (factory->active_vt != GDM_INITIAL_VT) {
                 g_debug ("GdmLocalDisplayFactory: active VT is not initial VT, so ignoring");
                 return G_SOURCE_CONTINUE;
         }
@@ -835,8 +839,6 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 g_source_remove (factory->active_vt_watch_id);
                 factory->active_vt_watch_id = 0;
         }
-
-        g_clear_pointer (&factory->tty_of_active_vt, g_free);
 #endif
 }
 
