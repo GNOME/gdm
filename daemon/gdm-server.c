@@ -73,6 +73,7 @@ struct _GdmServer
         GPid     pid;
 
         gboolean disable_tcp;
+        gboolean disable_ipv6;
         int      priority;
         char    *user_name;
         char    *session_args;
@@ -96,6 +97,7 @@ enum {
         PROP_AUTH_FILE,
         PROP_USER_NAME,
         PROP_DISABLE_TCP,
+        PROP_DISABLE_IPV6,
         PROP_IS_INITIAL,
 };
 
@@ -329,6 +331,11 @@ gdm_server_resolve_command_line (GdmServer  *server,
         }
 
 #endif
+
+        if (!server->disable_ipv6 && ! query_in_arglist) {
+                argv[len++] = g_strdup ("-nolisten");
+                argv[len++] = g_strdup ("inet6");
+        }
 
         if (vtarg != NULL && ! gotvtarg) {
                 argv[len++] = g_strdup (vtarg);
@@ -863,6 +870,13 @@ _gdm_server_set_disable_tcp (GdmServer  *server,
 }
 
 static void
+_gdm_server_set_disable_ipv6 (GdmServer  *server,
+                             gboolean    disabled)
+{
+        server->disable_ipv6 = disabled;
+}
+
+static void
 _gdm_server_set_is_initial (GdmServer  *server,
                             gboolean    initial)
 {
@@ -894,6 +908,9 @@ gdm_server_set_property (GObject      *object,
                 break;
         case PROP_DISABLE_TCP:
                 _gdm_server_set_disable_tcp (self, g_value_get_boolean (value));
+                break;
+        case PROP_DISABLE_IPV6:
+                _gdm_server_set_disable_ipv6 (self, g_value_get_boolean (value));
                 break;
         case PROP_IS_INITIAL:
                 _gdm_server_set_is_initial (self, g_value_get_boolean (value));
@@ -933,6 +950,9 @@ gdm_server_get_property (GObject    *object,
                 break;
         case PROP_DISABLE_TCP:
                 g_value_set_boolean (value, self->disable_tcp);
+                break;
+        case PROP_DISABLE_IPV6:
+                g_value_set_boolean (value, self->disable_ipv6);
                 break;
         case PROP_IS_INITIAL:
                 g_value_set_boolean (value, self->is_initial);
@@ -1028,6 +1048,13 @@ gdm_server_class_init (GdmServerClass *klass)
                                                                NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_DISABLE_IPV6,
+                                         g_param_spec_boolean ("disable-ipv6",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_IS_INITIAL,
                                          g_param_spec_boolean ("is-initial",

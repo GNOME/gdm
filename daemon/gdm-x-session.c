@@ -194,6 +194,7 @@ out:
 static gboolean
 spawn_x_server (State        *state,
                 gboolean      allow_remote_connections,
+                gboolean      disallow_ipv6,
                 GCancellable *cancellable)
 {
         GPtrArray           *arguments = NULL;
@@ -268,6 +269,11 @@ spawn_x_server (State        *state,
                 g_ptr_array_add (arguments, "tcp");
         }
 #endif
+
+        if (disallow_ipv6) {
+                g_ptr_array_add (arguments, "-nolisten");
+                g_ptr_array_add (arguments, "inet6");
+        }
 
         g_ptr_array_add (arguments, "-background");
         g_ptr_array_add (arguments, "none");
@@ -819,12 +825,14 @@ main (int    argc,
         static char    **args = NULL;
         static gboolean  run_script = FALSE;
         static gboolean  allow_remote_connections = FALSE;
+        static gboolean  disallow_ipv6 = FALSE;
         gboolean         debug = FALSE;
         gboolean         ret;
         int              exit_status = EX_OK;
         static GOptionEntry entries []   = {
                 { "run-script", 'r', 0, G_OPTION_ARG_NONE, &run_script, N_("Run program through /etc/gdm/Xsession wrapper script"), NULL },
                 { "allow-remote-connections", 'a', 0, G_OPTION_ARG_NONE, &allow_remote_connections, N_("Listen on TCP socket"), NULL },
+                { "disallow-ipv6", '6', 0, G_OPTION_ARG_NONE, &disallow_ipv6, N_("Don't try to bind a IPv6 TCP socket"), NULL },
                 { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", "" },
                 { NULL }
         };
@@ -870,7 +878,7 @@ main (int    argc,
 
         g_unix_signal_add (SIGTERM, (GSourceFunc) on_sigterm, state);
 
-        ret = spawn_x_server (state, allow_remote_connections, state->cancellable);
+        ret = spawn_x_server (state, allow_remote_connections, disallow_ipv6, state->cancellable);
 
         if (!ret) {
                 g_printerr ("Unable to run X server\n");

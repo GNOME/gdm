@@ -197,6 +197,7 @@ gdm_legacy_display_manage (GdmDisplay *display)
         gboolean         is_initial;
         gboolean         res;
         gboolean         disable_tcp;
+        gboolean	 allow_ipv6;
 
         g_object_get (G_OBJECT (self),
                       "x11-display-name", &display_name,
@@ -215,6 +216,12 @@ gdm_legacy_display_manage (GdmDisplay *display)
         if (gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disable_tcp)) {
                 g_object_set (self->server,
                               "disable-tcp", disable_tcp,
+                              NULL);
+        }
+        allow_ipv6 = FALSE;
+        if (gdm_settings_direct_get_boolean (GDM_KEY_ALLOW_IPV6, &allow_ipv6)) {
+                g_object_set (self->server,
+                              "disable-ipv6", !allow_ipv6,
                               NULL);
         }
 

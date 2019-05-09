@@ -2835,6 +2835,7 @@ gdm_session_start_session (GdmSession *self,
         gboolean                is_x11 = TRUE;
         gboolean                run_launcher = FALSE;
         gboolean                allow_remote_connections = FALSE;
+        gboolean                allow_ipv6 = TRUE;
         char                   *command;
         char                   *program;
 
@@ -2877,11 +2878,14 @@ gdm_session_start_session (GdmSession *self,
                         allow_remote_connections = TRUE;
                 }
 
+                gdm_settings_direct_get_boolean (GDM_KEY_ALLOW_IPV6, &allow_ipv6);
+                
                 if (run_launcher) {
                         if (is_x11) {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s %s\"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s%s\"%s\"",
                                                            run_xsession_script? "--run-script " : "",
                                                            allow_remote_connections? "--allow-remote-connections " : "",
+                                                           allow_ipv6? "" : "--disallow-ipv6 ",
                                                            command);
                         } else {
                                 program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session \"%s\"",
