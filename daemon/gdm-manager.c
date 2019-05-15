@@ -1811,6 +1811,9 @@ on_start_user_session (StartUserSessionOperation *operation)
 #endif
                       NULL);
 
+        if (doing_initial_setup)
+                chown_initial_setup_home_dir ();
+
         session_id = gdm_session_get_conversation_session_id (operation->session,
                                                               operation->service_name);
 
@@ -1842,8 +1845,6 @@ on_start_user_session (StartUserSessionOperation *operation)
                                 gdm_display_unmanage (display);
                                 gdm_display_finish (display);
                         }
-
-                        chown_initial_setup_home_dir ();
 
                         if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
                                                   "1",
