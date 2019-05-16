@@ -64,6 +64,22 @@ is_debug_set (void)
         return debug;
 }
 
+static gboolean
+on_shutdown_signal_cb (gpointer user_data)
+{
+        GMainLoop *mainloop = user_data;
+
+        g_main_loop_quit (mainloop);
+
+        return FALSE;
+}
+
+static void
+on_state_changed (GMainLoop *main_loop)
+{
+        g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
+}
+
 static void
 on_sigterm_cb (int signal_number)
 {
@@ -124,11 +140,19 @@ main (int    argc,
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
+        g_signal_connect_swapped (G_OBJECT (worker),
+                                  "notify::state",
+                                  G_CALLBACK (on_state_changed),
+                                  main_loop);
+
         g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         g_main_loop_run (main_loop);
 
         if (worker != NULL) {
+                g_signal_handlers_disconnect_by_func (worker,
+                                                      G_CALLBACK (on_state_changed),
+                                                      main_loop);
                 g_object_unref (worker);
         }
 

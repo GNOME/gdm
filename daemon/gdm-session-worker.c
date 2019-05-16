@@ -197,6 +197,7 @@ enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
         PROP_IS_REAUTH_SESSION,
+        PROP_STATE,
 };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
@@ -2773,6 +2774,8 @@ do_start_session (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_start_session (worker, &error);
         if (res) {
+                g_object_notify (G_OBJECT (worker), "state");
+
                 gdm_dbus_worker_complete_start_program (GDM_DBUS_WORKER (worker),
                                                         worker->priv->pending_invocation,
                                                         worker->priv->child_pid);
@@ -3471,6 +3474,13 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
                                                                "is reauth session",
                                                               FALSE,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
+                                         PROP_STATE,
+                                         g_param_spec_pointer ("state",
+                                                               "state",
+                                                               "state",
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static void
