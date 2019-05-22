@@ -254,10 +254,12 @@ on_display_status_changed (GdmDisplay             *display,
         GdmDisplayStore *store;
         int              num;
         char            *seat_id = NULL;
+        char            *session_id = NULL;
         char            *session_type = NULL;
         char            *session_class = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
+        int              ret;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
@@ -266,6 +268,7 @@ on_display_status_changed (GdmDisplay             *display,
 
         g_object_get (display,
                       "seat-id", &seat_id,
+                      "session-id", &session_id,
                       "is-initial", &is_initial,
                       "is-local", &is_local,
                       "session-type", &session_type,
@@ -288,10 +291,28 @@ on_display_status_changed (GdmDisplay             *display,
                  * a new login screen comes up if one is missing.
                  */
                 if (is_local && g_strcmp0 (session_class, "greeter") != 0) {
+                        g_autofree char *active_session = NULL;
+
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
-                        create_display (factory, seat_id, session_type, is_initial);
+                        ret = sd_seat_get_active (seat_id, &active_session, NULL);
+
+                        if (ret == 0) {
+                                g_autofree char *state = NULL;
+                                ret = sd_session_get_state (active_session, &state);
+                                if (ret != 0 ||
+                                    g_strcmp0 (state, "closing") == 0 ||
+                                    g_strcmp0 (active_session, session_id) == 0) {
+                                        g_clear_pointer (&active_session, free);
+                                }
+                        }
+
+                        /* If this died in the foreground leaving us on a blank vt,
+                           start a new login screen */
+                        if (!sd_seat_can_multi_session (seat_id) || active_session == NULL) {
+                                create_display (factory, seat_id, session_type, is_initial);
+                        }
                 }
                 break;
         case GDM_DISPLAY_FAILED:
@@ -331,6 +352,7 @@ on_display_status_changed (GdmDisplay             *display,
         }
 
         g_free (seat_id);
+        g_free (session_id);
         g_free (session_type);
         g_free (session_class);
 }
