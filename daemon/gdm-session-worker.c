@@ -2224,7 +2224,7 @@ set_up_for_new_vt (GdmSessionWorker *worker)
         }
 
         if (worker->priv->display_is_initial) {
-                session_vt = atoi (GDM_INITIAL_VT);
+                session_vt = GDM_INITIAL_VT;
         } else {
                 if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
                         g_debug ("GdmSessionWorker: couldn't open new VT: %m");
