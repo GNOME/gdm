@@ -3548,6 +3548,10 @@ gdm_session_worker_finalize (GObject *object)
 
         g_return_if_fail (worker->priv != NULL);
 
+        if (worker->priv->pam_handle != NULL) {
+                gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
+        }
+
         gdm_session_worker_unwatch_child (worker);
 
         if (worker->priv->child_pid > 0) {
