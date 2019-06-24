@@ -3561,6 +3561,10 @@ gdm_session_worker_finalize (GObject *object)
                 gdm_wait_on_pid (worker->priv->child_pid);
         }
 
+        if (worker->priv->pam_handle != NULL) {
+                gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
+        }
+
         g_object_unref (worker->priv->user_settings);
         g_free (worker->priv->service);
         g_free (worker->priv->x11_display_name);
