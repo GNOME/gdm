@@ -110,17 +110,6 @@
 #define RELEASE_DISPLAY_SIGNAL (SIGRTMAX)
 #define ACQUIRE_DISPLAY_SIGNAL (SIGRTMAX - 1)
 
-enum {
-        GDM_SESSION_WORKER_STATE_NONE = 0,
-        GDM_SESSION_WORKER_STATE_SETUP_COMPLETE,
-        GDM_SESSION_WORKER_STATE_AUTHENTICATED,
-        GDM_SESSION_WORKER_STATE_AUTHORIZED,
-        GDM_SESSION_WORKER_STATE_ACCREDITED,
-        GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED,
-        GDM_SESSION_WORKER_STATE_SESSION_OPENED,
-        GDM_SESSION_WORKER_STATE_SESSION_STARTED
-};
-
 typedef struct
 {
         GdmSessionWorker *worker;
@@ -132,7 +121,7 @@ typedef struct
 
 struct GdmSessionWorkerPrivate
 {
-        int               state;
+        GdmSessionWorkerState state;
 
         int               exit_code;
 
@@ -2490,6 +2479,9 @@ gdm_session_worker_get_property (GObject    *object,
                 break;
         case PROP_IS_REAUTH_SESSION:
                 g_value_set_boolean (value, self->priv->is_reauth_session);
+                break;
+        case PROP_STATE:
+                g_value_set_int (value, self->priv->state);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

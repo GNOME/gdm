@@ -41,12 +41,19 @@ BUILT_SOURCES =					\
 	gdm-session-glue.h			\
 	gdm-session-worker-glue.h		\
 	gdm-session-enum-types.h		\
+	gdm-session-worker-enum-types.h         \
 	$(NULL)
 
 gdm-session-enum-types.h: gdm-session-enum-types.h.in gdm-session.h
 	$(AM_V_GEN) glib-mkenums --template $^ > $@
 
 gdm-session-enum-types.c: gdm-session-enum-types.c.in gdm-session.h
+	$(AM_V_GEN) glib-mkenums --template $^ > $@
+
+gdm-session-worker-enum-types.h: gdm-session-worker-enum-types.h.in gdm-session-worker.h
+	$(AM_V_GEN) glib-mkenums --template $^ > $@
+
+gdm-session-worker-enum-types.c: gdm-session-worker-enum-types.c.in gdm-session-worker.h
 	$(AM_V_GEN) glib-mkenums --template $^ > $@
 
 gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
@@ -146,6 +153,8 @@ nodist_gdm_session_worker_SOURCES =		\
 	gdm-session-worker-glue.h		\
 	gdm-session-enum-types.c		\
 	gdm-session-enum-types.h		\
+	gdm-session-worker-enum-types.h		\
+	gdm-session-worker-enum-types.c		\
 	$(NULL)
 
 gdm_wayland_session_LDADD =		\
@@ -249,6 +258,8 @@ nodist_gdm_SOURCES = 			\
 	gdm-session-worker-glue.h		\
 	gdm-session-enum-types.c		\
 	gdm-session-enum-types.h		\
+	gdm-session-worker-enum-types.h		\
+	gdm-session-worker-enum-types.c		\
 	$(NULL)
 
 XDMCP_SOURCES =				\
@@ -286,6 +297,7 @@ CLEANFILES =					\
 	gdm-session-glue.c			\
 	gdm-session-worker-glue.c		\
 	gdm-session-enum-types.c		\
+	gdm-session-worker-enum-types.c		\
 	gdm-local-display-glue.c		\
 	$(BUILT_SOURCES)			\
 	$(NULL)
@@ -299,4 +311,6 @@ EXTRA_DIST = 				\
 	gdm-local-display-factory.xml	\
 	gdm-session-enum-types.c.in	\
 	gdm-session-enum-types.h.in	\
+	gdm-session-worker-enum-types.c.in	\
+	gdm-session-worker-enum-types.h.in	\
 	$(NULL)
