@@ -25,6 +25,7 @@
 
 #include "gdm-session-worker-glue.h"
 #include "gdm-session-worker-common.h"
+#include "gdm-session-worker-enum-types.h"
 
 G_BEGIN_DECLS
 
@@ -34,6 +35,17 @@ G_BEGIN_DECLS
 #define GDM_IS_SESSION_WORKER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION_WORKER))
 #define GDM_IS_SESSION_WORKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_WORKER))
 #define GDM_SESSION_WORKER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerClass))
+
+typedef enum {
+        GDM_SESSION_WORKER_STATE_NONE = 0,
+        GDM_SESSION_WORKER_STATE_SETUP_COMPLETE,
+        GDM_SESSION_WORKER_STATE_AUTHENTICATED,
+        GDM_SESSION_WORKER_STATE_AUTHORIZED,
+        GDM_SESSION_WORKER_STATE_ACCREDITED,
+        GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED,
+        GDM_SESSION_WORKER_STATE_SESSION_OPENED,
+        GDM_SESSION_WORKER_STATE_SESSION_STARTED
+} GdmSessionWorkerState;
 
 typedef struct GdmSessionWorkerPrivate GdmSessionWorkerPrivate;
 
