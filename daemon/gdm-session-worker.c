@@ -110,17 +110,6 @@
 #define RELEASE_DISPLAY_SIGNAL (SIGRTMAX)
 #define ACQUIRE_DISPLAY_SIGNAL (SIGRTMAX - 1)
 
-enum {
-        GDM_SESSION_WORKER_STATE_NONE = 0,
-        GDM_SESSION_WORKER_STATE_SETUP_COMPLETE,
-        GDM_SESSION_WORKER_STATE_AUTHENTICATED,
-        GDM_SESSION_WORKER_STATE_AUTHORIZED,
-        GDM_SESSION_WORKER_STATE_ACCREDITED,
-        GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED,
-        GDM_SESSION_WORKER_STATE_SESSION_OPENED,
-        GDM_SESSION_WORKER_STATE_SESSION_STARTED
-};
-
 typedef struct
 {
         GdmSessionWorker *worker;
@@ -132,7 +121,7 @@ typedef struct
 
 struct GdmSessionWorkerPrivate
 {
-        int               state;
+        GdmSessionWorkerState state;
 
         int               exit_code;
 
@@ -197,6 +186,7 @@ enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
         PROP_IS_REAUTH_SESSION,
+        PROP_STATE,
 };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
@@ -1022,6 +1012,17 @@ jump_to_vt (GdmSessionWorker  *worker,
 }
 
 static void
+gdm_session_worker_set_state (GdmSessionWorker      *worker,
+                              GdmSessionWorkerState  state)
+{
+        if (worker->priv->state == state)
+                return;
+
+        worker->priv->state = state;
+        g_object_notify (G_OBJECT (worker), "state");
+}
+
+static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                                      int               status)
 {
@@ -1060,7 +1061,7 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         worker->priv->session_vt = 0;
 
         g_debug ("GdmSessionWorker: state NONE");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_NONE;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_NONE);
 }
 
 static char *
@@ -1223,7 +1224,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         }
 
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_SETUP_COMPLETE;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
         /* Temporarily set PAM_TTY with the currently active VT (login screen) 
            PAM_TTY will be reset with the users VT right before the user session is opened */
@@ -1289,7 +1290,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         }
 
         g_debug ("GdmSessionWorker: state AUTHENTICATED");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_AUTHENTICATED;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_AUTHENTICATED);
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1354,7 +1355,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
         }
 
         g_debug ("GdmSessionWorker: state AUTHORIZED");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_AUTHORIZED;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_AUTHORIZED);
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1767,7 +1768,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
 
                 gdm_session_worker_get_username (worker, NULL);
                 gdm_session_auditor_report_user_accredited (worker->priv->auditor);
-                worker->priv->state = GDM_SESSION_WORKER_STATE_ACCREDITED;
+                gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_ACCREDITED);
         } else {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
         }
@@ -2196,7 +2197,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         g_assert (sizeof (GPid) <= sizeof (int));
 
         g_debug ("GdmSessionWorker: state SESSION_STARTED");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_STARTED;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SESSION_STARTED);
 
         gdm_session_worker_watch_child (worker);
 
@@ -2419,7 +2420,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         }
 
         g_debug ("GdmSessionWorker: state SESSION_OPENED");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SESSION_OPENED);
 
         session_id = gdm_session_worker_get_environment_variable (worker, "XDG_SESSION_ID");
 
@@ -2494,6 +2495,9 @@ gdm_session_worker_get_property (GObject    *object,
                 break;
         case PROP_IS_REAUTH_SESSION:
                 g_value_set_boolean (value, self->priv->is_reauth_session);
+                break;
+        case PROP_STATE:
+                g_value_set_enum (value, self->priv->state);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2678,7 +2682,7 @@ save_account_details_now (GdmSessionWorker *worker)
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
 
         g_debug ("GdmSessionWorker: saving account details for user %s", worker->priv->username);
-        worker->priv->state = GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED;
+        gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         if (!gdm_session_settings_save (worker->priv->user_settings,
                                         worker->priv->username)) {
                 g_warning ("could not save session and language settings");
@@ -3471,6 +3475,15 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
                                                                "is reauth session",
                                                               FALSE,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
+                                         PROP_STATE,
+                                         g_param_spec_enum ("state",
+                                                            "state",
+                                                            "state",
+                                                            GDM_TYPE_SESSION_WORKER_STATE,
+                                                            GDM_SESSION_WORKER_STATE_NONE,
+                                                            G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -3540,6 +3553,10 @@ gdm_session_worker_finalize (GObject *object)
         if (worker->priv->child_pid > 0) {
                 gdm_signal_pid (worker->priv->child_pid, SIGTERM);
                 gdm_wait_on_pid (worker->priv->child_pid);
+        }
+
+        if (worker->priv->pam_handle != NULL) {
+                gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
         }
 
         g_object_unref (worker->priv->user_settings);
