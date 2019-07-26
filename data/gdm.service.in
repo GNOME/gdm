@@ -21,6 +21,7 @@ OnFailure=plymouth-quit.service
 
 [Service]
 ExecStart=${sbindir}/gdm
+ExecStopPost=-/usr/bin/bash -c 'for f in /run/systemd/sessions/*; do [ -f $f ] && /usr/bin/fgrep -q SERVICE=gdm $f && loginctl terminate-session $(basename $f); done'
 KillMode=mixed
 Restart=always
 IgnoreSIGPIPE=no
