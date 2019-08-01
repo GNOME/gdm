@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-07-06 08:24+0000\n"
-"PO-Revision-Date: 2019-07-15 00:00+0530\n"
+"POT-Creation-Date: 2019-07-26 09:05+0000\n"
+"PO-Revision-Date: 2019-08-01 21:55+0530\n"
 "Last-Translator: Jor Teron <jor.teron@gmail.com>\n"
-"Language-Team: Karbi <mjw@li.org>\n"
+"Language-Team: Karbi <karbi.translation@gmail.com>\n"
 "Language: mjw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -75,8 +75,7 @@ msgid "The system is unable to start up a new login screen."
 msgstr "Computer login screen kimi ingpu un-eh det."
 
 #: daemon/gdm-display-access-file.c:298
-#, fuzzy, c-format
-#| msgid "could not find user \"%s\" on system"
+#, c-format
 msgid "could not find user “%s” on system"
 msgstr "“%s” phan computer long amen longle"
 
@@ -101,8 +100,6 @@ msgid "No session available"
 msgstr "Session awe"
 
 #: daemon/gdm-manager.c:878
-#, fuzzy
-#| msgid "No session available"
 msgid "Chooser session unavailable"
 msgstr "Session awe"
 
@@ -119,14 +116,12 @@ msgid "Unable to open private communication channel"
 msgstr "Chingki phan Private channel ingpu un-eh"
 
 #: daemon/gdm-server.c:383
-#, fuzzy, c-format
-#| msgid "Server was to be spawned by user %s but that user doesn't exist"
+#, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Server ke %s monit pen se ingpu nangji anta laso monit abang awe det"
 
 #: daemon/gdm-server.c:394 daemon/gdm-server.c:414
-#, fuzzy, c-format
-#| msgid "Couldn't set groupid to %d"
+#, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "%d groupid bi un-eh"
 
@@ -136,8 +131,7 @@ msgid "initgroups () failed for %s"
 msgstr "%s aphan initgroups () be un-eh"
 
 #: daemon/gdm-server.c:406
-#, fuzzy, c-format
-#| msgid "Couldn't set userid to %d"
+#, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "%d userid bi un-eh"
 
@@ -152,8 +146,7 @@ msgid "%s: Error setting %s to %s"
 msgstr "%s: %s pen %s ason-amung lar un-eh"
 
 #: daemon/gdm-server.c:537
-#, fuzzy, c-format
-#| msgid "%s: Server priority couldn't be set to %d: %s"
+#, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Server priority laso %d: %s long bi un-eh"
 
@@ -191,14 +184,10 @@ msgid "Could not create authentication helper process"
 msgstr "Authentication helper process selam un-eh det"
 
 #: daemon/gdm-session-worker.c:756
-#, fuzzy
-#| msgid "Your account was given a time limit that's now passed."
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Nangli account phan apor kipi lit tang lo."
 
 #: daemon/gdm-session-worker.c:763
-#, fuzzy
-#| msgid "Sorry, that didn't work. Please try again."
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Diya ik tha, laso keklem chun che. Ephong bor-e thu tha."
 
@@ -250,8 +239,7 @@ msgid "Failed to create LogDir %s: %s"
 msgstr "LogDir %s: %s selam un-eh det"
 
 #: daemon/main.c:223
-#, fuzzy, c-format
-#| msgid "Can't find the GDM user '%s'. Aborting!"
+#, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "GDM user “%s” phan long-le. Lasi pajut-lo!"
 
@@ -260,8 +248,7 @@ msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM user root nangji. Lasi pajut-lo!"
 
 #: daemon/main.c:235
-#, fuzzy, c-format
-#| msgid "Can't find the GDM group '%s'. Aborting!"
+#, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "GDM group “%s” longle det. Lasi pajut-lo!"
 
@@ -288,7 +275,7 @@ msgstr "GNOME Display Manager"
 #. make sure the pid file doesn't get wiped
 #: daemon/main.c:350
 msgid "Only the root user can run GDM"
-msgstr "root user atum si GDM padam long chot"
+msgstr "Root user se GDM ingpu long chot"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
@@ -360,7 +347,8 @@ msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr ""
-"Login screen long login un tum amen klang. Laso amokha pen pa klang kle det me."
+"Login screen long login un tum amen klang. Laso amokha pen pa klang kle det "
+"me."
 
 #: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
@@ -395,8 +383,8 @@ msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
-"Phong koan authentication sai klem longji, "
-"User selection long aphi cherui re ako."
+"Phong koan authentication sai klem longji, User selection long aphi cherui "
+"re ako."
 
 #: libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
@@ -429,8 +417,6 @@ msgstr "Laso application version"
 
 #. Option parsing
 #: utils/gdmflexiserver.c:137
-#, fuzzy
-#| msgid "- New GDM login"
 msgid "— New GDM login"
 msgstr "— Kimi GDM login"
 
