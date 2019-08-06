@@ -11,7 +11,6 @@ AM_CPPFLAGS = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
-	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
 	-DGNOME_SETTINGS_DAEMON_DIR="\"$(GNOME_SETTINGS_DAEMON_DIR)\""		\
 	$(GTK_CFLAGS)					\
