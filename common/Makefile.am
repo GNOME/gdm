@@ -14,7 +14,6 @@ AM_CPPFLAGS = \
 	-DLIBDIR=\"$(libdir)\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLOGDIR=\"$(logdir)\"				\
-	-DPIXMAPDIR=\"$(pixmapdir)\"			\
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\

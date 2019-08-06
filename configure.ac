@@ -975,7 +975,6 @@ dnl - Define some variables to represent the directories we use.
 dnl ---------------------------------------------------------------------------
 
 AC_SUBST(gdmlocaledir, ${gdmconfdir})
-AC_SUBST(pixmapdir, ${datadir}/pixmaps)
 
 AC_ARG_WITH(log-dir,
             AS_HELP_STRING([--with-log-dir=<file>],
@@ -1464,10 +1463,6 @@ data/gdm.conf
 data/Makefile
 data/applications/Makefile
 data/autostart/Makefile
-data/pixmaps/Makefile
-data/pixmaps/16x16/Makefile
-data/pixmaps/32x32/Makefile
-data/pixmaps/48x48/Makefile
 data/dconf/gdm
 common/Makefile
 po/Makefile.in
