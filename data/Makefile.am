@@ -4,7 +4,6 @@ EXTRA_DIST =
 SUBDIRS =			\
 	applications		\
 	autostart		\
-	pixmaps			\
 	$(NULL)
 
 initdir = $(gdmconfdir)/Init
@@ -75,7 +74,6 @@ $(schemas_DATA): $(schemas_in_files)
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
 		-e 's,[@]gdmlocaledir[@],$(gdmlocaledir),g' \
 		-e 's,[@]logdir[@],$(logdir),g' \
-		-e 's,[@]pixmapdir[@],$(pixmapdir),g' \
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.schemas.in >gdm.schemas
 
