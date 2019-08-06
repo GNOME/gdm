@@ -216,6 +216,12 @@ systemdsystemunit_DATA=$(systemdsystemunit)
 systemdsystemunitdir=$(SYSTEMD_SYSTEM_UNIT_DIR)
 endif
 
+systemduserunit = gnome-login.target gnome-login-wayland.target
+systemduserunit_DATA=$(systemduserunit)
+systemduserunitdir=$(SYSTEMD_USER_UNIT_DIR)
+
+EXTRA_DIST += gnome-login.target gnome-login-wayland.target
+
 Xsession_files =
 if ENABLE_GDM_XSESSION
 
