@@ -211,7 +211,8 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionWorker,
                          gdm_session_worker,
                          GDM_DBUS_TYPE_WORKER_SKELETON,
                          G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_WORKER,
-                                                worker_interface_init))
+                                                worker_interface_init)
+                         G_ADD_PRIVATE (GdmSessionWorker))
 
 /* adapted from glib script_execute */
 static void
@@ -3202,7 +3203,7 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
 
         g_debug ("GdmSessionWorker: start program: %s", text);
 
-        g_clear_pointer (&worker->priv->arguments, (GDestroyNotify) g_strfreev);
+        g_clear_pointer (&worker->priv->arguments, g_strfreev);
         if (! g_shell_parse_argv (text, NULL, &worker->priv->arguments, &parse_error)) {
                 g_dbus_method_invocation_take_error (invocation, parse_error);
                 return TRUE;
@@ -3459,8 +3460,6 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
         object_class->set_property = gdm_session_worker_set_property;
         object_class->constructor = gdm_session_worker_constructor;
         object_class->finalize = gdm_session_worker_finalize;
-
-        g_type_class_add_private (klass, sizeof (GdmSessionWorkerPrivate));
 
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,

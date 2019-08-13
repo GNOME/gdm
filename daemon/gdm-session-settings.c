@@ -62,7 +62,9 @@ enum {
         PROP_IS_LOADED
 };
 
-G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GdmSessionSettings,
+                            gdm_session_settings,
+                            G_TYPE_OBJECT)
 
 static void
 gdm_session_settings_class_init (GdmSessionSettingsClass *settings_class)
@@ -74,8 +76,6 @@ gdm_session_settings_class_init (GdmSessionSettingsClass *settings_class)
         object_class->finalize = gdm_session_settings_finalize;
 
         gdm_session_settings_class_install_properties (settings_class);
-
-        g_type_class_add_private (settings_class, sizeof (GdmSessionSettingsPrivate));
 }
 
 static void
