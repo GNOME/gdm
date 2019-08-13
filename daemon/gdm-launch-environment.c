@@ -68,6 +68,7 @@ struct GdmLaunchEnvironmentPrivate
         GdmSessionVerificationMode verification_mode;
 
         char           *user_name;
+        char           *autostart_dir;
         char           *runtime_dir;
 
         char           *session_id;
@@ -93,6 +94,7 @@ enum {
         PROP_X11_AUTHORITY_FILE,
         PROP_X11_DISPLAY_IS_LOCAL,
         PROP_USER_NAME,
+        PROP_AUTOSTART_DIR,
         PROP_RUNTIME_DIR,
         PROP_COMMAND,
 };
@@ -172,6 +174,9 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
         if (launch_environment->priv->x11_authority_file != NULL)
                 g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (launch_environment->priv->x11_authority_file));
+
+        if (launch_environment->priv->autostart_dir != NULL)
+                g_hash_table_insert (hash, g_strdup ("GNOME_SESSION_AUTOSTART_DIR"), g_strdup (launch_environment->priv->autostart_dir));
 
         if (launch_environment->priv->session_mode != NULL) {
                 g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->priv->session_mode));
@@ -576,6 +581,14 @@ _gdm_launch_environment_set_user_name (GdmLaunchEnvironment *launch_environment,
 }
 
 static void
+_gdm_launch_environment_set_autostart_dir (GdmLaunchEnvironment *launch_environment,
+                                         const char           *dir)
+{
+        g_free (launch_environment->priv->autostart_dir);
+        launch_environment->priv->autostart_dir = g_strdup (dir);
+}
+
+static void
 _gdm_launch_environment_set_runtime_dir (GdmLaunchEnvironment *launch_environment,
                                          const char           *dir)
 {
@@ -632,6 +645,9 @@ gdm_launch_environment_set_property (GObject      *object,
         case PROP_USER_NAME:
                 _gdm_launch_environment_set_user_name (self, g_value_get_string (value));
                 break;
+        case PROP_AUTOSTART_DIR:
+                _gdm_launch_environment_set_autostart_dir (self, g_value_get_string (value));
+                break;
         case PROP_RUNTIME_DIR:
                 _gdm_launch_environment_set_runtime_dir (self, g_value_get_string (value));
                 break;
@@ -684,6 +700,9 @@ gdm_launch_environment_get_property (GObject    *object,
                 break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->priv->user_name);
+                break;
+        case PROP_AUTOSTART_DIR:
+                g_value_set_string (value, self->priv->autostart_dir);
                 break;
         case PROP_RUNTIME_DIR:
                 g_value_set_string (value, self->priv->runtime_dir);
@@ -779,6 +798,14 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                               "user name",
                                                               GDM_USERNAME,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_AUTOSTART_DIR,
+                                         g_param_spec_string ("autostart-dir",
+                                                              "autostart-dir",
+                                                              "autostart-dir",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
         g_object_class_install_property (object_class,
                                          PROP_RUNTIME_DIR,
                                          g_param_spec_string ("runtime-dir",
@@ -889,6 +916,7 @@ gdm_launch_environment_finalize (GObject *object)
 
         g_free (launch_environment->priv->command);
         g_free (launch_environment->priv->user_name);
+        g_free (launch_environment->priv->autostart_dir);
         g_free (launch_environment->priv->runtime_dir);
         g_free (launch_environment->priv->x11_display_name);
         g_free (launch_environment->priv->x11_display_seat_id);
@@ -922,9 +950,6 @@ create_gnome_session_environment (const char *session_id,
         args = g_ptr_array_new ();
         g_ptr_array_add (args, "gnome-session");
 
-        g_ptr_array_add (args, "--autostart");
-        g_ptr_array_add (args, DATADIR "/gdm/greeter/autostart");
-
         if (debug) {
                 g_ptr_array_add (args, "--debug");
         }
@@ -949,6 +974,7 @@ create_gnome_session_environment (const char *session_id,
                                            "x11-display-seat-id", seat_id,
                                            "x11-display-hostname", display_hostname,
                                            "x11-display-is-local", display_is_local,
+                                           "autostart-dir", DATADIR "/gdm/greeter/autostart",
                                            "runtime-dir", GDM_SCREENSHOT_DIR,
                                            NULL);
 
