@@ -635,7 +635,7 @@ spawn_session (State        *state,
                                 continue;
                         }
 
-                        g_subprocess_launcher_setenv (launcher, environment_entry[0], environment_entry[1], FALSE);
+                        g_subprocess_launcher_setenv (launcher, environment_entry[0], environment_entry[1], TRUE);
                 }
 
                 /* Don't allow session specific environment variables from earlier sessions to
