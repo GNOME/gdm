@@ -495,7 +495,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
         ret = gdm_dbus_get_uid_for_name (sender, &caller_uid, &error);
 
         if (!ret) {
-                g_debug ("GdmManager: Error while retrieving uid for sender: %d",
+                g_debug ("GdmManager: Error while retrieving uid for sender: %s",
                          error->message);
                 g_error_free (error);
                 goto out;
@@ -504,8 +504,8 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
         ret = gdm_find_display_session_for_uid (caller_uid, &session_id, &error);
 
         if (!ret) {
-                g_debug ("GdmManager: Unable to find display session for uid %s: %s",
-                         caller_uid,
+                g_debug ("GdmManager: Unable to find display session for uid %d: %s",
+                         (int) caller_uid,
                          error->message);
                 g_error_free (error);
                 goto out;
