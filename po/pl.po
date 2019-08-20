@@ -1,21 +1,21 @@
 # Polish translation for gdm.
-# Copyright © 1999-2018 the gdm authors.
+# Copyright © 1999-2019 the gdm authors.
 # This file is distributed under the same license as the gdm package.
 # Zbigniew Chyla <chyla@alice.ci.pwr.wroc.pl>, 1999-2003.
 # Artur Flinta <aflinta@at.kernel.pl>, 2003-2006.
 # Wojciech Kapusta <wkapusta@aviary.pl>, 2006-2007.
 # Wadim Dziedzic <wdziedzic@aviary.pl>, 2007-2008.
 # Tomasz Dominikowski <dominikowski@gmail.com>, 2008-2009.
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2018.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2019.
 # Wojciech Szczęsny <wszczesny@aviary.pl>, 2013.
-# Aviary.pl <community-poland@mozilla.org>, 2006-2018.
+# Aviary.pl <community-poland@mozilla.org>, 2006-2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-04 23:14+0100\n"
-"PO-Revision-Date: 2018-02-04 23:15+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
+"POT-Creation-Date: 2019-08-05 22:13+0000\n"
+"PO-Revision-Date: 2019-08-20 18:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -25,55 +25,51 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../chooser/gdm-host-chooser-dialog.c:140
+#: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
 msgstr "_Odśwież"
 
-#: ../chooser/gdm-host-chooser-dialog.c:141
+#: chooser/gdm-host-chooser-dialog.c:140
 msgid "_Cancel"
 msgstr "_Anuluj"
 
-#: ../chooser/gdm-host-chooser-dialog.c:142
+#: chooser/gdm-host-chooser-dialog.c:141
 msgid "C_onnect"
 msgstr "_Połącz"
 
-#: ../chooser/gdm-host-chooser-dialog.c:147
+#: chooser/gdm-host-chooser-dialog.c:146
 msgid "Select System"
 msgstr "Wybór systemu"
 
-#: ../chooser/gdm-host-chooser-widget.c:254
+#: chooser/gdm-host-chooser-widget.c:253
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: nie można utworzyć bufora XDMCP."
 
-#: ../chooser/gdm-host-chooser-widget.c:260
+#: chooser/gdm-host-chooser-widget.c:259
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: nie można odczytać nagłówka XDMCP."
 
-#: ../chooser/gdm-host-chooser-widget.c:266
+#: chooser/gdm-host-chooser-widget.c:265
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: niepoprawna wersja XDMCP."
 
-#: ../chooser/gdm-host-chooser-widget.c:272
+#: chooser/gdm-host-chooser-widget.c:271
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: nie można przetworzyć adresu"
 
-#: ../common/gdm-common.c:317
-#, c-format
+#: common/gdm-common.c:307
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nie jest urządzeniem znakowym"
 
-#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:209
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Nie można zidentyfikować bieżącej sesji."
+#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+msgid "Could not identify the current session: "
+msgstr "Nie można zidentyfikować bieżącej sesji: "
 
-#: ../common/gdm-common.c:496 ../libgdm/gdm-user-switching.c:218
-#, c-format
+#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
 msgid "Could not identify the current seat."
 msgstr "Nie można zidentyfikować bieżącego stanowiska."
 
-#: ../common/gdm-common.c:506 ../libgdm/gdm-user-switching.c:228
-#, c-format
+#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
@@ -81,17 +77,16 @@ msgstr ""
 "System nie może ustalić, czy przełączyć do istniejącego ekranu logowania, "
 "czy uruchomić nowy."
 
-#: ../common/gdm-common.c:514 ../libgdm/gdm-user-switching.c:236
-#, c-format
+#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
 msgid "The system is unable to start up a new login screen."
 msgstr "System nie może uruchomić nowego ekranu logowania."
 
-#: ../daemon/gdm-display-access-file.c:300
+#: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
 msgstr "nie można odnaleźć użytkownika „%s” w systemie"
 
-#: ../daemon/gdm-legacy-display.c:235
+#: daemon/gdm-legacy-display.c:236
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -104,208 +99,206 @@ msgstr ""
 "zostanie tymczasowo wyłączony. Po naprawieniu problemu proszę ponownie "
 "uruchomić GDM."
 
-#: ../daemon/gdm-manager.c:775
+#: daemon/gdm-manager.c:762
 msgid "No display available"
 msgstr "Brak dostępnych ekranów"
 
-#: ../daemon/gdm-manager.c:844 ../daemon/gdm-manager.c:1120
+#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
 msgid "No session available"
 msgstr "Brak dostępnych sesji"
 
-#: ../daemon/gdm-manager.c:863
+#: daemon/gdm-manager.c:879
 msgid "Chooser session unavailable"
 msgstr "Sesja ekranu wyboru jest niedostępna"
 
-#: ../daemon/gdm-manager.c:875
+#: daemon/gdm-manager.c:895
 msgid "Can only be called before user is logged in"
 msgstr "Może być wywoływane tylko przed zalogowaniem użytkownika"
 
-#: ../daemon/gdm-manager.c:886
+#: daemon/gdm-manager.c:906
 msgid "Caller not GDM"
 msgstr "Program wywołujący to nie GDM"
 
-#: ../daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:916
 msgid "Unable to open private communication channel"
 msgstr "Nie można otworzyć prywatnego kanału komunikacji"
 
-#: ../daemon/gdm-server.c:383
+#: daemon/gdm-server.c:383
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Serwer powinien zostać uruchomiony przez użytkownika %s, ale taki użytkownik "
 "nie istnieje"
 
-#: ../daemon/gdm-server.c:394 ../daemon/gdm-server.c:414
+#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Nie można ustawić identyfikatora grupy na %d"
 
-#: ../daemon/gdm-server.c:400
+#: daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Funkcja initgroups () się nie powiodła dla %s"
 
-#: ../daemon/gdm-server.c:406
+#: daemon/gdm-server.c:406
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "Nie można ustawić identyfikatora użytkownika na %d"
 
-#: ../daemon/gdm-server.c:484
+#: daemon/gdm-server.c:484
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: nie można otworzyć pliku dziennika dla ekranu %s."
 
-#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
-#: ../daemon/gdm-server.c:517
+#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: błąd przy ustawianiu %s na %s"
 
-#: ../daemon/gdm-server.c:537
+#: daemon/gdm-server.c:537
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: nie można ustawić priorytetu serwera na %d: %s"
 
-#: ../daemon/gdm-server.c:689
+#: daemon/gdm-server.c:689
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: puste polecenie serwera dla ekranu %s"
 
-#: ../daemon/gdm-session-auditor.c:90
+#: daemon/gdm-session-auditor.c:88
 msgid "Username"
 msgstr "Nazwa użytkownika"
 
-#: ../daemon/gdm-session-auditor.c:91
+#: daemon/gdm-session-auditor.c:89
 msgid "The username"
 msgstr "Nazwa użytkownika"
 
-#: ../daemon/gdm-session-auditor.c:95
+#: daemon/gdm-session-auditor.c:93
 msgid "Hostname"
 msgstr "Nazwa komputera"
 
-#: ../daemon/gdm-session-auditor.c:96
+#: daemon/gdm-session-auditor.c:94
 msgid "The hostname"
 msgstr "Nazwa komputera"
 
-#: ../daemon/gdm-session-auditor.c:101
+#: daemon/gdm-session-auditor.c:99
 msgid "Display Device"
 msgstr "Urządzenie wyświetlające"
 
-#: ../daemon/gdm-session-auditor.c:102
+#: daemon/gdm-session-auditor.c:100
 msgid "The display device"
 msgstr "Urządzenie wyświetlające"
 
-#: ../daemon/gdm-session.c:1261
+#: daemon/gdm-session.c:1285
 msgid "Could not create authentication helper process"
 msgstr "Nie można utworzyć pomocniczego procesu uwierzytelniania"
 
-#: ../daemon/gdm-session-worker.c:766
+#: daemon/gdm-session-worker.c:756
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Konto ma ograniczenie czasowe, które już minęło."
 
-#: ../daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:763
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "To nie zadziałało. Proszę spróbować ponownie."
 
-#: ../daemon/gdm-session-worker.c:1170
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
-#: ../daemon/gdm-session-worker.c:1672 ../daemon/gdm-session-worker.c:1689
-#, c-format
+#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
 msgid "no user account available"
 msgstr "brak dostępnego konta użytkownika"
 
-#: ../daemon/gdm-session-worker.c:1716
+#: daemon/gdm-session-worker.c:1736
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
-#: ../daemon/gdm-wayland-session.c:478
+#: daemon/gdm-wayland-session.c:511
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Proces uruchamiania sesji Wayland menedżera wyświetlania GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:612
+#: daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Nie można utworzyć gniazda."
 
-#: ../daemon/gdm-x-session.c:826
+#: daemon/gdm-x-session.c:858
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Uruchamia program przez skrypt /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:827
+#: daemon/gdm-x-session.c:859
 msgid "Listen on TCP socket"
 msgstr "Nasłuchuje na gnieździe TCP"
 
-#: ../daemon/gdm-x-session.c:838
+#: daemon/gdm-x-session.c:871
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Proces uruchamiania sesji X menedżera wyświetlania GNOME"
 
-#: ../daemon/main.c:125 ../daemon/main.c:138
+#: daemon/main.c:125 daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Nie można zapisać pliku PID %s: prawdopodobnie brak miejsca na dysku: %s"
 
-#: ../daemon/main.c:182
+#: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Utworzenie katalogu wykonywanego raz %s się nie powiodło: %s"
 
-#: ../daemon/main.c:188
+#: daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Utworzenie katalogu logowania %s się nie powiodło: %s"
 
-#: ../daemon/main.c:223
+#: daemon/main.c:223
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Nie można odnaleźć użytkownika GDM „%s”. Przerywanie."
 
-#: ../daemon/main.c:229
+#: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Użytkownik GDM nie powinien być użytkownikiem root. Przerywanie."
 
-#: ../daemon/main.c:235
+#: daemon/main.c:235
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Nie można odnaleźć grupy GDM „%s”. Przerywanie."
 
-#: ../daemon/main.c:241
+#: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Grupa GDM nie powinna być grupą root. Przerywanie."
 
-#: ../daemon/main.c:317
+#: daemon/main.c:317
 msgid "Make all warnings fatal"
 msgstr "Wszystkie ostrzeżenia jako błędy"
 
-#: ../daemon/main.c:318
+#: daemon/main.c:318
 msgid "Exit after a time (for debugging)"
 msgstr "Kończy działanie po czasie (w celu debugowania)"
 
-#: ../daemon/main.c:319
+#: daemon/main.c:319
 msgid "Print GDM version"
 msgstr "Wyświetla wersję programu GDM"
 
-#: ../daemon/main.c:330
+#: daemon/main.c:330
 msgid "GNOME Display Manager"
 msgstr "Menedżer wyświetlania GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:351
+#: daemon/main.c:350
 msgid "Only the root user can run GDM"
 msgstr "Tylko użytkownik root może uruchamiać GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:94
+#: daemon/session-worker-main.c:119
 msgid "GNOME Display Manager Session Worker"
 msgstr "Proces roboczy sesji menedżera wyświetlania GNOME"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+#: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Określa, czy umożliwiać logowanie za pomocą czytników odcisków palców"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+#: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -313,11 +306,11 @@ msgstr ""
 "Ekran logowania może opcjonalnie umożliwiać użytkownikom, którzy "
 "zarejestrowali swoje odciski palców, logowanie za ich pomocą."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Określa, czy umożliwiać logowanie za pomocą czytników kart smartcard"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+#: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -325,11 +318,11 @@ msgstr ""
 "Ekran logowania może opcjonalnie umożliwiać użytkownikom mającym karty "
 "smartcard logowanie za ich pomocą."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
 msgstr "Określa, czy umożliwiać logowanie za pomocą hasła"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: data/org.gnome.login-screen.gschema.xml:29
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -338,11 +331,12 @@ msgstr ""
 "na uwierzytelnianie za pomocą hasła, wymuszając uwierzytelnianie za pomocą "
 "karty smartcard lub odcisków palców."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: data/org.gnome.login-screen.gschema.xml:36
+#: data/org.gnome.login-screen.gschema.xml:46
 msgid "Path to small image at top of user list"
 msgstr "Ścieżka do małego obrazu na górze listy użytkowników"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: data/org.gnome.login-screen.gschema.xml:39
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -350,7 +344,7 @@ msgstr ""
 "Ekran logowania może opcjonalnie wyświetlać mały obraz, aby administratorzy "
 "i dystrybucje mogły wyświetlać swoje marki."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -358,11 +352,11 @@ msgstr ""
 "Zastępczy ekran logowania może opcjonalnie wyświetlać mały obraz, aby "
 "administratorzy i dystrybucje mogły wyświetlać swoje marki."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: data/org.gnome.login-screen.gschema.xml:56
 msgid "Avoid showing user list"
 msgstr "Bez wyświetlania listy użytkowników"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: data/org.gnome.login-screen.gschema.xml:59
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -370,37 +364,37 @@ msgstr ""
 "Ekran logowania zwykle wyświetla listę dostępnych użytkowników. To "
 "ustawienie może być używane, aby wyłączyć jej wyświetlanie."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
 msgstr "Włączenie wyświetlania komunikatu bannera"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: data/org.gnome.login-screen.gschema.xml:69
 msgid "Set to true to show the banner message text."
 msgstr "Wartość „true” włącza wyświetlanie komunikatu bannera."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: data/org.gnome.login-screen.gschema.xml:75
 msgid "Banner message text"
 msgstr "Tekst komunikatu bannera"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: data/org.gnome.login-screen.gschema.xml:78
 msgid "Text banner message to show in the login window."
 msgstr "Treść komunikatu bannera do wyświetlenia na ekranie logowania."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid "Disable showing the restart buttons"
 msgstr "Wyłączenie wyświetlania przycisków ponownego uruchomienia"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: data/org.gnome.login-screen.gschema.xml:87
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Wartość „true” wyłącza wyświetlanie przycisków ponownego uruchamiania na "
 "ekranie logowania."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
+#: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
 msgstr "Liczba dozwolonych niepowodzeń uwierzytelnienia"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
+#: data/org.gnome.login-screen.gschema.xml:96
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -408,45 +402,45 @@ msgstr ""
 "Określa, ile razy użytkownik może próbować się uwierzytelnić przed powrotem "
 "do ekranu wyboru użytkownika."
 
-#: ../libgdm/gdm-user-switching.c:59
+#: libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Nie można utworzyć przejściowego ekranu: "
 
-#: ../libgdm/gdm-user-switching.c:90
+#: libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Nie można aktywować sesji: "
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Tylko polecenie WERSJA jest obsługiwane"
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "POLECENIE"
 
-#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
-#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
+#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
+#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Ignorowane — zachowane dla zgodności"
 
-#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
+#: utils/gdmflexiserver.c:48 utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Wypisywanie komunikatów wspomagających wyszukiwanie błędów"
 
-#: ../utils/gdmflexiserver.c:52
+#: utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Wersja tego programu"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:137
+#: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
 msgstr "— nowe logowanie GDM"
 
-#: ../utils/gdm-screenshot.c:212
+#: utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "Wykonano zrzut ekranu"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:279
+#: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Wykonuje zrzut ekranu"
