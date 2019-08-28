@@ -4,15 +4,14 @@
 # This file is distributed under the same license as the gdm2 package.
 # Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2012-2013.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2013, 2015, 2016, 2017, 2018.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2013, 2015, 2016, 2017, 2018, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-26 21:50+0000\n"
-"PO-Revision-Date: 2018-02-27 07:28+0700\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
+"POT-Creation-Date: 2019-08-25 20:15+0000\n"
+"PO-Revision-Date: 2019-08-28 08:08+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <gnome-vi-list@gnome.org>\n"
 "Language: vi\n"
@@ -22,55 +21,51 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: ../chooser/gdm-host-chooser-dialog.c:140
+#: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
 msgstr "Cậ_p nhật"
 
-#: ../chooser/gdm-host-chooser-dialog.c:141
+#: chooser/gdm-host-chooser-dialog.c:140
 msgid "_Cancel"
 msgstr "T_hôi"
 
-#: ../chooser/gdm-host-chooser-dialog.c:142
+#: chooser/gdm-host-chooser-dialog.c:141
 msgid "C_onnect"
 msgstr "_Kết nối"
 
-#: ../chooser/gdm-host-chooser-dialog.c:147
+#: chooser/gdm-host-chooser-dialog.c:146
 msgid "Select System"
 msgstr "Chọn hệ thống"
 
-#: ../chooser/gdm-host-chooser-widget.c:254
+#: chooser/gdm-host-chooser-widget.c:253
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: không thể tạo vùng đệm XDMCP!"
 
-#: ../chooser/gdm-host-chooser-widget.c:260
+#: chooser/gdm-host-chooser-widget.c:259
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Không thể đọc phần đầu XDMCP!"
 
-#: ../chooser/gdm-host-chooser-widget.c:266
+#: chooser/gdm-host-chooser-widget.c:265
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Phiên bản XDMCP không đúng!"
 
-#: ../chooser/gdm-host-chooser-widget.c:272
+#: chooser/gdm-host-chooser-widget.c:271
 msgid "XDMCP: Unable to parse address"
 msgstr "XMDCP: Không thể phân tích địa chỉ"
 
-#: ../common/gdm-common.c:317
-#, c-format
+#: common/gdm-common.c:307
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom không phải là một thiết bị ký tự"
 
-#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:209
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Không thể nhận ra phiên bản đang chạy."
+#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+msgid "Could not identify the current session: "
+msgstr "Không thể nhận ra phiên bản đang chạy: "
 
-#: ../common/gdm-common.c:496 ../libgdm/gdm-user-switching.c:218
-#, c-format
+#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
 msgid "Could not identify the current seat."
-msgstr "Không thể nhận ra trạm này."
+msgstr "Không thể nhận ra máy trạm này."
 
-#: ../common/gdm-common.c:506 ../libgdm/gdm-user-switching.c:228
-#, c-format
+#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
@@ -78,17 +73,16 @@ msgstr ""
 "Hệ thống không thể quyết định có chuyển sang màn hình đăng nhập sẵn có hoặc "
 "mở màn hình đăng nhập mới."
 
-#: ../common/gdm-common.c:514 ../libgdm/gdm-user-switching.c:236
-#, c-format
+#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
 msgid "The system is unable to start up a new login screen."
 msgstr "Hệ thống không thể mở màn hình đăng nhập mới."
 
-#: ../daemon/gdm-display-access-file.c:300
+#: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
 msgstr "không tìm thấy người dùng “%s” trên hệ thống"
 
-#: ../daemon/gdm-legacy-display.c:235
+#: daemon/gdm-legacy-display.c:236
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -97,232 +91,230 @@ msgid ""
 msgstr ""
 "Không thể khởi chạy trình phục vụ X (môi trường đồ họa của bạn) do nguyên "
 "nhân nội bộ. Hãy liên lạc với quản trị hệ thống của bạn hoặc kiểm tra syslog "
-"(nhật ký của hệ thống) để chẩn đoán lỗi. Trong khi đợi, bộ trình bày này sẽ "
-"bị tắt. Hãy khởi động lại GDM khi vấn đề đã được tháo gỡ."
+"(nhật ký của hệ thống) để chẩn đoán lỗi. Trong khi đợi, màn hình này sẽ bị "
+"tắt. Hãy khởi động lại GDM khi vấn đề đã được tháo gỡ."
 
-#: ../daemon/gdm-manager.c:775
+#: daemon/gdm-manager.c:763
 msgid "No display available"
 msgstr "Không có bộ hiển thị nào"
 
-#: ../daemon/gdm-manager.c:844 ../daemon/gdm-manager.c:1120
+#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
 msgid "No session available"
 msgstr "Không có phiên làm việc nào"
 
-#: ../daemon/gdm-manager.c:863
+#: daemon/gdm-manager.c:880
 msgid "Chooser session unavailable"
 msgstr "Bộ chọn phiên làm việc không sẵn có"
 
-#: ../daemon/gdm-manager.c:875
+#: daemon/gdm-manager.c:896
 msgid "Can only be called before user is logged in"
 msgstr "Chỉ có thể được gọi trước khi đăng nhập"
 
-#: ../daemon/gdm-manager.c:886
+#: daemon/gdm-manager.c:907
 msgid "Caller not GDM"
 msgstr "Bên gọi không phải GDM"
 
-#: ../daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:917
 msgid "Unable to open private communication channel"
 msgstr "Không thể mở kênh truyền thông riêng"
 
-#: ../daemon/gdm-server.c:383
+#: daemon/gdm-server.c:383
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Máy phục vụ được người dùng %s khởi tạo, nhưng người dùng đó không tồn tại"
 
-#: ../daemon/gdm-server.c:394 ../daemon/gdm-server.c:414
+#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Không thể đặt mã số nhóm thành %d"
 
-#: ../daemon/gdm-server.c:400
+#: daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () bị lỗi đối với %s"
 
-#: ../daemon/gdm-server.c:406
+#: daemon/gdm-server.c:406
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "Không thể đặt mã số người dùng thành %d"
 
-#: ../daemon/gdm-server.c:484
+#: daemon/gdm-server.c:484
 #, c-format
 msgid "%s: Could not open log file for display %s!"
-msgstr "%s: Không thể mở tập tin ghi nhật ký cho bộ trình bày %s!"
+msgstr "%s: Không thể mở tập tin ghi nhật ký cho màn hình %s!"
 
-#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
-#: ../daemon/gdm-server.c:517
+#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Gặp lỗi khi đặt %s thành %s"
 
-#: ../daemon/gdm-server.c:537
+#: daemon/gdm-server.c:537
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Không thể đặt mức ưu tiên của máy phục vụ thành %d: %s"
 
-#: ../daemon/gdm-server.c:689
+#: daemon/gdm-server.c:689
 #, c-format
 msgid "%s: Empty server command for display %s"
-msgstr "%s: Lệnh máy phục vụ rỗng cho bộ trình bày %s."
+msgstr "%s: Lệnh máy phục vụ rỗng cho bộ trình bày %s"
 
-#: ../daemon/gdm-session-auditor.c:90
+#: daemon/gdm-session-auditor.c:88
 msgid "Username"
 msgstr "Tên người dùng"
 
-#: ../daemon/gdm-session-auditor.c:91
+#: daemon/gdm-session-auditor.c:89
 msgid "The username"
 msgstr "Tên người dùng"
 
-#: ../daemon/gdm-session-auditor.c:95
+#: daemon/gdm-session-auditor.c:93
 msgid "Hostname"
 msgstr "Tên máy"
 
-#: ../daemon/gdm-session-auditor.c:96
+#: daemon/gdm-session-auditor.c:94
 msgid "The hostname"
 msgstr "Tên máy"
 
-#: ../daemon/gdm-session-auditor.c:101
+#: daemon/gdm-session-auditor.c:99
 msgid "Display Device"
 msgstr "Thiết bị hiển thị"
 
-#: ../daemon/gdm-session-auditor.c:102
+#: daemon/gdm-session-auditor.c:100
 msgid "The display device"
 msgstr "Thiết bị hiển thị, v.d. màn hình"
 
-#: ../daemon/gdm-session.c:1261
+#: daemon/gdm-session.c:1285
 msgid "Could not create authentication helper process"
 msgstr "Không thể tạo tiến trình trợ giúp xác thực"
 
-#: ../daemon/gdm-session-worker.c:766
+#: daemon/gdm-session-worker.c:757
 msgid "Your account was given a time limit that’s now passed."
 msgstr ""
 "Tài khoản của bạn có đưa ra thời gian giới hạn, cái mà hiện tại đã vượt quá."
 
-#: ../daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Rất tiếc, nó không làm việc. Hãy thử lại lần nữa."
 
-#: ../daemon/gdm-session-worker.c:1170
+#: daemon/gdm-session-worker.c:1191
 msgid "Username:"
 msgstr "Tài khoản:"
 
-#: ../daemon/gdm-session-worker.c:1672 ../daemon/gdm-session-worker.c:1689
-#, c-format
+#: daemon/gdm-session-worker.c:1695 daemon/gdm-session-worker.c:1712
 msgid "no user account available"
 msgstr "không có sẵn tài khoản người dùng"
 
-#: ../daemon/gdm-session-worker.c:1716
+#: daemon/gdm-session-worker.c:1739
 msgid "Unable to change to user"
 msgstr "Không thể chuyển đổi sang người dùng"
 
-#: ../daemon/gdm-wayland-session.c:478
+#: daemon/gdm-wayland-session.c:511
 msgid "GNOME Display Manager Wayland Session Launcher"
-msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bày Wayland GNOME"
+msgstr "Bộ khởi chạy phiên chạy của trình quản lý màn hình Wayland GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:612
+#: daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Không thể tạo ổ cắm mạng!"
 
-#: ../daemon/gdm-x-session.c:826
+#: daemon/gdm-x-session.c:858
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Chạy chương trình thông qua văn lệnh bao /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:827
+#: daemon/gdm-x-session.c:859
 msgid "Listen on TCP socket"
 msgstr "Lắng nghe trên ổ cắm TCP"
 
-#: ../daemon/gdm-x-session.c:838
+#: daemon/gdm-x-session.c:871
 msgid "GNOME Display Manager X Session Launcher"
-msgstr "Bộ phóng phiên phiên chạy của trình quản lý bộ trình bày X GNOME"
+msgstr "Bộ khởi chạy phiên làm việc của trình quản lý màn hình X GNOME"
 
-#: ../daemon/main.c:125 ../daemon/main.c:138
+#: daemon/main.c:125 daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Không thể ghi tập tin PID %s: gần như chắc chắn là do hết đĩa: %s"
 
-#: ../daemon/main.c:182
+#: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Không thể tạo thư mục đánh dấu chạy một lần %s: %s"
 
-#: ../daemon/main.c:188
+#: daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Gặp lỗi khi tạo LogDir %s: %s"
 
-#: ../daemon/main.c:223
+#: daemon/main.c:223
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Không thể tìm thấy người dùng GDM “%s”. Hủy bỏ!"
 
-#: ../daemon/main.c:229
+#: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
 "Người dùng GDM không nên là siêu quản trị (root) vì lý do an ninh. Hủy bỏ!"
 
-#: ../daemon/main.c:235
+#: daemon/main.c:235
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Không thể tìm thấy nhóm GDM “%s”. Hủy bỏ!"
 
-#: ../daemon/main.c:241
+#: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Nhóm GDM không nên là root vì lý do an ninh nên hủy bỏ!"
 
-#: ../daemon/main.c:317
+#: daemon/main.c:317
 msgid "Make all warnings fatal"
 msgstr "Xem mọi cảnh báo là nghiêm trọng"
 
-#: ../daemon/main.c:318
+#: daemon/main.c:318
 msgid "Exit after a time (for debugging)"
 msgstr "Thoát sau một khoảng thời gian (để gỡ lỗi)"
 
-#: ../daemon/main.c:319
+#: daemon/main.c:319
 msgid "Print GDM version"
 msgstr "In ra phiên bản GDM"
 
-#: ../daemon/main.c:330
+#: daemon/main.c:330
 msgid "GNOME Display Manager"
-msgstr "Trình quản lý bộ trình bày GNOME"
+msgstr "Trình quản lý màn hình GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:351
+#: daemon/main.c:350
 msgid "Only the root user can run GDM"
 msgstr "Chỉ có tài khoản siêu quản trị mới có quyền chạy GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:94
+#: daemon/session-worker-main.c:119
 msgid "GNOME Display Manager Session Worker"
-msgstr "Tiến trình hỗ trợ phiên chạy của trình quản lý bộ trình bày GNOME"
+msgstr "Tiến trình hỗ trợ phiên chạy của trình quản lý màn hình GNOME"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+#: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Có cho đăng nhập bằng đầu đọc vân tay không"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+#: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr "Màn hình đăng nhập có thể cho phép người dùng đăng nhập bằng vân tay."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Có cho đăng nhập bằng thẻ thông minh không"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+#: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
 "Màn hình đăng nhập có thể cho phép người dùng đăng nhập bằng thẻ thông minh."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
 msgstr "Có cho đăng nhập bằng mật khẩu hay không"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: data/org.gnome.login-screen.gschema.xml:29
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -331,11 +323,12 @@ msgstr ""
 "để ép buộc người dùng sử dụng xác thực bằng thẻ thông minh hay dùng dấu vân "
 "tay."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: data/org.gnome.login-screen.gschema.xml:36
+#: data/org.gnome.login-screen.gschema.xml:46
 msgid "Path to small image at top of user list"
 msgstr "Đường dẫn đến ảnh nhỏ ở trên danh sách người dùng"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: data/org.gnome.login-screen.gschema.xml:39
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -343,7 +336,7 @@ msgstr ""
 "Màn hình đăng nhập có thể hiện ảnh nhỏ để cung cấp cho nhà phân phối và quản "
 "trị trang cách thức thể hiện thương hiệu."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -351,11 +344,11 @@ msgstr ""
 "Màn hình đăng nhập dự phòng có thể hiện ảnh nhỏ để cung cấp cho nhà phân "
 "phối và quản trị trang cách thức thể hiện thương hiệu."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: data/org.gnome.login-screen.gschema.xml:56
 msgid "Avoid showing user list"
 msgstr "Tránh hiện danh sách người dùng"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: data/org.gnome.login-screen.gschema.xml:59
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -363,35 +356,35 @@ msgstr ""
 "Màn hình đăng nhập bình thường hiện danh sách người dùng có thể đăng nhập. "
 "Thiết lập này có thể tắt hiện danh sách này."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
 msgstr "Bật hiển thị lời chào"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: data/org.gnome.login-screen.gschema.xml:69
 msgid "Set to true to show the banner message text."
 msgstr "Đặt để hiển thị lời chào."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: data/org.gnome.login-screen.gschema.xml:75
 msgid "Banner message text"
 msgstr "Chuỗi thông điệp băng cờ"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: data/org.gnome.login-screen.gschema.xml:78
 msgid "Text banner message to show in the login window."
 msgstr "Thông điệp băng cờ cần hiển thị trên cửa sổ đăng nhập."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid "Disable showing the restart buttons"
 msgstr "Tắt hiển thị cái nút khởi động lại"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: data/org.gnome.login-screen.gschema.xml:87
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "Đặt để không hiển thị nút khởi động lại trong cửa sổ đăng nhập."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
+#: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
 msgstr "Số lần xác thực thất bại cho phép"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
+#: data/org.gnome.login-screen.gschema.xml:96
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -399,48 +392,48 @@ msgstr ""
 "Số lần người dùng được phép xác thực, trước khi bỏ cuộc và quay lại cho "
 "người dùng chọn một thao tác khác."
 
-#: ../libgdm/gdm-user-switching.c:59
+#: libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
 msgstr "Không thể tạo trình bày chuyển tiếp: "
 
-#: ../libgdm/gdm-user-switching.c:90
+#: libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
 msgstr "Không thể kích hoạt phiên làm việc: "
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Chỉ hỗ trợ lệnh VERSION (phiên bản)"
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "LỆNH"
 
-#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
-#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
+#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
+#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
-msgstr "Bỏ qua - để lại chỉ vì mục đích tương thích"
+msgstr "Bỏ qua — để lại chỉ vì mục đích tương thích"
 
-#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
+#: utils/gdmflexiserver.c:48 utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Kết xuất gỡ lỗi"
 
-#: ../utils/gdmflexiserver.c:52
+#: utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Phiên bản của ứng dụng này"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:137
+#: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
 msgstr "— Đăng nhập GDM mới"
 
-#: ../utils/gdm-screenshot.c:212
+#: utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
-msgstr "Đã chụp ảnh màn hình"
+msgstr "Chụp màn hình"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:279
+#: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
-msgstr "Chụp ảnh màn hình"
+msgstr "Chụp ảnh từ màn hình"
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr "Mật khẩu của bạn đã quá hạn dùng, xin hãy thay đổi nó ngay bây giờ."
