@@ -608,12 +608,23 @@ spawn_session (State        *state,
         GError              *error = NULL;
         gboolean             is_running = FALSE;
         const char          *vt;
-        static const char   *session_variables[] = { "DISPLAY",
-                                                     "XAUTHORITY",
-                                                     "WAYLAND_DISPLAY",
-                                                     "WAYLAND_SOCKET",
-                                                     "GNOME_SHELL_SESSION_MODE",
-                                                     NULL };
+        static const char  *session_variables[] = { "DESKTOP_SESSION",
+                                                    "DISPLAY",
+                                                    "GDMSESSION",
+                                                    "GDM_LANG",
+                                                    "GNOME_SHELL_SESSION_MODE",
+                                                    "LANG",
+                                                    "WAYLAND_DISPLAY",
+                                                    "WAYLAND_SOCKET",
+                                                    "WINDOWPATH",
+                                                    "XAUTHORITY",
+                                                    "XDG_CURRENT_DESKTOP",
+                                                    "XDG_SEAT",
+                                                    "XDG_SESSION_ID",
+                                                    "XDG_SESSION_CLASS",
+                                                    "XDG_SESSION_DESKTOP",
+                                                    "XDG_VTNR",
+                                                    NULL };
 
         g_debug ("Running X session");
 
@@ -641,8 +652,11 @@ spawn_session (State        *state,
                 /* Don't allow session specific environment variables from earlier sessions to
                  * leak through */
                 for (i = 0; session_variables[i] != NULL; i++) {
-                        if (g_getenv (session_variables[i]) == NULL) {
+                        const char *value = g_getenv (session_variables[i]);
+                        if (value == NULL) {
                                 g_subprocess_launcher_unsetenv (launcher, session_variables[i]);
+                        } else {
+                                g_subprocess_launcher_setenv (launcher, session_variables[i], value, TRUE);
                         }
                 }
         }
