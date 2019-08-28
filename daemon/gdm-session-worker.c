@@ -665,7 +665,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         char    *user_answer;
         gboolean res;
         char    *utf8_msg;
-        char        *msg;
+        char	*msg;
 
         if (response != NULL) {
                 *response = NULL;
@@ -955,8 +955,7 @@ out:
 
 static void
 jump_to_vt (GdmSessionWorker  *worker,
-            int                vt_number,
-            gboolean           take_control)
+            int                vt_number)
 {
         int fd;
         int active_vt_tty_fd;
@@ -992,8 +991,7 @@ jump_to_vt (GdmSessionWorker  *worker,
                 fd = active_vt_tty_fd;
         }
 
-        if (take_control)
-                handle_terminal_vt_switches (worker, fd);
+        handle_terminal_vt_switches (worker, fd);
 
         if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
                 g_debug ("GdmSessionWorker: couldn't get current VT: %m");
@@ -1056,7 +1054,7 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
                 if (worker->priv->login_vt != worker->priv->session_vt) {
-                        jump_to_vt (worker, worker->priv->login_vt, FALSE);
+                        jump_to_vt (worker, worker->priv->login_vt);
                 }
         }
 
@@ -2010,7 +2008,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
          * ready, and in the reuse server case, we're already on the correct VT. */
         if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
                 if (worker->priv->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
-                        jump_to_vt (worker, worker->priv->session_vt, TRUE);
+                        jump_to_vt (worker, worker->priv->session_vt);
                 }
         }
 
