@@ -1961,6 +1961,41 @@ on_user_session_started (GdmSession      *session,
 }
 
 static void
+run_post_session_script (GdmSession *session)
+{
+        GPid pid;
+        GdmDisplay *display;
+        gboolean display_is_local = FALSE;
+        const char *username;
+        g_autofree char *display_name = NULL, *remote_hostname = NULL, *display_auth_file = NULL;
+
+        display = get_display_for_user_session (session);
+
+        if (display == NULL)
+                return;
+
+        pid = gdm_session_get_pid (session);
+
+        if (pid <= 0)
+                return;
+
+        username = gdm_session_get_username (session);
+
+        g_object_get (G_OBJECT (display),
+                      "x11-display-name", &display_name,
+                      "is-local", &display_is_local,
+                      "remote-hostname", &remote_hostname,
+                      "x11-authority-file", &display_auth_file,
+                      NULL);
+
+        gdm_run_script (GDMCONFDIR "/PostSession",
+                        username,
+                        display_name,
+                        display_is_local? NULL : remote_hostname,
+                        display_auth_file);
+}
+
+static void
 remove_user_session (GdmManager *manager,
                      GdmSession *session)
 {
@@ -1970,6 +2005,8 @@ remove_user_session (GdmManager *manager,
         display = get_display_for_user_session (session);
 
         if (display != NULL) {
+                run_post_session_script (session);
+
                 gdm_display_unmanage (display);
                 gdm_display_finish (display);
         }
@@ -2780,6 +2817,9 @@ gdm_manager_dispose (GObject *object)
                          (GDestroyNotify)
                          g_hash_table_unref);
 
+        g_list_foreach (manager->priv->user_sessions,
+                        (GFunc) run_post_session_script,
+                        NULL);
         g_list_foreach (manager->priv->user_sessions,
                         (GFunc) gdm_session_close,
                         NULL);
