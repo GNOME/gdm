@@ -66,6 +66,7 @@ struct _GdmLocalDisplayFactory
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
         guint            active_vt_watch_id;
+        guint            wait_to_finish_timeout_id;
 #endif
 };
 
@@ -295,6 +296,14 @@ finish_waiting_displays_on_seat (GdmLocalDisplayFactory *factory,
                                    (GdmDisplayStoreFunc) finish_display_on_seat_if_waiting,
                                    (gpointer)
                                    seat_id);
+}
+
+static gboolean
+on_finish_waiting_for_seat0_displays_timeout (GdmLocalDisplayFactory *factory)
+{
+        g_debug ("GdmLocalDisplayFactory: timeout following VT switch to registered session complete, looking for any background displays to kill");
+        finish_waiting_displays_on_seat (factory, "seat0");
+        return G_SOURCE_REMOVE;
 }
 
 static void
@@ -628,6 +637,29 @@ lookup_by_session_id (const char *id,
         return g_strcmp0 (current, looking_for) == 0;
 }
 
+static gboolean
+lookup_by_tty (const char *id,
+              GdmDisplay *display,
+              gpointer    user_data)
+{
+        const char *tty_to_find = user_data;
+        g_autofree char *tty_to_check = NULL;
+        const char *session_id;
+        int ret;
+
+        session_id = gdm_display_get_session_id (display);
+
+        if (!session_id)
+                return FALSE;
+
+        ret = sd_session_get_tty (session_id, &tty_to_check);
+
+        if (ret != 0)
+                return FALSE;
+
+        return g_strcmp0 (tty_to_check, tty_to_find) == 0;
+}
+
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
 static void
 maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
@@ -669,11 +701,12 @@ on_vt_changed (GIOChannel    *source,
                GIOCondition   condition,
                GdmLocalDisplayFactory *factory)
 {
+        GdmDisplayStore *store;
         GIOStatus status;
         g_autofree char *tty_of_active_vt = NULL;
         g_autofree char *login_session_id = NULL;
         g_autofree char *active_session_id = NULL;
-        unsigned int previous_vt, new_vt;
+        unsigned int previous_vt, new_vt, login_window_vt = 0;
         const char *session_type = NULL;
         int ret, n_returned;
 
@@ -739,21 +772,19 @@ on_vt_changed (GIOChannel    *source,
         g_debug ("GdmLocalDisplayFactory: VT changed from %u to %u",
                  previous_vt, factory->active_vt);
 
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
         /* if the old VT was running a wayland login screen kill it
          */
         if (gdm_get_login_window_session_id ("seat0", &login_session_id)) {
-                unsigned int login_window_vt;
-
                 ret = sd_session_get_vt (login_session_id, &login_window_vt);
                 if (ret == 0 && login_window_vt != 0) {
                         g_debug ("GdmLocalDisplayFactory: VT of login window is %u", login_window_vt);
                         if (login_window_vt == previous_vt) {
-                                GdmDisplayStore *store;
                                 GdmDisplay *display;
 
                                 g_debug ("GdmLocalDisplayFactory: VT switched from login window");
 
-                                store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
                                 display = gdm_display_store_find (store,
                                                                   lookup_by_session_id,
                                                                   (gpointer) login_session_id);
@@ -761,6 +792,37 @@ on_vt_changed (GIOChannel    *source,
                                         maybe_stop_greeter_in_background (factory, display);
                         } else {
                                 g_debug ("GdmLocalDisplayFactory: VT not switched from login window");
+                        }
+                }
+        }
+
+        /* If we jumped to a registered user session, we can kill
+         * the login screen (after a suitable timeout to avoid flicker)
+         */
+        if (factory->active_vt != login_window_vt) {
+                GdmDisplay *display;
+
+                display = gdm_display_store_find (store,
+                                                  lookup_by_tty,
+                                                  (gpointer) tty_of_active_vt);
+
+                if (display != NULL) {
+                        gboolean registered;
+
+                        g_object_get (display, "session-registered", &registered, NULL);
+
+                        if (registered) {
+                                g_debug ("GdmLocalDisplayFactory: switched to registered user session, so reaping login screen in %d seconds",
+                                         WAIT_TO_FINISH_TIMEOUT);
+                                if (factory->wait_to_finish_timeout_id != 0) {
+                                         g_debug ("GdmLocalDisplayFactory: deferring previous login screen clean up operation");
+                                         g_source_remove (factory->wait_to_finish_timeout_id);
+                                }
+
+                                factory->wait_to_finish_timeout_id = g_timeout_add_seconds (WAIT_TO_FINISH_TIMEOUT,
+                                                                                            (GSourceFunc)
+                                                                                            on_finish_waiting_for_seat0_displays_timeout,
+                                                                                            factory);
                         }
                 }
         }
@@ -842,6 +904,10 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
         if (factory->active_vt_watch_id) {
                 g_source_remove (factory->active_vt_watch_id);
                 factory->active_vt_watch_id = 0;
+        }
+        if (factory->wait_to_finish_timeout_id != 0) {
+                g_source_remove (factory->wait_to_finish_timeout_id);
+                factory->wait_to_finish_timeout_id = 0;
         }
 #endif
 }
