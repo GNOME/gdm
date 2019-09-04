@@ -1634,7 +1634,7 @@ wants_initial_setup (GdmDisplay *self)
                         return TRUE;
                 }
 
-                g_debug ("GdmDisplay: Forceing no gnome-initial-setup");
+                g_debug ("GdmDisplay: Forcing no gnome-initial-setup");
                 return FALSE;
         }
 
