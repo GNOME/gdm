@@ -55,6 +55,8 @@
 #include <systemd/sd-journal.h>
 #endif
 
+#include <systemd/sd-login.h>
+
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif /* HAVE_SELINUX */
@@ -1107,30 +1109,46 @@ _get_xauth_for_pam (const char *x11_authority_file)
 }
 #endif
 
-static gboolean
-ensure_login_vt (GdmSessionWorker *worker)
+static unsigned short
+get_current_vt ()
 {
         int fd;
         struct vt_stat vt_state = { 0 };
-        gboolean got_login_vt = FALSE;
 
         fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
 
         if (fd < 0) {
                 g_debug ("GdmSessionWorker: couldn't open VT master: %m");
-                return FALSE;
+                return 0;
         }
 
         if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
                 g_debug ("GdmSessionWorker: couldn't get current VT: %m");
-                goto out;
+                return 0;
         }
 
-        worker->priv->login_vt = vt_state.v_active;
-        got_login_vt = TRUE;
-out:
-        close (fd);
-        return got_login_vt;
+        g_debug ("GdmSessionWorker: current VT is %hu", vt_state.v_active);
+        return vt_state.v_active;
+}
+
+static unsigned int
+get_login_vt (GdmSessionWorker *worker)
+{
+        g_autofree char *login_session_id = NULL;
+        unsigned int login_window_vt = 0;
+        int sd_ret;
+
+        gdm_get_login_window_session_id (worker->priv->display_seat_id, &login_session_id);
+
+        sd_ret = sd_session_get_vt (login_session_id, &login_window_vt);
+
+        if (sd_ret == 0 && login_window_vt != 0) {
+                g_debug ("GdmSessionWorker: Login window is on %u", login_window_vt);
+                return login_window_vt;
+        } else {
+                g_critical ("GdmSessionWorker: Couldn't get login window VT: %m");
+                return 0;
+        }
 }
 
 static gboolean
@@ -1146,6 +1164,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                                    const char         *seat_id,
                                    GError            **error)
 {
+        unsigned short         current_vt;
         struct pam_conv        pam_conversation;
         int                    error_code;
         char tty_string[256];
@@ -1229,8 +1248,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 
         /* Temporarily set PAM_TTY with the currently active VT (login screen) 
            PAM_TTY will be reset with the users VT right before the user session is opened */
-        if (ensure_login_vt (worker)) {
-                g_snprintf (tty_string, 256, "/dev/tty%d", worker->priv->login_vt);
+        current_vt = get_current_vt ();
+        if (current_vt != 0) {
+                g_snprintf (tty_string, 256, "/dev/tty%hu", current_vt);
                 pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
         }
         if (!display_is_local)
@@ -2265,36 +2285,21 @@ fail:
 static gboolean
 set_xdg_vtnr_to_current_vt (GdmSessionWorker *worker)
 {
-        int fd;
         char vt_string[256];
-        struct vt_stat vt_state = { 0 };
+        unsigned short current_vt;
 
-        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+        current_vt = get_current_vt ();
 
-        if (fd < 0) {
-                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
+        if (current_vt == 0)
                 return FALSE;
-        }
 
-        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
-                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
-                goto fail;
-        }
-
-        close (fd);
-        fd = -1;
-
-        g_snprintf (vt_string, sizeof (vt_string), "%d", vt_state.v_active);
+        g_snprintf (vt_string, sizeof (vt_string), "%hu", current_vt);
 
         gdm_session_worker_set_environment_variable (worker,
                                                      "XDG_VTNR",
                                                      vt_string);
 
         return TRUE;
-
-fail:
-        close (fd);
-        return FALSE;
 }
 
 static gboolean
@@ -2419,6 +2424,8 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
                              "%s", pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
+
+        worker->priv->login_vt = get_login_vt (worker);
 
         g_debug ("GdmSessionWorker: state SESSION_OPENED");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SESSION_OPENED);
