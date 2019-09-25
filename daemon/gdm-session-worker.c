@@ -146,7 +146,6 @@ struct GdmSessionWorkerPrivate
         char            **extensions;
 
         int               cred_flags;
-        int               login_vt;
         int               session_vt;
         int               session_tty_fd;
 
@@ -1034,13 +1033,20 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         gdm_session_worker_stop_auditor (worker);
 
+        /* If user-display-server is not enabled the login_vt is always
+         * identical to the session_vt. So in that case we never need to
+         * do a VT switch. */
+#ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
-                if (worker->priv->login_vt != worker->priv->session_vt) {
-                        jump_to_vt (worker, worker->priv->login_vt);
+                int initial_vt = atoi (GDM_INITIAL_VT);
+
+                /* Switch to the login VT if we are not the login screen. */
+                if (worker->priv->session_vt != initial_vt) {
+                        jump_to_vt (worker, initial_vt);
                 }
         }
+#endif
 
-        worker->priv->login_vt = 0;
         worker->priv->session_vt = 0;
 
         g_debug ("GdmSessionWorker: state NONE");
@@ -1090,32 +1096,6 @@ _get_xauth_for_pam (const char *x11_authority_file)
 #endif
 
 static gboolean
-ensure_login_vt (GdmSessionWorker *worker)
-{
-        int fd;
-        struct vt_stat vt_state = { 0 };
-        gboolean got_login_vt = FALSE;
-
-        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
-
-        if (fd < 0) {
-                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
-                return FALSE;
-        }
-
-        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
-                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
-                goto out;
-        }
-
-        worker->priv->login_vt = vt_state.v_active;
-        got_login_vt = TRUE;
-out:
-        close (fd);
-        return got_login_vt;
-}
-
-static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                                    const char         *service,
                                    const char * const *extensions,
@@ -1130,7 +1110,6 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 {
         struct pam_conv        pam_conversation;
         int                    error_code;
-        char tty_string[256];
 
         g_assert (worker->priv->pam_handle == NULL);
 
@@ -1209,11 +1188,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
-        /* Temporarily set PAM_TTY with the currently active VT (login screen) 
+        /* Temporarily set PAM_TTY with the login VT,
            PAM_TTY will be reset with the users VT right before the user session is opened */
-        ensure_login_vt (worker);
-        g_snprintf (tty_string, 256, "/dev/tty%d", worker->priv->login_vt);
-        pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+        pam_set_item (worker->priv->pam_handle, PAM_TTY, "/dev/tty" GDM_INITIAL_VT);
         if (!display_is_local)
                 worker->priv->password_is_required = TRUE;
 
