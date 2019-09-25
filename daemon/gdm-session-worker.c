@@ -1110,27 +1110,11 @@ _get_xauth_for_pam (const char *x11_authority_file)
 static gboolean
 ensure_login_vt (GdmSessionWorker *worker)
 {
-        int fd;
-        struct vt_stat vt_state = { 0 };
-        gboolean got_login_vt = FALSE;
+        /* We assume that the login VT is on the initial VT. */
 
-        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+        worker->priv->login_vt = GDM_INITIAL_VT;
 
-        if (fd < 0) {
-                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
-                return FALSE;
-        }
-
-        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
-                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
-                goto out;
-        }
-
-        worker->priv->login_vt = vt_state.v_active;
-        got_login_vt = TRUE;
-out:
-        close (fd);
-        return got_login_vt;
+        return TRUE;
 }
 
 static gboolean
