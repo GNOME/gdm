@@ -291,7 +291,7 @@ collect_sessions (void)
 #ifdef ENABLE_WAYLAND_SUPPORT
 #ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_getenv ("WAYLAND_DISPLAY") == NULL && g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-                return;
+                goto out;
         }
 #endif
 
@@ -300,6 +300,7 @@ collect_sessions (void)
         }
 #endif
 
+out:
         g_hash_table_foreach_remove (gdm_available_sessions_map,
                                      remove_duplicate_sessions,
                                      names_seen_before);
