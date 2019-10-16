@@ -3528,6 +3528,7 @@ gdm_session_worker_finalize (GObject *object)
         if (worker->priv->child_pid > 0) {
                 gdm_signal_pid (worker->priv->child_pid, SIGTERM);
                 gdm_wait_on_pid (worker->priv->child_pid);
+		run_script (worker, GDMCONFDIR "/PostSession");
         }
 
         if (worker->priv->pam_handle != NULL) {
