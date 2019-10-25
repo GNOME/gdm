@@ -61,6 +61,8 @@ struct GdmLocalDisplayFactoryPrivate
 
         guint            seat_new_id;
         guint            seat_removed_id;
+
+        gboolean         started;
 };
 
 enum {
@@ -259,6 +261,9 @@ on_display_status_changed (GdmDisplay             *display,
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
         int              ret;
+
+        if (!factory->priv->started)
+                return;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
@@ -766,7 +771,11 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
                                  0);
 
         gdm_local_display_factory_start_monitor (factory);
-        return gdm_local_display_factory_sync_seats (factory);
+
+        gdm_local_display_factory_sync_seats (factory);
+
+        factory->priv->started = TRUE;
+        return TRUE;
 }
 
 static gboolean
@@ -787,6 +796,8 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
         g_signal_handlers_disconnect_by_func (G_OBJECT (store),
                                               G_CALLBACK (on_display_removed),
                                               factory);
+
+        factory->priv->started = FALSE;
 
         return TRUE;
 }
@@ -933,7 +944,7 @@ gdm_local_display_factory_finalize (GObject *object)
 
         g_hash_table_destroy (factory->priv->used_display_numbers);
 
-        gdm_local_display_factory_stop_monitor (factory);
+        gdm_local_display_factory_stop (GDM_DISPLAY_FACTORY (factory));
 
         G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->finalize (object);
 }

@@ -1648,6 +1648,9 @@ on_display_status_changed (GdmDisplay *display,
                       "session-type", &session_type,
                       NULL);
 
+        if (!manager->priv->started)
+                return;
+
         status = gdm_display_get_status (display);
 
         switch (status) {
@@ -2763,6 +2766,8 @@ gdm_manager_dispose (GObject *object)
         manager = GDM_MANAGER (object);
 
         g_return_if_fail (manager->priv != NULL);
+
+        gdm_manager_stop (manager);
 
 #ifdef HAVE_LIBXDMCP
         g_clear_object (&manager->priv->xdmcp_factory);
