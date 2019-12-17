@@ -150,12 +150,25 @@ else
   systemd_systemunitdir = systemd_dep.get_pkgconfig_variable('systemdsystemunitdir')
 endif
 
+if get_option('systemduserunitdir') != ''
+  systemd_userunitdir = get_option('systemduserunitdir')
+else
+  systemd_userunitdir = systemd_dep.get_pkgconfig_variable('systemduserunitdir',
+                                                           define_variable: ['prefix', get_option('prefix')])
+endif
+
 configure_file(
   input: 'gdm.service.in',
   output: '@BASENAME@',
   configuration: service_config,
   install_dir: systemd_systemunitdir,
   format: 'cmake'
+)
+
+install_data(
+  'session.conf',
+  rename: join_paths('gnome-session@gnome-login.target.d', 'session.conf'),
+  install_dir: systemd_userunitdir,
 )
 
 # XSession
