@@ -91,6 +91,13 @@ localealias_DATA = locale.alias
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA =  gnome-login.session
 
+if INSTALL_SYSTEMD_USER_UNITS
+systemdsessiondir = $(SYSTEMD_USER_UNIT_DIR)/gnome-session@gnome-login.target.d
+systemdsession_DATA = session.conf
+endif
+
+EXTRA_DIST += session.conf
+
 pam_redhat_files = \
 	pam-redhat/gdm-autologin.pam		\
 	pam-redhat/gdm-launch-environment.pam	\
