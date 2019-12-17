@@ -263,6 +263,10 @@ AC_ARG_WITH([systemdsystemunitdir],
             AS_HELP_STRING([--with-systemdsystemunitdir=DIR],
                            [Directory for systemd service files]),
                 [with_systemdsystemunitdir=$withval], [with_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)])
+AC_ARG_WITH([systemduserunitdir],
+            AS_HELP_STRING([--with-systemduserunitdir=DIR],
+                           [Directory for systemd user service files]),
+                [with_systemduserunitdir=$withval], [with_systemduserunitdir=$($PKG_CONFIG --define-variable=prefix=${prefix} --variable=systemduserunitdir systemd)])
 AC_ARG_ENABLE(systemd-journal,
             AS_HELP_STRING([--enable-systemd-journal],
                            [Add journald support @<:@default=auto@:>@]),
@@ -880,7 +884,12 @@ if test "x$with_systemdsystemunitdir" != xno; then
         AC_SUBST(SYSTEMD_SYSTEM_UNIT_DIR, [$with_systemdsystemunitdir])
 fi
 
+if test "x$with_systemduserunitdir" != xno; then
+        AC_SUBST(SYSTEMD_USER_UNIT_DIR, [$with_systemduserunitdir])
+fi
+
 AM_CONDITIONAL(INSTALL_SYSTEMD_UNITS, test x$with_systemdsystemunitdir != xno)
+AM_CONDITIONAL(INSTALL_SYSTEMD_USER_UNITS, test x$with_systemduserunitdir != xno)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for plymouth support
