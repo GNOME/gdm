@@ -140,22 +140,34 @@ G_DEFINE_TYPE_WITH_CODE (GdmManager,
                          G_ADD_PRIVATE (GdmManager));
 
 #ifdef WITH_PLYMOUTH
+
+void plymouth_exec (gchar *cmd,  gchar *action)
+{
+
+        if (g_file_test ("/usr/bin/plymouth", G_FILE_TEST_EXISTS))
+               cmd = g_strjoin(action, "/usr/bin/plymouth ");
+        else
+               cmd = g_strjoin(action, "/bin/plymouth ");
+	return cmd;
+}
+
 static gboolean
 plymouth_is_running (void)
 {
         int      status;
         gboolean res;
         GError  *error;
-
+	gchar *cmd;
         error = NULL;
-        res = g_spawn_command_line_sync ("/bin/plymouth --ping",
-                                         NULL, NULL, &status, &error);
+
+	plymouth_exec(cmd, "--ping")
+        res = g_spawn_command_line_sync (cmd, NULL, NULL, &status, &error);
         if (! res) {
                 g_debug ("Could not ping plymouth: %s", error->message);
                 g_error_free (error);
                 return FALSE;
         }
-
+        g_free(cmd);
         return WIFEXITED (status) && WEXITSTATUS (status) == 0;
 }
 
@@ -164,14 +176,16 @@ plymouth_prepare_for_transition (void)
 {
         gboolean res;
         GError  *error;
-
+	gchar *cmd;
         error = NULL;
-        res = g_spawn_command_line_sync ("/bin/plymouth deactivate",
-                                         NULL, NULL, NULL, &error);
+
+	plymouth_exec(cmd, "deactivate")
+        res = g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
         if (! res) {
                 g_warning ("Could not deactivate plymouth: %s", error->message);
                 g_error_free (error);
         }
+        g_free(cmd);
 }
 
 static gboolean
@@ -179,14 +193,15 @@ plymouth_quit_with_transition (void)
 {
         gboolean res;
         GError  *error;
-
+	gchar *cmd;
         error = NULL;
-        res = g_spawn_command_line_async ("/bin/plymouth quit --retain-splash", &error);
+	plymouth_exec(cmd, "quit --retain-splash")
+        res = g_spawn_command_line_async (cmd, &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
         }
-
+        g_free(cmd);
         return G_SOURCE_REMOVE;
 }
 
@@ -195,13 +210,15 @@ plymouth_quit_without_transition (void)
 {
         gboolean res;
         GError  *error;
-
+	gchar *cmd;
         error = NULL;
-        res = g_spawn_command_line_async ("/bin/plymouth quit", &error);
+	plymouth_exec(cmd, "quit")
+        res = g_spawn_command_line_async (cmd, &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
         }
+        g_free(cmd);
 }
 #endif
 
