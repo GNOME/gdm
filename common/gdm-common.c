@@ -497,7 +497,7 @@ goto_login_session (GDBusConnection  *connection,
          * since the data allocated is from libsystemd-logind, which
          * does not use GLib's g_malloc (). */
 
-        if (!gdm_find_display_session_for_uid (getuid (), &our_session, &local_error)) {
+        if (!gdm_find_display_session (0, getuid (), &our_session, &local_error)) {
                 g_propagate_prefixed_error (error, local_error, _("Could not identify the current session: "));
 
                 return FALSE;
@@ -898,15 +898,38 @@ _systemd_session_is_active (const char *session_id)
 }
 
 gboolean
-gdm_find_display_session_for_uid (const uid_t uid,
-                                  char      **out_session_id,
-                                  GError    **error)
+gdm_find_display_session (int         pid,
+                          const uid_t uid,
+                          char      **out_session_id,
+                          GError    **error)
 {
         char *local_session_id = NULL;
         g_auto(GStrv) sessions = NULL;
         int n_sessions;
+        int res;
 
         g_return_val_if_fail (out_session_id != NULL, FALSE);
+
+        /* First try to look up the session using the pid. We need this
+         * at least for the greeter, because it currently runs multiple
+         * sessions under the same user.
+         * See also commit 2b52d8933c8ab38e7ee83318da2363d00d8c5581
+         * which added an explicit dbus-run-session for all but seat0.
+         */
+        res = sd_pid_get_session (pid, &local_session_id);
+        if (res >= 0) {
+                g_debug ("Found session for PID %d, using it", pid);
+                g_set_error (error, GDM_COMMON_ERROR, 0, _("Could not identify the current session."));
+
+                *out_session_id = g_strdup (local_session_id);
+                g_free (local_session_id);
+
+                return TRUE;
+        } else {
+                if (res != -ENODATA)
+                        g_warning ("Failed to retrieve session information for pid %d: %s",
+                                   pid, strerror (-res));
+        }
 
         g_debug ("Finding a graphical session for user %d", uid);
 

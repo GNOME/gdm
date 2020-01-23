@@ -501,7 +501,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 goto out;
         }
 
-        ret = gdm_find_display_session_for_uid (caller_uid, &session_id, &error);
+        ret = gdm_find_display_session (pid, caller_uid, &session_id, &error);
 
         if (!ret) {
                 g_debug ("GdmManager: Unable to find display session for uid %d: %s",
