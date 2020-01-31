@@ -532,11 +532,10 @@ if test "x$supports_pam_extensions" = "xyes" ; then
 	AC_DEFINE(SUPPORTS_PAM_EXTENSIONS, 1, [Define if PAM supports GDMs custom extensions])
 fi
 
-AC_CHECK_LIB(keyutils, keyctl_read, [
-        AC_DEFINE(HAVE_KEYUTILS, 1, [Define if have keyutils])
-        KEYUTILS_LIBS="-lkeyutils"
-        KEYUTILS_CFLAGS=""
-])
+PKG_CHECK_MODULES([KEYUTILS],
+                  [libkeyutils],
+                  [AC_DEFINE([HAVE_KEYUTILS], [1], [Define if have keyutils])],
+                  [true])
 AC_SUBST(KEYUTILS_LIBS)
 AC_SUBST(KEYUTILS_CFLAGS)
 
