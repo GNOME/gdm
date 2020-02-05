@@ -2891,6 +2891,7 @@ gdm_session_start_session (GdmSession *self,
         gboolean                is_x11 = TRUE;
         gboolean                run_launcher = FALSE;
         gboolean                allow_remote_connections = FALSE;
+        gboolean                run_separate_bus = FALSE;
         char                   *command;
         char                   *program;
         gboolean               register_session;
@@ -2921,6 +2922,10 @@ gdm_session_start_session (GdmSession *self,
 
         register_session = !gdm_session_session_registers (self);
 
+        if (g_strcmp0 (self->display_seat_id, "seat0") != 0 && !run_launcher) {
+                run_separate_bus = TRUE;
+        }
+
         if (self->selected_program == NULL) {
                 gboolean run_xsession_script;
 
@@ -2949,7 +2954,11 @@ gdm_session_start_session (GdmSession *self,
                                                            command);
                         }
                 } else if (run_xsession_script) {
-                        program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+                        if (run_separate_bus) {
+                                program = g_strdup_printf ("dbus-run-session -- " GDMCONFDIR "/Xsession \"%s\"", command);
+                        } else {
+                                program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+                        }
                 } else {
                         program = g_strdup (command);
                 }
