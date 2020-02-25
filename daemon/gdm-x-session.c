@@ -622,6 +622,12 @@ spawn_session (State        *state,
         if (state->environment != NULL) {
                 size_t i;
 
+                /* If we have received an environment block from the systemd user
+                 * instance, it will contain a PATH, which might be customized by
+                 * the user, while our PATH is a fallback. Remove our PATH so
+                 * that the one from systemd will be used. */
+                g_subprocess_launcher_unsetenv (launcher, "PATH");
+
                 for (i = 0; state->environment[i] != NULL; i++) {
                         g_auto(GStrv) environment_entry = NULL;
 
