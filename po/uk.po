@@ -5,57 +5,85 @@
 # Oleksandr Kovalenko <alx.kovalenko@gmail.com>, 2009
 # wanderlust <wanderlust@ukr.net>, 2009.
 # Daniel Korostil <ted.korostiled@gmail.com>, 2013, 2015, 2016.
+# vikaig <vikaig99@gmail.com>, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.90.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-23 13:16+0200\n"
-"PO-Revision-Date: 2016-02-23 13:19+0300\n"
-"Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
+"POT-Creation-Date: 2019-09-18 13:39+0000\n"
+"PO-Revision-Date: 2019-11-18 13:03+0200\n"
+"Last-Translator: vikaig <vikaig99@gmail.com>\n"
 "Language-Team: linux.org.ua\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.2.4\n"
 
-#: ../common/gdm-common.c:298
-#, c-format
+#: chooser/gdm-host-chooser-dialog.c:139
+msgid "_Refresh"
+msgstr "_Оновити"
+
+#: chooser/gdm-host-chooser-dialog.c:140
+msgid "_Cancel"
+msgstr "_Скасувати"
+
+#: chooser/gdm-host-chooser-dialog.c:141
+msgid "C_onnect"
+msgstr "_Підключитися"
+
+#: chooser/gdm-host-chooser-dialog.c:146
+msgid "Select System"
+msgstr "Виберіть систему"
+
+#: chooser/gdm-host-chooser-widget.c:253
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: не вдалось створити буфер XDMCP!"
+
+#: chooser/gdm-host-chooser-widget.c:259
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: не вдалось прочитати заголовок XDMCP!"
+
+#: chooser/gdm-host-chooser-widget.c:265
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: неправильна версія XDMCP!"
+
+#: chooser/gdm-host-chooser-widget.c:271
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: неможливо розібрати адресу"
+
+#: common/gdm-common.c:307
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не є символьним пристроєм"
 
-#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Неможливо розпізнати поточний сеанс."
+#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+msgid "Could not identify the current session: "
+msgstr "Неможливо розпізнати поточний сеанс: "
 
-#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
-#, c-format
+#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
 msgid "Could not identify the current seat."
 msgstr "Неможливо розпізнати поточне місце."
 
-#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
-#, c-format
+#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
 msgstr ""
 "Система не може визначити, чи перемкнутись на наявний вхідний екран чи "
-"запустити новий. "
+"запустити новий."
 
-#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
-#, c-format
+#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
 msgid "The system is unable to start up a new login screen."
 msgstr "Система не може запустити новий вхідний екран."
 
-#: ../daemon/gdm-display-access-file.c:300
+#: daemon/gdm-display-access-file.c:298
 #, c-format
-msgid "could not find user \"%s\" on system"
+msgid "could not find user “%s” on system"
 msgstr "неможливо знайти користувача «%s» у системі"
 
-#: ../daemon/gdm-legacy-display.c:235
+#: daemon/gdm-legacy-display.c:236
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -67,201 +95,203 @@ msgstr ""
 "системний журнал. Через деякий час цей дисплей буде вимкнено. Будь ласка, "
 "перезавантажте GDM, коли проблема буде вирішено."
 
-#: ../daemon/gdm-manager.c:766
+#: daemon/gdm-manager.c:763
 msgid "No display available"
 msgstr "Немає доступного екрана"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
+#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
 msgid "No session available"
 msgstr "Немає доступного сеансу"
 
-#: ../daemon/gdm-manager.c:844
+#: daemon/gdm-manager.c:880
+msgid "Chooser session unavailable"
+msgstr "Сеанс вибору недоступний"
+
+#: daemon/gdm-manager.c:896
 msgid "Can only be called before user is logged in"
 msgstr "Можна тільки викликатись перед входом користувача"
 
-#: ../daemon/gdm-manager.c:854
+#: daemon/gdm-manager.c:907
 msgid "Caller not GDM"
 msgstr "Викликач не GDM"
 
-#: ../daemon/gdm-manager.c:864
+#: daemon/gdm-manager.c:917
 msgid "Unable to open private communication channel"
 msgstr "Неможливо відкрити закритий канал зв'язку"
 
-#: ../daemon/gdm-server.c:391
+#: daemon/gdm-server.c:383
 #, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Сервер запущено користувачем %s, але цього користувача не існує"
 
-#: ../daemon/gdm-server.c:402 ../daemon/gdm-server.c:422
+#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
-msgid "Couldn't set groupid to %d"
+msgid "Couldn’t set groupid to %d"
 msgstr "Не вдалось встановити groupid для %d"
 
-#: ../daemon/gdm-server.c:408
+#: daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Помилка initgroups() для %s"
 
-#: ../daemon/gdm-server.c:414
+#: daemon/gdm-server.c:406
 #, c-format
-msgid "Couldn't set userid to %d"
+msgid "Couldn’t set userid to %d"
 msgstr "Не вдалось встановити userid для %d"
 
-#: ../daemon/gdm-server.c:492
+#: daemon/gdm-server.c:484
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не вдалось відкрити файл журналу для екрана %s!"
 
-#: ../daemon/gdm-server.c:513 ../daemon/gdm-server.c:519
-#: ../daemon/gdm-server.c:525
+#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: помилка налаштування %s для %s"
 
-#: ../daemon/gdm-server.c:545
+#: daemon/gdm-server.c:537
 #, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
+msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Пріоритет сервера неможливо вказати для %d: %s"
 
-#: ../daemon/gdm-server.c:697
+#: daemon/gdm-server.c:689
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: порожня команда програми сервера для екрана %s"
 
-#: ../daemon/gdm-session-auditor.c:90
+#: daemon/gdm-session-auditor.c:88
 msgid "Username"
 msgstr "Користувач"
 
-#: ../daemon/gdm-session-auditor.c:91
+#: daemon/gdm-session-auditor.c:89
 msgid "The username"
 msgstr "Користувач"
 
-#: ../daemon/gdm-session-auditor.c:95
+#: daemon/gdm-session-auditor.c:93
 msgid "Hostname"
 msgstr "Назва вузла"
 
-#: ../daemon/gdm-session-auditor.c:96
+#: daemon/gdm-session-auditor.c:94
 msgid "The hostname"
 msgstr "Назва вузла"
 
-#: ../daemon/gdm-session-auditor.c:101
+#: daemon/gdm-session-auditor.c:99
 msgid "Display Device"
 msgstr "Пристрій показу"
 
-#: ../daemon/gdm-session-auditor.c:102
+#: daemon/gdm-session-auditor.c:100
 msgid "The display device"
 msgstr "Пристрій показу"
 
-#: ../daemon/gdm-session.c:1205
+#: daemon/gdm-session.c:1285
 msgid "Could not create authentication helper process"
 msgstr "Неможливо створити дію з помічника розпізнавання"
 
-#: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#: daemon/gdm-session-worker.c:757
+msgid "Your account was given a time limit that’s now passed."
 msgstr "Ваш обліковий запис має часове обмеження, яке вже вичерпано."
 
-#: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:764
+msgid "Sorry, that didn’t work. Please try again."
 msgstr "Вибачте, це не працює. Спробуйте ще."
 
-#: ../daemon/gdm-session-worker.c:1010
+#: daemon/gdm-session-worker.c:1189
 msgid "Username:"
 msgstr "Користувач:"
 
-#: ../daemon/gdm-session-worker.c:1504 ../daemon/gdm-session-worker.c:1521
-#, c-format
+#: daemon/gdm-session-worker.c:1693 daemon/gdm-session-worker.c:1710
 msgid "no user account available"
 msgstr "недоступний обліковий запис користувача"
 
-#: ../daemon/gdm-session-worker.c:1548
+#: daemon/gdm-session-worker.c:1737
 msgid "Unable to change to user"
 msgstr "Неможливо змінити користувача"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: daemon/gdm-wayland-session.c:511
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Пускач сеансу Wayland GNOME"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
+#: daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
 msgstr "Не вдалось створити гніздо!"
 
-#: ../daemon/gdm-x-session.c:734
+#: daemon/gdm-x-session.c:858
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Запустити програму через скрипт у /etc/gdm/Xsession"
 
-#: ../daemon/gdm-x-session.c:735
+#: daemon/gdm-x-session.c:859
 msgid "Listen on TCP socket"
 msgstr "Чекати на сокет TCP"
 
-#: ../daemon/gdm-x-session.c:746
+#: daemon/gdm-x-session.c:871
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Пускач сеансу X GNOME"
 
-#: ../daemon/main.c:125 ../daemon/main.c:138
+#: daemon/main.c:125 daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Неможливо записати файл PID %s: можливо, немає місця на диску: %s"
 
-#: ../daemon/main.c:182
+#: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
 msgstr "Неможливо створити клеймований каталог %s: %s"
 
-#: ../daemon/main.c:188
+#: daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
 msgstr "Не вдалося створити LogDir %s: %s"
 
-#: ../daemon/main.c:223
+#: daemon/main.c:223
 #, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
+msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Не знайдено користувача GDM «%s». Скасування!"
 
-#: ../daemon/main.c:229
+#: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Користувачем GDM не може бути root. Скасування!"
 
-#: ../daemon/main.c:235
+#: daemon/main.c:235
 #, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
+msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Не знайдено групу GDM «%s». Скасування!"
 
-#: ../daemon/main.c:241
+#: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Група GDM не повинна бути групою root. Скасування!"
 
-#: ../daemon/main.c:318
+#: daemon/main.c:317
 msgid "Make all warnings fatal"
 msgstr "Зробити всі попередження критичними"
 
-#: ../daemon/main.c:319
+#: daemon/main.c:318
 msgid "Exit after a time (for debugging)"
 msgstr "Вийти через деякий час (для зневадження)"
 
-#: ../daemon/main.c:320
+#: daemon/main.c:319
 msgid "Print GDM version"
 msgstr "Показати версію GDM"
 
-#: ../daemon/main.c:333
+#: daemon/main.c:330
 msgid "GNOME Display Manager"
 msgstr "Менеджер стільниці GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:381
+#: daemon/main.c:350
 msgid "Only the root user can run GDM"
 msgstr "Лише адміністратор (root) може запускати GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:94
+#: daemon/session-worker-main.c:119
 msgid "GNOME Display Manager Session Worker"
-msgstr "Менеджер роботи стільничого сеансу GNOME"
+msgstr "Менеджер роботи стільничного сеансу GNOME"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+#: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Чи дозволяти відбитки пальців для входу"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+#: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -269,11 +299,11 @@ msgstr ""
 "Екран входу може факультативно дозволити користувачам, що мають унесені "
 "відбитки, заходити через відбиток."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Чи дозволяти смарт-картки для входу"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+#: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -281,11 +311,11 @@ msgstr ""
 "Екран входу може факультативно дозволити користувачам, що мають смарт-"
 "картки, заходити за їхньою допомогою."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
 msgstr "Чи дозволяти паролі для входу"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: data/org.gnome.login-screen.gschema.xml:29
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -294,11 +324,12 @@ msgstr ""
 "заставляти користувача використовувати смарт-картки або засвідчення через "
 "відбитки пальців."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: data/org.gnome.login-screen.gschema.xml:36
+#: data/org.gnome.login-screen.gschema.xml:46
 msgid "Path to small image at top of user list"
 msgstr "Шлях до маленького зображення зверху переліку користувачів"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: data/org.gnome.login-screen.gschema.xml:39
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -306,7 +337,7 @@ msgstr ""
 "Екран входу може факультативно дозволити показувати маленькі зображення, щоб "
 "надати адміністраторам і посередникам спосіб підтримування брендингу."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -315,11 +346,11 @@ msgstr ""
 "зображення, щоб надати адміністраторам і посередникам спосіб підтримування "
 "брендингу."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: data/org.gnome.login-screen.gschema.xml:56
 msgid "Avoid showing user list"
 msgstr "Уникати показування списку користувачів"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: data/org.gnome.login-screen.gschema.xml:59
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -328,36 +359,36 @@ msgstr ""
 "входу. Цей параметр можна перемкнути, щоб вимкнути показування списку "
 "користувачів."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
 msgstr "Увімкнути показ повідомлення заголовка"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: data/org.gnome.login-screen.gschema.xml:69
 msgid "Set to true to show the banner message text."
 msgstr "Встановити так, щоб показати текст повідомлення заголовка."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: data/org.gnome.login-screen.gschema.xml:75
 msgid "Banner message text"
 msgstr "Текст повідомлення заголовка"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: data/org.gnome.login-screen.gschema.xml:78
 msgid "Text banner message to show in the login window."
 msgstr "Текст повідомлення заголовка, що буде показано у вікні входу."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid "Disable showing the restart buttons"
 msgstr "Вимкнути показ кнопки перезавантаження"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+#: data/org.gnome.login-screen.gschema.xml:87
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Встановити так, щоб вимкнути показ кнопки перезавантаження у вікні входу."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
+#: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
 msgstr "Кількість дозволених промахів розпізнавання"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
+#: data/org.gnome.login-screen.gschema.xml:96
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -365,66 +396,46 @@ msgstr ""
 "Кількість разів, які дозволяють користувачу для спроби розпізнатись, перед "
 "невдачею та переходом назад до вибирання. користувача."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
-msgstr "Виберіть систему"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: не вдалось створити буфер XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: не вдалось прочитати заголовок XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: неправильна версія XDMCP!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: неможливо розібрати адресу"
-
-#: ../libgdm/gdm-user-switching.c:59
+#: libgdm/gdm-user-switching.c:59
 msgid "Unable to create transient display: "
-msgstr "Неможливо створити змінний екран:"
+msgstr "Неможливо створити змінний екран: "
 
-#: ../libgdm/gdm-user-switching.c:90
+#: libgdm/gdm-user-switching.c:90
 msgid "Unable to activate session: "
-msgstr "Неможливо ввімкнути сеанс:"
+msgstr "Неможливо ввімкнути сеанс: "
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Підтримується лише команда VERSION"
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
-#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
+#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
+#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
 msgstr "Пропущено — збережено для сумісності"
 
-#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
+#: utils/gdmflexiserver.c:48 utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Вивід зневадження"
 
-#: ../utils/gdmflexiserver.c:52
+#: utils/gdmflexiserver.c:52
 msgid "Version of this application"
 msgstr "Версія цієї програми"
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:137
-msgid "- New GDM login"
+#: utils/gdmflexiserver.c:137
+msgid "— New GDM login"
 msgstr "— Новий вхід GDM"
 
-#: ../utils/gdm-screenshot.c:212
+#: utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "Знімок екрана зроблено"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:279
+#: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Зробити знімок екрана"
 
