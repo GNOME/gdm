@@ -2190,30 +2190,39 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 static gboolean
 set_up_for_new_vt (GdmSessionWorker *worker)
 {
-        int fd;
+        int initial_vt_fd;
         char vt_string[256], tty_string[256];
         int session_vt = 0;
 
-        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
+        /* open the initial vt.  We need it for two scenarios:
+         *
+         * 1) display_is_initial is TRUE.  We need it directly.
+         * 2) display_is_initial is FALSE. We need it to mark
+         * the initial VT as "in use" so it doesn't get returned
+         * by VT_OPENQRY
+         * */
+        g_snprintf (tty_string, sizeof (tty_string), "/dev/tty%d", GDM_INITIAL_VT);
+        initial_vt_fd = open (tty_string, O_RDWR | O_NOCTTY);
 
-        if (fd < 0) {
-                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
+        if (initial_vt_fd < 0) {
+                g_debug ("GdmSessionWorker: couldn't open console of initial fd: %m");
                 return FALSE;
         }
 
         if (worker->priv->display_is_initial) {
                 session_vt = GDM_INITIAL_VT;
         } else {
-                if (ioctl(fd, VT_OPENQRY, &session_vt) < 0) {
+
+                /* Typically VT_OPENQRY is called on /dev/tty0, but we already
+                 * have /dev/tty1 open above, so might as well use it.
+                 */
+                if (ioctl (initial_vt_fd, VT_OPENQRY, &session_vt) < 0) {
                         g_debug ("GdmSessionWorker: couldn't open new VT: %m");
                         goto fail;
                 }
         }
 
         worker->priv->session_vt = session_vt;
-
-        close (fd);
-        fd = -1;
 
         g_assert (session_vt > 0);
 
@@ -2227,14 +2236,20 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                                                      "XDG_VTNR",
                                                      vt_string);
 
-        g_snprintf (tty_string, 256, "/dev/tty%d", session_vt);
-        worker->priv->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
+        if (worker->priv->display_is_initial) {
+             worker->priv->session_tty_fd = initial_vt_fd;
+        } else {
+             g_snprintf (tty_string, sizeof (tty_string), "/dev/tty%d", session_vt);
+             worker->priv->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
+             close (initial_vt_fd);
+        }
+
         pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
 
         return TRUE;
 
 fail:
-        close (fd);
+        close (initial_vt_fd);
         return FALSE;
 }
 
