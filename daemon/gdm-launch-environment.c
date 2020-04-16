@@ -921,6 +921,10 @@ create_gnome_session_environment (const char *session_id,
         g_ptr_array_add (args, "--autostart");
         g_ptr_array_add (args, DATADIR "/gdm/greeter/autostart");
 
+        /* Force non-systemd startup;
+         * together with dbus-run-session it allows multiple GDM greeters */
+        g_ptr_array_add (args, "--builtin");
+
         if (debug) {
                 g_ptr_array_add (args, "--debug");
         }

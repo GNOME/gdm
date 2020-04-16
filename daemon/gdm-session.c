@@ -2911,6 +2911,8 @@ gdm_session_start_session (GdmSession *self,
                                                            self->selected_program);
                         }
                 } else {
+                        /* NOTE: This only works because we also force non-systemd
+                         *       sessions for the greeter. */
                         if (g_strcmp0 (self->display_seat_id, "seat0") != 0) {
                                 program = g_strdup_printf ("dbus-run-session -- %s",
                                                            self->selected_program);
