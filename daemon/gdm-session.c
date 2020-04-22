@@ -2900,23 +2900,33 @@ gdm_session_start_session (GdmSession *self,
 
                 g_free (command);
         } else {
+                /* FIXME:
+                 * Always use a separate DBus bus for each greeter session.
+                 * Firstly, this means that if we run multiple greeter session
+                 * (which we really should not do, but have to currently), then
+                 * each one will get its own DBus session bus.
+                 * But, we also explicitly do this for seat0, because that way
+                 * it cannot make use of systemd to run the GNOME session. This
+                 * prevents the session lookup logic from getting confused.
+                 * This has a similar effect as passing --builtin to gnome-session.
+                 *
+                 * We really should not be doing this. But the fix is to use
+                 * separate dynamically created users and that requires some
+                 * major refactorings.
+                 */
                 if (run_launcher) {
                         if (is_x11) {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s\"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s\"dbus-run-session -- %s\"",
                                                            register_session ? "--register-session " : "",
                                                            self->selected_program);
                         } else {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"dbus-run-session -- %s\"",
                                                            register_session ? "--register-session " : "",
                                                            self->selected_program);
                         }
                 } else {
-                        if (g_strcmp0 (self->display_seat_id, "seat0") != 0) {
-                                program = g_strdup_printf ("dbus-run-session -- %s",
-                                                           self->selected_program);
-                        } else {
-                                program = g_strdup (self->selected_program);
-                        }
+                        program = g_strdup_printf ("dbus-run-session -- %s",
+                                                   self->selected_program);
                 }
         }
 
