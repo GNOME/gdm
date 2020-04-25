@@ -3,7 +3,6 @@ EXTRA_DIST =
 
 SUBDIRS =			\
 	applications		\
-	autostart		\
 	$(NULL)
 
 initdir = $(gdmconfdir)/Init

@@ -1461,7 +1461,6 @@ pam_gdm/Makefile
 data/gdm.conf
 data/Makefile
 data/applications/Makefile
-data/autostart/Makefile
 data/dconf/gdm
 common/Makefile
 po/Makefile.in
