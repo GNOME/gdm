@@ -2209,7 +2209,7 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                 return FALSE;
         }
 
-        if (worker->priv->display_is_initial) {
+        if (strcmp (worker->priv->service, "gdm-launch-environment") == 0) {
                 session_vt = GDM_INITIAL_VT;
         } else {
 
