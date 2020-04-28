@@ -148,7 +148,7 @@ plymouth_is_running (void)
         GError  *error;
 
         error = NULL;
-        res = g_spawn_command_line_sync ("/bin/plymouth --ping",
+        res = g_spawn_command_line_sync ("plymouth --ping",
                                          NULL, NULL, &status, &error);
         if (! res) {
                 g_debug ("Could not ping plymouth: %s", error->message);
@@ -166,7 +166,7 @@ plymouth_prepare_for_transition (void)
         GError  *error;
 
         error = NULL;
-        res = g_spawn_command_line_sync ("/bin/plymouth deactivate",
+        res = g_spawn_command_line_sync ("plymouth deactivate",
                                          NULL, NULL, NULL, &error);
         if (! res) {
                 g_warning ("Could not deactivate plymouth: %s", error->message);
@@ -181,7 +181,7 @@ plymouth_quit_with_transition (void)
         GError  *error;
 
         error = NULL;
-        res = g_spawn_command_line_async ("/bin/plymouth quit --retain-splash", &error);
+        res = g_spawn_command_line_async ("plymouth quit --retain-splash", &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
@@ -197,7 +197,7 @@ plymouth_quit_without_transition (void)
         GError  *error;
 
         error = NULL;
-        res = g_spawn_command_line_async ("/bin/plymouth quit", &error);
+        res = g_spawn_command_line_async ("plymouth quit", &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
