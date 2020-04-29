@@ -22,7 +22,7 @@ configure_file(
 )
 configure_file(
   input: 'gdm.conf-custom.in',
-  output: '@BASENAME@',
+  output: 'custom.conf',
   copy: true,
   install_mode: 'rw-r--r--',
   install_dir: gdmconfdir,
