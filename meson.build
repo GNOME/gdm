@@ -107,7 +107,7 @@ plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
 # support the ADT_USER enumeration value.
 have_adt = cc.has_header_symbol('bsm/adt.h', 'ADT_USER')
 # libaudit
-libaudit_dep = dependency('libaudit_dep', required: get_option('libaudit'))
+libaudit_dep = dependency('audit', required: get_option('libaudit'))
 # unit testsheadername
 libcheck_dep = dependency('check', version: '>= 0.9.4')
 
