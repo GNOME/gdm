@@ -17,7 +17,7 @@ gdm_prefix = get_option('prefix')
 
 gdmconfdir = (get_option('sysconfsubdir') == '')? gdm_prefix / get_option('sysconfdir') : gdm_prefix / get_option('sysconfdir') / get_option('sysconfsubdir')
 dmconfdir = (get_option('dmconfdir') != '')? get_option('dmconfdir') : gdm_prefix / get_option('sysconfdir') / 'dm'
-udev_dir = get_option('udev-dir') != '' ? get_option('udev-dir') : get_option('libdir') / 'udev' / 'rules.d'
+udev_dir = get_option('udev-dir')
 at_spi_registryd_dir = (get_option('at-spi-registryd-dir') != '')? get_option('at-spi-registryd-dir') : gdm_prefix / get_option('libexecdir')
 lang_config_file = (get_option('lang-file') != '')? get_option('lang-file') : gdm_prefix / get_option('sysconfdir') / 'locale.conf'
 pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm_prefix / get_option('libdir') / 'security'
@@ -38,6 +38,8 @@ gdm_screenshot_dir = (get_option('screenshot-dir') != '')? get_option('screensho
 config_h_dir = include_directories('.')
 
 # Dependencies
+udev_dep = dependency('udev')
+
 glib_min_version = '2.44.0'
 
 glib_dep = dependency('glib-2.0', version: '>=' + glib_min_version)
@@ -50,6 +52,16 @@ accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 xcb_dep = dependency('xcb')
 keyutils_dep = dependency('keyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
+
+# udev
+if udev_dir == ''
+  if udev_dep.found()
+    udev_dir = udev_dep.get_pkgconfig_variable('udevdir')
+  else
+    udev_dir = gdm_prefix / 'lib' / 'udev' / 'rules.d'
+  endif
+endif
+
 # X11
 x_deps = declare_dependency(
   dependencies: [
