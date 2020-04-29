@@ -4,7 +4,7 @@ gdm_flexiserver_deps = [
   libgdmcommon_dep,
 ]
 
-gdm_flexiserver = executable('gdm-flexiserver',
+gdm_flexiserver = executable('gdmflexiserver',
   'gdmflexiserver.c',
   dependencies: gdm_flexiserver_deps,
   include_directories: config_h_dir,
