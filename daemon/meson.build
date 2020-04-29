@@ -120,7 +120,7 @@ endif
 
 gdm_session_worker = executable('gdm-session-worker',
   gdm_session_worker_src,
-  dependencies: gdm_daemon_deps,
+  dependencies: gdm_session_worker_deps,
   include_directories: gdm_session_worker_includes,
   install: true,
   install_dir: get_option('libexecdir'),
