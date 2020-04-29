@@ -9,7 +9,19 @@ foreach file : [ 'Init', 'PreSession', 'PostSession' ]
     output: file,
     configuration: { 'X_PATH':  x_path },
   )
+
+  install_data(file,
+    install_dir: gdmconfdir / file,
+    install_mode: 'rwxr-xr-x',
+    rename: 'Default'
+  )
 endforeach
+
+install_data('PostLogin',
+  rename: 'Default',
+  install_mode: 'rwxr-xr-x',
+  install_dir: gdmconfdir / 'PostLogin',
+)
 
 # gdm.conf
 configure_file(
