@@ -4,12 +4,24 @@ subdir('dconf')
 
 # XPath configs
 foreach file : [ 'Init', 'PreSession', 'PostSession' ]
-  configure_file(
+  generated_file = configure_file(
     input: '@0@.in'.format(file),
     output: file,
     configuration: { 'X_PATH':  x_path },
   )
+
+  install_data(generated_file,
+    install_dir: gdmconfdir / file,
+    install_mode: 'rwxr-xr-x',
+    rename: 'Default'
+  )
 endforeach
+
+install_data('PostLogin',
+  rename: 'Default.sample',
+  install_mode: 'rwxr-xr-x',
+  install_dir: gdmconfdir / 'PostLogin',
+)
 
 # gdm.conf
 configure_file(
