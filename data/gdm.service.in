@@ -2,15 +2,15 @@
 Description=GNOME Display Manager
 
 # replaces the getty
-Conflicts=getty@tty@GDM_INITIAL_VT@.service
-After=getty@tty@GDM_INITIAL_VT@.service
+Conflicts=getty@tty${GDM_INITIAL_VT}.service
+After=getty@tty${GDM_INITIAL_VT}.service
 
 # replaces plymouth-quit since it quits plymouth on its own
-Conflicts=@PLYMOUTH_QUIT_SERVICE@
-After=@PLYMOUTH_QUIT_SERVICE@
+Conflicts=${PLYMOUTH_QUIT_SERVICE}
+After=${PLYMOUTH_QUIT_SERVICE}
 
 # Needs all the dependencies of the services it's replacing
-# pulled from getty@.service and @PLYMOUTH_QUIT_SERVICE@
+# pulled from getty@.service and ${PLYMOUTH_QUIT_SERVICE}
 # (except for plymouth-quit-wait.service since it waits until
 # plymouth is quit, which we do)
 After=rc-local.service plymouth-start.service systemd-user-sessions.service
@@ -20,14 +20,14 @@ After=rc-local.service plymouth-start.service systemd-user-sessions.service
 OnFailure=plymouth-quit.service
 
 [Service]
-ExecStart=@sbindir@/gdm
+ExecStart=${sbindir}/gdm
 KillMode=mixed
 Restart=always
 IgnoreSIGPIPE=no
 BusName=org.gnome.DisplayManager
 StandardOutput=syslog
 StandardError=inherit
-EnvironmentFile=-@LANG_CONFIG_FILE@
+EnvironmentFile=-${LANG_CONFIG_FILE}
 ExecReload=/bin/kill -SIGHUP $MAINPID
 KeyringMode=shared
 
