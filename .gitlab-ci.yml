@@ -39,9 +39,9 @@ build-fedora:
         yelp-tools
 
   script:
-    - ./autogen.sh
-    - make -j
-    - make -j check
-    - make -j distcheck
+    - meson . build --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usrlib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+    - ninja -C build
+    - ninja -C build install
+    - ninja -C build dist
   except:
     - tags
