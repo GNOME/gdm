@@ -155,6 +155,7 @@ configure_file(
   output: '@BASENAME@',
   configuration: service_config,
   install_dir: systemd_systemunitdir,
+  format: 'cmake'
 )
 
 # XSession
