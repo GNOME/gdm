@@ -8,8 +8,6 @@ build-fedora:
     - dnf -y install
         accountsservice-devel
         audit-libs-devel
-        autoconf
-        automake
         check-devel
         dconf
         desktop-file-utils
@@ -25,7 +23,7 @@ build-fedora:
         libdmx-devel
         libselinux-devel
         libtool
-        make
+        meson
         nss-devel
         pam-devel
         plymouth-devel
@@ -39,9 +37,10 @@ build-fedora:
         yelp-tools
 
   script:
-    - ./autogen.sh
-    - make -j
-    - make -j check
-    - make -j distcheck
+    - meson . build --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+    - ninja -C build
+    - ninja -C build install
+    - ninja -C build dist
+    - ninja -C build test
   except:
     - tags
