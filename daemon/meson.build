@@ -59,7 +59,7 @@ gdm_daemon_deps = [
   xcb_dep,
 ]
 
-if xdmcp_dep.found() and get_option('tcp-wrappers')
+if xdmcp_dep.found() and get_option('tcp_wrappers')
   gdm_daemon_deps += libwrap_dep
 endif
 
