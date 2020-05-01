@@ -116,7 +116,7 @@ pam_data_files_map = {
 }
 
 pam_data_files = pam_data_files_map[default_pam_config]
-pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
+pam_prefix = (get_option('pam_prefix') != '')? get_option('pam_prefix') : get_option('sysconfdir')
 foreach _pam_filename : pam_data_files
   install_data('pam-@0@/@1@.pam'.format(default_pam_config, _pam_filename),
     rename: _pam_filename,
@@ -136,7 +136,7 @@ gdm_rules = configure_file(
 # DBus service files
 service_config = configuration_data()
 service_config.set('sbindir', gdm_prefix / get_option('sbindir'))
-service_config.set('GDM_INITIAL_VT', get_option('initial-vt'))
+service_config.set('GDM_INITIAL_VT', get_option('initial_vt'))
 service_config.set('LANG_CONFIG_FILE', lang_config_file)
 if plymouth_dep.found()
   service_config.set('PLYMOUTH_QUIT_SERVICE', 'plymouth-quit.service')
@@ -159,7 +159,7 @@ configure_file(
 )
 
 # XSession
-if get_option('gdm-xsession')
+if get_option('gdm_xsession')
   configure_file(
     input: 'XSession.in',
     output: '@BASENAME@',

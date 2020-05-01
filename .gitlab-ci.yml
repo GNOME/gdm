@@ -38,7 +38,7 @@ build-fedora:
         yelp-tools
 
   script:
-    - meson . build --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+    - meson . build --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam_prefix=/etc -Drun_dir=/run/gdm -Dudev_dir=/lib/udev/rules.d -Ddefault_path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
     - ninja -C build
     - ninja -C build install
     - ninja -C build dist

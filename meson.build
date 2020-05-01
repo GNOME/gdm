@@ -17,22 +17,22 @@ gdm_prefix = get_option('prefix')
 
 gdmconfdir = (get_option('sysconfsubdir') == '')? gdm_prefix / get_option('sysconfdir') : gdm_prefix / get_option('sysconfdir') / get_option('sysconfsubdir')
 dmconfdir = (get_option('dmconfdir') != '')? get_option('dmconfdir') : gdm_prefix / get_option('sysconfdir') / 'dm'
-udev_dir = get_option('udev-dir')
-at_spi_registryd_dir = (get_option('at-spi-registryd-dir') != '')? get_option('at-spi-registryd-dir') : gdm_prefix / get_option('libexecdir')
-lang_config_file = (get_option('lang-file') != '')? get_option('lang-file') : gdm_prefix / get_option('sysconfdir') / 'locale.conf'
-pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm_prefix / get_option('libdir') / 'security'
-dbus_sys_dir = (get_option('dbus-sys') != '')? get_option('dbus-sys') : get_option('sysconfdir') / 'dbus-1' / 'system.d'
-gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / get_option('datadir') / 'gdm' / 'defaults.conf'
-gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
-gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_custom_conf
-gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get_option('gnome-settings-daemon-dir') : gdm_prefix / get_option('libexecdir')
-check_accelerated_dir = (get_option('check-accelerated-dir') != '')? get_option('check-accelerated-dir') : gdm_prefix / get_option('libexecdir')
-gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : gdm_prefix / get_option('localstatedir') / 'run' / 'gdm'
-gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
-ran_once_marker_dir = (get_option('ran-once-marker-dir') != '')? get_option('ran-once-marker-dir') : gdm_run_dir
-working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
-gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir
-gdm_screenshot_dir = (get_option('screenshot-dir') != '')? get_option('screenshot-dir') : gdm_run_dir / 'greeter'
+udev_dir = get_option('udev_dir')
+at_spi_registryd_dir = (get_option('at_spi_registryd_dir') != '')? get_option('at_spi_registryd_dir') : gdm_prefix / get_option('libexecdir')
+lang_config_file = (get_option('lang_file') != '')? get_option('lang_file') : gdm_prefix / get_option('sysconfdir') / 'locale.conf'
+pam_mod_dir = (get_option('pam_mod_dir') != '')? get_option('pam_mod_dir') : gdm_prefix / get_option('libdir') / 'security'
+dbus_sys_dir = (get_option('dbus_sys') != '')? get_option('dbus_sys') : get_option('sysconfdir') / 'dbus-1' / 'system.d'
+gdm_defaults_conf = (get_option('defaults_conf') != '')? get_option('defaults_conf') : gdm_prefix / get_option('datadir') / 'gdm' / 'defaults.conf'
+gdm_custom_conf = (get_option('custom_conf') != '')? get_option('custom_conf') : gdmconfdir / 'custom.conf'
+gdm_runtime_conf = (get_option('runtime_conf') != '')? get_option('runtime_conf') : gdm_custom_conf
+gnome_settings_daemon_dir = (get_option('gnome_settings_daemon_dir') != '')? get_option('gnome_settings_daemon_dir') : gdm_prefix / get_option('libexecdir')
+check_accelerated_dir = (get_option('check_accelerated_dir') != '')? get_option('check_accelerated_dir') : gdm_prefix / get_option('libexecdir')
+gdm_run_dir = (get_option('run_dir') != '')? get_option('run_dir') : gdm_prefix / get_option('localstatedir') / 'run' / 'gdm'
+gdm_pid_file = (get_option('pid_file') != '')? get_option('pid_file') : gdm_run_dir / 'gdm.pid'
+ran_once_marker_dir = (get_option('ran_once_marker_dir') != '')? get_option('ran_once_marker_dir') : gdm_run_dir
+working_dir = (get_option('working_dir') != '')? get_option('working_dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
+gdm_xauth_dir = (get_option('xauth_dir') != '')? get_option('xauth_dir') : gdm_run_dir
+gdm_screenshot_dir = (get_option('screenshot_dir') != '')? get_option('screenshot_dir') : gdm_run_dir / 'greeter'
 
 # Common variables
 config_h_dir = include_directories('.')
@@ -89,13 +89,13 @@ else
   x_bin = '/usr/bin/X'
 endif
 xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
-if xdmcp_dep.found() and get_option('tcp-wrappers')
+if xdmcp_dep.found() and get_option('tcp_wrappers')
   libwrap_dep = cc.find_library('libwrap')
 endif
 # systemd
 systemd_dep = dependency('systemd')
 libsystemd_dep = dependency('libsystemd')
-journald_dep = dependency('journald', required: get_option('systemd-journal'))
+journald_dep = dependency('journald', required: get_option('systemd_journal'))
 systemd_multiseat_x = find_program('systemd-multi-seat-x', required: false)
 systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
 # Plymouth
@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
 libpam_dep = cc.find_library('pam')
 pam_extensions_supported = cc.has_header_symbol('security/pam_appl.h', 'PAM_BINARY_PROMPT')
 
-default_pam_config = get_option('default-pam-config')
+default_pam_config = get_option('default_pam_config')
 # If requested, try autodetecting from release files (see NetworkManager source) 
 if default_pam_config == 'autodetect'
   pam_autodetect_map = {
@@ -188,7 +188,7 @@ conf.set_quoted('SYSCONFDIR', gdm_prefix / get_option('sysconfdir'))
 conf.set_quoted('BINDIR', gdm_prefix / get_option('bindir'))
 conf.set_quoted('LIBDIR', gdm_prefix / get_option('libdir'))
 conf.set_quoted('LIBEXECDIR', gdm_prefix / get_option('libexecdir'))
-conf.set_quoted('LOGDIR', get_option('log-dir'))
+conf.set_quoted('LOGDIR', get_option('log_dir'))
 conf.set_quoted('DMCONFDIR', dmconfdir)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
 conf.set_quoted('GDM_SCREENSHOT_DIR', gdm_screenshot_dir)
@@ -216,15 +216,15 @@ conf.set('HAVE_PAM_SYSLOG', have_pam_syslog)
 conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
-conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
+conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user_display_server'))
 conf.set('ENABLE_SYSTEMD_JOURNAL', journald_dep.found())
-conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
+conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland_support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
-conf.set('GDM_INITIAL_VT', get_option('initial-vt'))
+conf.set('GDM_INITIAL_VT', get_option('initial_vt'))
 conf.set_quoted('GDM_DEFAULTS_CONF', gdm_defaults_conf)
 conf.set_quoted('GDM_CUSTOM_CONF', gdm_custom_conf)
 conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
-conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
+conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default_path'))
 conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
 conf.set('HAVE_LIBXDMCP', xdmcp_dep.found())
