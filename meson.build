@@ -256,7 +256,9 @@ subdir('libgdm')
 subdir('utils')
 subdir('pam_gdm')
 subdir('po')
-subdir('tests')
+if libcheck_dep.found()
+  subdir('tests')
+endif
 if xdmcp_dep.found()
   subdir('chooser')
 endif
