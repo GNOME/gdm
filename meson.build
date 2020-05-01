@@ -109,7 +109,7 @@ have_adt = cc.has_header_symbol('bsm/adt.h', 'ADT_USER')
 # libaudit
 libaudit_dep = dependency('audit', required: get_option('libaudit'))
 # unit testsheadername
-libcheck_dep = dependency('check', version: '>= 0.9.4')
+libcheck_dep = dependency('check', required: false, version: '>= 0.9.4')
 
 cc.has_header('security/pam_modutil.h')
 cc.has_header('security/pam_ext.h')
