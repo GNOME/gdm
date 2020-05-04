@@ -2,3 +2,5 @@
 ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", RUN+="@libexecdir@/gdm-disable-wayland"
 # disable Wayland when using the proprietary nvidia driver
 DRIVER=="nvidia", RUN+="@libexecdir@/gdm-disable-wayland"
+# disable Wayland if modesetting is disabled
+IMPORT{cmdline}="nomodeset", RUN+="@libexecdir@/gdm-disable-wayland"
