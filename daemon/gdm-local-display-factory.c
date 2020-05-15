@@ -224,6 +224,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 {
         gboolean         ret;
         GdmDisplay      *display = NULL;
+        gboolean         is_initial = FALSE;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -235,6 +236,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         display = gdm_local_display_new ();
         if (gdm_local_display_factory_use_wayland ())
                 g_object_set (G_OBJECT (display), "session-type", "wayland", NULL);
+        is_initial = TRUE;
 #else
         if (display == NULL) {
                 guint32 num;
@@ -248,6 +250,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         g_object_set (display,
                       "seat-id", "seat0",
                       "allow-timed-login", FALSE,
+                      "is-initial", is_initial,
                       NULL);
 
         store_display (factory, display);
