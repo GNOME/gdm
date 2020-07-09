@@ -2531,7 +2531,7 @@ gdm_manager_start (GdmManager *manager)
 #ifdef WITH_PLYMOUTH
                 /* Quit plymouth if xdmcp is the only display */
                 if (!manager->priv->show_local_greeter && manager->priv->plymouth_is_running) {
-                        plymouth_quit_with_transition ();
+                        plymouth_quit_without_transition ();
                         manager->priv->plymouth_is_running = FALSE;
                 }
 #endif
