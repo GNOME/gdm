@@ -668,7 +668,6 @@ static void
 maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
                                   GdmDisplay             *display)
 {
-        g_autofree char *display_session_type = NULL;
         gboolean doing_initial_setup = FALSE;
 
         if (gdm_display_get_status (display) != GDM_DISPLAY_MANAGED) {
@@ -677,20 +676,12 @@ maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
         }
 
         g_object_get (G_OBJECT (display),
-                      "session-type", &display_session_type,
                       "doing-initial-setup", &doing_initial_setup,
                       NULL);
 
         /* we don't ever stop initial-setup implicitly */
         if (doing_initial_setup) {
                 g_debug ("GdmLocalDisplayFactory: login window is performing initial-setup, so ignoring");
-                return;
-        }
-
-        /* we can only stop greeter for wayland sessions, since
-         * X server would jump back on exit */
-        if (g_strcmp0 (display_session_type, "wayland") != 0) {
-                g_debug ("GdmLocalDisplayFactory: login window is running on Xorg, so ignoring");
                 return;
         }
 
