@@ -63,7 +63,7 @@ struct _GdmLocalDisplayFactory
         guint            seat_new_id;
         guint            seat_removed_id;
 
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+#if defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
         guint            active_vt_watch_id;
         guint            wait_to_finish_timeout_id;
@@ -406,7 +406,7 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+#if defined(ENABLE_USER_DISPLAY_SERVER)
                 g_signal_connect_object (display,
                                          "notify::session-registered",
                                          G_CALLBACK (on_session_registered_cb),
@@ -867,7 +867,7 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                              g_object_ref (factory),
                                                                              g_object_unref);
 
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+#if defined(ENABLE_USER_DISPLAY_SERVER)
         io_channel = g_io_channel_new_file ("/sys/class/tty/tty0/active", "r", NULL);
 
         if (io_channel != NULL) {
@@ -894,7 +894,7 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                                                       factory->seat_removed_id);
                 factory->seat_removed_id = 0;
         }
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+#if defined(ENABLE_USER_DISPLAY_SERVER)
         if (factory->active_vt_watch_id) {
                 g_source_remove (factory->active_vt_watch_id);
                 factory->active_vt_watch_id = 0;
