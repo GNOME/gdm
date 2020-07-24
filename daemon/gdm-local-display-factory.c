@@ -663,7 +663,7 @@ lookup_by_tty (const char *id,
         return g_strcmp0 (tty_to_check, tty_to_find) == 0;
 }
 
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
+#if defined(ENABLE_USER_DISPLAY_SERVER)
 static void
 maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
                                   GdmDisplay             *display)
