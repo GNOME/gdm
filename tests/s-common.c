@@ -60,36 +60,36 @@ static gboolean expands_to (const char *to_expand, const char *expanded)
 
 START_TEST (test_gdm_shell_expand)
 {
-        fail_unless (expands_to ("foo", "foo"));
-        fail_unless (expands_to ("foo ", "foo "));
-        fail_unless (expands_to ("foo#bar", "foo#bar"));
-        fail_unless (expands_to ("foo #bar", "foo "));
-        fail_unless (expands_to ("#bar", ""));
-        fail_unless (expands_to ("foo #bar gazonk", "foo "));
-        fail_unless (expands_to ("foo #bar gazonk", "foo "));
-        fail_unless (expands_to ("foo #bar gazonk", "foo "));
-        fail_unless (expands_to ("$FOO", "BAR"));
-        fail_unless (expands_to ("$9FOO", "$9FOO"));
-        fail_unless (expands_to ("$FOO9", "XXX"));
-        fail_unless (expands_to ("${FOO}9", "BAR9"));
-        fail_unless (expands_to ("$_FOO", "YYY"));
-        fail_unless (expands_to ("$FOO_FOO", "ZZZ"));
-        fail_unless (expands_to ("${FOO}", "BAR"));
-        fail_unless (expands_to ("$FOO$FOO", "BARBAR"));
-        fail_unless (expands_to ("${FOO}${FOO}", "BARBAR"));
-        fail_unless (expands_to ("$FOO${FOO}", "BARBAR"));
-        fail_unless (expands_to ("$foo", ""));
-        fail_unless (expands_to ("$FOOBAR", ""));
-        fail_unless (expands_to ("$FOO/BAR", "BAR/BAR"));
-        fail_unless (expands_to ("${FOO}BAR", "BARBAR"));
-        fail_unless (expands_to ("$/BAR", "$/BAR"));
-        fail_unless (expands_to ("${FOO BAR}BAR", "${FOO BAR}BAR"));
-        fail_unless (expands_to ("${}BAR", "${}BAR"));
-        fail_unless (expands_to ("${$FOO}BAR", "${BAR}BAR"));
-        fail_unless (expands_to ("\\$foo", "$foo"));
-        fail_unless (expands_to ("a\\\\b", "a\\b"));
-        fail_unless (expands_to ("a\\b", "a\\b"));
-        fail_unless (expands_to ("a\\#b", "a#b"));
+        ck_assert (expands_to ("foo", "foo"));
+        ck_assert (expands_to ("foo ", "foo "));
+        ck_assert (expands_to ("foo#bar", "foo#bar"));
+        ck_assert (expands_to ("foo #bar", "foo "));
+        ck_assert (expands_to ("#bar", ""));
+        ck_assert (expands_to ("foo #bar gazonk", "foo "));
+        ck_assert (expands_to ("foo #bar gazonk", "foo "));
+        ck_assert (expands_to ("foo #bar gazonk", "foo "));
+        ck_assert (expands_to ("$FOO", "BAR"));
+        ck_assert (expands_to ("$9FOO", "$9FOO"));
+        ck_assert (expands_to ("$FOO9", "XXX"));
+        ck_assert (expands_to ("${FOO}9", "BAR9"));
+        ck_assert (expands_to ("$_FOO", "YYY"));
+        ck_assert (expands_to ("$FOO_FOO", "ZZZ"));
+        ck_assert (expands_to ("${FOO}", "BAR"));
+        ck_assert (expands_to ("$FOO$FOO", "BARBAR"));
+        ck_assert (expands_to ("${FOO}${FOO}", "BARBAR"));
+        ck_assert (expands_to ("$FOO${FOO}", "BARBAR"));
+        ck_assert (expands_to ("$foo", ""));
+        ck_assert (expands_to ("$FOOBAR", ""));
+        ck_assert (expands_to ("$FOO/BAR", "BAR/BAR"));
+        ck_assert (expands_to ("${FOO}BAR", "BARBAR"));
+        ck_assert (expands_to ("$/BAR", "$/BAR"));
+        ck_assert (expands_to ("${FOO BAR}BAR", "${FOO BAR}BAR"));
+        ck_assert (expands_to ("${}BAR", "${}BAR"));
+        ck_assert (expands_to ("${$FOO}BAR", "${BAR}BAR"));
+        ck_assert (expands_to ("\\$foo", "$foo"));
+        ck_assert (expands_to ("a\\\\b", "a\\b"));
+        ck_assert (expands_to ("a\\b", "a\\b"));
+        ck_assert (expands_to ("a\\#b", "a#b"));
 }
 END_TEST
 

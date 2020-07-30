@@ -49,11 +49,11 @@ setup (void)
         s_in->sin_addr.s_addr = htonl (INADDR_LOOPBACK);
 
         ga = gdm_address_new_from_sockaddr (&sa, sizeof (sa));
-        fail_unless (NULL != ga);
+        ck_assert (NULL != ga);
 
         s_in->sin_addr.s_addr = htonl (0xc0a80001); /* 192.168.0.1 */
         ga192 = gdm_address_new_from_sockaddr (&sa, sizeof (sa));
-        fail_unless (NULL != (ga192));
+        ck_assert (NULL != (ga192));
 
 #ifdef ENABLE_IPV6
         s_in6 = (struct sockaddr_in6 *) &sa6;
@@ -61,7 +61,7 @@ setup (void)
         s_in6->sin6_port = htons (25);
         s_in6->sin6_addr = in6addr_loopback;
         ga6 = gdm_address_new_from_sockaddr ((struct sockaddr*)&sa6, sizeof(sa6));
-        fail_unless (NULL != ga6);
+        ck_assert (NULL != ga6);
 #endif
 }
 
@@ -97,19 +97,19 @@ START_TEST (test_gdm_address_new_from_sockaddr)
 #endif
 
         _ga = gdm_address_new_from_sockaddr ((struct sockaddr *) &sa, sizeof (sa));
-        fail_unless (NULL != _ga);
+        ck_assert (NULL != _ga);
         gdm_address_free (_ga);
 
 #ifdef ENABLE_IPV6
         _ga6 = gdm_address_new_from_sockaddr((struct sockaddr *) &sa6, sizeof (sa6));
-        fail_unless (NULL != _ga6);
+        ck_assert (NULL != _ga6);
         gdm_address_free (_ga6);
 #endif
 
 #ifndef NO_INVALID_INPUT
         /* invalid input */
-        fail_unless (NULL == gdm_address_new_from_sockaddr ((struct sockaddr *) &sa, 1), NULL );
-        fail_unless (NULL == gdm_address_new_from_sockaddr (NULL, 0), NULL);
+        ck_assert_msg (NULL == gdm_address_new_from_sockaddr ((struct sockaddr *) &sa, 1), NULL );
+        ck_assert_msg (NULL == gdm_address_new_from_sockaddr (NULL, 0), NULL);
 #endif
 }
 END_TEST
@@ -117,15 +117,15 @@ END_TEST
 
 START_TEST (test_gdm_address_get_family_type)
 {
-        fail_unless (AF_INET == gdm_address_get_family_type (ga), NULL);
+        ck_assert_msg (AF_INET == gdm_address_get_family_type (ga), NULL);
 
 #ifdef ENABLE_IPV6
-        fail_unless (AF_INET6 == gdm_address_get_family_type (ga6), NULL);
+        ck_assert_msg (AF_INET6 == gdm_address_get_family_type (ga6), NULL);
 #endif
 
 #ifndef NO_INVALID_INPUT
         /* invalid input */
-        fail_unless (-1 == gdm_address_get_family_type (NULL), NULL);
+        ck_assert_msg (-1 == gdm_address_get_family_type (NULL), NULL);
 #endif
 
 }
@@ -134,17 +134,17 @@ END_TEST
 
 START_TEST (test_gdm_address_is_loopback)
 {
-        fail_unless (TRUE == gdm_address_is_loopback (ga));
-        fail_unless (FALSE == gdm_address_is_loopback (ga192));
+        ck_assert (TRUE == gdm_address_is_loopback (ga));
+        ck_assert (FALSE == gdm_address_is_loopback (ga192));
 
 #ifdef ENABLE_IPV6
-        fail_unless (TRUE == gdm_address_is_loopback (ga6));
+        ck_assert (TRUE == gdm_address_is_loopback (ga6));
         /* FIXME: add more addresses */
 #endif
 
 #ifndef NO_INVALID_INPUT
         /* invalid input */
-        fail_unless (FALSE == gdm_address_is_loopback (NULL));
+        ck_assert (FALSE == gdm_address_is_loopback (NULL));
 #endif
 }
 END_TEST
@@ -161,18 +161,18 @@ START_TEST (test_gdm_address_equal)
         sin1->sin_family = AF_INET;
         sin1->sin_addr.s_addr = htonl (0xc0a80001); /* 192.168.0.1 */
         gdm1 = gdm_address_new_from_sockaddr (&sa1, sizeof (sa1));
-        fail_unless (gdm_address_equal (ga, ga192) == FALSE, NULL);
+        ck_assert_msg (gdm_address_equal (ga, ga192) == FALSE, NULL);
 
         /* should be equal */
-        fail_unless (TRUE == gdm_address_equal (ga192, gdm1), NULL);
+        ck_assert_msg (TRUE == gdm_address_equal (ga192, gdm1), NULL);
 
         gdm_address_free (gdm1);
 
 #ifdef ENABLE_IPV6
         /* should be inequal */
-        fail_unless (FALSE == gdm_address_equal (ga6, ga), NULL);
-        fail_unless (FALSE == gdm_address_equal (ga6, ga192), NULL);
-        fail_unless (FALSE == gdm_address_equal (ga6, gdm1), NULL);
+        ck_assert_msg (FALSE == gdm_address_equal (ga6, ga), NULL);
+        ck_assert_msg (FALSE == gdm_address_equal (ga6, ga192), NULL);
+        ck_assert_msg (FALSE == gdm_address_equal (ga6, gdm1), NULL);
 
         /* should be equal */
         /* FIXME: ipv6 version too */
@@ -180,9 +180,9 @@ START_TEST (test_gdm_address_equal)
 
 #ifndef NO_INVALID_INPUT
         /* invalid input */
-        fail_unless (FALSE == gdm_address_equal (NULL, NULL), NULL);
-        fail_unless (FALSE == gdm_address_equal (ga, NULL), NULL);
-        fail_unless (FALSE == gdm_address_equal (NULL, ga), NULL);
+        ck_assert_msg (FALSE == gdm_address_equal (NULL, NULL), NULL);
+        ck_assert_msg (FALSE == gdm_address_equal (ga, NULL), NULL);
+        ck_assert_msg (FALSE == gdm_address_equal (NULL, ga), NULL);
 #endif
 }
 END_TEST
