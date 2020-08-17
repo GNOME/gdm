@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "POT-Creation-Date: 2020-05-30 21:14+0000\n"
-"PO-Revision-Date: 2020-08-18 01:02+0200\n"
+"PO-Revision-Date: 2020-08-18 01:06+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -615,15 +615,16 @@ msgstr ""
 "<filename>PostLogin</filename> como usuario root, e logo executa o script "
 "<filename>PreSession</filename> como usuario root. Despois de executar estes "
 "scripts a sesión do usuario arríncase. Cando o usuario sae da súa sesión, o "
-"script <filename>PostSession</filename> execútarase como usuario root. Estes "
+"script <filename>PostSession</filename> executarase como usuario root. Estes "
 "scripts fornécense como hooks para as distribucións e aos usuario finais "
 "para personalizar como se xestionan as sesións. Por exemplo, usando estes "
 "hooks pode configurar que a máquina cree o cartafol de usuario $HOME ao voo, "
 "e o elimine ao iniciar sesión. A diferenza entre os scripts "
 "<filename>PostLogin</filename> e<filename>PreSession</filename> son que "
 "<filename>PostLogin</filename> execútase antes da chamada a pam_open_session "
-"polo que é o lugar correcto para facer calquera cousaa que se debería "
-"executar antes de que a sesión do usuario se inicialice."
+"polo que é o lugar correcto para facer calquera cousa que se debería "
+"executar antes de que a sesión do usuario se inicialice. O script "
+"<filename>PreSession</filename>chámase despois de que a sesión se inicie."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:334
@@ -1496,14 +1497,6 @@ msgid ""
 "remote connection takes up lots of resources, so it is much easier to do a "
 "denial of service attack via XDMCP than attacking a webserver."
 msgstr ""
-"Aínda que GDM tente deter aos atacantes potenciais tentando tomar control de "
-"XDMCP, debe ter en conta que debe bloquear o porto de XDMCP (normalmente o "
-"porto UDP 177) no seu cortalumes a non ser que sexa preciso. GDM protéxese "
-"contra ataques de denegación de servizo, pero o protocolo X é aínda "
-"inherentemente inseguro e debería usarse só en ambientes controlados. "
-"Ademáis cada conexión remota require moitos recursos, polo que é máis doado "
-"facer un ataque de denegación de servizo mediante XDMCP que atacando un "
-"servidor web."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:842
@@ -1780,12 +1773,6 @@ msgid ""
 "session starts. For example, you might setup the user's $HOME directory if "
 "needed."
 msgstr ""
-"Despois de autenticar o usuario con éxito, GDM executará o script "
-"<filename>PostLogin</filename>. Isto faise antes de realizar calquera "
-"configuración da sesión, incluso antes de chamar a pam_open_session. Este "
-"script é útil para facer calquera inicialización da sesión que precise "
-"suceder antes de que comece a sesión. Por exemplo, pode configurar o "
-"directorio $HOME do usuario se fose necesario."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1023
@@ -1834,11 +1821,6 @@ msgid ""
 "when GDM is calling these scripts, so you can run specific code when GDM is "
 "used."
 msgstr ""
-"Todos os guións anteriores definirán a <filename>$RUNNING_UNDER_GDM</"
-"filename> a variable de ambiente a <filename>si</filename>. Se os scripts "
-"tamén se comparten con outros xestores de pantalla, isto permítelle "
-"identificar cando GDM está chamando a estes scripts, polo que pode executar "
-"código específico cando se usa GDM."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1055
@@ -1854,12 +1836,6 @@ msgid ""
 "specification may be used to specify programs that should auto-restart or "
 "only be launched if a GConf configuration value is set, etc."
 msgstr ""
-"O directorio <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> "
-"contén ficheiros no formato especificado pola \"Especificación de inicio de "
-"inicio da aplicación de escritorio FreeDesktop.org\". As funcións estándar "
-"da especificación pódense usar para especificar programas que deberían "
-"reiniciarse automaticamente ou ser lanzados só se se establece un valor de "
-"configuración de GConf, etc."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1066
@@ -1873,15 +1849,6 @@ msgid ""
 "provided for starting various AT programs if the configuration values "
 "specified in the Accessibility Configuration section below are set."
 msgstr ""
-"Calquera ficheiro <filename> .desktop </filename> deste directorio fará que "
-"o programa asociado inicie automaticamente coa saída de interface gráfica de "
-"inicio de sesión. De xeito predeterminado, GDM envíase con ficheiros que "
-"iniciarán automaticamente a propia GUI de inicio de sesión de gdm-simple-"
-"greeter, a aplicación gnome-power-manager, o gnome-settings-daemon e o "
-"xestor de ventás de metacity. Estes programas son necesarios para que o "
-"programa de inicio de sesión arrinque. Ademais, disponse de ficheiros "
-"desktop para iniciar varios programas de AT se se definen os valores de "
-"configuración especificados na sección Configuración de accesibilidade."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1080
@@ -1922,9 +1889,6 @@ msgid ""
 "Note that older versions of GDM supported additional configuration options "
 "which are no longer supported in the latest versions of GDM."
 msgstr ""
-"Teña en conta que as versións máis antigas de GDM admiten opcións de "
-"configuración adicionais que xa non son compatibles coas últimas versións de "
-"GDM."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1112
@@ -1946,13 +1910,6 @@ msgid ""
 "login user to be a user named \"you\", you would modify the file so it "
 "contains the following lines:"
 msgstr ""
-"O ficheiro <filename>&lt;etc&gt;/gdm/custom.conf</filename> admite as "
-"seccións do grupo \"[daemon]\", \"[seguridade]\" e \"[xdmcp]\". Dentro de "
-"cada grupo, hai pares de chave/valore particulares que se poden especificar "
-"para modificar o comportamento de GDM. Por exemplo, para habilitar o inicio "
-"de sesión cronometrado e especificar o usuario de inicio de sesión "
-"programado para ser un usuario chamado \"Vostede\", modificaría o ficheiro "
-"de xeito que conteña as seguintes liñas:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:1130
@@ -2080,12 +2037,6 @@ msgid ""
 "display fashion. For example if the value is \"/usr/bin/getloginuser|\", "
 "then the program \"/usr/bin/getloginuser\" will be run to get the user value."
 msgstr ""
-"Se o valor remata cunha barra vertical | (o símbolo do tubo), entón GDM "
-"executará o programa especificado e utilizará calquera valor que se devolva "
-"do programa como usuario. O programa desenvólvese coa variable de entorno "
-"DISPLAY, de xeito que é posible especificar o usuario de xeito visualizado. "
-"Por exemplo, se o valor é «/usr/bin/getloginuser|», entón o programa «/usr/"
-"bin/getloginuser» executarase para obter o valor do usuario."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1218
@@ -2275,15 +2226,6 @@ msgid ""
 "returns - /sbin/nologin or /bin/false are considered invalid shells even if "
 "getusershell() returns them)."
 msgstr ""
-"Se esta clave é verdadeira, GDM chamará a fgetpwent() para obter unha lista "
-"de usuarios locais no sistema. Filtranse todos os usuarios cun identificador "
-"de usuario inferior a 500 (ou 100 se se executan con Oracle Solaris). O "
-"Navegador facial tamén mostrará todos os usuarios que se iniciaron sesión no "
-"sistema (por exemplo, usuarios NIS/LDAP). Obtén esta lista chamando á "
-"interface de ConsoleKit <command> ck-history </command>. Tamén filtrará "
-"calquera usuario que non teña un shell válido (os shells válidos son "
-"calquera shell que getusershell() devolva - /sbin/nologin ou /bin/false non "
-"son considerados shells válidos aínda que getusershell() os devolva)."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1343
@@ -2313,9 +2255,6 @@ msgid ""
 "Set to a list of users to always include in the Face Browser. This value is "
 "set to a list of users separated by commas. By default, the value is empty."
 msgstr ""
-"Establece unha lista de usuarios que sempre se inclúen no explorador facial. "
-"Este valor establécese nunha lista de usuarios separados por comas. Por "
-"defecto, o valor está baleiro."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1364
@@ -2337,12 +2276,6 @@ msgid ""
 "to add additional users to the list, then you need to set the value to the "
 "default value with additional users appended to the list."
 msgstr ""
-"Establece unha lista de usuarios que sempre se excluirán no explorador "
-"facial. Este valor establécese nunha lista de usuarios separados por comas. "
-"Teña en conta que a configuración en <filename>custom.conf</filename> anula "
-"o valor predeterminado, polo que se desexa engadir usuarios adicionais á "
-"lista, entón deberá establecer o valor por defecto con outros usuarios "
-"adicionados á lista."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1381
@@ -2373,10 +2306,6 @@ msgid ""
 "connection. This is a more secure configuration if you are not using remote "
 "connections."
 msgstr ""
-"Se é certo, engade sempre <filename>-nolisten tcp</filename> á liña de "
-"comandos cando se inicie Xservers adxunto, e así non se permite a conexión "
-"TCP. Esta é unha configuración máis segura se non está a usar conexións "
-"remotas."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1402
@@ -2407,10 +2336,6 @@ msgid ""
 "services to computers with more than one screen, you should increase this "
 "value."
 msgstr ""
-"Para evitar que os atacantes enchan a cola pendente, GDM só permitirá unha "
-"conexión para cada ordenador remoto. Se desexa proporcionar servizos de "
-"visualización a ordenadores con máis dunha pantalla, debería aumentar este "
-"valor."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1418
@@ -2418,9 +2343,6 @@ msgid ""
 "Note that the number of attached DISPLAYS allowed is not limited. Only "
 "remote connections via XDMCP are limited by this configuration option."
 msgstr ""
-"Teña en conta que o número de DISPLAYS admitidos non é limitado Esta "
-"conexión de configuración só está limitada polas conexións remotas mediante "
-"XDMCP."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1430
@@ -2496,9 +2418,6 @@ msgid ""
 "<filename>gdmchooser</filename>) for X-terminals which do not supply their "
 "own display browser."
 msgstr ""
-"Permite escoller XDMCP INDIRECT (é dicir, a execución remota de "
-"<filename>gdmchooser</filename>) para terminais X que non fornecen o seu "
-"propio navegador."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1478
@@ -2527,9 +2446,6 @@ msgid ""
 "which can be managed. It only limits the number of displays initiating a "
 "connection simultaneously."
 msgstr ""
-"Teña en conta que este parámetro non limita o número de pantallas remotas "
-"que se poden xestionar. Só limita o número de pantallas iniciando unha "
-"conexión simultaneamente."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1496
@@ -2549,9 +2465,6 @@ msgid ""
 "managed simultaneously. I.e. the total number of remote displays that can "
 "use your host."
 msgstr ""
-"Determina o número máximo de conexións de visualización remota que se "
-"xestionarán simultaneamente. P.ex. o número total de pantallas remotas que "
-"pode usar o seu host."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1508
@@ -2571,9 +2484,6 @@ msgid ""
 "containing a unique session id which will be used in future XDMCP "
 "conversations."
 msgstr ""
-"Cando GDM estea listo para xestionar unha pantalla, envíaselle un paquete "
-"ACCEPT que contén un identificador de sesión único que se empregará nas "
-"futuras conversas XDMCP."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1517
@@ -2581,8 +2491,6 @@ msgid ""
 "GDM will then place the session id in the pending queue waiting for the "
 "display to respond with a MANAGE request."
 msgstr ""
-"A continuación, GDM colocará o ID da sesión na cola pendente á espera de que "
-"a pantalla responda cunha solicitude MANAGE."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1522
@@ -2591,9 +2499,6 @@ msgid ""
 "display dead and erase it from the pending queue freeing up the slot for "
 "other displays."
 msgstr ""
-"Se non se recibe ningunha resposta dentro de segundos de MaxWait, GDM "
-"declarará a pantalla morta e borraraa da cola pendente liberando o slot para "
-"outras pantallas."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1531
@@ -2638,11 +2543,6 @@ msgid ""
 "setting by 2, so it may be necessary to increase the timeout if upgrading "
 "from GDM 2.20 and earlier to a newer version."
 msgstr ""
-"Se o Xserver non responde no número de segundos especificado, a conexión "
-"detense e a sesión finalizou. Cando isto sucede, o daemon morre cun sinal de "
-"ALARMA. Teña en conta que GDM 2.20 e versións anteriores multiplicou esta "
-"configuración por 2, polo que pode ser necesario aumentar o tempo de espera "
-"se se actualiza desde GDM 2.20 e anteriores a unha versión máis recente."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1560
@@ -2654,13 +2554,6 @@ msgid ""
 "seconds would really mean that the terminal was turned off or restarted and "
 "you would want to end the session."
 msgstr ""
-"Teña en conta que GDM no pasado tiña unha clave de configuración "
-"<filename>PingInterval</filename>, que tamén estivo en poucos minutos. Para "
-"a maioría dos propósitos, quere que esta configuración sexa inferior a un "
-"minuto. Non obstante, dado que na maioría dos casos nos que se usaría XDMCP "
-"(como laboratorios de terminais), un atraso de máis de 15 segundos ou menos "
-"significaría realmente que o terminal fose desactivado ou reiniciado e "
-"querería rematar a sesión."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1573
@@ -2679,8 +2572,6 @@ msgid ""
 "The UDP port number <filename>gdm</filename> should listen to for XDMCP "
 "requests. Do not change this unless you know what you are doing."
 msgstr ""
-"O número de porto UDP <filename>gdm</filename> debería escoitar as "
-"solicitudes de XDMCP. Non cambie isto a menos que saiba o que estás facendo."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1585
@@ -2824,11 +2715,6 @@ msgid ""
 "language is shown and the option \"Other...\" which pops-up a dialog box "
 "showing a full list of available languages which the user can select."
 msgstr ""
-"Establece unha lista de idiomas que se mostrarán de xeito predeterminado na "
-"xanela de inicio de sesión. O valor por defecto é «[]». Coa configuración "
-"predeterminada só se amosa o idioma predeterminado do sistema e a opción "
-"«Outro…» que aparece un cadro de diálogo que mostra unha lista completa de "
-"idiomas dispoñibles que o usuario pode seleccionar."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1687
@@ -2862,11 +2748,6 @@ msgid ""
 "show them in the keyboard layout combo box along with the \"Other...\" "
 "choice. This way, commonly selected keyboard layouts are easier to select."
 msgstr ""
-"Os usuarios non deberían ter que cambiar esta configuración á man. No seu "
-"lugar, GDM fai un seguimento de todos os esquemas de teclado seleccionados "
-"nesta tecla de configuración e mostralos na caixa combinada de disposición "
-"do teclado xunto coa opción «Outro…». Deste xeito, os esquemas de teclado "
-"normalmente seleccionados son máis fáciles de seleccionar."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1720
@@ -3135,8 +3016,8 @@ msgstr ""
 "\n"
 "[Desktop Entry]\n"
 "Encoding=UTF-8\n"
-"Name=Software Mouse-Clicks\n"
-"Comment=Perform clicks by dwelling with the pointer\n"
+"Name=Clics de rato por software\n"
+"Comment=Leva a cabo clics pousando o punteiro do rato\n"
 "TryExec=mousetweaks\n"
 "Exec=mousetweaks --enable-dwell -m window -c -x 20 -y 240 \n"
 "Terminal=false\n"
@@ -3163,11 +3044,6 @@ msgid ""
 "from the GDM autostart directory, or by adding the \"Hidden=true\" key "
 "setting to the gok.desktop file."
 msgstr ""
-"Para facer que GOK non se inicie, o ficheiro de escritorio do teclado GOK en "
-"pantalla debe ser eliminado ou desactivado. Se non, iniciarase onboard e GOK "
-"ao mesmo tempo. Pode facelo eliminando o ficheiro gok.desktop do directorio "
-"de inicio automático de GDM ou engadindo a configuración de clave "
-"«Hidden=true» no ficheiro gok.desktop."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1930
@@ -3176,9 +3052,6 @@ msgid ""
 "activates the on-screen keyboard in the GDM session; but onboard and "
 "mousetweaks will instead be launched."
 msgstr ""
-"Despois de facer estes cambios, GOK xa non se iniciará cando o usuario "
-"active o teclado en pantalla na sesión GDM; en cambio, lanzaranse onboard e "
-"mousetweaks."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1939
@@ -3195,13 +3068,6 @@ msgid ""
 "mandatory policy. GDM installs its own mandatory policy to lock down some "
 "settings for security."
 msgstr ""
-"O GDM Greeter usa algúns dos mesmos marcos de traballo que empregará a súa "
-"sesión de escritorio. Por iso, está influenciada por varias configuracións "
-"de GConf. Para cada unha destas configuracións, Greeter empregará o valor "
-"por defecto a menos que sexa sobrealimentado específicamente a) unha "
-"Política de obrigatoriedade instalada por GDM b) unha Política obrigatoria "
-"do sistema. GDM instala a súa propia política obrigatoria para bloquear "
-"algunhas configuracións de seguridade."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1959
@@ -3300,12 +3166,6 @@ msgid ""
 "these default values by simply changing to a different value when logging "
 "in. GDM will remember this change for subsequent logins."
 msgstr ""
-"A sesión predeterminada do usuario e as opcións de idioma almacénanse no "
-"ficheiro <filename>~/.dmrc</filename>. Cando un usuario inicia sesión por "
-"primeira vez, este ficheiro créase coas opcións iniciais do usuario. O "
-"usuario pode cambiar estes valores por defecto simplemente cambiando a un "
-"valor diferente ao iniciar sesión. GDM recordará este cambio para as sesións "
-"posteriores."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2045
@@ -3425,9 +3285,6 @@ msgid ""
 "daemon a HUP signal. This command will immediately terminate all sessions "
 "and log out users currently logged in with GDM."
 msgstr ""
-"<command>gdm-restart</command> detén e reinicia GDM enviando o daemon GDM un "
-"sinal HUP. Este comando rematará de inmediato todas as sesións e pechará os "
-"usuarios que se conectaron con GDM."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:2143
@@ -3469,10 +3326,6 @@ msgid ""
 "gdm-list mailing list. Information about how to do this is in the "
 "Introduction section of the document."
 msgstr ""
-"Esta sección analiza consellos útiles para traballar GDM. En xeral, se ten "
-"un problema ao usar GDM, pode enviar un erro ou enviar un correo electrónico "
-"á rolda de correo de gdm-list. A información sobre como facelo está na "
-"sección Introdución do documento."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:2181
@@ -3504,11 +3357,6 @@ msgid ""
 "error message or dialog when it tries to start, but it can be difficult to "
 "track down problems when GDM fails silently."
 msgstr ""
-"Hai moitos problemas que poden causar a falta de inicio de GDM, pero nesta "
-"sección trataremos algúns problemas comúns e como abordar o seguimento dun "
-"problema co inicio de GDM. Algúns problemas farán que GDM responda cunha "
-"mensaxe de erro ou un diálogo cando tenta comezar, pero pode ser difícil "
-"rastrexar problemas cando GDM falla en silencio."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2208
@@ -3523,15 +3371,6 @@ msgid ""
 "options. If so, then modify the Xserver command in the GDM configuration "
 "file so that it is correct for your system."
 msgstr ""
-"Primeiro asegúrese de que o Xserver está configurado correctamente. O "
-"ficheiro de configuración GDM contén un comando na sección [server-Standard] "
-"que se usa para iniciar o Xserver. Asegúrese de que este comando funciona no "
-"seu sistema. Ao executar este comando desde a consola debería iniciar o "
-"Xserver. Se falla, o problema é probable coa configuración de Xserver. "
-"Consulte o seu rexistro de erros de Xserver para ter unha idea do problema. "
-"O problema tamén pode ser que o seu Xserver requira diferentes opcións da "
-"liña de comandos. Se é así, entón modifique o comando Xserver no ficheiro de "
-"configuración de GDM para que sexa correcto para o seu sistema."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2221
@@ -3540,9 +3379,6 @@ msgid ""
 "ownership and permissions, and that the machine's file system is not full. "
 "These problems will cause GDM to fail to start."
 msgstr ""
-"Asegúrese de que o directorio <filename>/tmp</filename> ten a propiedade e "
-"permisos axeitados e que o sistema de ficheiros da máquina non está cheo. "
-"Estes problemas farán que o GDM non poida comezar."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:2232
