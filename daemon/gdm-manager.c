@@ -811,7 +811,7 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
                                      GVariant              *details)
 {
         GdmManager      *self = GDM_MANAGER (manager);
-        GdmDisplay      *display;
+        GdmDisplay      *display = NULL;
         const char      *sender;
         GDBusConnection *connection;
 
