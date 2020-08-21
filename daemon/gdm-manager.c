@@ -576,10 +576,11 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                                           lookup_by_session_id,
                                           (gpointer) session_id);
 
+out:
         if (out_display != NULL) {
                 *out_display = display;
         }
-out:
+
         g_free (session_id);
 }
 
