@@ -34,10 +34,10 @@ configure_file(
 )
 configure_file(
   input: 'gdm.conf-custom.in',
-  output: 'custom.conf',
+  output: gdm_custom_conf.split('/')[-1],
   copy: true,
   install_mode: 'rw-r--r--',
-  install_dir: gdmconfdir,
+  install_dir: run_command(find_program('dirname'), gdm_custom_conf).stdout().strip(),
 )
 
 # GSettings schema
