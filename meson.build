@@ -96,7 +96,6 @@ endif
 # systemd
 systemd_dep = dependency('systemd')
 libsystemd_dep = dependency('libsystemd')
-journald_dep = dependency('journald', required: get_option('systemd-journal'))
 if meson.version().version_compare('>= 0.53')
   systemd_multiseat_x = find_program('systemd-multi-seat-x',
     required: false,
@@ -228,7 +227,7 @@ conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
 conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
-conf.set('ENABLE_SYSTEMD_JOURNAL', journald_dep.found())
+conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('GDM_INITIAL_VT', get_option('initial-vt'))
