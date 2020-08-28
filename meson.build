@@ -50,7 +50,7 @@ gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
 libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 xcb_dep = dependency('xcb')
-keyutils_dep = dependency('keyutils', required: false)
+keyutils_dep = dependency('libkeyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
 
 # udev
