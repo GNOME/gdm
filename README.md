@@ -9,10 +9,9 @@ providing graphical log-ins and managing local and remote displays.
 To build and install GDM from source, just execute the following commands:
 
 ```
-$ ./autogen.sh
-$ ./configure
-$ make
-$ sudo make install
+$ meson _build
+$ ninja -C _build
+$ sudo ninja -C _build install
 ```
 
 ## Contributing
