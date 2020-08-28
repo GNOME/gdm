@@ -56,10 +56,11 @@ libselinux_dep = dependency('libselinux', required: get_option('selinux'))
 # udev
 if udev_dir == ''
   if udev_dep.found()
-    udev_dir = udev_dep.get_pkgconfig_variable('udevdir')
+    udev_prefix = udev_dep.get_pkgconfig_variable('udevdir')
   else
-    udev_dir = gdm_prefix / 'lib' / 'udev' / 'rules.d'
+    udev_prefix = gdm_prefix / 'lib' / 'udev'
   endif
+  udev_dir = udev_prefix / 'rules.d'
 endif
 
 # X11
