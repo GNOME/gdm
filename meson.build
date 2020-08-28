@@ -273,3 +273,58 @@ if xdmcp_dep.found()
   subdir('chooser')
 endif
 subdir('docs')
+
+if meson.version().version_compare('>= 0.53')
+summary({
+    'datadir': gdm_prefix / get_option('datadir'),
+    'sysconfdir': gdm_prefix / get_option('sysconfdir'),
+    'bindir': gdm_prefix / get_option('bindir'),
+    'libdir': gdm_prefix / get_option('libdir'),
+    'libexecdir': gdm_prefix / get_option('libexecdir'),
+    'logdir': get_option('log-dir'),
+    'System DBus': dbus_sys_dir,
+    'DM conf': dmconfdir,
+    'GDM conf': gdmconfdir,
+    'GDM Screenshot ': gdm_screenshot_dir,
+    'GDM Xauth': gdm_xauth_dir,
+    'GDM RanOnceMarker': ran_once_marker_dir,
+    'GDM Run': gdm_run_dir,
+    'GDM PID file': gdm_pid_file,
+    'GDM Defaults config': gdm_defaults_conf,
+    'GDM Custom config': gdm_custom_conf,
+    'GDM Runtime config': gdm_runtime_conf,
+    'GDM Session default path': get_option('default-path'),
+    'GDM Working dir': working_dir,
+    'GNOME locale': gdm_prefix / get_option('datadir') / get_option('localedir'),
+    'GNOME Settings Daemon': gnome_settings_daemon_dir,
+    'AT SPI registryd': at_spi_registryd_dir,
+    'Check Accelerated': check_accelerated_dir,
+    'Lang config file': lang_config_file,
+    'Pam MOD': pam_mod_dir,
+    'Udev rules': udev_dir,
+    'XServer': x_bin,
+    'XPath': x_path,
+    'Systemd XServer': systemd_x_server,
+  },
+  section: 'Paths',
+)
+
+summary({
+    'ADT': have_adt,
+    'PAM Syslog': have_pam_syslog,
+    'Supports PAM Extensions': pam_extensions_supported,
+    'SeLinux': libselinux_dep.found(),
+    'Use UserDisplayServer': get_option('user-display-server'),
+    'Use SystemdJournal': get_option('systemd-journal'),
+    'Use WaylandSupport': get_option('wayland-support'),
+    'Use Profiling': get_option('profiling'),
+    'Initial VT': get_option('initial-vt'),
+    'Username': get_option('user'),
+    'Groupname': get_option('group'),
+    'Plymouth': plymouth_dep.found(),
+    'Use ipv6': get_option('ipv6'),
+  },
+  section: 'Features',
+  bool_yn: true,
+)
+endif
