@@ -97,7 +97,17 @@ endif
 systemd_dep = dependency('systemd')
 libsystemd_dep = dependency('libsystemd')
 journald_dep = dependency('journald', required: get_option('systemd-journal'))
-systemd_multiseat_x = find_program('systemd-multi-seat-x', required: false)
+if meson.version().version_compare('>= 0.53')
+  systemd_multiseat_x = find_program('systemd-multi-seat-x',
+    required: false,
+    dirs: [
+      systemd_dep.get_pkgconfig_variable('systemdutildir'),
+      '/lib/systemd',
+      '/usr/lib/systemd',
+    ])
+else
+  systemd_multiseat_x = find_program('systemd-multi-seat-x', required: false)
+endif
 systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
 # Plymouth
 plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
