@@ -50,16 +50,17 @@ gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
 libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 xcb_dep = dependency('xcb')
-keyutils_dep = dependency('keyutils', required: false)
+keyutils_dep = dependency('libkeyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
 
 # udev
 if udev_dir == ''
   if udev_dep.found()
-    udev_dir = udev_dep.get_pkgconfig_variable('udevdir')
+    udev_prefix = udev_dep.get_pkgconfig_variable('udevdir')
   else
-    udev_dir = gdm_prefix / 'lib' / 'udev' / 'rules.d'
+    udev_prefix = gdm_prefix / 'lib' / 'udev'
   endif
+  udev_dir = udev_prefix / 'rules.d'
 endif
 
 # X11
@@ -95,8 +96,17 @@ endif
 # systemd
 systemd_dep = dependency('systemd')
 libsystemd_dep = dependency('libsystemd')
-journald_dep = dependency('journald', required: get_option('systemd-journal'))
-systemd_multiseat_x = find_program('systemd-multi-seat-x', required: false)
+if meson.version().version_compare('>= 0.53')
+  systemd_multiseat_x = find_program('systemd-multi-seat-x',
+    required: false,
+    dirs: [
+      systemd_dep.get_pkgconfig_variable('systemdutildir'),
+      '/lib/systemd',
+      '/usr/lib/systemd',
+    ])
+else
+  systemd_multiseat_x = find_program('systemd-multi-seat-x', required: false)
+endif
 systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
 # Plymouth
 plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
@@ -217,7 +227,7 @@ conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
 conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
-conf.set('ENABLE_SYSTEMD_JOURNAL', journald_dep.found())
+conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('GDM_INITIAL_VT', get_option('initial-vt'))
@@ -263,3 +273,58 @@ if xdmcp_dep.found()
   subdir('chooser')
 endif
 subdir('docs')
+
+if meson.version().version_compare('>= 0.53')
+summary({
+    'datadir': gdm_prefix / get_option('datadir'),
+    'sysconfdir': gdm_prefix / get_option('sysconfdir'),
+    'bindir': gdm_prefix / get_option('bindir'),
+    'libdir': gdm_prefix / get_option('libdir'),
+    'libexecdir': gdm_prefix / get_option('libexecdir'),
+    'logdir': get_option('log-dir'),
+    'System DBus': dbus_sys_dir,
+    'DM conf': dmconfdir,
+    'GDM conf': gdmconfdir,
+    'GDM Screenshot ': gdm_screenshot_dir,
+    'GDM Xauth': gdm_xauth_dir,
+    'GDM RanOnceMarker': ran_once_marker_dir,
+    'GDM Run': gdm_run_dir,
+    'GDM PID file': gdm_pid_file,
+    'GDM Defaults config': gdm_defaults_conf,
+    'GDM Custom config': gdm_custom_conf,
+    'GDM Runtime config': gdm_runtime_conf,
+    'GDM Session default path': get_option('default-path'),
+    'GDM Working dir': working_dir,
+    'GNOME locale': gdm_prefix / get_option('datadir') / get_option('localedir'),
+    'GNOME Settings Daemon': gnome_settings_daemon_dir,
+    'AT SPI registryd': at_spi_registryd_dir,
+    'Check Accelerated': check_accelerated_dir,
+    'Lang config file': lang_config_file,
+    'Pam MOD': pam_mod_dir,
+    'Udev rules': udev_dir,
+    'XServer': x_bin,
+    'XPath': x_path,
+    'Systemd XServer': systemd_x_server,
+  },
+  section: 'Paths',
+)
+
+summary({
+    'ADT': have_adt,
+    'PAM Syslog': have_pam_syslog,
+    'Supports PAM Extensions': pam_extensions_supported,
+    'SeLinux': libselinux_dep.found(),
+    'Use UserDisplayServer': get_option('user-display-server'),
+    'Use SystemdJournal': get_option('systemd-journal'),
+    'Use WaylandSupport': get_option('wayland-support'),
+    'Use Profiling': get_option('profiling'),
+    'Initial VT': get_option('initial-vt'),
+    'Username': get_option('user'),
+    'Groupname': get_option('group'),
+    'Plymouth': plymouth_dep.found(),
+    'Use ipv6': get_option('ipv6'),
+  },
+  section: 'Features',
+  bool_yn: true,
+)
+endif
