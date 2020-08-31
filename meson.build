@@ -314,6 +314,7 @@ summary({
     'PAM Syslog': have_pam_syslog,
     'Supports PAM Extensions': pam_extensions_supported,
     'SeLinux': libselinux_dep.found(),
+    'Use GDM Xsession': get_option('gdm-xsession'),
     'Use UserDisplayServer': get_option('user-display-server'),
     'Use SystemdJournal': get_option('systemd-journal'),
     'Use WaylandSupport': get_option('wayland-support'),
