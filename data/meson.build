@@ -209,7 +209,7 @@ configure_file(
 # XSession
 if get_option('gdm-xsession')
   configure_file(
-    input: 'XSession.in',
+    input: 'Xsession.in',
     output: '@BASENAME@',
     configuration: {
       'libexecdir': gdm_prefix / get_option('libexecdir'),
