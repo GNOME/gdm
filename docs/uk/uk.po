@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-16 23:35+0000\n"
-"PO-Revision-Date: 2020-04-18 18:15+0300\n"
+"PO-Revision-Date: 2020-08-31 11:32+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
 "=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 20.07.70\n"
+"X-Generator: Lokalize 20.11.70\n"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
@@ -260,6 +260,10 @@ msgid ""
 "Desktop Entry Specification used by GDM. <ulink type=\"http\" url=\"http://"
 "www.freedesktop.org/\"> http://www.freedesktop.org</ulink>."
 msgstr ""
+"FreeDesktop — організація, яка надає стандарти стільничного середовища,"
+" зокрема специфікацію стільничних записів, яку використано у GDM. <ulink"
+" type=\"http\" url=\"http://"
+"www.freedesktop.org/\"> http://www.freedesktop.org</ulink>."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:113
@@ -296,6 +300,9 @@ msgid ""
 "Xserver provided by the X.org Foundation <ulink type=\"http\" url=\"http://"
 "www.x.org/\">http://www.x.org</ulink>."
 msgstr ""
+"Xserver — реалізація системи вікон X. Наприклад, Xorg з Xserver, який"
+" надається X.org Foundation <ulink type=\"http\" url=\"http://"
+"www.x.org/\">http://www.x.org</ulink>."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:136
@@ -305,6 +312,10 @@ msgid ""
 "to <filename>/usr/share/pixmaps</filename> if GDM was configured with "
 "<command>--prefix=/usr</command>."
 msgstr ""
+"Шляхи, які починаються зі слова у кутових дужках, є відносними щодо префікса"
+" встановлення. Тобто <filename>&lt;share&gt;/pixmaps/</filename> позначає <"
+"filename>/usr/share/pixmaps</filename>, якщо GDM було налаштовано з <command"
+">--prefix=/usr</command>."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:147
@@ -333,6 +344,9 @@ msgid ""
 "Note that GDM is configurable, and many configuration settings have an "
 "impact on security. Issues to be aware of are highlighted in this document."
 msgstr ""
+"Зауважте, що GDM є придатним до налаштовування, а багато параметрів"
+" налаштувань стосуються захисту системи. Проблеми, на які слід звернути"
+" увагу, висвітлено у цьому документі."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:165
@@ -342,6 +356,10 @@ msgid ""
 "to behave as documented, then check to see if any related configuration may "
 "be different than described here."
 msgstr ""
+"Будь ласка, зверніть увагу на те, що у деяких операційних системах GDM"
+" налаштовано на поведінку, які відрізняється від типових значень, які описано"
+" у цьому документі. Якщо GDM поводить себе не так, як документовано, вам слід"
+" перевірити, чи відрізняються відповідні налаштування від описаних тут."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:172
@@ -364,6 +382,14 @@ msgid ""
 "list/\"> http://mail.gnome.org/archives/gdm-list/</ulink> and has a search "
 "facility to look for messages with keywords."
 msgstr ""
+"Якщо хочете обговорити щось щодо GDM або маєте запити щодо можливостей,"
+" надішліть повідомлення до списку листування <address><email"
+">gdm-list@gnome.org</email></address>. Для цього списку ведеться архів — вам"
+" варто пошукати відповіді на типові питання у цьому архіві. З архівом списку"
+" листування можна ознайомитися <ulink type=\"http\""
+" url=\"http://mail.gnome.org/archives/gdm-"
+"list/\">тут</ulink>. Передбачено можливості пошуку повідомлень за ключовими"
+" словами."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:188
@@ -392,6 +418,12 @@ msgid ""
 "options never made sense, and in part because some functionality has not "
 "been reimplemented yet."
 msgstr ""
+"У GDM 2.20 і попередніх версіях підтримувалася стабільність інтерфейсів"
+" налаштувань. Втім, у версії GDM 2.22 код було повністю переписано — його"
+" повну сумісність із попередніми версіями було втрачено. Почасти, причиною"
+" цього є те, що він працює інакше, отже деякі параметри втратили сенс, деякі"
+" ніколи не мали сенсу, а функціональні можливості, які було пов'язано із"
+" деякими параметрами, ще не було реалізовано."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:208
@@ -402,6 +434,11 @@ msgid ""
 "filename> file continue to be supported. Also, the <filename>~/.dmrc</"
 "filename>, and face browser image locations are still supported."
 msgstr ""
+"Стабільними інтерфейсами, підтримку яких продовжено, є Init, PreSession,"
+" PostSession, PostLogin та скрипти Xsession. Продовжено підтримку деяких"
+" параметрів налаштувань у файлі <filename>&lt;etc&gt;/gdm/custom.conf<"
+"/filename>. Крім того, продовжено підтримку <filename>~/.dmrc</filename> та"
+" каталогів зображень облич."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:217
@@ -725,6 +762,8 @@ msgid ""
 "If XDMCP seems to not be working, make sure that all machines are specified "
 "in <filename>/etc/hosts</filename>."
 msgstr ""
+"Якщо XDMCP не працює, переконайтеся, що усі адреси вказано у <filename"
+">/etc/hosts</filename>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:507
@@ -732,6 +771,8 @@ msgid ""
 "Refer to the \"Security\" section for information about security concerns "
 "when using XDMCP."
 msgstr ""
+"Зверніться до розділу «Безпека», щоб дізнатися більше про проблеми захисту"
+" при використанні XDMCP."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:514
