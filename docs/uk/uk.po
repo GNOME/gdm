@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-16 23:35+0000\n"
-"PO-Revision-Date: 2020-09-01 17:41+0300\n"
+"PO-Revision-Date: 2020-09-01 19:13+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -824,8 +824,8 @@ msgid ""
 "reasonably on most systems."
 msgstr ""
 "GDM включає декілька заходів, які роблять його більш стійким до атак типу "
-"<quote>відмова у обслуговуванні</quote> на службу XDMCP. Можна налаштувати "
-"значну кількість параметрів протоколу, час очікування з'єднання, тощо. "
+"«відмова у обслуговуванні» на службу XDMCP. Можна налаштувати "
+"значну кількість параметрів протоколу, час очікування з'єднання тощо. "
 "Типові налаштування мають добре працювати у більшості систем."
 
 #. (itstool) path: sect2/para
@@ -1253,9 +1253,9 @@ msgid ""
 "filename> files. For example to deny computers from <filename>.evil.domain</"
 "filename> from logging in, then add"
 msgstr ""
-"У файлах <filename>&lt;etc&gt;/hosts.allow</filename> та <filename>&lt;"
-"etc&gt;hosts.deny</filename> слід використовувати сервер з назвою "
-"<command>gdm</command>. Наприклад, щоб заборонити доступ комп'ютерам з "
+"Вам слід використовувати назву фонової служби <command>gdm</command> у файлах"
+" <filename>&lt;etc&gt;/hosts.allow</filename> та <filename>&lt;"
+"etc&gt;hosts.deny</filename>. Наприклад, щоб заборонити доступ комп'ютерам з "
 "<filename>.evil.domain</filename> додайте "
 
 #. (itstool) path: sect2/screen
@@ -1649,7 +1649,7 @@ msgid ""
 msgstr ""
 "Файл <filename>&lt;etc&gt;/gdm/custom.conf</filename> має синтаксис "
 "<filename>keyfile</filename>. Ключові слова у дужках визначають розділи "
-"груп, рядки перед знаком <quote>дорівнює</quote> (=) є ключами, а дані після "
+"груп, рядки перед знаком «дорівнює» (=) є ключами, а дані після "
 "знаку тотожності є їх значеннями. Порожні рядки або рядки, що починаються зі "
 "знаку (#) ігноруються."
 
@@ -2079,8 +2079,8 @@ msgid ""
 msgstr ""
 "Щоб нападники не змогли наводнити запитами чергу очікування, GDM допускає "
 "одне з'єднання з одного віддаленого комп'ютера. Якщо ви бажаєте надавати "
-"дисплей комп'ютерам з більш ніж одним екраном, відповідно слід збільшити  "
-"значення <filename>DisplaysPerHost</filename>."
+"дисплей комп'ютерам з більш ніж одним екраном, відповідно слід збільшити це"
+" значення."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1418
@@ -2135,10 +2135,10 @@ msgid ""
 "filename>, depending on your TCP Wrappers configuration. See the <ulink type="
 "\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> man page for details."
 msgstr ""
-"До файла <filename>&lt;etc&gt;/hosts.allow</filename> слід додати <_:"
-"screen-1/>, в залежності від конфігурації бібліотеки TCP Wrappers. "
-"Докладнішу інформацію дивіться у man-сторінці <ulink type=\"help\" url=\"man:"
-"hosts.allow\">hosts.allow</ulink>."
+"Вам слід додати <_:screen-1/> до файла <filename>&lt;etc&gt;/hosts.allow<"
+"/filename>, в залежності від конфігурації бібліотеки TCP Wrappers. "
+"Докладнішу інформацію можна знайти у man-сторінці <ulink type=\"help\""
+" url=\"man:hosts.allow\">hosts.allow</ulink>."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1457
@@ -2814,6 +2814,8 @@ msgid ""
 "Note the line with the AutostartCondition that links both desktop files to "
 "the GConf key for the on-screen keyboard."
 msgstr ""
+"Зауважте рядок із AutostartCondition, який пов'язує файли desktop із ключем"
+" GConf для екранної клавіатури."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1922
@@ -2860,6 +2862,8 @@ msgid ""
 "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, "
 "background, sound, xsettings."
 msgstr ""
+"GDM вмикає такі додатки gnome-settings-daemon: a11y-keyboard, "
+"background, sound, xsettings."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1977
@@ -2867,6 +2871,8 @@ msgid ""
 "These are responsible for things like the background image, font and theme "
 "settings, sound events, etc."
 msgstr ""
+"Ці додатки відповідають за фонове зображення, шрифт та параметри теми,"
+" озвучення подій тощо."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1982
@@ -2875,6 +2881,9 @@ msgid ""
 "disable the sound plugin then unset the following key: <filename>/apps/gdm/"
 "simple-greeter/settings-manager-plugins/sound/active</filename>."
 msgstr ""
+"Додатки можна вимкнути за допомогою GConf. Наприклад, якщо ви хочете вимкнути"
+" додаток озвучення, вимкніть такий ключ: <filename>/apps/gdm/"
+"simple-greeter/settings-manager-plugins/sound/active</filename>."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1990
@@ -3052,7 +3061,7 @@ msgstr "Вивести версію сервера GDM."
 #. (itstool) path: sect3/title
 #: C/index.docbook:2133
 msgid "<command>gdm-restart</command> Command Line Options"
-msgstr "Параметри командного рядка <filename>gdm-restart</filename>"
+msgstr "Параметри командного рядка <command>gdm-restart</command>"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:2135
@@ -3061,7 +3070,7 @@ msgid ""
 "daemon a HUP signal. This command will immediately terminate all sessions "
 "and log out users currently logged in with GDM."
 msgstr ""
-"<filename>gdm-restart</filename> зупиняє та перезапускає GDM, надсилаючи "
+"<command>gdm-restart</command> зупиняє та перезапускає GDM, надсилаючи "
 "службі GDM сигнал HUP. Це призводить до негайного припинення усіх сеансів та "
 "виходу користувачів, що увійшли через GDM."
 
@@ -3076,14 +3085,14 @@ msgid ""
 "<command>gdm-safe-restart</command> stops and restarts GDM by sending the "
 "GDM daemon a USR1 signal. GDM will be restarted as soon as all users log out."
 msgstr ""
-"<filename>gdm-safe-restart</filename> зупиняє та перезапускає GDM надсилаючи "
+"<command>gdm-safe-restart</command> зупиняє та перезапускає GDM надсилаючи "
 "службі GDM сигнал USR1. GDM перезапускається одразу після виходу усіх "
 "користувачів."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:2153
 msgid "<command>gdm-stop</command> Command Line Options"
-msgstr "Параметри командного рядка <filename>gdm-stop</filename>"
+msgstr "Параметри командного рядка <command>gdm-stop</command>"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:2155
@@ -3091,7 +3100,7 @@ msgid ""
 "<command>gdm-stop</command> stops GDM by sending the GDM daemon a TERM "
 "signal."
 msgstr ""
-"<filename>gdm-stop</filename> зупиняє GDM, надсилаючи службі GDM сигнал TERM."
+"<command>gdm-stop</command> зупиняє GDM, надсилаючи службі GDM сигнал TERM."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:2166
@@ -3175,7 +3184,9 @@ msgid ""
 "option) any later version."
 msgstr ""
 "Ця програма є вільною. Ви можете поширювати та змінювати її на умовах, "
-"викладених у GNU General Public License що видана Free Software Foundation; "
+"викладених у <ulink type=\"help\" url=\"gnome-help:gpl\"><citetitle>GNU"
+" General Public License</citetitle></ulink>, що видана Free Software"
+" Foundation; "
 "або версії 2 ліцензії, або (на ваше розсуд довільної старшої версії."
 
 #. (itstool) path: sect1/para
@@ -3218,6 +3229,11 @@ msgid ""
 "the Free Software Foundation by visiting <ulink type=\"http\" url=\"http://"
 "www.fsf.org\">their Web site</ulink> or by writing to <_:address-1/>"
 msgstr ""
+"Копію <citetitle>GNU General Public License</citetitle> включено як додаток "
+"до <citetitle>Підручника користувача GNOME</citetitle>. Крім того, ви можете "
+"отримати копію <citetitle>GNU General Public License</citetitle> від Free "
+"Software Foundation, відвідавши <ulink type=\"http\" url=\"http://www.fsf.org"
+"\">їхній вебсайт</ulink> або написавши до <_:address-1/>"
 
 #. (itstool) path: para/ulink
 #: C/legal.xml:9
