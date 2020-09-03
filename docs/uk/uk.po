@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-02 13:01+0000\n"
-"PO-Revision-Date: 2020-09-03 19:32+0300\n"
+"PO-Revision-Date: 2020-09-03 19:55+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -1342,6 +1342,15 @@ msgid ""
 "\" url=\"man:utmp\">utmp</ulink> and <ulink type=\"help\" url=\"man:wtmp"
 "\">wtmp</ulink> man pages on your system for more information."
 msgstr ""
+"GDM створює записи бази даних обліку користувачів utmp і wtmp під час входу і"
+" виходу з сеансу. База даних utmp містить дані щодо доступу користувачів та"
+" облікові дані, доступ до яких можна отримати за допомогою команд, подібних"
+" до <command>finger</command>, <command>last</command>, <command>login<"
+"/command> і <command>who</command>. База даних wtmp містить журнал усіх дій з"
+" доступу користувачів та облікові дані з бази даних utmp. Зверніться до"
+" сторінок підручника (man) <ulink type=\"help\" url=\"man:utmp\">utmp</ulink>"
+" і <ulink type=\"help\" url=\"man:wtmp\">wtmp</ulink> у вашій системі, щоб"
+" дізнатися більше."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:747
@@ -1357,6 +1366,12 @@ msgid ""
 "\"password\" is unique for each session logged in, so users from one session "
 "can't snoop on users from another."
 msgstr ""
+"Файл уповноваження сервера X під час запуску зберігаються у новоствореному"
+" каталозі <filename>&lt;var&gt;/run/gdm</filename>. Ці файли використовуються"
+" для зберігання і спільного використання «пароля» між клієнтами X і сервером"
+" X. Цей «пароль» є унікальним для кожного сеансу входу до системи, тому"
+" користувачі з одного сеансу не можуть проникнути до сеансів інших"
+" користувачів зі свого сеансу."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:757
@@ -1395,6 +1410,9 @@ msgid ""
 "keystrokes typed when entering passwords will still go over the wire in "
 "clear text. It is trivial to capture these."
 msgstr ""
+"Хоча ваш дисплей захищено куками, XEvents і, отже, натискання клавіш при"
+" введенні паролів проходять крізь дроти з'єднання апаратури без шифрування."
+" Доволі просто перехопити ці дані."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:782
@@ -1427,6 +1445,9 @@ msgid ""
 "GDM without TCP wrapper support, so this feature may not be supported on "
 "some Operating Systems."
 msgstr ""
+"Керування доступом XDMCP виконується за допомогою обгорток TCP. Можна зібрати"
+" GDM без підтримки обгортки TCP, тому у деяких операційних системах підтримки"
+" цієї можливості не передбачено."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:803
@@ -1519,6 +1540,8 @@ msgid ""
 "X is not a very safe protocol when using it over the Internet, and XDMCP is "
 "even less safe."
 msgstr ""
+"X не є дуже безпечним протоколом, якщо користуватися ним для зв'язку"
+" інтернетом, а XDMCP є ще менш безпечним протоколом."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:856
@@ -1532,6 +1555,9 @@ msgid ""
 "control whether the login screen should provide the shutdown and restart "
 "buttons on the greeter screen."
 msgstr ""
+"GDM можна налаштувати на використання PolicyKit для уможливлення для"
+" системних адміністраторів керувати тим, чи надаватиме вікно входу до системи"
+" доступ до кнопок вимикання та перезапуску системи у вікні програми вітання."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:870
@@ -1542,6 +1568,11 @@ msgid ""
 "Policy for these actions can be set up using the polkit-gnome-authorization "
 "tool, or the polkit-auth command line program."
 msgstr ""
+"Ці кнопки керуються, відповідно, діями <filename"
+">org.freedesktop.consolekit.system.stop-multiple-users</filename> і <filename"
+">org.freedesktop.consolekit.system.restart-multiple-users</filename>. Правила"
+" для цих дій можна налаштувати за допомогою програми"
+" polkit-gnome-authorization або інструмента командного рядка polkit-auth."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:882
@@ -1555,6 +1586,10 @@ msgid ""
 "RBAC configuration is used to control whether the login screen should "
 "provide the shutdown and restart buttons on the greeter screen."
 msgstr ""
+"GDM можна налаштувати на використання RBAC замість PolicyKit. У цьому випадку"
+" для уможливлення для системних адміністраторів керувати тим, чи надаватиме"
+" вікно входу до системи доступ до кнопок вимикання та перезапуску системи у"
+" вікні програми вітання, буде використано RBAC."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:890
@@ -1563,6 +1598,10 @@ msgid ""
 "authorization is used to control this. Simply modify the <filename>/etc/"
 "user_attr</filename> file so that the \"gdm\" user has this authorization."
 msgstr ""
+"Наприклад, у Oracle Solaris для керування цим використовується уповноваження"
+" «solaris.system.shutdown». Просто внесіть зміни до файла <filename"
+">/etc/user_attr</filename> так, щоб користувач «gdm» мав відповідне"
+" уповноваження."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:903
@@ -1578,6 +1617,11 @@ msgid ""
 "be used as a replacement for the utmp or utmpx files that are available on "
 "most Unix-like Operating Systems."
 msgstr ""
+"До GDM включено підтримку оприлюднення даних щодо входу користувачів та"
+" обліку сеансів у форматі бібліотеки, яка має назву ConsoleKit. ConsoleKit"
+" може стежити за усіма користувачами, які працюють у системі. У цьому сенсі"
+" нею можна скористатися як замінником файлів utmp і utmpx, які доступні у"
+" більшості Unix-подібних операційних системах."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:922
