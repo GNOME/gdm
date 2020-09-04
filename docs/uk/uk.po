@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-02 13:01+0000\n"
-"PO-Revision-Date: 2020-09-04 16:17+0300\n"
+"PO-Revision-Date: 2020-09-04 20:51+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -1986,6 +1986,12 @@ msgid ""
 "login user to be a user named \"you\", you would modify the file so it "
 "contains the following lines:"
 msgstr ""
+"У файлі <filename>&lt;etc&gt;/gdm/custom.conf</filename> передбачено"
+" підтримку розділів груп «[daemon]», «[security]» та «[xdmcp]». У кожній"
+" групі записують певні пари ключ-значення, якими можна скористатися для зміни"
+" поведінки GDM. Наприклад, щоб увімкнути відкладений вхід і вказати"
+" користувача, для якого виконуватиметься цей відкладений вхід, як «you», вам"
+" слід внести зміни до цього файла так, щоб у ньому містилися такі рядки:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:1130
@@ -2112,6 +2118,8 @@ msgid ""
 "This is the user that should be logged in after a specified number of "
 "seconds of inactivity."
 msgstr ""
+"Це назва облікового запису користувача, якого має бути впущено до системи"
+" після вказаної кількості секунд бездіяльності."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1204 C/index.docbook:1248
@@ -2123,6 +2131,13 @@ msgid ""
 "display fashion. For example if the value is \"/usr/bin/getloginuser|\", "
 "then the program \"/usr/bin/getloginuser\" will be run to get the user value."
 msgstr ""
+"Якщо значення завершуватиметься вертикальною рискою | (символом каналу), GDM"
+" виконає вказану програму і використає будь-яке повернуте нею до стандартного"
+" виведення значення як назву облікового запису користувача. Програму буде"
+" запущено із встановленою змінною середовища DISPLAY, тому можна вказати"
+" окремого користувача для окремого дисплея. Наприклад, якщо значенням є"
+" «/usr/bin/getloginuser|», буде запущено програму «/usr/bin/getloginuser» для"
+" отримання значення назви облікового запису користувача."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1218
@@ -2141,6 +2156,8 @@ msgid ""
 "Delay in seconds before the <filename>TimedLogin</filename> user will be "
 "logged in."
 msgstr ""
+"Затримка у секундах, перш ніж користувача <filename>TimedLogin</filename>"
+" буде впущено до системи."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1229
@@ -2160,6 +2177,9 @@ msgid ""
 "logged in immediately. This feature is like timed login with a delay of 0 "
 "seconds."
 msgstr ""
+"Якщо вказано значення «true», користувача, якого вказано в <filename"
+">AutomaticLogin</filename>, має бути впущено до системи негайно. Ця"
+" можливість рівноцінна відкладеному входу із затримкою у 0 секунд."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1241
@@ -2178,6 +2198,8 @@ msgid ""
 "This is the user that should be logged in immediately if "
 "<filename>AutomaticLoginEnable</filename> is true."
 msgstr ""
+"Це назва облікового запису користувача, якого має бути впущено до системи"
+" негайно, якщо <filename>AutomaticLoginEnable</filename> дорівнює «true»."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1262
@@ -2197,6 +2219,10 @@ msgid ""
 "to the <filename>Group</filename> configuration key and to the \"Security-"
 "&gt;GDM User And Group\" section of this document for more information."
 msgstr ""
+"Ім'я користувача, від імені якого буде запущено програму вітання та інші"
+" програми із графічним інтерфейсом. Зверніться до опису ключа налаштувань <"
+"filename>Group</filename> та до розділу «Захист-"
+"&gt;Користувач і група GDM» цього документа, щоб дізнатися більше."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1275
@@ -2216,6 +2242,10 @@ msgid ""
 "to the <filename>User</filename> configuration key and to the \"Security-&gt;"
 "GDM User And Group\" section of this document for more information."
 msgstr ""
+"Назва групи, від імені якої буде запущено програму вітання та інші програми"
+" із графічним інтерфейсом. Зверніться до опису ключа налаштувань <filename"
+">User</filename> та до розділу «Захист-"
+"&gt;Користувач і група GDM» цього документа, щоб дізнатися більше."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1290
@@ -2247,6 +2277,12 @@ msgid ""
 "messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> "
 "depending on your Operating System)."
 msgstr ""
+"Щоб увімнути діагностику, встановіть для ключа debug/Enable значення «true» у"
+" файлі "
+"<filename>&lt;etc&gt;/gdm/custom.conf</filename> і перезапустіть GDM."
+" Виведені діагностичні дані буде надіслано до файла журналу системи (<"
+"filename>&lt;var&gt;/log/messages</filename> або <filename"
+">&lt;var&gt;/adm/messages</filename>, залежно від вашої операційної системи)."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1314
@@ -2275,6 +2311,9 @@ msgid ""
 "If true, then the face browser will show all users on the local machine. If "
 "false, the face browser will only show users who have recently logged in."
 msgstr ""
+"Якщо має значення «true», переглядач портретів показуватиме усіх користувачів"
+" локальної системи. Якщо має значення «false», переглядач портретів"
+" показуватиме лише користувачів, які нещодавно входили до системи."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1329
@@ -2289,6 +2328,16 @@ msgid ""
 "returns - /sbin/nologin or /bin/false are considered invalid shells even if "
 "getusershell() returns them)."
 msgstr ""
+"Якщо значенням цього ключа є «true», GDM викличе fgetpwent() для отримання"
+" списку локальних користувачів системи. Усіх користувачів із ідентифікатором"
+" користувача, який є меншим за 500 (або 100, якщо працюємо у Oracle Solaris),"
+" буде відфільтровано. Переглядач портретів також показуватиме усіх"
+" користувачів, які раніше входили до системи (наприклад, користувачів"
+" NIS/LDAP). Він отримуватиме цей список шляхом виклику інтерфейсу <command"
+">ck-history</command> ConsoleKit. Він також відфільтровуватиме усіх"
+" користувачів, у яких немає належної командної оболонки (коректними"
+" вважаються усі оболонки, які повертає getusershell() — /sbin/nologin або"
+" /bin/false не вважаються некоректними, якщо їх повертає getusershell())."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1343
@@ -2297,6 +2346,9 @@ msgid ""
 "logged in on the system (local or NIS/LDAP users) by calling the <command>ck-"
 "history</command> ConsoleKit interface."
 msgstr ""
+"Якщо має значення «false», GDM показуватиме лише користувачів, які раніше"
+" входили до цієї системи (локальних або користувачів NIS/LDAP) за допомогою"
+" виклику інтерфейсу <command>ck-history</command> ConsoleKit."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1352
