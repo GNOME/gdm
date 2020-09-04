@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-02 13:01+0000\n"
-"PO-Revision-Date: 2020-09-03 19:55+0300\n"
+"PO-Revision-Date: 2020-09-04 16:17+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -1637,6 +1637,16 @@ msgid ""
 "these bits of information. The use of this privileged method is restricted "
 "by the use of the D-Bus system message bus security policy."
 msgstr ""
+"Коли GDM збирається створити процес входу до системи для користувача,"
+" програма викликає привілейований метод ConsoleKit з метою відкрити новий"
+" сеанс для цього користувача. На цей момент GDM також надає ConsoleKit"
+" відомості щодо цього сеанс користувача, зокрема такі: ідентифікатор"
+" користувача, показане ім'я X11, які буде пов'язано із сеансом, назву вузла,"
+" з якого походить сеанс (корисно у випадку сеансу XDMCP), чи є сеанс"
+" долученим тощо. Як елемент, який ініціює процес користувача, GDM перебуває в"
+" унікальному стані щодо визначення параметрів сеансу користувача і довіри для"
+" надання цієї частини даних. Використання цього привілейованого методу"
+" обмежено використанням правил безпеки каналу системних повідомлень D-Bus."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:936
@@ -1647,6 +1657,12 @@ msgid ""
 "the session receives this unlock signal are undefined and session-specific. "
 "However, most sessions will unlock a screensaver in response."
 msgstr ""
+"Якщо користувач із наявним сеансом пройшов розпізнавання у GDM і надсилає"
+" запити щодо поновлення наявного сеансу, GDM викликає привілейований метод"
+" ConsoleKit для розблокування сеансу. Дії, які відбуваються, коли сеанс"
+" отримує цей сигнал розблокування, не визначено точно — вони залежать від"
+" сеансу. Втім, у більшості сеансів відбувається розблокування зберігача"
+" екрана."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:945
@@ -1654,6 +1670,9 @@ msgid ""
 "When the user chooses to log out, or if GDM or the session quit unexpectedly "
 "the user session will be unregistered from ConsoleKit."
 msgstr ""
+"Якщо користувач виходить з облікового запису або якщо GDM або сеанс"
+" несподівано завершує роботу, реєстрацію сеансу користувача у ConsoleKit буде"
+" скасовано."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:954
@@ -1669,6 +1688,11 @@ msgid ""
 "session configuration. These types of integration are described in detail "
 "below."
 msgstr ""
+"У GDM передбачено декілька інтерфейсів налаштовування. Серед них точки"
+" інтеграції скриптів, налаштовування фонових служб, налаштовування програми"
+" вітання, загальні параметри сеансу, налаштовування інтеграції"
+" gnome-settings-daemon та налаштовування сеансу. Ці типи інтеграції докладно"
+" описано нижче."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:965
@@ -1725,6 +1749,15 @@ msgid ""
 "Xserver DISPLAY value for that display. For example, if the <filename>&lt;"
 "Init&gt;/:0</filename> script exists, it will be run for DISPLAY \":0\"."
 msgstr ""
+"Для кожного типу скриптів типовим, тим, який буде виконано, буде той, який"
+" називається «Default» і який зберігається у каталозі, пов'язаному із типом"
+" скрипту. Отже, типовим скриптом <filename>Init</filename> є <filename"
+">&lt;etc&gt;/gdm/Init/Default</filename>. Можна створити окремий скрипт для"
+" дисплея, і, якщо він існує, його буде запущено замість типового скрипту."
+" Такі скрипти зберігаються у тому самому каталозі, що і типовий скрипт, і"
+" мають таку саму назву, як значення змінної DISPLAY у сервері X для"
+" відповідного дисплея. Наприклад, якщо існує скрипт <filename"
+">&lt;Init&gt;/:0</filename>, його буде запущено для DISPLAY \":0\"."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:998
@@ -1735,6 +1768,11 @@ msgid ""
 "until the scripts finish, so if any of these scripts hang, this will cause "
 "the login process to also hang."
 msgstr ""
+"Усі ці скрипти запускаються із правами доступу root і повертають 0, якщо їх"
+" виконано успішно, і ненульовий код повернення, якщо станеться якась помилка,"
+" яка спричинила переривання сеансу входу до системи. Також зауважте, що GDM"
+" блокуватиметься, аж доки скрипти не завершать роботу. Тому, якщо якийсь з"
+" цих скриптів повисне, це спричинить зависання процесу входу до системи."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1006
@@ -1745,6 +1783,11 @@ msgid ""
 "run while the login screen is showing, or for doing any special "
 "initialization if required."
 msgstr ""
+"Коли сервер X для графічного інтерфейсу входу до системи вже запущено, але"
+" перед тим, як графічний інтерфейс входу буде показано, GDM запустить скрипт"
+" <filename>Init</filename>. Цей скрипт є корисним для запуску програм, які"
+" має бути запущено, доки відбувається показ вікна входу до системи, або"
+" виконання будь-якої спеціалізованої ініціалізації, якщо вона потрібна."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1014
@@ -1756,6 +1799,12 @@ msgid ""
 "session starts. For example, you might setup the user's $HOME directory if "
 "needed."
 msgstr ""
+"Після того, як користувача буде успішно розпізнано, GDM запустить скрипт <"
+"filename>PostLogin</filename>. Це завдання виконується перед налаштовуванням"
+" будь-якого сеансу, зокрема перед викликом pam_open_session. Цей скрипт"
+" корисний для виконання будь-якої ініціалізації сеансу, яку має бути виконано"
+" перед його запуском. Наприклад, ви можете налаштувати каталог $HOME"
+" користувача, якщо у цьому є потреба."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1023
@@ -1766,6 +1815,11 @@ msgid ""
 "initialized. It can be used for session management or accounting, for "
 "example."
 msgstr ""
+"Після ініціалізації сеансу користувача GDM запустить скрипт <filename"
+">PreSession</filename>. Цей скрипт корисний для виконання будь-якої"
+" ініціалізації сеансу, яку має бути виконано після того, як сеанс було"
+" ініціалізовано. Цим можна скористатися, наприклад, для керування сеансом або"
+" ведення обліку."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1031
@@ -1774,6 +1828,9 @@ msgid ""
 "<filename>PostSession</filename> script. Note that the Xserver will have "
 "been stopped by the time this script is run, so it should not be accessed."
 msgstr ""
+"Якщо користувач перериває свій сеанс, GDM запускає скрипт <filename"
+">PostSession</filename>. Зауважте, що роботу сервера X на момент запуску"
+" цього скрипту буде припинено, тому до нього не буде доступу."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1038
@@ -1796,6 +1853,12 @@ msgid ""
 "when GDM is calling these scripts, so you can run specific code when GDM is "
 "used."
 msgstr ""
+"Усі згадані вище скрипти встановлюють для змінної середовища <filename"
+">$RUNNING_UNDER_GDM</filename> значення <filename>yes</filename>. Якщо"
+" скрипти використовуються спільно із іншими програмами для керування"
+" дисплеєм, ця змінна надає вам змогу визначити, що скрипти викликає GDM,"
+" отже, ви можете наказувати системі виконувати певний код, якщо використано"
+" GDM."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1055
@@ -1811,6 +1874,12 @@ msgid ""
 "specification may be used to specify programs that should auto-restart or "
 "only be launched if a GConf configuration value is set, etc."
 msgstr ""
+"У каталозі <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename>"
+" містяться файли у форматі, який визначається «FreeDesktop.org Desktop"
+" Application Autostart Specification». Стандартними можливостями з цієї"
+" специфікації можна скористатися для визначення програм, які має бути"
+" автоматично перезапущено або запущено, лише якщо встановлено значення"
+" налаштування GConf тощо."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1066
@@ -1824,6 +1893,16 @@ msgid ""
 "provided for starting various AT programs if the configuration values "
 "specified in the Accessibility Configuration section below are set."
 msgstr ""
+"Буд-які файли <filename>.desktop</filename> у цьому каталозі спричинятимуть"
+" автоматичний запуск відповідної програми одночасно із графічним інтерфейсом"
+" програми входу до системи. Типово, GDM постачається із файлами, які"
+" автоматично запускають сам графічний інтерфейс входу до системи"
+" gdm-simple-greeter, програму gnome-power-manager, фонову службу"
+" gnome-settings-daemon та програму для керування вікнами metacity. Ці"
+" програми потрібні для забезпечення працездатності програми вітання. Крім"
+" того, передбачено файли desktop для запуску різноманітних засобів технологій"
+" доступності, якщо вказано відповідні значення параметрів налаштувань у"
+" розділі налаштовування доступності, описаному нижче."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1080
@@ -1841,6 +1920,14 @@ msgid ""
 "run as the user, and it will run whatever session was specified by the "
 "Desktop session file the user selected to start."
 msgstr ""
+"Також передбачено скрипт <filename>Xsession</filename>, який зберігається у"
+" каталозі <filename>&lt;etc&gt;/gdm/Xsession</filename> і викликається між"
+" скриптом <filename>PreSession</filename> і скриптом <filename>PostSession<"
+"/filename>. У цьому скрипті не передбачено підтримки роботи із окремими"
+" дисплеями, подібно до інших скриптів. Цей скрипт використовується для самого"
+" запуску сеансу користувача. Скрипт запускається від імені користувача і"
+" працюватиме незалежно від сеансу, який було вказано за допомогою файла"
+" стільничного сеансу, вибраного користувачем при запуску."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1095
@@ -1857,6 +1944,13 @@ msgid ""
 "schemas file may be overwritten when the user updates their system to have a "
 "newer version of GDM."
 msgstr ""
+"Налаштовування фонової служби GDM виконується за допомогою файла <filename"
+">&lt;etc&gt;/gdm/custom."
+"conf</filename>. Типові значення зберігаються у GConf у файлі <filename"
+">gdm.schemas</filename>. Рекомендуємо кінцевим користувачам вносити зміни до"
+" файла <filename>&lt;etc&gt;/gdm/custom.conf</filename>, оскільки файл бази"
+" даних параметрів може бути перезаписано при оновленні користувачем системи з"
+" метою встановлення новішої версії GDM."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1107
@@ -1864,6 +1958,8 @@ msgid ""
 "Note that older versions of GDM supported additional configuration options "
 "which are no longer supported in the latest versions of GDM."
 msgstr ""
+"Зауважте, що у застарілих версіях GDM було передбачено додаткові параметри"
+" налаштувань, підтримку яких у найновіших версіях GDM не реалізовано."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1112
