@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-02 13:01+0000\n"
-"PO-Revision-Date: 2020-09-04 20:51+0300\n"
+"PO-Revision-Date: 2020-09-05 21:58+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -2367,6 +2367,9 @@ msgid ""
 "Set to a list of users to always include in the Face Browser. This value is "
 "set to a list of users separated by commas. By default, the value is empty."
 msgstr ""
+"Встановлюється у значення списку користувачів, яких завжди слід включати до"
+" переглядача портретів. Значення у списку слід відокремлювати комами. Типово,"
+" це значення є порожнім."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1364
@@ -2392,6 +2395,12 @@ msgid ""
 "to add additional users to the list, then you need to set the value to the "
 "default value with additional users appended to the list."
 msgstr ""
+"Встановлюється у значення списку користувачів, яких завжди слід виключати з"
+" переглядача портретів. Значення у списку слід відокремлювати комами."
+" Зауважте, що параметр у <filename>custom.conf</filename> має пріоритет над"
+" типовим значенням. Тому, якщо ви хочете додати до списку записи"
+" користувачів, вам слід встановити типове значення з дописаними до списку"
+" додатковими користувачами."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1381
@@ -2422,6 +2431,10 @@ msgid ""
 "connection. This is a more secure configuration if you are not using remote "
 "connections."
 msgstr ""
+"Якщо має значення «true», завжди дописувати <filename>-nolisten tcp</filename"
+"> до командного рядка при запуску долучених серверів X, таким чином"
+" забороняючи з'єднання TCP. Це безпечніша конфігурація, якщо ви не"
+" використовуєте віддалені з'єднання."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1402
@@ -2463,6 +2476,9 @@ msgid ""
 "Note that the number of attached DISPLAYS allowed is not limited. Only "
 "remote connections via XDMCP are limited by this configuration option."
 msgstr ""
+"Зауважте, що кількість дозволених до долучення дисплеїв не обмежено. Цим"
+" параметром налаштувань обмежено лише кількість віддалених з'єднань за"
+" допомогою XDMCP."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1430
@@ -2689,6 +2705,12 @@ msgid ""
 "setting by 2, so it may be necessary to increase the timeout if upgrading "
 "from GDM 2.20 and earlier to a newer version."
 msgstr ""
+"Якщо сервер X не надасть відповіді протягом вказаної кількості секунд,"
+" з'єднання буде припинено, а сеанс буде завершено. Якщо таке трапляється,"
+" фонова служба завершує роботу із сигналом ALARM. Зауважте, що у GDM 2.20 і"
+" попередніх версіях це значення множилося на 2, тому, можливо, слід збільшити"
+" час очікування після оновлення з GDM 2.20 і попередніх версій до новіших"
+" версій удвічі."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1560
@@ -2775,6 +2797,13 @@ msgid ""
 "<command>gconf-editor</command> programs. The following configuration "
 "options are supported:"
 msgstr ""
+"Типова програма вітання GDM називається просто «Greeter» і налаштовується за"
+" допомогою GConf. Типові значення зберігаються у GConf у файлі <filename"
+">gdm-simple-greeter.schemas</filename>. Ці типові параметри можна"
+" перевизначити, якщо у користувача «gdm» є придатний до запису каталог $HOME"
+" для зберігання параметрів GConf. Ці значення можна редагувати за допомогою"
+" програм <command>gconftool-2</command> та <command>gconf-editor</command>."
+" Передбачено такі параметри налаштувань:"
 
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1620
@@ -2825,6 +2854,8 @@ msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 #: C/index.docbook:1647
 msgid "Controls whether to show the restart buttons in the login window."
 msgstr ""
+"Керує тим, чи буде показано кнопки перезапуску системи у вікні входу до"
+" системи."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1655
@@ -2837,6 +2868,8 @@ msgid ""
 "If true, then the face browser with known users is not shown in the login "
 "window."
 msgstr ""
+"Якщо має значення «true», у вікні входу до системи буде показано переглядач"
+" портретів зі списком усіх відомих користувачів."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1666
@@ -2853,6 +2886,8 @@ msgstr "computer (рядок)"
 #: C/index.docbook:1669
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
+"Встановіть назву піктограми з теми, яку слід використати як логотип програми"
+" вітання."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1676
@@ -2873,6 +2908,10 @@ msgid ""
 "language is shown and the option \"Other...\" which pops-up a dialog box "
 "showing a full list of available languages which the user can select."
 msgstr ""
+"Встановлюється у значення списку мов, які типово буде показано у вікні входу"
+" до системи. Типовим значенням є «[]». З типовим значенням буде показано лише"
+" типову мову системи та пункт «Інші...», який відкриває діалогову панель із"
+" повним списком доступних мов, одну з яких може бути вибрано користувачем."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1687
@@ -2882,6 +2921,10 @@ msgid ""
 "them in the language combo box along with the \"Other...\" choice. This way, "
 "commonly selected languages are easier to select."
 msgstr ""
+"Не рекомендуємо користувачам змінювати значення цього параметра вручну."
+" Замість цього, GDM стежить за вибраними для цього ключа налаштувань мовами і"
+" показує їх у спадному списку разом із пунктом «Інші...». У такий спосіб"
+" спрощується вибір типових вибраних мов."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1698
@@ -2897,6 +2940,11 @@ msgid ""
 "box showing a full list of available keyboard layouts which the user can "
 "select."
 msgstr ""
+"Встановлюється у значення списку розкладок клавіатури, які типово буде"
+" показано на панелі входу до системи. Типовим значенням є «[]». З типовим"
+" значенням буде показано лише типову розкладку клавіатури системи та пункт"
+" «Інші...», який відкриває діалогову панель із повним списком доступних"
+" розкладок клавіатури, одну з яких може бути вибрано користувачем."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1709
@@ -2906,6 +2954,11 @@ msgid ""
 "show them in the keyboard layout combo box along with the \"Other...\" "
 "choice. This way, commonly selected keyboard layouts are easier to select."
 msgstr ""
+"Не рекомендуємо користувачам змінювати значення цього параметра вручну."
+" Замість цього, GDM стежить за вибраними для цього ключа налаштувань"
+" розкладками клавіатури і показує їх у спадному списку разом із пунктом"
+" «Інші...». У такий спосіб спрощується вибір типових вибраних розкладок"
+" клавіатури."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1720
@@ -2917,6 +2970,8 @@ msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 msgid ""
 "Controls whether compiz is used as the window manager instead of metacity."
 msgstr ""
+"Керує тим, чи використовується compiz як програма для керування вікнами"
+" замість metacity."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1733
@@ -2945,6 +3000,10 @@ msgid ""
 "Accessibility Dialog, there is a list of checkboxes, so the user can enable "
 "or disable the associated assistive tools."
 msgstr ""
+"На панелі вітання GDM у вікні входу до системи буде показано піктограму"
+" доступності. Натисканням цієї піктограми можна відкрити діалогове вікно"
+" доступності GDM. У діалоговому вікні доступності GDM ви побачите список"
+" пунктів для вмикання або вимикання пов'язаних допоміжних інструментів."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1750
@@ -2960,6 +3019,18 @@ msgid ""
 "Consequently, the assistive tools that were running during the last GDM "
 "login session will automatically be launched at the next GDM login session."
 msgstr ""
+"Пункт для позначення, які відповідають екранній клавіатурі, екранному"
+" збільшувальному склу та допоміжним інструментам читання з екрана працюють із"
+" трьома ключами GConf, які описано у наступному розділі цього документа."
+" Позначенням цих пунктів або зняттям з них позначення можна встановити для"
+" пов'язаного ключа GConf значення «true» або «false». Якщо для ключа GConf"
+" встановлено значення «true», буде запущено допоміжні інструменти, пов'язані"
+" із цим ключем. Якщо для ключа GConf встановлено значення «false», роботу"
+" будь-якого допоміжного інструмента, пов'язаного із цим ключем GConf, буде"
+" перервано. Ці ключі GConf не буде автоматично скинуто до типового стану"
+" після входу користувача до системи. Отже, допоміжні інструменти, які було"
+" запущено під час останнього сеансу входу за допомогою GDM, буде також"
+" запущено під час наступного сеансу входу до системи за допомогою GDM."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1764
@@ -2970,6 +3041,11 @@ msgid ""
 "correspond to accessibility features that are provided by the Xserver, which "
 "is always running during the GDM session."
 msgstr ""
+"У інших пунктів діалогового вікна доступності GDM немає відповідних ключів у"
+" GConf, оскільки з ними не пов'язано додаткових програм, які запускаються для"
+" надання можливостей доступності. Ці інші пункти відповідають можливостями"
+" доступності, працездатність яких забезпечується сервером X, який завжди"
+" запускається під час сеансу GDM."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1774
@@ -2981,6 +3057,8 @@ msgstr "Ключі доступності GConf"
 msgid ""
 "GDM offers the following GConf keys to control its accessibility features:"
 msgstr ""
+"У GDM передбачено вказані нижче ключі GConf для керування його можливостями"
+" доступності:"
 
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1782
@@ -2998,6 +3076,9 @@ msgid ""
 "Controls whether the Accessibility infrastructure will be started with the "
 "GDM GUI. This is needed for many accessibility technology programs to work."
 msgstr ""
+"Керує тим, чи буде запущено інфраструктуру доступності разом із графічним"
+" інтерфейсом GDM. Такий запуск потрібен для забезпечення працездатності"
+" багатьох програм, які пов'язано із технологіями доступності."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1796
@@ -3010,6 +3091,9 @@ msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen magnifier application."
 msgstr ""
+"Якщо встановлено, разом із графічним інтерфейсом GDM буде запущено допоміжні"
+" інструменти, які пов'язано із цим ключем GConf. Типово, таким інструментом є"
+" екранне збільшувальне скло."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1807
@@ -3023,6 +3107,9 @@ msgid ""
 "with the GDM GUI program. By default this is an on-screen keyboard "
 "application."
 msgstr ""
+"Якщо встановлено, разом із графічним інтерфейсом GDM буде запущено допоміжні"
+" інструменти, які пов'язано із цим ключем GConf. Типово, таким інструментом є"
+" екранна клавіатура."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1818
@@ -3035,6 +3122,9 @@ msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen reader application."
 msgstr ""
+"Якщо встановлено, разом із графічним інтерфейсом GDM буде запущено допоміжні"
+" інструменти, які пов'язано із цим ключем GConf. Типово, таким інструментом є"
+" програма для читання тексту з екрана."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1832
@@ -3293,6 +3383,8 @@ msgid ""
 "A session can be disabled by editing the desktop file and adding a line as "
 "follows: <filename>Hidden=true</filename>."
 msgstr ""
+"Сеанс можна вимкнути редагуванням файла desktop із додаванням такого рядка: <"
+"filename>Hidden=true</filename>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2017
