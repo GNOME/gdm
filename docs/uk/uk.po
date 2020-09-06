@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm manual\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-02 13:01+0000\n"
-"PO-Revision-Date: 2020-09-05 21:58+0300\n"
+"PO-Revision-Date: 2020-09-06 19:45+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
@@ -3143,6 +3143,15 @@ msgid ""
 "file. So the exact AutostartCondition line in the desktop file could be one "
 "of the following:"
 msgstr ""
+"Для ключів GConf screen_magnifier_enabled, screen_keyboard_enabled, і"
+" screen_reader_enabled інструмент доступності, який буде запущено, залежить"
+" від файлів desktop, які зберігаються у каталозі автоматичного запуску GDM,"
+" як це описано у розділі «Налаштовування автозапуску» цього підручника."
+" Будь-який файл "
+"desktop у каталозі автозапуску GDM можна пов'язати із цим ключем GConf за"
+" допомогою визначення цього ключа GConf у значенні AutostartCondition файла"
+" desktop. Отже, точний рядок AutostartCondition у файлі desktop може бути"
+" одним з таких:"
 
 #. (itstool) path: sect3/screen
 #: C/index.docbook:1846
@@ -3173,6 +3182,12 @@ msgid ""
 "multiple assistive tools if there are multiple desktop files with this "
 "AutostartCondition in the GDM autostart directory."
 msgstr ""
+"Якщо ключ доступності має значення «true», буде запущено будь-яку програму,"
+" яку пов'язано із цим ключем у файлі desktop автоматичного запуску GDM (якщо"
+" у цьому файлі desktop не встановлено значення «true» для ключа Hidden). Один"
+" ключ GConf може навіть запускати декілька допоміжних інструментів, якщо у"
+" каталозі автозапуску GDM зберігається декілька файлів desktop із відповідним"
+" значенням AutostartCondition."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1862
@@ -3188,6 +3203,11 @@ msgid ""
 "additionally activate the assistive tool \"mousetweaks\" for dwelling "
 "support, then the following configuration is needed."
 msgstr ""
+"Наприклад, якщо GNOME постачається із GOK як типовою екранною клавіатурою, її"
+" можна замінити, якщо хочете, будь-якою іншою програмою. Щоб замінити GOK на"
+" екранну клавіатуру «onboard» і додатково активувати допоміжний інструмент"
+" «mousetweaks» для підтримки затриманого клацання, слід скористатися"
+" описаними нижче налаштуваннями."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1872
@@ -3197,6 +3217,10 @@ msgid ""
 "in the GDM autostart directory and be in the format as explained in the "
 "\"Autostart Configuration\" section of this document."
 msgstr ""
+"Створіть файл desktop для onboard і ще один для mousetweaks; наприклад,"
+" onboard.desktop і mousetweaks.desktop. Ці файли мають зберігатися у каталозі"
+" автоматичного запуску (autostart) GDM у форматі, який описано у розділі"
+" «Налаштовування автозапуску» цього документа."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1880
@@ -3291,6 +3315,11 @@ msgid ""
 "from the GDM autostart directory, or by adding the \"Hidden=true\" key "
 "setting to the gok.desktop file."
 msgstr ""
+"Щоб вимкнути запуск GOK, файл desktop для екранної клавіатури GOK слід"
+" вилучити або дезактивувати. Якщо цього не зробити, буде одночасно запущено"
+" onboard і GOK. Досягти потрібного результату можна вилученням файла"
+" gok.desktop з каталогу автозапуску GDM або додаванням ключа «Hidden=true» до"
+" файла gok.desktop."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1930
@@ -3299,6 +3328,9 @@ msgid ""
 "activates the on-screen keyboard in the GDM session; but onboard and "
 "mousetweaks will instead be launched."
 msgstr ""
+"Після внесення цих змін GOK не запускатиметься, коли користувач активує"
+" екранну клавіатуру у сеансі GDM, — замість нього буде запущено onboard і"
+" mousetweaks."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1939
@@ -3315,6 +3347,13 @@ msgid ""
 "mandatory policy. GDM installs its own mandatory policy to lock down some "
 "settings for security."
 msgstr ""
+"Програма вітання GDM використовує деякі з бібліотек, які використовуватиме і"
+" ваш стільничний сеанс. Отже, на його роботу впливають декілька параметрів"
+" GConf стільничного сеансу. Для кожного з таких параметрів програма вітання"
+" використовуватиме типове значення, якщо його не буде окремо перевизначено а)"
+" встановленими обов'язковими правилами GDM; б) обов'язковими правилами"
+" системи. GDM встановлює власні обов'язкові правила для блокування деяких"
+" параметрів з міркувань безпеки."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1959
@@ -3363,6 +3402,10 @@ msgid ""
 "\"http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec\"> "
 "http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec</ulink>."
 msgstr ""
+"Сеанси GDM визначаються за допомогою специфікації стільничних записів"
+" FreeDesktop.org, з якою можна ознайомитися за такою адресою: <ulink"
+" url=\"http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec\"> "
+"http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec</ulink>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1999
@@ -3376,6 +3419,15 @@ msgid ""
 "filename> is set to <filename>&lt;etc&gt;/dm/</filename> unless GDM is "
 "configured to use a different directory via the \"--with-dmconfdir\" option."
 msgstr ""
+"Типово, GDM встановлює файли desktop до каталогу <filename"
+">&lt;share&gt;/xsessions</filename>. GDM шукатиме файли desktop у таких"
+" каталогах, за порядком пріоритетності: <filename>&lt;etc&gt;/X11/sessions/</"
+"filename>, <filename>&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt;"
+"share&gt;/xsessions</filename> і <filename>&lt;share&gt;/gdm/"
+"BuiltInSessions</filename>. Типово, для <filename>&lt;dmconfdir&gt;</"
+"filename> встановлено значення <filename>&lt;etc&gt;/dm/</filename>, якщо GDM"
+" не налаштовано на використання іншого каталогу за допомогою параметра"
+" «--with-dmconfdir»."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2012
@@ -3401,6 +3453,18 @@ msgid ""
 "problems in the system or user scripts that might be preventing a user from "
 "being able to start a session."
 msgstr ""
+"У файлах desktop GDM передбачено підтримку специфічного для GDM розширення,"
+" ключа із назвою «X-GDM-BypassXsession». Якщо цей ключ у файлі desktop не"
+" вказано, типовим значенням для нього вважається «false». Якщо для ключа у"
+" файлі desktop вказано значення «true», GDM запустить програму, яку вказано у"
+" ключі «Exec» файла desktop безпосередньо під час запуску сеансу користувача."
+" GDM не запускатиме програму за допомогою скрипту <filename"
+">&lt;etc&gt;/gdm/Xsession</filename>, це звична поведінка. Оскільки обхід"
+" скрипту <filename>&lt;etc&gt;/gdm/Xsession</filename> надає змогу уникнути"
+" налаштовування сеансу користувача зі звичайними системними параметрами та"
+" параметрами користувача, сеанси, які запущено у такий спосіб, корисні для"
+" діагностування проблем у системі або скриптах користувача, які можуть"
+" заважати можливості користувача розпочати сеанс."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:2036
@@ -3416,6 +3480,11 @@ msgid ""
 "these default values by simply changing to a different value when logging "
 "in. GDM will remember this change for subsequent logins."
 msgstr ""
+"Типові параметри сеансу і вибір мов користувача зберігаються у файлі <"
+"filename>~/.dmrc</filename>. Коли користувач входить до системи вперше,"
+" програма створює цей файл із початковими параметрами користувача. Користувач"
+" може змінити типові значення простим зазначенням іншого значення при вході"
+" до системи. GDM запам'ятає внесені зміни для наступних входів до системи."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2045
@@ -3440,6 +3509,12 @@ msgid ""
 "If either of these keys is missing, the system default is used. The file "
 "would normally look as follows:"
 msgstr ""
+"Ключ <filename>Session</filename> вказує базову назву файла <filename"
+">.desktop</filename> сеансу, якою користувач бажає користуватися без суфікса"
+" назви <filename>.desktop</filename>. Ключ <filename>Language</filename>"
+" вказує на мову, якою типово хоче користуватися користувач. Якщо якогось із"
+" цих ключів не буде вказано, буде використано типове значення для системи."
+" Файл, зазвичай, виглядає десь так:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:2061
@@ -3471,6 +3546,8 @@ msgid ""
 "The GDM package provides the following commands in <filename>sbindir</"
 "filename> intended to be run by the root user:"
 msgstr ""
+"У пакунку GDM передбачено такі програми у <filename>sbindir</filename>, які"
+" має бути запущено від імені користувача root:"
 
 #. (itstool) path: sect3/title
 #. (itstool) path: variablelist/title
@@ -3484,6 +3561,8 @@ msgid ""
 "<command>gdm</command> is the main daemon which sets up graphical login "
 "environment and starts necessary helpers."
 msgstr ""
+"<command>gdm</command> є основною фоновою службою, яка налаштовує графічне"
+" середовище для входу і запускає необхідні допоміжні програми."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:2095
@@ -3582,6 +3661,11 @@ msgid ""
 "gdm-list mailing list. Information about how to do this is in the "
 "Introduction section of the document."
 msgstr ""
+"У цьому розділі наведено корисні підказки щодо забезпечення працездатності"
+" GDM. Загалом, якщо у вас виникають проблеми з користуванням GDM, ви можете"
+" надіслати повідомлення про ваду або повідомлення електронної пошти до списку"
+" листування gdm-list. Відомості щодо того, як це зробити, наведено у"
+" вступному розділі цього підручника."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:2181
@@ -3598,6 +3682,20 @@ msgid ""
 "you may need to configure syslog (refer to the <ulink type=\"help\" url="
 "\"man:syslog\">syslog</ulink> man page)."
 msgstr ""
+"Якщо GDM не працює належним чином, завжди варто включити до звіту"
+" діагностичні відомості. Щоб увімкнути діагностику, встановіть для ключа"
+" debug/Enable значення «true» у файлі <filename>&lt;etc&gt;/gdm/custom.conf<"
+"/filename> і перезапустіть GDM. Далі, використовуйте GDM до моменту, коли"
+" трапляється помилка, і діагностичні дані буде записано до загальносистемного"
+" файла журналу (<filename>&lt;var&gt;/log/messages</filename> або <filename"
+">&lt;var&gt;/adm/messages</filename>, залежно від вашої операційної системи)."
+" Якщо ви ділитеся цими даним зі спільнотою GDM у звіті щодо вади або"
+" повідомленні електронної пошти, будь ласка, включайте лише пов'язані із GDM"
+" діагностичні дані, але увесь файл, оскільки він може бути доволі великим."
+" Якщо ви не бачите у системному журналі ніяких даних GDM, вам варто"
+" налаштувати системний журнал (зверніться до сторінки підручника (man) щодо <"
+"ulink type=\"help\" url="
+"\"man:syslog\">syslog</ulink>)."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:2197
@@ -3613,6 +3711,12 @@ msgid ""
 "error message or dialog when it tries to start, but it can be difficult to "
 "track down problems when GDM fails silently."
 msgstr ""
+"Існує багато проблем, які можуть призводити до неможливості запуску GDM, але"
+" у цьому розділі ми обговоримо декілька типових проблем і те, яким чином"
+" підходити до відстежування причин проблем із запуском GDM. Деякі проблеми"
+" спричиняють виведення GDM повідомлення про помилку або діалогового вікна при"
+" спробі запуску, але причину проблеми важко встановити, якщо GDM завершує"
+" роботу без будь-яких повідомлень."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2208
@@ -3627,6 +3731,16 @@ msgid ""
 "options. If so, then modify the Xserver command in the GDM configuration "
 "file so that it is correct for your system."
 msgstr ""
+"Спочатку, переконайтеся, що сервер X налаштовано належним чином. Файл"
+" налаштувань GDM містить у розділі [server-Standard] команду, яка"
+" використовується для запуску сервера X. Перевірте, чи працює ця команда у"
+" вашій системі. Запуск цієї команди з консолі має запускати сервер X. Якщо"
+" запустити сервер не вдається, проблему, ймовірно, пов'язано із вашими"
+" налаштуваннями сервера X. Зверніться до журналу помилок сервера X, щоб"
+" дізнатися про причини проблеми. Проблема може також полягати у тому, що ваш"
+" сервер X потребує для запуску інших параметрів командного рядка. Якщо це"
+" так, змініть команду запуску сервера X у файлі налаштувань GDM так, щоб вона"
+" відповідала вашій системі."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2221
@@ -3635,6 +3749,10 @@ msgid ""
 "ownership and permissions, and that the machine's file system is not full. "
 "These problems will cause GDM to fail to start."
 msgstr ""
+"Також переконайтеся, що каталог <filename>/tmp</filename> має належного"
+" власника і права доступу, і що файлова система комп'ютера не є переповненою."
+" Проблеми із правами доступу і переповнена файлова система не дадуть"
+" запустити GDM."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:2232
