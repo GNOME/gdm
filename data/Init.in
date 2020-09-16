@@ -22,14 +22,22 @@ gdmwhich () {
   echo "$OUTPUT"
 }
 
-sysresources=/etc/X11/Xresources
+if [ -f /etc/X11/Xresources ]; then
+    sysresources=/etc/X11/Xresources
+else
+    sysresources=/usr/etc/X11/Xresources
+fi
 
 # merge in defaults
 if [ -f "$sysresources" ]; then
     xrdb -nocpp -merge "$sysresources"
 fi
 
-sysmodmap=/etc/X11/Xmodmap
+if [ -f /etc/X11/Xmodmap ]; then
+    sysmodmap=/etc/X11/Xmodmap
+else
+    sysmodmap=/usr/etc/X11/Xmodmap
+fi
 
 XMODMAP=`gdmwhich xmodmap`
 if [ "x$XMODMAP" != "x" ] ; then

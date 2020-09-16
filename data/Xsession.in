@@ -29,11 +29,20 @@ command="$@"
 # good for debugging where things went wrong
 echo "$0: Beginning session setup..."
 
-# First read /etc/profile and .profile
-test -f /etc/profile && . /etc/profile
+# First read /etc/profile (resp. /usr/etc/profile) and .profile
+if [ -f /etc/profile ]; then
+  . /etc/profile
+elif [ -f /usr/etc/profile ]; then
+  . /usr/etc/profile
+fi
 test -f "$HOME/.profile" && . "$HOME/.profile"
-# Second read /etc/xprofile and .xprofile for X specific setup
-test -f /etc/xprofile && . /etc/xprofile
+# Second read /etc/xprofile (resp. /usr/etc/xprofile)  and .xprofile for X specific setup
+if [ -f /etc/xprofile ]; then
+  . /etc/xprofile
+elif [ -f /usr/etc/xprofile ]; then
+  . /usr/etc/xprofile
+
+fi
 test -f "$HOME/.xprofile" && . "$HOME/.xprofile"
 
 # Translation stuff
@@ -85,9 +94,23 @@ userresources="$HOME/.Xresources"
 usermodmap="$HOME/.Xmodmap"
 userxkbmap="$HOME/.Xkbmap"
 
-sysresources=/etc/X11/Xresources 
-sysmodmap=/etc/X11/Xmodmap 
-sysxkbmap=/etc/X11/Xkbmap
+if [ -f /etc/X11/Xresources ]; then
+    sysresources=/etc/X11/Xresources
+else
+    sysresources=/usr/etc/X11/Xresources
+fi
+
+if [ -f /etc/X11/Xmodmap ]; then
+    sysmodmap=/etc/X11/Xmodmap
+else
+    sysmodmap=/usr/etc/X11/Xmodmap
+fi
+
+if [ -f /etc/X11/Xkbmap ]; then
+    sysxkbmap=/etc/X11/Xkbmap
+else
+    sysxkbmap=/usr/etc/X11/Xkbmap
+fi
 
 rh6sysresources=/etc/X11/xinit/Xresources 
 rh6sysmodmap=/etc/X11/xinit/Xmodmap 
@@ -149,6 +172,15 @@ unset XKB_IN_USE
 xhost +si:localuser:`id -un` || :
 
 # run all system xinitrc shell scripts.
+if [ -d /usr/etc/X11/xinit/xinitrc.d ]; then
+    for i in /usr/etc/X11/xinit/xinitrc.d/* ; do
+	sname=$(basename "$i")
+        test -x "/etc/X11/xinit/xinitrc.d/$sname" && continue
+        if [ -x "$i" -a ! -d "$i" ]; then
+            . "$i"
+        fi
+    done
+fi
 if [ -d /etc/X11/xinit/xinitrc.d ]; then
     for i in /etc/X11/xinit/xinitrc.d/* ; do
         if [ -x "$i" -a ! -d "$i" ]; then
