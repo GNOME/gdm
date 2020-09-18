@@ -1545,6 +1545,8 @@ on_display_status_changed (GdmDisplay *display,
                         }
 #endif
 
+                        g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
+
                         if (display == manager->priv->automatic_login_display) {
                                 g_clear_weak_pointer (&manager->priv->automatic_login_display);
 
