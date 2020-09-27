@@ -193,7 +193,7 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
                                             GAsyncResult       *result,
                                             UserVerifierData   *data)
 {
-        GdmClient                 *client;
+        g_autoptr(GdmClient)       client = NULL;
         GdmUserVerifierChoiceList *choice_list;
         g_autoptr(GError)          error = NULL;
 
@@ -216,7 +216,7 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                      GAsyncResult       *result,
                                      UserVerifierData   *data)
 {
-        GdmClient *client;
+        g_autoptr(GdmClient)       client = NULL;
         GCancellable *cancellable;
         GDBusConnection *connection;
         g_autoptr(GError) error = NULL;
@@ -279,7 +279,7 @@ on_user_verifier_proxy_created (GObject            *source,
                                 GAsyncResult       *result,
                                 gpointer            user_data)
 {
-        GdmClient       *self;
+        g_autoptr(GdmClient)       self = NULL;
         GCancellable    *cancellable = NULL;
         g_autoptr(GdmUserVerifier) user_verifier = NULL;
         g_autoptr(GTask)           task = user_data;
