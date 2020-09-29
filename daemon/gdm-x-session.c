@@ -256,7 +256,7 @@ spawn_x_server (State        *state,
         g_ptr_array_add (arguments, auth_file);
 
         /* If we were compiled with Xserver >= 1.17 we need to specify
-         * '-listen tcp' as the X server dosen't listen on tcp sockets
+         * '-listen tcp' as the X server doesn't listen on tcp sockets
          * by default anymore. In older versions we need to pass
          * -nolisten tcp to disable listening on tcp sockets.
          */
