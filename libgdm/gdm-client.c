@@ -444,80 +444,6 @@ gdm_client_get_connection_sync (GdmClient      *client,
         return connection;
 }
 
-static void
-on_connected (GObject            *source_object,
-              GAsyncResult       *result,
-              gpointer            user_data)
-{
-        g_autoptr(GTask)           task = user_data;
-        g_autoptr(GDBusConnection) connection = NULL;
-        g_autoptr(GError)          error = NULL;
-
-        connection = g_dbus_connection_new_for_address_finish (result, &error);
-        if (!connection) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        g_task_return_pointer (task,
-                               g_steal_pointer (&connection),
-                               (GDestroyNotify) g_object_unref);
-}
-
-static void
-on_session_opened (GdmManager         *manager,
-                   GAsyncResult       *result,
-                   gpointer            user_data)
-{
-        GCancellable     *cancellable;
-        g_autoptr(GTask)     task = user_data;
-        g_autoptr(GdmClient) client = NULL;
-        g_autoptr(GError)    error = NULL;
-        g_autofree char     *address = NULL;
-
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
-
-        if (!gdm_manager_call_open_session_finish (manager,
-                                                   &address,
-                                                   result,
-                                                   &error)) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        cancellable = g_task_get_cancellable (task);
-        g_dbus_connection_new_for_address (address,
-                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                           NULL,
-                                           cancellable,
-                                           on_connected,
-                                           g_steal_pointer (&task));
-}
-
-static void
-on_got_manager_for_opening_connection (GdmClient           *client,
-                                       GAsyncResult        *result,
-                                       gpointer             user_data)
-{
-        GCancellable *cancellable;
-        g_autoptr(GTask)      task = user_data;
-        g_autoptr(GdmManager) manager = NULL;
-        g_autoptr(GError)     error = NULL;
-
-        manager = g_task_propagate_pointer (G_TASK (result), &error);
-        if (manager == NULL) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        cancellable = g_task_get_cancellable (task);
-        gdm_manager_call_open_session (manager,
-                                       cancellable,
-                                       (GAsyncReadyCallback)
-                                       on_session_opened,
-                                       g_steal_pointer (&task));
-}
-
 static GDBusConnection *
 gdm_client_get_connection_finish (GdmClient      *client,
                                   GAsyncResult   *result,
@@ -542,6 +468,7 @@ gdm_client_get_connection (GdmClient           *client,
                             gpointer             user_data)
 {
         g_autoptr(GTask) task = NULL;
+        g_autoptr(GError) error = NULL;
         GDBusConnection *connection;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
@@ -551,19 +478,16 @@ gdm_client_get_connection (GdmClient           *client,
                            callback,
                            user_data);
 
-        connection = gdm_client_get_open_connection (client);
+        connection = gdm_client_get_connection_sync (client,
+                                                     cancellable,
+                                                     &error);
         if (connection != NULL) {
-            g_task_return_pointer (task,
-                                   g_object_ref (connection),
-                                   (GDestroyNotify) g_object_unref);
-            return;
+                g_task_return_pointer (task,
+                                       g_object_ref (connection),
+                                       (GDestroyNotify) g_object_unref);
+        } else {
+                g_task_return_error (task, g_steal_pointer (&error));
         }
-
-        get_manager (client,
-                     cancellable,
-                     (GAsyncReadyCallback)
-                     on_got_manager_for_opening_connection,
-                     g_steal_pointer (&task));
 }
 
 /**
