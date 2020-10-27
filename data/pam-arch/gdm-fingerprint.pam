@@ -1,14 +1,23 @@
-auth     required  pam_tally.so onerr=succeed file=/var/log/faillog
-auth     required  pam_shells.so
-auth     requisite pam_nologin.so
-auth     required  pam_env.so
-auth     required  pam_fprintd.so
-auth     optional  pam_permit.so
+#%PAM-1.0
 
-account  include   system-local-login
+auth       required                    pam_shells.so
+auth       requisite                   pam_nologin.so
+auth       required                    pam_faillock.so      preauth
+# Optionally use requisite above if you do not want to prompt for the fingerprint
+# on locked accounts.
+auth       [success=1 default=ignore]  pam_fprintd.so
+auth       [default=die]               pam_faillock.so      authfail
+auth       optional                    pam_permit.so
+auth       required                    pam_env.so
+auth       required                    pam_faillock.so      authsucc
+# If you drop the above call to pam_faillock.so the lock will be done also
+# on non-consecutive authentication failures.
+auth       [success=ok default=1]      pam_gdm.so
+auth       optional                    pam_gnome_keyring.so
 
-password required  pam_fprintd.so
-password optional  pam_permit.so
+account    include                     system-local-login
 
-session  optional  pam_keyinit.so force revoke
-session  include   system-local-login
+password   required                    pam_deny.so
+
+session    include                     system-local-login
+session    optional                    pam_gnome_keyring.so auto_start

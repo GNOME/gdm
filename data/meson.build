@@ -134,7 +134,6 @@ pam_data_files_map = {
     'gdm-fingerprint',
     'gdm-smartcard',
     'gdm-password',
-    'gdm-pin',
   ],
   'none': [],
   # We should no longer have 'autodetect' at this point
