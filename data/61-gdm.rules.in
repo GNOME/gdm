@@ -1,6 +1,6 @@
 # disable Wayland on Hi1710 chipsets
-ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", RUN+="@libexecdir@/gdm-disable-wayland"
+ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
 # disable Wayland when using the proprietary nvidia driver
-DRIVER=="nvidia", RUN+="@libexecdir@/gdm-disable-wayland"
+DRIVER=="nvidia", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
 # disable Wayland if modesetting is disabled
-IMPORT{cmdline}="nomodeset", RUN+="@libexecdir@/gdm-disable-wayland"
+IMPORT{cmdline}="nomodeset", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"

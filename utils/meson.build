@@ -26,14 +26,14 @@ gdm_screenshot = executable('gdm-screenshot',
   install: true,
 )
 
-# gdm-disable-wayland
-gdm_disable_wayland_deps = [
+# gdm-runtime-config
+gdm_runtime_config_deps = [
   glib_dep,
 ]
 
-gdm_disable_wayland = executable('gdm-disable-wayland',
-  'gdm-disable-wayland.c',
-  dependencies: gdm_disable_wayland_deps,
+gdm_runtime_config = executable('gdm-runtime-config',
+  'gdm-runtime-config.c',
+  dependencies: gdm_runtime_config_deps,
   include_directories: config_h_dir,
   install: true,
   install_dir: get_option('libexecdir'),
