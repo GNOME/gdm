@@ -2118,6 +2118,8 @@ on_display_status_changed (GdmDisplay             *display,
                 g_assert_not_reached ();
                 break;
         }
+
+        g_clear_object (&launch_environment);
 }
 
 static GdmDisplay *

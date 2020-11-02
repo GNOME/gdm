@@ -3590,6 +3590,7 @@ gdm_session_dispose (GObject *object)
         g_clear_pointer (&self->user_verifier_extensions,
                          g_hash_table_unref);
         g_clear_object (&self->greeter_interface);
+        g_clear_object (&self->remote_greeter_interface);
         g_clear_object (&self->chooser_interface);
 
         g_free (self->display_name);

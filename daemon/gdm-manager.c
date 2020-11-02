@@ -121,9 +121,9 @@ static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
 static void     gdm_manager_dispose     (GObject         *object);
 
-static GdmSession *create_user_session_for_display (GdmManager *manager,
-                                                    GdmDisplay *display,
-                                                    uid_t       allowed_user);
+static void     create_user_session_for_display (GdmManager *manager,
+                                                 GdmDisplay *display,
+                                                 uid_t       allowed_user);
 static void     start_user_session (GdmManager                *manager,
                                     StartUserSessionOperation *operation);
 static void     clean_user_session (GdmSession *session);
@@ -1338,7 +1338,8 @@ set_up_automatic_login_session (GdmManager *manager,
         /* 0 is root user; since the daemon talks to the session object
          * directly, itself, for automatic login
          */
-        session = create_user_session_for_display (manager, display, 0);
+        create_user_session_for_display (manager, display, 0);
+        session = get_user_session_for_display (display);
 
         g_object_get (G_OBJECT (display),
                       "session-type", &display_session_type,
@@ -1543,6 +1544,8 @@ on_display_status_changed (GdmDisplay *display,
                                 manager->priv->plymouth_is_running = FALSE;
                         }
 #endif
+
+                        g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
 
                         if (display == manager->priv->automatic_login_display) {
                                 g_clear_weak_pointer (&manager->priv->automatic_login_display);
@@ -2289,7 +2292,7 @@ clean_user_session (GdmSession *session)
         g_object_unref (session);
 }
 
-static GdmSession *
+static void
 create_user_session_for_display (GdmManager *manager,
                                  GdmDisplay *display,
                                  uid_t       allowed_user)
@@ -2399,7 +2402,7 @@ create_user_session_for_display (GdmManager *manager,
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
         g_object_set_data_full (G_OBJECT (display),
                                 "gdm-user-session",
-                                g_object_ref (session),
+                                session,
                                 (GDestroyNotify)
                                 clean_user_session);
 
@@ -2407,8 +2410,6 @@ create_user_session_for_display (GdmManager *manager,
         greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
         g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
 #endif
-
-        return session;
 }
 
 static void
