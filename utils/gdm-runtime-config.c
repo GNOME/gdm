@@ -31,21 +31,43 @@ main (int argc, char *argv[])
 {
         g_autoptr(GKeyFile) key_file = NULL;
         g_autoptr(GError) error = NULL;
+        gchar *group, *key, *value;
         gboolean saved_okay;
+
+        if (argc < 5 || g_strcmp0(argv[1], "set") != 0) {
+                g_printerr("gdm-runtime-config: command format should be " \
+                           "'gdm-runtime-config set <group> <key> <value>'\n" \
+                           "For example, 'gdm-runtime-config set daemon WaylandEnable true'");
+                return EX_USAGE;
+        }
+
+        group = argv[2];
+        key = argv[3];
+        value = argv[4];
 
         setlocale (LC_ALL, "");
 
         key_file = g_key_file_new ();
 
-        g_key_file_set_boolean (key_file, "daemon", "WaylandEnable", FALSE);
+        /* Just load the runtime conf file and ignore the error.  A new file
+         * will be created later if it is file not found.
+         * So that more than one config item can be set.
+         */
+        g_key_file_load_from_file (key_file,
+                                   GDM_RUNTIME_CONF,
+                                   G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
+                                   &error);
+        g_clear_error (&error);
+
+        g_key_file_set_value (key_file, group, key, value);
 
         g_mkdir_with_parents (GDM_RUN_DIR, 0711);
 
         saved_okay = g_key_file_save_to_file (key_file, GDM_RUNTIME_CONF, &error);
 
         if (!saved_okay) {
-                g_printerr ("gdm-disable-wayland: unable to disable wayland: %s",
-                            error->message);
+                g_printerr ("gdm-runtime-config: unable to set '%s' in '%s' group to '%s': %s",
+                            key, group, value, error->message);
                 return EX_CANTCREAT;
         }
 
