@@ -172,11 +172,13 @@ static void
 maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
                                               UserVerifierData   *data)
 {
+        GHashTable *user_verifier_extensions;
         GHashTableIter iter;
         gpointer key, value;
 
-        if (client->user_verifier_extensions != NULL) {
-                g_hash_table_iter_init (&iter, client->user_verifier_extensions);
+        user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier), "gdm-client-user-verifier-extensions");
+        if (user_verifier_extensions != NULL) {
+                g_hash_table_iter_init (&iter, user_verifier_extensions);
                 while (g_hash_table_iter_next (&iter, &key, &value)) {
                         if (value == NULL)
                                 return;
@@ -191,19 +193,21 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
                                             GAsyncResult       *result,
                                             UserVerifierData   *data)
 {
-        GdmClient                 *client;
+        GHashTable *user_verifier_extensions;
+        g_autoptr(GdmClient)       client = NULL;
         GdmUserVerifierChoiceList *choice_list;
         g_autoptr(GError)          error = NULL;
 
         client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
 
+        user_verifier_extensions = g_object_get_data (G_OBJECT (data->user_verifier), "gdm-client-user-verifier-extensions");
         choice_list = gdm_user_verifier_choice_list_proxy_new_finish (result, &error);
 
         if (choice_list == NULL) {
                 g_debug ("Couldn't create UserVerifier ChoiceList proxy: %s", error->message);
-                g_hash_table_remove (client->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name);
+                g_hash_table_remove (user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name);
         } else {
-                g_hash_table_replace (client->user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
+                g_hash_table_replace (user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
         }
 
         maybe_complete_user_verifier_proxy_operation (client, data);
@@ -214,7 +218,8 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                      GAsyncResult       *result,
                                      UserVerifierData   *data)
 {
-        GdmClient *client;
+        g_autoptr(GdmClient)       client = NULL;
+        GHashTable *user_verifier_extensions;
         GCancellable *cancellable;
         GDBusConnection *connection;
         g_autoptr(GError) error = NULL;
@@ -222,6 +227,7 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
 
         client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
         cancellable = g_task_get_cancellable (data->task);
+        user_verifier_extensions = g_object_get_data (G_OBJECT (user_verifier), "gdm-client-user-verifier-extensions");
 
         gdm_user_verifier_call_enable_extensions_finish (user_verifier, result, &error);
 
@@ -236,11 +242,11 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
 
         for (i = 0; client->enabled_extensions[i] != NULL; i++) {
                 g_debug ("Enabled extensions[%lu] = %s", i, client->enabled_extensions[i]);
-                g_hash_table_insert (client->user_verifier_extensions, client->enabled_extensions[i], NULL);
+                g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], NULL);
 
                 if (strcmp (client->enabled_extensions[i],
                             gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
-                        g_hash_table_insert (client->user_verifier_extensions, client->enabled_extensions[i], NULL);
+                        g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], NULL);
                         gdm_user_verifier_choice_list_proxy_new (connection,
                                                                  G_DBUS_PROXY_FLAGS_NONE,
                                                                  NULL,
@@ -251,12 +257,12 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                                                  data);
                 } else {
                         g_debug ("User verifier extension %s is unsupported", client->enabled_extensions[i]);
-                        g_hash_table_remove (client->user_verifier_extensions,
+                        g_hash_table_remove (user_verifier_extensions,
                                              client->enabled_extensions[i]);
                 }
         }
 
-        if (g_hash_table_size (client->user_verifier_extensions) == 0) {
+        if (g_hash_table_size (user_verifier_extensions) == 0) {
                 g_debug ("No supported user verifier extensions");
                 complete_user_verifier_proxy_operation (client, data);
         }
@@ -277,7 +283,8 @@ on_user_verifier_proxy_created (GObject            *source,
                                 GAsyncResult       *result,
                                 gpointer            user_data)
 {
-        GdmClient       *self;
+        g_autoptr(GdmClient)       self = NULL;
+        GHashTable         *user_verifier_extensions;
         GCancellable    *cancellable = NULL;
         g_autoptr(GdmUserVerifier) user_verifier = NULL;
         g_autoptr(GTask)           task = user_data;
@@ -300,11 +307,15 @@ on_user_verifier_proxy_created (GObject            *source,
                 return;
         }
 
-        self->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
-                                                                      g_str_equal,
-                                                                      NULL,
-                                                                      (GDestroyNotify)
-                                                                      free_interface_skeleton);
+        user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                          g_str_equal,
+                                                          NULL,
+                                                          (GDestroyNotify)
+                                                          free_interface_skeleton);
+        g_object_set_data_full (G_OBJECT (user_verifier),
+                                "gdm-client-user-verifier-extensions",
+                                user_verifier_extensions,
+                                (GDestroyNotify) g_hash_table_unref);
         cancellable = g_task_get_cancellable (task);
         gdm_user_verifier_call_enable_extensions (user_verifier,
                                                   (const char * const *)
@@ -444,80 +455,6 @@ gdm_client_get_connection_sync (GdmClient      *client,
         return connection;
 }
 
-static void
-on_connected (GObject            *source_object,
-              GAsyncResult       *result,
-              gpointer            user_data)
-{
-        g_autoptr(GTask)           task = user_data;
-        g_autoptr(GDBusConnection) connection = NULL;
-        g_autoptr(GError)          error = NULL;
-
-        connection = g_dbus_connection_new_for_address_finish (result, &error);
-        if (!connection) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        g_task_return_pointer (task,
-                               g_steal_pointer (&connection),
-                               (GDestroyNotify) g_object_unref);
-}
-
-static void
-on_session_opened (GdmManager         *manager,
-                   GAsyncResult       *result,
-                   gpointer            user_data)
-{
-        GCancellable     *cancellable;
-        g_autoptr(GTask)     task = user_data;
-        g_autoptr(GdmClient) client = NULL;
-        g_autoptr(GError)    error = NULL;
-        g_autofree char     *address = NULL;
-
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
-
-        if (!gdm_manager_call_open_session_finish (manager,
-                                                   &address,
-                                                   result,
-                                                   &error)) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        cancellable = g_task_get_cancellable (task);
-        g_dbus_connection_new_for_address (address,
-                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                           NULL,
-                                           cancellable,
-                                           on_connected,
-                                           g_steal_pointer (&task));
-}
-
-static void
-on_got_manager_for_opening_connection (GdmClient           *client,
-                                       GAsyncResult        *result,
-                                       gpointer             user_data)
-{
-        GCancellable *cancellable;
-        g_autoptr(GTask)      task = user_data;
-        g_autoptr(GdmManager) manager = NULL;
-        g_autoptr(GError)     error = NULL;
-
-        manager = g_task_propagate_pointer (G_TASK (result), &error);
-        if (manager == NULL) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        cancellable = g_task_get_cancellable (task);
-        gdm_manager_call_open_session (manager,
-                                       cancellable,
-                                       (GAsyncReadyCallback)
-                                       on_session_opened,
-                                       g_steal_pointer (&task));
-}
-
 static GDBusConnection *
 gdm_client_get_connection_finish (GdmClient      *client,
                                   GAsyncResult   *result,
@@ -542,6 +479,7 @@ gdm_client_get_connection (GdmClient           *client,
                             gpointer             user_data)
 {
         g_autoptr(GTask) task = NULL;
+        g_autoptr(GError) error = NULL;
         GDBusConnection *connection;
 
         g_return_if_fail (GDM_IS_CLIENT (client));
@@ -551,19 +489,16 @@ gdm_client_get_connection (GdmClient           *client,
                            callback,
                            user_data);
 
-        connection = gdm_client_get_open_connection (client);
+        connection = gdm_client_get_connection_sync (client,
+                                                     cancellable,
+                                                     &error);
         if (connection != NULL) {
-            g_task_return_pointer (task,
-                                   g_object_ref (connection),
-                                   (GDestroyNotify) g_object_unref);
-            return;
+                g_task_return_pointer (task,
+                                       g_object_ref (connection),
+                                       (GDestroyNotify) g_object_unref);
+        } else {
+                g_task_return_error (task, g_steal_pointer (&error));
         }
-
-        get_manager (client,
-                     cancellable,
-                     (GAsyncReadyCallback)
-                     on_got_manager_for_opening_connection,
-                     g_steal_pointer (&task));
 }
 
 /**
@@ -738,13 +673,19 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                            (gpointer *)
                                            &client->user_verifier);
                 if (client->enabled_extensions != NULL) {
+                        GHashTable *user_verifier_extensions;
                         gboolean res;
 
-                        client->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
-                                                                                        g_str_equal,
-                                                                                        NULL,
-                                                                                        (GDestroyNotify)
-                                                                                        free_interface_skeleton);
+                        user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                                          g_str_equal,
+                                                                          NULL,
+                                                                          (GDestroyNotify)
+                                                                          free_interface_skeleton);
+                        g_object_set_data_full (G_OBJECT (client->user_verifier),
+                                                "gdm-client-user-verifier-extensions",
+                                                user_verifier_extensions,
+                                                (GDestroyNotify) g_hash_table_unref);
+
                         res = gdm_user_verifier_call_enable_extensions_sync (client->user_verifier,
                                                                             (const char * const *)
                                                                              client->enabled_extensions,
@@ -764,7 +705,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                                                                                               cancellable,
                                                                                                                               NULL);
                                                         if (choice_list_interface != NULL)
-                                                                    g_hash_table_insert (client->user_verifier_extensions, client->enabled_extensions[i], choice_list_interface);
+                                                                    g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], choice_list_interface);
                                             }
                                 }
                         }
@@ -866,11 +807,17 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
         if (user_verifier == NULL)
                 return NULL;
 
-        client->user_verifier = user_verifier;
+        if (client->user_verifier != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->user_verifier),
+                                              (gpointer *)
+                                              &client->user_verifier);
+        }
 
         g_object_add_weak_pointer (G_OBJECT (client->user_verifier),
                                    (gpointer *)
                                    &client->user_verifier);
+
+        client->user_verifier = user_verifier;
 
         return user_verifier;
 }
@@ -888,10 +835,13 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 GdmUserVerifierChoiceList *
 gdm_client_get_user_verifier_choice_list (GdmClient *client)
 {
-        if (client->user_verifier_extensions == NULL)
+        GHashTable *user_verifier_extensions;
+
+        user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier), "gdm-client-user-verifier-extensions");
+        if (user_verifier_extensions == NULL)
                 return NULL;
 
-        return g_hash_table_lookup (client->user_verifier_extensions,
+        return g_hash_table_lookup (user_verifier_extensions,
                                     gdm_user_verifier_choice_list_interface_info ()->name);
 }
 
