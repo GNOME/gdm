@@ -510,13 +510,13 @@ gdm_display_real_prepare (GdmDisplay *self)
         return TRUE;
 }
 
-static void
+static gboolean
 look_for_existing_users_sync (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        GError *error = NULL;
-        GVariant *call_result;
-        GVariant *user_list;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) call_result = NULL;
+        g_autoptr(GVariant) user_list = NULL;
 
         priv = gdm_display_get_instance_private (self);
         priv->accountsservice_proxy = g_dbus_proxy_new_sync (priv->connection,
@@ -528,8 +528,8 @@ look_for_existing_users_sync (GdmDisplay *self)
                                                              &error);
 
         if (!priv->accountsservice_proxy) {
-                g_warning ("Failed to contact accountsservice: %s", error->message);
-                goto out;
+                g_critical ("Failed to contact accountsservice: %s", error->message);
+                return FALSE;
         }
 
         call_result = g_dbus_proxy_call_sync (priv->accountsservice_proxy,
@@ -541,16 +541,14 @@ look_for_existing_users_sync (GdmDisplay *self)
                                               &error);
 
         if (!call_result) {
-                g_warning ("Failed to list cached users: %s", error->message);
-                goto out;
+                g_critical ("Failed to list cached users: %s", error->message);
+                return FALSE;
         }
 
         g_variant_get (call_result, "(@ao)", &user_list);
         priv->have_existing_user_accounts = g_variant_n_children (user_list) > 0;
-        g_variant_unref (user_list);
-        g_variant_unref (call_result);
-out:
-        g_clear_error (&error);
+
+        return TRUE;
 }
 
 gboolean
@@ -568,7 +566,9 @@ gdm_display_prepare (GdmDisplay *self)
         /* FIXME: we should probably do this in a more global place,
          * asynchronously
          */
-        look_for_existing_users_sync (self);
+        if (!look_for_existing_users_sync (self)) {
+                exit (EXIT_FAILURE);
+        }
 
         priv->doing_initial_setup = wants_initial_setup (self);
 
