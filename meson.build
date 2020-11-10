@@ -164,7 +164,7 @@ libpam_dep = cc.find_library('pam')
 pam_extensions_supported = cc.has_header_symbol('security/pam_appl.h', 'PAM_BINARY_PROMPT')
 
 default_pam_config = get_option('default-pam-config')
-# If requested, try autodetecting from release files (see NetworkManager source) 
+# If requested, try autodetecting from release files (see NetworkManager source)
 if default_pam_config == 'autodetect'
   pam_autodetect_map = {
     '/etc/redhat-release': 'redhat',
@@ -273,6 +273,8 @@ if xdmcp_dep.found()
   subdir('chooser')
 endif
 subdir('docs')
+
+meson.add_install_script('build-aux/meson_post_install.py')
 
 if meson.version().version_compare('>= 0.53')
 summary({
