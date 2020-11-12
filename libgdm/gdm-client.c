@@ -176,7 +176,7 @@ maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
         GHashTableIter iter;
         gpointer key, value;
 
-        user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier), "gdm-client-user-verifier-extensions");
+        user_verifier_extensions = g_object_get_data (G_OBJECT (data->user_verifier), "gdm-client-user-verifier-extensions");
         if (user_verifier_extensions != NULL) {
                 g_hash_table_iter_init (&iter, user_verifier_extensions);
                 while (g_hash_table_iter_next (&iter, &key, &value)) {
