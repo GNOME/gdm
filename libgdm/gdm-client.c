@@ -650,6 +650,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                    GError       **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
+        GdmUserVerifier *user_verifier;
 
         if (client->user_verifier != NULL) {
                 return g_object_ref (client->user_verifier);
@@ -661,17 +662,16 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->user_verifier = gdm_user_verifier_proxy_new_sync (connection,
-                                                                        G_DBUS_PROXY_FLAGS_NONE,
-                                                                        NULL,
-                                                                        SESSION_DBUS_PATH,
-                                                                        cancellable,
-                                                                        error);
+        user_verifier = gdm_user_verifier_proxy_new_sync (connection,
+                                                          G_DBUS_PROXY_FLAGS_NONE,
+                                                          NULL,
+                                                          SESSION_DBUS_PATH,
+                                                          cancellable,
+                                                          error);
+
+        g_set_weak_pointer (&client->user_verifier, user_verifier);
 
         if (client->user_verifier != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->user_verifier),
-                                           (gpointer *)
-                                           &client->user_verifier);
                 if (client->enabled_extensions != NULL) {
                         GHashTable *user_verifier_extensions;
                         gboolean res;
@@ -807,17 +807,7 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
         if (user_verifier == NULL)
                 return NULL;
 
-        if (client->user_verifier != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->user_verifier),
-                                              (gpointer *)
-                                              &client->user_verifier);
-        }
-
-        g_object_add_weak_pointer (G_OBJECT (client->user_verifier),
-                                   (gpointer *)
-                                   &client->user_verifier);
-
-        client->user_verifier = user_verifier;
+        g_set_weak_pointer (&client->user_verifier, user_verifier);
 
         return user_verifier;
 }
@@ -980,11 +970,7 @@ gdm_client_get_greeter_finish (GdmClient       *client,
         if (greeter == NULL)
                 return NULL;
 
-        client->greeter = greeter;
-
-        g_object_add_weak_pointer (G_OBJECT (client->greeter),
-                                   (gpointer *)
-                                   &client->greeter);
+        g_set_weak_pointer (&client->greeter, greeter);
 
         return greeter;
 }
@@ -1008,6 +994,7 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                              GError       **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
+        GdmGreeter *greeter;
 
         if (client->greeter != NULL) {
                 return g_object_ref (client->greeter);
@@ -1019,18 +1006,16 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->greeter = gdm_greeter_proxy_new_sync (connection,
-                                                            G_DBUS_PROXY_FLAGS_NONE,
-                                                            NULL,
-                                                            SESSION_DBUS_PATH,
-                                                            cancellable,
-                                                            error);
+        greeter = gdm_greeter_proxy_new_sync (connection,
+                                              G_DBUS_PROXY_FLAGS_NONE,
+                                              NULL,
+                                              SESSION_DBUS_PATH,
+                                              cancellable,
+                                              error);
+
+        g_set_weak_pointer (&client->greeter, greeter);
 
         if (client->greeter != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->greeter),
-                                           (gpointer *)
-                                           &client->greeter);
-
                 query_for_timed_login_requested_signal (client->greeter);
         }
 
@@ -1150,11 +1135,7 @@ gdm_client_get_remote_greeter_finish (GdmClient     *client,
         if (remote_greeter == NULL)
                 return NULL;
 
-        client->remote_greeter = remote_greeter;
-
-        g_object_add_weak_pointer (G_OBJECT (client->remote_greeter),
-                                   (gpointer *)
-                                   &client->remote_greeter);
+        g_set_weak_pointer (&client->remote_greeter, remote_greeter);
 
         return remote_greeter;
 }
@@ -1177,6 +1158,7 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
                                     GError       **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
+        GdmRemoteGreeter *remote_greeter;
 
         if (client->remote_greeter != NULL) {
                 return g_object_ref (client->remote_greeter);
@@ -1188,18 +1170,14 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->remote_greeter = gdm_remote_greeter_proxy_new_sync (connection,
-                                                                          G_DBUS_PROXY_FLAGS_NONE,
-                                                                          NULL,
-                                                                          SESSION_DBUS_PATH,
-                                                                          cancellable,
-                                                                          error);
+        remote_greeter = gdm_remote_greeter_proxy_new_sync (connection,
+                                                            G_DBUS_PROXY_FLAGS_NONE,
+                                                            NULL,
+                                                            SESSION_DBUS_PATH,
+                                                            cancellable,
+                                                            error);
 
-        if (client->remote_greeter != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->remote_greeter),
-                                           (gpointer *)
-                                           &client->remote_greeter);
-        }
+        g_set_weak_pointer (&client->remote_greeter, remote_greeter);
 
         return client->remote_greeter;
 }
@@ -1318,11 +1296,7 @@ gdm_client_get_chooser_finish (GdmClient       *client,
         if (chooser == NULL)
                 return NULL;
 
-        client->chooser = chooser;
-
-        g_object_add_weak_pointer (G_OBJECT (client->chooser),
-                                   (gpointer *)
-                                   &client->chooser);
+        g_set_weak_pointer (&client->chooser, chooser);
 
         return chooser;
 }
@@ -1345,6 +1319,7 @@ gdm_client_get_chooser_sync (GdmClient     *client,
                              GError       **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
+        GdmChooser *chooser;
 
         if (client->chooser != NULL) {
                 return g_object_ref (client->chooser);
@@ -1356,18 +1331,14 @@ gdm_client_get_chooser_sync (GdmClient     *client,
                 return NULL;
         }
 
-        client->chooser = gdm_chooser_proxy_new_sync (connection,
-                                                            G_DBUS_PROXY_FLAGS_NONE,
-                                                            NULL,
-                                                            SESSION_DBUS_PATH,
-                                                            cancellable,
-                                                            error);
+        chooser = gdm_chooser_proxy_new_sync (connection,
+                                              G_DBUS_PROXY_FLAGS_NONE,
+                                              NULL,
+                                              SESSION_DBUS_PATH,
+                                              cancellable,
+                                              error);
 
-        if (client->chooser != NULL) {
-                g_object_add_weak_pointer (G_OBJECT (client->chooser),
-                                           (gpointer *)
-                                           &client->chooser);
-        }
+        g_set_weak_pointer (&client->chooser, chooser);
 
         return client->chooser;
 }
@@ -1397,29 +1368,10 @@ gdm_client_finalize (GObject *object)
 
         g_return_if_fail (client != NULL);
 
-        if (client->user_verifier != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->user_verifier),
-                                              (gpointer *)
-                                              &client->user_verifier);
-        }
-
-        if (client->greeter != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->greeter),
-                                              (gpointer *)
-                                              &client->greeter);
-        }
-
-        if (client->remote_greeter != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->remote_greeter),
-                                              (gpointer *)
-                                              &client->remote_greeter);
-        }
-
-        if (client->chooser != NULL) {
-                g_object_remove_weak_pointer (G_OBJECT (client->chooser),
-                                              (gpointer *)
-                                              &client->chooser);
-        }
+        g_clear_weak_pointer (&client->user_verifier);
+        g_clear_weak_pointer (&client->greeter);
+        g_clear_weak_pointer (&client->remote_greeter);
+        g_clear_weak_pointer (&client->chooser);
 
         g_strfreev (client->enabled_extensions);
 
