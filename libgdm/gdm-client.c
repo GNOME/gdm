@@ -41,6 +41,7 @@ struct _GdmClient
         GObject             parent;
 
         GdmUserVerifier    *user_verifier;
+        GdmUserVerifier    *user_verifier_for_reauth;
         GHashTable         *user_verifier_extensions;
 
         GdmGreeter         *greeter;
@@ -569,6 +570,8 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
+        g_set_weak_pointer (&client->user_verifier_for_reauth, user_verifier);
+
         return user_verifier;
 }
 
@@ -628,9 +631,15 @@ gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
                                                  GAsyncResult    *result,
                                                  GError         **error)
 {
+        GdmUserVerifier *user_verifier;
+
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        return g_task_propagate_pointer (G_TASK (result), error);
+        user_verifier = g_task_propagate_pointer (G_TASK (result), error);
+
+        g_set_weak_pointer (&client->user_verifier_for_reauth, user_verifier);
+
+        return user_verifier;
 }
 
 /**
@@ -825,9 +834,14 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 GdmUserVerifierChoiceList *
 gdm_client_get_user_verifier_choice_list (GdmClient *client)
 {
-        GHashTable *user_verifier_extensions;
+        GHashTable *user_verifier_extensions = NULL;
 
-        user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier), "gdm-client-user-verifier-extensions");
+        if (client->user_verifier_for_reauth != NULL)
+                user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier_for_reauth), "gdm-client-user-verifier-extensions");
+
+        if (user_verifier_extensions == NULL && client->user_verifier != NULL)
+                user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier), "gdm-client-user-verifier-extensions");
+
         if (user_verifier_extensions == NULL)
                 return NULL;
 
@@ -1369,6 +1383,7 @@ gdm_client_finalize (GObject *object)
         g_return_if_fail (client != NULL);
 
         g_clear_weak_pointer (&client->user_verifier);
+        g_clear_weak_pointer (&client->user_verifier_for_reauth);
         g_clear_weak_pointer (&client->greeter);
         g_clear_weak_pointer (&client->remote_greeter);
         g_clear_weak_pointer (&client->chooser);
