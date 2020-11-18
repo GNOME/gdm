@@ -21,5 +21,5 @@ greeter_dconf_defaults = custom_target('greeter-dconf-defaults',
     meson.current_source_dir() / 'defaults',
   ],
   install: true,
-  install_dir: get_option('datadir') / meson.project_name(),
+  install_dir: gdm_datadir,
 )

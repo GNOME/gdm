@@ -11,6 +11,6 @@ foreach desktop_file : [ 'mime-dummy-handler.desktop', 'mimeapps.list' ]
     input: desktop_file,
     output: desktop_file,
     configuration: desktop_conf,
-    install_dir: get_option('datadir') / 'gdm' / 'greeter' / 'applications',
+    install_dir: gdm_datadir / 'greeter' / 'applications',
   )
 endforeach

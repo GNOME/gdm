@@ -17,6 +17,7 @@ add_project_arguments('-D_GNU_SOURCE', language: 'c')
 
 # Options
 gdm_prefix = get_option('prefix')
+gdm_datadir = get_option('datadir') / meson.project_name()
 
 gdmconfdir = (get_option('sysconfsubdir') == '')? gdm_prefix / get_option('sysconfdir') : gdm_prefix / get_option('sysconfdir') / get_option('sysconfsubdir')
 dmconfdir = (get_option('dmconfdir') != '')? get_option('dmconfdir') : gdm_prefix / get_option('sysconfdir') / 'dm'
@@ -25,7 +26,7 @@ at_spi_registryd_dir = (get_option('at-spi-registryd-dir') != '')? get_option('a
 lang_config_file = (get_option('lang-file') != '')? get_option('lang-file') : gdm_prefix / get_option('sysconfdir') / 'locale.conf'
 pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm_prefix / get_option('libdir') / 'security'
 dbus_sys_dir = (get_option('dbus-sys') != '')? get_option('dbus-sys') : get_option('sysconfdir') / 'dbus-1' / 'system.d'
-gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / get_option('datadir') / 'gdm' / 'defaults.conf'
+gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / gdm_datadir / 'defaults.conf'
 gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
 gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get_option('gnome-settings-daemon-dir') : gdm_prefix / get_option('libexecdir')
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : gdm_prefix / get_option('localstatedir') / 'run' / 'gdm'
@@ -211,6 +212,7 @@ conf.set_quoted('LIBEXECDIR', gdm_prefix / get_option('libexecdir'))
 conf.set_quoted('LOGDIR', get_option('log-dir'))
 conf.set_quoted('DMCONFDIR', dmconfdir)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
+conf.set_quoted('GDM_DATADIR', gdm_prefix / gdm_datadir)
 conf.set_quoted('GDM_SCREENSHOT_DIR', gdm_screenshot_dir)
 conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_RAN_ONCE_MARKER_DIR', ran_once_marker_dir)

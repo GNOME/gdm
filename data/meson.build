@@ -55,11 +55,11 @@ gdm_schema = configure_file(
     'GDM_GROUPNAME': get_option('group'),
     'gdmconfdir': gdmconfdir,
   },
-  install_dir: get_option('datadir') / 'gdm',
+  install_dir: gdm_datadir,
 )
 
 install_data('locale.alias',
-  install_dir: get_option('datadir') / 'gdm',
+  install_dir: gdm_datadir,
 )
 
 gdm_gnome_shell_component = 'org.gnome.Shell'

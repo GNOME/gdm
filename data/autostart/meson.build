@@ -7,6 +7,6 @@ foreach autostart_file : [ 'orca-autostart.desktop' ]
     input: autostart_file,
     output: autostart_file,
     configuration: autostart_files_conf,
-    install_dir: get_option('datadir') / 'gdm' / 'greeter' / 'autostart',
+    install_dir: gdm_datadir / 'greeter' / 'autostart',
   )
 endforeach
