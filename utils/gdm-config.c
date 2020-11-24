@@ -36,7 +36,7 @@
 #define DCONF_SYSCONFIG_PROFILES_PATH DCONF_SYSCONFIG "dconf/profile"
 #define DCONF_SYSCONFIG_DB_PATH DCONF_SYSCONFIG "dconf/db"
 #define DCONF_SYSTEM_DB_PREFIX "system-db:"
-#define DCONF_SYSTEM_DB_DEFAULT_NAME "local"
+#define DCONF_SYSTEM_DB_DEFAULT_NAME "gdm_auth_config"
 
 #define GDM_DEFAULT_DCONF_PROFILE \
         DCONF_PROFILES_PATH "/" GDM_DCONF_PROFILE
@@ -871,7 +871,10 @@ ensure_dconf_configurable_system_profile (GError **error)
 {
         g_autofree char *profile_file = NULL;
         g_autofree char *db_path = NULL;
+        g_autoptr(GPtrArray) profile_lines = NULL;
+        const char *gdm_sys_db;
 
+        gdm_sys_db = DCONF_SYSTEM_DB_PREFIX DCONF_SYSTEM_DB_DEFAULT_NAME;
         profile_file = g_build_filename (DCONF_SYSCONFIG_PROFILES_PATH,
                                          get_dconf_system_profile (), NULL);
 
@@ -879,13 +882,25 @@ ensure_dconf_configurable_system_profile (GError **error)
                 if (!make_directory_with_parents (DCONF_SYSCONFIG_PROFILES_PATH, error))
                         return FALSE;
 
-                if (!g_file_set_contents (profile_file,
-                                          "user-db:user\n"
-                                          DCONF_SYSTEM_DB_PREFIX
-                                          DCONF_SYSTEM_DB_DEFAULT_NAME, -1,
-                                          error)) {
+                profile_lines = g_ptr_array_new_with_free_func (g_free);
+                g_ptr_array_add (profile_lines, g_strdup ("user-db:user"));
+                g_ptr_array_add (profile_lines, g_strdup (gdm_sys_db));
+        } else {
+                profile_lines = read_file_contents_to_array (profile_file, error);
+                if (!profile_lines)
                         return FALSE;
+
+                if (!g_ptr_array_find_with_equal_func (profile_lines, gdm_sys_db,
+                                                       g_str_equal, NULL)) {
+                        g_ptr_array_add (profile_lines, g_strdup (gdm_sys_db));
+                } else {
+                        g_clear_pointer (&profile_lines, g_ptr_array_unref);
                 }
+        }
+
+        if (profile_lines) {
+                if (!write_array_to_file (profile_lines, profile_file, error))
+                        return FALSE;
         }
 
         db_path = get_dconf_db_path (DCONF_SYSTEM_DB_DEFAULT_NAME);
@@ -947,15 +962,8 @@ ensure_system_user_dconf_profile (GError **error)
         g_autofree char *db_name = NULL;
         g_autoptr(GError) local_error = NULL;
 
-        /* XXX: To improve this, in case the user changed the db name in profile
-         * we could store the used db_name in a file under the GDM_WORKING_DIR.
-         * Otherwise we could add another gdm-config db for the profile and
-         * always use it, instead of trying to reuse the already configured ones
-         */
-        db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME, NULL);
-        if (!db_name)
-                db_name = get_system_dconf_profile_db_name (NULL, &local_error);
-
+        db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME,
+                                                    &local_error);
         if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
                 g_autofree char *profile_file = NULL;
 
@@ -964,7 +972,8 @@ ensure_system_user_dconf_profile (GError **error)
                         return FALSE;
 
                 g_debug ("Initialized dconf profile at %s", profile_file);
-                db_name = get_system_dconf_profile_db_name (NULL, error);
+                db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME,
+                                                            error);
                 if (!db_name)
                         return FALSE;
         } else if (local_error) {
