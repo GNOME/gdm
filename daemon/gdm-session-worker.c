@@ -757,6 +757,9 @@ get_friendly_error_message (int error_code)
                 return _("Your account was given a time limit that’s now passed.");
                 break;
 
+            case PAM_MAXTRIES:
+                return _("You reached the maximum authentication attempts, please try another method");
+
             default:
                 break;
         }
