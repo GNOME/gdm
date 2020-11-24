@@ -177,28 +177,28 @@ int main(int argc, char **argv) {
 libpam_dep = cc.find_library('pam')
 pam_extensions_supported = cc.has_header_symbol('security/pam_appl.h', 'PAM_BINARY_PROMPT')
 
-default_pam_config = get_option('default-pam-config')
-# If requested, try autodetecting from release files (see NetworkManager source)
-if default_pam_config == 'autodetect'
-  pam_autodetect_map = {
-    '/etc/redhat-release': 'redhat',
-    '/etc/fedora-release': 'redhat',
-    '/etc/exherbo-release': 'exherbo',
-    '/etc/arch-release': 'arch',
-    '/etc/lfs-release': 'lfs',
-  }
+distro_autodetect_map = {
+  '/etc/redhat-release': 'redhat',
+  '/etc/fedora-release': 'redhat',
+  '/etc/exherbo-release': 'exherbo',
+  '/etc/arch-release': 'arch',
+  '/etc/lfs-release': 'lfs',
+}
 
-  foreach _file, _pam_conf : pam_autodetect_map
-    pam_file_check = run_command('test', '-f', _file)
-    if pam_file_check.returncode() == 0
-      default_pam_config = _pam_conf
+distro = get_option('distro')
+if distro != 'none'
+  foreach _file, _pam_conf : distro_autodetect_map
+    distro_check = run_command('test', '-f', _file)
+    if distro_check.returncode() == 0
+      distro = _pam_conf
     endif
   endforeach
+endif
 
-  # If still not detected, default to none
-  if default_pam_config == 'autodetect'
-    default_pam_config = 'none'
-  endif
+# If requested, try autodetecting from release files (see NetworkManager source)
+default_pam_config = get_option('default-pam-config')
+if default_pam_config == 'autodetect'
+  default_pam_config = distro
 endif
 
 # dconf paths, we should fix dconf.pc to provide us more real data though
@@ -226,6 +226,7 @@ conf.set_quoted('LIBDIR', gdm_prefix / get_option('libdir'))
 conf.set_quoted('LIBEXECDIR', gdm_prefix / get_option('libexecdir'))
 conf.set_quoted('LOGDIR', get_option('log-dir'))
 conf.set_quoted('DMCONFDIR', dmconfdir)
+conf.set_quoted('DISTRO', distro)
 conf.set_quoted('DCONF_SYSCONFIG', dconf_sysconfig)
 conf.set_quoted('DCONF_PROFILES_PATH', dconf_profiles_path)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
@@ -235,6 +236,7 @@ conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_RAN_ONCE_MARKER_DIR', ran_once_marker_dir)
 conf.set_quoted('GDM_RUN_DIR', gdm_run_dir)
 conf.set_quoted('GDM_DCONF_PROFILE', 'gdm')
+conf.set_quoted('GDM_WORKING_DIR', working_dir)
 conf.set_quoted('GNOMELOCALEDIR', gdm_prefix / get_option('localedir'))
 conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
