@@ -131,16 +131,13 @@ pam_data_files_map = {
     'gdm-smartcard',
     'gdm-password',
   ],
-  'none': [],
-  # We should no longer have 'autodetect' at this point
 }
 
-pam_data_files = pam_data_files_map[default_pam_config]
-pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
+pam_data_files = pam_data_files_map.get(default_pam_config, [])
 foreach _pam_filename : pam_data_files
   install_data('pam-@0@/@1@.pam'.format(default_pam_config, _pam_filename),
     rename: _pam_filename,
-    install_dir: pam_prefix / 'pam.d',
+    install_dir: pam_profiles_dir,
   )
 endforeach
 

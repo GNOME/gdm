@@ -36,6 +36,8 @@ ran_once_marker_dir = (get_option('ran-once-marker-dir') != '')? get_option('ran
 working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
 gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir
 gdm_screenshot_dir = (get_option('screenshot-dir') != '')? get_option('screenshot-dir') : gdm_run_dir / 'greeter'
+pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
+pam_profiles_dir = pam_prefix / 'pam.d'
 
 # Common variables
 config_h_dir = include_directories('.')
@@ -238,6 +240,7 @@ conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
 conf.set_quoted('GNOME_SETTINGS_DAEMON_DIR', gnome_settings_daemon_dir)
 conf.set_quoted('LANG_CONFIG_FILE', lang_config_file)
+conf.set_quoted('PAM_PROFILES_DIR', pam_profiles_dir[0] == '/' ? pam_profiles_dir : '/' + pam_profiles_dir)
 conf.set('HAVE_ADT', have_adt)
 conf.set('HAVE_UTMP_H', have_utmp_header)
 conf.set('HAVE_UTMPX_H', have_utmpx_header)
