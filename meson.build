@@ -51,6 +51,7 @@ gobject_dep = dependency('gobject-2.0', version: '>=' + glib_min_version)
 gio_dep = dependency('gio-2.0', version: '>=' + glib_min_version)
 gio_unix_dep = dependency('gio-unix-2.0', version: '>=' + glib_min_version)
 gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
+dconf_dep = dependency('dconf', required: false)
 libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 xcb_dep = dependency('xcb')
@@ -198,6 +199,18 @@ if default_pam_config == 'autodetect'
   endif
 endif
 
+# dconf paths, we should fix dconf.pc to provide us more real data though
+if dconf_dep.found()
+  dconf_prefix = dconf_dep.get_pkgconfig_variable('prefix')
+  dconf_sysconfig = (dconf_prefix == '/usr') ? '/etc' : dconf_prefix + '/etc/'
+  dconf_datadir = dconf_prefix / 'share'
+else
+  dconf_sysconfig = gdm_prefix / get_option('sysconfdir')
+  dconf_datadir = gdm_prefix / get_option('datadir')
+endif
+
+dconf_profiles_path = dconf_datadir / 'dconf' / 'profile'
+
 # Configuration
 conf = configuration_data()
 conf.set_quoted('G_LOG_DOMAIN', 'Gdm')
@@ -211,6 +224,8 @@ conf.set_quoted('LIBDIR', gdm_prefix / get_option('libdir'))
 conf.set_quoted('LIBEXECDIR', gdm_prefix / get_option('libexecdir'))
 conf.set_quoted('LOGDIR', get_option('log-dir'))
 conf.set_quoted('DMCONFDIR', dmconfdir)
+conf.set_quoted('DCONF_SYSCONFIG', dconf_sysconfig)
+conf.set_quoted('DCONF_PROFILES_PATH', dconf_profiles_path)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
 conf.set_quoted('GDM_DATADIR', gdm_prefix / gdm_datadir)
 conf.set_quoted('GDM_SCREENSHOT_DIR', gdm_screenshot_dir)
