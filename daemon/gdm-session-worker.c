@@ -66,6 +66,7 @@
 #include "gdm-pam-extensions.h"
 #endif
 
+#include "gdm-dbus-glue.h"
 #include "gdm-session-worker.h"
 #include "gdm-session-glue.h"
 #include "gdm-session.h"
@@ -1051,18 +1052,6 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         gdm_session_worker_stop_auditor (worker);
 
-        /* If user-display-server is not enabled the login_vt is always
-         * identical to the session_vt. So in that case we never need to
-         * do a VT switch. */
-#ifdef ENABLE_USER_DISPLAY_SERVER
-        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
-                /* Switch to the login VT if we are not the login screen. */
-                if (worker->priv->session_vt != GDM_INITIAL_VT) {
-                        jump_to_vt (worker, GDM_INITIAL_VT);
-                }
-        }
-#endif
-
         worker->priv->session_vt = 0;
 
         g_debug ("GdmSessionWorker: state NONE");
@@ -1776,6 +1765,53 @@ run_script (GdmSessionWorker *worker,
 }
 
 static void
+wait_until_dbus_signal_emission_to_manager_finishes (GdmSessionWorker *worker)
+{
+        g_autoptr (GdmDBusPeer) peer_proxy = NULL;
+        g_autoptr (GError) error = NULL;
+        gboolean pinged;
+
+        peer_proxy = gdm_dbus_peer_proxy_new_sync (worker->priv->connection,
+                                                   G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                                   NULL,
+                                                   "/org/freedesktop/DBus",
+                                                   NULL,
+                                                   &error);
+
+        if (peer_proxy == NULL) {
+                g_debug ("GdmSessionWorker: could not create peer proxy to daemon: %s",
+                         error->message);
+                return;
+        }
+
+        pinged = gdm_dbus_peer_call_ping_sync (peer_proxy, NULL, &error);
+
+        if (!pinged) {
+                g_debug ("GdmSessionWorker: could not ping daemon: %s",
+                         error->message);
+                return;
+        }
+}
+
+static void
+jump_back_to_initial_vt (GdmSessionWorker *worker)
+{
+        if (worker->priv->session_vt == 0)
+                return;
+
+        if (worker->priv->session_vt == GDM_INITIAL_VT)
+                return;
+
+        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") != 0)
+                return;
+
+#ifdef ENABLE_USER_DISPLAY_SERVER
+        jump_to_vt (worker, GDM_INITIAL_VT);
+        worker->priv->session_vt = 0;
+#endif
+}
+
+static void
 session_worker_child_watch (GPid              pid,
                             int               status,
                             GdmSessionWorker *worker)
@@ -1789,8 +1825,11 @@ session_worker_child_watch (GPid              pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
-
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
+
+        worker->priv->child_pid = -1;
+        worker->priv->child_watch_id = 0;
+        run_script (worker, GDMCONFDIR "/PostSession");
 
         gdm_dbus_worker_emit_session_exited (GDM_DBUS_WORKER (worker),
                                              worker->priv->service,
@@ -1798,9 +1837,28 @@ session_worker_child_watch (GPid              pid,
 
         killpg (pid, SIGHUP);
 
-        worker->priv->child_pid = -1;
-        worker->priv->child_watch_id = 0;
-        run_script (worker, GDMCONFDIR "/PostSession");
+        /* FIXME: It's important to give the manager an opportunity to process the
+         * session-exited emission above before switching VTs.
+         *
+         * This is because switching VTs makes the manager try to put a login screen
+         * up on VT 1, but it may actually want to try to auto login again in response
+         * to session-exited.
+         *
+         * This function just does a manager roundtrip over the bus to make sure the
+         * signal has been dispatched before jumping.
+         *
+         * Ultimately, we may want to improve the manager<->worker interface.
+         *
+         * See:
+         *
+         * https://gitlab.gnome.org/GNOME/gdm/-/merge_requests/123
+         *
+         * for some ideas and more discussion.
+         *
+         */
+        wait_until_dbus_signal_emission_to_manager_finishes (worker);
+
+        jump_back_to_initial_vt (worker);
 }
 
 static void
@@ -2424,6 +2482,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
  out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
+                worker->priv->session_vt = 0;
                 return FALSE;
         }
 
@@ -3548,6 +3607,8 @@ gdm_session_worker_finalize (GObject *object)
         if (worker->priv->pam_handle != NULL) {
                 gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
         }
+
+        jump_back_to_initial_vt (worker);
 
         g_object_unref (worker->priv->user_settings);
         g_free (worker->priv->service);
