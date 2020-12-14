@@ -1,4 +1,10 @@
 # D-Bus interfaces
+dbus_gen = gnome.gdbus_codegen('gdm-dbus-glue',
+  'org.freedesktop.DBus.xml',
+  namespace: 'GdmDBus',
+  interface_prefix: 'org.freedesktop.DBus',
+  autocleanup: 'all',
+)
 display_dbus_gen = gnome.gdbus_codegen('gdm-display-glue',
   'gdm-display.xml',
   namespace: 'GdmDBus',
@@ -87,6 +93,7 @@ gdm_session_worker_src = [
   'gdm-session-worker-job.c',
   'gdm-session-worker-common.c',
   'gdm-dbus-util.c',
+  dbus_gen,
   session_dbus_gen,
   session_worker_dbus_gen,
   gdm_session_enums,
