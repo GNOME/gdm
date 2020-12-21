@@ -744,7 +744,50 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 }
 
 static const char *
-get_friendly_error_message (int error_code)
+get_max_retries_error_message (GdmSessionWorker *worker)
+{
+        if (g_strcmp0 (worker->priv->service, "gdm-password") == 0)
+                return _("You reached the maximum password authentication attempts, please try another method");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-pin") == 0)
+                return _("You reached the maximum PIN authentication attempts, please try another method");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-autologin") == 0)
+                return _("You reached the maximum auto login attempts, please try another authentication method");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-fingerprint") == 0)
+                return _("You reached the maximum fingerprint authentication attempts, please try another method");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-smartcard") == 0)
+                return _("You reached the maximum smart card authentication attempts, please try another method");
+
+        return _("You reached the maximum authentication attempts, please try another method");
+}
+
+static const char *
+get_generic_error_message (GdmSessionWorker *worker)
+{
+        if (g_strcmp0 (worker->priv->service, "gdm-password") == 0)
+                return _("Sorry, password authentication didn’t work. Please try again.");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-pin") == 0)
+                return _("Sorry, PIN authentication didn’t work. Please try again.");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-autologin") == 0)
+                return _("Sorry, auto login, didn’t work. Please try again.");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-fingerprint") == 0)
+                return _("Sorry, fingerprint authentication didn’t work. Please try again.");
+
+        if (g_strcmp0 (worker->priv->service, "gdm-smartcard") == 0)
+                return _("Sorry, smart card authentication didn’t work. Please try again.");
+
+        return _("Sorry, that didn’t work. Please try again.");
+}
+
+static const char *
+get_friendly_error_message (GdmSessionWorker *worker,
+                            int               error_code)
 {
         switch (error_code) {
             case PAM_SUCCESS:
@@ -757,11 +800,14 @@ get_friendly_error_message (int error_code)
                 return _("Your account was given a time limit that’s now passed.");
                 break;
 
+            case PAM_MAXTRIES:
+                return get_max_retries_error_message (worker);
+
             default:
                 break;
         }
 
-        return _("Sorry, that didn’t work. Please try again.");
+        return get_generic_error_message (worker);
 }
 
 static int
@@ -1251,7 +1297,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", get_friendly_error_message (error_code));
+                             "%s", get_friendly_error_message (worker, error_code));
                 goto out;
         }
 
@@ -1316,7 +1362,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHORIZING,
-                             "%s", get_friendly_error_message (error_code));
+                             "%s", get_friendly_error_message (worker, error_code));
                 goto out;
         }
 
