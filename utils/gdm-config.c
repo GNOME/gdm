@@ -79,6 +79,7 @@ typedef enum {
         AUTH_PASSWORD = COMMAND_PASSWORD,
         AUTH_FINGERPRINT = COMMAND_FINGERPRINT,
         AUTH_SMARTCARD = COMMAND_SMARTCARD,
+        AUTH_NONE = COMMAND_UNKNOWN,
 } GdmAuthType;
 
 typedef enum {
@@ -91,7 +92,6 @@ typedef enum {
 
 typedef struct
 {
-        const char       *name;
         GdmConfigCommand  config_command;
         GPtrArray        *args;
 } OptionData;
@@ -233,27 +233,40 @@ config_command_to_string (GdmConfigCommand config_command)
                         return "show";
                 case COMMAND_UNKNOWN:
                         return "unknown";
+        }
+
+        g_assert_not_reached ();
+}
+
+static const char *
+get_command_title (GdmConfigCommand config_command)
+{
+        switch (config_command) {
+                case COMMAND_PASSWORD:
+                        return _("Configure Password Authentication.");
+                case COMMAND_FINGERPRINT:
+                        return _("Configure Fingerprint Authentication.");
+                case COMMAND_SMARTCARD:
+                        return _("Configure Smart Card Authentication.");
+                case COMMAND_SHOW:
+                        return _("Show GDM Authentication configuration.");
                 default:
                         g_assert_not_reached ();
         }
 }
 
 static const char *
-config_command_name (GdmConfigCommand config_command)
+get_command_group_title (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case COMMAND_HELP:
-                        return _("Help");
                 case COMMAND_PASSWORD:
-                        return _("Password");
+                        return _("Password options");
                 case COMMAND_FINGERPRINT:
-                        return _("Fingerprint");
+                        return _("Fingerprint options");
                 case COMMAND_SMARTCARD:
-                        return _("Smart Card");
+                        return _("Smart Card options");
                 case COMMAND_SHOW:
-                        return _("Show");
-                case COMMAND_UNKNOWN:
-                        return _("Unknown");
+                        return _("Show options");
                 default:
                         g_assert_not_reached ();
         }
@@ -263,19 +276,34 @@ static GdmAuthType
 config_command_to_auth_type (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case AUTH_PASSWORD:
-                case AUTH_SMARTCARD:
-                case AUTH_FINGERPRINT:
+                case COMMAND_PASSWORD:
+                case COMMAND_SMARTCARD:
+                case COMMAND_FINGERPRINT:
                         return (GdmAuthType) config_command;
                 default:
-                        g_assert_not_reached ();
+                        return AUTH_NONE;
         }
 }
 
 const char *
-auth_type_to_string (GdmAuthType config_command)
+auth_type_to_string (GdmAuthType auth_type)
 {
-        return config_command_to_string ((GdmConfigCommand) config_command);
+        return config_command_to_string ((GdmConfigCommand) auth_type);
+}
+
+const char *
+get_pam_module_missing_error (GdmAuthType auth_type)
+{
+        switch (auth_type) {
+                case AUTH_PASSWORD:
+                        return _("No PAM module available for Password authentication");
+                case AUTH_SMARTCARD:
+                        return _("No PAM module available for Smart Card authentication");
+                case AUTH_FINGERPRINT:
+                        return _("No PAM module available for Fingerprint authentication");
+                default:
+                        g_assert_not_reached ();
+        }
 }
 
 const char *
@@ -303,16 +331,16 @@ toggle_option_check (GOptionContext *context,
 
         if (data->args->len < 2) {
                 g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
-                             _("%s needs at least one parameter"),
-                             data->name);
+                             _("“%s” needs at least one parameter"),
+                             config_command_to_string (data->config_command));
                 return FALSE;
         }
 
         if (get_requested_action () == ACTION_INVALID) {
-                /* TRANSLATORS: Authentication Method can't be enabled... */
+                /* TRANSLATORS: “command” can't be enabled... */
                 g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
-                             _("%s can't be enabled and disabled at the same time"),
-                             data->name);
+                             _("“%s” can't be enabled and disabled at the same time"),
+                             config_command_to_string (data->config_command));
                 return FALSE;
         }
 
@@ -332,10 +360,11 @@ smartcard_option_check (GOptionContext *context,
 
         if (opt_removal_action &&
             !smartcard_option_is_valid (GSD_SC_REMOVAL_ACTION_KEY, opt_removal_action)) {
-                /* TRANSLATORS: option is not a valid Authentication Method value */
+                /* TRANSLATORS: option is not a valid command “option-key” value */
                 g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
                              _("“%s” is not a valid %s “%s” value"),
-                             opt_removal_action, data->name,
+                             opt_removal_action,
+                             config_command_to_string (data->config_command),
                              GSD_SC_REMOVAL_ACTION_KEY);
                 return FALSE;
         }
@@ -714,14 +743,14 @@ set_distro_hook_config (GdmConfigCommand   config_command,
                 }
 
                 if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-                        g_debug ("Distro hook for %s %s not found: %s",
+                        g_debug ("Distro hook for command %s option-key %s not found: %s",
                         config_command_to_string (config_command), option_key,
                         local_error->message);
                 }
 
-                /* TRANSLATORS: Failed to set command option-key via distro hook */
+                /* TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook */
                 g_propagate_prefixed_error (error, g_steal_pointer (&local_error),
-                                            _("Failed to set %s %s via distro hook: "),
+                                            _("Failed to set command “%s” option key “%s” via distro hook: "),
                                             config_command_to_string (config_command),
                                             option_key);
                 return FALSE;
@@ -1061,6 +1090,7 @@ write_dconf_setting_to_key_file (const char  *db_name,
                 file_comment = g_strstrip (file_comment);
 
                 if (local_error) {
+                        /* TRANSLATORS: First value is a file path, second is an error message */
                         g_warning (_("Failed to get the “%s” header comment: %s, was it modified?"),
                                    file_path, local_error->message);
                 } else if (g_strcmp0 (file_comment, header_comment) != 0) {
@@ -1379,11 +1409,11 @@ handle_config_command (GdmConfigCommand          config_command,
         GdmAuthType auth_type;
 
         auth_type = config_command_to_auth_type (config_command);
+        g_assert (auth_type != AUTH_NONE);
 
         if (!have_pam_module (auth_type)) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED_HANDLED,
-                             _("No PAM module available for “%s” settings"),
-                             auth_type_to_string (auth_type));
+                             "%s", get_pam_module_missing_error (auth_type));
                 return FALSE;
         }
 
@@ -1454,6 +1484,7 @@ handle_command (int   argc,
                 char *argv[])
 {
         GdmConfigCommand config_command;
+        GdmAuthType auth_type;
         g_autoptr(GOptionContext) option_cx = NULL;
         g_autoptr(GdmConfigCommandHandler) command_handler = NULL;
         g_autoptr(GOptionGroup) group = NULL;
@@ -1461,9 +1492,8 @@ handle_command (int   argc,
         g_autoptr(GPtrArray) args_copy = NULL;
         g_autoptr(GError) error = NULL;
         g_autofree OptionData *options_data = NULL;
-        g_autofree const char *title = NULL;
-        g_autofree const char *group_title = NULL;
-        const char *name;
+        const char *title;
+        const char *group_title;
 
         config_command = parse_config_command (argv[1]);
         command_handler = config_command_get_handler (config_command);
@@ -1473,23 +1503,12 @@ handle_command (int   argc,
         }
 
         g_assert (command_handler);
-        name = config_command_name (config_command);
-
-        if (config_command == COMMAND_SHOW) {
-                title = g_strdup (_("Show GDM Authentication configuration."));
-                group_title = g_strdup_printf (_("%s options"), name);
-        } else {
-                /* TRANSLATORS: The string value contains the authentication method */
-                title = g_strdup_printf (_("Configure %s Authentication."), name);
-
-                /* TRANSLATORS: The string value contains the authentication method */
-                group_title = g_strdup_printf (_("%s authentication options"), name);
-        }
+        title = get_command_title (config_command);
+        group_title = get_command_group_title (config_command);
 
         cmd_args = create_cmd_args (argc, argv, config_command);
 
         options_data = g_new0 (OptionData, 1);
-        options_data->name = name;
         options_data->config_command = config_command;
         options_data->args = cmd_args;
 
@@ -1498,7 +1517,7 @@ handle_command (int   argc,
         g_option_context_set_summary (option_cx, title);
 
         group = g_option_group_new (config_command_to_string (config_command),
-                                    name,
+                                    group_title,
                                     N_("Command options"),
                                     g_steal_pointer (&options_data), g_free);
         g_option_group_set_translation_domain (group, GETTEXT_PACKAGE);
@@ -1543,7 +1562,8 @@ handle_command (int   argc,
                 g_setenv ("G_MESSAGES_DEBUG", G_LOG_DOMAIN, FALSE);
         }
 
-        if (config_command != COMMAND_SHOW &&
+        auth_type = config_command_to_auth_type (config_command);
+        if (auth_type != AUTH_NONE &&
             !handle_config_command (config_command, command_handler, &error)) {
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                         return TRUE;
@@ -1576,10 +1596,12 @@ handle_toggle_command (GdmConfigCommand   config_command,
                        GError           **error)
 {
         g_autoptr(GError) local_error = NULL;
+        GdmAuthType auth_type = config_command_to_auth_type (config_command);
         gboolean enabled = (get_requested_action () == ACTION_ENABLED);
 
-        if (!write_locked_gdm_settings_to_db (config_command_to_auth_type (config_command),
-                                              enabled, &local_error)) {
+        g_assert (auth_type != AUTH_NONE);
+
+        if (!write_locked_gdm_settings_to_db (auth_type, enabled, &local_error)) {
                 g_propagate_prefixed_error (error, g_steal_pointer (&local_error),
                                             _("Failed to set %s setting: "),
                                             config_command_to_string (config_command));
