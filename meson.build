@@ -25,7 +25,6 @@ dbus_sys_dir = (get_option('dbus-sys') != '')? get_option('dbus-sys') : get_opti
 gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / get_option('datadir') / 'gdm' / 'defaults.conf'
 gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
 gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get_option('gnome-settings-daemon-dir') : gdm_prefix / get_option('libexecdir')
-check_accelerated_dir = (get_option('check-accelerated-dir') != '')? get_option('check-accelerated-dir') : gdm_prefix / get_option('libexecdir')
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : gdm_prefix / get_option('localstatedir') / 'run' / 'gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
@@ -209,7 +208,6 @@ conf.set_quoted('GNOMELOCALEDIR', gdm_prefix / get_option('localedir'))
 conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
 conf.set_quoted('GNOME_SETTINGS_DAEMON_DIR', gnome_settings_daemon_dir)
-conf.set_quoted('CHECK_ACCELRATED_DIR', check_accelerated_dir)
 conf.set_quoted('LANG_CONFIG_FILE', lang_config_file)
 conf.set('HAVE_ADT', have_adt)
 conf.set('HAVE_UTMP_H', have_utmp_header)
@@ -300,7 +298,6 @@ summary({
     'GNOME locale': gdm_prefix / get_option('datadir') / get_option('localedir'),
     'GNOME Settings Daemon': gnome_settings_daemon_dir,
     'AT SPI registryd': at_spi_registryd_dir,
-    'Check Accelerated': check_accelerated_dir,
     'Lang config file': lang_config_file,
     'Pam MOD': pam_mod_dir,
     'Udev rules': udev_dir,
