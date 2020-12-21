@@ -774,7 +774,7 @@ get_generic_error_message (GdmSessionWorker *worker)
                 return _("Sorry, PIN authentication didn’t work. Please try again.");
 
         if (g_strcmp0 (worker->priv->service, "gdm-autologin") == 0)
-                return _("Sorry, auto login, didn’t work. Please try again.");
+                return _("Sorry, auto login didn’t work. Please try again.");
 
         if (g_strcmp0 (worker->priv->service, "gdm-fingerprint") == 0)
                 return _("Sorry, fingerprint authentication didn’t work. Please try again.");
