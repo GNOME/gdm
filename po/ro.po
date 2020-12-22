@@ -10,10 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-08-18 14:15+0300\n"
-"Last-Translator: Florentina Mușat <florentina.musat.28 [at] gmail [dot] "
-"com>\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2020-12-22 11:09+0200\n"
+"Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
 "Language-Team: Gnome Romanian Translation Team\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Project-Style: gnome\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
@@ -97,27 +96,27 @@ msgstr ""
 "pentru diagnoză. Între timp acest afișaj va fi dezactivat. Reporniți GDM "
 "când problema este corectată."
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Niciun afișaj disponibil"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Nicio sesiune disponibilă"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Comutatorul de sesiune este indisponibil"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Poate fi executat doar înainte ca utilizatorul să fie autentificat"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Apelantul nu este GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Nu s-a putut deschide un canal de comunicare privat"
 
@@ -129,7 +128,7 @@ msgstr "Serverul trebuia pornit de utilizatorul %s, dar acesta nu există"
 #: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
 msgid "Couldn’t set groupid to %d"
-msgstr "groupid nu a putut fi stabilit ca fiind %d"
+msgstr "Nu s-a putut stabili groupid la %d"
 
 #: daemon/gdm-server.c:400
 #, c-format
@@ -139,7 +138,7 @@ msgstr "initgroups () a eșuat pentru %s"
 #: daemon/gdm-server.c:406
 #, c-format
 msgid "Couldn’t set userid to %d"
-msgstr "userid nu a putut fi stabilit ca fiind %d"
+msgstr "Nu s-a putut stabili userid la %d"
 
 #: daemon/gdm-server.c:484
 #, c-format
@@ -189,23 +188,90 @@ msgstr "Dispozitivul de tip afișaj"
 msgid "Could not create authentication helper process"
 msgstr "Nu s-a putut crea procesul ajutător de autentificare"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Contul dumneavoastră a primit o limită de timp care acum a expirat."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Ați atins numărul maxim de încercări de autentificare prin parolă, încercați "
+"o altă metodă"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Ați atins numărul maxim de încercări de autentificare prin PIN, încercați o "
+"altă metodă"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Ați atins numărul maxim de încercări de autentificare automată, încercați o "
+"altă metodă de autentificare"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Ați atins numărul maxim de încercări de autentificare prin amprentă, "
+"încercați o altă metodă"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Ați atins numărul maxim de încercări de autentificare prin card smart, "
+"încercați o altă metodă"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Ați atins numărul maxim de încercări de autentificare, încercați o altă "
+"metodă"
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Autentificarea prin parolă nu a reușit. Încercați din nou."
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Autentificarea prin PIN nu a reușit. Încercați din nou."
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Autentificarea automată nu a reușit. Încercați din nou."
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Autentificarea prin amprentă nu a reușit. Încercați din nou."
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Autentificarea prin card smart nu a reușit. Încercați din nou."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Nu a funcționat. Încercați din nou."
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Contul dumneavoastră a primit o limită de timp care acum a expirat."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Nume de utilizator:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "niciun cont de utilizator disponibil"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Nu se poate schimba utilizatorul"
 
@@ -217,15 +283,15 @@ msgstr "Administratorul de afișaje GNOME - Lansatorul de sesiune Wayland"
 msgid "Could not create socket!"
 msgstr "Nu s-a putut crea un socket!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Rulați programul prin scriptul încadrator /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Ascultă la soclul TCP"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Administratorul de afișaje GNOME - Lansatorul de sesiune X"
 
