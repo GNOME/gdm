@@ -204,6 +204,14 @@ case "$command" in
         exit 0
     ;;
 
+    reset)
+        authselect_disable_features $SMARTCARD_FEATURE \
+                    $SMARTCARD_FEATURE_LOCK_ON_REMOVAL \
+                    $SMARTCARD_REQUIRED \
+                    $FINGERPRINT_FEATURE
+        exit $STOP
+    ;;
+
     *)
         # Use default behavior
         exit 0

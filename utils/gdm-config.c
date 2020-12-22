@@ -24,6 +24,7 @@
 #include <grp.h>
 #include <locale.h>
 #include <pwd.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sysexits.h>
 
@@ -72,6 +73,7 @@ typedef enum {
         COMMAND_PASSWORD,
         COMMAND_FINGERPRINT,
         COMMAND_SMARTCARD,
+        COMMAND_RESET,
         COMMAND_UNKNOWN,
 } GdmConfigCommand;
 
@@ -151,6 +153,15 @@ static GOptionEntry smartcard_entries[] =
         { NULL }
 };
 
+static GOptionEntry reset_entries[] =
+{
+        {
+                "yes", 'y', 0, G_OPTION_ARG_NONE, &opt_required,
+                N_("Assume yes to any answer"), NULL
+        },
+        { NULL }
+};
+
 static const char* SC_REMOVAL_ACTIONS[] = {
         "none",         /* GSD_SMARTCARD_REMOVAL_ACTION_NONE */
         "lock-screen",  /* GSD_SMARTCARD_REMOVAL_ACTION_LOCK_SCREEN */
@@ -164,6 +175,7 @@ static gboolean handle_fingerprint (GdmConfigCommand, GError **);
 static gboolean handle_smartcard (GdmConfigCommand, GError **);
 static gboolean handle_smartcard_options (GdmConfigCommand, GError **);
 static gboolean handle_show (GdmConfigCommand, GError **);
+static gboolean handle_reset (GdmConfigCommand, GError **);
 
 static GdmAuthAction
 get_requested_action (void)
@@ -212,6 +224,8 @@ parse_config_command (const char *command) {
                 return COMMAND_SMARTCARD;
         } else if (g_str_equal (command, "show")) {
                 return COMMAND_SHOW;
+        } else if (g_str_equal (command, "reset")) {
+                return COMMAND_RESET;
         }
 
         return COMMAND_UNKNOWN;
@@ -229,6 +243,8 @@ config_command_to_string (GdmConfigCommand config_command)
                         return "fingerprint";
                 case COMMAND_SMARTCARD:
                         return "smartcard";
+                case COMMAND_RESET:
+                        return "reset";
                 case COMMAND_SHOW:
                         return "show";
                 case COMMAND_UNKNOWN:
@@ -248,6 +264,8 @@ get_command_title (GdmConfigCommand config_command)
                         return _("Configure Fingerprint Authentication.");
                 case COMMAND_SMARTCARD:
                         return _("Configure Smart Card Authentication.");
+                case COMMAND_RESET:
+                        return _("Reset the GDM Authentication configuration.");
                 case COMMAND_SHOW:
                         return _("Show GDM Authentication configuration.");
                 default:
@@ -265,6 +283,8 @@ get_command_group_title (GdmConfigCommand config_command)
                         return _("Fingerprint options");
                 case COMMAND_SMARTCARD:
                         return _("Smart Card options");
+                case COMMAND_RESET:
+                        return _("Reset options");
                 case COMMAND_SHOW:
                         return _("Show options");
                 default:
@@ -400,6 +420,10 @@ config_command_get_handler (GdmConfigCommand config_command)
                         break;
                 case COMMAND_SHOW:
                         cmd_entries->handler_func = handle_show;
+                        return g_steal_pointer (&cmd_entries);
+                case COMMAND_RESET:
+                        g_ptr_array_add (cmd_entries->entries, (gpointer) reset_entries);
+                        cmd_entries->handler_func = handle_reset;
                         return g_steal_pointer (&cmd_entries);
                 case COMMAND_HELP:
                 case COMMAND_UNKNOWN:
@@ -586,7 +610,7 @@ build_distro_hook_arguments (const char       *distro_hook,
                 g_ptr_array_add (call_args, "enable");
         else if (action == ACTION_DISABLED)
                 g_ptr_array_add (call_args, "disable");
-        else
+        else if (config_command != COMMAND_RESET)
                 return NULL;
 
         g_ptr_array_add (call_args, NULL);
@@ -623,6 +647,8 @@ try_run_distro_hook (GdmConfigCommand   config_command,
          *                                [option-specific-params]
          * or
          *  gdm-auth-config-foo show [command] [$option]
+         * or
+         *  gdm-auth-config-foo reset [require]
          *
          * In set mode, if the exit code is 19 (as SIGSTOP), we won't proceed
          * doing further actions, as we consider that the script already handled
@@ -1235,6 +1261,16 @@ set_dconf_setting_lock (const char *db_name,
 }
 
 static gboolean
+unset_dconf_setting_lock (const char *db_name,
+                          const char *lock_name,
+                          const char *schema,
+                          const char *key,
+                          GError    **error)
+{
+        return set_dconf_setting_lock_full (db_name, lock_name, schema, key, FALSE, error);
+}
+
+static gboolean
 update_dconf (GError **error)
 {
         g_auto(GStrv) environ = NULL;
@@ -1471,6 +1507,7 @@ print_usage (int                   argc,
                 "  password     Configure the password authentication\n"
                 "  fingerprint  Configure the fingerprint authentication\n"
                 "  smartcard    Configure the smartcard authentication\n"
+                "  reset        Resets the default configuration\n"
                 "  show         Shows the current configuration\n"
                 "\n"
                 "Use “%s COMMAND --help” to get help on each command.\n"),
@@ -1635,6 +1672,31 @@ handle_fingerprint (GdmConfigCommand   config_command,
 }
 
 static gboolean
+toggle_smartcard_settings (const char  *key,
+                           GVariant    *value,
+                           GError     **error)
+{
+        g_autoptr(GError) local_error = NULL;
+
+        /* While this is not strictly needed we also do this for the gdm
+         * database so that we keep the values in sync for both profiles */
+        if (!write_locked_setting_to_db (GDM_CONFIG_DCONF_DB_NAME,
+                                         GSD_SC_SCHEMA,
+                                         key,
+                                         value ? g_variant_ref_sink (value) : NULL,
+                                         &local_error)) {
+                g_debug ("Failed to write setting to %s database: %s",
+                         GDM_CONFIG_DCONF_DB_NAME,
+                         local_error->message);
+        }
+
+        return write_locked_system_settings_to_db (GSD_SC_SCHEMA,
+                                                   key,
+                                                   value,
+                                                   error);
+}
+
+static gboolean
 handle_smartcard_options (GdmConfigCommand   config_command,
                           GError           **error)
 {
@@ -1663,22 +1725,7 @@ handle_smartcard_options (GdmConfigCommand   config_command,
                 value = g_variant_new_string (opt_removal_action);
         }
 
-        /* While this is not strictly needed we also do this for the gdm
-         * database so that we keep the values in sync for both profiles */
-        if (!write_locked_setting_to_db (GDM_CONFIG_DCONF_DB_NAME,
-                                         GSD_SC_SCHEMA,
-                                         GSD_SC_REMOVAL_ACTION_KEY,
-                                         value ? g_variant_ref_sink (value) : NULL,
-                                         &local_error)) {
-                g_debug ("Failed to write setting to %s database: %s",
-                         GDM_CONFIG_DCONF_DB_NAME,
-                         local_error->message);
-        }
-
-        return write_locked_system_settings_to_db (GSD_SC_SCHEMA,
-                                                   GSD_SC_REMOVAL_ACTION_KEY,
-                                                   value,
-                                                   error);
+        return toggle_smartcard_settings (GSD_SC_REMOVAL_ACTION_KEY, value, error);
 }
 
 static gboolean
@@ -1814,6 +1861,90 @@ handle_show (GdmConfigCommand   config_command,
 
         if (default_dconf_profile)
                 g_setenv ("DCONF_PROFILE", default_dconf_profile, TRUE);
+
+        return TRUE;
+}
+
+static gboolean
+handle_reset (GdmConfigCommand   config_command,
+              GError           **error)
+{
+        g_autoptr(GError) local_error = NULL;
+        int i;
+
+        if (get_requested_action () != ACTION_REQUIRED) {
+                const char *reply_Y = C_("Interactive question", "Y");
+                const char *reply_y = C_("Interactive question", "y");
+                const char *reply_N = C_("Interactive question", "N");
+                const char *reply_n = C_("Interactive question", "n");
+                char buffer[50];
+
+                while (TRUE) {
+                        g_print (C_("Interactive question", "Do you want to continue? [Y/n]? "));
+                        if (!fgets(buffer, sizeof (buffer), stdin))
+                                continue;
+
+                        g_strstrip (buffer);
+
+                        if (g_str_equal (buffer, reply_Y))
+                                break;
+                        if (g_str_equal (buffer, reply_y))
+                                break;
+                        if (g_str_equal (buffer, reply_N))
+                                break;
+                        if (g_str_equal (buffer, reply_n))
+                                break;
+                }
+
+                if (!g_str_equal (buffer, reply_y) && !g_str_equal (buffer, reply_Y)) {
+                        g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED,
+                                     _("User cancelled the request"));
+                        return FALSE;
+                }
+        }
+
+        if (!try_run_distro_hook (COMMAND_RESET, NULL, NULL, &local_error)) {
+                if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                        return TRUE;
+
+                if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+                        g_debug ("Ignored reset distro hook: %s", local_error->message);
+                        g_clear_error (&local_error);
+                } else {
+                        g_propagate_error (error, g_steal_pointer (&local_error));
+                        return FALSE;
+                }
+        }
+
+        for (i = 0; i < AUTH_NONE; i++) {
+                const char *option_key;
+
+                if (config_command_to_auth_type (i) == AUTH_NONE)
+                        continue;
+
+                option_key = auth_type_to_option_key (i);
+                if (!write_system_setting_to_db (GDM_CONFIG_DCONF_DB_NAME,
+                                                 LOGIN_SCHEMA,
+                                                 option_key,
+                                                 NULL,
+                                                 &local_error)) {
+                        g_propagate_prefixed_error (error, g_steal_pointer (&local_error),
+                                                    _("Failed to reset %s setting: "),
+                                                    config_command_to_string (config_command));
+                        return FALSE;
+                }
+
+                if (!unset_dconf_setting_lock (GDM_CONFIG_DCONF_DB_NAME,
+                                               GDM_CONFIG_DCONF_LOCKS_NAME,
+                                               LOGIN_SCHEMA, option_key, error))
+                        return FALSE;
+        }
+
+        if (!toggle_smartcard_settings (GSD_SC_REMOVAL_ACTION_KEY, NULL, error))
+                return FALSE;
+
+        if (!update_dconf (error))
+                return FALSE;
 
         return TRUE;
 }
