@@ -1170,6 +1170,44 @@ write_dconf_setting_to_key_file (const char  *db_name,
 }
 
 static gboolean
+remove_dconf_setting_key_file (const char *db_name,
+                               const char *key_file,
+                               GError     **error)
+{
+        g_autofree char *db_dir = NULL;
+        g_autofree char *key_file_path = NULL;
+        g_autoptr (GFile) file = NULL;
+
+        db_dir = get_dconf_db_path (db_name);
+        key_file_path = g_build_filename (db_dir, key_file, NULL);
+        file = g_file_new_for_path (key_file_path);
+
+        g_debug ("Removing setting key file %s", key_file_path);
+
+        if (g_file_delete (file, NULL, error)) {
+                /* Try to remove the parent dir, if empty */
+                g_autoptr (GFile) parent_dir = g_file_get_parent (file);
+                g_file_delete (parent_dir, NULL, NULL);
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
+static char *
+get_dconf_db_lock_path (const char *db_name,
+                        const char *lock_name)
+{
+        g_autofree char *db_dir = NULL;
+        g_autofree char *db_locks_dir = NULL;
+
+        db_dir = get_dconf_db_path (db_name);
+        db_locks_dir = g_build_filename (db_dir, "locks", NULL);
+
+        return g_build_filename (db_locks_dir, lock_name, NULL);
+}
+
+static gboolean
 set_dconf_setting_lock_full (const char *db_name,
                              const char *lock_name,
                              const char *schema,
@@ -1179,8 +1217,6 @@ set_dconf_setting_lock_full (const char *db_name,
 {
         g_autoptr(GPtrArray) locks_list = NULL;
         g_autoptr(GError) local_error = NULL;
-        g_autofree char *db_dir = NULL;
-        g_autofree char *db_locks_dir = NULL;
         g_autofree char *lock_file = NULL;
         g_autofree char *file_header = NULL;
         g_autofree char *locked_schema = NULL;
@@ -1188,9 +1224,7 @@ set_dconf_setting_lock_full (const char *db_name,
         gboolean found;
         unsigned int idx;
 
-        db_dir = get_dconf_db_path (db_name);
-        db_locks_dir = g_build_filename (db_dir, "locks", NULL);
-        lock_file = g_build_filename (db_locks_dir, lock_name, NULL);
+        lock_file = get_dconf_db_lock_path (db_name, lock_name);
         locks_list = read_file_contents_to_array (lock_file, &local_error);
 
         if (local_error) {
@@ -1210,11 +1244,14 @@ set_dconf_setting_lock_full (const char *db_name,
                                        g_get_prgname ());
 
         if (!locks_list) {
+                g_autofree char *db_locks_dir = NULL;
+
                 g_assert (add);
                 locks_list = g_ptr_array_new_with_free_func (g_free);
                 g_ptr_array_add (locks_list, g_steal_pointer (&file_header));
                 g_ptr_array_add (locks_list, g_strdup ("# Do no edit!"));
 
+                db_locks_dir = g_path_get_dirname (lock_file);
                 if (!make_directory_with_parents (db_locks_dir, error))
                         return FALSE;
         } else {
@@ -1268,6 +1305,29 @@ unset_dconf_setting_lock (const char *db_name,
                           GError    **error)
 {
         return set_dconf_setting_lock_full (db_name, lock_name, schema, key, FALSE, error);
+}
+
+static gboolean
+remove_dconf_setting_lock (const char  *db_name,
+                           const char  *lock_name,
+                           GError     **error)
+{
+        g_autofree char *lock_path = NULL;
+        g_autoptr (GFile) file = NULL;
+
+        lock_path = get_dconf_db_lock_path (db_name, lock_name);
+        file = g_file_new_for_path (lock_path);
+
+        g_debug ("Removing setting lock file %s", lock_path);
+
+        if (g_file_delete (file, NULL, error)) {
+                /* Try to remove the parent dir, if empty */
+                g_autoptr (GFile) parent_dir = g_file_get_parent (file);
+                g_file_delete (parent_dir, NULL, NULL);
+                return TRUE;
+        }
+
+        return FALSE;
 }
 
 static gboolean
@@ -1870,6 +1930,8 @@ handle_reset (GdmConfigCommand   config_command,
               GError           **error)
 {
         g_autoptr(GError) local_error = NULL;
+        g_autoptr(GFile) profile_file = NULL;
+        g_autofree char *system_db_name = NULL;
         int i;
 
         if (get_requested_action () != ACTION_REQUIRED) {
@@ -1942,6 +2004,75 @@ handle_reset (GdmConfigCommand   config_command,
 
         if (!toggle_smartcard_settings (GSD_SC_REMOVAL_ACTION_KEY, NULL, error))
                 return FALSE;
+
+        system_db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME, NULL);
+        if (g_strcmp0 (system_db_name, DCONF_SYSTEM_DB_DEFAULT_NAME) == 0) {
+                g_autofree char *profile_file = NULL;
+                g_autoptr(GPtrArray) profile_contents = NULL;
+
+                profile_file = get_dconf_system_profile_file (error);
+                profile_contents = get_system_dconf_profile_contents (NULL);
+
+                if (profile_contents) {
+                        g_autofree char *full_line = NULL;
+                        guint index;
+
+                        full_line = g_strconcat (DCONF_SYSTEM_DB_PREFIX, system_db_name, NULL);
+                        while (g_ptr_array_find_with_equal_func (profile_contents, full_line,
+                                                                 g_str_equal, &index)) {
+                                g_debug ("Removing %s db from profile %s",
+                                         system_db_name, profile_file);
+                                g_ptr_array_remove_index (profile_contents, index);
+                                write_array_to_file (profile_contents, profile_file, NULL);
+                        }
+                }
+        }
+
+        if (system_db_name) {
+                if (!remove_dconf_setting_lock (system_db_name,
+                                                GDM_CONFIG_DCONF_LOCKS_NAME,
+                                                &local_error)) {
+                        g_warning ("Failed to remove lock file for DB %s: %s",
+                                   system_db_name,
+                                   local_error->message);
+                        g_clear_error (&local_error);
+                }
+
+                if (!remove_dconf_setting_key_file (system_db_name,
+                                                    GDM_CONFIG_DCONF_OVERRIDE_NAME,
+                                                    &local_error)) {
+                        g_warning ("Failed to remove setting key file for DB %s: %s",
+                                   system_db_name,
+                                   local_error->message);
+                        g_clear_error (&local_error);
+                }
+        }
+
+        if (!remove_dconf_setting_lock (GDM_CONFIG_DCONF_DB_NAME,
+                                        GDM_CONFIG_DCONF_LOCKS_NAME,
+                                        &local_error)) {
+                g_warning ("Failed to remove lock file for DB %s: %s",
+                           GDM_CONFIG_DCONF_DB_NAME,
+                           local_error->message);
+                g_clear_error (&local_error);
+        }
+
+        if (!remove_dconf_setting_key_file (GDM_CONFIG_DCONF_DB_NAME,
+                                            GDM_CONFIG_DCONF_OVERRIDE_NAME,
+                                            &local_error)) {
+                g_warning ("Failed to remove setting key file for DB %s: %s",
+                           GDM_CONFIG_DCONF_DB_NAME,
+                           local_error->message);
+                g_clear_error (&local_error);
+        }
+
+        /* finally remove the profile/gdm */
+        profile_file = g_file_new_for_path (GDM_CONFIG_DCONF_PROFILE);
+        if (!g_file_delete (profile_file, NULL, &local_error)) {
+                g_warning ("Failed to remove gdm-auth-config profile override: %s",
+                           local_error->message);
+                g_clear_error (&local_error);
+        }
 
         if (!update_dconf (error))
                 return FALSE;
