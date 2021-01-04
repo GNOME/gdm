@@ -14,21 +14,22 @@
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
-# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013, 2015, 2016, 2017, 2018.
+# Fran Dieguez <frandieguez@gnome.org>, 2012-2021.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm-master-po-gl-41637\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-09-18 13:39+0000\n"
-"PO-Revision-Date: 2019-12-25 05:06+0100\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-01-04 23:39+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician\n"
+"Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Gtranslator 3.38.0\n"
 "X-Project-Style: gnome\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
@@ -104,27 +105,27 @@ msgstr ""
 "diagnosticar o problema. Mentres tanto esta pantalla ficará desactivada. "
 "Reinicie o GDM cando o problema estea corrixido."
 
-#: daemon/gdm-manager.c:763
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Non hai ningunha pantalla dispoñíbel"
 
-#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Non hai ningunha sesión dispoñíbel"
 
-#: daemon/gdm-manager.c:880
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Non hai ningunha sesión dispoñíbel"
 
-#: daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Só se pode chamar antes de que o usuario inicie a sesión"
 
-#: daemon/gdm-manager.c:907
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "O solicitante non é GDM"
 
-#: daemon/gdm-manager.c:917
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Non foi posíbel abrir unha canle de comunicación privada"
 
@@ -197,23 +198,99 @@ msgstr "O dispositivo de pantalla"
 msgid "Could not create authentication helper process"
 msgstr "Non foi posíbel crear o proceso de axuda de autenticación"
 
-#: daemon/gdm-session-worker.c:757
-msgid "Your account was given a time limit that’s now passed."
-msgstr "A súa conta obtivo un límite de tempo que foi superado agora."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Alcanzouse o número máximo de intentos de autenticación con contrasinal, por "
+"favor probe outro método"
+
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Alcanzouse o número máximo de intentos de autenticación con PIN, por favor "
+"probe outro método"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Alcanzouse o número máximo de intentos de autenticación automáticos, por "
+"favor probe outro método"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Alcanzouse o número máximo de intentos de autenticación con pegada dixital, "
+"por favor probe outro método"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Alcanzouse o número máximo de intentos de autenticación con tarxeta "
+"intelixente, por favor probe outro método"
 
 #: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Alcanzouse o número máximo de intentos de autenticación, por favor probe "
+"outro método"
+
+#: daemon/gdm-session-worker.c:771
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr ""
+"Desculpe, a autenticación con contrasinal non funcionou. Ténteo de novo."
+
+#: daemon/gdm-session-worker.c:774
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Desculpe, a autenticación con PIN non funcionou. Ténteo de novo."
+
+#: daemon/gdm-session-worker.c:777
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Desculpe, a autenticación automática non funcionou. Ténteo de novo."
+
+#: daemon/gdm-session-worker.c:780
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr ""
+"Desculpe, a autenticación con pegada dixital non funcionou. Ténteo de novo."
+
+#: daemon/gdm-session-worker.c:783
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr ""
+"Desculpe, a autenticación con tarxeta intelixente non funcionou. Ténteo de "
+"novo."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Desculpe, iso non funcionou. Ténteo de novo."
 
-#: daemon/gdm-session-worker.c:1189
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "A súa conta obtivo un límite de tempo que foi superado agora."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Nome de usuario:"
 
-#: daemon/gdm-session-worker.c:1693 daemon/gdm-session-worker.c:1710
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "non hai ningunha conta de usuario dispoñíbel"
 
-#: daemon/gdm-session-worker.c:1737
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Non é posíbel cambiar a ese usuario"
 
@@ -225,15 +302,15 @@ msgstr "Iniciador do xestor de sesión Wayland de pantalla de GNOME"
 msgid "Could not create socket!"
 msgstr "Non é posíbel crear o sócket!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Executa un programa mediante o script /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Escoitar nun socket TCP"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Iniciador do xestor de sesión X de pantalla de GNOME"
 
