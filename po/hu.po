@@ -1,5 +1,5 @@
 # Hungarian translation for gdm.
-# Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019. Free Software Foundation, Inc.
+# Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021. Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm package.
 #
 # Szabolcs Ban <shooby at gnome dot hu>, 1999.
@@ -11,13 +11,13 @@
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2016.
 # Attila Szervác as sas-guest see : <sas-guest at haydn dot debian dot org>, 2006.
 # Kováts Dóra <dorcssa at gmail dot com>, 2008.
-# Balázs Úr <ur.balazs at fsf dot hu>, 2012, 2015, 2017, 2018, 2019.
+# Balázs Úr <ur.balazs at fsf dot hu>, 2012, 2015, 2017, 2018, 2019, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-08-24 23:16+0200\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-01-19 20:49+0100\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 18.12.3\n"
+"X-Generator: Lokalize 19.12.3\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -64,7 +64,6 @@ msgid "/dev/urandom is not a character device"
 msgstr "a /dev/urandom nem karakteres eszköz"
 
 #: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
-#| msgid "Could not identify the current session."
 msgid "Could not identify the current session: "
 msgstr "Nem sikerült azonosítani a jelenlegi munkamenetet: "
 
@@ -100,27 +99,27 @@ msgstr ""
 "Értesítse a rendszergazdát, vagy ellenőrizze a rendszernaplót. Addig ez a "
 "képernyő ki lesz kapcsolva. Indítsa újra a GDM-et, ha a probléma megoldódott."
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Nem érhető el képernyő"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Nem érhető el munkamenet"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Választó munkamenet nem érhető el"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Csak a felhasználó bejelentkezése előtt hívható"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "A hívó nem a GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Nem sikerült megnyitni a személyes kommunikációs csatornát"
 
@@ -194,23 +193,94 @@ msgstr "A képernyő"
 msgid "Could not create authentication helper process"
 msgstr "Nem hozható létre a hitelesítési segédfolyamat"
 
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Elérte a jelszavas hitelesítési próbálkozások korlátját, próbálkozzon másik "
+"módszerrel"
+
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Elérte a PIN-kódos hitelesítési próbálkozások korlátját, próbálkozzon másik "
+"módszerrel"
+
 #: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Elérte az automatikus bejelentkezési próbálkozások korlátját, próbálkozzon "
+"másik hitelesítési módszerrel"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Elérte az ujjlenyomatos hitelesítési próbálkozások korlátját, próbálkozzon "
+"másik módszerrel"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Elérte az intelligenskártyás hitelesítési próbálkozások korlátját, "
+"próbálkozzon másik módszerrel"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Elérte a hitelesítési próbálkozások korlátját, próbálkozzon másik módszerrel"
+
+#: daemon/gdm-session-worker.c:771
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Sajnos a jelszavas hitelesítés nem sikerült. Próbálja újra."
+
+#: daemon/gdm-session-worker.c:774
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Sajnos a PIN-kódos hitelesítés nem sikerült. Próbálja újra."
+
+#: daemon/gdm-session-worker.c:777
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Sajnos az automatikus bejelentkezés nem sikerült. Próbálja újra."
+
+#: daemon/gdm-session-worker.c:780
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Sajnos az ujjlenyomatos hitelesítés nem sikerült. Próbálja újra."
+
+#: daemon/gdm-session-worker.c:783
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Sajnos az intelligenskártyás hitelesítés nem sikerült. Próbálja újra."
+
+#: daemon/gdm-session-worker.c:785
+msgid "Sorry, that didn’t work. Please try again."
+msgstr "Sajnos ez nem sikerült. Próbálja újra."
+
+#: daemon/gdm-session-worker.c:800
 msgid "Your account was given a time limit that’s now passed."
 msgstr "A fiók időkorlátja letelt."
 
-#: daemon/gdm-session-worker.c:763
-msgid "Sorry, that didn’t work. Please try again."
-msgstr "Elnézést, ez nem sikerült. Próbálja újra."
-
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Felhasználónév:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "nem létezik felhasználói fiók"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Nem lehet a felhasználóra váltani"
 
@@ -222,16 +292,16 @@ msgstr "GNOME bejelentkezéskezelő Wayland munkamenet-indító"
 msgid "Could not create socket!"
 msgstr "Nem hozható létre a foglalat!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr ""
 "Program futtatása a /etc/gdm/Xsession csomagoló-parancsfájlon keresztül"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Figyelés TCP foglalaton"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME bejelentkezéskezelő X munkamenet-indító"
 
