@@ -18,16 +18,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-09-10 01:24+0800\n"
-"Last-Translator: Dingzhong Chen <wsxy162@gmail.com>\n"
+"POT-Creation-Date: 2021-01-22 14:15+0000\n"
+"PO-Revision-Date: 2021-01-24 20:18+0800\n"
+"Last-Translator: mars <gzhqyz@gmail.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 3.32.1\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -66,7 +66,6 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符设备"
 
 #: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
-#| msgid "Could not identify the current session."
 msgid "Could not identify the current session: "
 msgstr "无法识别当前会话："
 
@@ -99,27 +98,27 @@ msgstr ""
 "由于内部错误无法启动 X 服务器(您的图形界面)。请与系统管理员联系或检查系统日志"
 "以便进行诊断。在此期间该显示将被禁用。请在问题更正以后重新启动 GDM。"
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "无可用的显示"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "无可用的会话"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "选择器会话不可用"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "只能在用户登录前被调用"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "调用者不是 GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "无法打开专用通信通道"
 
@@ -191,23 +190,78 @@ msgstr "显示设备"
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "你的帐号设有时间限制，已超过限定时间。"
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr "密码验证失败达最大次数，请稍后重试"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr "PIN 验证失败达最大次数，请稍后重试"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr "自动登录失败达最大次数，请稍后重试"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr "指纹验证失败达最大次数，请稍后重试"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr "智能卡验证失败达最大次数，请稍后重试"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr "验证失败达最大次数，请尝试其它方式"
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "抱歉，密码验证失败，请再试一次。"
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "抱歉，PIN 验证失败，请再试一次。"
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "抱歉，自动登录失败，请再试一次。"
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "抱歉，指纹验证失败，请再试一次。"
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "抱歉，智能卡验证失败，请再试一次。"
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "抱歉，登录失败，请再试一次。"
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "你的帐号设有时间限制，已超过限定时间。"
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "用户名："
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "无可用用户帐户"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
@@ -219,15 +273,15 @@ msgstr "GNOME 显示管理器 Wayland 会话启动器"
 msgid "Could not create socket!"
 msgstr "无法创建套接字！"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "通过 /etc/gdm/Xsession 包装脚本运行程序"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "监听 TCP 套接字"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME 显示管理器 X 会话启动器"
 
