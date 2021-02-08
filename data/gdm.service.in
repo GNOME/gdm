@@ -15,6 +15,14 @@ After=${PLYMOUTH_QUIT_SERVICE}
 # plymouth is quit, which we do)
 After=rc-local.service plymouth-start.service systemd-user-sessions.service
 
+# In order to start GNOME Shell (or the X server), we need the DRM device to
+# be available. However, when GDM starts the graphics driver may not be done
+# probing.
+# As such, delay until after systemd-udev-settle.service. Ideally we would only
+# wait for the seat to have a DRM device(/output) assigned.
+Wants=systemd-udev-trigger.service systemd-udev-settle.service
+After=systemd-udev-trigger.service systemd-udev-settle.service
+
 # GDM takes responsibility for stopping plymouth, so if it fails
 # for any reason, make sure plymouth still stops
 OnFailure=plymouth-quit.service
