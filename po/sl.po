@@ -5,14 +5,14 @@
 # Urban Borštnik <urban@cmm.ki.si>, 2000–2001.
 # Andraž Tori <andraz.tori1@guest.arnes.si>, 2001–2002.
 # Matjaž Horvat <m@owca.info>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2007–2019.
+# Matej Urbančič <mateju@svn.gnome.org>, 2007–2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-09-26 09:17+0000\n"
-"PO-Revision-Date: 2019-09-26 21:47+0200\n"
+"POT-Creation-Date: 2021-02-09 20:09+0000\n"
+"PO-Revision-Date: 2021-02-09 21:51+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -83,7 +83,7 @@ msgstr "Ni mogoče začeti novega prijavnega zaslona."
 #: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
-msgstr "v sistemu  uporabnika »%s« ni mogoče najti"
+msgstr "v sistemu ni mogoče najti uporabnika »%s«"
 
 #: daemon/gdm-legacy-display.c:236
 msgid ""
@@ -97,27 +97,27 @@ msgstr ""
 "dnevnik. V vmesnem času bo ta zaslon izključen. Poskusite s ponovnim zagonom "
 "GDM, ko bo problem odpravljen."
 
-#: daemon/gdm-manager.c:763
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Na voljo ni nobenega zaslona"
 
-#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Na voljo ni nobene seje"
 
-#: daemon/gdm-manager.c:880
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Seja izbirnika ni na voljo"
 
-#: daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Program je lahko klical le pred prijavo uporabnika"
 
-#: daemon/gdm-manager.c:907
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Klicalnik ni GDM"
 
-#: daemon/gdm-manager.c:917
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Ni mogoče odpreti zasebnega kanala za sporočanje"
 
@@ -190,23 +190,90 @@ msgstr "Naprava za prikazovanje"
 msgid "Could not create authentication helper process"
 msgstr "Ni mogoče ustvariti opravila pomočnika overitve prijave"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Računu je določen dovoljen čas, ki je sedaj pretekel."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Dosegli ste največje dovoljeno število poskusov overitve z geslom. Poskusite "
+"na drugi način."
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Dosegli ste največje dovoljeno število poskusov overitve s kodo PIN. "
+"Poskusite na drugi način."
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Dosegli ste največje dovoljeno število poskusov samodejne prijave. Poskusite "
+"na drugi način."
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Dosegli ste največje dovoljeno število poskusov overitve s prstnim odtisom. "
+"Poskusite na drugi način."
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Dosegli ste največje dovoljeno število poskusov overitve s pametno kartico. "
+"Poskusite na drugi način."
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Dosegli ste največje dovoljeno število poskusov overitve. Poskusite na drugi "
+"način."
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Overitev z geslom je spodletela. Poskusite znova."
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Overitev s kodo PIN je spodletela. Poskusite znova."
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Samodejna prijava je spodletela. Poskusite znova."
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Overitev s prstnim odtisom je spodletela. Poskusite znova."
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Overitev s pametno kartico je spodletela. Poskusite znova."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Dejanje je spodletelo. Poskusite znova."
 
-#: daemon/gdm-session-worker.c:1167
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Računu je določen dovoljen čas, ki je sedaj pretekel."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: daemon/gdm-session-worker.c:1669 daemon/gdm-session-worker.c:1686
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: daemon/gdm-session-worker.c:1713
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
@@ -218,15 +285,15 @@ msgstr "Zaganjalnik seje Wayland za zaslon GNOME"
 msgid "Could not create socket!"
 msgstr "Ni mogoče ustvariti vtiča!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Zaženi program preko skripta zavijalnika /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Poslušaj vtič TCP"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Zaganjalnik seje X za zaslon GNOME"
 
@@ -324,7 +391,7 @@ msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"Prijavni zaslon je mogoče nastaviti tako, da overitev z geslom ni  mogoča, "
+"Prijavni zaslon je mogoče nastaviti tako, da overitev z geslom ni mogoča, "
 "zahtevana pa je prijava z uporabo prstnega odtisa ali pametnih kartic."
 
 #: data/org.gnome.login-screen.gschema.xml:36
