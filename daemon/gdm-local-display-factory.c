@@ -48,6 +48,7 @@
 
 #define MAX_DISPLAY_FAILURES 5
 #define WAIT_TO_FINISH_TIMEOUT 10 /* seconds */
+#define SEAT0_GRAPHICS_CHECK_TIMEOUT 10 /* seconds */
 
 struct _GdmLocalDisplayFactory
 {
@@ -62,6 +63,10 @@ struct _GdmLocalDisplayFactory
 
         guint            seat_new_id;
         guint            seat_removed_id;
+        guint            seat_properties_changed_id;
+
+        gboolean         seat0_graphics_check_timed_out;
+        guint            seat0_graphics_check_timeout_id;
 
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
@@ -449,29 +454,117 @@ lookup_prepared_display_by_seat_id (const char *id,
         return lookup_by_seat_id (id, display, user_data);
 }
 
+static int
+on_seat0_graphics_check_timeout (gpointer user_data)
+{
+        GdmLocalDisplayFactory *factory = user_data;
+
+        factory->seat0_graphics_check_timeout_id = 0;
+
+        /* Simply try to re-add seat0. If it is there already (i.e. CanGraphical
+         * turned TRUE, then we'll find it and it will not be created again).
+         */
+        factory->seat0_graphics_check_timed_out = TRUE;
+        ensure_display_for_seat (factory, "seat0");
+
+        return G_SOURCE_REMOVE;
+}
+
 static void
 ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                          const char             *seat_id)
 {
-        gboolean is_initial;
-        const char *session_type = NULL;
+        int ret;
+        gboolean seat_supports_graphics;
+        gboolean is_seat0;
+        const char *session_type = "wayland";
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
         g_autofree char *login_session_id = NULL;
 
-        if (g_strcmp0 (seat_id, "seat0") == 0) {
-                is_initial = TRUE;
-                if (factory->num_failures == 0 && gdm_local_display_factory_use_wayland ())
-                        session_type = "wayland";
-        } else {
-                is_initial = FALSE;
+        ret = sd_seat_can_graphical (seat_id);
+
+        if (ret < 0) {
+                g_critical ("Failed to query CanGraphical information for seat %s", seat_id);
+                return;
         }
+
+        if (ret == 0) {
+                g_debug ("GdmLocalDisplayFactory: System doesn't currently support graphics");
+                seat_supports_graphics = FALSE;
+        } else {
+                g_debug ("GdmLocalDisplayFactory: System supports graphics");
+                seat_supports_graphics = TRUE;
+        }
+
+        if (g_strcmp0 (seat_id, "seat0") == 0) {
+                is_seat0 = TRUE;
+
+                /* If we've failed, or are explicitly told to, fall back to legacy X11 support
+                 */
+                if (factory->num_failures > 0 || !gdm_local_display_factory_use_wayland ()) {
+                        session_type = NULL;
+                        g_debug ("GdmLocalDisplayFactory: New displays on seat0 will use X11 fallback");
+                } else {
+                        g_debug ("GdmLocalDisplayFactory: New displays on seat0 will use wayland");
+                }
+        } else {
+                is_seat0 = FALSE;
+
+                g_debug ("GdmLocalDisplayFactory: New displays on seat %s will use X11 fallback", seat_id);
+                /* Force legacy X11 for all auxiliary seats */
+                seat_supports_graphics = TRUE;
+                session_type = NULL;
+        }
+
+        /* For seat0, we have a fallback logic to still try starting it after
+         * SEAT0_GRAPHICS_CHECK_TIMEOUT seconds. i.e. we simply continue even if
+         * CanGraphical is unset.
+         * This is ugly, but it means we'll come up eventually in some
+         * scenarios where no master device is present.
+         * Note that we'll force an X11 fallback even though there might be
+         * cases where an wayland capable device is present and simply not marked as
+         * master-of-seat. In these cases, this should likely be fixed in the
+         * udev rules.
+         *
+         * At the moment, systemd always sets CanGraphical for non-seat0 seats.
+         * This is because non-seat0 seats are defined by having master-of-seat
+         * set. This means we can avoid the fallback check for non-seat0 seats,
+         * which simplifies the code.
+         */
+        if (is_seat0) {
+                if (!seat_supports_graphics) {
+                        if (!factory->seat0_graphics_check_timed_out) {
+                                if (factory->seat0_graphics_check_timeout_id == 0) {
+                                        g_debug ("GdmLocalDisplayFactory: seat0 doesn't yet support graphics.  Waiting %d seconds to try again.", SEAT0_GRAPHICS_CHECK_TIMEOUT);
+                                        factory->seat0_graphics_check_timeout_id = g_timeout_add_seconds (SEAT0_GRAPHICS_CHECK_TIMEOUT,
+                                                                                                          on_seat0_graphics_check_timeout,
+                                                                                                          factory);
+
+                                } else {
+                                        /* It is not yet time to force X11 fallback. */
+                                        g_debug ("GdmLocalDisplayFactory: seat0 display requested when there is no graphics support before graphics check timeout.");
+                                        return;
+                                }
+                        }
+
+                        g_debug ("GdmLocalDisplayFactory: Assuming we can use seat0 for X11 even though system says it doesn't support graphics!");
+                        g_debug ("GdmLocalDisplayFactory: This might indicate an issue where the framebuffer device is not tagged as master-of-seat in udev.");
+                        seat_supports_graphics = TRUE;
+                        session_type = NULL;
+                } else {
+                        g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
+                }
+        }
+
+        if (!seat_supports_graphics)
+                return;
 
         g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                  session_type? : "X11", seat_id);
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        if (g_strcmp0 (seat_id, "seat0") == 0)
+        if (is_seat0)
                 display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
         else
                 display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
@@ -503,7 +596,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
 #ifdef ENABLE_USER_DISPLAY_SERVER
-        if (g_strcmp0 (seat_id, "seat0") == 0) {
+        if (is_seat0) {
                 display = gdm_local_display_new ();
                 if (session_type != NULL) {
                         g_object_set (G_OBJECT (display), "session-type", session_type, NULL);
@@ -520,7 +613,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         }
 
         g_object_set (display, "seat-id", seat_id, NULL);
-        g_object_set (display, "is-initial", is_initial, NULL);
+        g_object_set (display, "is-initial", is_seat0, NULL);
 
         store_display (factory, display);
 
@@ -613,6 +706,53 @@ on_seat_removed (GDBusConnection *connection,
 
         g_variant_get (parameters, "(&s&o)", &seat, NULL);
         delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+}
+
+static void
+on_seat_properties_changed (GDBusConnection *connection,
+                            const gchar     *sender_name,
+                            const gchar     *object_path,
+                            const gchar     *interface_name,
+                            const gchar     *signal_name,
+                            GVariant        *parameters,
+                            gpointer         user_data)
+{
+        const gchar *seat = NULL;
+        g_autoptr(GVariant) changed_props = NULL;
+        g_autoptr(GVariant) changed_prop = NULL;
+        g_autofree const gchar **invalidated_props = NULL;
+        gboolean changed = FALSE;
+        int ret;
+
+        /* Extract seat id, i.e. the last element of the object path. */
+        seat = strrchr (object_path, '/');
+        if (seat == NULL)
+                return;
+        seat += 1;
+
+        /* Valid seat IDs must start with seat, i.e. ignore "auto" */
+        if (!g_str_has_prefix (seat, "seat"))
+                return;
+
+        g_variant_get (parameters, "(s@a{sv}^a&s)", NULL, &changed_props, &invalidated_props);
+
+        changed_prop = g_variant_lookup_value (changed_props, "CanGraphical", NULL);
+        if (changed_prop)
+                changed = TRUE;
+        if (!changed && g_strv_contains (invalidated_props, "CanGraphical"))
+                changed = TRUE;
+
+        if (!changed)
+                return;
+
+        ret = sd_seat_can_graphical (seat);
+        if (ret < 0)
+                return;
+
+        if (ret != 0)
+                ensure_display_for_seat (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+        else
+                delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
 }
 
 static gboolean
@@ -782,6 +922,8 @@ on_vt_changed (GIOChannel    *source,
         if (factory->active_vt != login_window_vt) {
                 GdmDisplay *display;
 
+                g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
+
                 display = gdm_display_store_find (store,
                                                   lookup_by_tty,
                                                   (gpointer) tty_of_active_vt);
@@ -849,6 +991,16 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                              on_seat_removed,
                                                                              g_object_ref (factory),
                                                                              g_object_unref);
+        factory->seat_properties_changed_id = g_dbus_connection_signal_subscribe (factory->connection,
+                                                                                  "org.freedesktop.login1",
+                                                                                  "org.freedesktop.DBus.Properties",
+                                                                                  "PropertiesChanged",
+                                                                                  NULL,
+                                                                                  "org.freedesktop.login1.Seat",
+                                                                                  G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_NAMESPACE,
+                                                                                  on_seat_properties_changed,
+                                                                                  g_object_ref (factory),
+                                                                                  g_object_unref);
 
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         io_channel = g_io_channel_new_file ("/sys/class/tty/tty0/active", "r", NULL);
@@ -876,6 +1028,11 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 g_dbus_connection_signal_unsubscribe (factory->connection,
                                                       factory->seat_removed_id);
                 factory->seat_removed_id = 0;
+        }
+        if (factory->seat_properties_changed_id) {
+                g_dbus_connection_signal_unsubscribe (factory->connection,
+                                                      factory->seat_properties_changed_id);
+                factory->seat_properties_changed_id = 0;
         }
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         if (factory->active_vt_watch_id) {
@@ -961,6 +1118,8 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
         g_signal_handlers_disconnect_by_func (G_OBJECT (store),
                                               G_CALLBACK (on_display_removed),
                                               factory);
+
+        g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
 
         return TRUE;
 }
