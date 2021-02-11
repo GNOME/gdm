@@ -79,9 +79,7 @@ static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory 
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
 static void     ensure_display_for_seat                 (GdmLocalDisplayFactory      *factory,
-                                                         const char                  *seat_id,
-                                                         const char                  *session_type,
-                                                         gboolean                    initial_display);
+                                                         const char                  *seat_id);
 
 static void     on_display_status_changed               (GdmDisplay                  *display,
                                                          GParamSpec                  *arg1,
@@ -386,19 +384,11 @@ on_display_status_changed (GdmDisplay             *display,
 
                         factory->num_failures++;
 
-                        if (factory->num_failures > MAX_DISPLAY_FAILURES) {
-                                /* oh shit */
+                        /* oh shit */
+                        if (factory->num_failures > MAX_DISPLAY_FAILURES)
                                 g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
-                        } else {
-#ifdef ENABLE_WAYLAND_SUPPORT
-                                if (g_strcmp0 (session_type, "wayland") == 0) {
-                                        g_free (session_type);
-                                        session_type = NULL;
-                                }
-
-#endif
-                                ensure_display_for_seat (factory, seat_id, session_type, is_initial);
-                        }
+                        else
+                                ensure_display_for_seat (factory, seat_id);
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
@@ -461,13 +451,21 @@ lookup_prepared_display_by_seat_id (const char *id,
 
 static void
 ensure_display_for_seat (GdmLocalDisplayFactory *factory,
-                         const char             *seat_id,
-                         const char             *session_type,
-                         gboolean                initial)
+                         const char             *seat_id)
 {
+        gboolean is_initial;
+        const char *session_type = NULL;
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
         g_autofree char *login_session_id = NULL;
+
+        if (g_strcmp0 (seat_id, "seat0") == 0) {
+                is_initial = TRUE;
+                if (factory->num_failures == 0 && gdm_local_display_factory_use_wayland ())
+                        session_type = "wayland";
+        } else {
+                is_initial = FALSE;
+        }
 
         g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                  session_type? : "X11", seat_id);
@@ -522,7 +520,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         }
 
         g_object_set (display, "seat-id", seat_id, NULL);
-        g_object_set (display, "is-initial", initial, NULL);
+        g_object_set (display, "is-initial", is_initial, NULL);
 
         store_display (factory, display);
 
@@ -579,18 +577,7 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
         g_variant_iter_init (&iter, array);
 
         while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL)) {
-                gboolean is_initial;
-                const char *session_type = NULL;
-
-                if (g_strcmp0 (seat, "seat0") == 0) {
-                        is_initial = TRUE;
-                        if (gdm_local_display_factory_use_wayland ())
-                                session_type = "wayland";
-                } else {
-                        is_initial = FALSE;
-                }
-
-                ensure_display_for_seat (factory, seat, session_type, is_initial);
+                ensure_display_for_seat (factory, seat);
         }
 
         g_variant_unref (result);
@@ -610,7 +597,7 @@ on_seat_new (GDBusConnection *connection,
         const char *seat;
 
         g_variant_get (parameters, "(&s&o)", &seat, NULL);
-        ensure_display_for_seat (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, NULL, FALSE);
+        ensure_display_for_seat (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
 }
 
 static void
@@ -701,7 +688,6 @@ on_vt_changed (GIOChannel    *source,
         g_autofree char *login_session_id = NULL;
         g_autofree char *active_session_id = NULL;
         unsigned int previous_vt, new_vt, login_window_vt = 0;
-        const char *session_type = NULL;
         int ret, n_returned;
 
         g_debug ("GdmLocalDisplayFactory: received VT change event");
@@ -830,12 +816,9 @@ on_vt_changed (GIOChannel    *source,
                 return G_SOURCE_CONTINUE;
         }
 
-        if (gdm_local_display_factory_use_wayland ())
-                session_type = "wayland";
-
         g_debug ("GdmLocalDisplayFactory: creating new display on seat0 because of VT change");
 
-        ensure_display_for_seat (factory, "seat0", session_type, TRUE);
+        ensure_display_for_seat (factory, "seat0");
 
         return G_SOURCE_CONTINUE;
 }
