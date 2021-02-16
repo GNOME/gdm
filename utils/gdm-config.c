@@ -1517,8 +1517,8 @@ handle_config_command (GdmConfigCommand          config_command,
         g_assert (auth_type != AUTH_NONE);
 
         if (!have_pam_module (auth_type)) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED_HANDLED,
-                             "%s", get_pam_module_missing_error (auth_type));
+                g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED_HANDLED,
+                                     get_pam_module_missing_error (auth_type));
                 return FALSE;
         }
 
