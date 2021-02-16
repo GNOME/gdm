@@ -1283,6 +1283,13 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                              GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
                              "%s", "");
                 goto out;
+        } else if (error_code == PAM_MAXTRIES) {
+                g_debug ("GdmSessionWorker: authentication service had too many retries");
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_TOO_MANY_RETRIES,
+                                     get_friendly_error_message (worker, error_code));
+                goto out;
         } else if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
 
