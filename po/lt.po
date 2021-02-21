@@ -9,14 +9,14 @@
 # Gintautas Miliauskas <gintautas@miliauskas.lt>, 2008,2009.
 # Rimas Kudelis <rq@akl.lt>, 2010.
 # Algimantas Margevičius <gymka@mail.ru>, 2011.
-# Aurimas Černius <aurisc4@gmail.com>, 2010-2019.
+# Aurimas Černius <aurisc4@gmail.com>, 2010-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-08-18 21:42+0300\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-02-21 21:15+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 3.32.1\n"
+"X-Generator: Gtranslator 3.38.0\n"
 "X-Project-Style: gnome\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
@@ -65,7 +65,6 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nėra simbolių įrenginys"
 
 #: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
-#| msgid "Could not identify the current session."
 msgid "Could not identify the current session: "
 msgstr "Nepavyko identifikuoti esamo seanso: "
 
@@ -102,27 +101,27 @@ msgstr ""
 "norite diagnozuoti problemą. Kol kas šis ekranas bus išjungtas.  Kai "
 "išspręsite problemą, paleiskite GDM iš naujo."
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Nėra galimų vaizduoklių"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Nėra prieinamų seansų"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Pasirinkimo seansas nepasiekiamas"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Gali būti kviečiamas tik prieš naudotojui prisijungiant"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Kvietėjas ne GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Nepavyko atverti privataus komunikacijos kanalo"
 
@@ -195,23 +194,85 @@ msgstr "Vaizdavimo įrenginys"
 msgid "Could not create authentication helper process"
 msgstr "Nepavyko sukurti tapatybės patvirtinimo pagalbinio proceso"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Jūsų paskyrai buvo suteiktas laiko limitas, kuris dabar baigėsi."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr "Pasiekėte bandymų ribą slaptažodžiui, bandykite kitą metodą"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr "Pasiekėte bandymų ribą PIN kodui, bandykite kitą metodą"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Pasiekėte bandymų ribą automatiniam prisijungimui, bandykite kitą metodą"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Pasiekėte bandymų ribą prisijungimui piršto atspaudu, bandykite kitą metodą"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr "Pasiekėte bandymų ribą kortelei, bandykite kitą metodą"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr "Pasiekėte bandymų ribą prisijungimui, bandykite kitą metodą"
+
+#: daemon/gdm-session-worker.c:771
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Atleiskite, slaptažodis nesuveikė. Bandykite dar kartą."
+
+#: daemon/gdm-session-worker.c:774
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Atleiskite, PIN kodas nesuveikė. Bandykite dar kartą."
+
+#: daemon/gdm-session-worker.c:777
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Atleiskite, automatinis prisijungimas nesuveikė. Bandykite dar kartą."
+
+#: daemon/gdm-session-worker.c:780
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Atleiskite, piršto atspaudas nesuveikė nesuveikė. Bandykite dar kartą."
+
+#: daemon/gdm-session-worker.c:783
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Atleiskite, išmanioji kortelė nesuveikė. Bandykite dar kartą."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Atleiskite, tai nesuveikė. Bandykite dar kartą."
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Jūsų paskyrai buvo suteiktas laiko limitas, kuris dabar baigėsi."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
@@ -223,15 +284,15 @@ msgstr "GNOME ekrano tvarkytuvės Wayland seanso paleidėjas"
 msgid "Could not create socket!"
 msgstr "Nepavyko sukurti lizdo!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Paleisti programą per /etc/gdm/Xsession tarpinį scenarijų"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Klausytis TCP lizdo"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME ekrano tvarkytuvės X seanso paleidėjas"
 
