@@ -18,15 +18,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-08-17 16:01+0300\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-02-21 15:30+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-POT-Import-Date: 2012-02-19 15:15:58+0000\n"
 
@@ -103,27 +103,27 @@ msgstr ""
 "järjestelmälokia. Tämä näyttö poistetaan toistaiseksi käytöstä. Käynnistä "
 "GDM uudelleen, kun ongelma on korjattu."
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Näyttöä ei ole käytettävissä"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Istuntoa ei ole käytettävissä"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Valitsinistuntoa ei ole käytettävissä"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "On kutsuttavissa ainoastaan ennen käyttäjän sisäänkirjautumista"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Kutsuja ei ole GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Yksityisen kommunikaatiokanavan avaaminen epäonnistui"
 
@@ -195,23 +195,95 @@ msgstr "Näyttölaite"
 msgid "Could not create authentication helper process"
 msgstr "Tunnistautumisen avustusprosessin luominen ei onnistunut"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Tunnuksellesi annettiin aikaraja, joka on nyt umpeutunut."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Enimmäismäärä tunnistautumisyrityksiä salasanalla on täynnä. Yritä "
+"tunnistautumista toisella tavalla"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Enimmäismäärä tunnistautumisyrityksiä PIN-koodilla on täynnä. Yritä "
+"tunnistautumista toisella tavalla"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Enimmäismäärä automaattisen kirjautumisen yrityksiä on täynnä. Yritä "
+"tunnistautumista toisella tavalla"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Enimmäismäärä tunnistautumisyrityksiä sormenjäljellä on täynnä. Yritä "
+"tunnistautumista toisella tavalla"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Enimmäismäärä tunnistautumisyrityksiä älykortilla on täynnä. Yritä "
+"tunnistautumista toisella tavalla"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Enimmäismäärä tunnistautumisyrityksiä on täynnä. Yritä tunnistautumista "
+"toisella tavalla"
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr ""
+"Valitettavasti tunnistautuminen salasanalla ei toiminut. Yritä uudelleen."
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr ""
+"Valitettavasti tunnistautuminen PIN-koodilla ei toiminut. Yritä uudelleen."
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr ""
+"Valitettavasti automaattinen kirjautuminen ei toiminut. Yritä uudelleen."
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr ""
+"Valitettavasti tunnistautuminen sormenjäljellä ei toiminut. Yritä uudelleen."
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr ""
+"Valitettavasti tunnistautuminen älykortilla ei toiminut. Yritä uudelleen."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Valitettavasti se ei kelvannut. Yritä uudelleen."
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Tunnuksellesi annettiin aikaraja, joka on nyt umpeutunut."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "käyttäjätiliä ei ole käytettävissä"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Käyttäjää ei voitu vaihtaa"
 
@@ -223,15 +295,15 @@ msgstr "Gnomen kirjautumisikkunan Wayland-istunnon käynnistäjä"
 msgid "Could not create socket!"
 msgstr "Pistokkeen luonti epäonnistui!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Suorita ohjelma /etc/gdm/Xsession-wrapperiskriptin kautta"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Kuuntele TCP-sockettia"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Gnomen kirjautumisikkunan X-istunnon käynnistäjä"
 
