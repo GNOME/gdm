@@ -26,7 +26,7 @@ sysresources=/etc/X11/Xresources
 
 # merge in defaults
 if [ -f "$sysresources" ]; then
-    xrdb -merge "$sysresources"
+    xrdb -nocpp -merge "$sysresources"
 fi
 
 sysmodmap=/etc/X11/Xmodmap
