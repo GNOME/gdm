@@ -1189,10 +1189,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 /* we don't use pam_strerror here because it requires a valid
                  * pam handle, and if pam_start fails pam_handle is undefined
                  */
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
-                             "%s", "");
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
+                                     "");
 
                 goto out;
         }
@@ -1204,10 +1204,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 if (error_code != PAM_SUCCESS) {
                         g_debug ("GdmSessionWorker: error informing authentication system of preferred username prompt: %s",
                                 pam_strerror (worker->priv->pam_handle, error_code));
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     "%s", "");
+                        g_set_error_literal (error,
+                                             GDM_SESSION_WORKER_ERROR,
+                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                             "");
                         goto out;
                 }
         }
@@ -1220,10 +1220,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                          pam_strerror (worker->priv->pam_handle, error_code));
 
                 if (error_code != PAM_SUCCESS) {
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     "%s", "");
+                        g_set_error_literal (error,
+                                             GDM_SESSION_WORKER_ERROR,
+                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                             "");
                         goto out;
                 }
         }
@@ -1278,10 +1278,10 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         if (error_code == PAM_AUTHINFO_UNAVAIL) {
                 g_debug ("GdmSessionWorker: authentication service unavailable");
 
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
-                             "%s", "");
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
+                                     "");
                 goto out;
         } else if (error_code == PAM_MAXTRIES) {
                 g_debug ("GdmSessionWorker: authentication service had too many retries");
@@ -1301,10 +1301,10 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                         error_code = PAM_AUTH_ERR;
                 }
 
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             "%s", get_friendly_error_message (worker, error_code));
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                     get_friendly_error_message (worker, error_code));
                 goto out;
         }
 
@@ -1366,10 +1366,10 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
         if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: user is not authorized to log in: %s",
                          pam_strerror (worker->priv->pam_handle, error_code));
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_AUTHORIZING,
-                             "%s", get_friendly_error_message (worker, error_code));
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_AUTHORIZING,
+                                     get_friendly_error_message (worker, error_code));
                 goto out;
         }
 
@@ -1750,9 +1750,9 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         if (! _change_user (worker, uid, gid)) {
                 g_debug ("GdmSessionWorker: Unable to change to user");
                 error_code = PAM_SYSTEM_ERR;
-                g_set_error (error, GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             "%s", _("Unable to change to user"));
+                g_set_error_literal (error, GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
+                                     _("Unable to change to user"));
                 goto out;
         }
 
@@ -1768,11 +1768,10 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         }
 
         if (error_code != PAM_SUCCESS) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             "%s",
-                             pam_strerror (worker->priv->pam_handle, error_code));
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
+                                     pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
 
@@ -2120,10 +2119,10 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         session_pid = fork ();
 
         if (session_pid < 0) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                             "%s", g_strerror (errno));
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                                     g_strerror (errno));
                 error_code = PAM_ABORT;
                 goto out;
         }
@@ -2419,10 +2418,10 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
                                  pam_tty,
                                  pam_strerror (worker->priv->pam_handle, error_code));
                         g_free (pam_tty);
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     "%s", "");
+                        g_set_error_literal (error,
+                                             GDM_SESSION_WORKER_ERROR,
+                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                             "");
                         goto out;
                 }
         }
@@ -2436,10 +2435,10 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
                         g_debug ("error informing authentication system of display string %s: %s",
                                  worker->priv->x11_display_name,
                                  pam_strerror (worker->priv->pam_handle, error_code));
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     "%s", "");
+                        g_set_error_literal (error,
+                                             GDM_SESSION_WORKER_ERROR,
+                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                             "");
                         goto out;
                 }
         }
@@ -2455,10 +2454,10 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
                                  pam_strerror (worker->priv->pam_handle, error_code));
                         g_free (pam_xauth);
 
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     "%s", "");
+                        g_set_error_literal (error,
+                                             GDM_SESSION_WORKER_ERROR,
+                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                                             "");
                         goto out;
                 }
                 g_free (pam_xauth);
@@ -2515,10 +2514,10 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         error_code = pam_open_session (worker->priv->pam_handle, flags);
 
         if (error_code != PAM_SUCCESS) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                             "%s", pam_strerror (worker->priv->pam_handle, error_code));
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                                     pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
 

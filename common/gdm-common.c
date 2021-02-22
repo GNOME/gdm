@@ -257,10 +257,10 @@ _read_bytes (int      fd,
 
                 return FALSE;
         } else if (bytes_left_to_read > 0) {
-                g_set_error (error,
-                             G_FILE_ERROR,
-                             g_file_error_from_errno (errno),
-                             "%s", g_strerror (errno));
+                g_set_error_literal (error,
+                                     G_FILE_ERROR,
+                                     g_file_error_from_errno (errno),
+                                     g_strerror (errno));
                 return FALSE;
         }
 
@@ -292,10 +292,10 @@ gdm_generate_random_bytes (gsize    size,
         fd = open ("/dev/urandom", O_RDONLY);
 
         if (fd < 0) {
-                g_set_error (error,
-                             G_FILE_ERROR,
-                             g_file_error_from_errno (errno),
-                             "%s", g_strerror (errno));
+                g_set_error_literal (error,
+                                     G_FILE_ERROR,
+                                     g_file_error_from_errno (errno),
+                                     g_strerror (errno));
                 close (fd);
                 return NULL;
         }

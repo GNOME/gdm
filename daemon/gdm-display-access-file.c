@@ -270,10 +270,10 @@ _create_xauth_file_for_user (const char  *username,
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
                 g_remove (GDM_XAUTH_DIR);
                 if (g_mkdir (GDM_XAUTH_DIR, 0711) != 0) {
-                        g_set_error (error,
-                                     G_FILE_ERROR,
-                                     g_file_error_from_errno (errno),
-                                     "%s", g_strerror (errno));
+                        g_set_error_literal (error,
+                                             G_FILE_ERROR,
+                                             g_file_error_from_errno (errno),
+                                             g_strerror (errno));
                         goto out;
                 }
 
@@ -372,10 +372,10 @@ _create_xauth_file_for_user (const char  *username,
         errno = 0;
         fp = fdopen (fd, "w");
         if (fp == NULL) {
-                g_set_error (error,
-                             G_FILE_ERROR,
-                             g_file_error_from_errno (errno),
-                             "%s", g_strerror (errno));
+                g_set_error_literal (error,
+                                     G_FILE_ERROR,
+                                     g_file_error_from_errno (errno),
+                                     g_strerror (errno));
                 close (fd);
                 fd = -1;
                 goto out;
@@ -532,10 +532,10 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
          */
         if (!XauWriteAuth (file->fp, &auth_entry)
             || fflush (file->fp) == EOF) {
-                g_set_error (error,
+                g_set_error_literal (error,
                         G_FILE_ERROR,
                         g_file_error_from_errno (errno),
-                        "%s", g_strerror (errno));
+                        g_strerror (errno));
                 display_added = FALSE;
         } else {
                 display_added = TRUE;
