@@ -90,7 +90,6 @@ configure_file(
   output: '@BASENAME@',
   configuration: {
     'libexecdir': gdm_prefix / get_option('libexecdir'),
-    'check_accelerated_dir': check_accelerated_dir,
     'gnome_required_components': ';'.join(
       [ gdm_gnome_shell_component ] + gdm_gnome_session_required_components),
   },
