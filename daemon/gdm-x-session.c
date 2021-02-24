@@ -615,6 +615,17 @@ spawn_session (State        *state,
                                                      "WAYLAND_SOCKET",
                                                      "GNOME_SHELL_SESSION_MODE",
                                                      NULL };
+        /* The environment variables listed below are those we have set (or
+         * received from our own execution environment) only as a fallback to
+         * make things work, as opposed to a information directly pertaining to
+         * the session about to be started. Variables listed here will not
+         * overwrite the existing environment (possibly) imported from the
+         * systemd --user instance.
+         * As an example: We need a PATH for some of the launched subprocesses
+         * to work, but if the user (or the distributor) has customized the PATH
+         * via one of systemds user-environment-generators, that version should
+         * be preferred. */
+        static const char  *fallback_variables[] = { "PATH", NULL };
 
         g_debug ("Running X session");
 
@@ -636,7 +647,16 @@ spawn_session (State        *state,
                                 continue;
                         }
 
-                        g_subprocess_launcher_setenv (launcher, environment_entry[0], environment_entry[1], FALSE);
+                        /* Merge the environment block imported from systemd --user with the
+                         * environment we have set for ourselves (and thus pass on to the
+                         * launcher process). Variables we have set have precedence, as to not
+                         * import stale data from prior user sessions, with the exception of
+                         * those listed in fallback_variables. See the comment there for more
+                         * explanations. */
+                        g_subprocess_launcher_setenv (launcher,
+                                                      environment_entry[0],
+                                                      environment_entry[1],
+                                                      g_strv_contains (fallback_variables, environment_entry[0]));
                 }
 
                 /* Don't allow session specific environment variables from earlier sessions to
