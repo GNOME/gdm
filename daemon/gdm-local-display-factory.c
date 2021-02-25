@@ -78,7 +78,7 @@ static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryC
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
-static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory,
+static void     ensure_display_for_seat                 (GdmLocalDisplayFactory      *factory,
                                                          const char                  *seat_id,
                                                          const char                  *session_type,
                                                          gboolean                    initial_display);
@@ -397,7 +397,7 @@ on_display_status_changed (GdmDisplay             *display,
                                 }
 
 #endif
-                                create_display (factory, seat_id, session_type, is_initial);
+                                ensure_display_for_seat (factory, seat_id, session_type, is_initial);
                         }
                 }
                 break;
@@ -459,11 +459,11 @@ lookup_prepared_display_by_seat_id (const char *id,
         return lookup_by_seat_id (id, display, user_data);
 }
 
-static GdmDisplay *
-create_display (GdmLocalDisplayFactory *factory,
-                const char             *seat_id,
-                const char             *session_type,
-                gboolean                initial)
+static void
+ensure_display_for_seat (GdmLocalDisplayFactory *factory,
+                         const char             *seat_id,
+                         const char             *session_type,
+                         gboolean                initial)
 {
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
@@ -481,7 +481,7 @@ create_display (GdmLocalDisplayFactory *factory,
         /* Ensure we don't create the same display more than once */
         if (display != NULL) {
                 g_debug ("GdmLocalDisplayFactory: display already created");
-                return NULL;
+                return;
         }
 
         /* If we already have a login window, switch to it */
@@ -498,7 +498,7 @@ create_display (GdmLocalDisplayFactory *factory,
                         g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
                                  login_session_id);
                         gdm_activate_session_by_id (factory->connection, seat_id, login_session_id);
-                        return NULL;
+                        return;
                 }
         }
 
@@ -533,7 +533,7 @@ create_display (GdmLocalDisplayFactory *factory,
                 gdm_display_unmanage (display);
         }
 
-        return display;
+        return;
 }
 
 static void
@@ -590,7 +590,7 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
                         is_initial = FALSE;
                 }
 
-                create_display (factory, seat, session_type, is_initial);
+                ensure_display_for_seat (factory, seat, session_type, is_initial);
         }
 
         g_variant_unref (result);
@@ -610,7 +610,7 @@ on_seat_new (GDBusConnection *connection,
         const char *seat;
 
         g_variant_get (parameters, "(&s&o)", &seat, NULL);
-        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, NULL, FALSE);
+        ensure_display_for_seat (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, NULL, FALSE);
 }
 
 static void
@@ -835,7 +835,7 @@ on_vt_changed (GIOChannel    *source,
 
         g_debug ("GdmLocalDisplayFactory: creating new display on seat0 because of VT change");
 
-        create_display (factory, "seat0", session_type, TRUE);
+        ensure_display_for_seat (factory, "seat0", session_type, TRUE);
 
         return G_SOURCE_CONTINUE;
 }
