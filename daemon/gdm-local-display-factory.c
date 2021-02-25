@@ -473,7 +473,7 @@ create_display (GdmLocalDisplayFactory *factory,
                  session_type? : "X11", seat_id);
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        if (sd_seat_can_multi_session (seat_id))
+        if (g_strcmp0 (seat_id, "seat0") == 0)
                 display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
         else
                 display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);

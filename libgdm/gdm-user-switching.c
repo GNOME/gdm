@@ -218,24 +218,6 @@ goto_login_session (GDBusConnection  *connection,
                 return FALSE;
         }
 
-        res = sd_seat_can_multi_session (seat_id);
-        if (res < 0) {
-                free (seat_id);
-
-                g_debug ("failed to determine whether seat can do multi session: %s", strerror (-res));
-                g_set_error (error, GDM_CLIENT_ERROR, 0, _("The system is unable to determine whether to switch to an existing login screen or start up a new login screen."));
-
-                return FALSE;
-        }
-
-        if (res == 0) {
-                free (seat_id);
-
-                g_set_error (error, GDM_CLIENT_ERROR, 0, _("The system is unable to start up a new login screen."));
-
-                return FALSE;
-        }
-
         res = get_login_window_session_id (seat_id, &session_id);
         if (res && session_id != NULL) {
                 res = activate_session_id (connection, cancellable, seat_id, session_id, error);
