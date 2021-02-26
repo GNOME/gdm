@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-09-03 15:51+0200\n"
-"Last-Translator: gogo <linux.hr@protonmail.com>\n"
+"POT-Creation-Date: 2021-02-25 19:41+0000\n"
+"PO-Revision-Date: 2021-02-26 12:14+0100\n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Launchpad-Export-Date: 2008-05-28 05:19+0000\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -62,18 +62,6 @@ msgstr "Nemoguće otkrivanje trenutne sesije: "
 msgid "Could not identify the current seat."
 msgstr "Nemoguće identificirati trenutno sjedište."
 
-#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Sustav ne može otkriti treba li se prebaciti na postojeći zaslon prijave ili "
-"pokrenuti novi zaslon prijave."
-
-#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
-msgid "The system is unable to start up a new login screen."
-msgstr "Sustav ne može pokrenuti novi zaslon prijave."
-
 #: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
@@ -91,27 +79,27 @@ msgstr ""
 "sustava u svrhu dijagnosticiranja problema. U međuvremenu ovaj zaslon biti "
 "će onemogućen. Ponovno pokrenite GDM kada problem ispravite."
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Nema dostupnog zaslona"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Nema dostupne sesije"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Nedostupan odabiratelj sesije"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Može se jedino pozvati prije nego što se korisnik prijavi"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Pozivatelj nije GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Nemoguće otvaranje privatno kanala komunikacije"
 
@@ -179,31 +167,97 @@ msgstr "Uređaj zaslona"
 msgid "The display device"
 msgstr "Uređaj zaslona"
 
-#: daemon/gdm-session.c:1285
+#: daemon/gdm-session.c:1288
 msgid "Could not create authentication helper process"
 msgstr "Nemoguće stvaranje procesa pomoći ovjere"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Vašem računu dano je vremensko ograničenje koje je sada isteklo."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Dosegli ste najviše dopuštenih pokušaja ovjere lozinke, pokušajte drugim "
+"načinom"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Dosegli ste najviše dopuštenih pokušaja ovjere PIN-om, pokušajte drugim "
+"načinom"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Dosegli ste najviše dopuštenih automatskih pokušaja ovjere lozinke, "
+"pokušajte drugim načinom"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Dosegli ste najviše dopuštenih pokušaja ovjere otiskom, pokušajte drugim "
+"načinom"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Dosegli ste najviše dopuštenih pokušaja ovjere pametnom karticom, pokušajte "
+"drugim načinom"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Dosegli ste najviše dopuštenih pokušaja ovjere, pokušajte drugim načinom"
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Nažalost, ovjera lozinkom ne radi. Pokušajte ponovno."
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Nažalost, ovjera PIN-om ne radi. Pokušajte ponovno."
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Nažalost, automatska prijava ne radi. Pokušajte ponovno."
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Nažalost, ovjera otiskom ne radi. Pokušajte ponovno."
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Nažalost, ovjera pametnom karticom ne radi. Pokušajte ponovno."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Nažalost, to ne radi. Pokušajte ponovno."
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Vašem računu dano je vremensko ograničenje koje je sada isteklo."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Korisničko ime:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1711 daemon/gdm-session-worker.c:1728
 msgid "no user account available"
 msgstr "nema dostupnih korisničkih računa"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1755
 msgid "Unable to change to user"
 msgstr "Nemoguća promjena korisnika"
 
-#: daemon/gdm-wayland-session.c:511
+#: daemon/gdm-wayland-session.c:531
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME Upravitelj zaslona pokretanja wayland sesije"
 
@@ -211,15 +265,15 @@ msgstr "GNOME Upravitelj zaslona pokretanja wayland sesije"
 msgid "Could not create socket!"
 msgstr "Nemoguće stvaranje priključnice!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:879
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Pokreni program putem /etc/gdm/Xsession zaštitne skripte"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:880
 msgid "Listen on TCP socket"
 msgstr "Slušaj na TCP priključnici"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:892
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME Upravitelj zaslona pokretanja X sesije"
 
@@ -434,6 +488,16 @@ msgstr "Zaslon uslikan"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Uslikaj sliku zaslona"
+
+#~ msgid ""
+#~ "The system is unable to determine whether to switch to an existing login "
+#~ "screen or start up a new login screen."
+#~ msgstr ""
+#~ "Sustav ne može otkriti treba li se prebaciti na postojeći zaslon prijave "
+#~ "ili pokrenuti novi zaslon prijave."
+
+#~ msgid "The system is unable to start up a new login screen."
+#~ msgstr "Sustav ne može pokrenuti novi zaslon prijave."
 
 #, fuzzy
 #~ msgid "Your password has expired, please change it now."
