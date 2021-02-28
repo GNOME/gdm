@@ -16,22 +16,23 @@
 # Claude Paroz <claude@2xlibre.net>, 2007-2019.
 # Bruno Brouard <annoa.b@gmail.com>, 2008-2012.
 # Alexandre Franke <alexandre.franke@gmail.com>, 2011-2012.
-# Charles Monzat <superboa@hotmail.fr>, 2017, 2018.
+# Julien Humbert <julroy67@gmail.com>, 2021.
+# Charles Monzat <charles.monzat@free.fr>, 2017-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2020-05-30 21:14+0000\n"
-"PO-Revision-Date: 2020-08-24 18:09+0900\n"
-"Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
-"Language-Team: français <gnomefr@traduc.org>\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-02-17 14:28+0100\n"
+"Last-Translator: Charles Monzat <charles.monzat@free.fr>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Gtranslator 3.38.0\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -106,27 +107,27 @@ msgstr ""
 "journaux système pour diagnostiquer le problème. En attendant, cet affichage "
 "est désactivé. Veuillez redémarrer GDM lorsque le problème sera résolu."
 
-#: daemon/gdm-manager.c:763
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Aucun affichage disponible"
 
-#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Aucune session disponible"
 
-#: daemon/gdm-manager.c:880
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Sélecteur de session non disponible"
 
-#: daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Peut seulement être appelé avant que l’utilisateur soit connecté"
 
-#: daemon/gdm-manager.c:907
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "L’appelant n’est pas GDM"
 
-#: daemon/gdm-manager.c:917
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Impossible d’ouvrir un canal de communication privé"
 
@@ -201,23 +202,104 @@ msgstr "Le périphérique d’affichage"
 msgid "Could not create authentication helper process"
 msgstr "Impossible de créer un processus assistant d’authentification"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Votre compte a une limite de temps qui est maintenant échue."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Vous avez atteint le nombre maximal de tentatives d’authentification par mot "
+"de passe, veuillez essayer une autre méthode"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Vous avez atteint le nombre maximal de tentatives d’authentification par "
+"code PIN, veuillez essayer une autre méthode"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Vous avez atteint le nombre maximal de tentatives de connexion automatique, "
+"veuillez essayer une autre méthode d’authentification"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Vous avez atteint le nombre maximal de tentatives d’authentification par "
+"empreinte digitale, veuillez essayer une autre méthode"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Vous avez atteint le nombre maximal de tentatives d’authentification par "
+"carte à puce, veuillez essayer une autre méthode"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Vous avez atteint le nombre maximal de tentatives d’authentification, "
+"veuillez essayer une autre méthode"
+
+#: daemon/gdm-session-worker.c:771
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr ""
+"Désolé, l’authentification par mot de passe n’a pas fonctionné. Veuillez "
+"réessayer."
+
+#: daemon/gdm-session-worker.c:774
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr ""
+"Désolé, l’authentification par code PIN n’a pas fonctionné. Veuillez "
+"réessayer."
+
+#: daemon/gdm-session-worker.c:777
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr ""
+"Désolé, la connexion automatique n’a pas fonctionné. Veuillez réessayer."
+
+#: daemon/gdm-session-worker.c:780
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr ""
+"Désolé, l’authentification par empreinte digitale n’a pas fonctionné. "
+"Veuillez réessayer."
+
+#: daemon/gdm-session-worker.c:783
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr ""
+"Désolé, l’authentification par carte à puce n’a pas fonctionné. Veuillez "
+"réessayer."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Désolé, ça n’a pas fonctionné. Veuillez réessayer."
 
-#: daemon/gdm-session-worker.c:1167
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Votre compte a une limite de temps qui est maintenant échue."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Identifiant :"
 
-#: daemon/gdm-session-worker.c:1669 daemon/gdm-session-worker.c:1686
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "aucun compte utilisateur disponible"
 
-#: daemon/gdm-session-worker.c:1713
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Impossible de changer vers l’utilisateur"
 
@@ -229,15 +311,15 @@ msgstr "Lanceur de session Wayland du Gestionnaire de connexions de GNOME"
 msgid "Could not create socket!"
 msgstr "Impossible de créer le connecteur."
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Exécuter le programme via un script enveloppeur /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Écouter sur un connecteur TCP"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Lanceur de session X du Gestionnaire de connexions de GNOME"
 
@@ -378,7 +460,7 @@ msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr ""
-"Normalement l’écran de connexion affiche la liste des utilisateurs qui "
+"Normalement, l’écran de connexion affiche la liste des utilisateurs qui "
 "peuvent se connecter. Ce réglage peut être modifié pour désactiver "
 "l’affichage de cette liste."
 
