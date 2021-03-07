@@ -4,14 +4,14 @@
 # Gareth Owen <gowen72@yahoo.com>, 2004.
 # Philip Withnall <philip@tecnocode.co.uk> 2009, 2010.
 # Bruce Cowan <bruce@bcowan.me.uk>, 2010, 2011, 2012, 2016.
-# Zander Brown <zbrown@gnome.org>, 2019.
+# Zander Brown <zbrown@gnome.org>, 2019-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2019-08-25 02:32+0100\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-02-18 21:05+0000\n"
 "Last-Translator: Zander Brown <zbrown@gnome.org>\n"
 "Language-Team: English - United Kingdom <en_GB@li.org>\n"
 "Language: en_GB\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 3.32.1\n"
+"X-Generator: Gtranslator 3.38.0\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -58,7 +58,6 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom is not a character device"
 
 #: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
-#| msgid "Could not identify the current session."
 msgid "Could not identify the current session: "
 msgstr "Could not identify the current session:"
 
@@ -80,7 +79,6 @@ msgstr "The system is unable to start up a new login screen."
 
 #: daemon/gdm-display-access-file.c:298
 #, c-format
-#| msgid "could not find user \"%s\" on system"
 msgid "could not find user “%s” on system"
 msgstr "could not find user “%s” on system"
 
@@ -96,40 +94,37 @@ msgstr ""
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "No display available"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "No session available"
 
-#: daemon/gdm-manager.c:879
-#| msgid "No session available"
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Chooser session unavailable"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Can only be called before user is logged in"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Caller not GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Unable to open private communication channel"
 
 #: daemon/gdm-server.c:383
 #, c-format
-#| msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Server was to be spawned by user %s but that user doesn’t exist"
 
 #: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
-#| msgid "Couldn't set groupid to %d"
 msgid "Couldn’t set groupid to %d"
 msgstr "Couldn’t set groupid to %d"
 
@@ -140,7 +135,6 @@ msgstr "initgroups () failed for %s"
 
 #: daemon/gdm-server.c:406
 #, c-format
-#| msgid "Couldn't set userid to %d"
 msgid "Couldn’t set userid to %d"
 msgstr "Couldn’t set userid to %d"
 
@@ -156,7 +150,6 @@ msgstr "%s: Error setting %s to %s"
 
 #: daemon/gdm-server.c:537
 #, c-format
-#| msgid "%s: Server priority couldn't be set to %d: %s"
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Server priority couldn’t be set to %d: %s"
 
@@ -193,25 +186,94 @@ msgstr "The display device"
 msgid "Could not create authentication helper process"
 msgstr "Could not create authentication helper process"
 
-#: daemon/gdm-session-worker.c:756
-#| msgid "Your account was given a time limit that's now passed."
-msgid "Your account was given a time limit that’s now passed."
-msgstr "Your account was given a time limit that’s now passed."
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
 
-#: daemon/gdm-session-worker.c:763
-#| msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"You reached the maximum authentication attempts, please try another method"
+
+#: daemon/gdm-session-worker.c:771
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Sorry, password authentication didn’t work. Please try again."
+
+#: daemon/gdm-session-worker.c:774
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Sorry, PIN authentication didn’t work. Please try again."
+
+#: daemon/gdm-session-worker.c:777
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Sorry, auto login didn’t work. Please try again."
+
+#: daemon/gdm-session-worker.c:780
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Sorry, fingerprint authentication didn’t work. Please try again."
+
+#: daemon/gdm-session-worker.c:783
+#| msgid "Sorry, that didn’t work. Please try again."
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Sorry, smart card authentication didn’t work. Please try again."
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Sorry, that didn’t work. Please try again."
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Your account was given a time limit that’s now passed."
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Username:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "no user account available"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Unable to change to user"
 
@@ -223,15 +285,15 @@ msgstr "GNOME Display Manager Wayland Session Launcher"
 msgid "Could not create socket!"
 msgstr "Could not create socket!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Run program through /etc/gdm/Xsession wrapper script"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Listen on TCP socket"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME Display Manager X Session Launcher"
 
@@ -252,7 +314,6 @@ msgstr "Failed to create LogDir %s: %s"
 
 #: daemon/main.c:223
 #, c-format
-#| msgid "Can't find the GDM user '%s'. Aborting!"
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "Can't find the GDM user “%s”. Aborting!"
 
@@ -262,7 +323,6 @@ msgstr "The GDM user should not be root. Aborting!"
 
 #: daemon/main.c:235
 #, c-format
-#| msgid "Can't find the GDM group '%s'. Aborting!"
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "Can't find the GDM group “%s”. Aborting!"
 
@@ -434,7 +494,6 @@ msgstr "Version of this application"
 
 #. Option parsing
 #: utils/gdmflexiserver.c:137
-#| msgid "- New GDM login"
 msgid "— New GDM login"
 msgstr "— New GDM login"
 
