@@ -183,3 +183,17 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
 
         return retval;
 }
+
+void
+gdm_dbus_error_ensure (GQuark domain)
+{
+        /* The primary purpose of this function is to make sure the error quark
+         * is registered internally with gdbus before any bus traffic occurs,
+         * so we get remote errors mapped correctly to their local counterparts.
+         * This error quark registration happens implicitly the first time the
+         * quark is used.
+         * Note that g_debug is never optimized away, only the output is suppressed.
+         */
+        g_debug ("GdmDBusUtils: Registered DBus error domain '%s'",
+                 g_quark_to_string (domain));
+}
