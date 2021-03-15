@@ -35,4 +35,6 @@ gboolean gdm_dbus_get_pid_for_name (const char  *system_bus_name,
 gboolean gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                                     uid_t       *out_uid,
                                     GError     **error);
+
+void gdm_dbus_error_ensure (GQuark domain);
 #endif

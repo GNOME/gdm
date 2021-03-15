@@ -3998,6 +3998,9 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 #endif
+
+        /* Ensure we can resolve errors */
+        gdm_dbus_error_ensure (GDM_SESSION_WORKER_ERROR);
 }
 
 GdmSession *
