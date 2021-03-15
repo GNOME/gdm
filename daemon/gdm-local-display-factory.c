@@ -544,8 +544,9 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                                 } else {
                                         /* It is not yet time to force X11 fallback. */
                                         g_debug ("GdmLocalDisplayFactory: seat0 display requested when there is no graphics support before graphics check timeout.");
-                                        return;
                                 }
+
+                                return;
                         }
 
                         g_debug ("GdmLocalDisplayFactory: Assuming we can use seat0 for X11 even though system says it doesn't support graphics!");
