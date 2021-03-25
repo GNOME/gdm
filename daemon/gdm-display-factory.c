@@ -76,7 +76,7 @@ purge_display (char       *id,
         }
 }
 
-static void
+static gboolean
 purge_displays (GdmDisplayFactory *factory)
 {
         GdmDisplayFactoryPrivate *priv;
@@ -86,6 +86,8 @@ purge_displays (GdmDisplayFactory *factory)
         gdm_display_store_foreach_remove (priv->display_store,
                                           (GdmDisplayStoreFunc)purge_display,
                                           NULL);
+
+        return G_SOURCE_REMOVE;
 }
 
 void
