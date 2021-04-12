@@ -3167,6 +3167,21 @@ gdm_session_worker_handle_setup_for_program (GdmDBusWorker         *object,
         return TRUE;
 }
 
+static void
+fix_environment_if_old_gdm_daemon_running (GdmSessionWorker *worker)
+{
+        const char *daemon_version;
+        const char *username;
+
+        daemon_version = gdm_session_worker_get_environment_variable (worker, "GDM_VERSION");
+        username = gdm_session_worker_get_environment_variable (worker, "USERNAME");
+
+        if (g_strcmp0 (daemon_version, "3.14.2") == 0 &&
+            g_strcmp0 (username, "gdm") == 0) {
+            gdm_session_worker_set_environment_variable (worker, "GNOME_SHELL_SESSION_MODE", "gdm");
+        }
+}
+
 static gboolean
 gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
                                          GDBusMethodInvocation *invocation,
@@ -3175,6 +3190,8 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         GError *parse_error = NULL;
         validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SESSION_STARTED);
+
+        fix_environment_if_old_gdm_daemon_running (worker);
 
         if (worker->priv->is_reauth_session) {
                 g_dbus_method_invocation_return_error (invocation,
