@@ -17,15 +17,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-09-18 13:39+0000\n"
-"PO-Revision-Date: 2019-10-20 20:11+0300\n"
-"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
+"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"PO-Revision-Date: 2021-01-06 13:22+0200\n"
+"Last-Translator: Alexey Rubtsov <rushills@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -67,7 +67,7 @@ msgstr "/dev/urandom не является символьным устройст
 
 #: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
 msgid "Could not identify the current session: "
-msgstr "Не удалось идентифицировать текущий сеанс:"
+msgstr "Не удалось идентифицировать текущий сеанс: "
 
 #: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
 msgid "Could not identify the current seat."
@@ -102,27 +102,27 @@ msgstr ""
 "журнал. В настоящее время этот дисплей будет отключен. Перезапустите GDM, "
 "когда проблема будет устранена."
 
-#: daemon/gdm-manager.c:763
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "Дисплей недоступен"
 
-#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "Сеанс недоступен"
 
-#: daemon/gdm-manager.c:880
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "Выбор сеанса недоступен"
 
-#: daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "Может быть вызван до того, как пользователь вошёл в систему"
 
-#: daemon/gdm-manager.c:907
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "Другой вызывающий компонент (не GDM)"
 
-#: daemon/gdm-manager.c:917
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "Невозможно открыть приватный коммуникационный канал"
 
@@ -196,23 +196,86 @@ msgstr "Устройство дисплея"
 msgid "Could not create authentication helper process"
 msgstr "Не удалось создать вспомогательный процесс аутентификации"
 
-#: daemon/gdm-session-worker.c:757
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr ""
+"Вы использовали все попытки ввода пароля, пожалуйста, попробуйте другой метод"
+
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr ""
+"Вы использовали все попытки ввода PIN, пожалуйста, попробуйте другой метод"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr ""
+"Вы использовали все попытки автоматического входа в систему, пожалуйста, "
+"попробуйте другой метод"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Вы использовали все попытки входа по отпечатку пальца, пожалуйста, "
+"попробуйте другой метод"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Вы использовали все попытки входа по смарт-карте, пожалуйста, попробуйте "
+"другой метод"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr "Вы использовали все попытки входа, пожалуйста,попробуйте другой метод"
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "Вход с паролем не сработал. Попробуйте ещё раз, пожалуйста."
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "Вход по PIN не сработал. Попробуйте ещё раз, пожалуйста."
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "Автоматический вход не сработал. Попробуйте ещё раз, пожалуйста."
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "Вход по отпечатку пальца не сработал. Попробуйте ещё раз, пожалуйста."
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "Вход по смарт-карте не сработал. Попробуйте ещё раз, пожалуйста."
+
+#: daemon/gdm-session-worker.c:785
+msgid "Sorry, that didn’t work. Please try again."
+msgstr "Не сработало. Попробуйте ещё раз, пожалуйста."
+
+#: daemon/gdm-session-worker.c:800
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Время действия учётной записи истекло."
 
-#: daemon/gdm-session-worker.c:764
-msgid "Sorry, that didn’t work. Please try again."
-msgstr "Не сработало. Попробуйте ещё раз."
-
-#: daemon/gdm-session-worker.c:1189
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: daemon/gdm-session-worker.c:1693 daemon/gdm-session-worker.c:1710
+#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
 msgid "no user account available"
 msgstr "учётная запись пользователя недоступна"
 
-#: daemon/gdm-session-worker.c:1737
+#: daemon/gdm-session-worker.c:1748
 msgid "Unable to change to user"
 msgstr "Не удалось сменить пользователя"
 
@@ -224,15 +287,15 @@ msgstr "Модуль GDM для запуска сеанса Wayland"
 msgid "Could not create socket!"
 msgstr "Не удалось создать сокет!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:859
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Запустить программу через сценарий-обёртку /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:860
 msgid "Listen on TCP socket"
 msgstr "Прослушивать TCP-сокет"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:872
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Модуль GDM для запуска сеанса X"
 
@@ -255,22 +318,22 @@ msgstr "Не удалось создать каталог журналов %s: %
 #: daemon/main.c:223
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
-msgstr "Не найден пользователь GDM «%s». Аварийное завершение."
+msgstr "Не найден пользователь GDM «%s». Аварийное завершение!"
 
 #: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
-"Пользователь GDM не должен быть суперпользователем. Аварийное завершение."
+"Пользователь GDM не должен быть суперпользователем. Аварийное завершение!"
 
 #: daemon/main.c:235
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
-msgstr "Не удалось найти группу GDM «%s». Аварийное завершение."
+msgstr "Не удалось найти группу GDM «%s». Аварийное завершение!"
 
 #: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
-"Группа GDM не должна быть группой суперпользователя. Аварийное завершение."
+"Группа GDM не должна быть группой суперпользователя. Аварийное завершение!"
 
 #: daemon/main.c:317
 msgid "Make all warnings fatal"
