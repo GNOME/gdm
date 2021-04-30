@@ -295,7 +295,7 @@ summary({
     'GDM Runtime config': gdm_runtime_conf,
     'GDM Session default path': get_option('default-path'),
     'GDM Working dir': working_dir,
-    'GNOME locale': gdm_prefix / get_option('datadir') / get_option('localedir'),
+    'GNOME locale': gdm_prefix / get_option('localedir'),
     'GNOME Settings Daemon': gnome_settings_daemon_dir,
     'AT SPI registryd': at_spi_registryd_dir,
     'Lang config file': lang_config_file,
