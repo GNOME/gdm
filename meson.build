@@ -90,7 +90,7 @@ else
 endif
 xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
 if xdmcp_dep.found() and get_option('tcp-wrappers')
-  libwrap_dep = cc.find_library('libwrap')
+  libwrap_dep = cc.find_library('wrap')
 endif
 # systemd
 systemd_dep = dependency('systemd')
