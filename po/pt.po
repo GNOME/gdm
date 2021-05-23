@@ -6,15 +6,17 @@
 # Pedro Albuquerque <palbuquerque73@openmailbox.com>, 2015.
 # Tiago Santos <tiagofsantos81@sapo.pt>, 2016.
 # Juliano Camargo <julianosc@pm.me>, 2020.
+# José Vieira <jvieira33@sapo.pt>, 2021.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 3.8\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2020-12-21 15:54+0000\n"
-"PO-Revision-Date: 2020-12-22 00:23+0000\n"
+"POT-Creation-Date: 2021-05-09 18:55+0000\n"
+"PO-Revision-Date: 2021-05-23 17:37+0100\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
-"Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
+"Language-Team: Português (https://l10n.gnome.org/teams/pt/)\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,7 +46,7 @@ msgstr "XDMCP: impossível criar buffer XDMCP!"
 
 #: chooser/gdm-host-chooser-widget.c:259
 msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: impossível ler cabeçalho XDMCP!"
+msgstr "XDMCP: impossível ler o cabeçalho do XDMCP!"
 
 #: chooser/gdm-host-chooser-widget.c:265
 msgid "XDMCP: Incorrect XDMCP version!"
@@ -52,7 +54,7 @@ msgstr "XDMCP: versão incorreta do XDMCP!"
 
 #: chooser/gdm-host-chooser-widget.c:271
 msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: impossível processar o endereço"
+msgstr "XDMCP: impossível analisar o endereço"
 
 #: common/gdm-common.c:307
 msgid "/dev/urandom is not a character device"
@@ -66,18 +68,6 @@ msgstr "Impossível identificar a sessão atual: "
 msgid "Could not identify the current seat."
 msgstr "Impossível identificar o lugar atual."
 
-#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"O sistema é incapaz de determinar se deve alternar para um ecrã de início de "
-"sessão existente ou criar um novo ecrã."
-
-#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
-msgid "The system is unable to start up a new login screen."
-msgstr "O sistema é incapaz de iniciar um novo ecrã de início de sessão."
-
 #: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
@@ -90,10 +80,10 @@ msgid ""
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"Impossível iniciar o servidor X (o seu ambiente gráfico) devido a um erro "
-"interno. Contacte o seu administrador de sistemas ou analise o syslog para "
-"diagnosticar. Entretanto este ecrã será desativado. Reinicie o GDM quando o "
-"problema estiver corrigido."
+"Impossível iniciar o servidor X (ambiente gráfico) devido a um erro interno. "
+"Contacte o administrador de sistemas ou analise o syslog para diagnosticar. "
+"Entretanto, este ecrã será desativado. Reinicie o GDM quando o problema "
+"estiver corrigido."
 
 #: daemon/gdm-manager.c:764
 msgid "No display available"
@@ -123,7 +113,7 @@ msgstr "Impossível abrir canal de comunicação privado"
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
-"Servidor seria criado pelo utilizador %s, mas este utilizador não existe"
+"O servidor seria gerado pelo utilizador %s, mas este utilizador não existe"
 
 #: daemon/gdm-server.c:394 daemon/gdm-server.c:414
 #, c-format
@@ -166,142 +156,134 @@ msgstr "Utilizador"
 
 #: daemon/gdm-session-auditor.c:89
 msgid "The username"
-msgstr "O nome do utilizador"
+msgstr "O nome_de_utilizador"
 
 #: daemon/gdm-session-auditor.c:93
 msgid "Hostname"
-msgstr "Máquina"
+msgstr "Hospedeiro"
 
 #: daemon/gdm-session-auditor.c:94
 msgid "The hostname"
-msgstr "O nome da máquina"
+msgstr "O nome_de_hospedeiro"
 
 #: daemon/gdm-session-auditor.c:99
 msgid "Display Device"
-msgstr "Dispositivo de ecrã"
+msgstr "Dispositivo de exibição"
 
 #: daemon/gdm-session-auditor.c:100
 msgid "The display device"
-msgstr "O dispositivo de ecrã"
+msgstr "O dispositivo de exibição"
 
-#: daemon/gdm-session.c:1285
+#: daemon/gdm-session.c:1288
 msgid "Could not create authentication helper process"
-msgstr "Impossível criar processo de apoio à autenticação"
+msgstr "Impossível criar processo de ajuda à autenticação"
 
 #: daemon/gdm-session-worker.c:750
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr ""
-"Atingiu o máximo de tentativas de autenticação por palavra-passe, por favor "
-"tente outro método"
+"Foi atingido o máximo de tentativas de autenticação por palavra-passe. Tente "
+"outro método"
 
 #: daemon/gdm-session-worker.c:753
 msgid ""
 "You reached the maximum PIN authentication attempts, please try another "
 "method"
 msgstr ""
-"Atingiu o máximo de tentativas de autenticação por PIN, por favor tente "
-"outro método"
+"Foi atingido o máximo de tentativas de autenticação por PIN. Tente outro "
+"método"
 
 #: daemon/gdm-session-worker.c:756
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr ""
-"Atingiu o máximo de tentativas de autenticação de início de sessão "
-"automático, por favor tente outro método"
+"Foi atingido o máximo de tentativas de autenticação de início de sessão "
+"automático. Tente outro método"
 
 #: daemon/gdm-session-worker.c:759
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr ""
-"Atingiu o máximo de tentativas de autenticação por impressão digital, por "
-"favor tente outro método"
+"Foi atingido o máximo de tentativas de autenticação por impressão digital. "
+"Tente outro método"
 
 #: daemon/gdm-session-worker.c:762
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr ""
-"Atingiu o máximo de tentativas de autenticação por cartão inteligente, por "
-"favor tente outro método"
+"Foi atingido o máximo de tentativas de autenticação por cartão inteligente. "
+"Tente outro método"
 
 #: daemon/gdm-session-worker.c:764
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
-"Atingiu o máximo de tentativas de autenticação, por favor tente outro método"
+"Foi atingido o máximo de tentativas de autenticação. Tente outro método"
 
 #: daemon/gdm-session-worker.c:771
 msgid "Sorry, password authentication didn’t work. Please try again."
-msgstr ""
-"Desculpe, a autenticação por palavra-passe não resultou. Por favor, tente "
-"novamente."
+msgstr "A autenticação por palavra-passe não resultou. Tente novamente."
 
 #: daemon/gdm-session-worker.c:774
 msgid "Sorry, PIN authentication didn’t work. Please try again."
-msgstr ""
-"Desculpe, a autenticação por PIN não resultou. Por favor, tente novamente."
+msgstr "A autenticação por PIN não resultou. Tente novamente."
 
 #: daemon/gdm-session-worker.c:777
 msgid "Sorry, auto login didn’t work. Please try again."
-msgstr ""
-"Desculpe, o início de sessão automático não resultou. Por favor, tente "
-"novamente."
+msgstr "O início de sessão automático não resultou. Tente novamente."
 
 #: daemon/gdm-session-worker.c:780
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
-msgstr ""
-"Desculpe, a autenticação por impressão digital não resultou. Por favor, "
-"tente novamente."
+msgstr "A autenticação por impressão digital não resultou. Tente novamente."
 
 #: daemon/gdm-session-worker.c:783
 msgid "Sorry, smart card authentication didn’t work. Please try again."
-msgstr ""
-"Desculpe, a autenticação por cartão inteligente não resultou. Por favor, "
-"tente novamente."
+msgstr "A autenticação por cartão inteligente não resultou. Tente novamente."
 
 #: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
-msgstr "Desculpe, não resultou. Por favor, tente novamente."
+msgstr "Não resultou. Tente novamente."
 
 #: daemon/gdm-session-worker.c:800
 msgid "Your account was given a time limit that’s now passed."
-msgstr "Atribuiu-se um limite de tempo à sua conta que foi agora ultrapassado."
+msgstr ""
+"Foi atribuído um limite de tempo à sua conta que foi agora ultrapassado."
 
 #: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "Utilizador:"
 
-#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
+#: daemon/gdm-session-worker.c:1711 daemon/gdm-session-worker.c:1728
 msgid "no user account available"
 msgstr "nenhuma conta de utilizador disponível"
 
-#: daemon/gdm-session-worker.c:1748
+#: daemon/gdm-session-worker.c:1755
 msgid "Unable to change to user"
 msgstr "Impossível mudar para o utilizador"
 
-#: daemon/gdm-wayland-session.c:511
+#: daemon/gdm-wayland-session.c:531
 msgid "GNOME Display Manager Wayland Session Launcher"
-msgstr "Iniciador do gestor de ecrãs Wayland do GNOME"
+msgstr "Iniciador de sessão Wayland do Gestor do ecrãs do GNOME"
 
 #: daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
-msgstr "Impossível criar ranhura!"
+msgstr "Impossível criar socket!"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:879
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Execute o programa através do script /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:860
+#: daemon/gdm-x-session.c:880
 msgid "Listen on TCP socket"
-msgstr "Ouvir na ranhura TCP"
+msgstr "Ouvir no socket TCP"
 
-#: daemon/gdm-x-session.c:872
+#: daemon/gdm-x-session.c:892
 msgid "GNOME Display Manager X Session Launcher"
-msgstr "Iniciador do gestor de ecrãs X Session do GNOME"
+msgstr "Iniciador de sessão X do Gestor de ecrãs do GNOME"
 
 #: daemon/main.c:125 daemon/main.c:138
 #, c-format
@@ -312,30 +294,30 @@ msgstr ""
 #: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr "Impossível criar pasta marcador de executar uma vez %s: %s"
+msgstr "Falha ao criar diretório marcador de executar uma vez %s: %s"
 
 #: daemon/main.c:188
 #, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "Falha ao criar pasta de diário %s: %s"
+msgstr "Falha ao criar diretório de registo %s: %s"
 
 #: daemon/main.c:223
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
-msgstr "Impossível encontrar o utilizador GDM \"%s\". A abortar!"
+msgstr "Impossível encontrar o utilizador do GDM \"%s\". A abortar!"
 
 #: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
-msgstr "O utilizador GDM não deveria ser root. A abortar!"
+msgstr "O utilizador do GDM não deveria ser root. A abortar!"
 
 #: daemon/main.c:235
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
-msgstr "Impossível encontrar o grupo GDM \"%s\". A abortar!"
+msgstr "Impossível encontrar o grupo do GDM \"%s\". A abortar!"
 
 #: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
-msgstr "O grupo GDM não deveria ser root. A abortar!"
+msgstr "O grupo do GDM não deveria ser root. A abortar!"
 
 #: daemon/main.c:317
 msgid "Make all warnings fatal"
@@ -347,7 +329,7 @@ msgstr "Sair após algum tempo (para depuração)"
 
 #: daemon/main.c:319
 msgid "Print GDM version"
-msgstr "Imprimir versão GDM"
+msgstr "Mostrar a versão do GDM"
 
 #: daemon/main.c:330
 msgid "GNOME Display Manager"
@@ -362,44 +344,45 @@ msgstr "Apenas o utilizador root pode executar o GDM"
 #. of starting up a session
 #: daemon/session-worker-main.c:119
 msgid "GNOME Display Manager Session Worker"
-msgstr "Trabalhador de sessão do gestor de ecrãs do GNOME"
+msgstr "Iniciador de sessão do gestor de ecrãs do GNOME"
 
 #: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr "Permitir ou não iniciar sessão através de leitor de impressão digital"
+msgstr ""
+"Permitir ou não, iniciar sessão através do leitor de impressões digitais"
 
 #: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"O ecrã de início de sessão pode opcionalmente permitir aos utilizadores que "
-"tenham recolhido a sua impressão digital utilizá-la para iniciar sessão."
+"O ecrã de acesso pode opcionalmente permitir aos utilizadores que tenham "
+"fornecido a sua impressão digital utilizá-la para aceder ao sistema."
 
 #: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
-msgstr "Permitir ou não iniciar sessão através de smartcard"
+msgstr "Permitir ou não, iniciar sessão através do cartão smart"
 
 #: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"O ecrã de início de sessão pode opcionalmente permitir aos utilizadores que "
-"tenham smartcards utilizá-los para iniciar sessão."
+"O ecrã de acesso pode opcionalmente permitir aos utilizadores que tenham "
+"smartcards utilizá-los para aceder ao sistema."
 
 #: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
-msgstr "Permitir ou não início de sessão através de senha"
+msgstr "Permitir ou não, iniciar sessão através de palavras-passe"
 
 #: data/org.gnome.login-screen.gschema.xml:29
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"O ecrã de inicio de sessão pode ser configurado para desabilitar a "
-"autenticação com senha, forçando a utilização de autenticação por impressão "
-"digital do utilizador."
+"O ecrã de acesso pode ser configurado para não permitir a autenticação com "
+"palavra-passe, forçando o utilizador a autenticar-se por cartão smart ou "
+"impressão digital."
 
 #: data/org.gnome.login-screen.gschema.xml:36
 #: data/org.gnome.login-screen.gschema.xml:46
@@ -411,18 +394,17 @@ msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
 msgstr ""
-"O ecrã de início de sessão pode opcionalmente apresentar uma pequena imagem "
-"para que administradores de sistemas e distribuições possam mostrar a sua "
-"marca."
+"O ecrã de acesso pode opcionalmente apresentar uma pequena imagem para que "
+"os administradores de sítios e as distribuições possam mostrar a sua marca."
 
 #: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
 msgstr ""
-"O ecrã de recurso de início de sessão pode opcionalmente apresentar uma "
-"pequena imagem para que administradores de sistemas e distribuições possam "
-"mostrar a sua marca."
+"O ecrã de acesso de recurso pode opcionalmente apresentar uma pequena imagem "
+"para que os administradores de sites e as distribuições possam mostrar a sua "
+"marca."
 
 #: data/org.gnome.login-screen.gschema.xml:56
 msgid "Avoid showing user list"
@@ -433,25 +415,25 @@ msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr ""
-"O ecrã de início de sessão normalmente apresenta uma lista de utilizadores "
-"disponíveis para iniciar sessão. Esta opção pode ser desligada para que não "
-"seja mostrada a lista de utilizadores."
+"O ecrã de acesso normalmente apresenta uma lista de utilizadores registados "
+"para iniciar sessão. Esta opção pode ser desligada para que não seja exibida "
+"a lista de utilizadores."
 
 #: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
-msgstr "Ativar a apresentação da mensagem de título"
+msgstr "Ativar a apresentação da mensagem destacada"
 
 #: data/org.gnome.login-screen.gschema.xml:69
 msgid "Set to true to show the banner message text."
-msgstr "Definir como verdadeiro para mostrar o texto de mensagem de título."
+msgstr "Definir como verdadeiro para mostrar o texto de mensagem destacada."
 
 #: data/org.gnome.login-screen.gschema.xml:75
 msgid "Banner message text"
-msgstr "Texto da mensagem de título"
+msgstr "Texto da mensagem destacada"
 
 #: data/org.gnome.login-screen.gschema.xml:78
 msgid "Text banner message to show in the login window."
-msgstr "Texto de título a mostrar na janela de início de sessão."
+msgstr "Texto destacado a mostrar na janela de acesso."
 
 #: data/org.gnome.login-screen.gschema.xml:84
 msgid "Disable showing the restart buttons"
@@ -461,11 +443,11 @@ msgstr "Desativar a apresentação dos botões de reiniciar"
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Definir como verdadeiro para desativar a apresentação do botão de reiniciar "
-"na janela de início de sessão."
+"na janela de acesso."
 
 #: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
-msgstr "Número de falhas de autenticação permitido"
+msgstr "Número de falhas de autenticação permitidas"
 
 #: data/org.gnome.login-screen.gschema.xml:96
 msgid ""
@@ -507,7 +489,7 @@ msgstr "Versão desta aplicação"
 #. Option parsing
 #: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
-msgstr "— Novo início de sessão GDM"
+msgstr "— Novo acesso GDM"
 
 #: utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -517,6 +499,16 @@ msgstr "Captura de ecrã realizada"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Capturar uma imagem do ecrã"
+
+#~ msgid ""
+#~ "The system is unable to determine whether to switch to an existing login "
+#~ "screen or start up a new login screen."
+#~ msgstr ""
+#~ "O sistema é incapaz de determinar se deve alternar para um ecrã de início "
+#~ "de sessão existente ou criar um novo ecrã."
+
+#~ msgid "The system is unable to start up a new login screen."
+#~ msgstr "O sistema é incapaz de iniciar um novo ecrã de início de sessão."
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr "A sua senha expirou, por favor, altera-a agora."
