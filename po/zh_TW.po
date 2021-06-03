@@ -15,16 +15,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.2.0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-10-09 07:44+0000\n"
-"PO-Revision-Date: 2019-11-23 10:47+0800\n"
-"Last-Translator: pan93412 <pan93412@gmail.com>\n"
+"POT-Creation-Date: 2021-02-25 19:41+0000\n"
+"PO-Revision-Date: 2021-06-03 10:01+0800\n"
+"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese <zh-l10n@linux.org.tw>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 19.11.80\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -70,16 +70,6 @@ msgstr "無法識別目前的工作階段："
 msgid "Could not identify the current seat."
 msgstr "無法識別目前的臺座。"
 
-#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr "系統無法決定要切換到現有的登入畫面或是啟動一個新的登入畫面。"
-
-#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
-msgid "The system is unable to start up a new login screen."
-msgstr "系統無法啟動一個新的登入畫面。"
-
 #: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
@@ -95,27 +85,27 @@ msgstr ""
 "因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請連絡管理員或是檢查系"
 "統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
 
-#: daemon/gdm-manager.c:763
+#: daemon/gdm-manager.c:764
 msgid "No display available"
 msgstr "沒有顯示可用"
 
-#: daemon/gdm-manager.c:861 daemon/gdm-manager.c:1145
+#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
 msgid "No session available"
 msgstr "沒有可用的工作階段"
 
-#: daemon/gdm-manager.c:880
+#: daemon/gdm-manager.c:881
 msgid "Chooser session unavailable"
 msgstr "選擇器工作階段無法使用"
 
-#: daemon/gdm-manager.c:896
+#: daemon/gdm-manager.c:897
 msgid "Can only be called before user is logged in"
 msgstr "只能在使用者登入前呼叫"
 
-#: daemon/gdm-manager.c:907
+#: daemon/gdm-manager.c:908
 msgid "Caller not GDM"
 msgstr "呼叫者不是 GDM"
 
-#: daemon/gdm-manager.c:917
+#: daemon/gdm-manager.c:918
 msgid "Unable to open private communication channel"
 msgstr "無法開啟隱私通訊頻道"
 
@@ -132,7 +122,7 @@ msgstr "無法將 groupid 設定為 %d"
 #: daemon/gdm-server.c:400
 #, c-format
 msgid "initgroups () failed for %s"
-msgstr "%s 的 initgroups () 失敗。"
+msgstr "%s 的 initgroups () 失敗"
 
 #: daemon/gdm-server.c:406
 #, c-format
@@ -183,31 +173,86 @@ msgstr "顯示裝置"
 msgid "The display device"
 msgstr "顯示裝置"
 
-#: daemon/gdm-session.c:1285
+#: daemon/gdm-session.c:1288
 msgid "Could not create authentication helper process"
 msgstr "無法建立核對協助程序"
 
-#: daemon/gdm-session-worker.c:756
-msgid "Your account was given a time limit that’s now passed."
-msgstr "您的帳號設有時間限制，而現在已超過限制時間。"
+#: daemon/gdm-session-worker.c:750
+msgid ""
+"You reached the maximum password authentication attempts, please try another "
+"method"
+msgstr "您已到達密碼核對身分的最高嘗試次數，請改用其他方法"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:753
+msgid ""
+"You reached the maximum PIN authentication attempts, please try another "
+"method"
+msgstr "您已到達 PIN 碼核對身分的最高嘗試次數，請改用其他方法"
+
+#: daemon/gdm-session-worker.c:756
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
+msgstr "您已到達自動登入的最高次數，請改用其他的身分核對方法"
+
+#: daemon/gdm-session-worker.c:759
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr "您已到達指紋登入核對身分的最高嘗試次數，請改用其他方法"
+
+#: daemon/gdm-session-worker.c:762
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr "您已到達智慧卡核對身分的最高嘗試次數，請改用其他方法"
+
+#: daemon/gdm-session-worker.c:764
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr "您已到達核對身分的最高嘗試次數，請改用其他方法"
+
+#: daemon/gdm-session-worker.c:771
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr "抱歉，密碼核對身分沒有作用。請再試一次。"
+
+#: daemon/gdm-session-worker.c:774
+msgid "Sorry, PIN authentication didn’t work. Please try again."
+msgstr "抱歉，PIN 碼核對身分沒有作用。請再試一次。"
+
+#: daemon/gdm-session-worker.c:777
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr "抱歉，自動登入沒有作用。請再試一次。"
+
+#: daemon/gdm-session-worker.c:780
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr "抱歉，指紋核對身分沒有作用。請再試一次。"
+
+#: daemon/gdm-session-worker.c:783
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr "抱歉，智慧卡核對身分沒有作用。請再試一次。"
+
+#: daemon/gdm-session-worker.c:785
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "抱歉，那沒有作用。請再試一次。"
 
-#: daemon/gdm-session-worker.c:1167
+#: daemon/gdm-session-worker.c:800
+msgid "Your account was given a time limit that’s now passed."
+msgstr "您的帳號設有時間限制，而現在已超過限制時間。"
+
+#: daemon/gdm-session-worker.c:1202
 msgid "Username:"
 msgstr "使用者名稱："
 
-#: daemon/gdm-session-worker.c:1669 daemon/gdm-session-worker.c:1686
+#: daemon/gdm-session-worker.c:1711 daemon/gdm-session-worker.c:1728
 msgid "no user account available"
 msgstr "沒有可用的使用者帳號"
 
-#: daemon/gdm-session-worker.c:1713
+#: daemon/gdm-session-worker.c:1755
 msgid "Unable to change to user"
 msgstr "無法改變為使用者"
 
-#: daemon/gdm-wayland-session.c:511
+#: daemon/gdm-wayland-session.c:531
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME 登入管理員 Wayland 工作階段啟動器"
 
@@ -215,15 +260,15 @@ msgstr "GNOME 登入管理員 Wayland 工作階段啟動器"
 msgid "Could not create socket!"
 msgstr "無法建構 socket！"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:879
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "透過 /etc/gdm/Xsession 包裹命令稿執行程式"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:880
 msgid "Listen on TCP socket"
 msgstr "聽取 TCP 插槽"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:892
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME 登入管理員 X 工作階段的啟動器"
 
@@ -326,7 +371,8 @@ msgstr "使用者清單頂端小影像的路徑"
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr "登入畫面可以選擇性的顯示一張小影像讓網站管理者和各散布版能展示他們的品牌。"
+msgstr ""
+"登入畫面可以選擇性的顯示一張小影像讓網站管理者和各散布版能展示他們的品牌。"
 
 #: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
@@ -424,6 +470,14 @@ msgstr "拍下截圖"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "照下螢幕的影像"
+
+#~ msgid ""
+#~ "The system is unable to determine whether to switch to an existing login "
+#~ "screen or start up a new login screen."
+#~ msgstr "系統無法決定要切換到現有的登入畫面或是啟動一個新的登入畫面。"
+
+#~ msgid "The system is unable to start up a new login screen."
+#~ msgstr "系統無法啟動一個新的登入畫面。"
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr "您的密碼已逾期，請立即改變它。"
