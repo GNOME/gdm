@@ -157,6 +157,16 @@ gdm_rules = configure_file(
   install_dir: udev_dir,
 )
 
+# Polkit rules
+polkit_rules = configure_file(
+  input: 'org.gnome.gdm.rules.in',
+  output: '@BASENAME@',
+  configuration: {
+    'GDM_USERNAME': get_option('user'),
+  },
+  install_dir: get_option('datadir') / 'polkit-1' / 'rules.d',
+)
+
 # DBus service files
 service_config = configuration_data()
 service_config.set('sbindir', gdm_prefix / get_option('sbindir'))

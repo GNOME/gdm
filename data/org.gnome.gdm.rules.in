@@ -1,0 +1,8 @@
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.NetworkManager.network-control" &&
+        subject.user == "@GDM_USERNAME@") {
+            return polkit.Result.NO;
+    }
+
+    return polkit.Result.NOT_HANDLED;
+});
