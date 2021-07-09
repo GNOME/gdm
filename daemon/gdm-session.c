@@ -172,6 +172,7 @@ enum {
         AUTHENTICATION_FAILED,
         VERIFICATION_COMPLETE,
         SESSION_OPENED,
+        SESSION_OPENED_FAILED,
         SESSION_STARTED,
         SESSION_START_FAILED,
         SESSION_EXITED,
@@ -880,7 +881,7 @@ on_opened (GdmDBusWorker *worker,
                 report_and_stop_conversation (self, service_name, error);
 
                 g_debug ("GdmSession: Emitting 'session-start-failed' signal");
-                g_signal_emit (self, signals[SESSION_START_FAILED], 0, service_name, error->message);
+                g_signal_emit (self, signals[SESSION_OPENED_FAILED], 0, service_name, error->message);
         }
 }
 
@@ -3742,6 +3743,17 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_STRING);
+        signals [SESSION_OPENED_FAILED] =
+                g_signal_new ("session-opened-failed",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              0,
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_generic,
+                              G_TYPE_NONE,
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [SESSION_STARTED] =
                 g_signal_new ("session-started",
                               GDM_TYPE_SESSION,
