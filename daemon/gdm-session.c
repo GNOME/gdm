@@ -172,6 +172,7 @@ enum {
         AUTHENTICATION_FAILED,
         VERIFICATION_COMPLETE,
         SESSION_OPENED,
+        SESSION_OPENED_FAILED,
         SESSION_STARTED,
         SESSION_START_FAILED,
         SESSION_EXITED,
@@ -322,18 +323,18 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         service_name = g_strdup (conversation->service_name);
 
         if (worked) {
-                if (self->user_verifier_interface != NULL) {
-                        gdm_dbus_user_verifier_emit_verification_complete (self->user_verifier_interface,
-                                                                           service_name);
-                        g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
-                }
-
                 switch (self->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
                 case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
                         gdm_session_open_session (self, service_name);
                         break;
                 case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
+                        if (self->user_verifier_interface != NULL) {
+                                gdm_dbus_user_verifier_emit_verification_complete (self->user_verifier_interface,
+                                                                                   service_name);
+                                g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
+                        }
+                        break;
                 default:
                         break;
                 }
@@ -866,15 +867,15 @@ on_opened (GdmDBusWorker *worker,
 
                 conversation->session_id = g_strdup (session_id);
 
-                if (self->greeter_interface != NULL) {
-                        gdm_dbus_greeter_emit_session_opened (self->greeter_interface,
-                                                              service_name);
-                }
-
                 if (self->user_verifier_interface != NULL) {
                         gdm_dbus_user_verifier_emit_verification_complete (self->user_verifier_interface,
                                                                            service_name);
                         g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
+                }
+
+                if (self->greeter_interface != NULL) {
+                        gdm_dbus_greeter_emit_session_opened (self->greeter_interface,
+                                                              service_name);
                 }
 
                 g_debug ("GdmSession: Emitting 'session-opened' signal");
@@ -883,7 +884,7 @@ on_opened (GdmDBusWorker *worker,
                 report_and_stop_conversation (self, service_name, error);
 
                 g_debug ("GdmSession: Emitting 'session-start-failed' signal");
-                g_signal_emit (self, signals[SESSION_START_FAILED], 0, service_name, error->message);
+                g_signal_emit (self, signals[SESSION_OPENED_FAILED], 0, service_name, error->message);
         }
 }
 
@@ -3746,6 +3747,17 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_STRING);
+        signals [SESSION_OPENED_FAILED] =
+                g_signal_new ("session-opened-failed",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              0,
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_generic,
+                              G_TYPE_NONE,
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [SESSION_STARTED] =
                 g_signal_new ("session-started",
                               GDM_TYPE_SESSION,
