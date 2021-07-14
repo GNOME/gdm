@@ -37,7 +37,7 @@ main (int argc, char *argv[])
         if (argc < 5 || g_strcmp0(argv[1], "set") != 0) {
                 g_printerr("gdm-runtime-config: command format should be " \
                            "'gdm-runtime-config set <group> <key> <value>'\n" \
-                           "For example, 'gdm-runtime-config set daemon WaylandEnable true'");
+                           "For example, 'gdm-runtime-config set daemon WaylandEnable true'\n");
                 return EX_USAGE;
         }
 
@@ -66,7 +66,7 @@ main (int argc, char *argv[])
         saved_okay = g_key_file_save_to_file (key_file, GDM_RUNTIME_CONF, &error);
 
         if (!saved_okay) {
-                g_printerr ("gdm-runtime-config: unable to set '%s' in '%s' group to '%s': %s",
+                g_printerr ("gdm-runtime-config: unable to set '%s' in '%s' group to '%s': %s\n",
                             key, group, value, error->message);
                 return EX_CANTCREAT;
         }
