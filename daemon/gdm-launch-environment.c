@@ -161,6 +161,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 NULL
         };
         char *system_data_dirs;
+        g_auto (GStrv) supported_session_types = NULL;
         int i;
 
         /* create a hash table of current environment, then update keys has necessary */
@@ -243,6 +244,14 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                                               DATADIR "/gdm/greeter",
                                               system_data_dirs));
         g_free (system_data_dirs);
+
+        g_object_get (launch_environment->priv->session,
+                      "supported-session-types",
+                      &supported_session_types,
+                      NULL);
+        g_hash_table_insert (hash,
+                             g_strdup ("GDM_SUPPORTED_SESSION_TYPES"),
+                             g_strjoinv (":", supported_session_types));
 
         return hash;
 }
