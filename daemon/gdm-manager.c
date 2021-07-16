@@ -2307,7 +2307,6 @@ create_user_session_for_display (GdmManager *manager,
         char       *display_id = NULL;
 #if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
         g_autofree char *display_session_type = NULL;
-        gboolean    greeter_is_wayland;
 #endif
 
         g_object_get (G_OBJECT (display),
@@ -2405,11 +2404,6 @@ create_user_session_for_display (GdmManager *manager,
                                 session,
                                 (GDestroyNotify)
                                 clean_user_session);
-
-#if defined(ENABLE_WAYLAND_SUPPORT) && defined(ENABLE_USER_DISPLAY_SERVER)
-        greeter_is_wayland = g_strcmp0 (display_session_type, "wayland") == 0;
-        g_object_set (G_OBJECT (session), "ignore-wayland", !greeter_is_wayland, NULL);
-#endif
 }
 
 static void
