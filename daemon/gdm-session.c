@@ -133,11 +133,10 @@ struct _GdmSession
         GDBusServer         *outside_server;
         GHashTable          *environment;
 
+        GStrv                supported_session_types;
+
         guint32              is_program_session : 1;
         guint32              display_is_initial : 1;
-#ifdef ENABLE_WAYLAND_SUPPORT
-        guint32              ignore_wayland : 1;
-#endif
 };
 
 enum {
@@ -154,9 +153,7 @@ enum {
         PROP_DISPLAY_X11_AUTHORITY_FILE,
         PROP_USER_X11_AUTHORITY_FILE,
         PROP_CONVERSATION_ENVIRONMENT,
-#ifdef ENABLE_WAYLAND_SUPPORT
-        PROP_IGNORE_WAYLAND,
-#endif
+        PROP_SUPPORTED_SESSION_TYPES,
 };
 
 enum {
@@ -347,13 +344,24 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         g_object_unref (self);
 }
 
+static gboolean
+supports_session_type (GdmSession *self,
+                       const char *session_type)
+{
+        if (session_type == NULL)
+                return TRUE;
+
+        return g_strv_contains ((const char * const *) self->supported_session_types,
+                                session_type);
+}
+
 static char **
 get_system_session_dirs (GdmSession *self,
                          const char *type)
 {
         GArray *search_array = NULL;
         char **search_dirs;
-        int i;
+        int i, j;
         const gchar * const *system_data_dirs = g_get_system_data_dirs ();
 
         static const char *x_search_dirs[] = {
@@ -367,35 +375,32 @@ get_system_session_dirs (GdmSession *self,
 
         search_array = g_array_new (TRUE, TRUE, sizeof (char *));
 
-        if (type == NULL || g_str_equal (type, "x11")) {
-                for (i = 0; system_data_dirs[i]; i++) {
-                        gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
-                        g_array_append_val (search_array, dir);
+        for (j = 0; self->supported_session_types[j] != NULL; j++) {
+                const char *supported_type = self->supported_session_types[j];
+
+                if (g_str_equal (supported_type, "x11") &&
+                    (type == NULL || g_str_equal (type, supported_type))) {
+                        for (i = 0; system_data_dirs[i]; i++) {
+                                gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+                                g_array_append_val (search_array, dir);
+                        }
+
+                        g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
                 }
 
-                g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
-        }
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        if (!self->ignore_wayland &&
-            (type == NULL || g_str_equal (type, "wayland"))) {
-#ifdef ENABLE_USER_DISPLAY_SERVER
-                g_array_prepend_val (search_array, wayland_search_dir);
+                if (g_str_equal (supported_type, "wayland") &&
+                    (type == NULL || g_str_equal (type, supported_type))) {
+                        for (i = 0; system_data_dirs[i]; i++) {
+                                gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+                                g_array_append_val (search_array, dir);
+                        }
 
-                for (i = 0; system_data_dirs[i]; i++) {
-                        gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
-                        g_array_insert_val (search_array, i, dir);
+                        g_array_append_val (search_array, wayland_search_dir);
                 }
-#else
-                for (i = 0; system_data_dirs[i]; i++) {
-                        gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
-                        g_array_append_val (search_array, dir);
-                }
-
-                g_array_append_val (search_array, wayland_search_dir);
 #endif
         }
-#endif
 
         search_dirs = g_strdupv ((char **) search_array->data);
 
@@ -469,6 +474,12 @@ get_session_command_for_file (GdmSession  *self,
         ret = FALSE;
         if (command != NULL) {
                 *command = NULL;
+        }
+
+        if (!supports_session_type (self, type)) {
+                g_debug ("GdmSession: ignoring %s session command request for file '%s'",
+                         type, file);
+                goto out;
         }
 
         g_debug ("GdmSession: getting session command for file '%s'", file);
@@ -2257,14 +2268,18 @@ stop_conversation_now (GdmSessionConversation *conversation)
         g_clear_object (&conversation->job);
 }
 
-#ifdef ENABLE_WAYLAND_SUPPORT
 void
-gdm_session_set_ignore_wayland (GdmSession *self,
-                                gboolean    ignore_wayland)
+gdm_session_set_supported_session_types (GdmSession         *self,
+                                         const char * const *supported_session_types)
 {
-        self->ignore_wayland = ignore_wayland;
+        const char * const session_types[] = { "wayland", "x11", NULL };
+        g_strfreev (self->supported_session_types);
+
+        if (supported_session_types == NULL)
+                self->supported_session_types = g_strdupv ((GStrv) session_types);
+        else
+                self->supported_session_types = g_strdupv ((GStrv) supported_session_types);
 }
-#endif
 
 gboolean
 gdm_session_start_conversation (GdmSession *self,
@@ -3189,15 +3204,15 @@ gdm_session_is_wayland_session (GdmSession *self)
 {
         GKeyFile   *key_file;
         gboolean    is_wayland_session = FALSE;
-        char       *filename;
-        char       *full_path = NULL;
+        char            *filename;
+        g_autofree char *full_path = NULL;
 
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         filename = get_session_filename (self);
 
-        key_file = load_key_file_for_file (self, filename, "wayland", &full_path);
+        key_file = load_key_file_for_file (self, filename, NULL, &full_path);
 
         if (key_file == NULL) {
                 goto out;
@@ -3540,11 +3555,9 @@ gdm_session_set_property (GObject      *object,
         case PROP_CONVERSATION_ENVIRONMENT:
                 set_conversation_environment (self, g_value_get_pointer (value));
                 break;
-#ifdef ENABLE_WAYLAND_SUPPORT
-        case PROP_IGNORE_WAYLAND:
-                gdm_session_set_ignore_wayland (self, g_value_get_boolean (value));
+        case PROP_SUPPORTED_SESSION_TYPES:
+                gdm_session_set_supported_session_types (self, g_value_get_boxed (value));
                 break;
-#endif
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -3598,11 +3611,9 @@ gdm_session_get_property (GObject    *object,
         case PROP_CONVERSATION_ENVIRONMENT:
                 g_value_set_pointer (value, self->environment);
                 break;
-#ifdef ENABLE_WAYLAND_SUPPORT
-        case PROP_IGNORE_WAYLAND:
-                g_value_set_boolean (value, self->ignore_wayland);
+        case PROP_SUPPORTED_SESSION_TYPES:
+                g_value_set_boxed (value, self->supported_session_types);
                 break;
-#endif
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -3620,6 +3631,8 @@ gdm_session_dispose (GObject *object)
 
         gdm_session_close (self);
 
+        g_clear_pointer (&self->supported_session_types,
+                         g_strfreev);
         g_clear_pointer (&self->conversations,
                          g_hash_table_unref);
 
@@ -4034,15 +4047,13 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
-#ifdef ENABLE_WAYLAND_SUPPORT
         g_object_class_install_property (object_class,
-                                         PROP_IGNORE_WAYLAND,
-                                         g_param_spec_boolean ("ignore-wayland",
-                                                               "ignore wayland",
-                                                               "ignore wayland",
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-#endif
+                                         PROP_SUPPORTED_SESSION_TYPES,
+                                         g_param_spec_boxed ("supported-session-types",
+                                                             "supported session types",
+                                                             "supported session types",
+                                                             G_TYPE_STRV,
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         /* Ensure we can resolve errors */
         gdm_dbus_error_ensure (GDM_SESSION_WORKER_ERROR);
