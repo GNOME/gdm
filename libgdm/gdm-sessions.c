@@ -306,6 +306,23 @@ out:
                                      names_seen_before);
 }
 
+static gint
+compare_session_ids (gconstpointer  a,
+                     gconstpointer  b)
+{
+        GdmSessionFile *session_a, *session_b;
+        session_a = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, a);
+        session_b = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, b);
+
+        if (session_a == NULL)
+                return -1;
+
+        if (session_b == NULL)
+                return 1;
+
+        return g_strcmp0 (session_a->translated_name, session_b->translated_name);
+}
+
 /**
  * gdm_get_session_ids:
  *
@@ -337,6 +354,8 @@ gdm_get_session_ids (void)
                 g_ptr_array_add (array, g_strdup (session->id));
         }
         g_ptr_array_add (array, NULL);
+
+        g_ptr_array_sort (array, compare_session_ids);
 
         return (char **) g_ptr_array_free (array, FALSE);
 }
