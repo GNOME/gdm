@@ -190,6 +190,8 @@ collect_sessions_from_directory (const char *dirname)
 
         gboolean is_x11 = g_getenv ("WAYLAND_DISPLAY") == NULL &&
                           g_getenv ("RUNNING_UNDER_GDM") != NULL;
+        gboolean is_wayland = g_getenv ("WAYLAND_DISPLAY") != NULL &&
+                              g_getenv ("RUNNING_UNDER_GDM") != NULL;
 
         /* FIXME: add file monitor to directory */
 
@@ -206,18 +208,46 @@ collect_sessions_from_directory (const char *dirname)
                         continue;
                 }
 
-                if (is_x11 && g_str_has_suffix (filename, "-xorg.desktop")) {
-                        char *base_name = g_strndup (filename, strlen (filename) - strlen ("-xorg.desktop"));
-                        char *fallback_name = g_strconcat (base_name, ".desktop", NULL);
-                        g_free (base_name);
-                        char *fallback_path = g_build_filename (dirname, fallback_name, NULL);
-                        g_free (fallback_name);
-                        if (g_file_test (fallback_path, G_FILE_TEST_EXISTS)) {
-                                g_free (fallback_path);
-                                g_debug ("Running under X11, ignoring %s", filename);
-                                continue;
+                if (is_wayland) {
+                        if (g_str_has_suffix (filename, "-wayland.desktop")) {
+                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen ("-wayland.desktop"));
+                                g_autofree char *other_name = g_strconcat (base_name, ".desktop", NULL);
+                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
+
+                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
+                                        g_debug ("Running under Wayland, ignoring %s", filename);
+                                        continue;
+                                }
+                        } else {
+                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen (".desktop"));
+                                g_autofree char *other_name = g_strdup_printf ("%s-xorg.desktop", base_name);
+                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
+
+                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
+                                        g_debug ("Running under Wayland, ignoring %s", filename);
+                                        continue;
+                                }
                         }
-                        g_free (fallback_path);
+                } else if (is_x11) {
+                        if (g_str_has_suffix (filename, "-xorg.desktop")) {
+                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen ("-xorg.desktop"));
+                                g_autofree char *other_name = g_strconcat (base_name, ".desktop", NULL);
+                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
+
+                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
+                                        g_debug ("Running under X11, ignoring %s", filename);
+                                        continue;
+                                }
+                        } else {
+                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen (".desktop"));
+                                g_autofree char *other_name = g_strdup_printf ("%s-wayland.desktop", base_name);
+                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
+
+                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
+                                        g_debug ("Running under X11, ignoring %s", filename);
+                                        continue;
+                                }
+                        }
                 }
 
                 id = g_strndup (filename, strlen (filename) - strlen (".desktop"));
@@ -247,6 +277,9 @@ collect_sessions (void)
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
         };
+        g_auto (GStrv) supported_session_types = NULL;
+
+        supported_session_types = g_strsplit (g_getenv ("GDM_SUPPORTED_SESSION_TYPES"), ":", -1);
 
         names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
         xorg_search_array = g_ptr_array_new_with_free_func (g_free);
@@ -284,26 +317,42 @@ collect_sessions (void)
                                                                     g_free, (GDestroyNotify)gdm_session_file_free);
         }
 
-        for (i = 0; i < xorg_search_array->len; i++) {
-                collect_sessions_from_directory (g_ptr_array_index (xorg_search_array, i));
+        if (!supported_session_types || g_strv_contains ((const char * const *) supported_session_types, "x11")) {
+                for (i = 0; i < xorg_search_array->len; i++) {
+                        collect_sessions_from_directory (g_ptr_array_index (xorg_search_array, i));
+                }
         }
 
 #ifdef ENABLE_WAYLAND_SUPPORT
 #ifdef ENABLE_USER_DISPLAY_SERVER
-        if (g_getenv ("WAYLAND_DISPLAY") == NULL && g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-                goto out;
+        if (!supported_session_types  || g_strv_contains ((const char * const *) supported_session_types, "wayland")) {
+                for (i = 0; i < wayland_search_array->len; i++) {
+                        collect_sessions_from_directory (g_ptr_array_index (wayland_search_array, i));
+                }
         }
 #endif
-
-        for (i = 0; i < wayland_search_array->len; i++) {
-                collect_sessions_from_directory (g_ptr_array_index (wayland_search_array, i));
-        }
 #endif
 
-out:
         g_hash_table_foreach_remove (gdm_available_sessions_map,
                                      remove_duplicate_sessions,
                                      names_seen_before);
+}
+
+static gint
+compare_session_ids (gconstpointer  a,
+                     gconstpointer  b)
+{
+        GdmSessionFile *session_a, *session_b;
+        session_a = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, a);
+        session_b = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, b);
+
+        if (session_a == NULL)
+                return -1;
+
+        if (session_b == NULL)
+                return 1;
+
+        return g_strcmp0 (session_a->translated_name, session_b->translated_name);
 }
 
 /**
@@ -337,6 +386,8 @@ gdm_get_session_ids (void)
                 g_ptr_array_add (array, g_strdup (session->id));
         }
         g_ptr_array_add (array, NULL);
+
+        g_ptr_array_sort (array, compare_session_ids);
 
         return (char **) g_ptr_array_free (array, FALSE);
 }
