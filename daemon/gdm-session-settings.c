@@ -39,6 +39,7 @@ struct _GdmSessionSettingsPrivate
         ActUserManager *user_manager;
         ActUser *user;
         char *session_name;
+        char *session_type;
         char *language_name;
 };
 
@@ -58,6 +59,7 @@ static void gdm_session_settings_get_property (GObject      *object,
 enum {
         PROP_0 = 0,
         PROP_SESSION_NAME,
+        PROP_SESSION_TYPE,
         PROP_LANGUAGE_NAME,
         PROP_IS_LOADED
 };
@@ -92,6 +94,11 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
                                         "The name of the session",
                                         NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_SESSION_NAME, param_spec);
+
+        param_spec = g_param_spec_string ("session-type", "Session Type",
+                                          "The type of the session",
+                                          NULL, G_PARAM_READWRITE);
+        g_object_class_install_property (object_class, PROP_SESSION_TYPE, param_spec);
 
         param_spec = g_param_spec_string ("language-name", "Language Name",
                                         "The name of the language",
@@ -163,6 +170,19 @@ gdm_session_settings_set_session_name (GdmSessionSettings *settings,
         }
 }
 
+void
+gdm_session_settings_set_session_type (GdmSessionSettings *settings,
+                                       const char         *session_type)
+{
+        g_return_if_fail (GDM_IS_SESSION_SETTINGS (settings));
+
+        if (settings->priv->session_type == NULL ||
+            g_strcmp0 (settings->priv->session_type, session_type) != 0) {
+                settings->priv->session_type = g_strdup (session_type);
+                g_object_notify (G_OBJECT (settings), "session-type");
+        }
+}
+
 char *
 gdm_session_settings_get_language_name (GdmSessionSettings *settings)
 {
@@ -175,6 +195,13 @@ gdm_session_settings_get_session_name (GdmSessionSettings *settings)
 {
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
         return g_strdup (settings->priv->session_name);
+}
+
+char *
+gdm_session_settings_get_session_type (GdmSessionSettings *settings)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
+        return g_strdup (settings->priv->session_type);
 }
 
 static void
@@ -196,6 +223,10 @@ gdm_session_settings_set_property (GObject      *object,
                         gdm_session_settings_set_session_name (settings, g_value_get_string (value));
                 break;
 
+                case PROP_SESSION_TYPE:
+                        gdm_session_settings_set_session_type (settings, g_value_get_string (value));
+                break;
+
                 default:
                         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         }
@@ -214,6 +245,10 @@ gdm_session_settings_get_property (GObject    *object,
         switch (prop_id) {
                 case PROP_SESSION_NAME:
                         g_value_set_string (value, settings->priv->session_name);
+                break;
+
+                case PROP_SESSION_TYPE:
+                        g_value_set_string (value, settings->priv->session_type);
                 break;
 
                 case PROP_LANGUAGE_NAME:
@@ -254,6 +289,7 @@ static void
 load_settings_from_user (GdmSessionSettings *settings)
 {
         const char *session_name;
+        const char *session_type;
         const char *language_name;
 
         if (!act_user_is_loaded (settings->priv->user)) {
@@ -261,20 +297,31 @@ load_settings_from_user (GdmSessionSettings *settings)
                 return;
         }
 
-        session_name = act_user_get_x_session (settings->priv->user);
-        g_debug ("GdmSessionSettings: saved session is %s", session_name);
+        /* if the user doesn't have saved state, they don't have any settings worth reading */
+        if (!act_user_get_saved (settings->priv->user))
+                goto out;
 
-        if (session_name != NULL) {
+        session_type = act_user_get_session_type (settings->priv->user);
+        session_name = act_user_get_session (settings->priv->user);
+
+        g_debug ("GdmSessionSettings: saved session is %s (type %s)", session_name, session_type);
+
+        if (session_type != NULL && session_type[0] != '\0') {
+                gdm_session_settings_set_session_type (settings, session_type);
+        }
+
+        if (session_name != NULL && session_name[0] != '\0') {
                 gdm_session_settings_set_session_name (settings, session_name);
         }
 
         language_name = act_user_get_language (settings->priv->user);
 
         g_debug ("GdmSessionSettings: saved language is %s", language_name);
-        if (language_name != NULL) {
+        if (language_name != NULL && language_name[0] != '\0') {
                 gdm_session_settings_set_language_name (settings, language_name);
         }
 
+out:
         g_object_notify (G_OBJECT (settings), "is-loaded");
 }
 
@@ -349,7 +396,11 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
         }
 
         if (settings->priv->session_name != NULL) {
-                act_user_set_x_session (user, settings->priv->session_name);
+                act_user_set_session (user, settings->priv->session_name);
+        }
+
+        if (settings->priv->session_type != NULL) {
+                act_user_set_session_type (user, settings->priv->session_type);
         }
 
         if (settings->priv->language_name != NULL) {
