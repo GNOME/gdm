@@ -1,6 +1,10 @@
 # disable Wayland on Hi1710 chipsets
 ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
-# disable Wayland when using the proprietary nvidia driver
-DRIVER=="nvidia", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
+# disable Wayland on hybrid systems with vendor nvidia driver
+# default to Xorg on single gpu vendor nvidia systems
+DRIVER=="nvidia", ENV{GDM_HAS_VENDOR_NVIDIA_DRIVER}="1"
+DRIVER=="nvidia", RUN+="@libexecdir@/gdm-runtime-config set daemon PreferredDisplayServer xorg"
+SUBSYSTEM=="drm", KERNEL=="card[1-9]*", ENV{GDM_HAS_NVIDIA_DRIVER}=="1", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
+ACTION=="add", SUBSYSTEM=="module", KERNEL=="nvidia_drm", ATTR{parameters/modeset}=="N", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
 # disable Wayland if modesetting is disabled
 IMPORT{cmdline}="nomodeset", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
