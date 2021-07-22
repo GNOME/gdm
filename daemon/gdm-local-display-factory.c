@@ -229,7 +229,7 @@ gdm_local_display_factory_get_session_type (GdmLocalDisplayFactory *factory,
                                             gboolean                should_fall_back)
 {
         const char *session_types[3] = { NULL };
-        gsize i, session_type_index = 0, number_of_session_types = 0;
+        gsize i, session_type_index = 0;
         g_autofree gchar *preferred_display_server = NULL;
 
         preferred_display_server = get_preferred_display_server (factory);
@@ -240,22 +240,24 @@ gdm_local_display_factory_get_session_type (GdmLocalDisplayFactory *factory,
 
         for (i = 0; i < G_N_ELEMENTS (session_types) - 1; i++) {
 #ifdef ENABLE_WAYLAND_SUPPORT
-            if (number_of_session_types > 0 ||
+            if (i > 0 ||
                 g_strcmp0 (preferred_display_server, "wayland") == 0) {
                     gboolean wayland_enabled = FALSE;
                     if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
-                            if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE) )
-                                    session_types[number_of_session_types++] = "wayland";
+                            if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE)) {
+                                    session_types[i] = "wayland";
+                            }
                     }
             }
 #endif
 
-            if (number_of_session_types > 0 ||
+            if (i > 0 ||
                 g_strcmp0 (preferred_display_server, "xorg") == 0) {
                     gboolean xorg_enabled = FALSE;
                     if (gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &xorg_enabled)) {
-                            if (xorg_enabled && g_file_test ("/usr/bin/Xorg", G_FILE_TEST_IS_EXECUTABLE) )
-                                    session_types[number_of_session_types++] = "x11";
+                            if (xorg_enabled && g_file_test ("/usr/bin/Xorg", G_FILE_TEST_IS_EXECUTABLE)) {
+                                    session_types[i] = "x11";
+                            }
                     }
             }
         }
