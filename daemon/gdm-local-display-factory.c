@@ -246,6 +246,7 @@ gdm_local_display_factory_get_session_type (GdmLocalDisplayFactory *factory,
                     if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
                             if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE)) {
                                     session_types[i] = "wayland";
+                                    continue;
                             }
                     }
             }
@@ -257,6 +258,7 @@ gdm_local_display_factory_get_session_type (GdmLocalDisplayFactory *factory,
                     if (gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &xorg_enabled)) {
                             if (xorg_enabled && g_file_test ("/usr/bin/Xorg", G_FILE_TEST_IS_EXECUTABLE)) {
                                     session_types[i] = "x11";
+                                    continue;
                             }
                     }
             }
