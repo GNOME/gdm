@@ -3204,21 +3204,19 @@ gdm_session_is_wayland_session (GdmSession *self)
 {
         GKeyFile   *key_file;
         gboolean    is_wayland_session = FALSE;
-        char       *filename;
-        char       *full_path = NULL;
+        char            *filename;
+        g_autofree char *full_path = NULL;
 
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         filename = get_session_filename (self);
 
-        if (supports_session_type (self, "wayland")) {
-        	key_file = load_key_file_for_file (self, filename, "wayland", &full_path);
+        key_file = load_key_file_for_file (self, filename, NULL, &full_path);
 
-		if (key_file == NULL) {
-			goto out;
-		}
-	}
+        if (key_file == NULL) {
+                goto out;
+        }
 
         if (full_path != NULL && strstr (full_path, "/wayland-sessions/") != NULL) {
                 is_wayland_session = TRUE;
