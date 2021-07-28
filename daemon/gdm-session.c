@@ -378,7 +378,7 @@ get_system_session_dirs (GdmSession *self,
         for (j = 0; self->supported_session_types[j] != NULL; j++) {
                 const char *supported_type = self->supported_session_types[j];
 
-                if (g_str_equal (supported_type, "x11") ||
+                if (g_str_equal (supported_type, "x11") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         for (i = 0; system_data_dirs[i]; i++) {
                                 gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
@@ -388,8 +388,9 @@ get_system_session_dirs (GdmSession *self,
                         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
                 }
 
+
 #ifdef ENABLE_WAYLAND_SUPPORT
-                if (g_str_equal (supported_type, "wayland") ||
+                if (g_str_equal (supported_type, "wayland") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         for (i = 0; system_data_dirs[i]; i++) {
                                 gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
