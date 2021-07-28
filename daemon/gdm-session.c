@@ -378,7 +378,7 @@ get_system_session_dirs (GdmSession *self,
         for (j = 0; self->supported_session_types[j] != NULL; j++) {
                 const char *supported_type = self->supported_session_types[j];
 
-                if (g_str_equal (supported_type, "x11") ||
+                if (g_str_equal (supported_type, "x11") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         for (i = 0; system_data_dirs[i]; i++) {
                                 gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
@@ -388,8 +388,9 @@ get_system_session_dirs (GdmSession *self,
                         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
                 }
 
+
 #ifdef ENABLE_WAYLAND_SUPPORT
-                if (g_str_equal (supported_type, "wayland") ||
+                if (g_str_equal (supported_type, "wayland") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         for (i = 0; system_data_dirs[i]; i++) {
                                 gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
@@ -3203,21 +3204,19 @@ gdm_session_is_wayland_session (GdmSession *self)
 {
         GKeyFile   *key_file;
         gboolean    is_wayland_session = FALSE;
-        char       *filename;
-        char       *full_path = NULL;
+        char            *filename;
+        g_autofree char *full_path = NULL;
 
         g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         filename = get_session_filename (self);
 
-        if (supports_session_type (self, "wayland")) {
-        	key_file = load_key_file_for_file (self, filename, "wayland", &full_path);
+        key_file = load_key_file_for_file (self, filename, NULL, &full_path);
 
-		if (key_file == NULL) {
-			goto out;
-		}
-	}
+        if (key_file == NULL) {
+                goto out;
+        }
 
         if (full_path != NULL && strstr (full_path, "/wayland-sessions/") != NULL) {
                 is_wayland_session = TRUE;
