@@ -1103,8 +1103,6 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         gdm_session_worker_stop_auditor (worker);
 
-        worker->priv->session_vt = 0;
-
         g_debug ("GdmSessionWorker: state NONE");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_NONE);
 }
