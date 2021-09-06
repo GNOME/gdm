@@ -1022,18 +1022,21 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                 g_debug ("GdmSession: not using invalid .dmrc session: %s", session_name);
                 g_free (self->saved_session);
                 self->saved_session = NULL;
-        } else if (strcmp (session_name,
-                   get_default_session_name (self)) != 0) {
-                g_free (self->saved_session);
-                self->saved_session = g_strdup (session_name);
+                update_session_type (self);
+        } else {
+                if (strcmp (session_name,
+                            get_default_session_name (self)) != 0) {
+                        g_free (self->saved_session);
+                        self->saved_session = g_strdup (session_name);
 
-                if (self->greeter_interface != NULL) {
-                        gdm_dbus_greeter_emit_default_session_name_changed (self->greeter_interface,
-                                                                            session_name);
+                        if (self->greeter_interface != NULL) {
+                                gdm_dbus_greeter_emit_default_session_name_changed (self->greeter_interface,
+                                                                                    session_name);
+                        }
                 }
+                if (self->saved_session_type != NULL)
+                        set_session_type (self, self->saved_session_type);
         }
-
-        update_session_type (self);
 
 }
 
