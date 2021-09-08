@@ -1,10 +1,29 @@
 # disable Wayland on Hi1710 chipsets
-ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
-# disable Wayland on hybrid systems with vendor nvidia driver
-# default to Xorg on single gpu vendor nvidia systems
-DRIVER=="nvidia", ENV{GDM_HAS_VENDOR_NVIDIA_DRIVER}="1"
-DRIVER=="nvidia", RUN+="@libexecdir@/gdm-runtime-config set daemon PreferredDisplayServer xorg"
-SUBSYSTEM=="drm", KERNEL=="card[1-9]*", ENV{GDM_HAS_NVIDIA_DRIVER}=="1", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
-ACTION=="add", SUBSYSTEM=="module", KERNEL=="nvidia_drm", ATTR{parameters/modeset}=="N", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
+ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
+
 # disable Wayland if modesetting is disabled
-IMPORT{cmdline}="nomodeset", RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
+IMPORT{cmdline}="nomodeset", SUBSYSTEM=="drm", KERNEL=="card[0-9]*", GOTO="gdm_disable_wayland"
+
+# Disable wayland when nvidia modeset is disabled or when drivers are a lower
+# version than 470, in any case always prefer Xorg
+KERNEL!="nvidia_drm", GOTO="gdm_nvidia_drm_end"
+SUBSYSTEM!="module", GOTO="gdm_nvidia_drm_end"
+ACTION!="add", GOTO="gdm_nvidia_drm_end"
+# disable wayland if nvidia-drm modeset is not enabled
+ATTR{parameters/modeset}!="Y", GOTO="gdm_disable_wayland"
+# disable wayland for nvidia drivers versions lower than 470
+ATTR{version}=="4[0-6][0-9].*|[0-3][0-9][0-9].*|[0-9][0-9].*|[0-9].*", GOTO="gdm_disable_wayland"
+GOTO="gdm_prefer_xorg"
+LABEL="gdm_nvidia_drm_end"
+
+GOTO="gdm_end"
+
+LABEL="gdm_prefer_xorg"
+RUN+="@libexecdir@/gdm-runtime-config set daemon PreferredDisplayServer xorg"
+GOTO="gdm_end"
+
+LABEL="gdm_disable_wayland"
+RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
+GOTO="gdm_end"
+
+LABEL="gdm_end"
