@@ -2131,6 +2131,7 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
         GdmDisplay      *display;
         GdmDisplayStore *store;
         gboolean         use_chooser;
+        const char      *session_types[] = { "x11", NULL };
 
         g_debug ("GdmXdmcpDisplayFactory: Creating xdmcp display for %s:%d",
                 hostname ? hostname : "(null)", displaynum);
@@ -2164,6 +2165,11 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
         if (display == NULL) {
                 goto out;
         }
+
+        g_object_set (G_OBJECT (display),
+                      "session-type", session_types[0],
+                      "supported-session-types", session_types,
+                      NULL);
 
         if (! gdm_display_prepare (display)) {
                 gdm_display_unmanage (display);
