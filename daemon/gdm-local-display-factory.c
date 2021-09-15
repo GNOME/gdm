@@ -73,6 +73,8 @@ struct _GdmLocalDisplayFactory
         guint            active_vt_watch_id;
         guint            wait_to_finish_timeout_id;
 #endif
+
+        gboolean         is_started;
 };
 
 enum {
@@ -504,6 +506,10 @@ on_display_status_changed (GdmDisplay             *display,
         char            *session_class = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
+
+
+        if (!factory->is_started)
+                return;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
@@ -1275,6 +1281,8 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
+        factory->is_started = TRUE;
+
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         g_signal_connect_object (G_OBJECT (store),
@@ -1311,8 +1319,9 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
         g_signal_handlers_disconnect_by_func (G_OBJECT (store),
                                               G_CALLBACK (on_display_removed),
                                               factory);
-
         g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
+
+        factory->is_started = FALSE;
 
         return TRUE;
 }
