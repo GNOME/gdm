@@ -2768,6 +2768,8 @@ gdm_manager_dispose (GObject *object)
 
         g_return_if_fail (manager->priv != NULL);
 
+        gdm_manager_stop (manager);
+
         g_clear_weak_pointer (&manager->priv->automatic_login_display);
 
 #ifdef HAVE_LIBXDMCP
