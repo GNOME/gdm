@@ -104,13 +104,11 @@ pam_data_files_map = {
     'gdm-fingerprint',
     'gdm-smartcard',
     'gdm-password',
-    'gdm-pin',
   ],
   'openembedded': [
     'gdm-autologin',
     'gdm-launch-environment',
     'gdm-password',
-    'gdm-pin',
   ],
   'exherbo': [
     'gdm-autologin',
@@ -118,7 +116,6 @@ pam_data_files_map = {
     'gdm-fingerprint',
     'gdm-smartcard',
     'gdm-password',
-    'gdm-pin',
   ],
   'lfs': [
     'gdm-autologin',
@@ -126,7 +123,6 @@ pam_data_files_map = {
     'gdm-fingerprint',
     'gdm-smartcard',
     'gdm-password',
-    'gdm-pin',
   ],
   'arch': [
     'gdm-autologin',
