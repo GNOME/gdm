@@ -1036,6 +1036,8 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                 }
                 if (self->saved_session_type != NULL)
                         set_session_type (self, self->saved_session_type);
+                else
+                        update_session_type (self);
         }
 
 }
