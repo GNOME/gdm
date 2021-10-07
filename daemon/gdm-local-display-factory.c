@@ -684,8 +684,13 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                 falling_back = factory->num_failures > 0;
                 session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
 
-                g_debug ("GdmLocalDisplayFactory: New displays on seat0 will use %s%s",
-                         session_types[0], falling_back? " fallback" : "");
+                if (session_types == NULL) {
+                        g_debug ("GdmLocalDisplayFactory: Both Wayland and Xorg are unavailable");
+                        seat_supports_graphics = FALSE;
+                } else {
+                        g_debug ("GdmLocalDisplayFactory: New displays on seat0 will use %s%s",
+                                 session_types[0], falling_back? " fallback" : "");
+                }
         } else {
                 is_seat0 = FALSE;
 
