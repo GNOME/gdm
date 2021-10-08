@@ -71,7 +71,7 @@ x_deps = declare_dependency(
 )
 # Xserver 1.17 & later default to -nolisten and require -listen for remote access
 xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
-xserver_nolisten_default = xserver_deps.found()
+xserver_has_listen = xserver_deps.found()
 find_x_server_script = find_program('build-aux/find-x-server.sh', native: true)
 find_x_server_out = run_command(find_x_server_script).stdout().strip()
 if find_x_server_out != ''
@@ -227,7 +227,7 @@ conf.set('HAVE_PAM_SYSLOG', have_pam_syslog)
 conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
-conf.set('HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY', xserver_nolisten_default)
+conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
 conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
