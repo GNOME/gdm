@@ -260,14 +260,14 @@ spawn_x_server (State        *state,
          * by default anymore. In older versions we need to pass
          * -nolisten tcp to disable listening on tcp sockets.
          */
-#ifdef HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY
-        if (allow_remote_connections) {
-                g_ptr_array_add (arguments, "-listen");
-                g_ptr_array_add (arguments, "tcp");
-        }
-#else
         if (!allow_remote_connections) {
                 g_ptr_array_add (arguments, "-nolisten");
+                g_ptr_array_add (arguments, "tcp");
+        }
+
+#ifdef HAVE_XSERVER_WITH_LISTEN
+        if (allow_remote_connections) {
+                g_ptr_array_add (arguments, "-listen");
                 g_ptr_array_add (arguments, "tcp");
         }
 #endif
