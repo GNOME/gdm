@@ -278,8 +278,11 @@ collect_sessions (void)
                 DATADIR "/xsessions/",
         };
         g_auto (GStrv) supported_session_types = NULL;
+        const gchar *gdm_supported_session_types;
 
-        supported_session_types = g_strsplit (g_getenv ("GDM_SUPPORTED_SESSION_TYPES"), ":", -1);
+        gdm_supported_session_types = g_getenv ("GDM_SUPPORTED_SESSION_TYPES");
+        if (gdm_supported_session_types)
+            supported_session_types = g_strsplit (gdm_supported_session_types, ":", -1);
 
         names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
         xorg_search_array = g_ptr_array_new_with_free_func (g_free);
