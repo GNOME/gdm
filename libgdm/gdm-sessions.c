@@ -277,9 +277,13 @@ collect_sessions (void)
                 DATADIR "/gdm/BuiltInSessions/",
                 DATADIR "/xsessions/",
         };
+        const gchar *supported_session_types_env = NULL;
         g_auto (GStrv) supported_session_types = NULL;
 
-        supported_session_types = g_strsplit (g_getenv ("GDM_SUPPORTED_SESSION_TYPES"), ":", -1);
+        supported_session_types_env = g_getenv ("GDM_SUPPORTED_SESSION_TYPES");
+        if (supported_session_types_env != NULL) {
+                supported_session_types = g_strsplit (supported_session_types_env, ":", -1);
+        }
 
         names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
         xorg_search_array = g_ptr_array_new_with_free_func (g_free);
