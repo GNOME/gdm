@@ -539,7 +539,8 @@ on_display_status_changed (GdmDisplay             *display,
                  * ensures we get a new login screen when the user logs out,
                  * if there isn't one.
                  */
-                if (is_local && g_strcmp0 (session_class, "greeter") != 0) {
+                if (is_local &&
+                    (g_strcmp0 (session_class, "greeter") != 0 || factory->active_vt == GDM_INITIAL_VT)) {
                         /* reset num failures */
                         factory->num_failures = 0;
 
