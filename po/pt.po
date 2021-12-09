@@ -13,15 +13,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.8\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2021-05-09 18:55+0000\n"
-"PO-Revision-Date: 2021-05-23 17:37+0100\n"
+"POT-Creation-Date: 2021-10-01 08:39+0000\n"
+"PO-Revision-Date: 2021-12-09 11:50+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Português (https://l10n.gnome.org/teams/pt/)\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
@@ -174,11 +174,11 @@ msgstr "Dispositivo de exibição"
 msgid "The display device"
 msgstr "O dispositivo de exibição"
 
-#: daemon/gdm-session.c:1288
+#: daemon/gdm-session.c:1334
 msgid "Could not create authentication helper process"
 msgstr "Impossível criar processo de ajuda à autenticação"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:755
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -186,15 +186,7 @@ msgstr ""
 "Foi atingido o máximo de tentativas de autenticação por palavra-passe. Tente "
 "outro método"
 
-#: daemon/gdm-session-worker.c:753
-msgid ""
-"You reached the maximum PIN authentication attempts, please try another "
-"method"
-msgstr ""
-"Foi atingido o máximo de tentativas de autenticação por PIN. Tente outro "
-"método"
-
-#: daemon/gdm-session-worker.c:756
+#: daemon/gdm-session-worker.c:758
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -202,7 +194,7 @@ msgstr ""
 "Foi atingido o máximo de tentativas de autenticação de início de sessão "
 "automático. Tente outro método"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:761
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -210,7 +202,7 @@ msgstr ""
 "Foi atingido o máximo de tentativas de autenticação por impressão digital. "
 "Tente outro método"
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:764
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -218,50 +210,46 @@ msgstr ""
 "Foi atingido o máximo de tentativas de autenticação por cartão inteligente. "
 "Tente outro método"
 
-#: daemon/gdm-session-worker.c:764
+#: daemon/gdm-session-worker.c:766
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Foi atingido o máximo de tentativas de autenticação. Tente outro método"
 
-#: daemon/gdm-session-worker.c:771
+#: daemon/gdm-session-worker.c:773
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "A autenticação por palavra-passe não resultou. Tente novamente."
 
-#: daemon/gdm-session-worker.c:774
-msgid "Sorry, PIN authentication didn’t work. Please try again."
-msgstr "A autenticação por PIN não resultou. Tente novamente."
-
-#: daemon/gdm-session-worker.c:777
+#: daemon/gdm-session-worker.c:776
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "O início de sessão automático não resultou. Tente novamente."
 
-#: daemon/gdm-session-worker.c:780
+#: daemon/gdm-session-worker.c:779
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "A autenticação por impressão digital não resultou. Tente novamente."
 
-#: daemon/gdm-session-worker.c:783
+#: daemon/gdm-session-worker.c:782
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "A autenticação por cartão inteligente não resultou. Tente novamente."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:784
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Não resultou. Tente novamente."
 
-#: daemon/gdm-session-worker.c:800
+#: daemon/gdm-session-worker.c:799
 msgid "Your account was given a time limit that’s now passed."
 msgstr ""
 "Foi atribuído um limite de tempo à sua conta que foi agora ultrapassado."
 
-#: daemon/gdm-session-worker.c:1202
+#: daemon/gdm-session-worker.c:1199
 msgid "Username:"
 msgstr "Utilizador:"
 
-#: daemon/gdm-session-worker.c:1711 daemon/gdm-session-worker.c:1728
+#: daemon/gdm-session-worker.c:1600 daemon/gdm-session-worker.c:1617
 msgid "no user account available"
 msgstr "nenhuma conta de utilizador disponível"
 
-#: daemon/gdm-session-worker.c:1755
+#: daemon/gdm-session-worker.c:1644
 msgid "Unable to change to user"
 msgstr "Impossível mudar para o utilizador"
 
@@ -349,40 +337,41 @@ msgstr "Iniciador de sessão do gestor de ecrãs do GNOME"
 #: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr ""
-"Permitir ou não, iniciar sessão através do leitor de impressões digitais"
+"Permitir ou não início de sessão através do leitores de impressões digitais"
 
 #: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"O ecrã de acesso pode opcionalmente permitir aos utilizadores que tenham "
-"fornecido a sua impressão digital utilizá-la para aceder ao sistema."
+"O ecrã de início de sessão pode opcionalmente permitir aos utilizadores que "
+"tenham fornecido a sua impressão digital utilizá-la para aceder ao sistema."
 
 #: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
-msgstr "Permitir ou não, iniciar sessão através do cartão smart"
+msgstr ""
+"Permitir ou não início de sessão através de leitores de cartão inteligente"
 
 #: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"O ecrã de acesso pode opcionalmente permitir aos utilizadores que tenham "
-"smartcards utilizá-los para aceder ao sistema."
+"O ecrã de início de sessão pode opcionalmente permitir aos utilizadores que "
+"tenham cartões inteligentes utilizá-los para aceder ao sistema."
 
 #: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
-msgstr "Permitir ou não, iniciar sessão através de palavras-passe"
+msgstr "Permitir ou não início de sessão através de palavras passe"
 
 #: data/org.gnome.login-screen.gschema.xml:29
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"O ecrã de acesso pode ser configurado para não permitir a autenticação com "
-"palavra-passe, forçando o utilizador a autenticar-se por cartão smart ou "
-"impressão digital."
+"O ecrã de inicio de sessão pode ser configurado para desativar a "
+"autenticação com palavra passe, forçando o utilizador a usar autenticação "
+"por cartão inteligente ou impressão digital."
 
 #: data/org.gnome.login-screen.gschema.xml:36
 #: data/org.gnome.login-screen.gschema.xml:46
@@ -499,6 +488,16 @@ msgstr "Captura de ecrã realizada"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Capturar uma imagem do ecrã"
+
+#~ msgid ""
+#~ "You reached the maximum PIN authentication attempts, please try another "
+#~ "method"
+#~ msgstr ""
+#~ "Foi atingido o máximo de tentativas de autenticação por PIN. Tente outro "
+#~ "método"
+
+#~ msgid "Sorry, PIN authentication didn’t work. Please try again."
+#~ msgstr "A autenticação por PIN não resultou. Tente novamente."
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
