@@ -317,18 +317,19 @@ gdm_server_resolve_command_line (GdmServer  *server,
          * by default anymore. In older versions we need to pass
          * -nolisten tcp to disable listening on tcp sockets.
          */
-#ifdef HAVE_XSERVER_THAT_DEFAULTS_TO_LOCAL_ONLY
-        if (!server->disable_tcp && ! query_in_arglist) {
-                argv[len++] = g_strdup ("-listen");
-                argv[len++] = g_strdup ("tcp");
-        }
-#else
-        if (server->disable_tcp && ! query_in_arglist) {
-                argv[len++] = g_strdup ("-nolisten");
-                argv[len++] = g_strdup ("tcp");
-        }
+        if (!query_in_arglist) {
+                if (server->disable_tcp) {
+                        argv[len++] = g_strdup ("-nolisten");
+                        argv[len++] = g_strdup ("tcp");
+                }
 
+#ifdef HAVE_XSERVER_WITH_LISTEN
+                if (!server->disable_tcp) {
+                        argv[len++] = g_strdup ("-listen");
+                        argv[len++] = g_strdup ("tcp");
+                }
 #endif
+        }
 
         if (vtarg != NULL && ! gotvtarg) {
                 argv[len++] = g_strdup (vtarg);
