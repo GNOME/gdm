@@ -2,7 +2,12 @@
 ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
 
 # disable Wayland if modesetting is disabled
-IMPORT{cmdline}="nomodeset", SUBSYSTEM=="drm", KERNEL=="card[0-9]*", GOTO="gdm_disable_wayland"
+KERNEL!="card[0-9]*", GOTO="gdm_nomodeset_end"
+SUBSYSTEM!="drm", GOTO="gdm_nomodeset_end"
+# but keep it enabled for simple framebuffer drivers
+DRIVERS=="simple-framebuffer", GOTO="gdm_nomodeset_end"
+IMPORT{cmdline}="nomodeset", GOTO="gdm_disable_wayland"
+LABEL="gdm_nomodeset_end"
 
 # Disable wayland when nvidia modeset is disabled or when drivers are a lower
 # version than 470, in any case always prefer Xorg
