@@ -53,7 +53,6 @@
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define GDM_SESSION_MODE "gdm"
 #define INITIAL_SETUP_SESSION_MODE "initial-setup"
-#define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 
 extern char **environ;
 
@@ -240,8 +239,9 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
         g_hash_table_insert (hash,
                              g_strdup ("XDG_DATA_DIRS"),
-                             g_strdup_printf ("%s:%s",
+                             g_strdup_printf ("%s:%s:%s",
                                               DATADIR "/gdm/greeter",
+                                              DATADIR,
                                               system_data_dirs));
         g_free (system_data_dirs);
 
