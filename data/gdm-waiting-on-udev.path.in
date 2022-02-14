@@ -1,0 +1,12 @@
+[Unit]
+Description=Synchronize GNOME Display Manager with udev
+ConditionPathExists=/run/udev/gdm-waiting-on-udev
+
+[Path]
+PathChanged=/run/udev/gdm-waiting-on-udev
+Unit=gdm.service
+
+[Install]
+WantedBy=graphical.target
+
+
