@@ -252,6 +252,15 @@ gdm_settings_direct_init (GdmSettings *settings,
 }
 
 void
+gdm_settings_direct_reload (void)
+{
+    if (!settings_object)
+            return;
+
+    gdm_settings_reload (settings_object);
+}
+
+void
 gdm_settings_direct_shutdown (void)
 {
 

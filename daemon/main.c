@@ -267,16 +267,8 @@ static gboolean
 on_sighup_cb (gpointer user_data)
 {
         g_debug ("Got HUP signal");
-        /* Reread config stuff like system config files, VPN service
-         * files, etc
-         */
-        g_object_unref (settings);
-        settings = gdm_settings_new ();
-        if (settings != NULL) {
-                if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
-                        g_warning ("Unable to initialize settings");
-                }
-        }
+
+        gdm_settings_reload (settings);
 
         return TRUE;
 }

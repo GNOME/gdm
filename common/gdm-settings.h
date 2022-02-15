@@ -40,6 +40,7 @@ typedef enum
 GQuark              gdm_settings_error_quark                    (void);
 
 GdmSettings *       gdm_settings_new                            (void);
+void                gdm_settings_reload                         (GdmSettings *settings);
 
 /* exported */
 
