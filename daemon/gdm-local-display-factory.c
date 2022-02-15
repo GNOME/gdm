@@ -1051,10 +1051,12 @@ on_seat_properties_changed (GDBusConnection *connection,
         if (ret < 0)
                 return;
 
-        if (ret != 0)
+        if (ret != 0) {
+                gdm_settings_direct_reload ();
                 ensure_display_for_seat (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
-        else
+        } else {
                 delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+        }
 }
 
 static gboolean
@@ -1288,6 +1290,7 @@ on_uevent (GUdevClient *client,
         g_signal_handler_disconnect (factory->gudev_client, factory->uevent_handler_id);
         factory->uevent_handler_id = 0;
 
+        gdm_settings_direct_reload ();
         ensure_display_for_seat (factory, "seat0");
 }
 #endif
