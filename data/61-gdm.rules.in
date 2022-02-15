@@ -30,7 +30,7 @@ ATTR{parameters/modeset}!="Y", GOTO="gdm_disable_wayland"
 # disable wayland for nvidia drivers versions lower than 470
 ATTR{version}=="4[0-6][0-9].*|[0-3][0-9][0-9].*|[0-9][0-9].*|[0-9].*", GOTO="gdm_disable_wayland"
 # For nvidia drivers versions Above 510, keep Wayland by default
-ATTR{version}=="[5-9][1-9][0-9].*", GOTO="gdm_end"
+ATTR{version}=="[5-9][1-9][0-9].*", GOTO="gdm_stop_waiting_on_udev"
 # For nvidia drivers versions 470-495, prefer Xorg by default
 GOTO="gdm_prefer_xorg"
 LABEL="gdm_nvidia_drm_end"
