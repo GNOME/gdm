@@ -30,6 +30,8 @@ G_BEGIN_DECLS
 gboolean              gdm_settings_direct_init                       (GdmSettings       *settings,
                                                                       const char        *schemas_file,
                                                                       const char        *root);
+
+void                  gdm_settings_direct_reload                     (void);
 void                  gdm_settings_direct_shutdown                   (void);
 
 gboolean              gdm_settings_direct_get                        (const char        *key,
