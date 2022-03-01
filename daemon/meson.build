@@ -204,6 +204,10 @@ if xdmcp_dep.found()
   ]
 endif
 
+if gudev_dep.found()
+  gdm_daemon_deps += gudev_dep
+endif
+
 gdm_daemon = executable('gdm',
   [ gdm_daemon_sources, gdm_daemon_gen_sources ],
   dependencies: gdm_daemon_deps,
