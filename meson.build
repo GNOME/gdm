@@ -38,6 +38,7 @@ config_h_dir = include_directories('.')
 
 # Dependencies
 udev_dep = dependency('udev')
+gudev_dep = dependency('gudev-1.0', version: '>= 232')
 
 glib_min_version = '2.56.0'
 
@@ -244,6 +245,7 @@ conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('WITH_PLYMOUTH', plymouth_dep.found())
 conf.set_quoted('X_SERVER', x_bin)
 conf.set_quoted('X_PATH', x_path)
+conf.set('HAVE_UDEV', gudev_dep.found())
 conf.set('HAVE_UT_UT_HOST', utmp_has_host_field)
 conf.set('HAVE_UT_UT_PID', utmp_has_pid_field)
 conf.set('HAVE_UT_UT_ID', utmp_has_id_field)
