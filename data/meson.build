@@ -149,7 +149,6 @@ gdm_rules = configure_file(
   output: '@BASENAME@',
   configuration: {
     'libexecdir': gdm_prefix / get_option('libexecdir'),
-    'bindir': gdm_prefix / get_option('bindir'),
   },
   install_dir: udev_dir,
 )
@@ -180,14 +179,6 @@ endif
 
 configure_file(
   input: 'gdm.service.in',
-  output: '@BASENAME@',
-  configuration: service_config,
-  install_dir: systemd_systemunitdir,
-  format: 'cmake'
-)
-
-configure_file(
-  input: 'gdm-waiting-on-udev.path.in',
   output: '@BASENAME@',
   configuration: service_config,
   install_dir: systemd_systemunitdir,

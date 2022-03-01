@@ -19,11 +19,6 @@ After=rc-local.service plymouth-start.service systemd-user-sessions.service
 # for any reason, make sure plymouth still stops
 OnFailure=plymouth-quit.service
 
-# If our udev rule is still trying to figure out the lay of the land
-# then block for a bit. gdm-waiting-on-udev.path will start us later
-# when appropriate.
-ConditionPathExists=!/run/udev/gdm-waiting-on-udev
-
 [Service]
 ExecStart=${sbindir}/gdm
 KillMode=mixed

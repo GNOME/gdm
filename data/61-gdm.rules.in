@@ -9,15 +9,6 @@ DRIVERS=="simple-framebuffer", GOTO="gdm_nomodeset_end"
 IMPORT{cmdline}="nomodeset", GOTO="gdm_disable_wayland"
 LABEL="gdm_nomodeset_end"
 
-# The vendor nvidia driver has mutiple modules that need to be loaded before GDM can make an
-# informed choice on which way to proceed, so force GDM to wait until NVidia's modules are
-# loaded before starting up.
-KERNEL!="nvidia", GOTO="gdm_nvidia_end"
-SUBSYSTEM!="module", GOTO="gdm_nvidia_end"
-ACTION!="add", GOTO="gdm_nvidia_end"
-RUN+="@bindir@/touch /run/udev/gdm-waiting-on-udev"
-LABEL="gdm_nvidia_end"
-
 # Disable wayland when nvidia modeset is disabled or when drivers are a lower
 # version than 470,
 # For versions above 470 but lower than 510 prefer Xorg,
@@ -30,7 +21,7 @@ ATTR{parameters/modeset}!="Y", GOTO="gdm_disable_wayland"
 # disable wayland for nvidia drivers versions lower than 470
 ATTR{version}=="4[0-6][0-9].*|[0-3][0-9][0-9].*|[0-9][0-9].*|[0-9].*", GOTO="gdm_disable_wayland"
 # For nvidia drivers versions Above 510, keep Wayland by default
-ATTR{version}=="[5-9][1-9][0-9].*", GOTO="gdm_stop_waiting_on_udev"
+ATTR{version}=="[5-9][1-9][0-9].*", GOTO="gdm_end"
 # For nvidia drivers versions 470-495, prefer Xorg by default
 GOTO="gdm_prefer_xorg"
 LABEL="gdm_nvidia_drm_end"
@@ -39,14 +30,10 @@ GOTO="gdm_end"
 
 LABEL="gdm_prefer_xorg"
 RUN+="@libexecdir@/gdm-runtime-config set daemon PreferredDisplayServer xorg"
-GOTO="gdm_stop_waiting_on_udev"
+GOTO="gdm_end"
 
 LABEL="gdm_disable_wayland"
 RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
-GOTO="gdm_stop_waiting_on_udev"
-
-LABEL="gdm_stop_waiting_on_udev"
-RUN+="@bindir@/rm -f /run/udev/gdm-waiting-on-udev"
 GOTO="gdm_end"
 
 LABEL="gdm_end"
