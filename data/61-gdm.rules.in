@@ -1,5 +1,11 @@
+
+SUBSYSTEM!="pci", GOTO="gdm_pci_device_end"
+ACTION!="bind", GOTO="gdm_pci_device_end"
+
 # disable Wayland on Hi1710 chipsets
 ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
+
+LABEL="gdm_pci_device_end"
 
 # disable Wayland if modesetting is disabled
 KERNEL!="card[0-9]*", GOTO="gdm_nomodeset_end"
