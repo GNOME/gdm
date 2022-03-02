@@ -184,11 +184,15 @@ backend_value_changed (GdmSettingsBackend *backend,
         g_signal_emit (settings, signals [VALUE_CHANGED], 0, key, old_value, new_value);
 }
 
-static void
-gdm_settings_init (GdmSettings *settings)
+void
+gdm_settings_reload (GdmSettings *settings)
 {
         GList *l;
         GdmSettingsBackend *backend;
+
+        g_list_foreach (settings->backends, (GFunc) g_object_unref, NULL);
+        g_list_free (settings->backends);
+        settings->backends = NULL;
 
         backend = gdm_settings_desktop_backend_new (GDM_CUSTOM_CONF);
         if (backend)
@@ -206,6 +210,12 @@ gdm_settings_init (GdmSettings *settings)
                                   G_CALLBACK (backend_value_changed),
                                   settings);
         }
+}
+
+static void
+gdm_settings_init (GdmSettings *settings)
+{
+        gdm_settings_reload (settings);
 }
 
 static void

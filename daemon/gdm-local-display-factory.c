@@ -28,6 +28,10 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#ifdef HAVE_UDEV
+#include <gudev/gudev.h>
+#endif
+
 #include <systemd/sd-login.h>
 
 #include "gdm-common.h"
@@ -52,7 +56,10 @@
 
 struct _GdmLocalDisplayFactory
 {
-        GdmDisplayFactory              parent;
+        GdmDisplayFactory  parent;
+#ifdef HAVE_UDEV
+        GUdevClient       *gudev_client;
+#endif
 
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
@@ -65,8 +72,13 @@ struct _GdmLocalDisplayFactory
         guint            seat_removed_id;
         guint            seat_properties_changed_id;
 
+        gboolean         seat0_has_platform_graphics;
+        gboolean         seat0_has_boot_up_graphics;
+
         gboolean         seat0_graphics_check_timed_out;
         guint            seat0_graphics_check_timeout_id;
+
+        guint            uevent_handler_id;
 
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
@@ -622,6 +634,86 @@ lookup_prepared_display_by_seat_id (const char *id,
         return lookup_by_seat_id (id, display, user_data);
 }
 
+#ifdef HAVE_UDEV
+static gboolean
+udev_is_settled (GdmLocalDisplayFactory *factory)
+{
+        g_autoptr (GUdevEnumerator) enumerator = NULL;
+        GList *devices;
+        GList *node;
+
+        gboolean is_settled = FALSE;
+
+        if (factory->seat0_has_platform_graphics) {
+                g_debug ("GdmLocalDisplayFactory: udev settled, platform graphics enabled.");
+                return TRUE;
+        }
+
+        if (factory->seat0_has_boot_up_graphics) {
+                g_debug ("GdmLocalDisplayFactory: udev settled, boot up graphics available.");
+                return TRUE;
+        }
+
+        if (factory->seat0_graphics_check_timed_out) {
+                g_debug ("GdmLocalDisplayFactory: udev timed out, proceeding anyway.");
+                return TRUE;
+        }
+
+        g_debug ("GdmLocalDisplayFactory: Checking if udev has settled enough to support graphics.");
+
+        enumerator = g_udev_enumerator_new (factory->gudev_client);
+
+        g_udev_enumerator_add_match_name (enumerator, "card*");
+        g_udev_enumerator_add_match_tag (enumerator, "master-of-seat");
+        g_udev_enumerator_add_match_subsystem (enumerator, "drm");
+
+        devices = g_udev_enumerator_execute (enumerator);
+        if (!devices) {
+                g_debug ("GdmLocalDisplayFactory: udev has no candidate graphics devices available yet.");
+                return FALSE;
+        }
+
+        node = devices;
+        while (node != NULL) {
+                GUdevDevice *device = node->data;
+                GList *next_node = node->next;
+                g_autoptr (GUdevDevice) platform_device = NULL;
+                g_autoptr (GUdevDevice) pci_device = NULL;
+
+                platform_device = g_udev_device_get_parent_with_subsystem (device, "platform", NULL);
+
+                if (platform_device != NULL) {
+                        g_debug ("GdmLocalDisplayFactory: Found embedded platform graphics, proceeding.");
+                        factory->seat0_has_platform_graphics = TRUE;
+                        is_settled = TRUE;
+                        break;
+                }
+
+                pci_device = g_udev_device_get_parent_with_subsystem (device, "pci", NULL);
+
+                if (pci_device != NULL) {
+                        gboolean boot_vga;
+
+                        boot_vga = g_udev_device_get_sysfs_attr_as_int (pci_device, "boot_vga");
+
+                        if (boot_vga == 1) {
+                                 g_debug ("GdmLocalDisplayFactory: Found primary PCI graphics adapter, proceeding.");
+                                 factory->seat0_has_boot_up_graphics = TRUE;
+                                 is_settled = TRUE;
+                                 break;
+                        } else {
+                                 g_debug ("GdmLocalDisplayFactory: Found secondary PCI graphics adapter, not proceeding yet.");
+                        }
+                }
+                node = next_node;
+        }
+
+        g_debug ("GdmLocalDisplayFactory: udev has %ssettled enough for graphics.", is_settled? "" : "not ");
+        g_list_free_full (devices, g_object_unref);
+        return is_settled;
+}
+#endif
+
 static int
 on_seat0_graphics_check_timeout (gpointer user_data)
 {
@@ -653,6 +745,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         gboolean wayland_enabled = FALSE, xorg_enabled = FALSE;
         g_autofree gchar *preferred_display_server = NULL;
         gboolean falling_back = FALSE;
+        gboolean waiting_on_udev = FALSE;
 
         gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled);
         gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &xorg_enabled);
@@ -664,19 +757,28 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                return;
         }
 
-        ret = sd_seat_can_graphical (seat_id);
+#ifdef HAVE_UDEV
+        waiting_on_udev = !udev_is_settled (factory);
+#endif
 
-        if (ret < 0) {
-                g_critical ("Failed to query CanGraphical information for seat %s", seat_id);
-                return;
-        }
+        if (!waiting_on_udev) {
+                ret = sd_seat_can_graphical (seat_id);
 
-        if (ret == 0) {
-                g_debug ("GdmLocalDisplayFactory: System doesn't currently support graphics");
-                seat_supports_graphics = FALSE;
+                if (ret < 0) {
+                        g_critical ("Failed to query CanGraphical information for seat %s", seat_id);
+                        return;
+                }
+
+                if (ret == 0) {
+                        g_debug ("GdmLocalDisplayFactory: System doesn't currently support graphics");
+                        seat_supports_graphics = FALSE;
+                } else {
+                        g_debug ("GdmLocalDisplayFactory: System supports graphics");
+                        seat_supports_graphics = TRUE;
+                }
         } else {
-                g_debug ("GdmLocalDisplayFactory: System supports graphics");
-                seat_supports_graphics = TRUE;
+               g_debug ("GdmLocalDisplayFactory: udev is still settling, so not creating display yet");
+               seat_supports_graphics = FALSE;
         }
 
         if (g_strcmp0 (seat_id, "seat0") == 0) {
@@ -703,7 +805,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         /* For seat0, we have a fallback logic to still try starting it after
          * SEAT0_GRAPHICS_CHECK_TIMEOUT seconds. i.e. we simply continue even if
-         * CanGraphical is unset.
+         * CanGraphical is unset or udev otherwise never finds a suitable graphics card.
          * This is ugly, but it means we'll come up eventually in some
          * scenarios where no master device is present.
          * Note that we'll force an X11 fallback even though there might be
@@ -949,10 +1051,12 @@ on_seat_properties_changed (GDBusConnection *connection,
         if (ret < 0)
                 return;
 
-        if (ret != 0)
+        if (ret != 0) {
+                gdm_settings_direct_reload ();
                 ensure_display_for_seat (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
-        else
+        } else {
                 delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+        }
 }
 
 static gboolean
@@ -1166,10 +1270,36 @@ on_vt_changed (GIOChannel    *source,
 }
 #endif
 
+#ifdef HAVE_UDEV
+static void
+on_uevent (GUdevClient *client,
+           const char  *action,
+           GUdevDevice *device,
+           GdmLocalDisplayFactory *factory)
+{
+        if (!g_udev_device_get_device_file (device))
+                return;
+
+        if (g_strcmp0 (action, "add") != 0 &&
+            g_strcmp0 (action, "change") != 0)
+                return;
+
+        if (!udev_is_settled (factory))
+                return;
+
+        g_signal_handler_disconnect (factory->gudev_client, factory->uevent_handler_id);
+        factory->uevent_handler_id = 0;
+
+        gdm_settings_direct_reload ();
+        ensure_display_for_seat (factory, "seat0");
+}
+#endif
+
 static void
 gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
 {
         g_autoptr (GIOChannel) io_channel = NULL;
+        const char *subsystems[] = { "drm", NULL };
 
         factory->seat_new_id = g_dbus_connection_signal_subscribe (factory->connection,
                                                                          "org.freedesktop.login1",
@@ -1201,6 +1331,13 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                                   on_seat_properties_changed,
                                                                                   g_object_ref (factory),
                                                                                   g_object_unref);
+#ifdef HAVE_UDEV
+        factory->gudev_client = g_udev_client_new (subsystems);
+        factory->uevent_handler_id = g_signal_connect (factory->gudev_client,
+                                                       "uevent",
+                                                       G_CALLBACK (on_uevent),
+                                                       factory);
+#endif
 
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         io_channel = g_io_channel_new_file ("/sys/class/tty/tty0/active", "r", NULL);
@@ -1219,6 +1356,12 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
 static void
 gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
 {
+        if (factory->uevent_handler_id) {
+                g_signal_handler_disconnect (factory->gudev_client, factory->uevent_handler_id);
+                factory->uevent_handler_id = 0;
+        }
+        g_clear_object (&factory->gudev_client);
+
         if (factory->seat_new_id) {
                 g_dbus_connection_signal_unsubscribe (factory->connection,
                                                       factory->seat_new_id);
