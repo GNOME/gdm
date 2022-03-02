@@ -1,6 +1,19 @@
+# identify virtio graphics cards to find passthrough setups
+SUBSYSTEM!="virtio", GOTO="gdm_virtio_device_end"
+ACTION!="add", GOTO="gdm_virtio_device_end"
+ATTR{vendor}=="0x1af4", ATTR{device}=="0x0010", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-virtual-gpu", ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}="1", GOTO="gdm_virtio_device_end"
+LABEL="gdm_virtio_device_end"
 
 SUBSYSTEM!="pci", GOTO="gdm_pci_device_end"
 ACTION!="bind", GOTO="gdm_pci_device_end"
+
+# identify virtio graphics cards to find passthrough setups
+# cirrus
+ATTR{vendor}=="0x1013", ATTR{device}=="0x00b8", ATTR{subsystem_vendor}=="0x1af4", ATTR{subsystem_device}=="0x1100", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-virtual-gpu", ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}="1", GOTO="gdm_pci_device_end"
+# vga
+ATTR{vendor}=="0x1b36", ATTR{device}=="0x0100", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-virtual-gpu", ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}="1", GOTO="gdm_pci_device_end"
+# qxl
+ATTR{vendor}=="0x1234", ATTR{device}=="0x1111", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-virtual-gpu", ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}="1", GOTO="gdm_pci_device_end"
 
 # disable Wayland on Hi1710 chipsets
 ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
@@ -24,6 +37,8 @@ LABEL="gdm_pci_device_end"
 # disable Wayland if modesetting is disabled
 KERNEL!="card[0-9]*", GOTO="gdm_nomodeset_end"
 SUBSYSTEM!="drm", GOTO="gdm_nomodeset_end"
+IMPORT{parent}="GDM_MACHINE_HAS_VIRTUAL_GPU"
+ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}!="1", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-hardware-gpu"
 # but keep it enabled for simple framebuffer drivers
 DRIVERS=="simple-framebuffer", GOTO="gdm_nomodeset_end"
 IMPORT{cmdline}="nomodeset", GOTO="gdm_disable_wayland"
@@ -76,6 +91,14 @@ TEST!="/run/udev/gdm-machine-has-hybrid-graphics", GOTO="gdm_hybrid_nvidia_lapto
 TEST!="/run/udev/gdm-machine-has-vendor-nvidia-driver", GOTO="gdm_hybrid_nvidia_laptop_check_end"
 GOTO="gdm_disable_wayland"
 LABEL="gdm_hybrid_nvidia_laptop_check_end"
+
+# Disable wayland in situation where we're in a guest with a virtual gpu and host passthrough gpu
+LABEL="gdm_virt_passthrough_check"
+TEST!="/run/udev/gdm-machine-has-hybrid-graphics", GOTO="gdm_virt_passthrough_check_end"
+TEST!="/run/udev/gdm-machine-has-virtual-gpu", GOTO="gdm_virt_passthrough_check_end"
+TEST!="/run/udev/gdm-machine-has-hardware-gpu", GOTO="gdm_virt_passthrough_check_end"
+GOTO="gdm_disable_wayland"
+LABEL="gdm_virt_passthrough_check_end"
 
 # Disable wayland when nvidia modeset is disabled or when drivers are a lower
 # version than 470,
