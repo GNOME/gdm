@@ -1037,19 +1037,39 @@ on_seat_properties_changed (GDBusConnection *connection,
         const gchar *seat = NULL;
         g_autoptr(GVariant) changed_props = NULL;
         g_autoptr(GVariant) changed_prop = NULL;
+        g_autoptr(GVariant) reply = NULL;
+        g_autoptr(GVariant) reply_value = NULL;
+        g_autoptr(GError) error = NULL;
         g_autofree const gchar **invalidated_props = NULL;
         gboolean changed = FALSE;
         int ret;
 
-        /* Extract seat id, i.e. the last element of the object path. */
-        seat = strrchr (object_path, '/');
-        if (seat == NULL)
-                return;
-        seat += 1;
+        /* Acquire seat name */
+        reply = g_dbus_connection_call_sync (connection,
+                                             sender_name,
+                                             object_path,
+                                             "org.freedesktop.DBus.Properties",
+                                             "Get",
+                                             g_variant_new ("(ss)",
+                                                            "org.freedesktop.login1.Seat",
+                                                            "Id"),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1, NULL, &error);
 
-        /* Valid seat IDs must start with seat, i.e. ignore "auto" */
-        if (!g_str_has_prefix (seat, "seat"))
+        if (reply == NULL) {
+                g_debug ("could not acquire seat name: %s", error->message);
                 return;
+        }
+
+        g_variant_get (reply, "(v)", &reply_value);
+
+        seat = g_variant_get_string (reply_value, NULL);
+
+        if (seat == NULL) {
+                g_debug ("seat name is not string");
+                return;
+        }
 
         g_variant_get (parameters, "(s@a{sv}^a&s)", NULL, &changed_props, &invalidated_props);
 
