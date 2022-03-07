@@ -545,17 +545,15 @@ on_display_status_changed (GdmDisplay             *display,
                 }
                 gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
 
-                /* if this is a local display, do a full resync.  Only
-                 * seats without displays will get created anyway.  This
-                 * ensures we get a new login screen when the user logs out,
-                 * if there isn't one.
+                /* if this is a local display, ensure that we get a login
+                 * screen when the user logs out.
                  */
                 if (is_local &&
                     (g_strcmp0 (session_class, "greeter") != 0 || factory->active_vt == GDM_INITIAL_VT)) {
                         /* reset num failures */
                         factory->num_failures = 0;
 
-                        gdm_local_display_factory_sync_seats (factory);
+                        ensure_display_for_seat (factory, seat_id);
                 }
                 break;
         case GDM_DISPLAY_FAILED:
