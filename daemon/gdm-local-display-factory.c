@@ -768,13 +768,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: display for seat %s requested", seat_id);
 
-        /* Ensure we don't create the same display more than once */
-        display = get_display_for_seat (factory, seat_id);
-        if (display != NULL) {
-                g_debug ("GdmLocalDisplayFactory: display for %s already created", seat_id);
-                return;
-        }
-
         /* If we already have a login window, switch to it */
         if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
                 GdmDisplay *display;
@@ -894,6 +887,13 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         else
                 g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                          session_types[0], seat_id);
+
+        /* Ensure we don't create the same display more than once */
+        display = get_display_for_seat (factory, seat_id);
+        if (display != NULL) {
+                g_debug ("GdmLocalDisplayFactory: display for %s already created", seat_id);
+                return;
+        }
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
