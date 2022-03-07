@@ -758,6 +758,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 {
         gboolean seat_supports_graphics;
         gboolean is_seat0;
+        gboolean falling_back;
         g_auto (GStrv) session_types = NULL;
         const char *legacy_session_types[] = { "x11", NULL };
         GdmDisplay      *display = NULL;
@@ -828,24 +829,16 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         }
 
         is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
-        if (is_seat0) {
-                gboolean falling_back;
 
-                falling_back = factory->num_failures > 0;
-                session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
+        falling_back = factory->num_failures > 0;
+        session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
 
-                if (session_types == NULL) {
-                        g_debug ("GdmLocalDisplayFactory: Both Wayland and Xorg are unavailable");
-                        seat_supports_graphics = FALSE;
-                } else {
-                        g_debug ("GdmLocalDisplayFactory: New displays on seat0 will use %s%s",
-                                 session_types[0], falling_back? " fallback" : "");
-                }
+        if (session_types == NULL) {
+                g_debug ("GdmLocalDisplayFactory: Both Wayland and Xorg are unavailable");
+                seat_supports_graphics = FALSE;
         } else {
-                g_debug ("GdmLocalDisplayFactory: New displays on seat %s will use X11 fallback", seat_id);
-                /* Force legacy X11 for all auxiliary seats */
-                seat_supports_graphics = TRUE;
-                session_types = g_strdupv ((char **) legacy_session_types);
+                g_debug ("GdmLocalDisplayFactory: New displays on seat0 will use %s%s",
+                         session_types[0], falling_back? " fallback" : "");
         }
 
         /* For seat0, we have a fallback logic to still try starting it after
@@ -907,13 +900,11 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 #ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_strcmp0 (preferred_display_server, "wayland") == 0 ||
             g_strcmp0 (preferred_display_server, "xorg") == 0) {
-                if (is_seat0) {
-                        display = gdm_local_display_new ();
-                        g_object_set (G_OBJECT (display),
-                                      "session-type", session_types[0],
-                                      "supported-session-types", session_types,
-                                      NULL);
-                }
+                display = gdm_local_display_new ();
+                g_object_set (G_OBJECT (display),
+                              "session-type", session_types[0],
+                              "supported-session-types", session_types,
+                              NULL);
         }
 #endif
 
