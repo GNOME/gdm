@@ -549,7 +549,8 @@ on_display_status_changed (GdmDisplay             *display,
                  * screen when the user logs out.
                  */
                 if (is_local &&
-                    (g_strcmp0 (session_class, "greeter") != 0 || factory->active_vt == GDM_INITIAL_VT)) {
+                    (g_strcmp0 (session_class, "greeter") != 0 || factory->active_vt == GDM_INITIAL_VT ||
+                     g_strcmp0 (seat_id, "seat0") != 0)) {
                         /* reset num failures */
                         factory->num_failures = 0;
 
@@ -626,6 +627,21 @@ lookup_prepared_display_by_seat_id (const char *id,
         status = gdm_display_get_status (display);
 
         if (status != GDM_DISPLAY_PREPARED)
+                return FALSE;
+
+        return lookup_by_seat_id (id, display, user_data);
+}
+
+static gboolean
+lookup_managed_display_by_seat_id (const char *id,
+                                   GdmDisplay *display,
+                                   gpointer    user_data)
+{
+        int status;
+
+        status = gdm_display_get_status (display);
+
+        if (status != GDM_DISPLAY_MANAGED)
                 return FALSE;
 
         return lookup_by_seat_id (id, display, user_data);
@@ -745,7 +761,7 @@ get_display_for_seat (GdmLocalDisplayFactory *factory,
         if (is_seat0)
                 display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
         else
-                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+                display = gdm_display_store_find (store, lookup_managed_display_by_seat_id, (gpointer) seat_id);
 
         return display;
 }
