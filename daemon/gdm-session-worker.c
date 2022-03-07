@@ -1224,10 +1224,13 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
-        /* Temporarily set PAM_TTY with the login VT,
-           PAM_TTY will be reset with the users VT right before the user session is opened */
-        g_snprintf (tty_string, 256, "/dev/tty%d", GDM_INITIAL_VT);
-        pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
+        if (strcmp (seat_id, "seat0") == 0) {
+                /* Temporarily set PAM_TTY with the login VT,
+                   PAM_TTY will be reset with the users VT right before the user session is opened */
+                g_snprintf (tty_string, 256, "/dev/tty%d", GDM_INITIAL_VT);
+                pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
+        }
+
         if (!display_is_local)
                 worker->password_is_required = TRUE;
 
@@ -2340,22 +2343,24 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         g_assert (worker->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
 
-        switch (worker->display_mode) {
-        case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
-                if (!set_up_for_current_vt (worker, error)) {
-                        return FALSE;
+        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0) {
+                switch (worker->display_mode) {
+                case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
+                        if (!set_up_for_current_vt (worker, error)) {
+                                return FALSE;
+                        }
+                        break;
+                case GDM_SESSION_DISPLAY_MODE_NEW_VT:
+                case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:
+                        if (!set_up_for_new_vt (worker)) {
+                                g_set_error (error,
+                                             GDM_SESSION_WORKER_ERROR,
+                                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                                             "Unable to open VT");
+                                return FALSE;
+                        }
+                        break;
                 }
-                break;
-        case GDM_SESSION_DISPLAY_MODE_NEW_VT:
-        case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:
-                if (!set_up_for_new_vt (worker)) {
-                        g_set_error (error,
-                                     GDM_SESSION_WORKER_ERROR,
-                                     GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                                     "Unable to open VT");
-                        return FALSE;
-                }
-                break;
         }
 
         flags = 0;
