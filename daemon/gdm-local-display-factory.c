@@ -78,7 +78,7 @@ struct _GdmLocalDisplayFactory
         gboolean         seat0_graphics_check_timed_out;
         guint            seat0_graphics_check_timeout_id;
 
-        guint            uevent_handler_id;
+        gulong           uevent_handler_id;
 
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
