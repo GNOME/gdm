@@ -78,7 +78,7 @@ struct _GdmLocalDisplayFactory
         gboolean         seat0_graphics_check_timed_out;
         guint            seat0_graphics_check_timeout_id;
 
-        guint            uevent_handler_id;
+        gulong           uevent_handler_id;
 
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
@@ -710,6 +710,10 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
 
         g_debug ("GdmLocalDisplayFactory: udev has %ssettled enough for graphics.", is_settled? "" : "not ");
         g_list_free_full (devices, g_object_unref);
+
+        if (is_settled)
+                g_clear_signal_handler (&factory->uevent_handler_id, factory->gudev_client);
+
         return is_settled;
 }
 #endif
@@ -1286,9 +1290,6 @@ on_uevent (GUdevClient *client,
 
         if (!udev_is_settled (factory))
                 return;
-
-        g_signal_handler_disconnect (factory->gudev_client, factory->uevent_handler_id);
-        factory->uevent_handler_id = 0;
 
         gdm_settings_direct_reload ();
         ensure_display_for_seat (factory, "seat0");
