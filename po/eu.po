@@ -10,7 +10,7 @@
 msgid ""
 msgstr "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"POT-Creation-Date: 2022-01-16 11:59+0000\n"
 "PO-Revision-Date: 2020-12-27 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
@@ -65,16 +65,6 @@ msgstr "Ezin izan da uneko saioa identifikatu. "
 msgid "Could not identify the current seat."
 msgstr "Ezin izan da uneko saioa identifikatu."
 
-#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr "Sistemak ezin du saioa hasita duen pantaila batera aldatu edo saio-hasierako pantaila berri bat abiarazi behar duen zehatu."
-
-#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
-msgid "The system is unable to start up a new login screen."
-msgstr "Sistemak ezin du saio-hasierako pantaila abiarazi."
-
 #: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
@@ -112,42 +102,42 @@ msgstr "Deitzailea ez da GDM"
 msgid "Unable to open private communication channel"
 msgstr "Ezin da komunikazio pribatuaren kanala ireki"
 
-#: daemon/gdm-server.c:383
+#: daemon/gdm-server.c:384
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Zerbitzaria %s erabiltzaileak abiarazi behar zuen, baina erabiltzaile hori ez da existitzen"
 
-#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Ezin izan da groupid ezarri %d(e)n"
 
-#: daemon/gdm-server.c:400
+#: daemon/gdm-server.c:401
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s(r)en initgroups()-ek huts egin du"
 
-#: daemon/gdm-server.c:406
+#: daemon/gdm-server.c:407
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "Ezin izan da userid ezarri %d(e)n"
 
-#: daemon/gdm-server.c:484
+#: daemon/gdm-server.c:485
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ezin izan da %s pantailaren egunkari-fitxategia ireki!"
 
-#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
+#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Errorea %s %s(e)n ezartzean"
 
-#: daemon/gdm-server.c:537
+#: daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: zerbitzariaren lehentasuna ezin da %d balioarekin ezarri: %s"
 
-#: daemon/gdm-server.c:689
+#: daemon/gdm-server.c:690
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s pantailaren zerbitzari-komando hutsa"
@@ -176,86 +166,76 @@ msgstr "Pantailaren gailua"
 msgid "The display device"
 msgstr "Pantailaren gailua"
 
-#: daemon/gdm-session.c:1285
+#: daemon/gdm-session.c:1334
 msgid "Could not create authentication helper process"
 msgstr "Ezin izan dira autentifikazio-izenak irakurri"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:755
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "Pasahitza autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:753
-msgid ""
-"You reached the maximum PIN authentication attempts, please try another "
-"method"
-msgstr "PINa autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
-
-#: daemon/gdm-session-worker.c:756
+#: daemon/gdm-session-worker.c:758
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr "Saio-hasiera automatikorako gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:761
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr "Hatz-marka bidez autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:764
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr "Txartelaren bidez autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:764
+#: daemon/gdm-session-worker.c:766
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "Autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:771
+#: daemon/gdm-session-worker.c:773
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Pasahitzaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:774
-msgid "Sorry, PIN authentication didn’t work. Please try again."
-msgstr "PIN bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
-
-#: daemon/gdm-session-worker.c:777
+#: daemon/gdm-session-worker.c:776
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Saio-hasiera automatikoak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:780
+#: daemon/gdm-session-worker.c:779
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Hatz-markaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:783
+#: daemon/gdm-session-worker.c:782
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Txartelaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:784
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Huts egin du. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:800
+#: daemon/gdm-session-worker.c:799
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Zure kontuari denbora-muga bat eman zitzaion, orain iraungitu dena."
 
-#: daemon/gdm-session-worker.c:1202
+#: daemon/gdm-session-worker.c:1199
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
 
-#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
+#: daemon/gdm-session-worker.c:1600 daemon/gdm-session-worker.c:1617
 msgid "no user account available"
 msgstr "ez dago erabiltzailearen konturik erabilgarri"
 
-#: daemon/gdm-session-worker.c:1748
+#: daemon/gdm-session-worker.c:1644
 msgid "Unable to change to user"
 msgstr "Ezin da erabiltzailez aldatu"
 
-#: daemon/gdm-wayland-session.c:511
+#: daemon/gdm-wayland-session.c:531
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOMEren pantaila-kudeatzailearen Wayland saioaren abiarazlea"
 
@@ -263,15 +243,15 @@ msgstr "GNOMEren pantaila-kudeatzailearen Wayland saioaren abiarazlea"
 msgid "Could not create socket!"
 msgstr "Ezin izan da socket-a sortu!"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:879
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Exekutatu programa /etc/gdm/Xsession script doitzailearen bidez"
 
-#: daemon/gdm-x-session.c:860
+#: daemon/gdm-x-session.c:880
 msgid "Listen on TCP socket"
 msgstr "Entzun TCP socket-ean"
 
-#: daemon/gdm-x-session.c:872
+#: daemon/gdm-x-session.c:892
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOMEren pantaila-kudeatzailearen X saioaren abiarazlea"
 
@@ -348,13 +328,13 @@ msgstr "Hatz-markak erregistratu dituzten erabiltzaileei saioa hatz-marken bidez
 
 #: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
-msgstr "Saioa hasteko txartelen irakurgailuak onartuko diren ala ez"
+msgstr "Saioa hasteko txartel adimendunen irakurgailuak onartuko diren ala ez"
 
 #: data/org.gnome.login-screen.gschema.xml:19
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
-msgstr "Txartela duten erabiltzaileei saioa txartelen irakurgailuaren bidez hasteko aukera eman diezaioke saioa hasteko pantailak."
+msgstr "Txartel adimenduna duten erabiltzaileei saioa txartelen irakurgailuaren bidez hasteko aukera eman diezaioke saioa hasteko pantailak."
 
 #: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
@@ -469,6 +449,26 @@ msgstr "Hartutako pantaila-argazkia"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Egin pantailaren argazkia"
+
+#~ msgid ""
+#~ "The system is unable to determine whether to switch to an existing login "
+#~ "screen or start up a new login screen."
+#~ msgstr ""
+#~ "Sistemak ezin du saioa hasita duen pantaila batera aldatu edo saio-"
+#~ "hasierako pantaila berri bat abiarazi behar duen zehatu."
+
+#~ msgid "The system is unable to start up a new login screen."
+#~ msgstr "Sistemak ezin du saio-hasierako pantaila abiarazi."
+
+#~ msgid ""
+#~ "You reached the maximum PIN authentication attempts, please try another "
+#~ "method"
+#~ msgstr ""
+#~ "PINa autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu "
+#~ "beste metodoren bat"
+
+#~ msgid "Sorry, PIN authentication didn’t work. Please try again."
+#~ msgstr "PIN bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr "Zure pasahitza iraungitu da, aldatu ezazu orain."
