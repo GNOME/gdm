@@ -406,6 +406,19 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
         if (settings->priv->language_name != NULL) {
                 act_user_set_language (user, settings->priv->language_name);
         }
+
+        if (!act_user_is_local_account (user)) {
+                g_autoptr (GError) error = NULL;
+
+                act_user_manager_cache_user (settings->priv->user_manager, username, &error);
+
+                if (error != NULL) {
+                        g_debug ("GdmSessionSettings: Could not locally cache remote user: %s", error->message);
+                        g_object_unref (user);
+                        return FALSE;
+                }
+
+        }
         g_object_unref (user);
 
         return TRUE;
