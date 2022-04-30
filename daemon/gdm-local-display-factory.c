@@ -513,8 +513,10 @@ on_display_status_changed (GdmDisplay             *display,
         int              status;
         int              num;
         char            *seat_id = NULL;
+        char            *seat_active_session = NULL;
         char            *session_type = NULL;
         char            *session_class = NULL;
+        char            *session_id = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
 
@@ -531,7 +533,10 @@ on_display_status_changed (GdmDisplay             *display,
                       "is-local", &is_local,
                       "session-type", &session_type,
                       "session-class", &session_class,
+                      "session-id", &session_id,
                       NULL);
+
+        sd_seat_get_active (seat_id, &seat_active_session, NULL);
 
         status = gdm_display_get_status (display);
 
@@ -549,7 +554,9 @@ on_display_status_changed (GdmDisplay             *display,
                  * screen when the user logs out.
                  */
                 if (is_local &&
-                    (g_strcmp0 (session_class, "greeter") != 0 || factory->active_vt == GDM_INITIAL_VT ||
+                    ((g_strcmp0 (session_class, "greeter") != 0 &&
+                      (!seat_active_session || g_strcmp0(session_id, seat_active_session) == 0)) ||
+                     factory->active_vt == GDM_INITIAL_VT ||
                      g_strcmp0 (seat_id, "seat0") != 0)) {
                         /* reset num failures */
                         factory->num_failures = 0;
@@ -595,8 +602,10 @@ on_display_status_changed (GdmDisplay             *display,
         }
 
         g_free (seat_id);
+        g_free (seat_active_session);
         g_free (session_type);
         g_free (session_class);
+        g_free (session_id);
 }
 
 static gboolean
