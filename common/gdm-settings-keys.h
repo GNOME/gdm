@@ -36,6 +36,7 @@ G_BEGIN_DECLS
 #define GDM_KEY_PREFERRED_DISPLAY_SERVER "daemon/PreferredDisplayServer"
 #define GDM_KEY_WAYLAND_ENABLE "daemon/WaylandEnable"
 #define GDM_KEY_XORG_ENABLE "daemon/XorgEnable"
+#define GDM_KEY_REMOTE_LOGIN_ENABLE "daemon/RemoteLoginEnable"
 
 #define GDM_KEY_DEBUG "debug/Enable"
 
