@@ -42,6 +42,7 @@
 #include "gdm-display-glue.h"
 #include "gdm-display-access-file.h"
 #include "gdm-launch-environment.h"
+#include "gdm-remote-display.h"
 
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"

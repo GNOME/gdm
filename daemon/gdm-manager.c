@@ -48,6 +48,8 @@
 #include "gdm-launch-environment.h"
 #include "gdm-local-display.h"
 #include "gdm-local-display-factory.h"
+#include "gdm-remote-display.h"
+#include "gdm-remote-display-factory.h"
 #include "gdm-session.h"
 #include "gdm-session-record.h"
 #include "gdm-settings-direct.h"
@@ -78,11 +80,13 @@ struct _GdmManager
 #ifdef HAVE_LIBXDMCP
         GdmXdmcpDisplayFactory *xdmcp_factory;
 #endif
+        GdmRemoteDisplayFactory *remote_factory;
         GdmDisplay             *automatic_login_display;
         GList                  *user_sessions;
         GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
         gboolean                xdmcp_enabled;
+        gboolean                remote_login_enabled;
 
         gboolean                started;
         gboolean                show_local_greeter;
@@ -99,7 +103,8 @@ struct _GdmManager
 enum {
         PROP_0,
         PROP_XDMCP_ENABLED,
-        PROP_SHOW_LOCAL_GREETER
+        PROP_SHOW_LOCAL_GREETER,
+        PROP_REMOTE_LOGIN_ENABLED
 };
 
 enum {
@@ -2502,8 +2507,19 @@ gdm_manager_start (GdmManager *manager)
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
         }
 
-#ifdef HAVE_LIBXDMCP
         /* Accept remote connections */
+        if (manager->remote_login_enabled) {
+#ifdef WITH_PLYMOUTH
+                /* Quit plymouth if remote is the only display */
+                if (!manager->show_local_greeter && manager->plymouth_is_running) {
+                        plymouth_quit_without_transition ();
+                        manager->plymouth_is_running = FALSE;
+                }
+#endif
+        }
+
+#ifdef HAVE_LIBXDMCP
+        /* Accept xdmcp connections */
         if (manager->xdmcp_enabled) {
 #ifdef WITH_PLYMOUTH
                 /* Quit plymouth if xdmcp is the only display */
@@ -2592,6 +2608,22 @@ gdm_manager_set_show_local_greeter (GdmManager *manager,
         manager->show_local_greeter = show_local_greeter;
 }
 
+void
+gdm_manager_set_remote_login_enabled (GdmManager *manager,
+                                      gboolean    enabled)
+{
+        g_return_if_fail (GDM_IS_MANAGER (manager));
+
+        if (manager->remote_login_enabled != enabled) {
+                manager->remote_login_enabled = enabled;
+                if (manager->remote_login_enabled) {
+                        manager->remote_factory = gdm_remote_display_factory_new (manager->display_store);
+                } else {
+                        g_clear_object (&manager->remote_factory);
+                }
+        }
+}
+
 static void
 gdm_manager_set_property (GObject      *object,
                           guint         prop_id,
@@ -2608,6 +2640,9 @@ gdm_manager_set_property (GObject      *object,
                 break;
         case PROP_SHOW_LOCAL_GREETER:
                 gdm_manager_set_show_local_greeter (self, g_value_get_boolean (value));
+                break;
+        case PROP_REMOTE_LOGIN_ENABLED:
+                gdm_manager_set_remote_login_enabled (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2632,6 +2667,9 @@ gdm_manager_get_property (GObject    *object,
         case PROP_SHOW_LOCAL_GREETER:
                 g_value_set_boolean (value, self->show_local_greeter);
                 break;
+        case PROP_REMOTE_LOGIN_ENABLED:
+                g_value_set_boolean (value, self->remote_login_enabled);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -2652,6 +2690,10 @@ gdm_manager_constructor (GType                  type,
         gdm_dbus_manager_set_version (GDM_DBUS_MANAGER (manager), PACKAGE_VERSION);
 
         manager->local_factory = gdm_local_display_factory_new (manager->display_store);
+
+        if (manager->remote_login_enabled) {
+                manager->remote_factory = gdm_remote_display_factory_new (manager->display_store);
+        }
 
 #ifdef HAVE_LIBXDMCP
         if (manager->xdmcp_enabled) {
@@ -2696,6 +2738,14 @@ gdm_manager_class_init (GdmManagerClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_XDMCP_ENABLED,
                                          g_param_spec_boolean ("xdmcp-enabled",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
+                                         PROP_REMOTE_LOGIN_ENABLED,
+                                         g_param_spec_boolean ("remote-login-enabled",
                                                                NULL,
                                                                NULL,
                                                                FALSE,
@@ -2770,6 +2820,7 @@ gdm_manager_dispose (GObject *object)
         g_clear_object (&manager->xdmcp_factory);
 #endif
         g_clear_object (&manager->local_factory);
+        g_clear_object (&manager->remote_factory);
         g_clear_pointer (&manager->open_reauthentication_requests,
                          g_hash_table_unref);
         g_clear_pointer (&manager->transient_sessions,

@@ -49,6 +49,8 @@ void                gdm_manager_set_xdmcp_enabled              (GdmManager *mana
                                                                 gboolean    enabled);
 void                gdm_manager_set_show_local_greeter         (GdmManager *manager,
                                                                 gboolean    show_local_greeter);
+void                gdm_manager_set_remote_login_enabled       (GdmManager *manager,
+                                                                gboolean    enabled);
 gboolean            gdm_manager_get_displays                   (GdmManager *manager,
                                                                 GPtrArray **displays,
                                                                 GError    **error);
