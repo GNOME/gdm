@@ -12,6 +12,8 @@
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Display"/>
     <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplay"/>
+    <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Settings"/>
@@ -25,6 +27,8 @@
   <policy context="default">
     <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.Display"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.RemoteDisplay"/>
     <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
     <deny send_destination="org.gnome.DisplayManager"
@@ -68,6 +72,8 @@
            send_interface="org.gnome.DisplayManager.Manager"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Display"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplay"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
     <allow send_destination="org.gnome.DisplayManager"

@@ -23,6 +23,12 @@ local_display_factory_dbus_gen = gnome.gdbus_codegen('gdm-local-display-factory-
   interface_prefix: 'org.gnome.DisplayManager',
   autocleanup: 'all',
 )
+remote_display_dbus_gen = gnome.gdbus_codegen('gdm-remote-display-glue',
+  'gdm-remote-display.xml',
+  namespace: 'GdmDBus',
+  interface_prefix: 'org.gnome.DisplayManager',
+  autocleanup: 'all',
+)
 manager_dbus_gen = gnome.gdbus_codegen('gdm-manager-glue',
   'gdm-manager.xml',
   namespace: 'GdmDBus',
@@ -172,6 +178,7 @@ gdm_daemon_sources = files(
   'gdm-legacy-display.c',
   'gdm-local-display-factory.c',
   'gdm-local-display.c',
+  'gdm-remote-display.c',
   'gdm-manager.c',
   'gdm-server.c',
   'gdm-session-record.c',
@@ -186,6 +193,7 @@ gdm_daemon_gen_sources = [
   local_display_factory_dbus_gen,
   manager_dbus_gen,
   local_display_dbus_gen,
+  remote_display_dbus_gen,
   session_dbus_gen,
   session_worker_dbus_gen,
   gdm_session_enums,
