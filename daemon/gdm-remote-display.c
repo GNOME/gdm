@@ -23,6 +23,7 @@
 #include <glib-object.h>
 
 #include "gdm-display.h"
+#include "gdm-launch-environment.h"
 #include "gdm-remote-display.h"
 #include "gdm-remote-display-glue.h"
 
@@ -72,7 +73,21 @@ gdm_remote_display_finalize (GObject *object)
 static gboolean
 gdm_remote_display_prepare (GdmDisplay *display)
 {
-        /* TODO: create a headless greeter launch environment */
+        GdmRemoteDisplay *self = GDM_REMOTE_DISPLAY (display);
+        g_autoptr (GdmLaunchEnvironment) launch_environment = NULL;
+        g_autofree char *session_type = NULL;
+
+        g_object_get (self,
+                      "session-type", &session_type,
+                      NULL);
+
+        launch_environment = gdm_create_greeter_launch_environment (NULL,
+                                                                    NULL,
+                                                                    session_type,
+                                                                    NULL,
+                                                                    FALSE);
+
+        g_object_set (self, "launch-environment", launch_environment, NULL);
 
         return GDM_DISPLAY_CLASS (gdm_remote_display_parent_class)->prepare (display);
 }
