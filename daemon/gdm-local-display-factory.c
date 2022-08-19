@@ -402,7 +402,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                 display = gdm_local_display_new ();
                 g_object_set (G_OBJECT (display),
                               "session-type", session_types[0],
-                              "supported-session-tyes", session_types,
+                              "supported-session-types", session_types,
                               NULL);
                 is_initial = TRUE;
         }
