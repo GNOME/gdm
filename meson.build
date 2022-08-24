@@ -1,7 +1,7 @@
 project('gdm', 'c',
   version: '43.0',
   license: 'GPL2+',
-  meson_version: '>= 0.50',
+  meson_version: '>= 0.57',
 )
 
 # Modules
@@ -281,7 +281,9 @@ if xdmcp_dep.found()
 endif
 subdir('docs')
 
-meson.add_install_script('build-aux/meson_post_install.py')
+gnome.post_install(
+  glib_compile_schemas: true,
+)
 
 if meson.version().version_compare('>= 0.53')
 summary({
