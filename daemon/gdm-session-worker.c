@@ -81,8 +81,6 @@
 
 #include "gdm-session-settings.h"
 
-#define GDM_SESSION_WORKER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerPrivate))
-
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
 #define GDM_SESSION_DBUS_NAME         "org.gnome.DisplayManager.Session"
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
@@ -120,8 +118,9 @@ typedef struct
 
 } ReauthenticationRequest;
 
-struct GdmSessionWorkerPrivate
+struct _GdmSessionWorker
 {
+        GdmDBusWorkerSkeleton parent;
         GdmSessionWorkerState state;
 
         int               exit_code;
@@ -211,8 +210,7 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionWorker,
                          gdm_session_worker,
                          GDM_DBUS_TYPE_WORKER_SKELETON,
                          G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_WORKER,
-                                                worker_interface_init)
-                         G_ADD_PRIVATE (GdmSessionWorker))
+                                                worker_interface_init))
 
 /* adapted from glib script_execute */
 static void
@@ -404,17 +402,17 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
 {
         gconstpointer item;
 
-        g_assert (worker->priv->pam_handle != NULL);
+        g_assert (worker->pam_handle != NULL);
 
-        if (pam_get_item (worker->priv->pam_handle, PAM_USER, &item) == PAM_SUCCESS) {
+        if (pam_get_item (worker->pam_handle, PAM_USER, &item) == PAM_SUCCESS) {
                 if (username != NULL) {
                         *username = g_strdup ((char *) item);
                         g_debug ("GdmSessionWorker: username is '%s'",
                                  *username != NULL ? *username : "<unset>");
                 }
 
-                if (worker->priv->auditor != NULL) {
-                        gdm_session_auditor_set_username (worker->priv->auditor, (char *)item);
+                if (worker->auditor != NULL) {
+                        gdm_session_auditor_set_username (worker->auditor, (char *)item);
                 }
 
                 return TRUE;
@@ -427,14 +425,14 @@ static void
 attempt_to_load_user_settings (GdmSessionWorker *worker,
                                const char       *username)
 {
-        if (worker->priv->user_settings == NULL)
+        if (worker->user_settings == NULL)
                 return;
 
-        if (gdm_session_settings_is_loaded (worker->priv->user_settings))
+        if (gdm_session_settings_is_loaded (worker->user_settings))
                 return;
 
         g_debug ("GdmSessionWorker: attempting to load user settings");
-        gdm_session_settings_load (worker->priv->user_settings,
+        gdm_session_settings_load (worker->user_settings,
                                    username);
 }
 
@@ -448,34 +446,34 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
         res = gdm_session_worker_get_username (worker, &username);
         if (res) {
                 g_debug ("GdmSessionWorker: old-username='%s' new-username='%s'",
-                         worker->priv->username != NULL ? worker->priv->username : "<unset>",
+                         worker->username != NULL ? worker->username : "<unset>",
                          username != NULL ? username : "<unset>");
 
 
-                gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
+                gdm_session_auditor_set_username (worker->auditor, worker->username);
 
-                if ((worker->priv->username == username) ||
-                    ((worker->priv->username != NULL) && (username != NULL) &&
-                     (strcmp (worker->priv->username, username) == 0)))
+                if ((worker->username == username) ||
+                    ((worker->username != NULL) && (username != NULL) &&
+                     (strcmp (worker->username, username) == 0)))
                         goto out;
 
                 g_debug ("GdmSessionWorker: setting username to '%s'", username);
 
-                g_free (worker->priv->username);
-                worker->priv->username = username;
+                g_free (worker->username);
+                worker->username = username;
                 username = NULL;
 
                 gdm_dbus_worker_emit_username_changed (GDM_DBUS_WORKER (worker),
-                                                       worker->priv->username);
+                                                       worker->username);
 
                 /* We have a new username to try. If we haven't been able to
                  * read user settings up until now, then give it a go now
                  * (see the comment in do_setup for rationale on why it's useful
                  * to keep trying to read settings)
                  */
-                if (worker->priv->username != NULL &&
-                    worker->priv->username[0] != '\0') {
-                        attempt_to_load_user_settings (worker, worker->priv->username);
+                if (worker->username != NULL &&
+                    worker->username[0] != '\0') {
+                        attempt_to_load_user_settings (worker, worker->username);
                 }
         }
 
@@ -488,8 +486,8 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
                                  const char       *question,
                                  char            **answerp)
 {
-        return gdm_dbus_worker_manager_call_info_query_sync (worker->priv->manager,
-                                                             worker->priv->service,
+        return gdm_dbus_worker_manager_call_info_query_sync (worker->manager,
+                                                             worker->service,
                                                              question,
                                                              answerp,
                                                              NULL,
@@ -501,8 +499,8 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
                                    const char       *question,
                                    char            **answerp)
 {
-        return gdm_dbus_worker_manager_call_secret_info_query_sync (worker->priv->manager,
-                                                                    worker->priv->service,
+        return gdm_dbus_worker_manager_call_secret_info_query_sync (worker->manager,
+                                                                    worker->service,
                                                                     question,
                                                                     answerp,
                                                                     NULL,
@@ -513,8 +511,8 @@ static gboolean
 gdm_session_worker_report_info (GdmSessionWorker *worker,
                                 const char       *info)
 {
-        return gdm_dbus_worker_manager_call_info_sync (worker->priv->manager,
-                                                       worker->priv->service,
+        return gdm_dbus_worker_manager_call_info_sync (worker->manager,
+                                                       worker->service,
                                                        info,
                                                        NULL,
                                                        NULL);
@@ -524,8 +522,8 @@ static gboolean
 gdm_session_worker_report_problem (GdmSessionWorker *worker,
                                    const char       *problem)
 {
-        return gdm_dbus_worker_manager_call_problem_sync (worker->priv->manager,
-                                                          worker->priv->service,
+        return gdm_dbus_worker_manager_call_problem_sync (worker->manager,
+                                                          worker->service,
                                                           problem,
                                                           NULL,
                                                           NULL);
@@ -561,8 +559,8 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
 
         choices_as_variant = g_variant_builder_end (&builder);
 
-        res = gdm_dbus_worker_manager_call_choice_list_query_sync (worker->priv->manager,
-                                                                    worker->priv->service,
+        res = gdm_dbus_worker_manager_call_choice_list_query_sync (worker->manager,
+                                                                    worker->service,
                                                                     prompt_message,
                                                                     choices_as_variant,
                                                                     answerp,
@@ -607,7 +605,7 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 return FALSE;
         }
 
-        if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->priv->extensions, GDM_PAM_EXTENSION_CHOICE_LIST)) {
+        if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CHOICE_LIST)) {
                 GdmPamExtensionChoiceListRequest *list_request = (GdmPamExtensionChoiceListRequest *) extended_message;
                 GdmPamExtensionChoiceListResponse *list_response = malloc (GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE);
 
@@ -688,8 +686,8 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 
         utf8_msg = convert_to_utf8 (query->msg);
 
-        worker->priv->cancelled = FALSE;
-        worker->priv->timed_out = FALSE;
+        worker->cancelled = FALSE;
+        worker->timed_out = FALSE;
 
         user_answer = NULL;
         res = FALSE;
@@ -721,9 +719,9 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 break;
         }
 
-        if (worker->priv->timed_out) {
+        if (worker->timed_out) {
                 gdm_dbus_worker_emit_cancel_pending_query (GDM_DBUS_WORKER (worker));
-                worker->priv->timed_out = FALSE;
+                worker->timed_out = FALSE;
         }
 
         if (user_answer != NULL) {
@@ -751,16 +749,16 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 static const char *
 get_max_retries_error_message (GdmSessionWorker *worker)
 {
-        if (g_strcmp0 (worker->priv->service, "gdm-password") == 0)
+        if (g_strcmp0 (worker->service, "gdm-password") == 0)
                 return _("You reached the maximum password authentication attempts, please try another method");
 
-        if (g_strcmp0 (worker->priv->service, "gdm-autologin") == 0)
+        if (g_strcmp0 (worker->service, "gdm-autologin") == 0)
                 return _("You reached the maximum auto login attempts, please try another authentication method");
 
-        if (g_strcmp0 (worker->priv->service, "gdm-fingerprint") == 0)
+        if (g_strcmp0 (worker->service, "gdm-fingerprint") == 0)
                 return _("You reached the maximum fingerprint authentication attempts, please try another method");
 
-        if (g_strcmp0 (worker->priv->service, "gdm-smartcard") == 0)
+        if (g_strcmp0 (worker->service, "gdm-smartcard") == 0)
                 return _("You reached the maximum smart card authentication attempts, please try another method");
 
         return _("You reached the maximum authentication attempts, please try another method");
@@ -769,16 +767,16 @@ get_max_retries_error_message (GdmSessionWorker *worker)
 static const char *
 get_generic_error_message (GdmSessionWorker *worker)
 {
-        if (g_strcmp0 (worker->priv->service, "gdm-password") == 0)
+        if (g_strcmp0 (worker->service, "gdm-password") == 0)
                 return _("Sorry, password authentication didn’t work. Please try again.");
 
-        if (g_strcmp0 (worker->priv->service, "gdm-autologin") == 0)
+        if (g_strcmp0 (worker->service, "gdm-autologin") == 0)
                 return _("Sorry, auto login didn’t work. Please try again.");
 
-        if (g_strcmp0 (worker->priv->service, "gdm-fingerprint") == 0)
+        if (g_strcmp0 (worker->service, "gdm-fingerprint") == 0)
                 return _("Sorry, fingerprint authentication didn’t work. Please try again.");
 
-        if (g_strcmp0 (worker->priv->service, "gdm-smartcard") == 0)
+        if (g_strcmp0 (worker->service, "gdm-smartcard") == 0)
                 return _("Sorry, smart card authentication didn’t work. Please try again.");
 
         return _("Sorry, that didn’t work. Please try again.");
@@ -876,7 +874,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 
         g_debug ("GdmSessionWorker: PAM conversation returning %d: %s",
                  return_value,
-                 pam_strerror (worker->priv->pam_handle, return_value));
+                 pam_strerror (worker->pam_handle, return_value));
 
         return return_value;
 }
@@ -886,9 +884,9 @@ gdm_session_worker_start_auditor (GdmSessionWorker *worker)
 {
     /* Use dummy auditor so program session doesn't pollute user audit logs
      */
-    if (worker->priv->is_program_session) {
-            worker->priv->auditor = gdm_session_auditor_new (worker->priv->hostname,
-                                                             worker->priv->display_device);
+    if (worker->is_program_session) {
+            worker->auditor = gdm_session_auditor_new (worker->hostname,
+                                                       worker->display_device);
             return;
     }
 
@@ -896,22 +894,22 @@ gdm_session_worker_start_auditor (GdmSessionWorker *worker)
  * auditors, instead of assuming they are mutually exclusive
  */
 #if defined (HAVE_ADT)
-        worker->priv->auditor = gdm_session_solaris_auditor_new (worker->priv->hostname,
-                                                                 worker->priv->display_device);
+        worker->auditor = gdm_session_solaris_auditor_new (worker->hostname,
+                                                           worker->display_device);
 #elif defined (HAVE_LIBAUDIT)
-        worker->priv->auditor = gdm_session_linux_auditor_new (worker->priv->hostname,
-                                                               worker->priv->display_device);
+        worker->auditor = gdm_session_linux_auditor_new (worker->hostname,
+                                                         worker->display_device);
 #else
-        worker->priv->auditor = gdm_session_auditor_new (worker->priv->hostname,
-                                                         worker->priv->display_device);
+        worker->auditor = gdm_session_auditor_new (worker->hostname,
+                                                   worker->display_device);
 #endif
 }
 
 static void
 gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
 {
-        g_object_unref (worker->priv->auditor);
-        worker->priv->auditor = NULL;
+        g_object_unref (worker->auditor);
+        worker->auditor = NULL;
 }
 
 static void
@@ -1010,15 +1008,15 @@ jump_to_vt (GdmSessionWorker  *worker,
         g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
         active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
 
-        if (worker->priv->session_tty_fd != -1) {
+        if (worker->session_tty_fd != -1) {
                 static const char *clear_screen_escape_sequence = "\33[H\33[2J";
 
                 /* let's make sure the new VT is clear */
-                write (worker->priv->session_tty_fd,
+                write (worker->session_tty_fd,
                        clear_screen_escape_sequence,
                        sizeof (clear_screen_escape_sequence));
 
-                fd = worker->priv->session_tty_fd;
+                fd = worker->session_tty_fd;
 
                 g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
                 if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
@@ -1061,10 +1059,10 @@ static void
 gdm_session_worker_set_state (GdmSessionWorker      *worker,
                               GdmSessionWorkerState  state)
 {
-        if (worker->priv->state == state)
+        if (worker->state == state)
                 return;
 
-        worker->priv->state = state;
+        worker->state = state;
         g_object_notify (G_OBJECT (worker), "state");
 }
 
@@ -1074,26 +1072,26 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 {
         g_debug ("GdmSessionWorker: uninitializing PAM");
 
-        if (worker->priv->pam_handle == NULL)
+        if (worker->pam_handle == NULL)
                 return;
 
         gdm_session_worker_get_username (worker, NULL);
 
-        if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
-                pam_close_session (worker->priv->pam_handle, 0);
-                gdm_session_auditor_report_logout (worker->priv->auditor);
+        if (worker->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
+                pam_close_session (worker->pam_handle, 0);
+                gdm_session_auditor_report_logout (worker->auditor);
         } else {
-                gdm_session_auditor_report_login_failure (worker->priv->auditor,
+                gdm_session_auditor_report_login_failure (worker->auditor,
                                                           status,
-                                                          pam_strerror (worker->priv->pam_handle, status));
+                                                          pam_strerror (worker->pam_handle, status));
         }
 
-        if (worker->priv->state >= GDM_SESSION_WORKER_STATE_ACCREDITED) {
-                pam_setcred (worker->priv->pam_handle, PAM_DELETE_CRED);
+        if (worker->state >= GDM_SESSION_WORKER_STATE_ACCREDITED) {
+                pam_setcred (worker->pam_handle, PAM_DELETE_CRED);
         }
 
-        pam_end (worker->priv->pam_handle, status);
-        worker->priv->pam_handle = NULL;
+        pam_end (worker->pam_handle, status);
+        worker->pam_handle = NULL;
 
         gdm_session_worker_stop_auditor (worker);
 
@@ -1160,7 +1158,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         int                    error_code;
         char tty_string[256];
 
-        g_assert (worker->priv->pam_handle == NULL);
+        g_assert (worker->pam_handle == NULL);
 
         g_debug ("GdmSessionWorker: initializing PAM; service=%s username=%s seat=%s",
                  service ? service : "(null)",
@@ -1180,7 +1178,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         error_code = pam_start (service,
                                 username,
                                 &pam_conversation,
-                                &worker->priv->pam_handle);
+                                &worker->pam_handle);
         if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: could not initialize PAM: (error code %d)", error_code);
                 /* we don't use pam_strerror here because it requires a valid
@@ -1196,11 +1194,11 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 
         /* set USER PROMPT */
         if (username == NULL) {
-                error_code = pam_set_item (worker->priv->pam_handle, PAM_USER_PROMPT, _("Username:"));
+                error_code = pam_set_item (worker->pam_handle, PAM_USER_PROMPT, _("Username:"));
 
                 if (error_code != PAM_SUCCESS) {
                         g_debug ("GdmSessionWorker: error informing authentication system of preferred username prompt: %s",
-                                pam_strerror (worker->priv->pam_handle, error_code));
+                                pam_strerror (worker->pam_handle, error_code));
                         g_set_error_literal (error,
                                              GDM_SESSION_WORKER_ERROR,
                                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
@@ -1211,10 +1209,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 
         /* set RHOST */
         if (hostname != NULL && hostname[0] != '\0') {
-                error_code = pam_set_item (worker->priv->pam_handle, PAM_RHOST, hostname);
+                error_code = pam_set_item (worker->pam_handle, PAM_RHOST, hostname);
                 g_debug ("error informing authentication system of user's hostname %s: %s",
                          hostname,
-                         pam_strerror (worker->priv->pam_handle, error_code));
+                         pam_strerror (worker->pam_handle, error_code));
 
                 if (error_code != PAM_SUCCESS) {
                         g_set_error_literal (error,
@@ -1240,9 +1238,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         /* Temporarily set PAM_TTY with the login VT,
            PAM_TTY will be reset with the users VT right before the user session is opened */
         g_snprintf (tty_string, 256, "/dev/tty%d", GDM_INITIAL_VT);
-        pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+        pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
         if (!display_is_local)
-                worker->priv->password_is_required = TRUE;
+                worker->password_is_required = TRUE;
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1261,7 +1259,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         int error_code;
         int authentication_flags;
 
-        g_debug ("GdmSessionWorker: authenticating user %s", worker->priv->username);
+        g_debug ("GdmSessionWorker: authenticating user %s", worker->username);
 
         authentication_flags = 0;
 
@@ -1270,7 +1268,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         }
 
         /* blocking call, does the actual conversation */
-        error_code = pam_authenticate (worker->priv->pam_handle, authentication_flags);
+        error_code = pam_authenticate (worker->pam_handle, authentication_flags);
 
         if (error_code == PAM_AUTHINFO_UNAVAIL) {
                 g_debug ("GdmSessionWorker: authentication service unavailable");
@@ -1288,7 +1286,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                                      get_friendly_error_message (worker, error_code));
                 goto out;
         } else if (error_code != PAM_SUCCESS) {
-                g_debug ("GdmSessionWorker: authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
+                g_debug ("GdmSessionWorker: authentication returned %d: %s", error_code, pam_strerror (worker->pam_handle, error_code));
 
                 /*
                  * Do not display a different message for user unknown versus
@@ -1336,33 +1334,33 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
 
         /* check that the account isn't disabled or expired
          */
-        error_code = pam_acct_mgmt (worker->priv->pam_handle, authentication_flags);
+        error_code = pam_acct_mgmt (worker->pam_handle, authentication_flags);
 
         /* it's possible that the user needs to change their password or pin code
          */
-        if (error_code == PAM_NEW_AUTHTOK_REQD && !worker->priv->is_program_session) {
+        if (error_code == PAM_NEW_AUTHTOK_REQD && !worker->is_program_session) {
                 g_debug ("GdmSessionWorker: authenticated user requires new auth token");
-                error_code = pam_chauthtok (worker->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
+                error_code = pam_chauthtok (worker->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
 
                 gdm_session_worker_get_username (worker, NULL);
 
                 if (error_code != PAM_SUCCESS) {
-                        gdm_session_auditor_report_password_change_failure (worker->priv->auditor);
+                        gdm_session_auditor_report_password_change_failure (worker->auditor);
                 } else {
-                        gdm_session_auditor_report_password_changed (worker->priv->auditor);
+                        gdm_session_auditor_report_password_changed (worker->auditor);
                 }
         }
 
         /* If the user is reauthenticating, then authorization isn't required to
          * proceed, the user is already logged in after all.
          */
-        if (worker->priv->is_reauth_session) {
+        if (worker->is_reauth_session) {
                 error_code = PAM_SUCCESS;
         }
 
         if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: user is not authorized to log in: %s",
-                         pam_strerror (worker->priv->pam_handle, error_code));
+                         pam_strerror (worker->pam_handle, error_code));
                 g_set_error_literal (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_AUTHORIZING,
@@ -1397,13 +1395,13 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
                 environment_entry = g_strdup (key);
         }
 
-        error_code = pam_putenv (worker->priv->pam_handle,
+        error_code = pam_putenv (worker->pam_handle,
                                  environment_entry);
 
         if (error_code != PAM_SUCCESS) {
                 g_warning ("cannot put %s in pam environment: %s\n",
                            environment_entry,
-                           pam_strerror (worker->priv->pam_handle, error_code));
+                           pam_strerror (worker->pam_handle, error_code));
         }
         g_debug ("GdmSessionWorker: Set PAM environment variable: '%s'", environment_entry);
         g_free (environment_entry);
@@ -1413,7 +1411,7 @@ static char *
 gdm_session_worker_get_environment_variable (GdmSessionWorker *worker,
                                              const char       *key)
 {
-        return g_strdup (pam_getenv (worker->priv->pam_handle, key));
+        return g_strdup (pam_getenv (worker->pam_handle, key));
 }
 
 static void
@@ -1423,9 +1421,9 @@ gdm_session_worker_update_environment_from_passwd_info (GdmSessionWorker *worker
                                                         const char       *home,
                                                         const char       *shell)
 {
-        gdm_session_worker_set_environment_variable (worker, "LOGNAME", worker->priv->username);
-        gdm_session_worker_set_environment_variable (worker, "USER", worker->priv->username);
-        gdm_session_worker_set_environment_variable (worker, "USERNAME", worker->priv->username);
+        gdm_session_worker_set_environment_variable (worker, "LOGNAME", worker->username);
+        gdm_session_worker_set_environment_variable (worker, "USER", worker->username);
+        gdm_session_worker_set_environment_variable (worker, "USERNAME", worker->username);
         gdm_session_worker_set_environment_variable (worker, "HOME", home);
         gdm_session_worker_set_environment_variable (worker, "PWD", home);
         gdm_session_worker_set_environment_variable (worker, "SHELL", shell);
@@ -1435,7 +1433,7 @@ static gboolean
 gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
                                                 const char       *key)
 {
-        return pam_getenv (worker->priv->pam_handle, key) != NULL;
+        return pam_getenv (worker->pam_handle, key) != NULL;
 }
 
 static gboolean
@@ -1454,14 +1452,14 @@ _change_user (GdmSessionWorker  *worker,
                 return FALSE;
         }
 #endif
-        worker->priv->uid = uid;
-        worker->priv->gid = gid;
+        worker->uid = uid;
+        worker->gid = gid;
 
         if (setgid (gid) < 0) {
                 return FALSE;
         }
 
-        if (initgroups (worker->priv->username, gid) < 0) {
+        if (initgroups (worker->username, gid) < 0) {
                 return FALSE;
         }
 
@@ -1591,7 +1589,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         home = NULL;
         shell = NULL;
 
-        if (worker->priv->username == NULL) {
+        if (worker->username == NULL) {
                 g_debug ("GdmSessionWorker: Username not set");
                 error_code = PAM_USER_UNKNOWN;
                 g_set_error (error,
@@ -1603,7 +1601,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
 
         uid = 0;
         gid = 0;
-        res = _lookup_passwd_info (worker->priv->username,
+        res = _lookup_passwd_info (worker->username,
                                    &uid,
                                    &gid,
                                    &home,
@@ -1645,14 +1643,14 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 goto out;
         }
 
-        error_code = pam_setcred (worker->priv->pam_handle, worker->priv->cred_flags);
+        error_code = pam_setcred (worker->pam_handle, worker->cred_flags);
 
         /* If the user is reauthenticating and they've made it this far, then there
          * is no reason we should lock them out of their session.  They've already
          * proved they are they same person who logged in, and that's all we care
          * about.
          */
-        if (worker->priv->is_reauth_session) {
+        if (worker->is_reauth_session) {
                 error_code = PAM_SUCCESS;
         }
 
@@ -1660,7 +1658,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 g_set_error_literal (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                                     pam_strerror (worker->priv->pam_handle, error_code));
+                                     pam_strerror (worker->pam_handle, error_code));
                 goto out;
         }
 
@@ -1674,7 +1672,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 ret = TRUE;
 
                 gdm_session_worker_get_username (worker, NULL);
-                gdm_session_auditor_report_user_accredited (worker->priv->auditor);
+                gdm_session_auditor_report_user_accredited (worker->auditor);
                 gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_ACCREDITED);
         } else {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
@@ -1686,7 +1684,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
 static const char * const *
 gdm_session_worker_get_environment (GdmSessionWorker *worker)
 {
-        return (const char * const *) pam_getenvlist (worker->priv->pam_handle);
+        return (const char * const *) pam_getenvlist (worker->pam_handle);
 }
 
 static gboolean
@@ -1694,15 +1692,15 @@ run_script (GdmSessionWorker *worker,
             const char       *dir)
 {
         /* scripts are for non-program sessions only */
-        if (worker->priv->is_program_session) {
+        if (worker->is_program_session) {
                 return TRUE;
         }
 
         return gdm_run_script (dir,
-                               worker->priv->username,
-                               worker->priv->x11_display_name,
-                               worker->priv->display_is_local? NULL : worker->priv->hostname,
-                               worker->priv->x11_authority_file);
+                               worker->username,
+                               worker->x11_display_name,
+                               worker->display_is_local? NULL : worker->hostname,
+                               worker->x11_authority_file);
 }
 
 static void
@@ -1712,7 +1710,7 @@ wait_until_dbus_signal_emission_to_manager_finishes (GdmSessionWorker *worker)
         g_autoptr (GError) error = NULL;
         gboolean pinged;
 
-        peer_proxy = gdm_dbus_peer_proxy_new_sync (worker->priv->connection,
+        peer_proxy = gdm_dbus_peer_proxy_new_sync (worker->connection,
                                                    G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                                                    NULL,
                                                    "/org/freedesktop/DBus",
@@ -1737,18 +1735,18 @@ wait_until_dbus_signal_emission_to_manager_finishes (GdmSessionWorker *worker)
 static void
 jump_back_to_initial_vt (GdmSessionWorker *worker)
 {
-        if (worker->priv->session_vt == 0)
+        if (worker->session_vt == 0)
                 return;
 
-        if (worker->priv->session_vt == GDM_INITIAL_VT)
+        if (worker->session_vt == GDM_INITIAL_VT)
                 return;
 
-        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") != 0)
+        if (g_strcmp0 (worker->display_seat_id, "seat0") != 0)
                 return;
 
 #ifdef ENABLE_USER_DISPLAY_SERVER
         jump_to_vt (worker, GDM_INITIAL_VT);
-        worker->priv->session_vt = 0;
+        worker->session_vt = 0;
 #endif
 }
 
@@ -1768,12 +1766,12 @@ session_worker_child_watch (GPid              pid,
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
 
-        worker->priv->child_pid = -1;
-        worker->priv->child_watch_id = 0;
+        worker->child_pid = -1;
+        worker->child_watch_id = 0;
         run_script (worker, GDMCONFDIR "/PostSession");
 
         gdm_dbus_worker_emit_session_exited (GDM_DBUS_WORKER (worker),
-                                             worker->priv->service,
+                                             worker->service,
                                              status);
 
         killpg (pid, SIGHUP);
@@ -1805,10 +1803,10 @@ session_worker_child_watch (GPid              pid,
 static void
 gdm_session_worker_watch_child (GdmSessionWorker *worker)
 {
-        g_debug ("GdmSession worker: watching pid %d", worker->priv->child_pid);
-        worker->priv->child_watch_id = g_child_watch_add (worker->priv->child_pid,
-                                                          (GChildWatchFunc)session_worker_child_watch,
-                                                          worker);
+        g_debug ("GdmSession worker: watching pid %d", worker->child_pid);
+        worker->child_watch_id = g_child_watch_add (worker->child_pid,
+                                                    (GChildWatchFunc)session_worker_child_watch,
+                                                    worker);
 
 }
 
@@ -1967,13 +1965,13 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         pid_t session_pid;
         int   error_code;
 
-        gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
-        if (worker->priv->is_program_session) {
+        gdm_get_pwent_for_name (worker->username, &passwd_entry);
+        if (worker->is_program_session) {
                 g_debug ("GdmSessionWorker: opening session for program '%s'",
-                         worker->priv->arguments[0]);
+                         worker->arguments[0]);
         } else {
                 g_debug ("GdmSessionWorker: opening user session with program '%s'",
-                         worker->priv->arguments[0]);
+                         worker->arguments[0]);
         }
 
         error_code = PAM_SUCCESS;
@@ -1981,13 +1979,13 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         /* If we're in new vt mode, jump to the new vt now. There's no need to jump for
          * the other two modes: in the logind case, the session will activate itself when
          * ready, and in the reuse server case, we're already on the correct VT. */
-        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
-                if (worker->priv->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
-                        jump_to_vt (worker, worker->priv->session_vt);
+        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0) {
+                if (worker->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
+                        jump_to_vt (worker, worker->session_vt);
                 }
         }
 
-        if (!worker->priv->is_program_session && !run_script (worker, GDMCONFDIR "/PostLogin")) {
+        if (!worker->is_program_session && !run_script (worker, GDMCONFDIR "/PostLogin")) {
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
@@ -1996,7 +1994,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 goto out;
         }
 
-        if (!worker->priv->is_program_session && !run_script (worker, GDMCONFDIR "/PreSession")) {
+        if (!worker->is_program_session && !run_script (worker, GDMCONFDIR "/PreSession")) {
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
@@ -2023,10 +2021,10 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 gboolean has_journald = FALSE, needs_controlling_terminal = FALSE;
                 /* Leak the TTY into the session as stdin so that it stays open
                  * without any races. */
-                if (worker->priv->session_tty_fd > 0) {
-                        dup2 (worker->priv->session_tty_fd, STDIN_FILENO);
-                        close (worker->priv->session_tty_fd);
-                        worker->priv->session_tty_fd = -1;
+                if (worker->session_tty_fd > 0) {
+                        dup2 (worker->session_tty_fd, STDIN_FILENO);
+                        close (worker->session_tty_fd);
+                        worker->session_tty_fd = -1;
                         needs_controlling_terminal = TRUE;
                 } else {
                         stdin_fd = open ("/dev/null", O_RDWR);
@@ -2037,8 +2035,8 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 #ifdef ENABLE_SYSTEMD_JOURNAL
                 has_journald = sd_booted() > 0;
 #endif
-                if (!has_journald && worker->priv->is_program_session) {
-                        stdout_fd = _open_program_session_log (worker->priv->log_file);
+                if (!has_journald && worker->is_program_session) {
+                        stdout_fd = _open_program_session_log (worker->log_file);
                         stderr_fd = dup (stdout_fd);
                 }
 
@@ -2063,13 +2061,13 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         _exit (EXIT_FAILURE);
                 }
 #else
-                if (setuid (worker->priv->uid) < 0) {
+                if (setuid (worker->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
                         _exit (EXIT_FAILURE);
                 }
 #endif
 
-                if (!worker->priv->is_program_session) {
+                if (!worker->is_program_session) {
                         gdm_load_env_d (load_env_func, get_var_cb, worker);
                 }
 
@@ -2084,8 +2082,8 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
                 if (has_journald) {
-                        stdout_fd = sd_journal_stream_fd (worker->priv->arguments[0], LOG_INFO, FALSE);
-                        stderr_fd = sd_journal_stream_fd (worker->priv->arguments[0], LOG_WARNING, FALSE);
+                        stdout_fd = sd_journal_stream_fd (worker->arguments[0], LOG_INFO, FALSE);
+                        stderr_fd = sd_journal_stream_fd (worker->arguments[0], LOG_WARNING, FALSE);
 
                         /* Unset the CLOEXEC flags, because sd_journal_stream_fd
                          * gives it to us by default.
@@ -2094,7 +2092,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         gdm_clear_close_on_exec_flag (stderr_fd);
                 }
 #endif
-                if (!has_journald && !worker->priv->is_program_session) {
+                if (!has_journald && !worker->is_program_session) {
                         if (home_dir != NULL && home_dir[0] != '\0') {
                                 char *cache_dir;
                                 char *log_dir;
@@ -2141,23 +2139,23 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                  */
                 signal (SIGPIPE, SIG_DFL);
 
-                gdm_session_execute (worker->priv->arguments[0],
-                                     worker->priv->arguments,
+                gdm_session_execute (worker->arguments[0],
+                                     worker->arguments,
                                      (char **)
                                      environment,
                                      TRUE);
 
                 gdm_log_init ();
                 g_debug ("GdmSessionWorker: child '%s' could not be started: %s",
-                         worker->priv->arguments[0],
+                         worker->arguments[0],
                          g_strerror (errno));
 
                 _exit (EXIT_FAILURE);
         }
 
-        if (worker->priv->session_tty_fd > 0) {
-                close (worker->priv->session_tty_fd);
-                worker->priv->session_tty_fd = -1;
+        if (worker->session_tty_fd > 0) {
+                close (worker->session_tty_fd);
+                worker->session_tty_fd = -1;
         }
 
         /* If we end up execing again, make sure we don't use the executable context set up
@@ -2167,7 +2165,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         setexeccon (NULL);
 #endif
 
-        worker->priv->child_pid = session_pid;
+        worker->child_pid = session_pid;
 
         g_debug ("GdmSessionWorker: session opened creating reply...");
         g_assert (sizeof (GPid) <= sizeof (int));
@@ -2208,7 +2206,7 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                 return FALSE;
         }
 
-        if (worker->priv->display_is_initial) {
+        if (worker->display_is_initial) {
                 session_vt = GDM_INITIAL_VT;
         } else {
 
@@ -2221,7 +2219,7 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                 }
         }
 
-        worker->priv->session_vt = session_vt;
+        worker->session_vt = session_vt;
 
         g_assert (session_vt > 0);
 
@@ -2235,15 +2233,15 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                                                      "XDG_VTNR",
                                                      vt_string);
 
-        if (worker->priv->display_is_initial) {
-             worker->priv->session_tty_fd = initial_vt_fd;
+        if (worker->display_is_initial) {
+             worker->session_tty_fd = initial_vt_fd;
         } else {
              g_snprintf (tty_string, sizeof (tty_string), "/dev/tty%d", session_vt);
-             worker->priv->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
+             worker->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
              close (initial_vt_fd);
         }
 
-        pam_set_item (worker->priv->pam_handle, PAM_TTY, tty_string);
+        pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
 
         return TRUE;
 
@@ -2298,14 +2296,14 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
         char                  *pam_tty;
 
         /* set TTY */
-        pam_tty = _get_tty_for_pam (worker->priv->x11_display_name, worker->priv->display_device);
+        pam_tty = _get_tty_for_pam (worker->x11_display_name, worker->display_device);
         if (pam_tty != NULL && pam_tty[0] != '\0') {
-                error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
+                error_code = pam_set_item (worker->pam_handle, PAM_TTY, pam_tty);
 
                 if (error_code != PAM_SUCCESS) {
                         g_debug ("error informing authentication system of user's console %s: %s",
                                  pam_tty,
-                                 pam_strerror (worker->priv->pam_handle, error_code));
+                                 pam_strerror (worker->pam_handle, error_code));
                         g_free (pam_tty);
                         g_set_error_literal (error,
                                              GDM_SESSION_WORKER_ERROR,
@@ -2318,12 +2316,12 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
 
 #ifdef PAM_XDISPLAY
         /* set XDISPLAY */
-        if (worker->priv->x11_display_name != NULL && worker->priv->x11_display_name[0] != '\0') {
-                error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, worker->priv->x11_display_name);
+        if (worker->x11_display_name != NULL && worker->x11_display_name[0] != '\0') {
+                error_code = pam_set_item (worker->pam_handle, PAM_XDISPLAY, worker->x11_display_name);
                 if (error_code != PAM_SUCCESS) {
                         g_debug ("error informing authentication system of display string %s: %s",
-                                 worker->priv->x11_display_name,
-                                 pam_strerror (worker->priv->pam_handle, error_code));
+                                 worker->x11_display_name,
+                                 pam_strerror (worker->pam_handle, error_code));
                         g_set_error_literal (error,
                                              GDM_SESSION_WORKER_ERROR,
                                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
@@ -2334,13 +2332,13 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
 #endif
 #ifdef PAM_XAUTHDATA
         /* set XAUTHDATA */
-        pam_xauth = _get_xauth_for_pam (worker->priv->x11_authority_file);
+        pam_xauth = _get_xauth_for_pam (worker->x11_authority_file);
         if (pam_xauth != NULL) {
-                error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
+                error_code = pam_set_item (worker->pam_handle, PAM_XAUTHDATA, pam_xauth);
                 if (error_code != PAM_SUCCESS) {
                         g_debug ("error informing authentication system of display string %s: %s",
-                                 worker->priv->x11_display_name,
-                                 pam_strerror (worker->priv->pam_handle, error_code));
+                                 worker->x11_display_name,
+                                 pam_strerror (worker->pam_handle, error_code));
                         g_free (pam_xauth);
 
                         g_set_error_literal (error,
@@ -2353,7 +2351,7 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
          }
 #endif
 
-        if (g_strcmp0 (worker->priv->display_seat_id, "seat0") == 0) {
+        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0) {
                 g_debug ("GdmSessionWorker: setting XDG_VTNR to current vt");
                 set_xdg_vtnr_to_current_vt (worker);
         } else {
@@ -2373,10 +2371,10 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         int flags;
         char *session_id = NULL;
 
-        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
+        g_assert (worker->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
 
-        switch (worker->priv->display_mode) {
+        switch (worker->display_mode) {
         case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
                 if (!set_up_for_current_vt (worker, error)) {
                         return FALSE;
@@ -2396,17 +2394,17 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 
         flags = 0;
 
-        if (worker->priv->is_program_session) {
+        if (worker->is_program_session) {
                 flags |= PAM_SILENT;
         }
 
-        error_code = pam_open_session (worker->priv->pam_handle, flags);
+        error_code = pam_open_session (worker->pam_handle, flags);
 
         if (error_code != PAM_SUCCESS) {
                 g_set_error_literal (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                                     pam_strerror (worker->priv->pam_handle, error_code));
+                                     pam_strerror (worker->pam_handle, error_code));
                 goto out;
         }
 
@@ -2416,19 +2414,19 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         session_id = gdm_session_worker_get_environment_variable (worker, "XDG_SESSION_ID");
 
         if (session_id != NULL) {
-                g_free (worker->priv->session_id);
-                worker->priv->session_id = session_id;
+                g_free (worker->session_id);
+                worker->session_id = session_id;
         }
 
  out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
-                worker->priv->session_vt = 0;
+                worker->session_vt = 0;
                 return FALSE;
         }
 
         gdm_session_worker_get_username (worker, NULL);
-        gdm_session_auditor_report_login (worker->priv->auditor);
+        gdm_session_auditor_report_login (worker->auditor);
 
         return TRUE;
 }
@@ -2437,15 +2435,15 @@ static void
 gdm_session_worker_set_server_address (GdmSessionWorker *worker,
                                        const char       *address)
 {
-        g_free (worker->priv->server_address);
-        worker->priv->server_address = g_strdup (address);
+        g_free (worker->server_address);
+        worker->server_address = g_strdup (address);
 }
 
 static void
 gdm_session_worker_set_is_reauth_session (GdmSessionWorker *worker,
                                           gboolean          is_reauth_session)
 {
-        worker->priv->is_reauth_session = is_reauth_session;
+        worker->is_reauth_session = is_reauth_session;
 }
 
 static void
@@ -2483,13 +2481,13 @@ gdm_session_worker_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_SERVER_ADDRESS:
-                g_value_set_string (value, self->priv->server_address);
+                g_value_set_string (value, self->server_address);
                 break;
         case PROP_IS_REAUTH_SESSION:
-                g_value_set_boolean (value, self->priv->is_reauth_session);
+                g_value_set_boolean (value, self->is_reauth_session);
                 break;
         case PROP_STATE:
-                g_value_set_enum (value, self->priv->state);
+                g_value_set_enum (value, self->state);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2516,8 +2514,8 @@ gdm_session_worker_handle_set_session_name (GdmDBusWorker         *object,
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         g_debug ("GdmSessionWorker: session name set to %s", session_name);
-        if (worker->priv->user_settings != NULL)
-                gdm_session_settings_set_session_name (worker->priv->user_settings,
+        if (worker->user_settings != NULL)
+                gdm_session_settings_set_session_name (worker->user_settings,
                                                        session_name);
         gdm_dbus_worker_complete_set_session_name (object, invocation);
         return TRUE;
@@ -2530,7 +2528,7 @@ gdm_session_worker_handle_set_session_display_mode (GdmDBusWorker         *objec
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         g_debug ("GdmSessionWorker: session display mode set to %s", str);
-        worker->priv->display_mode = gdm_session_display_mode_from_string (str);
+        worker->display_mode = gdm_session_display_mode_from_string (str);
         gdm_dbus_worker_complete_set_session_display_mode (object, invocation);
         return TRUE;
 }
@@ -2542,8 +2540,8 @@ gdm_session_worker_handle_set_language_name (GdmDBusWorker         *object,
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         g_debug ("GdmSessionWorker: language name set to %s", language_name);
-        if (worker->priv->user_settings != NULL)
-                gdm_session_settings_set_language_name (worker->priv->user_settings,
+        if (worker->user_settings != NULL)
+                gdm_session_settings_set_language_name (worker->user_settings,
                                                         language_name);
         gdm_dbus_worker_complete_set_language_name (object, invocation);
         return TRUE;
@@ -2554,7 +2552,7 @@ on_saved_language_name_read (GdmSessionWorker *worker)
 {
         char *language_name;
 
-        language_name = gdm_session_settings_get_language_name (worker->priv->user_settings);
+        language_name = gdm_session_settings_get_language_name (worker->user_settings);
 
         g_debug ("GdmSessionWorker: Saved language is %s", language_name);
         gdm_dbus_worker_emit_saved_language_name_read (GDM_DBUS_WORKER (worker),
@@ -2567,7 +2565,7 @@ on_saved_session_name_read (GdmSessionWorker *worker)
 {
         char *session_name;
 
-        session_name = gdm_session_settings_get_session_name (worker->priv->user_settings);
+        session_name = gdm_session_settings_get_session_name (worker->user_settings);
 
         g_debug ("GdmSessionWorker: Saved session is %s", session_name);
         gdm_dbus_worker_emit_saved_session_name_read (GDM_DBUS_WORKER (worker),
@@ -2580,7 +2578,7 @@ on_saved_session_type_read (GdmSessionWorker *worker)
 {
         char *session_type;
 
-        session_type = gdm_session_settings_get_session_type (worker->priv->user_settings);
+        session_type = gdm_session_settings_get_session_type (worker->user_settings);
 
         g_debug ("GdmSessionWorker: Saved session type is %s", session_type);
         gdm_dbus_worker_emit_saved_session_type_read (GDM_DBUS_WORKER (worker),
@@ -2597,23 +2595,23 @@ do_setup (GdmSessionWorker *worker)
 
         error = NULL;
         res = gdm_session_worker_initialize_pam (worker,
-                                                 worker->priv->service,
-                                                 (const char **) worker->priv->extensions,
-                                                 worker->priv->username,
-                                                 worker->priv->hostname,
-                                                 worker->priv->display_is_local,
-                                                 worker->priv->x11_display_name,
-                                                 worker->priv->x11_authority_file,
-                                                 worker->priv->display_device,
-                                                 worker->priv->display_seat_id,
+                                                 worker->service,
+                                                 (const char **) worker->extensions,
+                                                 worker->username,
+                                                 worker->hostname,
+                                                 worker->display_is_local,
+                                                 worker->x11_display_name,
+                                                 worker->x11_authority_file,
+                                                 worker->display_device,
+                                                 worker->display_seat_id,
                                                  &error);
 
         if (res) {
-                g_dbus_method_invocation_return_value (worker->priv->pending_invocation, NULL);
+                g_dbus_method_invocation_return_value (worker->pending_invocation, NULL);
         } else {
-                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+                g_dbus_method_invocation_take_error (worker->pending_invocation, error);
         }
-        worker->priv->pending_invocation = NULL;
+        worker->pending_invocation = NULL;
 }
 
 static void
@@ -2626,23 +2624,23 @@ do_authenticate (GdmSessionWorker *worker)
          */
         error = NULL;
         res = gdm_session_worker_authenticate_user (worker,
-                                                    worker->priv->password_is_required,
+                                                    worker->password_is_required,
                                                     &error);
         if (res) {
                 /* we're authenticated.  Let's make sure we've been given
                  * a valid username for the system
                  */
-                if (!worker->priv->is_program_session) {
+                if (!worker->is_program_session) {
                         g_debug ("GdmSessionWorker: trying to get updated username");
                         gdm_session_worker_update_username (worker);
                 }
 
-                gdm_dbus_worker_complete_authenticate (GDM_DBUS_WORKER (worker), worker->priv->pending_invocation);
+                gdm_dbus_worker_complete_authenticate (GDM_DBUS_WORKER (worker), worker->pending_invocation);
         } else {
                 g_debug ("GdmSessionWorker: Unable to verify user");
-                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+                g_dbus_method_invocation_take_error (worker->pending_invocation, error);
         }
-        worker->priv->pending_invocation = NULL;
+        worker->pending_invocation = NULL;
 }
 
 static void
@@ -2655,14 +2653,14 @@ do_authorize (GdmSessionWorker *worker)
          */
         error = NULL;
         res = gdm_session_worker_authorize_user (worker,
-                                                 worker->priv->password_is_required,
+                                                 worker->password_is_required,
                                                  &error);
         if (res) {
-                gdm_dbus_worker_complete_authorize (GDM_DBUS_WORKER (worker), worker->priv->pending_invocation);
+                gdm_dbus_worker_complete_authorize (GDM_DBUS_WORKER (worker), worker->pending_invocation);
         } else {
-                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+                g_dbus_method_invocation_take_error (worker->pending_invocation, error);
         }
-        worker->priv->pending_invocation = NULL;
+        worker->pending_invocation = NULL;
 }
 
 static void
@@ -2677,24 +2675,24 @@ do_accredit (GdmSessionWorker *worker)
         res = gdm_session_worker_accredit_user (worker, &error);
 
         if (res) {
-                gdm_dbus_worker_complete_establish_credentials (GDM_DBUS_WORKER (worker), worker->priv->pending_invocation);
+                gdm_dbus_worker_complete_establish_credentials (GDM_DBUS_WORKER (worker), worker->pending_invocation);
         } else {
-                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+                g_dbus_method_invocation_take_error (worker->pending_invocation, error);
         }
-        worker->priv->pending_invocation = NULL;
+        worker->pending_invocation = NULL;
 }
 
 static void
 save_account_details_now (GdmSessionWorker *worker)
 {
-        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
+        g_assert (worker->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
 
-        g_debug ("GdmSessionWorker: saving account details for user %s", worker->priv->username);
+        g_debug ("GdmSessionWorker: saving account details for user %s", worker->username);
 
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
-        if (worker->priv->user_settings != NULL) {
-                if (!gdm_session_settings_save (worker->priv->user_settings,
-                                                worker->priv->username)) {
+        if (worker->user_settings != NULL) {
+                if (!gdm_session_settings_save (worker->user_settings,
+                                                worker->username)) {
                         g_warning ("could not save session and language settings");
                 }
         }
@@ -2706,7 +2704,7 @@ on_settings_is_loaded_changed (GdmSessionSettings *user_settings,
                                GParamSpec         *pspec,
                                GdmSessionWorker   *worker)
 {
-        if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+        if (!gdm_session_settings_is_loaded (worker->user_settings)) {
                 return;
         }
 
@@ -2714,25 +2712,25 @@ on_settings_is_loaded_changed (GdmSessionSettings *user_settings,
          * so that gdm_session_settings_set_* APIs don't cause the emitting
          * of Saved*NameRead D-Bus signals any more.
          */
-        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
+        g_signal_handlers_disconnect_by_func (worker->user_settings,
                                               G_CALLBACK (on_saved_session_name_read),
                                               worker);
 
-        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
+        g_signal_handlers_disconnect_by_func (worker->user_settings,
                                               G_CALLBACK (on_saved_language_name_read),
                                               worker);
 
-        if (worker->priv->state == GDM_SESSION_WORKER_STATE_NONE) {
+        if (worker->state == GDM_SESSION_WORKER_STATE_NONE) {
                 g_debug ("GdmSessionWorker: queuing setup for user: %s %s",
-                         worker->priv->username, worker->priv->display_device);
+                         worker->username, worker->display_device);
                 queue_state_change (worker);
-        } else if (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED) {
+        } else if (worker->state == GDM_SESSION_WORKER_STATE_ACCREDITED) {
                 save_account_details_now (worker);
         } else {
                 return;
         }
 
-        g_signal_handlers_disconnect_by_func (G_OBJECT (worker->priv->user_settings),
+        g_signal_handlers_disconnect_by_func (G_OBJECT (worker->user_settings),
                                               G_CALLBACK (on_settings_is_loaded_changed),
                                               worker);
 }
@@ -2740,17 +2738,17 @@ on_settings_is_loaded_changed (GdmSessionSettings *user_settings,
 static void
 do_save_account_details_when_ready (GdmSessionWorker *worker)
 {
-        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
+        g_assert (worker->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
 
-        if (worker->priv->user_settings != NULL && !gdm_session_settings_is_loaded (worker->priv->user_settings)) {
-                g_signal_connect (G_OBJECT (worker->priv->user_settings),
+        if (worker->user_settings != NULL && !gdm_session_settings_is_loaded (worker->user_settings)) {
+                g_signal_connect (G_OBJECT (worker->user_settings),
                                   "notify::is-loaded",
                                   G_CALLBACK (on_settings_is_loaded_changed),
                                   worker);
                 g_debug ("GdmSessionWorker: user %s, not fully loaded yet, will save account details later",
-                         worker->priv->username);
-                gdm_session_settings_load (worker->priv->user_settings,
-                                           worker->priv->username);
+                         worker->username);
+                gdm_session_settings_load (worker->user_settings,
+                                           worker->username);
                 return;
         }
 
@@ -2767,16 +2765,16 @@ do_open_session (GdmSessionWorker *worker)
         res = gdm_session_worker_open_session (worker, &error);
 
         if (res) {
-                char *session_id = worker->priv->session_id;
+                char *session_id = worker->session_id;
                 if (session_id == NULL) {
                         session_id = "";
                 }
 
-                gdm_dbus_worker_complete_open (GDM_DBUS_WORKER (worker), worker->priv->pending_invocation, session_id);
+                gdm_dbus_worker_complete_open (GDM_DBUS_WORKER (worker), worker->pending_invocation, session_id);
         } else {
-                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+                g_dbus_method_invocation_take_error (worker->pending_invocation, error);
         }
-        worker->priv->pending_invocation = NULL;
+        worker->pending_invocation = NULL;
 }
 
 static void
@@ -2789,12 +2787,12 @@ do_start_session (GdmSessionWorker *worker)
         res = gdm_session_worker_start_session (worker, &error);
         if (res) {
                 gdm_dbus_worker_complete_start_program (GDM_DBUS_WORKER (worker),
-                                                        worker->priv->pending_invocation,
-                                                        worker->priv->child_pid);
+                                                        worker->pending_invocation,
+                                                        worker->child_pid);
         } else {
-                g_dbus_method_invocation_take_error (worker->priv->pending_invocation, error);
+                g_dbus_method_invocation_take_error (worker->pending_invocation, error);
         }
-        worker->priv->pending_invocation = NULL;
+        worker->pending_invocation = NULL;
 }
 
 static const char *
@@ -2842,11 +2840,11 @@ state_change_idle (GdmSessionWorker *worker)
 {
         int new_state;
 
-        new_state = worker->priv->state + 1;
+        new_state = worker->state + 1;
         g_debug ("GdmSessionWorker: attempting to change state to %s",
                  get_state_name (new_state));
 
-        worker->priv->state_change_idle_id = 0;
+        worker->state_change_idle_id = 0;
 
         switch (new_state) {
         case GDM_SESSION_WORKER_STATE_SETUP_COMPLETE:
@@ -2880,11 +2878,11 @@ state_change_idle (GdmSessionWorker *worker)
 static void
 queue_state_change (GdmSessionWorker *worker)
 {
-        if (worker->priv->state_change_idle_id > 0) {
+        if (worker->state_change_idle_id > 0) {
                 return;
         }
 
-        worker->priv->state_change_idle_id = g_idle_add ((GSourceFunc)state_change_idle, worker);
+        worker->state_change_idle_id = g_idle_add ((GSourceFunc)state_change_idle, worker);
 }
 
 static gboolean
@@ -2892,21 +2890,21 @@ validate_state_change (GdmSessionWorker      *worker,
                        GDBusMethodInvocation *invocation,
                        int                    new_state)
 {
-        if (worker->priv->pending_invocation != NULL) {
+        if (worker->pending_invocation != NULL) {
                 g_dbus_method_invocation_return_error (invocation,
                                                        GDM_SESSION_WORKER_ERROR,
                                                        GDM_SESSION_WORKER_ERROR_OUTSTANDING_REQUEST,
                                                        "Cannot process state change to %s, as there is already an outstanding request to move to state %s",
                                                        get_state_name (new_state),
-                                                       get_state_name (worker->priv->state + 1));
+                                                       get_state_name (worker->state + 1));
                 return FALSE;
-        } else if (worker->priv->state != new_state - 1) {
+        } else if (worker->state != new_state - 1) {
                 g_dbus_method_invocation_return_error (invocation,
                                                        GDM_SESSION_WORKER_ERROR,
                                                        GDM_SESSION_WORKER_ERROR_WRONG_STATE,
                                                        "Cannot move to state %s, in state %s, not %s",
                                                        get_state_name (new_state),
-                                                       get_state_name (worker->priv->state),
+                                                       get_state_name (worker->state),
                                                        get_state_name (new_state - 1));
                 return FALSE;
         }
@@ -2920,7 +2918,7 @@ validate_and_queue_state_change (GdmSessionWorker      *worker,
                                  int                    new_state)
 {
         if (validate_state_change (worker, invocation, new_state)) {
-                worker->priv->pending_invocation = invocation;
+                worker->pending_invocation = invocation;
                 queue_state_change (worker);
         }
 }
@@ -2950,10 +2948,10 @@ gdm_session_worker_handle_establish_credentials (GdmDBusWorker         *object,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_ACCREDITED);
 
-        if (!worker->priv->is_reauth_session) {
-                worker->priv->cred_flags = PAM_ESTABLISH_CRED;
+        if (!worker->is_reauth_session) {
+                worker->cred_flags = PAM_ESTABLISH_CRED;
         } else {
-                worker->priv->cred_flags = PAM_REINITIALIZE_CRED;
+                worker->cred_flags = PAM_REINITIALIZE_CRED;
         }
 
         return TRUE;
@@ -3011,62 +3009,62 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
         g_variant_iter_init (&iter, details);
         while (g_variant_iter_loop (&iter, "{sv}", &key, &value)) {
                 if (g_strcmp0 (key, "service") == 0) {
-                        worker->priv->service = g_variant_dup_string (value, NULL);
+                        worker->service = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "extensions") == 0) {
-                        worker->priv->extensions = filter_extensions (g_variant_get_strv (value, NULL));
+                        worker->extensions = filter_extensions (g_variant_get_strv (value, NULL));
                 } else if (g_strcmp0 (key, "username") == 0) {
-                        worker->priv->username = g_variant_dup_string (value, NULL);
+                        worker->username = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "is-program-session") == 0) {
-                        worker->priv->is_program_session = g_variant_get_boolean (value);
+                        worker->is_program_session = g_variant_get_boolean (value);
                 } else if (g_strcmp0 (key, "log-file") == 0) {
-                        worker->priv->log_file = g_variant_dup_string (value, NULL);
+                        worker->log_file = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "x11-display-name") == 0) {
-                        worker->priv->x11_display_name = g_variant_dup_string (value, NULL);
+                        worker->x11_display_name = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "x11-authority-file") == 0) {
-                        worker->priv->x11_authority_file = g_variant_dup_string (value, NULL);
+                        worker->x11_authority_file = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "console") == 0) {
-                        worker->priv->display_device = g_variant_dup_string (value, NULL);
+                        worker->display_device = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "seat-id") == 0) {
-                        worker->priv->display_seat_id = g_variant_dup_string (value, NULL);
+                        worker->display_seat_id = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "hostname") == 0) {
-                        worker->priv->hostname = g_variant_dup_string (value, NULL);
+                        worker->hostname = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "display-is-local") == 0) {
-                        worker->priv->display_is_local = g_variant_get_boolean (value);
+                        worker->display_is_local = g_variant_get_boolean (value);
                 } else if (g_strcmp0 (key, "display-is-initial") == 0) {
-                        worker->priv->display_is_initial = g_variant_get_boolean (value);
+                        worker->display_is_initial = g_variant_get_boolean (value);
                 }
         }
 
-        worker->priv->pending_invocation = invocation;
+        worker->pending_invocation = invocation;
 
-        if (!worker->priv->is_program_session) {
-                worker->priv->user_settings = gdm_session_settings_new ();
+        if (!worker->is_program_session) {
+                worker->user_settings = gdm_session_settings_new ();
 
-                g_signal_connect_swapped (worker->priv->user_settings,
+                g_signal_connect_swapped (worker->user_settings,
                                           "notify::language-name",
                                           G_CALLBACK (on_saved_language_name_read),
                                           worker);
 
-                g_signal_connect_swapped (worker->priv->user_settings,
+                g_signal_connect_swapped (worker->user_settings,
                                           "notify::session-name",
                                           G_CALLBACK (on_saved_session_name_read),
                                           worker);
 
-                g_signal_connect_swapped (worker->priv->user_settings,
+                g_signal_connect_swapped (worker->user_settings,
                                           "notify::session-type",
                                           G_CALLBACK (on_saved_session_type_read),
                                           worker);
 
-                if (worker->priv->username) {
-                        wait_for_settings = !gdm_session_settings_load (worker->priv->user_settings,
-                                                                        worker->priv->username);
+                if (worker->username) {
+                        wait_for_settings = !gdm_session_settings_load (worker->user_settings,
+                                                                        worker->username);
                 }
         }
 
         if (wait_for_settings) {
                 /* Load settings from accounts daemon before continuing
                  */
-                g_signal_connect (G_OBJECT (worker->priv->user_settings),
+                g_signal_connect (G_OBJECT (worker->user_settings),
                                   "notify::is-loaded",
                                   G_CALLBACK (on_settings_is_loaded_changed),
                                   worker);
@@ -3092,28 +3090,28 @@ gdm_session_worker_handle_setup (GdmDBusWorker         *object,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
-        worker->priv->service = g_strdup (service);
-        worker->priv->x11_display_name = g_strdup (x11_display_name);
-        worker->priv->x11_authority_file = g_strdup (x11_authority_file);
-        worker->priv->display_device = g_strdup (console);
-        worker->priv->display_seat_id = g_strdup (seat_id);
-        worker->priv->hostname = g_strdup (hostname);
-        worker->priv->display_is_local = display_is_local;
-        worker->priv->display_is_initial = display_is_initial;
-        worker->priv->username = NULL;
+        worker->service = g_strdup (service);
+        worker->x11_display_name = g_strdup (x11_display_name);
+        worker->x11_authority_file = g_strdup (x11_authority_file);
+        worker->display_device = g_strdup (console);
+        worker->display_seat_id = g_strdup (seat_id);
+        worker->hostname = g_strdup (hostname);
+        worker->display_is_local = display_is_local;
+        worker->display_is_initial = display_is_initial;
+        worker->username = NULL;
 
-        worker->priv->user_settings = gdm_session_settings_new ();
+        worker->user_settings = gdm_session_settings_new ();
 
-        g_signal_connect_swapped (worker->priv->user_settings,
+        g_signal_connect_swapped (worker->user_settings,
                                   "notify::language-name",
                                   G_CALLBACK (on_saved_language_name_read),
                                   worker);
 
-        g_signal_connect_swapped (worker->priv->user_settings,
+        g_signal_connect_swapped (worker->user_settings,
                                   "notify::session-name",
                                   G_CALLBACK (on_saved_session_name_read),
                                   worker);
-        g_signal_connect_swapped (worker->priv->user_settings,
+        g_signal_connect_swapped (worker->user_settings,
                                   "notify::session-type",
                                   G_CALLBACK (on_saved_session_type_read),
                                   worker);
@@ -3139,39 +3137,39 @@ gdm_session_worker_handle_setup_for_user (GdmDBusWorker         *object,
         if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE))
                 return TRUE;
 
-        worker->priv->service = g_strdup (service);
-        worker->priv->x11_display_name = g_strdup (x11_display_name);
-        worker->priv->x11_authority_file = g_strdup (x11_authority_file);
-        worker->priv->display_device = g_strdup (console);
-        worker->priv->display_seat_id = g_strdup (seat_id);
-        worker->priv->hostname = g_strdup (hostname);
-        worker->priv->display_is_local = display_is_local;
-        worker->priv->display_is_initial = display_is_initial;
-        worker->priv->username = g_strdup (username);
+        worker->service = g_strdup (service);
+        worker->x11_display_name = g_strdup (x11_display_name);
+        worker->x11_authority_file = g_strdup (x11_authority_file);
+        worker->display_device = g_strdup (console);
+        worker->display_seat_id = g_strdup (seat_id);
+        worker->hostname = g_strdup (hostname);
+        worker->display_is_local = display_is_local;
+        worker->display_is_initial = display_is_initial;
+        worker->username = g_strdup (username);
 
-        worker->priv->user_settings = gdm_session_settings_new ();
+        worker->user_settings = gdm_session_settings_new ();
 
-        g_signal_connect_swapped (worker->priv->user_settings,
+        g_signal_connect_swapped (worker->user_settings,
                                   "notify::language-name",
                                   G_CALLBACK (on_saved_language_name_read),
                                   worker);
 
-        g_signal_connect_swapped (worker->priv->user_settings,
+        g_signal_connect_swapped (worker->user_settings,
                                   "notify::session-name",
                                   G_CALLBACK (on_saved_session_name_read),
                                   worker);
-        g_signal_connect_swapped (worker->priv->user_settings,
+        g_signal_connect_swapped (worker->user_settings,
                                   "notify::session-type",
                                   G_CALLBACK (on_saved_session_type_read),
                                   worker);
 
         /* Load settings from accounts daemon before continuing
          */
-        worker->priv->pending_invocation = invocation;
-        if (gdm_session_settings_load (worker->priv->user_settings, username)) {
+        worker->pending_invocation = invocation;
+        if (gdm_session_settings_load (worker->user_settings, username)) {
                 queue_state_change (worker);
         } else {
-                g_signal_connect (G_OBJECT (worker->priv->user_settings),
+                g_signal_connect (G_OBJECT (worker->user_settings),
                                   "notify::is-loaded",
                                   G_CALLBACK (on_settings_is_loaded_changed),
                                   worker);
@@ -3197,17 +3195,17 @@ gdm_session_worker_handle_setup_for_program (GdmDBusWorker         *object,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
-        worker->priv->service = g_strdup (service);
-        worker->priv->x11_display_name = g_strdup (x11_display_name);
-        worker->priv->x11_authority_file = g_strdup (x11_authority_file);
-        worker->priv->display_device = g_strdup (console);
-        worker->priv->display_seat_id = g_strdup (seat_id);
-        worker->priv->hostname = g_strdup (hostname);
-        worker->priv->display_is_local = display_is_local;
-        worker->priv->display_is_initial = display_is_initial;
-        worker->priv->username = g_strdup (username);
-        worker->priv->log_file = g_strdup (log_file);
-        worker->priv->is_program_session = TRUE;
+        worker->service = g_strdup (service);
+        worker->x11_display_name = g_strdup (x11_display_name);
+        worker->x11_authority_file = g_strdup (x11_authority_file);
+        worker->display_device = g_strdup (console);
+        worker->display_seat_id = g_strdup (seat_id);
+        worker->hostname = g_strdup (hostname);
+        worker->display_is_local = display_is_local;
+        worker->display_is_initial = display_is_initial;
+        worker->username = g_strdup (username);
+        worker->log_file = g_strdup (log_file);
+        worker->is_program_session = TRUE;
 
         return TRUE;
 }
@@ -3221,7 +3219,7 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
         GError *parse_error = NULL;
         validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SESSION_STARTED);
 
-        if (worker->priv->is_reauth_session) {
+        if (worker->is_reauth_session) {
                 g_dbus_method_invocation_return_error (invocation,
                                                        GDM_SESSION_WORKER_ERROR,
                                                        GDM_SESSION_WORKER_ERROR_IN_REAUTH_SESSION,
@@ -3231,13 +3229,13 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
 
         g_debug ("GdmSessionWorker: start program: %s", text);
 
-        g_clear_pointer (&worker->priv->arguments, g_strfreev);
-        if (! g_shell_parse_argv (text, NULL, &worker->priv->arguments, &parse_error)) {
+        g_clear_pointer (&worker->arguments, g_strfreev);
+        if (! g_shell_parse_argv (text, NULL, &worker->arguments, &parse_error)) {
                 g_dbus_method_invocation_take_error (invocation, parse_error);
                 return TRUE;
         }
 
-        worker->priv->pending_invocation = invocation;
+        worker->pending_invocation = invocation;
         queue_state_change (worker);
 
         return TRUE;
@@ -3263,7 +3261,7 @@ on_reauthentication_client_disconnected (GdmSession              *session,
         g_debug ("GdmSessionWorker: client disconnected from reauthentication server");
 
         worker = request->worker;
-        g_hash_table_remove (worker->priv->reauthentication_requests,
+        g_hash_table_remove (worker->reauthentication_requests,
                              GINT_TO_POINTER (pid_of_client));
 }
 
@@ -3330,12 +3328,12 @@ reauthentication_request_new (GdmSessionWorker      *worker,
         request->uid_of_caller = uid_of_caller;
         request->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
                                             uid_of_caller,
-                                            worker->priv->x11_display_name,
-                                            worker->priv->hostname,
-                                            worker->priv->display_device,
-                                            worker->priv->display_seat_id,
-                                            worker->priv->x11_authority_file,
-                                            worker->priv->display_is_local,
+                                            worker->x11_display_name,
+                                            worker->hostname,
+                                            worker->display_device,
+                                            worker->display_seat_id,
+                                            worker->x11_authority_file,
+                                            worker->display_is_local,
                                             environment);
 
         g_signal_connect (request->session,
@@ -3381,19 +3379,19 @@ gdm_session_worker_handle_start_reauthentication (GdmDBusWorker         *object,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         ReauthenticationRequest *request;
 
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SESSION_STARTED) {
+        if (worker->state != GDM_SESSION_WORKER_STATE_SESSION_STARTED) {
                 g_dbus_method_invocation_return_error (invocation,
                                                        GDM_SESSION_WORKER_ERROR,
                                                        GDM_SESSION_WORKER_ERROR_WRONG_STATE,
                                                        "Cannot reauthenticate while in state %s",
-                                                       get_state_name (worker->priv->state));
+                                                       get_state_name (worker->state));
                 return TRUE;
         }
 
         g_debug ("GdmSessionWorker: start reauthentication");
 
         request = reauthentication_request_new (worker, pid_of_caller, uid_of_caller, invocation);
-        g_hash_table_replace (worker->priv->reauthentication_requests,
+        g_hash_table_replace (worker->reauthentication_requests,
                               GINT_TO_POINTER (pid_of_caller),
                               request);
         return TRUE;
@@ -3411,28 +3409,28 @@ gdm_session_worker_constructor (GType                  type,
                                                                                                     n_construct_properties,
                                                                                                     construct_properties));
 
-        g_debug ("GdmSessionWorker: connecting to address: %s", worker->priv->server_address);
+        g_debug ("GdmSessionWorker: connecting to address: %s", worker->server_address);
 
         error = NULL;
-        worker->priv->connection = g_dbus_connection_new_for_address_sync (worker->priv->server_address,
-                                                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                                                           NULL,
-                                                                           NULL,
-                                                                           &error);
-        if (worker->priv->connection == NULL) {
+        worker->connection = g_dbus_connection_new_for_address_sync (worker->server_address,
+                                                                     G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                                     NULL,
+                                                                     NULL,
+                                                                     &error);
+        if (worker->connection == NULL) {
                 g_warning ("error opening connection: %s", error->message);
                 g_clear_error (&error);
 
                 exit (EXIT_FAILURE);
         }
 
-        worker->priv->manager = GDM_DBUS_WORKER_MANAGER (gdm_dbus_worker_manager_proxy_new_sync (worker->priv->connection,
-                                                                                                 G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
-                                                                                                 NULL, /* dbus name */
-                                                                                                 GDM_SESSION_DBUS_PATH,
-                                                                                                 NULL,
-                                                                                                 &error));
-        if (worker->priv->manager == NULL) {
+        worker->manager = GDM_DBUS_WORKER_MANAGER (gdm_dbus_worker_manager_proxy_new_sync (worker->connection,
+                                                                                           G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                                                                           NULL, /* dbus name */
+                                                                                           GDM_SESSION_DBUS_PATH,
+                                                                                           NULL,
+                                                                                           &error));
+        if (worker->manager == NULL) {
                 g_warning ("error creating session proxy: %s", error->message);
                 g_clear_error (&error);
 
@@ -3440,19 +3438,19 @@ gdm_session_worker_constructor (GType                  type,
         }
 
         if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (worker),
-                                               worker->priv->connection,
+                                               worker->connection,
                                                GDM_WORKER_DBUS_PATH,
                                                &error)) {
                 g_warning ("Error while exporting object: %s", error->message);
                 exit (EXIT_FAILURE);
         }
 
-        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->priv->manager), G_MAXINT);
+        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->manager), G_MAXINT);
 
         /* Send an initial Hello message so that the session can associate
          * the conversation we manage with our pid.
          */
-        gdm_dbus_worker_manager_call_hello_sync (worker->priv->manager,
+        gdm_dbus_worker_manager_call_hello_sync (worker->manager,
                                                  NULL,
                                                  NULL);
 
@@ -3544,23 +3542,21 @@ reauthentication_request_free (ReauthenticationRequest *request)
 static void
 gdm_session_worker_init (GdmSessionWorker *worker)
 {
-        worker->priv = GDM_SESSION_WORKER_GET_PRIVATE (worker);
-
-        worker->priv->reauthentication_requests = g_hash_table_new_full (NULL,
-                                                                         NULL,
-                                                                         NULL,
-                                                                         (GDestroyNotify)
-                                                                         reauthentication_request_free);
+        worker->reauthentication_requests = g_hash_table_new_full (NULL,
+                                                                   NULL,
+                                                                   NULL,
+                                                                   (GDestroyNotify)
+                                                                   reauthentication_request_free);
 }
 
 static void
 gdm_session_worker_unwatch_child (GdmSessionWorker *worker)
 {
-        if (worker->priv->child_watch_id == 0)
+        if (worker->child_watch_id == 0)
                 return;
 
-        g_source_remove (worker->priv->child_watch_id);
-        worker->priv->child_watch_id = 0;
+        g_source_remove (worker->child_watch_id);
+        worker->child_watch_id = 0;
 }
 
 
@@ -3574,34 +3570,34 @@ gdm_session_worker_finalize (GObject *object)
 
         worker = GDM_SESSION_WORKER (object);
 
-        g_return_if_fail (worker->priv != NULL);
+        g_return_if_fail (worker != NULL);
 
         gdm_session_worker_unwatch_child (worker);
 
-        if (worker->priv->child_pid > 0) {
-                gdm_signal_pid (worker->priv->child_pid, SIGTERM);
-                gdm_wait_on_pid (worker->priv->child_pid);
+        if (worker->child_pid > 0) {
+                gdm_signal_pid (worker->child_pid, SIGTERM);
+                gdm_wait_on_pid (worker->child_pid);
         }
 
-        if (worker->priv->pam_handle != NULL) {
+        if (worker->pam_handle != NULL) {
                 gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
         }
 
         jump_back_to_initial_vt (worker);
 
-        g_object_unref (worker->priv->user_settings);
-        g_free (worker->priv->service);
-        g_free (worker->priv->x11_display_name);
-        g_free (worker->priv->x11_authority_file);
-        g_free (worker->priv->display_device);
-        g_free (worker->priv->display_seat_id);
-        g_free (worker->priv->hostname);
-        g_free (worker->priv->username);
-        g_free (worker->priv->server_address);
-        g_strfreev (worker->priv->arguments);
-        g_strfreev (worker->priv->extensions);
+        g_object_unref (worker->user_settings);
+        g_free (worker->service);
+        g_free (worker->x11_display_name);
+        g_free (worker->x11_authority_file);
+        g_free (worker->display_device);
+        g_free (worker->display_seat_id);
+        g_free (worker->hostname);
+        g_free (worker->username);
+        g_free (worker->server_address);
+        g_strfreev (worker->arguments);
+        g_strfreev (worker->extensions);
 
-        g_hash_table_unref (worker->priv->reauthentication_requests);
+        g_hash_table_unref (worker->reauthentication_requests);
 
         G_OBJECT_CLASS (gdm_session_worker_parent_class)->finalize (object);
 }
