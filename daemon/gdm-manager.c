@@ -55,8 +55,6 @@
 #include "gdm-xdmcp-display-factory.h"
 #include "gdm-xdmcp-chooser-display.h"
 
-#define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
-
 #define GDM_DBUS_PATH             "/org/gnome/DisplayManager"
 #define GDM_MANAGER_PATH          GDM_DBUS_PATH "/Manager"
 #define GDM_MANAGER_DISPLAYS_PATH GDM_DBUS_PATH "/Displays"
@@ -72,8 +70,9 @@ typedef struct
         guint idle_id;
 } StartUserSessionOperation;
 
-struct GdmManagerPrivate
+struct _GdmManager
 {
+        GdmDBusManagerSkeleton parent;
         GdmDisplayStore        *display_store;
         GdmLocalDisplayFactory *local_factory;
 #ifdef HAVE_LIBXDMCP
@@ -136,8 +135,7 @@ G_DEFINE_TYPE_WITH_CODE (GdmManager,
                          gdm_manager,
                          GDM_DBUS_TYPE_MANAGER_SKELETON,
                          G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_MANAGER,
-                                                manager_interface_init)
-                         G_ADD_PRIVATE (GdmManager));
+                                                manager_interface_init));
 
 #ifdef WITH_PLYMOUTH
 static gboolean
@@ -304,7 +302,7 @@ session_unlock (GdmManager *manager,
 
         g_debug ("Unlocking session %s", ssid);
 
-        reply = g_dbus_connection_call_sync (manager->priv->connection,
+        reply = g_dbus_connection_call_sync (manager->connection,
                                              "org.freedesktop.login1",
                                              "/org/freedesktop/login1",
                                              "org.freedesktop.login1.Manager",
@@ -335,7 +333,7 @@ find_session_for_user_on_seat (GdmManager *manager,
 {
         GList *node;
 
-        for (node = manager->priv->user_sessions; node != NULL; node = node->next) {
+        for (node = manager->user_sessions; node != NULL; node = node->next) {
                 GdmSession *candidate_session = node->data;
                 const char *candidate_username, *candidate_seat_id, *candidate_session_id;
 
@@ -572,7 +570,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 }
         }
 
-        display = gdm_display_store_find (self->priv->display_store,
+        display = gdm_display_store_find (self->display_store,
                                           lookup_by_session_id,
                                           (gpointer) session_id);
 
@@ -610,7 +608,7 @@ switch_to_compatible_user_session (GdmManager *manager,
         if (existing_session != NULL) {
                 ssid_to_activate = gdm_session_get_session_id (existing_session);
                 if (seat_id != NULL) {
-                        res = gdm_activate_session_by_id (manager->priv->connection, seat_id, ssid_to_activate);
+                        res = gdm_activate_session_by_id (manager->connection, seat_id, ssid_to_activate);
                         if (! res) {
                                 g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
                                 goto out;
@@ -717,7 +715,7 @@ find_user_session_for_display (GdmManager *self,
                                GdmDisplay *display)
 {
 
-        GList *node = self->priv->user_sessions;
+        GList *node = self->user_sessions;
 
         while (node != NULL) {
                 GdmSession *session = node->data;
@@ -932,7 +930,7 @@ close_transient_session (GdmManager *self,
         GPid pid;
         pid = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), "caller-pid"));
         gdm_session_close (session);
-        g_hash_table_remove (self->priv->transient_sessions,
+        g_hash_table_remove (self->transient_sessions,
                              GUINT_TO_POINTER (pid));
 }
 
@@ -1078,7 +1076,7 @@ open_temporary_reauthentication_channel (GdmManager            *self,
         g_object_set_data (G_OBJECT (session),
                            "caller-pid",
                            GUINT_TO_POINTER (pid));
-        g_hash_table_insert (self->priv->transient_sessions,
+        g_hash_table_insert (self->transient_sessions,
                              GINT_TO_POINTER (pid),
                              session);
 
@@ -1161,7 +1159,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 
         if (session != NULL && gdm_session_is_running (session)) {
                 gdm_session_start_reauthentication (session, pid, uid);
-                g_hash_table_insert (self->priv->open_reauthentication_requests,
+                g_hash_table_insert (self->open_reauthentication_requests,
                                      GINT_TO_POINTER (pid),
                                      invocation);
         } else if (is_login_screen) {
@@ -1452,7 +1450,7 @@ set_up_session (GdmManager *manager,
         if (g_strcmp0 (seat_id, "seat0") == 0)
                 seat_can_autologin = TRUE;
 
-        if (manager->priv->did_automatic_login || manager->priv->automatic_login_display != NULL)
+        if (manager->did_automatic_login || manager->automatic_login_display != NULL)
                 seat_did_autologin = TRUE;
 
         if (seat_can_autologin && !seat_did_autologin)
@@ -1510,7 +1508,7 @@ on_display_status_changed (GdmDisplay *display,
         g_object_get (display,
                       "is-local", &display_is_local,
                       NULL);
-        quit_plymouth = display_is_local && manager->priv->plymouth_is_running;
+        quit_plymouth = display_is_local && manager->plymouth_is_running;
 #endif
 
         g_object_get (display,
@@ -1542,22 +1540,22 @@ on_display_status_changed (GdmDisplay *display,
 #ifdef WITH_PLYMOUTH
                         if (quit_plymouth) {
                                 plymouth_quit_without_transition ();
-                                manager->priv->plymouth_is_running = FALSE;
+                                manager->plymouth_is_running = FALSE;
                         }
 #endif
 
                         g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
 
-                        if (display == manager->priv->automatic_login_display) {
-                                g_clear_weak_pointer (&manager->priv->automatic_login_display);
+                        if (display == manager->automatic_login_display) {
+                                g_clear_weak_pointer (&manager->automatic_login_display);
 
-                                manager->priv->did_automatic_login = TRUE;
+                                manager->did_automatic_login = TRUE;
 
 #ifdef ENABLE_WAYLAND_SUPPORT
                                 if (g_strcmp0 (session_type, "wayland") != 0 && status == GDM_DISPLAY_FAILED) {
                                         /* we're going to fall back to X11, so try to autologin again
                                          */
-                                        manager->priv->did_automatic_login = FALSE;
+                                        manager->did_automatic_login = FALSE;
                                 }
 #endif
                         }
@@ -1576,7 +1574,7 @@ on_display_removed (GdmDisplayStore *display_store,
         char    *id;
 
         gdm_display_get_id (display, &id, NULL);
-        g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+        g_dbus_object_manager_server_unexport (manager->object_manager, id);
         g_free (id);
 
         g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), manager);
@@ -1650,7 +1648,7 @@ create_display_for_user_session (GdmManager *self,
                       "seat-id", seat_id,
                       "session-id", session_id,
                       NULL);
-        gdm_display_store_add (self->priv->display_store,
+        gdm_display_store_add (self->display_store,
                                display);
         g_object_set_data (G_OBJECT (session), "gdm-display", display);
         g_object_set_data_full (G_OBJECT (display),
@@ -1868,11 +1866,11 @@ on_start_user_session (StartUserSessionOperation *operation)
 	            !gdm_session_client_is_connected (operation->session)) {
                         /* remove the unused prepared greeter display since we're not going
                          * to have a greeter */
-                        gdm_display_store_remove (self->priv->display_store, display);
+                        gdm_display_store_remove (self->display_store, display);
                         g_object_unref (display);
 
-                        self->priv->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
-                        g_object_add_weak_pointer (G_OBJECT (self->priv->automatic_login_display), (gpointer *) &self->priv->automatic_login_display);
+                        self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
+                        g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
                 }
         }
 
@@ -1929,7 +1927,7 @@ on_user_session_opened (GdmSession       *session,
                         const char       *session_id,
                         GdmManager       *manager)
 {
-        manager->priv->user_sessions = g_list_append (manager->priv->user_sessions,
+        manager->user_sessions = g_list_append (manager->user_sessions,
                                                       g_object_ref (session));
         if (g_strcmp0 (service_name, "gdm-autologin") == 0 &&
             !gdm_session_client_is_connected (session)) {
@@ -1952,9 +1950,9 @@ on_user_session_started (GdmSession      *session,
 
 #ifdef WITH_PLYMOUTH
         if (g_strcmp0 (service_name, "gdm-autologin") == 0) {
-                if (manager->priv->plymouth_is_running) {
+                if (manager->plymouth_is_running) {
                         g_timeout_add_seconds (20, (GSourceFunc) plymouth_quit_with_transition, NULL);
-                        manager->priv->plymouth_is_running = FALSE;
+                        manager->plymouth_is_running = FALSE;
                 }
         }
 #endif
@@ -1974,10 +1972,10 @@ remove_user_session (GdmManager *manager,
                 gdm_display_finish (display);
         }
 
-        node = g_list_find (manager->priv->user_sessions, session);
+        node = g_list_find (manager->user_sessions, session);
 
         if (node != NULL) {
-                manager->priv->user_sessions = g_list_delete_link (manager->priv->user_sessions, node);
+                manager->user_sessions = g_list_delete_link (manager->user_sessions, node);
                 gdm_session_close (session);
                 g_object_unref (session);
         }
@@ -2040,7 +2038,7 @@ on_session_reauthenticated (GdmSession *session,
 
                 seat_id = gdm_session_get_display_seat_id (session);
                 if (gdm_get_login_window_session_id (seat_id, &session_id)) {
-                        GdmDisplay *display = gdm_display_store_find (manager->priv->display_store,
+                        GdmDisplay *display = gdm_display_store_find (manager->display_store,
                                                                       lookup_by_session_id,
                                                                       (gpointer) session_id);
 
@@ -2120,9 +2118,9 @@ on_session_client_connected (GdmSession      *session,
         }
 
 #ifdef WITH_PLYMOUTH
-        if (manager->priv->plymouth_is_running) {
+        if (manager->plymouth_is_running) {
                 plymouth_quit_with_transition ();
-                manager->priv->plymouth_is_running = FALSE;
+                manager->plymouth_is_running = FALSE;
         }
 #endif
 
@@ -2274,11 +2272,11 @@ on_session_reauthentication_started (GdmSession *session,
 
         source_tag = GINT_TO_POINTER (pid_of_caller);
 
-        invocation = g_hash_table_lookup (manager->priv->open_reauthentication_requests,
+        invocation = g_hash_table_lookup (manager->open_reauthentication_requests,
                                           source_tag);
 
         if (invocation != NULL) {
-                g_hash_table_steal (manager->priv->open_reauthentication_requests,
+                g_hash_table_steal (manager->open_reauthentication_requests,
                                     source_tag);
                 gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
                                                                          invocation,
@@ -2416,7 +2414,7 @@ on_display_added (GdmDisplayStore *display_store,
         display = gdm_display_store_lookup (display_store, id);
 
         if (display != NULL) {
-                g_dbus_object_manager_server_export (manager->priv->object_manager,
+                g_dbus_object_manager_server_export (manager->object_manager,
                                                      gdm_display_get_object_skeleton (display));
 
                 g_signal_connect (display, "notify::status",
@@ -2464,7 +2462,7 @@ gdm_manager_get_displays (GdmManager *manager,
         }
 
         *displays = g_ptr_array_new ();
-        gdm_display_store_foreach (manager->priv->display_store,
+        gdm_display_store_foreach (manager->display_store,
                                    (GdmDisplayStoreFunc)listify_display_ids,
                                    displays);
 
@@ -2476,17 +2474,17 @@ gdm_manager_stop (GdmManager *manager)
 {
         g_debug ("GdmManager: GDM stopping");
 
-        if (manager->priv->local_factory != NULL) {
-                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+        if (manager->local_factory != NULL) {
+                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->local_factory));
         }
 
 #ifdef HAVE_LIBXDMCP
-        if (manager->priv->xdmcp_factory != NULL) {
-                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+        if (manager->xdmcp_factory != NULL) {
+                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
         }
 #endif
 
-        manager->priv->started = FALSE;
+        manager->started = FALSE;
 }
 
 void
@@ -2495,34 +2493,34 @@ gdm_manager_start (GdmManager *manager)
         g_debug ("GdmManager: GDM starting to manage displays");
 
 #ifdef WITH_PLYMOUTH
-        manager->priv->plymouth_is_running = plymouth_is_running ();
+        manager->plymouth_is_running = plymouth_is_running ();
 
-        if (manager->priv->plymouth_is_running) {
+        if (manager->plymouth_is_running) {
                 plymouth_prepare_for_transition ();
         }
 #endif
-        if (!manager->priv->xdmcp_enabled || manager->priv->show_local_greeter) {
-                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+        if (!manager->xdmcp_enabled || manager->show_local_greeter) {
+                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
         }
 
 #ifdef HAVE_LIBXDMCP
         /* Accept remote connections */
-        if (manager->priv->xdmcp_enabled) {
+        if (manager->xdmcp_enabled) {
 #ifdef WITH_PLYMOUTH
                 /* Quit plymouth if xdmcp is the only display */
-                if (!manager->priv->show_local_greeter && manager->priv->plymouth_is_running) {
+                if (!manager->show_local_greeter && manager->plymouth_is_running) {
                         plymouth_quit_without_transition ();
-                        manager->priv->plymouth_is_running = FALSE;
+                        manager->plymouth_is_running = FALSE;
                 }
 #endif
-                if (manager->priv->xdmcp_factory != NULL) {
+                if (manager->xdmcp_factory != NULL) {
                         g_debug ("GdmManager: Accepting XDMCP connections...");
-                        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
                 }
         }
 #endif
 
-        manager->priv->started = TRUE;
+        manager->started = TRUE;
 }
 
 static gboolean
@@ -2532,21 +2530,21 @@ register_manager (GdmManager *manager)
         GDBusObjectManagerServer *object_server;
 
         error = NULL;
-        manager->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM,
-                                                    NULL,
-                                                    &error);
-        if (manager->priv->connection == NULL) {
+        manager->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM,
+                                              NULL,
+                                              &error);
+        if (manager->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
                 g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 
         object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DISPLAYS_PATH);
-        g_dbus_object_manager_server_set_connection (object_server, manager->priv->connection);
-        manager->priv->object_manager = object_server;
+        g_dbus_object_manager_server_set_connection (object_server, manager->connection);
+        manager->object_manager = object_server;
 
         if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (manager),
-                                               manager->priv->connection,
+                                               manager->connection,
                                                GDM_MANAGER_PATH,
                                                &error)) {
                 g_critical ("error exporting interface to %s: %s",
@@ -2565,21 +2563,21 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
 {
         g_return_if_fail (GDM_IS_MANAGER (manager));
 
-        if (manager->priv->xdmcp_enabled != enabled) {
-                manager->priv->xdmcp_enabled = enabled;
+        if (manager->xdmcp_enabled != enabled) {
+                manager->xdmcp_enabled = enabled;
 #ifdef HAVE_LIBXDMCP
-                if (manager->priv->xdmcp_enabled) {
-                        manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
-                        if (manager->priv->started) {
-                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                if (manager->xdmcp_enabled) {
+                        manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store);
+                        if (manager->started) {
+                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
                         }
                 } else {
-                        if (manager->priv->started) {
-                                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                        if (manager->started) {
+                                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
                         }
 
-                        g_object_unref (manager->priv->xdmcp_factory);
-                        manager->priv->xdmcp_factory = NULL;
+                        g_object_unref (manager->xdmcp_factory);
+                        manager->xdmcp_factory = NULL;
                 }
 #endif
         }
@@ -2592,7 +2590,7 @@ gdm_manager_set_show_local_greeter (GdmManager *manager,
 {
         g_return_if_fail (GDM_IS_MANAGER (manager));
 
-        manager->priv->show_local_greeter = show_local_greeter;
+        manager->show_local_greeter = show_local_greeter;
 }
 
 static void
@@ -2630,10 +2628,10 @@ gdm_manager_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_XDMCP_ENABLED:
-                g_value_set_boolean (value, self->priv->xdmcp_enabled);
+                g_value_set_boolean (value, self->xdmcp_enabled);
                 break;
         case PROP_SHOW_LOCAL_GREETER:
-                g_value_set_boolean (value, self->priv->show_local_greeter);
+                g_value_set_boolean (value, self->show_local_greeter);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2654,11 +2652,11 @@ gdm_manager_constructor (GType                  type,
 
         gdm_dbus_manager_set_version (GDM_DBUS_MANAGER (manager), PACKAGE_VERSION);
 
-        manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
+        manager->local_factory = gdm_local_display_factory_new (manager->display_store);
 
 #ifdef HAVE_LIBXDMCP
-        if (manager->priv->xdmcp_enabled) {
-                manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
+        if (manager->xdmcp_enabled) {
+                manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store);
         }
 #endif
 
@@ -2679,7 +2677,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
                 g_signal_new ("display-added",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmManagerClass, display_added),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -2689,7 +2687,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
                 g_signal_new ("display-removed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmManagerClass, display_removed),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__OBJECT,
@@ -2708,29 +2706,26 @@ gdm_manager_class_init (GdmManagerClass *klass)
 static void
 gdm_manager_init (GdmManager *manager)
 {
-
-        manager->priv = GDM_MANAGER_GET_PRIVATE (manager);
-
-        manager->priv->display_store = gdm_display_store_new ();
-        manager->priv->user_sessions = NULL;
-        manager->priv->open_reauthentication_requests = g_hash_table_new_full (NULL,
-                                                                               NULL,
-                                                                               (GDestroyNotify)
-                                                                               NULL,
-                                                                               (GDestroyNotify)
-                                                                               g_object_unref);
-        manager->priv->transient_sessions = g_hash_table_new_full (NULL,
-                                                                   NULL,
-                                                                   (GDestroyNotify)
-                                                                   NULL,
-                                                                   (GDestroyNotify)
-                                                                   g_object_unref);
-        g_signal_connect (G_OBJECT (manager->priv->display_store),
+        manager->display_store = gdm_display_store_new ();
+        manager->user_sessions = NULL;
+        manager->open_reauthentication_requests = g_hash_table_new_full (NULL,
+                                                                         NULL,
+                                                                         (GDestroyNotify)
+                                                                         NULL,
+                                                                         (GDestroyNotify)
+                                                                         g_object_unref);
+        manager->transient_sessions = g_hash_table_new_full (NULL,
+                                                             NULL,
+                                                             (GDestroyNotify)
+                                                             NULL,
+                                                             (GDestroyNotify)
+                                                             g_object_unref);
+        g_signal_connect (G_OBJECT (manager->display_store),
                           "display-added",
                           G_CALLBACK (on_display_added),
                           manager);
 
-        g_signal_connect (G_OBJECT (manager->priv->display_store),
+        g_signal_connect (G_OBJECT (manager->display_store),
                           "display-removed",
                           G_CALLBACK (on_display_removed),
                           manager);
@@ -2741,8 +2736,8 @@ unexport_display (const char *id,
                   GdmDisplay *display,
                   GdmManager *manager)
 {
-        if (!g_dbus_connection_is_closed (manager->priv->connection))
-                g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+        if (!g_dbus_connection_is_closed (manager->connection))
+                g_dbus_object_manager_server_unexport (manager->object_manager, id);
 }
 
 static void
@@ -2766,52 +2761,52 @@ gdm_manager_dispose (GObject *object)
 
         manager = GDM_MANAGER (object);
 
-        g_return_if_fail (manager->priv != NULL);
+        g_return_if_fail (manager != NULL);
 
         gdm_manager_stop (manager);
 
-        g_clear_weak_pointer (&manager->priv->automatic_login_display);
+        g_clear_weak_pointer (&manager->automatic_login_display);
 
 #ifdef HAVE_LIBXDMCP
-        g_clear_object (&manager->priv->xdmcp_factory);
+        g_clear_object (&manager->xdmcp_factory);
 #endif
-        g_clear_object (&manager->priv->local_factory);
-        g_clear_pointer (&manager->priv->open_reauthentication_requests,
+        g_clear_object (&manager->local_factory);
+        g_clear_pointer (&manager->open_reauthentication_requests,
                          g_hash_table_unref);
-        g_clear_pointer (&manager->priv->transient_sessions,
+        g_clear_pointer (&manager->transient_sessions,
                          g_hash_table_unref);
 
-        g_list_foreach (manager->priv->user_sessions,
+        g_list_foreach (manager->user_sessions,
                         (GFunc) gdm_session_close,
                         NULL);
-        g_list_free_full (manager->priv->user_sessions, (GDestroyNotify) g_object_unref);
-        manager->priv->user_sessions = NULL;
+        g_list_free_full (manager->user_sessions, (GDestroyNotify) g_object_unref);
+        manager->user_sessions = NULL;
 
-        g_signal_handlers_disconnect_by_func (G_OBJECT (manager->priv->display_store),
+        g_signal_handlers_disconnect_by_func (G_OBJECT (manager->display_store),
                                               G_CALLBACK (on_display_added),
                                               manager);
-        g_signal_handlers_disconnect_by_func (G_OBJECT (manager->priv->display_store),
+        g_signal_handlers_disconnect_by_func (G_OBJECT (manager->display_store),
                                               G_CALLBACK (on_display_removed),
                                               manager);
 
-        if (!g_dbus_connection_is_closed (manager->priv->connection)) {
-                gdm_display_store_foreach (manager->priv->display_store,
+        if (!g_dbus_connection_is_closed (manager->connection)) {
+                gdm_display_store_foreach (manager->display_store,
                                            (GdmDisplayStoreFunc)unexport_display,
                                            manager);
                 g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (manager));
         }
 
-        gdm_display_store_foreach (manager->priv->display_store,
+        gdm_display_store_foreach (manager->display_store,
                                    (GdmDisplayStoreFunc) finish_display,
                                    manager);
 
-        gdm_display_store_clear (manager->priv->display_store);
+        gdm_display_store_clear (manager->display_store);
 
-        g_dbus_object_manager_server_set_connection (manager->priv->object_manager, NULL);
+        g_dbus_object_manager_server_set_connection (manager->object_manager, NULL);
 
-        g_clear_object (&manager->priv->connection);
-        g_clear_object (&manager->priv->object_manager);
-        g_clear_object (&manager->priv->display_store);
+        g_clear_object (&manager->connection);
+        g_clear_object (&manager->object_manager);
+        g_clear_object (&manager->display_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->dispose (object);
 }

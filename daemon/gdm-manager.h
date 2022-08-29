@@ -29,30 +29,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_MANAGER         (gdm_manager_get_type ())
-#define GDM_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_MANAGER, GdmManager))
-#define GDM_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_MANAGER, GdmManagerClass))
-#define GDM_IS_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_MANAGER))
-#define GDM_IS_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_MANAGER))
-#define GDM_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_MANAGER, GdmManagerClass))
-
-typedef struct GdmManagerPrivate GdmManagerPrivate;
-
-typedef struct
-{
-        GdmDBusManagerSkeleton  parent;
-        GdmManagerPrivate      *priv;
-} GdmManager;
-
-typedef struct
-{
-        GdmDBusManagerSkeletonClass parent_class;
-
-        void          (* display_added)    (GdmManager      *manager,
-                                            const char      *id);
-        void          (* display_removed)  (GdmManager      *manager,
-                                            GdmDisplay      *display);
-} GdmManagerClass;
+#define GDM_TYPE_MANAGER (gdm_manager_get_type ())
+G_DECLARE_FINAL_TYPE (GdmManager, gdm_manager, GDM, MANAGER, GdmDBusManagerSkeleton)
 
 typedef enum
 {
@@ -62,7 +40,6 @@ typedef enum
 #define GDM_MANAGER_ERROR gdm_manager_error_quark ()
 
 GQuark              gdm_manager_error_quark                    (void);
-GType               gdm_manager_get_type                       (void);
 
 GdmManager *        gdm_manager_new                            (void);
 void                gdm_manager_start                          (GdmManager *manager);
