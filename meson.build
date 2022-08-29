@@ -102,17 +102,13 @@ endif
 # systemd
 systemd_dep = dependency('systemd')
 libsystemd_dep = dependency('libsystemd')
-if meson.version().version_compare('>= 0.53')
-  systemd_multiseat_x = find_program('systemd-multi-seat-x',
-    required: false,
-    dirs: [
-      systemd_dep.get_pkgconfig_variable('systemdutildir'),
-      '/lib/systemd',
-      '/usr/lib/systemd',
-    ])
-else
-  systemd_multiseat_x = find_program('systemd-multi-seat-x', required: false)
-endif
+systemd_multiseat_x = find_program('systemd-multi-seat-x',
+  required: false,
+  dirs: [
+    systemd_dep.get_pkgconfig_variable('systemdutildir'),
+    '/lib/systemd',
+    '/usr/lib/systemd',
+  ])
 systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
 # Plymouth
 plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
@@ -285,7 +281,6 @@ gnome.post_install(
   glib_compile_schemas: true,
 )
 
-if meson.version().version_compare('>= 0.53')
 summary({
     'datadir': gdm_prefix / get_option('datadir'),
     'sysconfdir': gdm_prefix / get_option('sysconfdir'),
@@ -338,4 +333,3 @@ summary({
   section: 'Features',
   bool_yn: true,
 )
-endif
