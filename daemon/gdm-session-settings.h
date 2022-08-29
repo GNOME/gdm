@@ -26,31 +26,10 @@
 #include <glib-object.h>
 
 G_BEGIN_DECLS
+
 #define GDM_TYPE_SESSION_SETTINGS (gdm_session_settings_get_type ())
-#define GDM_SESSION_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDM_TYPE_SESSION_SETTINGS, GdmSessionSettings))
-#define GDM_SESSION_SETTINGS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_SESSION_SETTINGS, GdmSessionSettingsClass))
-#define GDM_IS_SESSION_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION_SETTINGS))
-#define GDM_IS_SESSION_SETTINGS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_SETTINGS))
-#define GDM_SESSION_SETTINGS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_SETTINGS, GdmSessionSettingsClass))
-#define GDM_SESSION_SETTINGS_ERROR (gdm_session_settings_error_quark ())
-typedef struct _GdmSessionSettings GdmSessionSettings;
-typedef struct _GdmSessionSettingsClass GdmSessionSettingsClass;
-typedef struct _GdmSessionSettingsPrivate GdmSessionSettingsPrivate;
+G_DECLARE_FINAL_TYPE (GdmSessionSettings, gdm_session_settings, GDM, SESSION_SETTINGS, GObject)
 
-struct _GdmSessionSettings
-{
-        GObject                   parent;
-
-        /*< private > */
-        GdmSessionSettingsPrivate *priv;
-};
-
-struct _GdmSessionSettingsClass
-{
-        GObjectClass        parent_class;
-};
-
-GType               gdm_session_settings_get_type           (void);
 GdmSessionSettings *gdm_session_settings_new                (void);
 
 gboolean            gdm_session_settings_load               (GdmSessionSettings  *settings,
