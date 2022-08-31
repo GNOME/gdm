@@ -231,12 +231,10 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (value != NULL, FALSE);
 
         ret = FALSE;
-
-        if (value != NULL) {
-                *value = NULL;
-        }
+        *value = NULL;
 
         val = g = k = l = NULL;
         /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
@@ -257,9 +255,7 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
                 goto out;
         }
 
-        if (value != NULL) {
-                *value = g_strdup (val);
-        }
+        *value = g_strdup (val);
         ret = TRUE;
  out:
         g_free (val);
@@ -345,6 +341,7 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (value != NULL, FALSE);
 
         /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
         if (! parse_key_string (key, &g, &k, &l, NULL)) {
@@ -426,6 +423,8 @@ GdmSettingsBackend *
 gdm_settings_desktop_backend_new (const char* filename)
 {
         GObject *object;
+
+        g_return_val_if_fail (filename != NULL, NULL);
 
         if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
                 return NULL;
