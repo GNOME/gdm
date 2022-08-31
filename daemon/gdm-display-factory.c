@@ -95,6 +95,8 @@ gdm_display_factory_queue_purge_displays (GdmDisplayFactory *factory)
 {
         GdmDisplayFactoryPrivate *priv;
 
+        g_return_if_fail (GDM_IS_DISPLAY_FACTORY (factory));
+
         priv = gdm_display_factory_get_instance_private (factory);
         if (priv->purge_displays_id == 0) {
                 priv->purge_displays_id = g_idle_add ((GSourceFunc) purge_displays, factory);
