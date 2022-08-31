@@ -62,24 +62,32 @@ gdm_settings_entry_new (void)
 const char *
 gdm_settings_entry_get_key (GdmSettingsEntry *entry)
 {
+        g_return_val_if_fail (entry != NULL, NULL);
+
         return entry->key;
 }
 
 const char *
 gdm_settings_entry_get_signature (GdmSettingsEntry *entry)
 {
+        g_return_val_if_fail (entry != NULL, NULL);
+
         return entry->signature;
 }
 
 const char *
 gdm_settings_entry_get_default_value (GdmSettingsEntry *entry)
 {
+        g_return_val_if_fail (entry != NULL, NULL);
+
         return entry->default_value;
 }
 
 const char *
 gdm_settings_entry_get_value (GdmSettingsEntry *entry)
 {
+        g_return_val_if_fail (entry != NULL, NULL);
+
         return entry->value;
 }
 
@@ -87,6 +95,8 @@ void
 gdm_settings_entry_set_value (GdmSettingsEntry *entry,
                               const char       *value)
 {
+        g_return_if_fail (entry != NULL);
+
         g_free (entry->value);
         entry->value = g_strdup (value);
 }
@@ -94,6 +104,8 @@ gdm_settings_entry_set_value (GdmSettingsEntry *entry,
 void
 gdm_settings_entry_free (GdmSettingsEntry *entry)
 {
+        g_return_if_fail (entry != NULL);
+
         g_free (entry->key);
         g_free (entry->signature);
         g_free (entry->default_value);
@@ -220,8 +232,7 @@ gdm_settings_parse_schemas (const char  *file,
 
         g_return_val_if_fail (file != NULL, FALSE);
         g_return_val_if_fail (root != NULL, FALSE);
-
-        g_assert (schemas != NULL);
+        g_return_val_if_fail (schemas != NULL, FALSE);
 
         contents = NULL;
         error = NULL;
@@ -278,6 +289,9 @@ gboolean
 gdm_settings_parse_value_as_boolean (const char *value,
                                      gboolean   *bool)
 {
+        g_return_val_if_fail (value != NULL, FALSE);
+        g_return_val_if_fail (bool != NULL, FALSE);
+
         if (g_ascii_strcasecmp (value, "true") == 0 || strcmp (value, "1") == 0) {
                 *bool = TRUE;
                 return TRUE;
@@ -296,6 +310,9 @@ gdm_settings_parse_value_as_integer (const char *value,
         char *end_of_valid_int;
         glong long_value;
         gint  int_value;
+
+        g_return_val_if_fail (value != NULL, FALSE);
+        g_return_val_if_fail (intval != NULL, FALSE);
 
         errno = 0;
         long_value = strtol (value, &end_of_valid_int, 10);
@@ -320,6 +337,9 @@ gdm_settings_parse_value_as_double  (const char *value,
 {
         char   *end_of_valid_d;
         gdouble double_value = 0;
+
+        g_return_val_if_fail (value != NULL, FALSE);
+        g_return_val_if_fail (doubleval != NULL, FALSE);
 
         double_value = g_ascii_strtod (value, &end_of_valid_d);
 
