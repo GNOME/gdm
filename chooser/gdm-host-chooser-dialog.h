@@ -31,8 +31,6 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (GdmHostChooserDialog, gdm_host_chooser_dialog, GDM, HOST_CHOOSER_DIALOG, GtkDialog)
 
 GtkWidget            * gdm_host_chooser_dialog_new                (int                   kind_mask);
-void                   gdm_host_chooser_dialog_set_kind_mask      (GdmHostChooserDialog *dialog,
-                                                                   int                   kind_mask);
 
 GdmChooserHost *       gdm_host_chooser_dialog_get_host           (GdmHostChooserDialog *dialog);
 
