@@ -114,6 +114,9 @@ gdm_dbus_get_pid_for_name (const char  *system_bus_name,
         gboolean retval = FALSE;
         unsigned int v;
 
+        g_return_val_if_fail (system_bus_name != NULL, FALSE);
+        g_return_val_if_fail (out_pid != NULL, FALSE);
+
         bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, error);
         if (bus == NULL) {
                 return FALSE;
@@ -153,6 +156,9 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
         GVariant *reply;
         gboolean retval = FALSE;
         unsigned int v;
+
+        g_return_val_if_fail (system_bus_name != NULL, FALSE);
+        g_return_val_if_fail (out_uid != NULL, FALSE);
 
         bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, error);
         if (bus == NULL) {
