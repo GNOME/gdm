@@ -208,13 +208,6 @@ gdm_settings_direct_get_string (const char        *key,
         return ret;
 }
 
-gboolean
-gdm_settings_direct_set (const char        *key,
-                         GValue            *value)
-{
-        return TRUE;
-}
-
 static void
 hashify_list (GdmSettingsEntry *entry,
               gpointer          data)
