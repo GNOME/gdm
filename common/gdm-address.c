@@ -240,6 +240,8 @@ gdm_address_debug (GdmAddress *address)
         char *host = NULL;
         char *port = NULL;
 
+        g_return_if_fail (address != NULL);
+
         gdm_address_get_numeric_info (address, &host, &port);
 
         _gdm_address_debug (address, host, port);
@@ -493,6 +495,8 @@ gboolean
 gdm_address_is_local (GdmAddress *address)
 {
         const GList *list;
+
+        g_return_val_if_fail (address != NULL, FALSE);
 
         if (gdm_address_is_loopback (address)) {
                 return TRUE;
