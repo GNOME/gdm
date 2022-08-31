@@ -360,6 +360,10 @@ gdm_activate_session_by_id (GDBusConnection *connection,
         GError *local_error = NULL;
         GVariant *reply;
 
+        g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
+        g_return_val_if_fail (seat_id != NULL, FALSE);
+        g_return_val_if_fail (session_id != NULL, FALSE);
+
         reply = g_dbus_connection_call_sync (connection,
                                              "org.freedesktop.login1",
                                              "/org/freedesktop/login1",
@@ -391,6 +395,8 @@ gdm_get_login_window_session_id (const char  *seat_id,
         char      *service_id;
         char      *service_class;
         char      *state;
+
+        g_return_val_if_fail (session_id != NULL, FALSE);
 
         res = sd_seat_get_sessions (seat_id, &sessions, NULL, NULL);
         if (res < 0) {
