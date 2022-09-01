@@ -322,6 +322,8 @@ gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job,
 {
         gboolean    res;
 
+        g_return_val_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job), FALSE);
+
         g_debug ("GdmSessionWorkerJob: Starting worker...");
 
         res = gdm_session_worker_job_spawn (session_worker_job, name);
@@ -352,6 +354,8 @@ handle_session_worker_job_death (GdmSessionWorkerJob *session_worker_job)
 void
 gdm_session_worker_job_stop_now (GdmSessionWorkerJob *session_worker_job)
 {
+        g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
+
         if (session_worker_job->pid <= 1) {
                 return;
         }
@@ -367,6 +371,8 @@ void
 gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
 {
         int res;
+
+        g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
 
         if (session_worker_job->pid <= 1) {
                 return;
