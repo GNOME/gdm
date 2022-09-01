@@ -409,6 +409,8 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         uid_t             uid;
         gid_t             gid;
 
+        g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), FALSE);
+
         g_debug ("GdmLaunchEnvironment: Starting...");
 
         if (!gdm_get_pwent_for_name (launch_environment->user_name, &passwd_entry)) {
@@ -504,6 +506,8 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 gboolean
 gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
 {
+        g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), FALSE);
+
         if (launch_environment->pid > 1) {
                 gdm_signal_pid (-launch_environment->pid, SIGTERM);
         }
@@ -522,12 +526,16 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
 GdmSession *
 gdm_launch_environment_get_session (GdmLaunchEnvironment *launch_environment)
 {
+        g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), NULL);
+
         return launch_environment->session;
 }
 
 char *
 gdm_launch_environment_get_session_id (GdmLaunchEnvironment *launch_environment)
 {
+        g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), NULL);
+
         return g_strdup (launch_environment->session_id);
 }
 
