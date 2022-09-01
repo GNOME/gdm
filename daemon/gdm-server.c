@@ -752,6 +752,8 @@ gdm_server_start (GdmServer *server)
         GError *local_error = NULL;
         GError **error = &local_error;
 
+        g_return_val_if_fail (GDM_IS_SERVER (server), FALSE);
+
         /* Hardcode the VT for the initial X server, but nothing else */
         if (server->is_initial) {
                 vtarg = "vt" G_STRINGIFY (GDM_INITIAL_VT);
@@ -801,6 +803,8 @@ gboolean
 gdm_server_stop (GdmServer *server)
 {
         int res;
+
+        g_return_val_if_fail (GDM_IS_SERVER (server), FALSE);
 
         if (server->pid <= 1) {
                 return TRUE;
