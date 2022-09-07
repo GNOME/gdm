@@ -1827,10 +1827,8 @@ gdm_display_set_windowpath (GdmDisplay *self)
         xcb_get_property_reply_t *get_property_reply = NULL;
         xcb_window_t root_window = XCB_WINDOW_NONE;
         const char *windowpath;
-        char *newwindowpath;
+        g_autofree gchar *newwindowpath = NULL;
         uint32_t num;
-        char nums[10];
-        int numn;
 
         priv = gdm_display_get_instance_private (self);
 
@@ -1868,13 +1866,10 @@ gdm_display_set_windowpath (GdmDisplay *self)
         num = ((uint32_t *) xcb_get_property_value (get_property_reply))[0];
 
         windowpath = getenv ("WINDOWPATH");
-        numn = snprintf (nums, sizeof (nums), "%u", num);
         if (!windowpath) {
-                newwindowpath = malloc (numn + 1);
-                sprintf (newwindowpath, "%s", nums);
+                newwindowpath = g_strdup_printf ("%u", num);
         } else {
-                newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
-                sprintf (newwindowpath, "%s:%s", windowpath, nums);
+                newwindowpath = g_strdup_printf ("%s:%u", windowpath, num);
         }
 
         g_setenv ("WINDOWPATH", newwindowpath, TRUE);
