@@ -32,9 +32,6 @@ G_DECLARE_FINAL_TYPE (GdmHostChooserWidget, gdm_host_chooser_widget, GDM, HOST_C
 
 GtkWidget *            gdm_host_chooser_widget_new                (int                   kind_mask);
 
-void                   gdm_host_chooser_widget_set_kind_mask      (GdmHostChooserWidget *widget,
-                                                                   int                   kind_mask);
-
 void                   gdm_host_chooser_widget_refresh            (GdmHostChooserWidget *widget);
 
 GdmChooserHost *       gdm_host_chooser_widget_get_host           (GdmHostChooserWidget *widget);

@@ -29,7 +29,6 @@ G_BEGIN_DECLS
 typedef struct _GdmSettingsEntry GdmSettingsEntry;
 
 GdmSettingsEntry *        gdm_settings_entry_new               (void);
-GdmSettingsEntry *        gdm_settings_entry_copy              (GdmSettingsEntry *entry);
 void                      gdm_settings_entry_free              (GdmSettingsEntry *entry);
 
 const char *              gdm_settings_entry_get_key           (GdmSettingsEntry *entry);
