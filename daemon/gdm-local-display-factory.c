@@ -733,6 +733,25 @@ on_seat0_graphics_check_timeout (gpointer user_data)
         return G_SOURCE_REMOVE;
 }
 
+GdmDisplay *
+get_display_for_seat (GdmLocalDisplayFactory *factory,
+                      const char             *seat_id)
+{
+        GdmDisplay *display;
+        GdmDisplayStore *store;
+        gboolean is_seat0;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
+        if (is_seat0)
+                display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
+        else
+                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+
+        return display;
+}
+
 static void
 ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                          const char             *seat_id)
@@ -741,7 +760,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         gboolean is_seat0;
         g_auto (GStrv) session_types = NULL;
         const char *legacy_session_types[] = { "x11", NULL };
-        GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
         g_autofree char *login_session_id = NULL;
         g_autofree gchar *preferred_display_server = NULL;
@@ -855,14 +873,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                 g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                          session_types[0], seat_id);
 
-        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
-
-        if (is_seat0)
-                display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
-        else
-                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
-
         /* Ensure we don't create the same display more than once */
+        display = get_display_for_seat (factory, seat_id);
         if (display != NULL) {
                 g_debug ("GdmLocalDisplayFactory: display already created");
                 return;
@@ -871,7 +883,9 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         /* If we already have a login window, switch to it */
         if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
                 GdmDisplay *display;
+                GdmDisplayStore *store;
 
+                store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
                 display = gdm_display_store_find (store,
                                                   lookup_by_session_id,
                                                   (gpointer) login_session_id);
