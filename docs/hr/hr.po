@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "POT-Creation-Date: 2022-09-09 10:18+0000\n"
-"PO-Revision-Date: 2022-09-17 18:00+0200\n"
+"PO-Revision-Date: 2022-09-17 21:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -178,6 +178,8 @@ msgid ""
 "The GNOME Display Manager (GDM) is a display manager that implements all significant features required for managing attached and "
 "remote displays. GDM was written from scratch and does not contain any XDM or X Consortium code."
 msgstr ""
+"GNOME Upravitelj zaslona (GDM) je upravitelj zaslona koji implementira sve značajne značajke potrebne za upravljanje priključenim i "
+"udaljenim zaslonima. GDM je napisan od nule i ne sadrži XDM ili X Consortium kôd."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:159
@@ -185,6 +187,8 @@ msgid ""
 "Note that GDM is configurable, and many configuration settings have an impact on security. Issues to be aware of are highlighted in "
 "this document."
 msgstr ""
+"Zapamtite da je GDM moguće podešavati i mnoge postavke podešavanja utječu na sigurnost. Problemi kojih treba biti svjestan istaknuti "
+"su u ovom dokumentu."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:165
@@ -192,6 +196,8 @@ msgid ""
 "Please note that some Operating Systems configure GDM to behave differently than the default values as described in this document. If "
 "GDM does not seem to behave as documented, then check to see if any related configuration may be different than described here."
 msgstr ""
+"Zapamtite da neki operativni sustavi podešavaju GDM da se ponaša drugačije od zadanih vrijednosti kako je opisano u ovom dokumentu. "
+"Ako se GDM ne ponaša kao što je dokumentirano, tada provjerite razlikuje li se neko povezano podešavanje od ovdje opisanog."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:172
@@ -199,6 +205,8 @@ msgid ""
 "For further information about GDM, refer to the project website at <ulink type=\"http\" url=\"http://wiki.gnome.org/Projects/GDM/\"> "
 "http://wiki.gnome.org/Projects/GDM</ulink>."
 msgstr ""
+"Za dodatne GDM informacije, pogledajte web stranicu projekta na <ulink type=\"http\" url=\"http://wiki.gnome.org/Projects/GDM/\"> "
+"http://wiki.gnome.org/Projects/ GDM</ulink>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:178
@@ -208,6 +216,10 @@ msgid ""
 "url=\"http://mail.gnome.org/archives/gdm-list/\"> http://mail.gnome.org/archives/gdm-list/</ulink> and has a search facility to look "
 "for messages with keywords."
 msgstr ""
+"Za raspravu ili upite o GDM-u, pogledajte popis adrese e-pošte <address><email>gdm-list@gnome.org</email></address>. Ovaj popis je "
+"arhiviran i dobar je izvor za provjeru traženja odgovora na uobičajena pitanja. Ovaj popis je arhiviran na <ulink type=\"http\" "
+"url=\"http://mail.gnome.org/archives/gdm-list/\"> http://mail.gnome.org/archives/gdm-list/</ulink> i ima mogućnost pretraživanja za "
+"traženje poruka s ključnim riječima."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:188
@@ -215,11 +227,13 @@ msgid ""
 "Please submit any bug reports or enhancement requests to the \"gdm\" category in <ulink type=\"http\" url=\"http://bugzilla.gnome.org/"
 "\"> http://bugzilla.gnome.org</ulink>."
 msgstr ""
+"Pošaljite sve izvještaje o greškama ili zahtjeve za poboljšanjem u kategoriju \"gdm\" na <ulink type=\"http\" url=\"http://bugzilla."
+"gnome.org/\"> http://bugzilla.gnome.org</ulink> ."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:197
 msgid "Interface Stability"
-msgstr ""
+msgstr "Stabilnost sučelja"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:199
@@ -228,6 +242,10 @@ msgid ""
 "not completely backward compatible with older releases. This is in part because things work differently, so some options just don't "
 "make sense, in part because some options never made sense, and in part because some functionality has not been reimplemented yet."
 msgstr ""
+"GDM 2.20 i stariji podržavaju stabilna sučelja podešavanja. Ipak, baza kôda u potpunosti je ponovno napisana za GDM 2.22 i nije u "
+"potpunosti kompatibilna sa starijim izdanjima. To je dijelom zato što stvari funkcioniraju drugačije, stoga neke mogućnosti "
+"jednostavno nemaju smisla, dijelom zato što neke mogućnosti nikad nisu imale smisla, a dijelom zato što neke funkcije još nisu ponovno "
+"implementirane."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:208
@@ -236,6 +254,9 @@ msgid ""
 "scripts. Some daemon configuration options in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file continue to be supported. "
 "Also, the <filename>~/.dmrc</filename>, and face browser image locations are still supported."
 msgstr ""
+"Sučelja koja su i dalje podržana na stabilan način uključuju Init, PreSession, PostSession, PostLogin i Xsession skripte. Pojedine "
+"mogućnosti podešavanja pozadinskog programa u <filename>&lt;etc&gt;/gdm/custom.conf</filename> datoteci i dalje su podržane. Još su, "
+"<filename>~/.dmrc</filename> i lokacije slika preglednika lica i dalje podržane."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:217
@@ -244,11 +265,15 @@ msgid ""
 "environments, login in a window via a program like Xnest or Xephyr, the gdmsetup program, XML-based greeter themes, and the ability to "
 "run the XDMCP chooser from the login screen. These features were not added back during the 2.22 rewrite."
 msgstr ""
+"GDM 2.20 i stariji podržavali su mogućnost upravljanja višestrukim zaslonima s odvojenim grafičkim karticama, poput onih koje se "
+"koriste u okruženjima terminalskih poslužitelja, prijavu u prozor putem programa kao što su Xnest ili Xephyr, gdmsetup program, XML "
+"temeljene teme dobrodošlice i mogućnost pokretanja XDMCP odabirtatelja s zaslona za prijavu. Ove značajke nisu dodane tijekom ponovnog "
+"pisanja 2.22 izdanja."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:229
 msgid "Functional Description"
-msgstr ""
+msgstr "Funkcionalni opis"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:240
@@ -257,6 +282,9 @@ msgid ""
 "the user session. GDM is configurable and the ways it can be configured are described in the \"Configuring GDM\" section of this "
 "document. GDM is also accessible for users with disabilities."
 msgstr ""
+"GDM je odgovoran za upravljanje zaslonima u sustavu. To uključuje ovjeru korisnika, pokretanje korisničke sesije i prekid korisničke "
+"sesije. GDM je moguće podesiti, a načini na koji se može podesiti opisani su u odlomku \"GDM podešavanje\" ovog dokumenta. GDM je "
+"također dostupan korisnicima s invaliditetom."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:248
@@ -265,6 +293,9 @@ msgid ""
 "as the Fast User Switch Applet (FUSA) and gnome-screensaver to manage multiple displays on the console via the Xserver Virtual "
 "Terminal (VT) interface. It also can manage XDMCP displays."
 msgstr ""
+"GDM pruža mogućnost upravljanja zaslonom glavne konzole i zaslonima pokrenutim putem VT-a. Integriran je s drugim programima, kao što "
+"je Fast User Switch Applet (FUSA) i gnome-screensaver za upravljanje višestrukim zaslonima na konzoli putem sučelja Xserver Virtualni "
+"Terminal (VT). Može upravljati i XDMCP zaslonima."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:256
@@ -272,6 +303,8 @@ msgid ""
 "Regardless of the display type, GDM will do the following when it manages the display. It will start an Xserver process, then run the "
 "<filename>Init</filename> script as the root user, and start the greeter program on the display."
 msgstr ""
+"Neovisno o vrsti zaslona, GDM će učiniti sljedeće kada upravlja zaslonom. Pokrenut će Xserver proces, zatim pokrenuti <filename>Init</"
+"filename> skriptu kao korijenski korisnik i pokrenuti program dobrodošlice na zaslonu."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:263
@@ -285,6 +318,14 @@ msgid ""
 "with greeter login extensions and the <command>--enable-split-authentication</command> <filename>./configure</filename> option, or one "
 "at a time via system PAM configuration."
 msgstr ""
+"Program dobrodošlice pokreće se kao neprivilegirani \"gdm\" korisnik/grupa. Ovaj korisnik i grupa opisani su u odjeljku \"Sigurnost\" "
+"ovog dokumenta. Glavne funkcije programa dobrodošlice su pružanje mehanizma za odabir računa prijave i pokretanje dijaloga između "
+"korisnika i sustava pri ovjeri tog računa. Proces ovjere pokreću Pluggable Authentication Modules (PAM). PAM moduli određuju koji se "
+"upiti (ako postoje) prikazuju korisniku za ovjeru prijave. U prosječnom sustavu, program dobrodošlice tražit će korisničko ime i "
+"lozinku za ovjeru prijave. Ipak, pojedini sustavi mogu biti podešeni za korištenje dodatnih mehanizama poput čitača otisaka prstiju "
+"ili pametnih kartica. GDM se može podesiti da podržava ove alternativne prijave paralelno s proširenjima prijave programa dobrodošlice "
+"i mogućnosti <command>--enable-split-authentication</command> <filename>./configure</filename>, ili jedne po jedne putem PAM sustava "
+"podešavanja."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:282
@@ -292,6 +333,8 @@ msgid ""
 "The smartcard extension can be enabled or disabled via the <filename>org.gnome.display-manager.extensions.smartcard.active</filename> "
 "gsettings key."
 msgstr ""
+"Proširenje pametne kartice može se omogućiti ili onemogućiti putem <filename>org.gnome.display-manager.extensions.smartcard.active</"
+"filename> ključa postavki."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:288
@@ -299,6 +342,8 @@ msgid ""
 "Likewise, the fingerprint extension can be enabled or disabled via the <filename>org.gnome.display-manager.extensions.fingerprint."
 "active</filename> gsettings key."
 msgstr ""
+"Isto tako, proširenje otiska prsta može se omogućiti ili onemogućiti putem <filename>org.gnome.display-manager.extensions.fingerprint."
+"active</filename> gsettings ključa."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:294
@@ -306,6 +351,8 @@ msgid ""
 "GDM and PAM can be configured to not require any input, which will cause GDM to automatically log in and simply start a session, which "
 "can be useful for some environments, such as single user systems or kiosks."
 msgstr ""
+"GDM i PAM mogu se podesiti da ne zahtijevaju nikakav unos, što će uzrokovati da se GDM automatski prijavi i jednostavno pokrene "
+"sesiju, što može biti korisno za pojedina okruženja, poput sustava s jednim korisnikom ili kioscima."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:301
@@ -317,6 +364,12 @@ msgid ""
 "session and language in the user's <filename>~/.dmrc</filename> and will use these defaults if the user did not pick a session or "
 "language in the login GUI."
 msgstr ""
+"Kao dodatak ovjeri prijave, program dobrodošlice omogućuje korisniku odabir sesije i jezika koji će koristiti. Sesije su definirane "
+"datotekama koje završavaju .desktop sufiksom, a više informacija o tim datotekama možete pronaći u odlomku \"GDM korisnička sesija i "
+"podešavanje jezika\" u ovom dokumentu. Po zadanome, GDM je podešen za prikaz preglednika lica tako da korisnik može odabrati svoj "
+"korisnički račun klikom na sliku umjesto upisivanja svog korisničkog imena. GDM prati korisnikovu zadanu sesiju i jezik u korisnikovoj "
+"<filename>~/.dmrc</filename> datoteci i koristit će te zadane postavke ako korisnik nije odabrao sesiju ili jezik u korisničkom "
+"sučelju za prijavu."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:314
@@ -330,11 +383,19 @@ msgid ""
 "should be run before the user session is initialized. The <filename>PreSession</filename> script is called after session "
 "initialization."
 msgstr ""
+"Nakon ovjere korisnika, pozadinski program pokreće <filename>PostLogin</filename> skriptu kao korijenski korisnik, zatim pokreće "
+"<filename>PreSession</filename> skriptu kao korijenski korisnik. Nakon pokretanja ovih skripti, pokreće se korisnička sesija. Kada "
+"korisnik izađe iz svoje sesije, <filename>PostSession</filename> skripta se pokreće kao korijenski korisnik. Ove se skripte ponašaju "
+"kao spojnice za distribucije i krajnje korisnike u svrhu prilagodbe upravljanja sesijama. Primjerice, korištenjem ovih spojnica možete "
+"postaviti sustav koji stvara korisnički $HOME direktorij u hodu i briše ga nakon odjave. Razlika između <filename>PostLogin</filename> "
+"i <filename>PreSession</filename> skripti je u tome što se <filename>PostLogin</filename> pokreće prije poziva pam_open_session stoga "
+"je ona pravo mjesto za prilagodbu svega potrebnog za pokretanje prije pokretanja korisničke sesije. Skripta <filename>PreSession</"
+"filename> poziva se nakon pokretanja sesije."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:334
 msgid "Greeter Panel"
-msgstr ""
+msgstr "Panel dobrodošlice"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:335
@@ -347,11 +408,18 @@ msgid ""
 "configure GDM to not provide the shutdown and restart buttons, if desired. GDM can also be configured via PolicyKit (or via RBAC on "
 "Oracle Solaris) to require the user have appropriate authorization before accepting the shutdown or restart request."
 msgstr ""
+"Program GDM dobrodošlice prikazuje panel pričvršćen na dnu zaslona koji pruža dodatnu funkcionalnost. Kada je korisnik odabran, panel "
+"mu omogućuje odabir sesije, jezika i rasporeda tipkovnice koji će koristiti nakon prijave. Izbornik rasporeda tipkovnice još mijenja i "
+"raspored tipkovnice koji se koristi pri upisivanja lozinke. Panel sadrži područje usluge prijave za napuštanje ikona stanja. Pojedini "
+"primjeri ikona stanja uključuju ikonu baterije trenutnu potrošnje baterije i ikonu omogućavanja značajki pristupačnosti. Program "
+"dobrodošlice isto nudi tipke koje korisniku omogućuju isključivanje ili ponovno pokretanje sustava, moguće je podesiti GDM da ne "
+"prikazuje te tipke, ako želite. GDM se može podesiti putem PolicyKita (ili putem RBAC-a na Oracle Solarisu) da od korisnika zahtijeva "
+"odgovarajuću ovjeru prije pokretanja isključivanja ili ponovnog pokretanja."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:352
 msgid "Note that keyboard layout features are only available on systems that support libxklavier."
-msgstr ""
+msgstr "Zapamtite da su značajke rasporeda tipkovnice dostupne samo na sustavima koji podržavaju libxklavier."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:359
@@ -367,6 +435,11 @@ msgid ""
 "needed. Refer to the \"Accessibility Configuration\" section of the document for more information how various accessibility features "
 "can be configured."
 msgstr ""
+"GDM podržava \"Pristupačnu prijavu\", omogućujući korisnicima prijavu na svoju radnu površinu čak i ako ne mogu jednostavno koristiti "
+"zaslon, miš ili tipkovnicu na uobičajeni način. Tehnologija pristupačnosti (AT) ima značajke poput zaslonske tipkovnice, čitača "
+"zaslona, povećalo zaslona i Xserver AccessX pristupačnost tipkovnice. Po potrebi, moguće je omogućiti ikone i upravljanja velikim "
+"tekstom i visokim kontrastom. Pogledajte odlomak \"Podešavanje pristupačnosti\" u dokumentu za više informacija o tome kako se "
+"različite značajke pristupačnosti mogu podesiti."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:373
@@ -374,11 +447,13 @@ msgid ""
 "On some Operating Systems, it is necessary to make sure that the GDM user is a member of the \"audio\" group for AT programs that "
 "require audio output (such as text-to-speech) to be functional."
 msgstr ""
+"Na pojedinim operativnim sustavima, potrebno je osigurati da GDM korisnik bude član \"audio\" grupe za AT programe koji zahtijevaju "
+"zvučni izlaz (poput tekst-u-govor) kako bi bio funkcionalan."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:381
 msgid "The GDM Face Browser"
-msgstr ""
+msgstr "GDM preglednik lica"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:383
@@ -390,6 +465,12 @@ msgid ""
 "face browser in GDM 2.20 and earlier would attempt to display all remote users, which caused performance problems in large, enterprise "
 "deployments."
 msgstr ""
+"Preglednik lica je sučelje koje korisnicima omogućuje odabir korisničkog imena klikom na sliku. Ova se značajka može omogućiti ili "
+"onemogućiti putem GSettings org.gnome.login-screen disable-user-list ključa i uključena je po zadanome. Kada je onemogućeno, korisnici "
+"moraju ručno upisati svoje puno korisničko ime. Kada je omogućeno, prikazuje sve lokalne korisnike koji su dostupni za prijavu na "
+"sustav (svi korisnički računi definirani u /etc/passwd datoteci koji imaju valjanu ljusku i dovoljno visok UID) i udaljene korisnike "
+"koji su se nedavno prijavili. Preglednik lica u GDM 2.20 i starijim inačicama pokušao bi prikazati sve udaljene korisnike, što je "
+"uzrokovalo probleme s performansama u velikim, poslovnim implementacijama."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:397
@@ -397,6 +478,8 @@ msgid ""
 "The Face Browser is configured to display the users who log in most frequently at the top of the list. This helps to ensure that users "
 "who log in frequently can quickly find their login image."
 msgstr ""
+"Preglednik lica podešen je za prikaz korisnika koji se najčešće prijavljuju na vrhu popisa. Ovo pomaže osigurati korisnicima koji se "
+"često prijavljuju da mogu brzo pronaći svoju sliku za prijavu."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:403
@@ -405,6 +488,9 @@ msgid ""
 "username in the list. This means that a user with a long username will only have to type the first few characters of the username "
 "before the correct item in the list gets selected."
 msgstr ""
+"Preglednik lica podržava \"pretragu unaprijed\" koja dinamički pomiče odabir lica dok korisnik tipka na odgovarajuće korisničko ime na "
+"popisu. To znači da će korisnik s dugim korisničkim imenom morati upisati samo prvih nekoliko znakova korisničkog imena prije nego što "
+"se odabere ispravna stavka na popisu."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:411
@@ -414,6 +500,10 @@ msgid ""
 "user. Face image files should be a standard image that GTK+ can read, such as PNG or JPEG. Face icons placed in the global face "
 "directory must be readable to the GDM user."
 msgstr ""
+"Ikone koje koristi GDM administrator sustava može instalirati globalno ili se mogu nalaziti u korisničkim osobnim direktorijima. Ako "
+"su instalirane globalno, trebale bi biti u <filename>&lt;share&gt;/pixmaps/faces/</filename> direktoriju, a naziv datoteke trebao bi "
+"biti ime korisnika. Datoteke sa slikom lica trebale bi biti standardne slike koje GTK+ može čitati, poput PNG ili JPEG formata. Ikone "
+"lica smještene u globalni direktorij lica moraju biti čitljive GDM korisniku."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:427
@@ -422,6 +512,9 @@ msgid ""
 "user's face image in <filename>~/.face</filename>. If not found, it will try <filename>~/.face.icon</filename>. If still not found, it "
 "will use the value defined for \"face/picture=\" in the <filename>~/.gnome2/gdm</filename> file."
 msgstr ""
+"Ako nema globalne ikone za korisnika, GDM će datoteku slike tražiti u korisnikovom $HOME direktoriju. GDM će prvo potražiti sliku lica "
+"korisnika u <filename>~/.face</filename>. Ako se ne pronađe, pokušat će <filename>~/.face.icon</filename>. Ako i dalje nije pronađen, "
+"koristit će vrijednost određenu za \"face/picture=\" u <filename>~/.gnome2/gdm</filename> datoteci."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:436
@@ -429,6 +522,8 @@ msgid ""
 "If a user has no defined face image, GDM will use the \"stock_person\" icon defined in the current GTK+ theme. If no such image is "
 "defined, it will fallback to a generic face image."
 msgstr ""
+"Ako korisnik nema određenu sliku lica, GDM će koristiti ikonu \"stock_person\" određenu u trenutnoj GTK+ temi. Ako takva slika nije "
+"određena, vratit će se na generičku sliku lica."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:442
@@ -436,6 +531,9 @@ msgid ""
 "Please note that loading and scaling face icons located in remote user home directories can be a very time-consuming task. Since it "
 "not practical to load images over NIS or NFS, GDM does not attempt to load face images from remote home directories."
 msgstr ""
+"Zapamtite da učitavanje i promjena veličine ikona lica smještenih u osobnim direktorijima udaljenih korisnika može biti dugotrajan "
+"zadatak. Budući da nije praktično učitavati slike preko NIS-a ili NFS-a, GDM ne pokušava učitati slike lica iz udaljenih osobnih "
+"direktorija."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:449
@@ -444,6 +542,9 @@ msgid ""
 "usernames are exposed to remote users. This, of course, limits security somewhat since a malicious user does not need to guess valid "
 "usernames. In some very restrictive environments the face browser may not be appropriate."
 msgstr ""
+"Kada je preglednik uključen, valjana korisnička imena na računalu su svima dostupna. Ako je XDMCP omogućen, tada su korisnička imena "
+"dostupna i udaljenim korisnicima. Ovo, naravno, donekle ograničava sigurnost budući da zlonamjerni korisnik ne mora pogađati valjana "
+"korisnička imena. U pojedinim vrlo restriktivnim okruženjima preglednik lica možda neće biti prikladan."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:461
@@ -457,6 +558,9 @@ msgid ""
 "XDMCP support is turned off, but can be enabled if desired. If GDM is built with TCP Wrapper support, then the daemon will only grant "
 "access to hosts specified in the GDM service section in the TCP Wrappers configuration file."
 msgstr ""
+"GDM pozadinski program se može podesiti da osluškuje i upravlja zahtjevima Protokola upravljanja X zaslona (XDMCP) s udaljenih "
+"zaslona. Po zadanome XDMCP podrška je isključena, ali se po potrebi može omogućiti. Ako je GDM izgrađen s podrškom za TCP Wrapper, "
+"tada će pozadinski program odobriti pristup samo poslužiteljima navedenim u odjeljku GDM usluge u TCP Wrappers datoteci podešavanja."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:479
@@ -464,6 +568,8 @@ msgid ""
 "GDM includes several measures making it more resistant to denial of service attacks on the XDMCP service. A lot of the protocol "
 "parameters, handshaking timeouts, etc. can be fine tuned. The default configuration should work reasonably on most systems."
 msgstr ""
+"GDM uključuje nekoliko mjera koje ga čine otpornijim na napade uskraćivanjem usluge na XDMCP pozadinskom programu. Puno parametara "
+"protokola, čekanja rukovanja itd. mogu se precizno prilagoditi. Zadano podešavanje trebalo bi razumno raditi na većini sustava."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:486
@@ -471,6 +577,8 @@ msgid ""
 "GDM by default listens for XDMCP requests on the normal UDP port used for XDMCP, port 177, and will respond to QUERY and "
 "BROADCAST_QUERY requests by sending a WILLING packet to the originator."
 msgstr ""
+"GDM po zadanome osluškuje XDMCP zahtjeve na normalnom UDP ulazu koji se koristi za XDMCP, ulaz 177 i odgovorit će na QUERY i "
+"BROADCAST_QUERY zahtjeve slanjem WILLING paketa pokretaču."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:492
@@ -480,21 +588,25 @@ msgid ""
 "the redirection once the user's connection succeeds. This extension is only supported if both daemons are GDM. It is transparent and "
 "will be ignored by XDM or other daemons that implement XDMCP."
 msgstr ""
+"GDM se može podesiti da poštuje INDIREKTNE zahtjeve i predstavlja biratelja poslužitelja udaljenog zaslona. GDM će zapamtiti izbor "
+"korisnika i proslijediti sljedeće zahtjeve odabranom upravitelju. GDM također podržava proširenje protokola koje će zaboraviti "
+"preusmjeravanje nakon što korisnikovo povezivanje uspije. Ovo proširenje je podržano samo ako su oba pozadinska programa GDM. "
+"Transparentan je i zanemarit će ga XDM ili drugi pozadinski programi koji implementiraju XDMCP."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:502
 msgid "If XDMCP seems to not be working, make sure that all machines are specified in <filename>/etc/hosts</filename>."
-msgstr ""
+msgstr "Ako se čini da XDMCP ne radi, provjerite jesu li svi poslužitelji navedeni u <filename>/etc/hosts</filename> datoteci."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:507
 msgid "Refer to the \"Security\" section for information about security concerns when using XDMCP."
-msgstr ""
+msgstr "Pogledajte odlomak \"Sigurnost\" za informacije o sigurnosnim problemima kada se koristi XDMCP."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:514
 msgid "Logging"
-msgstr "Prijavljivanje"
+msgstr "Zapisivanje"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:516
@@ -503,6 +615,9 @@ msgid ""
 "is not working properly. Debug output can be enabled by setting the debug/Enable key to \"true\" in the <filename>&lt;etc&gt;/gdm/"
 "custom.conf</filename> file."
 msgstr ""
+"GDM koristi syslog za zapisivanje grešaka i staanja. Može zapisivati i informacije otklanjanja grešaka, što može biti korisno za "
+"pronalaženje problema ako GDM ne radi ispravno. Zapisivanje otklanjanja grešaka može se omogućiti postavljanjem debug/Enable ključa na "
+"\"istina\" u <filename>&lt;etc&gt;/gdm/custom.conf</filename> datoteci."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:524
@@ -510,6 +625,8 @@ msgid ""
 "Output from the various Xservers is stored in the GDM log directory, which is normally <filename>&lt;var&gt;/log/gdm/</filename>. Any "
 "Xserver messages are saved to a file associated with the display value, <filename>&lt;display&gt;.log</filename>."
 msgstr ""
+"Zapis iz raznih X poslužitelja pohranjuje se u GDM direktorij zapisa, koji je uobičajeno <filename>&lt;var&gt;/log/gdm/</filename>. "
+"Sve poruke X poslužitelja spremaju se u datoteku pridruženu vrijednosti zaslona, <filename>&lt;display&gt;.log</filename>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:531
@@ -518,6 +635,9 @@ msgid ""
 "filename> file which usually expands to <filename>~/.cache/gdm/session.log</filename>. The file is overwritten on each login, so "
 "logging out and logging back into the same user via GDM will cause any messages from the previous session to be lost."
 msgstr ""
+"Izlaz sesije prenosi se kroz GDM pozadinski program u <filename>~/<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log</"
+"filename> datoteku koja se uobičajeno proširuje na <filename>~/.cache/gdm/ session.log</filename>. Datoteka se prebriše pri svakoj "
+"prijavi, tako da će odjava i ponovna prijava istog korisnika putem GDM-a uzrokovati gubitak svih poruka iz prijašnje sesije."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:540
@@ -526,11 +646,14 @@ msgid ""
 "<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log.XXXXXXXX</filename> where the <filename>XXXXXXXX</filename> are some random "
 "characters."
 msgstr ""
+"Zapamtite da ako GDM iz nekog razloga ne može stvoriti ovu datoteku, stvorit će se pričuvna datoteka naziva <filename>~/"
+"<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log.XXXXXXXX</filename> gdje su <filename>XXXXXXXX</filename> neki naizmjenično "
+"odabrani znakovi."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:548
 msgid "Fast User Switching"
-msgstr ""
+msgstr "Brza zamjena korisnika"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:550
@@ -540,6 +663,10 @@ msgid ""
 "changed back and forth using the same mechanism. Note that some distributions may not add the User Switcher to the default panel "
 "configuration. It can be added using the panel context menu."
 msgstr ""
+"GDM omogućuje istovremenu prijavu više korisnika. Nakon što je jedan korisnik prijavljen, drugi se korisnici mogu prijaviti putem "
+"zamjenjivača korisnika na GNOME panelu ili pomoću \"Zamijeni korisnika\" tipke u dijalogu zaključanog zaslona GNOME čuvara zaslona. "
+"Aktivna sesija može se mijenjati naprijed i natrag koristeći isti mehanizam. Zapamtite da pojedine distribucije možda neće dodati "
+"zamjenu korisnika zadanom podešavanju panela. Zamjena korisnika može se dodati pomoću sadržajnog izbornika panela."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:559
@@ -547,6 +674,8 @@ msgid ""
 "Note this feature is available on systems that support Virtual Terminals. This feature will not function if Virtual Terminals is not "
 "available."
 msgstr ""
+"Zapamtite da je ova značajka dostupna na sustavima koji podržavaju virtualne terminale. Ova značajka neće funkcionirati ako virtualni "
+"terminali nisu dostupni."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:570
