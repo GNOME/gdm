@@ -1,7 +1,7 @@
-# translation of gdm2 to Turkish
 # Turkish translation of GDM.
 # Copyright (C) 1999-2003, 2004 Free Software Foundation, Inc.
-#
+# Copyright (C) 2005-2022 GDM's COPYRIGHT HOLDER
+# This file is distributed under the same licence as the GDM package.
 #
 # Fatih Demir <kabalak@gtranslator.org>, 1999.
 # Nilgün Belma Bugüner <nilgun@fide.org>, 2002.
@@ -16,9 +16,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2\n"
+"Project-Id-Version: GDM\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2020-12-21 15:54+0000\n"
+"POT-Creation-Date: 2022-07-07 18:00+0000\n"
 "PO-Revision-Date: 2021-02-07 09:26+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
@@ -73,18 +73,6 @@ msgstr "Geçerli oturum saptanamadı: "
 msgid "Could not identify the current seat."
 msgstr "Geçerli oturak saptanamadı."
 
-#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Sistem, var olan oturum açma ekranına geçiş yapılmasına ya da yeni oturum "
-"açma ekranı başlatılmasına karar veremedi."
-
-#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
-msgid "The system is unable to start up a new login screen."
-msgstr "Sistem, yeni oturum açma ekranı başlatamadı."
-
 #: daemon/gdm-display-access-file.c:298
 #, c-format
 msgid "could not find user “%s” on system"
@@ -126,42 +114,42 @@ msgstr "Çağıran GDM değil"
 msgid "Unable to open private communication channel"
 msgstr "Özel iletişim kanalı açılamadı"
 
-#: daemon/gdm-server.c:383
+#: daemon/gdm-server.c:384
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Sunucu, %s kullanıcısınca yaratılmalı ama bu kullanıcı yok"
 
-#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "groupid, %d olarak değiştirilemedi"
 
-#: daemon/gdm-server.c:400
+#: daemon/gdm-server.c:401
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s için initgroups () başarısız oldu"
 
-#: daemon/gdm-server.c:406
+#: daemon/gdm-server.c:407
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "userid, %d olarak değiştirilemedi"
 
-#: daemon/gdm-server.c:484
+#: daemon/gdm-server.c:485
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: %s ekranı için günlük dosyası açılamadı!"
 
-#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
+#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ayarı %s olarak atarken hata"
 
-#: daemon/gdm-server.c:537
+#: daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Sunucu önceliği %d olarak atanamadı: %s"
 
-#: daemon/gdm-server.c:689
+#: daemon/gdm-server.c:690
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s ekranı için boş sunucu komutu"
@@ -190,25 +178,18 @@ msgstr "Görüntü Aygıtı"
 msgid "The display device"
 msgstr "Görüntü aygıtı"
 
-#: daemon/gdm-session.c:1285
+#: daemon/gdm-session.c:1334
 msgid "Could not create authentication helper process"
 msgstr "Kimlik doğrulama yardımcı süreci oluşturulamadı"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:755
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr ""
 "Azami parola kimlik doğrulama girişimini aştınız, lütfen başka yöntem deneyin"
 
-#: daemon/gdm-session-worker.c:753
-msgid ""
-"You reached the maximum PIN authentication attempts, please try another "
-"method"
-msgstr ""
-"Azami PIN kimlik doğrulama girişimini aştınız, lütfen başka yöntem deneyin"
-
-#: daemon/gdm-session-worker.c:756
+#: daemon/gdm-session-worker.c:758
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -216,7 +197,7 @@ msgstr ""
 "Azami kendiliğinden oturum açma girişimini aştınız, lütfen başka kimlik "
 "doğrulama yöntemi deneyin"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:761
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -224,7 +205,7 @@ msgstr ""
 "Azami parmak izi kimlik doğrulama girişimini aştınız, lütfen başka yöntem "
 "deneyin"
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:764
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -232,56 +213,52 @@ msgstr ""
 "Azami akıllı kart kimlik doğrulama girişimini aştınız, lütfen başka yöntem "
 "deneyin"
 
-#: daemon/gdm-session-worker.c:764
+#: daemon/gdm-session-worker.c:766
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "Azami kimlik doğrulama girişimini aştınız, lütfen başka yöntem deneyin"
 
-#: daemon/gdm-session-worker.c:771
+#: daemon/gdm-session-worker.c:773
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr ""
 "Üzgünüm, parola kimlik doğrulaması işe yaramadı. Lütfen yeniden deneyin."
 
-#: daemon/gdm-session-worker.c:774
-msgid "Sorry, PIN authentication didn’t work. Please try again."
-msgstr "Üzgünüm, PIN kimlik doğrulaması işe yaramadı. Lütfen yeniden deneyin."
-
-#: daemon/gdm-session-worker.c:777
+#: daemon/gdm-session-worker.c:776
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr ""
 "Üzgünüm, kendiliğinden oturum açma işe yaramadı. Lütfen yeniden deneyin."
 
-#: daemon/gdm-session-worker.c:780
+#: daemon/gdm-session-worker.c:779
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "Üzgünüm, parmak izi kimlik doğrulaması işe yaramadı. Lütfen yeniden deneyin."
 
-#: daemon/gdm-session-worker.c:783
+#: daemon/gdm-session-worker.c:782
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
 "Üzgünüm, akıllı kart kimlik doğrulaması işe yaramadı. Lütfen yeniden deneyin."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:784
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Üzgünüm ama işe yaramadı. Lütfen yeniden deneyin."
 
-#: daemon/gdm-session-worker.c:800
+#: daemon/gdm-session-worker.c:799
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Hesabınıza şu anda süresi dolan bir zaman sınırı verilmiş."
 
-#: daemon/gdm-session-worker.c:1202
+#: daemon/gdm-session-worker.c:1199
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
-#: daemon/gdm-session-worker.c:1704 daemon/gdm-session-worker.c:1721
+#: daemon/gdm-session-worker.c:1600 daemon/gdm-session-worker.c:1617
 msgid "no user account available"
 msgstr "hiçbir kullanıcı hesabı yok"
 
-#: daemon/gdm-session-worker.c:1748
+#: daemon/gdm-session-worker.c:1644
 msgid "Unable to change to user"
 msgstr "Kullanıcıya değiştirilemiyor"
 
-#: daemon/gdm-wayland-session.c:511
+#: daemon/gdm-wayland-session.c:531
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME Görüntü Yöneticisi Wayland Oturumu Başlatıcı"
 
@@ -289,15 +266,15 @@ msgstr "GNOME Görüntü Yöneticisi Wayland Oturumu Başlatıcı"
 msgid "Could not create socket!"
 msgstr "Yuva oluşturulamadı!"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:879
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "/etc/gdm/Xsession sarmalayıcı betiği aracılığıyla program çalıştır"
 
-#: daemon/gdm-x-session.c:860
+#: daemon/gdm-x-session.c:880
 msgid "Listen on TCP socket"
 msgstr "TCP yuvası üzerinden dinle"
 
-#: daemon/gdm-x-session.c:872
+#: daemon/gdm-x-session.c:892
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME Görüntü Yöneticisi X Oturumu Başlatıcı"
 
@@ -334,24 +311,24 @@ msgstr "GDM kümesi “%s” bulunamadı. İptal ediliyor!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM kümesi ‘root’ olmamalı. İptal ediliyor!"
 
-#: daemon/main.c:317
+#: daemon/main.c:309
 msgid "Make all warnings fatal"
 msgstr "Tüm uyarıları ölümcül yap"
 
-#: daemon/main.c:318
+#: daemon/main.c:310
 msgid "Exit after a time (for debugging)"
 msgstr "Bir süre sonra çık (hata ayıklama için)"
 
-#: daemon/main.c:319
+#: daemon/main.c:311
 msgid "Print GDM version"
 msgstr "GDM sürümünü yazdır"
 
-#: daemon/main.c:330
+#: daemon/main.c:322
 msgid "GNOME Display Manager"
 msgstr "GNOME Görüntü Yöneticisi"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:350
+#: daemon/main.c:342
 msgid "Only the root user can run GDM"
 msgstr "Yalnızca yetkili kullanıcı GDM’yi çalıştırabilir"
 
@@ -513,12 +490,3 @@ msgstr "Ekran görüntüsü alındı"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Ekranın resmini çek"
-
-#~ msgid "Your password has expired, please change it now."
-#~ msgstr "Parolanızın kullanım süresi doldu, lütfen şimdi değiştirin."
-
-#~ msgid "GNOME Shell"
-#~ msgstr "GNOME Kabuğu"
-
-#~ msgid "Window management and compositing"
-#~ msgstr "Pencere yönetimi ve kompozisyon"
