@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "POT-Creation-Date: 2022-09-09 10:18+0000\n"
-"PO-Revision-Date: 2022-09-19 16:22+0200\n"
+"PO-Revision-Date: 2022-09-19 20:48+0200\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -112,7 +112,7 @@ msgid ""
 "Chooser - A program used to select a remote host for managing a display remotely on the attached display (<command>gdm-host-chooser</"
 "command>)."
 msgstr ""
-"Chooser - Program koji se koristi za odabir udaljenog glavnog računala za daljinsko upravljanje zaslonom na priključenom zaslonu "
+"Odabiratelj - Program koji se koristi za odabir udaljenog računala i udaljeno upravljanje zaslonom na priključenom zaslonu "
 "(<command>gdm-host-chooser</command>)."
 
 #. (itstool) path: sect1/para
@@ -132,7 +132,7 @@ msgstr "GDM - GNOME Upravitelj zaslonima. Koristi se za opisivanje softverskog p
 #. (itstool) path: sect1/para
 #: C/index.docbook:118
 msgid "Greeter - The graphical login window (provided by <command>gnome-shell</command>)."
-msgstr "Greeter - grafički prozor prijave (pružan od strane <command>gnome-shell</command>)."
+msgstr "Dobrodošlica - grafički prozor prijave (pružan od strane <command>gnome-shell</command>)."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:122
@@ -150,8 +150,8 @@ msgid ""
 "Xserver - An implementation of the X Window System. For example the Xorg Xserver provided by the X.org Foundation <ulink type=\"http\" "
 "url=\"http://www.x.org/\">http://www.x.org</ulink>."
 msgstr ""
-"Xserver - Implementacija X Window sustava. Primjerice, Xorg Xserver koji osigurava X.org zaklada <ulink type=\"http\" url=\"http://www."
-"x.org/\">http://www.x.org</ulink>."
+"X poslužitelj - Implementacija X Window sustava. Primjerice, Xorg X poslužitelj koji osigurava X.org zaklada <ulink type=\"http\" "
+"url=\"http://www.x.org/\">http://www.x.org</ulink>."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:136
@@ -294,8 +294,8 @@ msgid ""
 "Terminal (VT) interface. It also can manage XDMCP displays."
 msgstr ""
 "GDM pruža mogućnost upravljanja zaslonom glavne konzole i zaslonima pokrenutim putem VT-a. Integriran je s drugim programima, kao što "
-"je Fast User Switch Applet (FUSA) i gnome-screensaver za upravljanje višestrukim zaslonima na konzoli putem sučelja Xserver Virtualni "
-"Terminal (VT). Može upravljati i XDMCP zaslonima."
+"je Fast User Switch Applet (FUSA) i gnome-screensaver za upravljanje višestrukim zaslonima na konzoli putem sučelja Virtualni Terminal "
+"X poslužitelja (VT). Može upravljati i XDMCP zaslonima."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:256
@@ -303,8 +303,8 @@ msgid ""
 "Regardless of the display type, GDM will do the following when it manages the display. It will start an Xserver process, then run the "
 "<filename>Init</filename> script as the root user, and start the greeter program on the display."
 msgstr ""
-"Neovisno o vrsti zaslona, GDM će učiniti sljedeće kada upravlja zaslonom. Pokrenut će Xserver proces, zatim pokrenuti <filename>Init</"
-"filename> skriptu kao korijenski korisnik i pokrenuti program dobrodošlice na zaslonu."
+"Neovisno o vrsti zaslona, GDM će učiniti sljedeće kada upravlja zaslonom. Pokrenut će proces X poslužitelja, zatim pokrenuti "
+"<filename>Init</filename> skriptu kao korijenski korisnik i pokrenuti program dobrodošlice na zaslonu."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:263
@@ -318,7 +318,7 @@ msgid ""
 "with greeter login extensions and the <command>--enable-split-authentication</command> <filename>./configure</filename> option, or one "
 "at a time via system PAM configuration."
 msgstr ""
-"Program dobrodošlice pokreće se kao neprivilegirani \"gdm\" korisnik/grupa. Ovaj korisnik i grupa opisani su u odjeljku \"Sigurnost\" "
+"Program dobrodošlice pokreće se kao nepovlašteni \"gdm\" korisnik/grupa. Ovaj korisnik i grupa opisani su u odjeljku \"Sigurnost\" "
 "ovog dokumenta. Glavne funkcije programa dobrodošlice su pružanje mehanizma za odabir računa prijave i pokretanje dijaloga između "
 "korisnika i sustava pri ovjeri tog računa. Proces ovjere pokreću Pluggable Authentication Modules (PAM). PAM moduli određuju koji se "
 "upiti (ako postoje) prikazuju korisniku za ovjeru prijave. U prosječnom sustavu, program dobrodošlice tražit će korisničko ime i "
@@ -549,7 +549,7 @@ msgstr ""
 #. (itstool) path: sect2/title
 #: C/index.docbook:461
 msgid "XDMCP"
-msgstr ""
+msgstr "XDMCP"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:470
@@ -694,6 +694,9 @@ msgid ""
 "most systems, but can be configured to any user or group. All GDM GUI programs are run as this user, so that the programs which "
 "interact with the user are run in a sandbox. This user and group should have limited privilege."
 msgstr ""
+"Iz sigurnosnih razloga preporuča se namjenski ID korisnika i grupe za pravilan rad. Ovaj korisnik i grupa uobičajeno su \"gdm\" na "
+"većini sustava, ali se mogu podesiti za bilo kojeg korisnika ili grupu. Svi GDM GUI programi pokreću se kao ovaj korisnik, tako da se "
+"programi koji komuniciraju s korisnikom pokreću u sigurnom okruženju. Ovaj korisnik i grupa trebaju imati ograničene dozvole."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:584
@@ -701,6 +704,8 @@ msgid ""
 "The only special privilege the \"gdm\" user requires is the ability to read and write Xauth files to the <filename>&lt;var&gt;/run/"
 "gdm</filename> directory. The <filename>&lt;var&gt;/run/gdm</filename> directory should have root:gdm ownership and 1777 permissions."
 msgstr ""
+"Jedina posebna dozvola koju \"gdm\" korisnik zahtijeva je mogućnost čitanja i pisanja Xauth datoteka u <filename>&lt;var&gt;/run/gdm</"
+"filename> direktorij. Direktorij <filename>&lt;var&gt;/run/gdm</filename> trebao bi imati root:gdm vlasništvo i 1777 dozvole."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:592
@@ -711,6 +716,11 @@ msgid ""
 "so that only the \"gdm\" user has access to these files and that it is not easy to login to this account. For example, the account "
 "should be setup to not have a password or allow non-root users to login to the account."
 msgstr ""
+"Ni pod kojim okolnostima ne bi trebali podesiti GDM korisnika/grupu na korisnika kojem korisnik može lako pristupiti, poput korisnik "
+"<filename>nobody</filename>. Svaki korisnik koji dobije pristup Xauth ključu može njuškati i upravljati pokrenutim GUI programima koji "
+"su pokrenuti u pridruženoj sesiji ili izvršiti napad uskraćivanjem usluge. Bitno je osigurati pravilno podešen sustav tako da samo "
+"\"gdm\" korisnik ima pristup ovim datotekama i da se nije lako prijaviti na ovaj račun. Primjerice, račun bi trebao biti postavljen "
+"tako da nema lozinku ili da dopušta nekorijenskim korisnicima prijavu na račun."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:605
@@ -720,6 +730,10 @@ msgid ""
 "provide the \"gdm\" user with a writable $HOME directory. However, some features of GDM may be disabled if it is unable to write state "
 "information to GConf configuration."
 msgstr ""
+"Podešavanje GDM dobrodošlice pohranjeno je u GConf. Kako bi GDM korisnik mogao pisati podešavanje, potrebno je da \"gdm\" korisnik ima "
+"$HOME direktorij s dozvolom pisanja. Korisnici mogu podesiti zadano GConf podešavanje po potrebi kako bi izbjegli da \"gdm\" korisniku "
+"daju $HOME direktorij s dozvolom pisanja. Ipak, pojedine GDM značajke mogu biti onemogućene ako se ne mogu zapisivati podaci o stanju "
+"u GConf podešavanju."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:617
@@ -733,6 +747,9 @@ msgid ""
 "authentication on your computer. It allows the administrator to configure specific authentication behavior for different login "
 "programs (such as ssh, login GUI, screensaver, etc.)"
 msgstr ""
+"GDM koristi PAM za ovjeru prijave. PAM je kratica za Pluggable Authentication Module, a koristi ga većina programa koji zahtijevaju "
+"ovjeru na vašem računalu. Omogućuje administratoru podešavanje specifičnog ponašanja ovjere za različite programe prijave (kao što su "
+"ssh, GUI za prijavu, čuvar zaslona itd.)"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:627
@@ -742,6 +759,10 @@ msgid ""
 "expected that a person needing to do PAM configuration would need to do further reading of PAM documentation to understand how to "
 "configure PAM and to understand terms used in this section."
 msgstr ""
+"PAM je složen i vrlo podesiv, a ova dokumentacija nema namjeru to opširno objašnjavati. Umjesto toga, namjera je dati pregled kako je "
+"PAM podešavanje povezano s GDM-om, kako se PAM uobičajeno podešava s GDM-om i koji su poznati problemi. Očekivano je da osoba koja ima "
+"potrebu podesiti PAM mora dodatno pročitati PAM dokumentaciju kako bi razumjela PAM podešavanje i pojmove koji se koriste u ovom "
+"odlomku."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:637
@@ -750,6 +771,10 @@ msgid ""
 "pam.d\">pam.d</ulink> or <ulink type=\"help\" url=\"man:pam.conf\">pam.conf</ulink> man page for details. Be sure you read the PAM "
 "documentation and are comfortable with the security implications of any changes you intend to make to your configuration."
 msgstr ""
+"PAM podešavanje ima različito, ali slično sučelje na raznim operativnim sustavima, stoga provjerite <ulink type=\"help\" url=\"man:pam."
+"d\">pam.d</ulink> ili <ulink type=\"help\" url=\"man:pam.conf\">pam.conf</ulink> stranice priručnika za pojedinosti. Obavezno "
+"pročitajte PAM dokumentaciju i upoznajte se sa sigurnosnim implikacijama bilo kakvih promjena koje namjeravate napraviti u svome "
+"podešavanju."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:647
@@ -759,6 +784,10 @@ msgid ""
 "default PAM behavior. On most systems this should work fine. However, the automatic login feature may not work if the gdm-autologin "
 "service is not defined."
 msgstr ""
+"Zapamtite da GDM po zadanome koristi PAM \"gdm\" naziv usluge za normalnu prijavu i PAM \"gdm-autologin\" naziv usluge za automatsku "
+"prijavu. Ove usluge možda nisu određene u vašoj pam.d ili pam.conf datoteci podešavanja. Ako nema unosa, GDM će koristiti zadano PAM "
+"ponašanje. Na većini sustava ovo bi trebalo dobro funkcionirati. Ipak, značajka automatske prijave možda neće raditi ako usluga gdm-"
+"autologin nije određena."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:657
@@ -767,6 +796,8 @@ msgid ""
 "called after. This allows the system administrator to add any scripting to the login process either before or after PAM initializes "
 "the session."
 msgstr ""
+"Skripta <filename>PostLogin</filename> pokreće se prije pam_open_session poziva , a skripta <filename>PreSession</filename> se poziva "
+"nakon. Ovo omogućuje administratoru sustava dodavanje bilo koje skripte procesu prijave prije ili nakon što PAM pokrene sesiju."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:665
@@ -776,6 +807,10 @@ msgid ""
 "directly. Refer to the PAM documentation on your system. How to do this is frequently discussed on the <address><email>gdm-list@gnome."
 "org</email></address> mail list, so you can refer to the list archives for more information."
 msgstr ""
+"Ako želite učiniti da GDM radi s drugim vrstama mehanizama ovjere (poput čitača otiska prsta ili pametne kartice), tada bi to trebali "
+"implementirati korištenjem servisnog modula PAM za željenu vrstu ovjere, umjesto pokušajem izravne izmjene GDM kôda. Pogledajte PAM "
+"dokumentaciju na vašem sustavu. O tome kako to učiniti često se raspravlja na<address><email>gdm-list@gnome.org</email></address> "
+"mailing listi, tako da možete pogledati arhive popisa za više informacija."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:676
@@ -784,6 +819,9 @@ msgid ""
 "the ability to accept either SmartCard and the ability to type the username and password into the login program. There are techniques "
 "that are used to make this work, and it is best to research how this problem is commonly solved when setting up such a configuration."
 msgstr ""
+"PAM ima određena ograničenja u pogledu mogućnosti rada s više vrsta ovjere istovremeno, poput podrške mogućnosti prihvaćanja pametne "
+"kartice i mogućnosti upisivanja korisničkog imena i lozinke u program prijave. Postoje tehnike koje se koriste da bi ovo "
+"funkcioniralo, a najbolje je istražiti kako se ovaj problem uobičajeno rješava prilikom postavljanja takvog podešavanja."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:685
@@ -793,6 +831,10 @@ msgid ""
 "its public interfaces. Assuming your system has a pam_allow.so PAM module which does this, a PAM configuration to enable \"gdm-"
 "autologin\" would look like this:"
 msgstr ""
+"Ako automatska prijava ne radi na sustavu, provjerite je li \"gdm-autologin\" PAM određen u PAM podešavanju. Kako bi ovo "
+"funkcioniralo, potrebno je koristiti PAM modul koji jednostavno ne vrši ovjeru ili koji jednostavno vraća PAM_SUCCESS sa svih svojih "
+"javnih sučelja. Pod pretpostavkom da vaš sustav ima pam_allow.so PAM modul koji to radi, PAM podešavanje za omogućavanje \"gdm-"
+"autologin\" izgledao bi ovako:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:695
@@ -805,12 +847,20 @@ msgid ""
 "       gdm-autologin session  sufficient  pam_allow.so.1\n"
 "       gdm-autologin password  sufficient  pam_allow.so.1\n"
 msgstr ""
+"\n"
+"       gdm-autologin auth  required    pam_unix_cred.so.1\n"
+"       gdm-autologin auth  sufficient  pam_allow.so.1\n"
+"       gdm-autologin account  sufficient  pam_allow.so.1\n"
+"       gdm-autologin session  sufficient  pam_allow.so.1\n"
+"       gdm-autologin password  sufficient  pam_allow.so.1\n"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:703
 msgid ""
 "The above setup will cause no lastlog entry to be generated. If a lastlog entry is desired, then use the following for the session:"
 msgstr ""
+"Gornja postavka neće uzrokovati stvaranje unosa posljednje prijave. Ako želite unos posljednje prijave, tada koristite sljedeće za "
+"sesiju:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:708
@@ -819,6 +869,8 @@ msgid ""
 "\n"
 "       gdm-autologin session required pam_unix_session.so.1\n"
 msgstr ""
+"\n"
+"       gdm-autologin session required pam_unix_session.so.1\n"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:712
@@ -828,6 +880,10 @@ msgid ""
 "achieved by checking that the user is member a Unix group called \"nopasswdlogin\" before asking for a password. For this to work, the "
 "PAM configuration file for the \"gdm\" service must include a line such as:"
 msgstr ""
+"Ako računalo koristi više ljudi, što automatsku prijavu čini neprikladnom, možete dopustiti pojedinim korisnicima prijavu bez upisa "
+"svojih lozinki. Ova se značajka može omogućiti kao mogućnost po korisniku u user-admin alatu iz gnome-system-tools; to se postiže "
+"provjerom je li korisnik član Unix grupe pod nazivom \"nopasswdlogin\" prije nego što se zatraži lozinka. Kako bi ovo radilo, PAM "
+"datoteka podešavanja za uslugu \"gdm\" mora sadržavati redak kao što je:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:723
@@ -836,6 +892,8 @@ msgid ""
 "\n"
 "      gdm auth  sufficient  pam_succeed_if.so  user ingroup nopasswdlogin\n"
 msgstr ""
+"\n"
+"      gdm auth  sufficient  pam_succeed_if.so  user ingroup nopasswdlogin\n"
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:730
@@ -851,11 +909,16 @@ msgid ""
 "database. Refer to the <ulink type=\"help\" url=\"man:utmp\">utmp</ulink> and <ulink type=\"help\" url=\"man:wtmp\">wtmp</ulink> man "
 "pages on your system for more information."
 msgstr ""
+"GDM stvara utmp i wtmp unose baze podataka korisničkih računa nakon prijave i odjave u sesiju. Baza podataka utmp sadrži informacije o "
+"korisničkom pristupu i informacije računa kojima se pristupa naredbama poput <command>finger</command>, <command>last</command>, "
+"<command>login</command> i <command>who</command>. Baza podataka wtmp sadrži povijest pristupa korisnika i informacija računa za bazu "
+"podataka utmp. Pogledajte <ulink type=\"help\" url=\"man:utmp\">utmp</ulink> i <ulink type=\"help\" url=\"man:wtmp\">wtmp</ulink> "
+"stranice priručnika na vašem sustavu za više informacija."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:747
 msgid "Xserver Authentication Scheme"
-msgstr ""
+msgstr "Shema ovjere X poslužitelja"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:749
@@ -864,6 +927,9 @@ msgid ""
 "files are used to store and share a \"password\" between X clients and the Xserver. This \"password\" is unique for each session "
 "logged in, so users from one session can't snoop on users from another."
 msgstr ""
+"Datoteke ovjere X poslužitelja pohranjuju se u novostvorenom poddirektoriju <filename>&lt;var&gt;/run/gdm</filename> pri pokretanju. "
+"Ove se datoteke koriste za pohranjivanje i dijeljenje \"lozinke\" između X klijenta i X poslužitelja. Ova \"lozinka\" je jedinstvena "
+"za svaku prijavljenu sesiju, stoga korisnici iz jedne sesije ne mogu njuškati korisnike iz druge."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:757
@@ -875,6 +941,12 @@ msgid ""
 "X connection rather then using XDMCP. You could think of XDMCP as a sort of graphical telnet, having the same security issues. In most "
 "cases, ssh -Y should be preferred over GDM's XDMCP features."
 msgstr ""
+"GDM podržava samo MIT-MAGIC-COOKIE-1 shemu ovjere X poslužitelja. Ubičajeno malo se dobiva od drugih shema i do sada nije uložen "
+"nikakav trud da se one implementiraju. Budite posebno oprezni pri XDMCP korištenju jer kolačić ovjere X poslužitelja ide preko žice "
+"kao običan tekst. Ako je njuškanje moguće, napadač bi mogao jednostavno njuškati vašu lozinku ovjere dok se prijavljujete, bez obzira "
+"koja se shema ovjere koristi. Ako je njuškanje moguće i nepoželjno, tada bi trebali koristiti ssh za tuneliranje X povezivanja umjesto "
+"XDMCP-a. Možete zamisliti XDMCP kao neku vrstu grafičkog telneta, koji ima iste sigurnosne probleme. U većini slučajeva, ssh -Y treba "
+"imati prednost nad GDM-ovim XDMCP značajkama."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:774
@@ -887,6 +959,8 @@ msgid ""
 "Even though your display is protected by cookies, XEvents and thus keystrokes typed when entering passwords will still go over the "
 "wire in clear text. It is trivial to capture these."
 msgstr ""
+"Iako je vaš zaslon zaštićen kolačićima, XEvents i pritisci tipki upisani pri upisu lozinki, i dalje će ići preko žice u običnom "
+"tekstu. Jednostavno ih je presresti."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:782
@@ -896,11 +970,15 @@ msgid ""
 "accessed by the outside world, and can only connect to the server. The only point from which you need to access outside is the server. "
 "This type of set up should never use an unmanaged hub or other sniffable network."
 msgstr ""
+"XDMCP je prvenstveno koristan za pokretanje malih klijenta poput terminal laboratorija. Ti mali klijenti trebat će mrežu samo za "
+"pristup poslužitelju, stoga je najbolje sigurnosno pravilo imati te male klijente na zasebnoj mreži kojoj se ne može pristupiti izvana "
+"i mogu se povezati samo s poslužiteljem. Jedina točka s koje trebate pristup izvana je poslužitelj. Ova vrsta postavljanja nikada ne "
+"bi trebala koristiti neupravljano čvorište ili drugu mrežu koja se može njuškati."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:795
 msgid "XDMCP Access Control"
-msgstr ""
+msgstr "XDMCP upravljanje pristupom"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:797
@@ -908,6 +986,8 @@ msgid ""
 "XDMCP access control is done using TCP wrappers. It is possible to compile GDM without TCP wrapper support, so this feature may not be "
 "supported on some Operating Systems."
 msgstr ""
+"XDMCP upravljanje pristupom vrši se pomoću TCP wrappera. Moguće je kompilirati GDM bez podrške za TCP wrapper, tako da ova značajka "
+"možda nije podržana na pojedinim operativnim sustavima."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:803
@@ -915,6 +995,8 @@ msgid ""
 "You should use the daemon name <command>gdm</command> in the <filename>&lt;etc&gt;/hosts.allow</filename> and <filename>&lt;etc&gt;/"
 "hosts.deny</filename> files. For example to deny computers from <filename>.evil.domain</filename> from logging in, then add"
 msgstr ""
+"Trebali bi koristiti naziv pozadinskog programa <command>gdm</command> u <filename>&lt;etc&gt;/hosts.allow</filename> i <filename>&lt;"
+"etc&gt;/hosts.deny</filename> datotekama. Primjerice, za zabranu prijave računala sa <filename>.zla.domena</filename>, dodajte"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:810
@@ -923,11 +1005,13 @@ msgid ""
 "\n"
 "gdm: .evil.domain\n"
 msgstr ""
+"\n"
+"gdm: .zla.domena\n"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:813
 msgid "to <filename>&lt;etc&gt;/hosts.deny</filename>. You may also need to add"
-msgstr ""
+msgstr "u <filename>&lt;etc&gt;/hosts.deny</filename>. Još možete dodati"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:817
@@ -936,6 +1020,8 @@ msgid ""
 "\n"
 "gdm: .your.domain\n"
 msgstr ""
+"\n"
+"gdm: .vaša.domena\n"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:820
@@ -943,6 +1029,8 @@ msgid ""
 "to your <filename>&lt;etc&gt;/hosts.allow</filename> if you normally disallow all services from all hosts. See the <ulink "
 "type=\"help\" url=\"man:hosts.allow\">hosts.allow(5)</ulink> man page for details."
 msgstr ""
+"u <filename>&lt;etc&gt;/hosts.allow</filename> ako inače zabranjujete sve usluge sa svih poslužitelja. Pogledajte <ulink type=\"help\" "
+"url=\"man:hosts.allow\">hosts.allow(5)</ulink> stranicu priručnika za pojedinosti."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:829
@@ -957,6 +1045,10 @@ msgid ""
 "is still inherently insecure and should only be used in controlled environments. Also each remote connection takes up lots of "
 "resources, so it is much easier to do a denial of service attack via XDMCP than attacking a webserver."
 msgstr ""
+"Iako GDM pokušava nadmudriti potencijalne napadače koji pokušavaju iskoristiti XDMCP, ipak se savjetuje da blokirate XDMCP ulaz "
+"(uobičajeno UDP ulaz 177) na vatrozidu osim ako je stvarno potreban. GDM štiti od napada uskraćivanjem usluge, ali X protokol je još "
+"uvijek inherentno nesiguran i trebao bi se koristiti samo u kontroliranim okruženjima. Svako udaljeno povezivanje zauzima mnogo "
+"resursa, tako da je mnogo lakše izvršiti napad uskraćivanjem usluge putem XDMCP-a nego napadati web poslužitelj."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:842
@@ -964,11 +1056,13 @@ msgid ""
 "It is also wise to block all of the Xserver ports. These are TCP ports 6000+ (one for each display number) on your firewall. Note that "
 "GDM will use display numbers 20 and higher for flexible on-demand servers."
 msgstr ""
+"Pametno je blokirati sve ulaze X poslužitelja. To su TCP ulazi 6000+ (jedan za svaki broj prikaza) u vatrozidu. Zapamtite da će GDM "
+"koristiti brojeve prikaza 20 i više za prilagodljive poslužitelje na zahtjev."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:849
 msgid "X is not a very safe protocol when using it over the Internet, and XDMCP is even less safe."
-msgstr ""
+msgstr "X nije baš siguran protokol kada se koristi preko Interneta, a XDMCP je još manje siguran."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:856
@@ -981,6 +1075,8 @@ msgid ""
 "GDM may be configured to use PolicyKit to allow the system administrator to control whether the login screen should provide the "
 "shutdown and restart buttons on the greeter screen."
 msgstr ""
+"GDM se može podesiti da koristi PolicyKit kako bi administratoru sustava dopustio upravljanje omogućavanjem tipki isključivanja i "
+"ponovnog pokretanja u zaslonu prijave na zaslonu dobrodošlice."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:870
@@ -989,11 +1085,14 @@ msgid ""
 "freedesktop.consolekit.system.restart-multiple-users</filename> actions respectively. Policy for these actions can be set up using the "
 "polkit-gnome-authorization tool, or the polkit-auth command line program."
 msgstr ""
+"Tim tipkama se upravlja radnjama <filename>org.freedesktop.consolekit.system.stop-multiple-users</filename> i <filename>org."
+"freedesktop.consolekit.system.restart-multiple-users</filename>. Pravila za ove radnje mogu se postaviti pomoću polkit-gnome-"
+"authorization alata ili polkit-auth pragrama naredbenog retka."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:882
 msgid "RBAC (Role Based Access Control)"
-msgstr ""
+msgstr "RBAC (Upravljanje pristupom temeljenom na ulogama)"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:884
@@ -1001,6 +1100,8 @@ msgid ""
 "GDM may be configured to use RBAC instead of PolicyKit. In this case the RBAC configuration is used to control whether the login "
 "screen should provide the shutdown and restart buttons on the greeter screen."
 msgstr ""
+"GDM se može podesiti da koristi RBAC umjesto PolicyKita. U ovom se slučaju RBAC podešavanje koristi za upravljanje omogućavanjem tipki "
+"isključivanja i ponovnog pokretanja u zaslonu prijave na zaslonu dobrodošlice."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:890
@@ -1008,6 +1109,8 @@ msgid ""
 "For example, on Oracle Solaris, the \"solaris.system.shutdown\" authorization is used to control this. Simply modify the <filename>/"
 "etc/user_attr</filename> file so that the \"gdm\" user has this authorization."
 msgstr ""
+"Primjerice, na Oracle Solarisu, \"solaris.system.shutdown\" ovjera se koristi za upravljanje ovim. Jednostavno promijenite <filename>/"
+"etc/user_attr</filename> datoteku tako da \"gdm\" korisnik ima ovu ovlast."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:903
@@ -1021,6 +1124,9 @@ msgid ""
 "ConsoleKit is able to keep track of all the users currently logged in. In this respect, it can be used as a replacement for the utmp "
 "or utmpx files that are available on most Unix-like Operating Systems."
 msgstr ""
+"GDM uključuje podršku za objavljivanje podataka prijave korisnika s radnim okvirom korisnika i sesijom prijave poznatim kao "
+"ConsoleKit. ConsoleKit može pratiti sve trenutno prijavljene korisnike. U tom smislu, može se koristiti kao zamjena za utmp ili utmpx "
+"datoteke koje su dostupne na većini Unixoidnih operativnih sustava."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:922
@@ -1032,6 +1138,12 @@ msgid ""
 "position to know about the user session and to be trusted to provide these bits of information. The use of this privileged method is "
 "restricted by the use of the D-Bus system message bus security policy."
 msgstr ""
+"Kada GDM treba stvoriti novi proces prijave korisnika, pozvat će povlašteni način ConsoleKita kako bi otvorio novu sesiju za "
+"korisnika. U ovom trenutku GDM isto pruža ConsoleKit informacije o ovoj korisničkoj sesiji poput: ID korisnika, X11 naziva zaslona "
+"koji će biti povezan sa sesijom, naziv poslužitelja s kojeg sesija potječe (korisno u slučaju XDMCP sesije ), je li ova sesija "
+"priključena ili nije, itd. Kao entitet koji pokreće korisnički proces, GDM je u jedinstvenom položaju da zna sve o korisničkoj sesiji "
+"i da mu se vjeruje da će pružiti ove informacije. Korištenje ovog povlaštenog načina ograničeno je korištenjem sigurnosnih pravila "
+"sabirnice poruka D-Bus sustava."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:936
@@ -1040,12 +1152,16 @@ msgid ""
 "method of ConsoleKit to unlock that session. The exact details of what happens when the session receives this unlock signal are "
 "undefined and session-specific. However, most sessions will unlock a screensaver in response."
 msgstr ""
+"U slučaju da se korisnik s postojećom sesijom ovjeri na GDM i zatraži nastavak te postojeće sesije, GDM poziva povlašteni način "
+"ConsoleKita za otključavanje dotične sesije. Točne pojedinosti o tome što se događa kada sesija primi ovaj signal za otključavanje "
+"nisu određene i specifične su za sesiju. Ipak, većina sesija će kao odgovor otključati čuvar zaslona."
 
 #. (itstool) path: sect1/para
 #: C/index.docbook:945
 msgid ""
 "When the user chooses to log out, or if GDM or the session quit unexpectedly the user session will be unregistered from ConsoleKit."
 msgstr ""
+"Kada se korisnik odluči odjaviti ili ako se GDM ili sesija neočekivano prekinu, korisnička sesija bit će poništena s ConsoleKita."
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:954
