@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "POT-Creation-Date: 2022-09-09 10:18+0000\n"
-"PO-Revision-Date: 2022-09-19 20:48+0200\n"
+"PO-Revision-Date: 2022-09-20 21:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -695,8 +695,9 @@ msgid ""
 "interact with the user are run in a sandbox. This user and group should have limited privilege."
 msgstr ""
 "Iz sigurnosnih razloga preporuča se namjenski ID korisnika i grupe za pravilan rad. Ovaj korisnik i grupa uobičajeno su \"gdm\" na "
-"većini sustava, ali se mogu podesiti za bilo kojeg korisnika ili grupu. Svi GDM GUI programi pokreću se kao ovaj korisnik, tako da se "
-"programi koji komuniciraju s korisnikom pokreću u sigurnom okruženju. Ovaj korisnik i grupa trebaju imati ograničene dozvole."
+"većini sustava, ali se mogu podesiti za bilo kojeg korisnika ili grupu. Svi programi GDM grafičkog korisničkog sučelja pokreću se kao "
+"ovaj korisnik, tako da se programi koji komuniciraju s korisnikom pokreću u sigurnom okruženju. Ovaj korisnik i grupa trebaju imati "
+"ograničene dozvole."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:584
@@ -717,10 +718,10 @@ msgid ""
 "should be setup to not have a password or allow non-root users to login to the account."
 msgstr ""
 "Ni pod kojim okolnostima ne bi trebali podesiti GDM korisnika/grupu na korisnika kojem korisnik može lako pristupiti, poput korisnik "
-"<filename>nobody</filename>. Svaki korisnik koji dobije pristup Xauth ključu može njuškati i upravljati pokrenutim GUI programima koji "
-"su pokrenuti u pridruženoj sesiji ili izvršiti napad uskraćivanjem usluge. Bitno je osigurati pravilno podešen sustav tako da samo "
-"\"gdm\" korisnik ima pristup ovim datotekama i da se nije lako prijaviti na ovaj račun. Primjerice, račun bi trebao biti postavljen "
-"tako da nema lozinku ili da dopušta nekorijenskim korisnicima prijavu na račun."
+"<filename>nobody</filename>. Svaki korisnik koji dobije pristup Xauth ključu može njuškati i upravljati pokrenutim programima "
+"grafičkog korisničkog sučelja koji su pokrenuti u pridruženoj sesiji ili izvršiti napad uskraćivanjem usluge. Bitno je osigurati "
+"pravilno podešen sustav tako da samo \"gdm\" korisnik ima pristup ovim datotekama i da se nije lako prijaviti na ovaj račun. "
+"Primjerice, račun bi trebao biti postavljen tako da nema lozinku ili da dopušta nekorijenskim korisnicima prijavu na račun."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:605
@@ -749,7 +750,7 @@ msgid ""
 msgstr ""
 "GDM koristi PAM za ovjeru prijave. PAM je kratica za Pluggable Authentication Module, a koristi ga većina programa koji zahtijevaju "
 "ovjeru na vašem računalu. Omogućuje administratoru podešavanje specifičnog ponašanja ovjere za različite programe prijave (kao što su "
-"ssh, GUI za prijavu, čuvar zaslona itd.)"
+"ssh, grafičko korisničko sučelja za prijavu, čuvar zaslona itd.)"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:627
@@ -1175,16 +1176,19 @@ msgid ""
 "general session settings, integration with gnome-settings-daemon configuration, and session configuration. These types of integration "
 "are described in detail below."
 msgstr ""
+"GDM ima brojna sučelja podešavanja. To obuhvaća točke integracije skriptiranja, podešavanje pozadinskog programa, podešavanje zaslona "
+"dobrodošlice, opće postavke sesije, integraciju s gnome-settings-daemon podešavanjem i podešavanjem sesije. Ove vrste integracije "
+"opširno su opisane u nastavku."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:965
 msgid "Scripting Integration Points"
-msgstr ""
+msgstr "Točke integracije skriptiranja"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:967
 msgid "The GDM script integration points can be found in the <filename>&lt;etc&gt;/gdm/</filename> directory:"
-msgstr ""
+msgstr "GDM točke integracije skripte mogu se pronaći u <filename>&lt;etc&gt;/gdm/</filename> direktoriju:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:972
@@ -1197,6 +1201,12 @@ msgid ""
 "PreSession/\n"
 "PostSession/\n"
 msgstr ""
+"\n"
+"Xsession\n"
+"Init/\n"
+"PostLogin/\n"
+"PreSession/\n"
+"PostSession/\n"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:980
@@ -1204,6 +1214,8 @@ msgid ""
 "The <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename>, and <filename>PostSession</filename> "
 "scripts all work as described below."
 msgstr ""
+"Skripte <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename> i <filename>PostSession</filename> "
+"rade kako je opisano u nastavku."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:986
@@ -1214,6 +1226,11 @@ msgid ""
 "as the default script and have the same name as the Xserver DISPLAY value for that display. For example, if the <filename>&lt;"
 "Init&gt;/:0</filename> script exists, it will be run for DISPLAY \":0\"."
 msgstr ""
+"Za svaku vrstu skripte, zadana skripta koja će se izvršiti naziva se \"Default\" i pohranjuje se u direktoriju povezanom s vrstom "
+"skripte. Stoga, zadana <filename>Init</filename> skripta je <filename>&lt;etc&gt;/gdm/Init/Default</filename>. Može se postaviti "
+"skripta za pojedini zaslon, a ako postoji pokrenut će se umjesto zadane skripte. Takve skripte su pohranjene u istom direktoriju kao i "
+"zadana skripta i imaju isti naziv kao Xserver DISPLAY vrijednost za taj zaslon. Primjerice, ako<filename>&lt;Init&gt;/:0</filename> "
+"skripta  postoji, pokrenut će se za DISPLAY \":0\"."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:998
@@ -1222,6 +1239,9 @@ msgid ""
 "that should cause the login session to be aborted. Also note that GDM will block until the scripts finish, so if any of these scripts "
 "hang, this will cause the login process to also hang."
 msgstr ""
+"Sve ove skripte pokreću se s korijenskim ovlastima i vraćaju 0 ako se uspješno izvrše, a do povratnog kôda različitog od nule dolazi "
+"pri bilo kakvom neuspjehu koji uzrokuje prekid prijave sesije. Zapamtite da će GDM biti blokiran sve dok se skripte ne izvrše, pa ako "
+"bilo koja od ovih skripti zastane, to će uzrokovati i zastoj procesa prijave."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1006
@@ -1230,6 +1250,9 @@ msgid ""
 "<filename>Init</filename> script. This script is useful for starting programs that should be run while the login screen is showing, or "
 "for doing any special initialization if required."
 msgstr ""
+"Kada je X poslužitelj za grafičko korisničko sučelje prijave uspješno pokrenut, ali prije nego što se grafičko korisničko sučelje "
+"prijave ustvari prikaže, GDM će pokrenuti <filename>Init</filename> skriptu. Ova skripta korisna je za pokretanje programa koji se "
+"trebaju pokrenuti pri prikazu zaslona prijave, ili po potrebi, za izvođenje bilo kojeg specifičnog pokretanja."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1014
@@ -1238,6 +1261,9 @@ msgid ""
 "session setup has been done, including before the pam_open_session call. This script is useful for doing any session initialization "
 "that needs to happen before the session starts. For example, you might setup the user's $HOME directory if needed."
 msgstr ""
+"Nakon što se korisnik uspješno ovjeri, GDM će pokrenuti <filename>PostLogin</filename> skriptu. Ovo se izvodi prije početka "
+"postavljanja sesije, uključujući prije pam_open_session poziva. Ova skripta je korisna za bilo koje pokretanje sesije koje se treba "
+"dogoditi prije početka sesije. Primjerice, možete postaviti korisnički $HOME direktorij, po potrebi."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1023
@@ -1246,6 +1272,9 @@ msgid ""
 "any session initialization that needs to happen after the session has been initialized. It can be used for session management or "
 "accounting, for example."
 msgstr ""
+"Nakon što se korisnička sesija pokrene, GDM će pokrenuti <filename>PreSession</filename> skriptu. Ova skripta je korisna za bilo koje "
+"pokretanje sesije koje se treba dogoditi nakon što je sesija pokrenuta. Primjerice, može se koristiti za upravljanje sesijom ili "
+"računima."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1031
@@ -1253,6 +1282,8 @@ msgid ""
 "When a user terminates their session, GDM will run the <filename>PostSession</filename> script. Note that the Xserver will have been "
 "stopped by the time this script is run, so it should not be accessed."
 msgstr ""
+"Kada korisnik prekine svoju sesiju, GDM će pokrenuti <filename>PostSession</filename> skriptu. Zapamtite da će X poslužitelj biti "
+"zaustavljen u vremenu izvođenja ove skripte, stoga mu se ne bi trebalo pristupati."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1038
@@ -1260,6 +1291,8 @@ msgid ""
 "Note that the <filename>PostSession</filename> script will be run even when the display fails to respond due to an I/O error or "
 "similar. Thus, there is no guarantee that X applications will work during script execution."
 msgstr ""
+"Još zapamtite da će se <filename>PostSession</filename> skripta pokrenuti čak i kada zaslon ne odgovori uslijed I/U greške ili nešto "
+"sličnog. Stoga nema jamstva da će X aplikacije raditi tijekom izvođenja skripte."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1045
@@ -1268,6 +1301,9 @@ msgid ""
 "scripts are also shared with other display managers, this allows you to identify when GDM is calling these scripts, so you can run "
 "specific code when GDM is used."
 msgstr ""
+"Sve gore navedene skripte će postaviti <filename>$RUNNING_UNDER_GDM</filename> varijablu okruženja na <filename>yes</filename>. Ako se "
+"skripte dijele s drugim upraviteljima zaslona, to vam omogućuje da prepoznate kada GDM poziva te skripte, tako da možete pokrenuti "
+"određeni kôd kada se GDM koristi."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1055
@@ -1281,6 +1317,9 @@ msgid ""
 "org Desktop Application Autostart Specification\". Standard features in the specification may be used to specify programs that should "
 "auto-restart or only be launched if a GConf configuration value is set, etc."
 msgstr ""
+"Direktorij <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> sadrži datoteke u formatu navedenom u \"FreeDesktop.org "
+"specifikaciji automatskog pokretanja aplikacija radne površine\". Standardne značajke u specifikaciji mogu se koristiti za određivanje "
+"programa koji se trebaju automatski ponovno pokrenuti ili pokrenuti samo ako je GConf vrijednost podešavanja postavljena, itd."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1066
@@ -1291,6 +1330,11 @@ msgid ""
 "work. In addition, desktop files are provided for starting various AT programs if the configuration values specified in the "
 "Accessibility Configuration section below are set."
 msgstr ""
+"Sve <filename>.desktop</filename> datoteke u ovom direktoriju uzrokovat će automatsko pokretanje pridruženog programa s grafičkim "
+"korisničkim sučeljem dobrodošlice prijave. Po zadanome, GDM se isporučuje s datotekama koje će automatski pokrenuti sam gdm-simple-"
+"greeter dobrodošlicu grafičkog korisničkog sučelja prijave, gnome-power-manager aplikaciju, gnome-settings-daemon i metacity "
+"upravitelja prozora. Ovi programi su potrebni za rad programa dobrodošlice. Osim toga, .desktop datoteke potrebne su za pokretanje "
+"raznih AT programa ako su vrijednosti podešavanja određene u Podešavanje pristupačnosti u odjeljku ispod."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1080
@@ -1305,6 +1349,10 @@ msgid ""
 "the other scripts. This script is used for actually starting the user session. This script is run as the user, and it will run "
 "whatever session was specified by the Desktop session file the user selected to start."
 msgstr ""
+"Još postoji i <filename>Xsession</filename> skripta koja se nalazi u <filename>&lt;etc&gt;/gdm/Xsession</filename> koja se poziva "
+"između <filename>PreSession</filename> i <filename>PostSession</filename> skripte. Ova skripta ne podržava prikaz po pojedinom zaslonu "
+"kao druge skripte. Ustvari se koristi za pokretanje korisničke sesije. Skripta se pokreće kao korisnik, i pokrenut će bilo koju sesiju "
+"koju je odredila datoteka sesije radne površine, a koju je korisnik odabrao za pokretanje."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1095
