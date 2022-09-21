@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "POT-Creation-Date: 2022-09-09 10:18+0000\n"
-"PO-Revision-Date: 2022-09-21 15:19+0200\n"
+"PO-Revision-Date: 2022-09-21 18:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -1651,23 +1651,23 @@ msgstr ""
 #. (itstool) path: sect3/title
 #: C/index.docbook:1314
 msgid "Greeter Options"
-msgstr "Greeter mogućnosti"
+msgstr "Mogućnosti zaslona dobrodošlice"
 
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1317
 msgid "[greeter]"
-msgstr ""
+msgstr "[greeter]"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1320
 msgid "IncludeAll"
-msgstr ""
+msgstr "IncludeAll"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1322
 #, no-wrap
 msgid "IncludeAll=true"
-msgstr ""
+msgstr "IncludeAll=true"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1323
@@ -1675,6 +1675,8 @@ msgid ""
 "If true, then the face browser will show all users on the local machine. If false, the face browser will only show users who have "
 "recently logged in."
 msgstr ""
+"Ako je true, tada će preglednik lica prikazati sve korisnike na lokalnom računalu. Ako je false, preglednik lica prikazat će samo "
+"nedavno prijavljene korisnike."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1329
@@ -1685,6 +1687,11 @@ msgid ""
 "also filter out any users which do not have a valid shell (valid shells are any shell that getusershell() returns - /sbin/nologin or /"
 "bin/false are considered invalid shells even if getusershell() returns them)."
 msgstr ""
+"Kada je ovaj ključ true, GDM će pozvati fgetpwent() za dobivanje popisa lokalnih korisnika na sustavu. Svi korisnici s ID-jem "
+"korisnika manjim od 500 (ili 100 ako rade na Oracle Solarisu) se filtriraju. Preglednik lica će prikazati sve korisnike koji su se "
+"prije prijavili na sustav (primjerice, NIS/LDAP korisnici). Ovaj popis dobiva se pozivanjem <command>ck-history</command> ConsoleKit "
+"sučelja. Filtrirat će i sve korisnike koji nemaju valjanu ljusku (valjane ljuske su sve ljuske koje getusershell() vraća - /sbin/"
+"nologin ili /bin/false smatraju se nevaljanim ljuskama čak i ako ih getusershell() vraća)."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1343
@@ -1692,18 +1699,19 @@ msgid ""
 "If false, then GDM more simply only displays users that have previously logged in on the system (local or NIS/LDAP users) by calling "
 "the <command>ck-history</command> ConsoleKit interface."
 msgstr ""
+"Ako je false, tada GDM jednostavnije prikazuje samo korisnike koji su se prije prijavili na sustav (lokalne ili NIS/LDAP korisnike) "
+"pozivanjem <command>ck-history</command> ConsoleKit sučelja."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1352
-#, fuzzy
 msgid "Include"
-msgstr "Obuhvati"
+msgstr "Include"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1354
 #, no-wrap
 msgid "Include="
-msgstr ""
+msgstr "Include="
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1355
@@ -1711,18 +1719,19 @@ msgid ""
 "Set to a list of users to always include in the Face Browser. This value is set to a list of users separated by commas. By default, "
 "the value is empty."
 msgstr ""
+"Postavlja popis korisnika koji će uvijek biti uključeni u preglednik lica. Ova vrijednost postavlja popis korisnika odvojenih "
+"zarezima. Po zadanome, vrijednost je prazna."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1364
-#, fuzzy
 msgid "Exclude"
-msgstr "Izuzmi"
+msgstr "Exclude"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1366
 #, no-wrap
 msgid "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
-msgstr ""
+msgstr "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1367
@@ -1731,6 +1740,9 @@ msgid ""
 "setting in the <filename>custom.conf</filename> overrides the default value, so if you wish to add additional users to the list, then "
 "you need to set the value to the default value with additional users appended to the list."
 msgstr ""
+"Postavlja popis korisnika koji će se uvijek isključiti u pregledniku lica. Ova vrijednost postavlja popis korisnika odvojenih "
+"zarezima. Zapamtite da postavka u <filename>custom.conf</filename> zaobilazi zadanu vrijednost, stoga ako želite dodati dodatne "
+"korisnike na popis, morate postaviti vrijednost na zadanu vrijednost s dodatnim korisnicima dodatim na popis."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1381
@@ -1740,18 +1752,18 @@ msgstr "Mogućnosti sigurnosti"
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1384
 msgid "[security]"
-msgstr ""
+msgstr "[security]"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1387
 msgid "DisallowTCP"
-msgstr ""
+msgstr "DisallowTCP"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1389
 #, no-wrap
 msgid "DisallowTCP=true"
-msgstr ""
+msgstr "DisallowTCP=true"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1390
@@ -1759,27 +1771,29 @@ msgid ""
 "If true, then always append <filename>-nolisten tcp</filename> to the command line when starting attached Xservers, thus disallowing "
 "TCP connection. This is a more secure configuration if you are not using remote connections."
 msgstr ""
+"Ako je true, tada uvijek dodajte <filename>-nolisten tcp</filename> u naredbeni redak kada pokrećete priključene X poslužitelje, čime "
+"se onemogućuje TCP povezivanje. Ovo je sigurnije podešavanje ako ne koristite udaljeno povezivanje."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1402
 msgid "XDCMP Support"
-msgstr ""
+msgstr "XDCMP podrška"
 
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1405
 msgid "[xdmcp]"
-msgstr ""
+msgstr "[xdmcp]"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1408
 msgid "DisplaysPerHost"
-msgstr ""
+msgstr "DisplaysPerHost"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1410
 #, no-wrap
 msgid "DisplaysPerHost=1"
-msgstr ""
+msgstr "DisplaysPerHost=1"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1411
@@ -1787,6 +1801,8 @@ msgid ""
 "To prevent attackers from filling up the pending queue, GDM will only allow one connection for each remote computer. If you want to "
 "provide display services to computers with more than one screen, you should increase this value."
 msgstr ""
+"Kako bi spriječio napadače da popune red čekanja, GDM će dopustiti samo jedno povezivanje za pojedino udaljeno računalo. Ako želite "
+"pružiti usluge na računalima s više od jednog zaslona, trebali bi povećati ovu vrijednost."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1418
@@ -1794,16 +1810,18 @@ msgid ""
 "Note that the number of attached DISPLAYS allowed is not limited. Only remote connections via XDMCP are limited by this configuration "
 "option."
 msgstr ""
+"Zapamtite da broj dopuštenih priključenih ZASLONA nije ograničen. Samo XDMCP udaljena povezivanja su ograničena ovom mogućnosti "
+"podešavanja."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1430
 msgid "Setting this to true enables XDMCP support allowing remote displays/X terminals to be managed by GDM."
-msgstr ""
+msgstr "Postavljanje na true omogućuje XDMCP podršku koja omogućuje upravljanje udaljenim zaslonima/X terminalima putem GDM-a."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1435
 msgid "<filename>gdm</filename> listens for requests on UDP port 177. See the Port option for more information."
-msgstr ""
+msgstr "<filename>gdm</filename> osluškuje zahtjeve na UDP ulazu 177. Pogledajte Ulaz mogućnost za više informacija."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1440
@@ -1811,6 +1829,8 @@ msgid ""
 "If GDM is compiled to support it, access from remote displays can be controlled using the TCP Wrappers library. The service name is "
 "<filename>gdm</filename>"
 msgstr ""
+"Ako je GDM kompiliran da ga podržava, pristupom s udaljenih zaslona može se upravljati pomoću TCP Wrappers biblioteke. Naziv usluge je "
+"<filename>gdm</filename>"
 
 #. (itstool) path: para/screen
 #: C/index.docbook:1448
@@ -1819,6 +1839,8 @@ msgid ""
 "\n"
 "gdm:.my.domain\n"
 msgstr ""
+"\n"
+"gdm:.my.domain\n"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1446
@@ -1826,6 +1848,8 @@ msgid ""
 "You should add <_:screen-1/> to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending on your TCP Wrappers configuration. See "
 "the <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> man page for details."
 msgstr ""
+"Trebali bi dodati <_:screen-1/> u svoju <filename>&lt;etc&gt;/hosts.allow</filename> datoteku, ovisno o vašem TCP Wrappers "
+"podešavanju. Pogledajte <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> stranicu priručnika za više pojedinosti."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1457
@@ -1833,17 +1857,19 @@ msgid ""
 "Please note that XDMCP is not a particularly secure protocol and that it is a good idea to block UDP port 177 on your firewall unless "
 "you really need it."
 msgstr ""
+"Zapamtite da XDMCP nije posebno siguran protokol i da je dobra ideja blokirati UDP ulaz 177 na vašem vatrozidu, osim ako vam stvarno "
+"nije potreban."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1466
 msgid "HonorIndirect"
-msgstr ""
+msgstr "HonorIndirect"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1468
 #, no-wrap
 msgid "HonorIndirect=true"
-msgstr ""
+msgstr "HonorIndirect=true"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1469
@@ -1851,17 +1877,19 @@ msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of <filename>gdmchooser</filename>) for X-terminals which do not supply their "
 "own display browser."
 msgstr ""
+"Omogućuje XDMCP INDIRECT odabir (tj. <filename>gdmchooser</filename> daljinsko izvršavanje) za X-terminale koji ne pružaju vlastiti "
+"preglednik zaslona."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1478
 msgid "MaxPending"
-msgstr ""
+msgstr "MaxPending"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1480
 #, no-wrap
 msgid "MaxPending=4"
-msgstr ""
+msgstr "MaxPending=4"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1481
@@ -1869,6 +1897,8 @@ msgid ""
 "To avoid denial of service attacks, GDM has fixed size queue of pending connections. Only MaxPending displays can start at the same "
 "time."
 msgstr ""
+"Kako bi se izbjegli napadi uskraćivanja usluge, GDM ima nepromjenjivu veličinu čekanja povezivanja. Samo MaxPending zasloni mogu se "
+"pokrenuti istovremeno."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1487
@@ -1876,17 +1906,19 @@ msgid ""
 "Please note that this parameter does not limit the number of remote displays which can be managed. It only limits the number of "
 "displays initiating a connection simultaneously."
 msgstr ""
+"Zapamtite da ovaj parametar ne ograničava broj udaljenih zaslona kojima se može upravljati. Ograničava samo broj zaslona koji "
+"istovremeno pokreću povezivanje."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1496
 msgid "MaxSessions"
-msgstr ""
+msgstr "MaxSessions"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1498
 #, no-wrap
 msgid "MaxSessions=16"
-msgstr ""
+msgstr "MaxSessions=16"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1499
@@ -1894,17 +1926,19 @@ msgid ""
 "Determines the maximum number of remote display connections which will be managed simultaneously. I.e. the total number of remote "
 "displays that can use your host."
 msgstr ""
+"Određuje najveći broj povezivanja udaljenog zaslona kojima će se upravljati istovremeno. tj. ukupan broj udaljenih zaslona koji mogu "
+"koristiti vaš poslužitelj."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1508
 msgid "MaxWait"
-msgstr ""
+msgstr "MaxWait"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1510
 #, no-wrap
 msgid "MaxWait=30"
-msgstr ""
+msgstr "MaxWait=30"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1511
@@ -1912,11 +1946,13 @@ msgid ""
 "When GDM is ready to manage a display an ACCEPT packet is sent to it containing a unique session id which will be used in future XDMCP "
 "conversations."
 msgstr ""
+"Kada je GDM spreman za upravljanje zaslonom, šalje mu se ACCEPT paket koji sadrži jedinstveni ID sesije koji će se koristiti u budućim "
+"XDMCP razgovorima."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1517
 msgid "GDM will then place the session id in the pending queue waiting for the display to respond with a MANAGE request."
-msgstr ""
+msgstr "GDM će zatim smjestiti ID sesije u red čekanja čekajući da zaslon odgovori MANAGE zahtjevom."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1522
@@ -1924,17 +1960,19 @@ msgid ""
 "If no response is received within MaxWait seconds, GDM will declare the display dead and erase it from the pending queue freeing up "
 "the slot for other displays."
 msgstr ""
+"Ako se odgovor ne primi unutar MaxWait sekundi, GDM će proglasiti zaslon mrtvim i obrisati ga iz reda čekanja oslobađajući mjesto za "
+"druge zaslone."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1531
 msgid "MaxWaitIndirect"
-msgstr ""
+msgstr "MaxWaitIndirect"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1533
 #, no-wrap
 msgid "MaxWaitIndirect=30"
-msgstr ""
+msgstr "MaxWaitIndirect=30"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1534
@@ -1944,17 +1982,21 @@ msgid ""
 "forgotten and the indirect slot freed up for other displays. The information may be forgotten earlier if there are more hosts trying "
 "to send indirect queries then <filename>MaxPendingIndirect</filename>."
 msgstr ""
+"Parametar MaxWaitIndirect određuje najveći broj sekundi između trenutka kada korisnik odabere poslužitelja i naknadnog neizravnog "
+"upita kada je korisnik povezan s poslužiteljem. Kada se vrijeme čekanja prekorači, podaci o odabranom poslužitelju se zaboravljaju, a "
+"neizravni priključak se oslobađa za druge zaslone. Informacije se mogu zaboraviti ranije ako ima više poslužitelja koji pokušavaju "
+"poslati neizravne upite od <filename>MaxPendingIndirect</filename>."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1548
 msgid "PingIntervalSeconds"
-msgstr ""
+msgstr "PingIntervalSeconds"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1550
 #, no-wrap
 msgid "PingIntervalSeconds=60"
-msgstr ""
+msgstr "PingIntervalSeconds=60"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1551
@@ -1963,6 +2005,9 @@ msgid ""
 "happens the daemon dies with an ALARM signal. Note that GDM 2.20 and earlier multiplied this setting by 2, so it may be necessary to "
 "increase the timeout if upgrading from GDM 2.20 and earlier to a newer version."
 msgstr ""
+"Ako X poslužitelj ne odgovori u određenom broju sekundi, povezivanje se prekida i sesija završava. Kada se to dogodi, pozadinski "
+"program umire sa signalom ALARM. Zapamtite da su GDM 2.20 i starije inačice pomnožile ovu postavku sa 2, stoga će možda biti potrebno "
+"povećati vrijeme čekanja ako nadograđujete s GDM 2.20 i starijih inačica na noviju inačicu."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1560
@@ -1972,17 +2017,21 @@ msgid ""
 "labs), a lag of more than 15 or so seconds would really mean that the terminal was turned off or restarted and you would want to end "
 "the session."
 msgstr ""
+"Zapamtite da je GDM u prošlosti imao <filename>PingInterval</filename> ključ podešavanja koji je bio u minutama. U većini slučajeva "
+"željeli bi da ova postavka bude niža od jedne minute. Ipak, budući da bi u većini slučajeva gdje bi se XDMCP koristio (poput "
+"terminalskih laboratorija), kašnjenje od 15 i više sekundi značilo bi da je terminal isključen ili ponovno pokrenut i da bi htjeli "
+"prekinuti sesiju."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1573
 msgid "Port"
-msgstr "Ulaz"
+msgstr "Port"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1575
 #, no-wrap
 msgid "Port=177"
-msgstr ""
+msgstr "Port=177"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1576
@@ -1990,18 +2039,18 @@ msgid ""
 "The UDP port number <filename>gdm</filename> should listen to for XDMCP requests. Do not change this unless you know what you are "
 "doing."
 msgstr ""
+"Broj UDP ulaza kojeg bi <filename>gdm</filename> trebao osluškivati za XDMCP zahtjeve. Ne mijenjajte ovo ako ne znate što radite."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1585
-#, fuzzy
 msgid "Willing"
-msgstr "Dobrovoljno"
+msgstr "Willing"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1587
 #, no-wrap
 msgid "Willing=&lt;etc&gt;/gdm/Xwilling"
-msgstr ""
+msgstr "Willing=&lt;etc&gt;/gdm/Xwilling"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1588
@@ -2012,11 +2061,15 @@ msgid ""
 "(and only the first line). It runs at most once every 3 seconds to prevent possible denial of service by flooding the machine with "
 "QUERY packets."
 msgstr ""
+"Kada sustav pošalje WILLING paket natrag nakon QUERY, on šalje izraz koji daje trenutno stanje ovog poslužitelja. Zadana poruka je ID "
+"sustava, no moguće je stvoriti skriptu koja prikazuje prilagođenu poruku. Ako ova skripta ne postoji ili je ovaj ključ prazan, šalje "
+"se zadana poruka. Ako ova skripta uspije i proizvede neki izlaz, šalje se prvi redak izlaza (i samo prvi redak). Pokreće se najviše "
+"jednom svake 3 sekunde kako bi se spriječilo moguće odbijanje usluge preopterećenjem sustava sa QUERY paketima."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1607
 msgid "Simple Greeter Configuration"
-msgstr "Jednostavno Greeter podešavanje"
+msgstr "Jednostavno podešavanja zaslona dobrodošlice"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1609
