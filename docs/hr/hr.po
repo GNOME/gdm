@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "POT-Creation-Date: 2022-09-09 10:18+0000\n"
-"PO-Revision-Date: 2022-09-20 21:23+0200\n"
+"PO-Revision-Date: 2022-09-21 15:19+0200\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -617,7 +617,7 @@ msgid ""
 msgstr ""
 "GDM koristi syslog za zapisivanje grešaka i stanja. Može zapisivati i informacije otklanjanja grešaka, što može biti korisno za "
 "pronalaženje problema ako GDM ne radi ispravno. Zapisivanje otklanjanja grešaka može se omogućiti postavljanjem debug/Enable ključa na "
-"\"istina\" u <filename>&lt;etc&gt;/gdm/custom.conf</filename> datoteci."
+"\"true\" u <filename>&lt;etc&gt;/gdm/custom.conf</filename> datoteci."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:524
@@ -1366,12 +1366,15 @@ msgid ""
 "the <filename>gdm.schemas</filename> file. It is recommended that end-users modify the <filename>&lt;etc&gt;/gdm/custom.conf</"
 "filename> file because the schemas file may be overwritten when the user updates their system to have a newer version of GDM."
 msgstr ""
+"GDM pozadinski program se podešava pomoću datoteke <filename>&lt;etc&gt;/gdm/custom.conf</filename>. Zadane vrijednosti pohranjene su "
+"u GConf u <filename>gdm.schemas</filename> datoteci. Preporučuje se da krajnji korisnici mijenjaju datoteku <filename>&lt;etc&gt;/gdm/"
+"custom.conf</filename> jer bi datoteka sheme mogla biti prebrisana kada korisnik nadopuni svoj sustav s novijom GDM inačicom."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1107
 msgid ""
 "Note that older versions of GDM supported additional configuration options which are no longer supported in the latest versions of GDM."
-msgstr ""
+msgstr "Starije GDM inačice su podržavale dodatne mogućnosti podešavanja koje više nisu podržane u novijim GDM inačicama."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1112
@@ -1380,6 +1383,9 @@ msgid ""
 "group sections, strings before an equal sign (=) are keys and the data after equal sign represents their value. Empty lines or lines "
 "starting with the hash mark (#) are ignored."
 msgstr ""
+"Datoteka <filename>&lt;etc&gt;/gdm/custom.conf</filename> je u formatu <filename>datoteke ključa</filename>. Ključne riječi u "
+"zagradama definiraju odjeljke grupe, izrazi ispred znaka jednakosti (=) su ključevi, a podaci nakon znaka jednakosti predstavljaju "
+"njihovu vrijednost. Prazni redci ili redci koji počinju oznakom ljestvice (#) zanemaruju se."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1120
@@ -1388,6 +1394,10 @@ msgid ""
 "Within each group, there are particular key/value pairs that can be specified to modify how GDM behaves. For example, to enable timed "
 "login and specify the timed login user to be a user named \"you\", you would modify the file so it contains the following lines:"
 msgstr ""
+"Datoteka <filename>&lt;etc&gt;/gdm/custom.conf</filename> podržava \"[daemon]\", \"[security]\" i \"[xdmcp]\" odjeljke grupe. Unutar "
+"svake grupe postoje određeni parovi ključ/vrijednost koji se mogu navesti za promjenu GDM ponašanja. Primjerice, za omogućavanje "
+"vremenski određene prijave i određivanja da korisnik s vremenskom prijavom bude korisnik s imenom \"vi\", promijenite datoteku tako da "
+"sadrži sljedeće retke:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:1130
@@ -1398,27 +1408,31 @@ msgid ""
 "TimedLoginEnable=true\n"
 "TimedLogin=you\n"
 msgstr ""
+"\n"
+"[daemon]\n"
+"TimedLoginEnable=true\n"
+"TimedLogin=you\n"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1136
 msgid "A full list of supported configuration keys follow:"
-msgstr ""
+msgstr "Cjelovit popis podržanih ključeva podešavanja slijedi u nastavku:"
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1141
 msgid "[chooser]"
-msgstr ""
+msgstr "[chooser]"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1145
 msgid "Multicast"
-msgstr ""
+msgstr "Multicast"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1147
 #, no-wrap
 msgid "Multicast=false"
-msgstr ""
+msgstr "Multicast=false"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1148
@@ -1426,38 +1440,40 @@ msgid ""
 "If true and IPv6 is enabled, the chooser will send a multicast query to the local network and collect responses from the hosts who "
 "have joined multicast group."
 msgstr ""
+"Ako je true i IPv6 je omogućen, chooser će poslati multicast upit lokalnoj mreži i prikupiti odgovore od poslužitelja koji su se "
+"pridružili multicast grupi."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1157
 msgid "MulticastAddr"
-msgstr ""
+msgstr "MulticastAddr"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1159
 #, no-wrap
 msgid "MulticastAddr=ff02::1"
-msgstr ""
+msgstr "MulticastAddr=ff02::1"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1160
 msgid "This is the Link-local multicast address."
-msgstr ""
+msgstr "Ovo je multicast adresa lokalnog povezivanja."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1169
 msgid "[daemon]"
-msgstr ""
+msgstr "[daemon]"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1172
 msgid "TimedLoginEnable"
-msgstr ""
+msgstr "TimedLoginEnable"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1174
 #, no-wrap
 msgid "TimedLoginEnable=false"
-msgstr ""
+msgstr "TimedLoginEnable=false"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1175
@@ -1470,22 +1486,30 @@ msgid ""
 "user so you should be careful, although if using PAM it can be configured to require password entry before allowing login. Refer to "
 "the \"Security-&gt;PAM\" section of the manual for more information, or for help if this feature does not seem to work."
 msgstr ""
+"Ako korisnik naveden u <filename>TimedLogin</filename> treba biti prijavljen nakon nekoliko sekundi (postavljenih s "
+"<filename>TimedLoginDelay</filename>) neaktivnosti na zaslonu prijave. Ovo je korisno za javne pristupne terminale ili možda čak i za "
+"kućnu upotrebu. Ako korisnik koristi tipkovnicu ili pregledava izbornike, vremensko ograničenje će se vratiti na "
+"<filename>TimedLoginDelay</filename> ili 30 sekundi, ovisno o tome što je više. Ako korisnik ne upiše korisničko ime, već samo "
+"pritisne tipku ENTER dok program prijave zatraži korisničko ime, tada će GDM pretpostaviti da se korisnik želi odmah prijaviti kao "
+"vremenski ograničeni korisnik. Zapamtite da se za ovog korisnika neće zatražiti lozinka, stoga bi trebali biti oprezni, iako ako "
+"koristite PAM, može se podesiti tako da zahtijeva upis lozinke prije omogućavanja prijave. Pogledajte \"PAM sigurnost\" odlomak "
+"priručnika za više informacija ili za pomoć ako ova značajka slučajno ne radi."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1197
 msgid "TimedLogin"
-msgstr ""
+msgstr "TimedLogin"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1199
 #, no-wrap
 msgid "TimedLogin="
-msgstr ""
+msgstr "TimedLogin="
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1200
 msgid "This is the user that should be logged in after a specified number of seconds of inactivity."
-msgstr ""
+msgstr "Ovo je korisnik koji bi se trebao prijaviti nakon određenog broja sekundi neaktivnosti."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1204 C/index.docbook:1248
@@ -1495,33 +1519,37 @@ msgid ""
 "possible to specify the user in a per-display fashion. For example if the value is \"/usr/bin/getloginuser|\", then the program \"/usr/"
 "bin/getloginuser\" will be run to get the user value."
 msgstr ""
+"Ako vrijednost završava okomitom crtom | (simbol okomite crte), tada će GDM izvršiti navedeni program i koristiti bilo koju vrijednost "
+"koja se vrati na standardnom izlazu iz programa kao korisnik. Program se izvodi s postavljenom varijablom okruženja DISPLAY stoga je "
+"moguće navesti korisnika u prikazu po pojedinom zaslonu. Primjerice, ako je vrijednost \"/usr/bin/getloginuser|\", tada će se "
+"pokrenuti \"/usr/bin/getloginuser\" program kako bi se dobila korisnikova vrijednost."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1218
 msgid "TimedLoginDelay"
-msgstr ""
+msgstr "TimedLoginDelay"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1220
 #, no-wrap
 msgid "TimedLoginDelay=30"
-msgstr ""
+msgstr "TimedLoginDelay=30"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1221
 msgid "Delay in seconds before the <filename>TimedLogin</filename> user will be logged in."
-msgstr ""
+msgstr "Odgoda u sekundama prije nego što se <filename>TimedLogin</filename> korisnik prijavi."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1229
 msgid "AutomaticLoginEnable"
-msgstr ""
+msgstr "AutomaticLoginEnable"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1231
 #, no-wrap
 msgid "AutomaticLoginEnable=false"
-msgstr ""
+msgstr "AutomaticLoginEnable=false"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1232
@@ -1529,27 +1557,29 @@ msgid ""
 "If true, the user given in <filename>AutomaticLogin</filename> should be logged in immediately. This feature is like timed login with "
 "a delay of 0 seconds."
 msgstr ""
+"Ako je true, korisnik naveden u <filename>AutomaticLogin</filename> trebao bi se odmah prijaviti. Ova je značajka poput vremenski "
+"ograničene prijave s odgodom od 0 sekundi."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1241
 msgid "AutomaticLogin"
-msgstr ""
+msgstr "AutomaticLogin"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1243
 #, no-wrap
 msgid "AutomaticLogin="
-msgstr ""
+msgstr "AutomaticLogin="
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1244
 msgid "This is the user that should be logged in immediately if <filename>AutomaticLoginEnable</filename> is true."
-msgstr ""
+msgstr "Ovo je korisnik koji bi se trebao odmah prijaviti ako je <filename>AutomaticLoginEnable</filename> true."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1262
 msgid "User"
-msgstr "Korisnik"
+msgstr "User"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1264
@@ -1563,6 +1593,8 @@ msgid ""
 "The username under which the greeter and other GUI programs are run. Refer to the <filename>Group</filename> configuration key and to "
 "the \"Security-&gt;GDM User And Group\" section of this document for more information."
 msgstr ""
+"Korisničko ime pod kojim se pokreće dobrodošlica i drugi programi s grafičkim sučeljem. Pogledajte ključ podešavanja <filename>Grupe</"
+"filename> i \"Sigurnost-GDM korisnik i grupe\" odlomak u ovom dokumentu."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1275
@@ -1581,6 +1613,8 @@ msgid ""
 "The group name under which the greeter and other GUI programs are run. Refer to the <filename>User</filename> configuration key and to "
 "the \"Security-&gt;GDM User And Group\" section of this document for more information."
 msgstr ""
+"Naziv grupe pod kojim se pokreće dobrodošlica i drugi programi s grafičkim sučeljem. Pogledajte ključ podešavanja <filename>Grupe</"
+"filename> i \"Sigurnost-GDM korisnik i grupe\" odlomak u ovom dokumentu."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1290
@@ -1590,18 +1624,18 @@ msgstr "Mogućnosti otklanjanja grešaka"
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1293
 msgid "[debug]"
-msgstr ""
+msgstr "[debug]"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1296 C/index.docbook:1427
 msgid "Enable"
-msgstr ""
+msgstr "Enable"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1298 C/index.docbook:1429
 #, no-wrap
 msgid "Enable=false"
-msgstr ""
+msgstr "Enable=false"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1299
@@ -1610,6 +1644,9 @@ msgid ""
 "GDM. Then debug output will be sent to the system log file (<filename>&lt;var&gt;/log/messages</filename> or <filename>&lt;var&gt;/adm/"
 "messages</filename> depending on your Operating System)."
 msgstr ""
+"Kako bi omogućili otklanjanje grešaka, postavite debug/Enable ključ na \"true\" u <filename>&lt;etc&gt;/gdm/custom.conf</filename> "
+"datoteci i ponovno pokrenite GDM. Zatim će se sadržaj otklanjanja grešaka bilježiti u datoteku zapisa sustava (<filename>&lt;var&gt;/"
+"log/messages</filename> ili <filename>&lt;var&gt;/adm/messages</filename> ovisno o vašem operativnom sustavu)."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1314
