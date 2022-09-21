@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "POT-Creation-Date: 2022-09-09 10:18+0000\n"
-"PO-Revision-Date: 2022-09-21 18:35+0200\n"
+"PO-Revision-Date: 2022-09-22 00:30+0200\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -2079,91 +2079,95 @@ msgid ""
 "directory to store GConf settings. These values can be edited using the <command>gconftool-2</command> or <command>gconf-editor</"
 "command> programs. The following configuration options are supported:"
 msgstr ""
+"Zadani GDM zaslon dobrodošlice naziva se jednostavnim zaslonom dobrodošlice i podešava se putem GConfa. Zadane vrijednosti pohranjene "
+"su u GConf u <filename>gdm-simple-greeter.schemas</filename> datoteci. Ove zadane postavke mogu se zaobići ako \"gdm\" korisnik ima "
+"$HOME direktorij s dozvolom pisanja za pohranu GConf postavki. Ove vrijednosti mogu se uređivati pomoću <command>gconftool-2</command> "
+"ili <command>gconf-editor</command> programa. Podržane su sljedeće mogućnosti podešavanja:"
 
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1620
 msgid "Greeter Configuration Keys"
-msgstr ""
+msgstr "Ključevi podešavanja dobrodošlice"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1623
 msgid "/apps/gdm/simple-greeter/banner_message_enable"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/banner_message_enable"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1625 C/index.docbook:1646 C/index.docbook:1657 C/index.docbook:1722 C/index.docbook:1787 C/index.docbook:1798
 #: C/index.docbook:1809 C/index.docbook:1820
 #, no-wrap
 msgid "false (boolean)"
-msgstr ""
+msgstr "false (boolean)"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1626
 msgid "Controls whether the banner message text is displayed."
-msgstr ""
+msgstr "Upravlja hoće li se prikazati natpis teksta poruke."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1633
 msgid "/apps/gdm/simple-greeter/banner_message_text"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/banner_message_text"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1635
 #, no-wrap
 msgid "NULL (string)"
-msgstr ""
+msgstr "NULL (string)"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1636
 msgid "Specifies the text banner message to show on the greeter window."
-msgstr ""
+msgstr "Određuje natpis teksta poruke koja će se prikazati u prozoru dobrodošlice."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1644
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1647
 msgid "Controls whether to show the restart buttons in the login window."
-msgstr ""
+msgstr "Upravlja hoće li se u prozoru prijave prikazati tipke za ponovno pokretanje."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1655
 msgid "/apps/gdm/simple-greeter/disable_user_list"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/disable_user_list"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1658
 msgid "If true, then the face browser with known users is not shown in the login window."
-msgstr ""
+msgstr "Ako je true, preglednik lica s poznatim korisnicima nije prikazan u prozoru prijave."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1666
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/logo_icon_name"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1668
 #, no-wrap
 msgid "computer (string)"
-msgstr ""
+msgstr "computer (string)"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1669
 msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
+msgstr "Postavite naziv tematske ikone koja će se koristiti za logotip dobrodošlice."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1676
 msgid "/apps/gdm/simple-greeter/recent-languages"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/recent-languages"
 
 #. (itstool) path: listitem/synopsis
 #: C/index.docbook:1678 C/index.docbook:1700
 #, no-wrap
 msgid "[] (string list)"
-msgstr ""
+msgstr "[] (string list)"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1679
@@ -2172,6 +2176,9 @@ msgid ""
 "system default language is shown and the option \"Other...\" which pops-up a dialog box showing a full list of available languages "
 "which the user can select."
 msgstr ""
+"Postavite popis jezika koji će se po zadanome prikazivati u prozoru prijave. Zadana vrijednost je \"[]\". Sa zadanom postavkom "
+"prikazan je samo zadani jezik sustava i mogućnost \"Ostalo...\" koja otvara dijalog koji prikazuje potpuni popis dostupnih jezika koje "
+"korisnik može odabrati."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1687
@@ -2180,11 +2187,13 @@ msgid ""
 "and will show them in the language combo box along with the \"Other...\" choice. This way, commonly selected languages are easier to "
 "select."
 msgstr ""
+"Korisnici ne namjeravaju ručno mijenjati ovu postavku. Umjesto toga, GDM prati sve jezike odabrane u ovom ključu podešavanja i "
+"prikazat će ih u dijalogu odabira jezika zajedno s \"Ostalo...\" odabirom. Na taj način lakše je odabrati najčešće odabrane jezike."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1698
 msgid "/apps/gdm/simple-greeter/recent-layouts"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/recent-layouts"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1701
@@ -2193,6 +2202,9 @@ msgid ""
 "the system default keyboard layout is shown and the option \"Other...\" which pops-up a dialog box showing a full list of available "
 "keyboard layouts which the user can select."
 msgstr ""
+"Postavite popis rasporeda tipkovnice koji će se po zadanome prikazivati na panelu prijave. Zadana vrijednost je \"[]\". Sa zadanom "
+"postavkom prikazan je samo zadani raspored tipkovnice sustava i mogućnost \"Ostalo...\" koja prikazuje dijalog koji prikazuje potpuni "
+"popis dostupnih rasporeda tipkovnice koje korisnik može odabrati."
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1709
@@ -2201,16 +2213,19 @@ msgid ""
 "key, and will show them in the keyboard layout combo box along with the \"Other...\" choice. This way, commonly selected keyboard "
 "layouts are easier to select."
 msgstr ""
+"Korisnici ne namjeravaju ručno mijenjati ovu postavku. Umjesto toga, GDM prati sve rasporede tipkovnice odabrane u ovom ključu "
+"podešavanja i prikazat će ih u dijalogu odabira rasporeda tipkovnica zajedno s \"Ostalo...\" odabirom. Na taj način lakše je odabrati "
+"najčešće odabrane rasporede tipkovnice."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1720
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1723
 msgid "Controls whether compiz is used as the window manager instead of metacity."
-msgstr ""
+msgstr "Upravlja hoće li se compiz koristiti kao upravitelj prozora umjesto metacityja."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1733
@@ -2220,12 +2235,12 @@ msgstr "Podešavanje pristupačnosti"
 #. (itstool) path: sect2/para
 #: C/index.docbook:1735
 msgid "This section describes the accessibility configuration options available in GDM."
-msgstr ""
+msgstr "Ovaj odlomak opisuje GDM dostupne mogućnosti podešavanja pristupačnosti."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1741
 msgid "GDM Accessibility Dialog And GConf Keys"
-msgstr ""
+msgstr "GDM dijalog pristupačnosti i GConf ključevi"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1743
@@ -2233,6 +2248,9 @@ msgid ""
 "The GDM greeter panel at the login screen displays an accessibility icon. Clicking on that icon opens the GDM Accessibility Dialog. In "
 "the GDM Accessibility Dialog, there is a list of checkboxes, so the user can enable or disable the associated assistive tools."
 msgstr ""
+"GDM panel dobrodošlice na zaslonu prijave prikazuje ikonu pristupačnosti. Klikom na tu ikonu otvara se dijalog GDM pristupačnosti. U "
+"dijalogu GDM pristupačnosti nalazi se popis s preklopnicima pomoću kojih korisnik može omogućiti ili onemogućiti pridružene pomoćne "
+"alate."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1750
@@ -2244,6 +2262,12 @@ msgid ""
 "automatically reset to a default state after the user has logged in. Consequently, the assistive tools that were running during the "
 "last GDM login session will automatically be launched at the next GDM login session."
 msgstr ""
+"Poreklopnici koji odgovaraju zaslonskoj tipkovnici, zaslonskom povećalu i pomoćnim alatima za čitač zaslona djeluju na tri GConf "
+"ključa opisana u sljedećem odlomku ovog dokumenta. Omogućavanjem ili onemogućavanjem ovih preklopnika, pridruženi GConf ključ "
+"postavlja se na \"true\" ili \"false\". Kada je ključ GConf postavljen na true, pokreću se pomoćni alati povezani s tim GConf ključem. "
+"Kada je GConf ključ postavljen na \"false\", svi pokrenuti pomoćni alati povezani s ovim GConf ključem se zatvaraju. Ovi GConf "
+"ključevi se ne vraćaju automatski na zadano stanje nakon što se korisnik prijavi. Posljedično, pomoćni alati koji su bili pokrenuti "
+"tijekom posljednje GDM prijave sesije automatski će se pokrenuti u sljedećoj GDM prijavi sesije."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1764
@@ -2252,26 +2276,29 @@ msgid ""
 "provide the accessibility features that they offer. These other options correspond to accessibility features that are provided by the "
 "Xserver, which is always running during the GDM session."
 msgstr ""
+"Ostali preklopnici u dijalogu GDM pristupačnosti nemaju odgovarajuće GConf ključeve jer se ne pokreće nikakav dodatni program za "
+"pružanje značajki pristupačnosti koje nude. Ove druge mogućnosti odgovaraju značajkama pristupačnosti koje pruža X poslužitelj, koji "
+"je uvijek pokrenut tijekom GDM sesije."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1774
 msgid "Accessibility GConf Keys"
-msgstr ""
+msgstr "GConf ključevi pristupačnosti"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1776
 msgid "GDM offers the following GConf keys to control its accessibility features:"
-msgstr ""
+msgstr "GDM nudi sljedeće GConf ključeve za upravljanje svojih značajki pristupačnosti:"
 
 #. (itstool) path: variablelist/title
 #: C/index.docbook:1782
 msgid "GDM Configuration Keys"
-msgstr ""
+msgstr "GDM ključevi podešavanja"
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1785
 msgid "/desktop/gnome/interface/accessibility"
-msgstr ""
+msgstr "/desktop/gnome/interface/accessibility"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1788
@@ -2279,11 +2306,13 @@ msgid ""
 "Controls whether the Accessibility infrastructure will be started with the GDM GUI. This is needed for many accessibility technology "
 "programs to work."
 msgstr ""
+"Upravlja hoće li se infrastruktura pristupačnosti pokrenuti s GDM grafičkim korisničkim sučeljem. Ovo je potrebno za rad mnogih "
+"programa tehnologije pristupačnosti."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1796
 msgid "/desktop/gnome/applications/at/screen_magnifier_enabled"
-msgstr ""
+msgstr "/desktop/gnome/applications/at/screen_magnifier_enabled"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1799
@@ -2291,11 +2320,13 @@ msgid ""
 "If set, then the assistive tools linked to this GConf key will be started with the GDM GUI program. By default this is a screen "
 "magnifier application."
 msgstr ""
+"Ako je postavljeno, tada će se pomoćni alati povezani s ovim GConf ključem pokrenuti s GDM grafičkim korisničkim sučeljem. Po zadanome "
+"ovo je aplikacija za povećanje zaslona."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1807
 msgid "/desktop/gnome/applications/at/screen_keyboard_enabled"
-msgstr ""
+msgstr "/desktop/gnome/applications/at/screen_keyboard_enabled"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1810
@@ -2303,11 +2334,13 @@ msgid ""
 "If set, then the assistive tools linked to this GConf key will be started with the GDM GUI program. By default this is an on-screen "
 "keyboard application."
 msgstr ""
+"Ako je postavljeno, tada će se pomoćni alati povezani s ovim GConf ključem pokrenuti s GDM grafičkim korisničkim sučeljem. Po zadanome "
+"ovo je aplikacija zaslonske tipkovnice."
 
 #. (itstool) path: varlistentry/term
 #: C/index.docbook:1818
 msgid "/desktop/gnome/applications/at/screen_reader_enabled"
-msgstr ""
+msgstr "/desktop/gnome/applications/at/screen_reader_enabled"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1821
@@ -2315,11 +2348,13 @@ msgid ""
 "If set, then the assistive tools linked to this GConf key will be started with the GDM GUI program. By default this is a screen reader "
 "application."
 msgstr ""
+"Ako je postavljeno, tada će se pomoćni alati povezani s ovim GConf ključem pokrenuti s GDM grafičkim korisničkim sučeljem. Po zadanome "
+"ovo je aplikacija čitača zaslona."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1832
 msgid "Linking GConf Keys to Accessibility Tools"
-msgstr ""
+msgstr "Povezivanje GConf ključeva s alatima pristupačmosti"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1834
@@ -2329,6 +2364,11 @@ msgid ""
 "of this manual. Any desktop file in the GDM autostart directory can be linked to these GConf key via specifying that GConf key in the "
 "AutostartCondition value in the desktop file. So the exact AutostartCondition line in the desktop file could be one of the following:"
 msgstr ""
+"Za screen_magnifier_enabled, screen_keyboard_enabled i screen_reader_enabled GConf ključeve, pomoćni alat koji se pokreće ovisi o "
+"datotekama radne površine koje se nalaze u GDM direktoriju automatskog pokretanja kao što je opisano u odlomku \"Podešavanje "
+"automatskog pokretanja\" ovog priručnika. Bilo koja datoteka radne površine u GDM direktoriju automatskog pokretanja može se povezati "
+"s ovim GConf ključem navođenjem tog GConf ključa u AutostartCondition vrijednostima u datoteci radne površine. Stoga, točan redak "
+"AutostartCondition u datoteci radne površine može biti jedan od sljedećeg:"
 
 #. (itstool) path: sect3/screen
 #: C/index.docbook:1846
@@ -2339,6 +2379,10 @@ msgid ""
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled\n"
 msgstr ""
+"\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled\n"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1852
@@ -2347,11 +2391,15 @@ msgid ""
 "(unless the Hidden key is set to true in that desktop file). A single GConf key can even start multiple assistive tools if there are "
 "multiple desktop files with this AutostartCondition in the GDM autostart directory."
 msgstr ""
+"Kada je ključ pristupačnosti true, tada će se pokrenuti bilo koji program koji je povezan s tim ključem u datoteci radne površine za "
+"GDM automatsko pokretanje (osim ako je Hidden ključ postavljen na true u toj datoteci radne površine). Jedan GConf ključ može čak "
+"pokrenuti više pomoćnih alata ako postoji više datoteka radne površine s ovim AutostartCondition mogućnosti u GDM direktoriju "
+"automatskog pokretanja."
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1862
 msgid "Example Of Modifying Accessibility Tool Configuration"
-msgstr ""
+msgstr "Primjer promjene podešavanja alata pristupačnosti"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1864
@@ -2360,6 +2408,9 @@ msgid ""
 "if desired. To replace GOK with the on-screen keyboard application \"onboard\" and additionally activate the assistive tool "
 "\"mousetweaks\" for dwelling support, then the following configuration is needed."
 msgstr ""
+"Primjerice, ako se GNOME distribuira s GOK-om kao zadanom zaslonskom tipkovnicom, to se po potrebi može zamijeniti drugim programom. "
+"Za zamjenu GOK-a s \"onboard\" aplikacijom zaslonske tipkovnice i dodatno aktiviranje pomoćnog alata \"mousetweaks\" za dwelling "
+"podršku, potrebno je sljedeće podešavanje."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1872
@@ -2368,11 +2419,14 @@ msgid ""
 "must be placed in the GDM autostart directory and be in the format as explained in the \"Autostart Configuration\" section of this "
 "document."
 msgstr ""
+"Stvorite datoteku radne površine za onboard i drugu za mousetweaks; primjerice, onboard.desktop i mousetweaks.desktop. Ove datoteke "
+"moraju biti smještene u GDM direktorij automatskog pokretanja i biti u formatu kako je objašnjeno u odlomku \"Podešavanje automatskog "
+"pokretanja\" ovog dokumenta."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1880
 msgid "The following is an example <filename>onboard.desktop</filename> file:"
-msgstr ""
+msgstr "Slijedi primjer datoteke <filename>onboard.desktop</filename>:"
 
 #. (itstool) path: sect3/screen
 #: C/index.docbook:1884
@@ -2391,11 +2445,23 @@ msgid ""
 "Categories=GNOME;GTK;Accessibility;\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 msgstr ""
+"\n"
+"[Desktop Entry]\n"
+"Encoding=UTF-8\n"
+"Name=Onboard Onscreen Keyboard\n"
+"Comment=Use an on-screen keyboard\n"
+"TryExec=onboard\n"
+"Exec=onboard --size 500x180 -x 20 -y 10\n"
+"Terminal=false\n"
+"Type=Application\n"
+"StartupNotify=true\n"
+"Categories=GNOME;GTK;Accessibility;\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1898
 msgid "The following is an example <filename>mousetweaks.desktop</filename> file:"
-msgstr ""
+msgstr "Slijedi primjer datoteke <filename>mousetweaks.desktop</filename>:"
 
 #. (itstool) path: sect3/screen
 #: C/index.docbook:1903
@@ -2414,11 +2480,24 @@ msgid ""
 "Categories=GNOME;GTK;Accessibility;\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 msgstr ""
+"\n"
+"[Desktop Entry]\n"
+"Encoding=UTF-8\n"
+"Name=Software Mouse-Clicks\n"
+"Comment=Perform clicks by dwelling with the pointer\n"
+"TryExec=mousetweaks\n"
+"Exec=mousetweaks --enable-dwell -m window -c -x 20 -y 240 \n"
+"Terminal=false\n"
+"Type=Application\n"
+"StartupNotify=true\n"
+"Categories=GNOME;GTK;Accessibility;\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1917
 msgid "Note the line with the AutostartCondition that links both desktop files to the GConf key for the on-screen keyboard."
 msgstr ""
+"Obratite pozornost na redak s AutostartCondition koji povezuje obje datoteke radne površine s GConf ključem za zaslonsku tipkovnicu."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1922
@@ -2427,6 +2506,9 @@ msgid ""
 "GOK would simultaneously be started. This can be done by removing the gok.desktop file from the GDM autostart directory, or by adding "
 "the \"Hidden=true\" key setting to the gok.desktop file."
 msgstr ""
+"Kako bi onemogućili pokretanje GOK-a, morate ukloniti ili deaktivirati datoteku radne površine za GOK zaslonsku tipkovnicu. U "
+"suprotnome, onboard i GOK bi se pokrenuli istovremeno. To se može učiniti uklanjanjem datoteke gok.desktop iz GDM direktorija "
+"automatskog pokretanja ili dodavanjem postavke \"Hidden=true\" ključa gok.desktop datoteci."
 
 #. (itstool) path: sect3/para
 #: C/index.docbook:1930
@@ -2434,6 +2516,8 @@ msgid ""
 "After making these changes, GOK will no longer be started when the user activates the on-screen keyboard in the GDM session; but "
 "onboard and mousetweaks will instead be launched."
 msgstr ""
+"Nakon uvođenja ovih promjena, GOK se više neće pokretati kada korisnik aktivira zaslonsku tipkovnicu u GDM sesiji; ali onboard i "
+"mousetweaks će se umjesto pokrenuti."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1939
@@ -2447,6 +2531,10 @@ msgid ""
 "GConf settings. For each of these settings the Greeter will use the default value unless it is specifically overridden by a) GDM's "
 "installed mandatory policy b) system mandatory policy. GDM installs its own mandatory policy to lock down some settings for security."
 msgstr ""
+"GDM zaslon dobrodošlice koristi isti radni okvir koji će koristiti vaša sesija radne površine. Stoga, na njega utječe nekoliko istih "
+"GConf postavki. Za svaku od ovih postavki zaslon dobrodošlice će koristiti zadanu vrijednost osim ako je izričito zaobilazi a) "
+"instalirana GDM obvezna pravila b) obvezna pravila sustava. GDM instalira vlastita obavezna pravila za zaključavanje pojedinih "
+"postavki radi sigurnosti."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1959
@@ -2456,12 +2544,12 @@ msgstr "GNOME postavke pozadinskog programa"
 #. (itstool) path: sect2/para
 #: C/index.docbook:1972
 msgid "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, background, sound, xsettings."
-msgstr ""
+msgstr "GDM omogućuje sljedeće gnome-settings-daemon priključke: a11y-keyboard, background, sound i xsettings."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1977
 msgid "These are responsible for things like the background image, font and theme settings, sound events, etc."
-msgstr ""
+msgstr "Oni su odgovorni za stvari poput pozadinske slike, postavki slova i teme, zvučnih događaja itd."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1982
@@ -2469,6 +2557,8 @@ msgid ""
 "Plugins can also be disabled using GConf. For example, if you want to disable the sound plugin then unset the following key: "
 "<filename>/apps/gdm/simple-greeter/settings-manager-plugins/sound/active</filename>."
 msgstr ""
+"Priključci se mogu onemogućiti pomoću GConfa. Primjerice, ako želite onemogućiti priključak zvuka, odznačite sljedeći ključ: "
+"<filename>/apps/gdm/simple-greeter/settings-manager-plugins/sound/active</filename>."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:1990
@@ -2482,6 +2572,9 @@ msgid ""
 "url=\"http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec\"> http://www.freedesktop.org/wiki/Specifications/desktop-"
 "entry-spec</ulink>."
 msgstr ""
+"GDM sesije određene su pomoću FreeDesktop.org specifikacije unosa radne površine, na koju upućuje sljedeći URL: <ulink url=\"http://"
+"www.freedesktop.org/wiki/Specifications/desktop-entry-spec\"> http: //www.freedesktop.org/wiki/Specifications/desktop-entry-spec</"
+"ulink>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:1999
@@ -2492,11 +2585,16 @@ msgid ""
 "default the <filename>&lt;dmconfdir&gt;</filename> is set to <filename>&lt;etc&gt;/dm/</filename> unless GDM is configured to use a "
 "different directory via the \"--with-dmconfdir\" option."
 msgstr ""
+"Po zadanome, GDM će instalirati datoteke radne površine u direktorij <filename>&lt;share&gt;/xsessions</filename>. GDM će pretraživati "
+"sljedeće direktorije ovim redoslijedom kako bi pronašao datoteke radne površine: <filename>&lt;etc&gt;/X11/sessions/</filename>, "
+"<filename>&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt; share&gt;/xsessions</filename> i <filename>&lt;share&gt;/gdm/"
+"BuiltInSessions</filename>. Po zadanome <filename>&lt;dmconfdir&gt;</filename> je postavljen na <filename>&lt;etc&gt;/dm/</filename> "
+"osim ako GDM nije podešen za korištenje drugog direktorija putem \"--with-dmconfdir\" mogućnosti."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2012
 msgid "A session can be disabled by editing the desktop file and adding a line as follows: <filename>Hidden=true</filename>."
-msgstr ""
+msgstr "Sesija se može onemogućiti uređivanjem datoteke radne površine i dodavanjem sljedećeg retka: <filename>Hidden=true</filename>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2017
@@ -2508,11 +2606,18 @@ msgid ""
 "filename> script avoids setting up the user session with the normal system and user settings, sessions started this way can be useful "
 "for debugging problems in the system or user scripts that might be preventing a user from being able to start a session."
 msgstr ""
+"GDM datoteke radne površine podržavaju GDM specifično proširenje, ključ naziva \"X-GDM-BypassXsession\". Ako ključ nije naveden u "
+"datoteci radne površine, zadana vrijednost je \"false\". Ako je ovaj ključ naveden kao \"true\" u datoteci radne površine, tada će GDM "
+"pokrenuti program određen \"Exec\" ključem datoteke radne površine izravno pri pokretanju korisničke sesije. Neće pokrenuti program "
+"putem <filename>&lt;etc&gt;/gdm/Xsession</filename> skripte, što je normalno ponašanje. Budući da se zaobilaženjem <filename>&lt;"
+"etc&gt;/gdm/Xsession</filename> skripte izbjegava postavljanje korisničke sesije s normalnim postavkama sustava i korisnika, sesije "
+"započete na ovaj način mogu biti korisne za otklanjanje grešaka u sustavu ili korisničkim skriptama koje možda sprječavaju korisnika "
+"da pokrene sesiju."
 
 #. (itstool) path: sect2/title
 #: C/index.docbook:2036
 msgid "GDM User Session and Language Configuration"
-msgstr ""
+msgstr "GDM korisnička sesija i podešavanje jezika"
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2037
@@ -2521,6 +2626,9 @@ msgid ""
 "time, this file is created with the user's initial choices. The user can change these default values by simply changing to a different "
 "value when logging in. GDM will remember this change for subsequent logins."
 msgstr ""
+"Korisnikova zadana sesija i odabir jezika pohranjeni su u <filename>~/.dmrc</filename> datoteci. Kada se korisnik prijavi po prvi "
+"puta, ova datoteka se stvara s početnim odabirom korisnika. Korisnik može promijeniti ove zadane vrijednosti jednostavnom promjenom na "
+"drugu vrijednost pri prijavi. GDM će zapamtiti ovu promjenu za sljedeće prijave."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2045
@@ -2528,6 +2636,8 @@ msgid ""
 "The <filename>~/.dmrc</filename> file is in the standard <filename>INI</filename> format. It has one section called "
 "<filename>[Desktop]</filename> which has two keys: <filename>Session</filename> and <filename>Language</filename>."
 msgstr ""
+"Datoteka <filename>~/.dmrc</filename> je u standardnom <filename>INI</filename> formatu. Ima jedan odjeljak pod nazivom "
+"<filename>[Desktop]</filename> koji ima dva ključa: <filename>Session</filename> i <filename>Language</filename>."
 
 #. (itstool) path: sect2/para
 #: C/index.docbook:2052
@@ -2537,6 +2647,9 @@ msgid ""
 "the user wishes to use by default. If either of these keys is missing, the system default is used. The file would normally look as "
 "follows:"
 msgstr ""
+"Ključ <filename>Session</filename> navodi osnovni naziv datoteke sesije <filename>.desktop</filename> koju korisnik želi normalno "
+"koristiti bez datotečnog nastavka <filename>.desktop</filename>. Ključ <filename>Language</filename> određuje jezik koji korisnik želi "
+"koristiti po zadanome. Ako jedan od ovih ključeva nedostaje, koristi se zadana vrijednost sustava. Datoteka uobičajeno izgleda ovako:"
 
 #. (itstool) path: sect2/screen
 #: C/index.docbook:2061
@@ -2547,6 +2660,10 @@ msgid ""
 "Session=gnome\n"
 "Language=cs_CZ.UTF-8\n"
 msgstr ""
+"\n"
+"[Desktop]\n"
+"Session=gnome\n"
+"Language=hr_HR.UTF-8\n"
 
 #. (itstool) path: sect1/title
 #: C/index.docbook:2073
