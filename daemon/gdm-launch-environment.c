@@ -56,8 +56,9 @@
 
 extern char **environ;
 
-struct GdmLaunchEnvironmentPrivate
+struct _GdmLaunchEnvironment
 {
+        GObject         parent;
         GdmSession     *session;
         char           *command;
         GPid            pid;
@@ -110,7 +111,7 @@ static void     gdm_launch_environment_class_init    (GdmLaunchEnvironmentClass 
 static void     gdm_launch_environment_init          (GdmLaunchEnvironment      *launch_environment);
 static void     gdm_launch_environment_finalize      (GObject                   *object);
 
-G_DEFINE_TYPE_WITH_PRIVATE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 
 static char *
 get_var_cb (const char *var,
@@ -176,13 +177,13 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                                      g_strdup (g_getenv (optional_environment[i])));
         }
 
-        if (launch_environment->priv->x11_authority_file != NULL)
-                g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (launch_environment->priv->x11_authority_file));
+        if (launch_environment->x11_authority_file != NULL)
+                g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (launch_environment->x11_authority_file));
 
-        if (launch_environment->priv->session_mode != NULL) {
-                g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->priv->session_mode));
+        if (launch_environment->session_mode != NULL) {
+                g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->session_mode));
 
-		if (strcmp (launch_environment->priv->session_mode, INITIAL_SETUP_SESSION_MODE) != 0) {
+		if (strcmp (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) != 0) {
 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
 			g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
 			g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
@@ -195,9 +196,9 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 		}
         }
 
-        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->priv->user_name));
-        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->priv->user_name));
-        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (launch_environment->priv->user_name));
+        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->user_name));
+        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->user_name));
+        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (launch_environment->user_name));
 
         g_hash_table_insert (hash, g_strdup ("GDM_VERSION"), g_strdup (VERSION));
         g_hash_table_remove (hash, "MAIL");
@@ -206,7 +207,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
         g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
 
-        gdm_get_pwent_for_name (launch_environment->priv->user_name, &pwent);
+        gdm_get_pwent_for_name (launch_environment->user_name, &pwent);
         if (pwent != NULL) {
                 if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
                         g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pwent->pw_dir));
@@ -216,10 +217,10 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pwent->pw_shell));
         }
 
-        if (start_session && launch_environment->priv->x11_display_seat_id != NULL) {
+        if (start_session && launch_environment->x11_display_seat_id != NULL) {
                 char *seat_id;
 
-                seat_id = launch_environment->priv->x11_display_seat_id;
+                seat_id = launch_environment->x11_display_seat_id;
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
         }
@@ -229,7 +230,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         /* Now populate XDG_DATA_DIRS from env.d if we're running initial setup; this allows
          * e.g. Flatpak apps to be recognized by gnome-shell.
          */
-        if (g_strcmp0 (launch_environment->priv->session_mode, INITIAL_SETUP_SESSION_MODE) == 0)
+        if (g_strcmp0 (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) == 0)
                 gdm_load_env_d (load_env_func, get_var_cb, hash);
 
         /* Prepend our own XDG_DATA_DIRS value */
@@ -245,7 +246,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                                               system_data_dirs));
         g_free (system_data_dirs);
 
-        g_object_get (launch_environment->priv->session,
+        g_object_get (launch_environment->session,
                       "supported-session-types",
                       &supported_session_types,
                       NULL);
@@ -269,7 +270,7 @@ on_session_setup_complete (GdmSession        *session,
 
         g_hash_table_iter_init (&iter, hash);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
-                gdm_session_set_environment_variable (launch_environment->priv->session, key, value);
+                gdm_session_set_environment_variable (launch_environment->session, key, value);
         }
         g_hash_table_destroy (hash);
 }
@@ -280,10 +281,10 @@ on_session_opened (GdmSession           *session,
                    const char           *session_id,
                    GdmLaunchEnvironment *launch_environment)
 {
-        launch_environment->priv->session_id = g_strdup (session_id);
+        launch_environment->session_id = g_strdup (session_id);
 
         g_signal_emit (G_OBJECT (launch_environment), signals [OPENED], 0);
-        gdm_session_start_session (launch_environment->priv->session, service_name);
+        gdm_session_start_session (launch_environment->session, service_name);
 }
 
 static void
@@ -292,7 +293,7 @@ on_session_started (GdmSession           *session,
                     int                   pid,
                     GdmLaunchEnvironment *launch_environment)
 {
-        launch_environment->priv->pid = pid;
+        launch_environment->pid = pid;
         g_signal_emit (G_OBJECT (launch_environment), signals [STARTED], 0);
 }
 
@@ -301,7 +302,7 @@ on_session_exited (GdmSession           *session,
                    int                   exit_code,
                    GdmLaunchEnvironment *launch_environment)
 {
-        gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
+        gdm_session_stop_conversation (launch_environment->session, "gdm-launch-environment");
 
         g_signal_emit (G_OBJECT (launch_environment), signals [EXITED], 0, exit_code);
 }
@@ -311,7 +312,7 @@ on_session_died (GdmSession           *session,
                  int                   signal_number,
                  GdmLaunchEnvironment *launch_environment)
 {
-        gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
+        gdm_session_stop_conversation (launch_environment->session, "gdm-launch-environment");
 
         g_signal_emit (G_OBJECT (launch_environment), signals [DIED], 0, signal_number);
 }
@@ -333,17 +334,17 @@ on_conversation_started (GdmSession           *session,
         char             *log_path;
         char             *log_file;
 
-        if (launch_environment->priv->x11_display_name != NULL)
-                log_file = g_strdup_printf ("%s-greeter.log", launch_environment->priv->x11_display_name);
+        if (launch_environment->x11_display_name != NULL)
+                log_file = g_strdup_printf ("%s-greeter.log", launch_environment->x11_display_name);
         else
                 log_file = g_strdup ("greeter.log");
 
         log_path = g_build_filename (LOGDIR, log_file, NULL);
         g_free (log_file);
 
-        gdm_session_setup_for_program (launch_environment->priv->session,
+        gdm_session_setup_for_program (launch_environment->session,
                                        "gdm-launch-environment",
-                                       launch_environment->priv->user_name,
+                                       launch_environment->user_name,
                                        log_path);
         g_free (log_path);
 }
@@ -355,13 +356,13 @@ on_conversation_stopped (GdmSession           *session,
 {
         GdmSession *conversation_session;
 
-        conversation_session = launch_environment->priv->session;
-        launch_environment->priv->session = NULL;
+        conversation_session = launch_environment->session;
+        launch_environment->session = NULL;
 
         g_debug ("GdmLaunchEnvironment: conversation stopped");
 
-        if (launch_environment->priv->pid > 1) {
-                gdm_signal_pid (-launch_environment->priv->pid, SIGTERM);
+        if (launch_environment->pid > 1) {
+                gdm_signal_pid (-launch_environment->pid, SIGTERM);
                 g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
         }
 
@@ -410,10 +411,10 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 
         g_debug ("GdmLaunchEnvironment: Starting...");
 
-        if (!gdm_get_pwent_for_name (launch_environment->priv->user_name, &passwd_entry)) {
+        if (!gdm_get_pwent_for_name (launch_environment->user_name, &passwd_entry)) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
                              "Unknown user %s",
-                             launch_environment->priv->user_name);
+                             launch_environment->user_name);
                 goto out;
         }
 
@@ -421,8 +422,8 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         gid = passwd_entry->pw_gid;
 
         g_debug ("GdmLaunchEnvironment: Setting up run time dir %s",
-                 launch_environment->priv->runtime_dir);
-        if (!ensure_directory_with_uid_gid (launch_environment->priv->runtime_dir, uid, gid, error)) {
+                 launch_environment->runtime_dir);
+        if (!ensure_directory_with_uid_gid (launch_environment->runtime_dir, uid, gid, error)) {
                 goto out;
         }
 
@@ -430,64 +431,64 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, error))
                 goto out;
 
-        launch_environment->priv->session = gdm_session_new (launch_environment->priv->verification_mode,
-                                                             uid,
-                                                             launch_environment->priv->x11_display_name,
-                                                             launch_environment->priv->x11_display_hostname,
-                                                             launch_environment->priv->x11_display_device,
-                                                             launch_environment->priv->x11_display_seat_id,
-                                                             launch_environment->priv->x11_authority_file,
-                                                             launch_environment->priv->x11_display_is_local,
-                                                             NULL);
+        launch_environment->session = gdm_session_new (launch_environment->verification_mode,
+                                                       uid,
+                                                       launch_environment->x11_display_name,
+                                                       launch_environment->x11_display_hostname,
+                                                       launch_environment->x11_display_device,
+                                                       launch_environment->x11_display_seat_id,
+                                                       launch_environment->x11_authority_file,
+                                                       launch_environment->x11_display_is_local,
+                                                       NULL);
 
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "conversation-started",
                                  G_CALLBACK (on_conversation_started),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "conversation-stopped",
                                  G_CALLBACK (on_conversation_stopped),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "setup-complete",
                                  G_CALLBACK (on_session_setup_complete),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "session-opened",
                                  G_CALLBACK (on_session_opened),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "session-started",
                                  G_CALLBACK (on_session_started),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "session-exited",
                                  G_CALLBACK (on_session_exited),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "session-died",
                                  G_CALLBACK (on_session_died),
                                  launch_environment,
                                  0);
-        g_signal_connect_object (launch_environment->priv->session,
+        g_signal_connect_object (launch_environment->session,
                                  "hostname-selected",
                                  G_CALLBACK (on_hostname_selected),
                                  launch_environment,
                                  0);
 
-        gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
-        gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
+        gdm_session_start_conversation (launch_environment->session, "gdm-launch-environment");
+        gdm_session_select_program (launch_environment->session, launch_environment->command);
 
-        if (launch_environment->priv->session_type != NULL) {
-                g_object_set (G_OBJECT (launch_environment->priv->session),
+        if (launch_environment->session_type != NULL) {
+                g_object_set (G_OBJECT (launch_environment->session),
                               "session-type",
-                              launch_environment->priv->session_type,
+                              launch_environment->session_type,
                               NULL);
         }
 
@@ -503,14 +504,14 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 gboolean
 gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
 {
-        if (launch_environment->priv->pid > 1) {
-                gdm_signal_pid (-launch_environment->priv->pid, SIGTERM);
+        if (launch_environment->pid > 1) {
+                gdm_signal_pid (-launch_environment->pid, SIGTERM);
         }
 
-        if (launch_environment->priv->session != NULL) {
-                gdm_session_close (launch_environment->priv->session);
+        if (launch_environment->session != NULL) {
+                gdm_session_close (launch_environment->session);
 
-                g_clear_object (&launch_environment->priv->session);
+                g_clear_object (&launch_environment->session);
         }
 
         g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
@@ -521,107 +522,107 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
 GdmSession *
 gdm_launch_environment_get_session (GdmLaunchEnvironment *launch_environment)
 {
-        return launch_environment->priv->session;
+        return launch_environment->session;
 }
 
 char *
 gdm_launch_environment_get_session_id (GdmLaunchEnvironment *launch_environment)
 {
-        return g_strdup (launch_environment->priv->session_id);
+        return g_strdup (launch_environment->session_id);
 }
 
 static void
 _gdm_launch_environment_set_verification_mode (GdmLaunchEnvironment           *launch_environment,
                                                GdmSessionVerificationMode      verification_mode)
 {
-        launch_environment->priv->verification_mode = verification_mode;
+        launch_environment->verification_mode = verification_mode;
 }
 
 static void
 _gdm_launch_environment_set_session_type (GdmLaunchEnvironment *launch_environment,
                                           const char           *session_type)
 {
-        g_free (launch_environment->priv->session_type);
-        launch_environment->priv->session_type = g_strdup (session_type);
+        g_free (launch_environment->session_type);
+        launch_environment->session_type = g_strdup (session_type);
 }
 
 static void
 _gdm_launch_environment_set_session_mode (GdmLaunchEnvironment *launch_environment,
                                           const char           *session_mode)
 {
-        g_free (launch_environment->priv->session_mode);
-        launch_environment->priv->session_mode = g_strdup (session_mode);
+        g_free (launch_environment->session_mode);
+        launch_environment->session_mode = g_strdup (session_mode);
 }
 
 static void
 _gdm_launch_environment_set_x11_display_name (GdmLaunchEnvironment *launch_environment,
                                               const char           *name)
 {
-        g_free (launch_environment->priv->x11_display_name);
-        launch_environment->priv->x11_display_name = g_strdup (name);
+        g_free (launch_environment->x11_display_name);
+        launch_environment->x11_display_name = g_strdup (name);
 }
 
 static void
 _gdm_launch_environment_set_x11_display_seat_id (GdmLaunchEnvironment *launch_environment,
                                                  const char           *sid)
 {
-        g_free (launch_environment->priv->x11_display_seat_id);
-        launch_environment->priv->x11_display_seat_id = g_strdup (sid);
+        g_free (launch_environment->x11_display_seat_id);
+        launch_environment->x11_display_seat_id = g_strdup (sid);
 }
 
 static void
 _gdm_launch_environment_set_x11_display_hostname (GdmLaunchEnvironment *launch_environment,
                                                   const char           *name)
 {
-        g_free (launch_environment->priv->x11_display_hostname);
-        launch_environment->priv->x11_display_hostname = g_strdup (name);
+        g_free (launch_environment->x11_display_hostname);
+        launch_environment->x11_display_hostname = g_strdup (name);
 }
 
 static void
 _gdm_launch_environment_set_x11_display_device (GdmLaunchEnvironment *launch_environment,
                                                 const char           *name)
 {
-        g_free (launch_environment->priv->x11_display_device);
-        launch_environment->priv->x11_display_device = g_strdup (name);
+        g_free (launch_environment->x11_display_device);
+        launch_environment->x11_display_device = g_strdup (name);
 }
 
 static void
 _gdm_launch_environment_set_x11_display_is_local (GdmLaunchEnvironment *launch_environment,
                                                   gboolean              is_local)
 {
-        launch_environment->priv->x11_display_is_local = is_local;
+        launch_environment->x11_display_is_local = is_local;
 }
 
 static void
 _gdm_launch_environment_set_x11_authority_file (GdmLaunchEnvironment *launch_environment,
                                                 const char           *file)
 {
-        g_free (launch_environment->priv->x11_authority_file);
-        launch_environment->priv->x11_authority_file = g_strdup (file);
+        g_free (launch_environment->x11_authority_file);
+        launch_environment->x11_authority_file = g_strdup (file);
 }
 
 static void
 _gdm_launch_environment_set_user_name (GdmLaunchEnvironment *launch_environment,
                                        const char           *name)
 {
-        g_free (launch_environment->priv->user_name);
-        launch_environment->priv->user_name = g_strdup (name);
+        g_free (launch_environment->user_name);
+        launch_environment->user_name = g_strdup (name);
 }
 
 static void
 _gdm_launch_environment_set_runtime_dir (GdmLaunchEnvironment *launch_environment,
                                          const char           *dir)
 {
-        g_free (launch_environment->priv->runtime_dir);
-        launch_environment->priv->runtime_dir = g_strdup (dir);
+        g_free (launch_environment->runtime_dir);
+        launch_environment->runtime_dir = g_strdup (dir);
 }
 
 static void
 _gdm_launch_environment_set_command (GdmLaunchEnvironment *launch_environment,
                                      const char           *name)
 {
-        g_free (launch_environment->priv->command);
-        launch_environment->priv->command = g_strdup (name);
+        g_free (launch_environment->command);
+        launch_environment->command = g_strdup (name);
 }
 
 static void
@@ -689,40 +690,40 @@ gdm_launch_environment_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_VERIFICATION_MODE:
-                g_value_set_enum (value, self->priv->verification_mode);
+                g_value_set_enum (value, self->verification_mode);
                 break;
         case PROP_SESSION_TYPE:
-                g_value_set_string (value, self->priv->session_type);
+                g_value_set_string (value, self->session_type);
                 break;
         case PROP_SESSION_MODE:
-                g_value_set_string (value, self->priv->session_mode);
+                g_value_set_string (value, self->session_mode);
                 break;
         case PROP_X11_DISPLAY_NAME:
-                g_value_set_string (value, self->priv->x11_display_name);
+                g_value_set_string (value, self->x11_display_name);
                 break;
         case PROP_X11_DISPLAY_SEAT_ID:
-                g_value_set_string (value, self->priv->x11_display_seat_id);
+                g_value_set_string (value, self->x11_display_seat_id);
                 break;
         case PROP_X11_DISPLAY_HOSTNAME:
-                g_value_set_string (value, self->priv->x11_display_hostname);
+                g_value_set_string (value, self->x11_display_hostname);
                 break;
         case PROP_X11_DISPLAY_DEVICE:
-                g_value_set_string (value, self->priv->x11_display_device);
+                g_value_set_string (value, self->x11_display_device);
                 break;
         case PROP_X11_DISPLAY_IS_LOCAL:
-                g_value_set_boolean (value, self->priv->x11_display_is_local);
+                g_value_set_boolean (value, self->x11_display_is_local);
                 break;
         case PROP_X11_AUTHORITY_FILE:
-                g_value_set_string (value, self->priv->x11_authority_file);
+                g_value_set_string (value, self->x11_authority_file);
                 break;
         case PROP_USER_NAME:
-                g_value_set_string (value, self->priv->user_name);
+                g_value_set_string (value, self->user_name);
                 break;
         case PROP_RUNTIME_DIR:
-                g_value_set_string (value, self->priv->runtime_dir);
+                g_value_set_string (value, self->runtime_dir);
                 break;
         case PROP_COMMAND:
-                g_value_set_string (value, self->priv->command);
+                g_value_set_string (value, self->command);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -828,7 +829,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, opened),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -838,7 +839,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, started),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -848,7 +849,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                 g_signal_new ("stopped",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, stopped),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -858,7 +859,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, exited),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -869,7 +870,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                 g_signal_new ("died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, died),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -881,7 +882,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                 g_signal_new ("hostname-selected",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmLaunchEnvironmentClass, hostname_selected),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -893,11 +894,8 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
 static void
 gdm_launch_environment_init (GdmLaunchEnvironment *launch_environment)
 {
-
-        launch_environment->priv = gdm_launch_environment_get_instance_private (launch_environment);
-
-        launch_environment->priv->command = NULL;
-        launch_environment->priv->session = NULL;
+        launch_environment->command = NULL;
+        launch_environment->session = NULL;
 }
 
 static void
@@ -910,24 +908,24 @@ gdm_launch_environment_finalize (GObject *object)
 
         launch_environment = GDM_LAUNCH_ENVIRONMENT (object);
 
-        g_return_if_fail (launch_environment->priv != NULL);
+        g_return_if_fail (launch_environment != NULL);
 
         gdm_launch_environment_stop (launch_environment);
 
-        if (launch_environment->priv->session) {
-                g_object_unref (launch_environment->priv->session);
+        if (launch_environment->session) {
+                g_object_unref (launch_environment->session);
         }
 
-        g_free (launch_environment->priv->command);
-        g_free (launch_environment->priv->user_name);
-        g_free (launch_environment->priv->runtime_dir);
-        g_free (launch_environment->priv->x11_display_name);
-        g_free (launch_environment->priv->x11_display_seat_id);
-        g_free (launch_environment->priv->x11_display_device);
-        g_free (launch_environment->priv->x11_display_hostname);
-        g_free (launch_environment->priv->x11_authority_file);
-        g_free (launch_environment->priv->session_id);
-        g_free (launch_environment->priv->session_type);
+        g_free (launch_environment->command);
+        g_free (launch_environment->user_name);
+        g_free (launch_environment->runtime_dir);
+        g_free (launch_environment->x11_display_name);
+        g_free (launch_environment->x11_display_seat_id);
+        g_free (launch_environment->x11_display_device);
+        g_free (launch_environment->x11_display_hostname);
+        g_free (launch_environment->x11_authority_file);
+        g_free (launch_environment->session_id);
+        g_free (launch_environment->session_type);
 
         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
 }

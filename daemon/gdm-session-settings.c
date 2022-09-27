@@ -34,8 +34,9 @@
 
 #include <act/act-user-manager.h>
 
-struct _GdmSessionSettingsPrivate
+struct _GdmSessionSettings
 {
+        GObject parent;
         ActUserManager *user_manager;
         ActUser *user;
         char *session_name;
@@ -64,9 +65,7 @@ enum {
         PROP_IS_LOADED
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (GdmSessionSettings,
-                            gdm_session_settings,
-                            G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
 
 static void
 gdm_session_settings_class_init (GdmSessionSettingsClass *settings_class)
@@ -91,8 +90,8 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
         object_class->get_property = gdm_session_settings_get_property;
 
         param_spec = g_param_spec_string ("session-name", "Session Name",
-                                        "The name of the session",
-                                        NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                                          "The name of the session",
+                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_SESSION_NAME, param_spec);
 
         param_spec = g_param_spec_string ("session-type", "Session Type",
@@ -101,9 +100,9 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
         g_object_class_install_property (object_class, PROP_SESSION_TYPE, param_spec);
 
         param_spec = g_param_spec_string ("language-name", "Language Name",
-                                        "The name of the language",
-                                        NULL,
-                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                          "The name of the language",
+                                          NULL,
+                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_LANGUAGE_NAME, param_spec);
 
         param_spec = g_param_spec_boolean ("is-loaded", NULL, NULL,
@@ -114,12 +113,7 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
 static void
 gdm_session_settings_init (GdmSessionSettings *settings)
 {
-        settings->priv = G_TYPE_INSTANCE_GET_PRIVATE (settings,
-                                                     GDM_TYPE_SESSION_SETTINGS,
-                                                     GdmSessionSettingsPrivate);
-
-        settings->priv->user_manager = act_user_manager_get_default ();
-
+        settings->user_manager = act_user_manager_get_default ();
 }
 
 static void
@@ -130,12 +124,12 @@ gdm_session_settings_finalize (GObject *object)
 
         settings = GDM_SESSION_SETTINGS (object);
 
-        if (settings->priv->user != NULL) {
-                g_object_unref (settings->priv->user);
+        if (settings->user != NULL) {
+                g_object_unref (settings->user);
         }
 
-        g_free (settings->priv->session_name);
-        g_free (settings->priv->language_name);
+        g_free (settings->session_name);
+        g_free (settings->language_name);
 
         parent_class = G_OBJECT_CLASS (gdm_session_settings_parent_class);
 
@@ -150,9 +144,9 @@ gdm_session_settings_set_language_name (GdmSessionSettings *settings,
 {
         g_return_if_fail (GDM_IS_SESSION_SETTINGS (settings));
 
-        if (settings->priv->language_name == NULL ||
-            strcmp (settings->priv->language_name, language_name) != 0) {
-                settings->priv->language_name = g_strdup (language_name);
+        if (settings->language_name == NULL ||
+            strcmp (settings->language_name, language_name) != 0) {
+                settings->language_name = g_strdup (language_name);
                 g_object_notify (G_OBJECT (settings), "language-name");
         }
 }
@@ -163,9 +157,9 @@ gdm_session_settings_set_session_name (GdmSessionSettings *settings,
 {
         g_return_if_fail (GDM_IS_SESSION_SETTINGS (settings));
 
-        if (settings->priv->session_name == NULL ||
-            strcmp (settings->priv->session_name, session_name) != 0) {
-                settings->priv->session_name = g_strdup (session_name);
+        if (settings->session_name == NULL ||
+            strcmp (settings->session_name, session_name) != 0) {
+                settings->session_name = g_strdup (session_name);
                 g_object_notify (G_OBJECT (settings), "session-name");
         }
 }
@@ -176,9 +170,9 @@ gdm_session_settings_set_session_type (GdmSessionSettings *settings,
 {
         g_return_if_fail (GDM_IS_SESSION_SETTINGS (settings));
 
-        if (settings->priv->session_type == NULL ||
-            g_strcmp0 (settings->priv->session_type, session_type) != 0) {
-                settings->priv->session_type = g_strdup (session_type);
+        if (settings->session_type == NULL ||
+            g_strcmp0 (settings->session_type, session_type) != 0) {
+                settings->session_type = g_strdup (session_type);
                 g_object_notify (G_OBJECT (settings), "session-type");
         }
 }
@@ -187,21 +181,21 @@ char *
 gdm_session_settings_get_language_name (GdmSessionSettings *settings)
 {
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
-        return g_strdup (settings->priv->language_name);
+        return g_strdup (settings->language_name);
 }
 
 char *
 gdm_session_settings_get_session_name (GdmSessionSettings *settings)
 {
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
-        return g_strdup (settings->priv->session_name);
+        return g_strdup (settings->session_name);
 }
 
 char *
 gdm_session_settings_get_session_type (GdmSessionSettings *settings)
 {
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
-        return g_strdup (settings->priv->session_type);
+        return g_strdup (settings->session_type);
 }
 
 static void
@@ -244,15 +238,15 @@ gdm_session_settings_get_property (GObject    *object,
 
         switch (prop_id) {
                 case PROP_SESSION_NAME:
-                        g_value_set_string (value, settings->priv->session_name);
+                        g_value_set_string (value, settings->session_name);
                 break;
 
                 case PROP_SESSION_TYPE:
-                        g_value_set_string (value, settings->priv->session_type);
+                        g_value_set_string (value, settings->session_type);
                 break;
 
                 case PROP_LANGUAGE_NAME:
-                        g_value_set_string (value, settings->priv->language_name);
+                        g_value_set_string (value, settings->language_name);
                 break;
 
                 case PROP_IS_LOADED:
@@ -278,11 +272,11 @@ gdm_session_settings_new (void)
 gboolean
 gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
 {
-        if (settings->priv->user == NULL) {
+        if (settings->user == NULL) {
                 return FALSE;
         }
 
-        return act_user_is_loaded (settings->priv->user);
+        return act_user_is_loaded (settings->user);
 }
 
 static void
@@ -292,17 +286,17 @@ load_settings_from_user (GdmSessionSettings *settings)
         const char *session_type;
         const char *language_name;
 
-        if (!act_user_is_loaded (settings->priv->user)) {
+        if (!act_user_is_loaded (settings->user)) {
                 g_warning ("GdmSessionSettings: trying to load user settings from unloaded user");
                 return;
         }
 
         /* if the user doesn't have saved state, they don't have any settings worth reading */
-        if (!act_user_get_saved (settings->priv->user))
+        if (!act_user_get_saved (settings->user))
                 goto out;
 
-        session_type = act_user_get_session_type (settings->priv->user);
-        session_name = act_user_get_session (settings->priv->user);
+        session_type = act_user_get_session_type (settings->user);
+        session_name = act_user_get_session (settings->user);
 
         g_debug ("GdmSessionSettings: saved session is %s (type %s)", session_name, session_type);
 
@@ -314,7 +308,7 @@ load_settings_from_user (GdmSessionSettings *settings)
                 gdm_session_settings_set_session_name (settings, session_name);
         }
 
-        language_name = act_user_get_language (settings->priv->user);
+        language_name = act_user_get_language (settings->user);
 
         g_debug ("GdmSessionSettings: saved language is %s", language_name);
         if (language_name != NULL && language_name[0] != '\0') {
@@ -330,9 +324,9 @@ on_user_is_loaded_changed (ActUser            *user,
                            GParamSpec         *pspec,
                            GdmSessionSettings *settings)
 {
-        if (act_user_is_loaded (settings->priv->user)) {
+        if (act_user_is_loaded (settings->user)) {
                 load_settings_from_user (settings);
-                g_signal_handlers_disconnect_by_func (G_OBJECT (settings->priv->user),
+                g_signal_handlers_disconnect_by_func (G_OBJECT (settings->user),
                                                       G_CALLBACK (on_user_is_loaded_changed),
                                                       settings);
         }
@@ -348,23 +342,23 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
 
-        if (settings->priv->user != NULL) {
-                old_user = settings->priv->user;
+        if (settings->user != NULL) {
+                old_user = settings->user;
 
-                g_signal_handlers_disconnect_by_func (G_OBJECT (settings->priv->user),
+                g_signal_handlers_disconnect_by_func (G_OBJECT (settings->user),
                                                       G_CALLBACK (on_user_is_loaded_changed),
                                                       settings);
         } else {
                 old_user = NULL;
         }
 
-        settings->priv->user = act_user_manager_get_user (settings->priv->user_manager,
+        settings->user = act_user_manager_get_user (settings->user_manager,
                                                           username);
 
         g_clear_object (&old_user);
 
-        if (!act_user_is_loaded (settings->priv->user)) {
-                g_signal_connect (settings->priv->user,
+        if (!act_user_is_loaded (settings->user)) {
+                g_signal_connect (settings->user,
                                   "notify::is-loaded",
                                   G_CALLBACK (on_user_is_loaded_changed),
                                   settings);
@@ -386,7 +380,7 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
         g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (gdm_session_settings_is_loaded (settings), FALSE);
 
-        user = act_user_manager_get_user (settings->priv->user_manager,
+        user = act_user_manager_get_user (settings->user_manager,
                                           username);
 
 
@@ -395,22 +389,22 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
                 return FALSE;
         }
 
-        if (settings->priv->session_name != NULL) {
-                act_user_set_session (user, settings->priv->session_name);
+        if (settings->session_name != NULL) {
+                act_user_set_session (user, settings->session_name);
         }
 
-        if (settings->priv->session_type != NULL) {
-                act_user_set_session_type (user, settings->priv->session_type);
+        if (settings->session_type != NULL) {
+                act_user_set_session_type (user, settings->session_type);
         }
 
-        if (settings->priv->language_name != NULL) {
-                act_user_set_language (user, settings->priv->language_name);
+        if (settings->language_name != NULL) {
+                act_user_set_language (user, settings->language_name);
         }
 
         if (!act_user_is_local_account (user)) {
                 g_autoptr (GError) error = NULL;
 
-                act_user_manager_cache_user (settings->priv->user_manager, username, &error);
+                act_user_manager_cache_user (settings->user_manager, username, &error);
 
                 if (error != NULL) {
                         g_debug ("GdmSessionSettings: Could not locally cache remote user: %s", error->message);

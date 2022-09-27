@@ -31,30 +31,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_XDMCP_CHOOSER_DISPLAY         (gdm_xdmcp_chooser_display_get_type ())
-#define GDM_XDMCP_CHOOSER_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_XDMCP_CHOOSER_DISPLAY, GdmXdmcpChooserDisplay))
-#define GDM_XDMCP_CHOOSER_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_XDMCP_CHOOSER_DISPLAY, GdmXdmcpChooserDisplayClass))
-#define GDM_IS_XDMCP_CHOOSER_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_XDMCP_CHOOSER_DISPLAY))
-#define GDM_IS_XDMCP_CHOOSER_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_XDMCP_CHOOSER_DISPLAY))
-#define GDM_XDMCP_CHOOSER_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_XDMCP_CHOOSER_DISPLAY, GdmXdmcpChooserDisplayClass))
-
-typedef struct GdmXdmcpChooserDisplayPrivate GdmXdmcpChooserDisplayPrivate;
-
-typedef struct
-{
-        GdmXdmcpDisplay                parent;
-} GdmXdmcpChooserDisplay;
-
-typedef struct
-{
-        GdmXdmcpDisplayClass   parent_class;
-
-        void (* hostname_selected)          (GdmXdmcpChooserDisplay *display,
-                                             const char             *hostname);
-} GdmXdmcpChooserDisplayClass;
-
-GType                     gdm_xdmcp_chooser_display_get_type                 (void);
-
+#define GDM_TYPE_XDMCP_CHOOSER_DISPLAY (gdm_xdmcp_chooser_display_get_type ())
+G_DECLARE_FINAL_TYPE (GdmXdmcpChooserDisplay, gdm_xdmcp_chooser_display, GDM, XDMCP_CHOOSER_DISPLAY, GdmXdmcpDisplay)
 
 GdmDisplay *              gdm_xdmcp_chooser_display_new                      (const char              *hostname,
                                                                               int                      number,

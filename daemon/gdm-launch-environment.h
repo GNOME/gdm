@@ -27,43 +27,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_LAUNCH_ENVIRONMENT         (gdm_launch_environment_get_type ())
-#define GDM_LAUNCH_ENVIRONMENT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_LAUNCH_ENVIRONMENT, GdmLaunchEnvironment))
-#define GDM_LAUNCH_ENVIRONMENT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_LAUNCH_ENVIRONMENT, GdmLaunchEnvironmentClass))
-#define GDM_IS_LAUNCH_ENVIRONMENT(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_LAUNCH_ENVIRONMENT))
-#define GDM_IS_LAUNCH_ENVIRONMENT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_LAUNCH_ENVIRONMENT))
-#define GDM_LAUNCH_ENVIRONMENT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_LAUNCH_ENVIRONMENT, GdmLaunchEnvironmentClass))
-
-typedef struct GdmLaunchEnvironmentPrivate GdmLaunchEnvironmentPrivate;
-
-typedef struct
-{
-        GObject                   parent;
-        GdmLaunchEnvironmentPrivate *priv;
-} GdmLaunchEnvironment;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-
-        /* methods */
-        gboolean (*start)          (GdmLaunchEnvironment  *launch_environment);
-        gboolean (*stop)           (GdmLaunchEnvironment  *launch_environment);
-
-
-        /* signals */
-        void (* opened)            (GdmLaunchEnvironment  *launch_environment);
-        void (* started)           (GdmLaunchEnvironment  *launch_environment);
-        void (* stopped)           (GdmLaunchEnvironment  *launch_environment);
-        void (* exited)            (GdmLaunchEnvironment  *launch_environment,
-                                    int                    exit_code);
-        void (* died)              (GdmLaunchEnvironment  *launch_environment,
-                                    int                    signal_number);
-        void (* hostname_selected) (GdmLaunchEnvironment  *launch_environment,
-                                    const char            *hostname);
-} GdmLaunchEnvironmentClass;
-
-GType                 gdm_launch_environment_get_type           (void);
+#define GDM_TYPE_LAUNCH_ENVIRONMENT (gdm_launch_environment_get_type ())
+G_DECLARE_FINAL_TYPE (GdmLaunchEnvironment, gdm_launch_environment, GDM, LAUNCH_ENVIRONMENT, GObject)
 
 gboolean              gdm_launch_environment_start              (GdmLaunchEnvironment *launch_environment);
 gboolean              gdm_launch_environment_stop               (GdmLaunchEnvironment *launch_environment);

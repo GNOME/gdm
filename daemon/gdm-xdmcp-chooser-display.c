@@ -42,6 +42,12 @@
 #include "gdm-common.h"
 #include "gdm-address.h"
 
+
+struct _GdmXdmcpChooserDisplay
+{
+        GdmXdmcpDisplay parent;
+};
+
 enum {
         HOSTNAME_SELECTED,
         LAST_SIGNAL
@@ -76,7 +82,7 @@ gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
                 g_signal_new ("hostname-selected",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmXdmcpChooserDisplayClass, hostname_selected),
+                              0,
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

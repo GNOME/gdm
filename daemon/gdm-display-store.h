@@ -27,30 +27,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_DISPLAY_STORE         (gdm_display_store_get_type ())
-#define GDM_DISPLAY_STORE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_DISPLAY_STORE, GdmDisplayStore))
-#define GDM_DISPLAY_STORE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_DISPLAY_STORE, GdmDisplayStoreClass))
-#define GDM_IS_DISPLAY_STORE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_DISPLAY_STORE))
-#define GDM_IS_DISPLAY_STORE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_DISPLAY_STORE))
-#define GDM_DISPLAY_STORE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_DISPLAY_STORE, GdmDisplayStoreClass))
-
-typedef struct GdmDisplayStorePrivate GdmDisplayStorePrivate;
-
-typedef struct
-{
-        GObject                 parent;
-        GdmDisplayStorePrivate *priv;
-} GdmDisplayStore;
-
-typedef struct
-{
-        GObjectClass   parent_class;
-
-        void          (* display_added)    (GdmDisplayStore *display_store,
-                                            const char      *id);
-        void          (* display_removed)  (GdmDisplayStore *display_store,
-                                            GdmDisplay      *display);
-} GdmDisplayStoreClass;
+#define GDM_TYPE_DISPLAY_STORE (gdm_display_store_get_type ())
+G_DECLARE_FINAL_TYPE (GdmDisplayStore, gdm_display_store, GDM, DISPLAY_STORE, GObject)
 
 typedef enum
 {
@@ -64,7 +42,6 @@ typedef gboolean (*GdmDisplayStoreFunc) (const char *id,
                                          gpointer    user_data);
 
 GQuark              gdm_display_store_error_quark              (void);
-GType               gdm_display_store_get_type                 (void);
 
 GdmDisplayStore *   gdm_display_store_new                      (void);
 

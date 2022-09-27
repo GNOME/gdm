@@ -29,12 +29,8 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SESSION_WORKER            (gdm_session_worker_get_type ())
-#define GDM_SESSION_WORKER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDM_TYPE_SESSION_WORKER, GdmSessionWorker))
-#define GDM_SESSION_WORKER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerClass))
-#define GDM_IS_SESSION_WORKER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION_WORKER))
-#define GDM_IS_SESSION_WORKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_WORKER))
-#define GDM_SESSION_WORKER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerClass))
+#define GDM_TYPE_SESSION_WORKER (gdm_session_worker_get_type ())
+G_DECLARE_FINAL_TYPE (GdmSessionWorker, gdm_session_worker, GDM, SESSION_WORKER, GdmDBusWorkerSkeleton)
 
 typedef enum {
         GDM_SESSION_WORKER_STATE_NONE = 0,
@@ -46,21 +42,6 @@ typedef enum {
         GDM_SESSION_WORKER_STATE_SESSION_OPENED,
         GDM_SESSION_WORKER_STATE_SESSION_STARTED
 } GdmSessionWorkerState;
-
-typedef struct GdmSessionWorkerPrivate GdmSessionWorkerPrivate;
-
-typedef struct
-{
-        GdmDBusWorkerSkeleton parent;
-        GdmSessionWorkerPrivate *priv;
-} GdmSessionWorker;
-
-typedef struct
-{
-        GdmDBusWorkerSkeletonClass parent_class;
-} GdmSessionWorkerClass;
-
-GType              gdm_session_worker_get_type                 (void);
 
 GdmSessionWorker * gdm_session_worker_new                      (const char *server_address,
                                                                 gboolean    is_for_reauth) G_GNUC_MALLOC;
