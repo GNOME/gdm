@@ -858,7 +858,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
         return_value = PAM_SUCCESS;
 
  out:
-        if (return_value != PAM_SUCCESS) {
+        if (return_value != PAM_SUCCESS || responses == NULL) {
                 for (i = 0; i < number_of_messages; i++) {
                         if (replies[i].resp != NULL) {
                                 memset (replies[i].resp, 0, strlen (replies[i].resp));

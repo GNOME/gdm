@@ -1502,9 +1502,9 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
                                  GDBusMethodInvocation      *invocation,
                                  GdmLocalDisplayFactory     *factory)
 {
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
+        g_autofree char *id = NULL;
         gboolean created;
-        char *id = NULL;
 
         created = gdm_local_display_factory_create_transient_display (factory,
                                                                       &id,
@@ -1515,7 +1515,6 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
                 gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
         }
 
-        g_free (id);
         return TRUE;
 }
 
