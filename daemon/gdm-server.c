@@ -807,10 +807,7 @@ gdm_server_stop (GdmServer *server)
         }
 
         /* remove watch source before we can wait on child */
-        if (server->child_watch_id > 0) {
-                g_source_remove (server->child_watch_id);
-                server->child_watch_id = 0;
-        }
+        g_clear_handle_id (&server->child_watch_id, g_source_remove);
 
         g_debug ("GdmServer: Stopping server");
 
