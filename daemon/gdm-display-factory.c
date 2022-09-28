@@ -233,10 +233,7 @@ gdm_display_factory_finalize (GObject *object)
 
         g_return_if_fail (priv != NULL);
 
-        if (priv->purge_displays_id != 0) {
-                g_source_remove (priv->purge_displays_id);
-                priv->purge_displays_id = 0;
-        }
+        g_clear_handle_id (&priv->purge_displays_id, g_source_remove);
 
         G_OBJECT_CLASS (gdm_display_factory_parent_class)->finalize (object);
 }
