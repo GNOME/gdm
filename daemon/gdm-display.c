@@ -619,10 +619,8 @@ gdm_display_finish (GdmDisplay *self)
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
         priv = gdm_display_get_instance_private (self);
-        if (priv->finish_idle_id != 0) {
-                g_source_remove (priv->finish_idle_id);
-                priv->finish_idle_id = 0;
-        }
+
+        g_clear_handle_id (&priv->finish_idle_id, g_source_remove);
 
         _gdm_display_set_status (self, GDM_DISPLAY_FINISHED);
 
@@ -1250,10 +1248,7 @@ gdm_display_dispose (GObject *object)
 
         g_debug ("GdmDisplay: Disposing display");
 
-        if (priv->finish_idle_id != 0) {
-                g_source_remove (priv->finish_idle_id);
-                priv->finish_idle_id = 0;
-        }
+        g_clear_handle_id (&priv->finish_idle_id, g_source_remove);
         g_clear_object (&priv->launch_environment);
         g_clear_pointer (&priv->supported_session_types, g_strfreev);
 
