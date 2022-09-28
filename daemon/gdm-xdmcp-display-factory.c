@@ -3110,10 +3110,7 @@ gdm_xdmcp_display_factory_stop (GdmDisplayFactory *base_factory)
         g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory), FALSE);
         g_return_val_if_fail (factory->socket_fd != -1, FALSE);
 
-        if (factory->socket_watch_id > 0) {
-                g_source_remove (factory->socket_watch_id);
-                factory->socket_watch_id = 0;
-        }
+        g_clear_handle_id (&factory->socket_watch_id, g_source_remove);
 
         if (factory->socket_fd > 0) {
                 VE_IGNORE_EINTR (close (factory->socket_fd));
@@ -3447,9 +3444,7 @@ gdm_xdmcp_display_factory_finalize (GObject *object)
 
         g_return_if_fail (factory != NULL);
 
-        if (factory->socket_watch_id > 0) {
-                g_source_remove (factory->socket_watch_id);
-        }
+        g_clear_handle_id (&factory->socket_watch_id, g_source_remove);
 
         if (factory->socket_fd > 0) {
                 close (factory->socket_fd);
