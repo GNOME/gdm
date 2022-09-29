@@ -1881,7 +1881,6 @@ gdm_display_connect (GdmDisplay *self)
         gboolean ret;
 
         priv = gdm_display_get_instance_private (self);
-        ret = FALSE;
 
         g_debug ("GdmDisplay: Server is ready - opening display %s", priv->x11_display_name);
 
