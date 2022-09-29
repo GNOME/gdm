@@ -1157,6 +1157,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         int                    error_code;
         char tty_string[256];
 
+        g_assert (service != NULL);
         g_assert (worker->pam_handle == NULL);
 
         g_debug ("GdmSessionWorker: initializing PAM; service=%s username=%s seat=%s",
