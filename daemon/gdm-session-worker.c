@@ -2268,7 +2268,6 @@ set_xdg_vtnr_to_current_vt (GdmSessionWorker *worker)
         }
 
         close (fd);
-        fd = -1;
 
         g_snprintf (vt_string, sizeof (vt_string), "%d", vt_state.v_active);
 
