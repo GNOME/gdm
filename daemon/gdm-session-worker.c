@@ -690,7 +690,6 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         worker->timed_out = FALSE;
 
         user_answer = NULL;
-        res = FALSE;
         switch (query->msg_style) {
         case PAM_PROMPT_ECHO_ON:
                 res = gdm_session_worker_ask_question (worker, utf8_msg, &user_answer);
@@ -1482,7 +1481,6 @@ _lookup_passwd_info (const char *username,
 
         ret = FALSE;
         aux_buffer = NULL;
-        aux_buffer_size = 0;
 
         required_aux_buffer_size = sysconf (_SC_GETPW_R_SIZE_MAX);
 
