@@ -108,8 +108,6 @@ gdm_settings_direct_get_int (const char        *key,
 
         assert_signature (entry, "i");
 
-        ret = FALSE;
-
         res = get_value (key, &str);
 
         if (! res) {
@@ -131,7 +129,6 @@ gdm_settings_direct_get_uint (const char        *key,
         gboolean          ret;
         int               intvalue;
 
-        ret = FALSE;
         ret = gdm_settings_direct_get_int (key, &intvalue);
    
         if (intvalue >= 0)
@@ -157,8 +154,6 @@ gdm_settings_direct_get_boolean (const char        *key,
         g_assert (entry != NULL);
 
         assert_signature (entry, "b");
-
-        ret = FALSE;
 
         res = get_value (key, &str);
 
