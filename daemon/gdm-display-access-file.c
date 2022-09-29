@@ -278,7 +278,15 @@ _create_xauth_file_for_user (const char  *username,
                 }
 
                 g_chmod (GDM_XAUTH_DIR, 0711);
-                _get_uid_and_gid_for_user (GDM_USERNAME, &uid, &gid);
+                if (!_get_uid_and_gid_for_user (GDM_USERNAME, &uid, &gid)) {
+                        g_set_error (error,
+                                     GDM_DISPLAY_ERROR,
+                                     GDM_DISPLAY_ERROR_GETTING_USER_INFO,
+                                     _("Could not find user “%s” on system"),
+                                     GDM_USERNAME);
+                        goto out;
+                }
+
                 if (chown (GDM_XAUTH_DIR, 0, gid) != 0) {
                         g_warning ("Unable to change owner of '%s'",
                                    GDM_XAUTH_DIR);
