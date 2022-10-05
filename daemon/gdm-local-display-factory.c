@@ -846,12 +846,14 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         if (!seat_supports_graphics)
                 return;
 
-        if (session_types != NULL)
-                g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
-                         session_types[0], seat_id);
-        else if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0)
+        g_assert (session_types != NULL);
+
+        if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0)
                 g_debug ("GdmLocalDisplayFactory: Legacy Xorg login display for seat %s requested",
                          seat_id);
+        else
+                g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
+                         session_types[0], seat_id);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
