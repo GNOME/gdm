@@ -784,9 +784,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                seat_supports_graphics = FALSE;
         }
 
-        if (g_strcmp0 (seat_id, "seat0") == 0) {
-                is_seat0 = TRUE;
-
+        is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
+        if (is_seat0) {
                 falling_back = factory->num_failures > 0;
                 session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
 
@@ -798,8 +797,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                                  session_types[0], falling_back? " fallback" : "");
                 }
         } else {
-                is_seat0 = FALSE;
-
                 g_debug ("GdmLocalDisplayFactory: New displays on seat %s will use X11 fallback", seat_id);
                 /* Force legacy X11 for all auxiliary seats */
                 seat_supports_graphics = TRUE;
