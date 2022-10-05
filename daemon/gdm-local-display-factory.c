@@ -745,13 +745,9 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
         g_autofree char *login_session_id = NULL;
-        gboolean wayland_enabled = FALSE, xorg_enabled = FALSE;
         g_autofree gchar *preferred_display_server = NULL;
         gboolean falling_back = FALSE;
         gboolean waiting_on_udev = FALSE;
-
-        gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled);
-        gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &xorg_enabled);
 
         preferred_display_server = get_preferred_display_server (factory);
 
@@ -838,7 +834,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                         g_debug ("GdmLocalDisplayFactory: Assuming we can use seat0 for X11 even though system says it doesn't support graphics!");
                         g_debug ("GdmLocalDisplayFactory: This might indicate an issue where the framebuffer device is not tagged as master-of-seat in udev.");
                         seat_supports_graphics = TRUE;
-                        wayland_enabled = FALSE;
                         g_strfreev (session_types);
                         session_types = g_strdupv ((char **) legacy_session_types);
                 } else {
