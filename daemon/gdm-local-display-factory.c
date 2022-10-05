@@ -737,7 +737,6 @@ static void
 ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                          const char             *seat_id)
 {
-        int ret;
         gboolean seat_supports_graphics;
         gboolean is_seat0;
         g_auto (GStrv) session_types = NULL;
@@ -746,7 +745,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         GdmDisplay      *display = NULL;
         g_autofree char *login_session_id = NULL;
         g_autofree gchar *preferred_display_server = NULL;
-        gboolean falling_back = FALSE;
         gboolean waiting_on_udev = FALSE;
 
         preferred_display_server = get_preferred_display_server (factory);
@@ -761,6 +759,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 #endif
 
         if (!waiting_on_udev) {
+                int ret;
+
                 ret = sd_seat_can_graphical (seat_id);
 
                 if (ret < 0) {
@@ -782,6 +782,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
         if (is_seat0) {
+                gboolean falling_back;
+
                 falling_back = factory->num_failures > 0;
                 session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
 
