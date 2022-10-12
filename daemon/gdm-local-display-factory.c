@@ -765,6 +765,35 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         g_autofree gchar *preferred_display_server = NULL;
         gboolean waiting_on_udev = FALSE;
 
+        g_debug ("GdmLocalDisplayFactory: display for seat %s requested", seat_id);
+
+        /* Ensure we don't create the same display more than once */
+        display = get_display_for_seat (factory, seat_id);
+        if (display != NULL) {
+                g_debug ("GdmLocalDisplayFactory: display for %s already created", seat_id);
+                return;
+        }
+
+        /* If we already have a login window, switch to it */
+        if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
+                GdmDisplay *display;
+                GdmDisplayStore *store;
+
+                store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+                display = gdm_display_store_find (store,
+                                                  lookup_by_session_id,
+                                                  (gpointer) login_session_id);
+                if (display != NULL &&
+                    (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED ||
+                     gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)) {
+                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
+                        g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
+                                 login_session_id);
+                        gdm_activate_session_by_id (factory->connection, seat_id, login_session_id);
+                        return;
+                }
+        }
+
         preferred_display_server = get_preferred_display_server (factory);
 
         if (g_strcmp0 (preferred_display_server, "none") == 0) {
@@ -872,33 +901,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         else
                 g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
                          session_types[0], seat_id);
-
-        /* Ensure we don't create the same display more than once */
-        display = get_display_for_seat (factory, seat_id);
-        if (display != NULL) {
-                g_debug ("GdmLocalDisplayFactory: display for %s already created", seat_id);
-                return;
-        }
-
-        /* If we already have a login window, switch to it */
-        if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
-                GdmDisplay *display;
-                GdmDisplayStore *store;
-
-                store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
-                display = gdm_display_store_find (store,
-                                                  lookup_by_session_id,
-                                                  (gpointer) login_session_id);
-                if (display != NULL &&
-                    (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED ||
-                     gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)) {
-                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
-                        g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
-                                 login_session_id);
-                        gdm_activate_session_by_id (factory->connection, seat_id, login_session_id);
-                        return;
-                }
-        }
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
