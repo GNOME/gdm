@@ -876,7 +876,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         /* Ensure we don't create the same display more than once */
         display = get_display_for_seat (factory, seat_id);
         if (display != NULL) {
-                g_debug ("GdmLocalDisplayFactory: display already created");
+                g_debug ("GdmLocalDisplayFactory: display for %s already created", seat_id);
                 return;
         }
 
