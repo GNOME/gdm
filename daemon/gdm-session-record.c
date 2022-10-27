@@ -80,12 +80,12 @@ static void
 record_set_timestamp (UTMP *u)
 {
 #if defined(HAVE_UT_UT_TV)
-        GTimeVal    now = { 0 };
+        gint64 now;
 
         /* Set time in TV format */
-        g_get_current_time (&now);
-        u->ut_tv.tv_sec  = now.tv_sec;
-        u->ut_tv.tv_usec = now.tv_usec;
+        now = g_get_real_time();
+        u->ut_tv.tv_sec  = now / G_USEC_PER_SEC;
+        u->ut_tv.tv_usec = now % G_USEC_PER_SEC;
         g_debug ("using ut_tv time %ld",
                  (glong) u->ut_tv.tv_sec);
 #elif defined(HAVE_UT_UT_TIME)

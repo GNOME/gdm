@@ -489,7 +489,7 @@ find_broadcast_addresses (GdmHostChooserWidget *widget)
                                 continue;
                         }
 
-                        g_memmove (&sin, &ifreq.ifr_broadaddr, sizeof (struct sockaddr_in));
+                        memcpy (&sin, &ifreq.ifr_broadaddr, sizeof (struct sockaddr_in));
                         sin.sin_port = htons (XDM_UDP_PORT);
                         address = gdm_address_new_from_sockaddr ((struct sockaddr *) &sin, sizeof (sin));
                         if (address != NULL) {

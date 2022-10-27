@@ -34,7 +34,7 @@ typedef enum {
 
 #define GDM_CHOOSER_HOST_KIND_MASK_ALL (GDM_CHOOSER_HOST_KIND_XDMCP)
 
-G_CONST_RETURN char  *gdm_chooser_host_get_description     (GdmChooserHost   *chooser_host);
+const char           *gdm_chooser_host_get_description     (GdmChooserHost   *chooser_host);
 GdmAddress *          gdm_chooser_host_get_address         (GdmChooserHost   *chooser_host);
 gboolean              gdm_chooser_host_get_willing         (GdmChooserHost   *chooser_host);
 GdmChooserHostKind    gdm_chooser_host_get_kind            (GdmChooserHost   *chooser_host);

@@ -65,7 +65,7 @@ gdm_chooser_host_get_address (GdmChooserHost *host)
         return host->address;
 }
 
-G_CONST_RETURN char *
+const char *
 gdm_chooser_host_get_description (GdmChooserHost *host)
 {
         g_return_val_if_fail (GDM_IS_CHOOSER_HOST (host), NULL);

@@ -373,7 +373,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         gboolean         ret;
         GdmDisplay      *display = NULL;
         gboolean         is_initial = FALSE;
-        const char      *session_type;
         g_autofree gchar *preferred_display_server = NULL;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
