@@ -149,13 +149,19 @@ record_set_line (UTMP       *u,
 {
         /*
          * Set ut_line to the device name associated with this display
-         * but remove the "/dev/" prefix.  If no device, then use the
-         * $DISPLAY value.
+         * but remove the "/dev/" prefix if there is one. Otherwise, if it
+         * seems like the display device is a seat id, just use it wholesale.
+         * If there's no device at all, but $DISPLAY is set, just fall back to
+         * using that.
          */
-        if (display_device != NULL
-            && g_str_has_prefix (display_device, "/dev/")) {
+        if (display_device != NULL && g_str_has_prefix (display_device, "/dev/")) {
                 memccpy (u->ut_line,
                          display_device + strlen ("/dev/"),
+                         '\0',
+                         sizeof (u->ut_line));
+        } else if (display_device != NULL && g_str_has_prefix (display_device, "seat")) {
+                memccpy (u->ut_line,
+                         display_device,
                          '\0',
                          sizeof (u->ut_line));
         } else if (x11_display_name != NULL) {

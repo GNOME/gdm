@@ -653,13 +653,14 @@ add_session_record (GdmManager    *manager,
                     SessionRecord  record)
 {
         const char *username;
-        char *display_name, *hostname, *display_device;
+        char *display_name, *hostname, *display_device, *display_seat_id;
         gboolean recorded = FALSE;
 
         display_name = NULL;
         username = NULL;
         hostname = NULL;
         display_device = NULL;
+        display_seat_id = NULL;
 
         username = gdm_session_get_username (session);
 
@@ -671,10 +672,15 @@ add_session_record (GdmManager    *manager,
                       "display-name", &display_name,
                       "display-hostname", &hostname,
                       "display-device", &display_device,
+                      "display-seat-id", &display_seat_id,
                       NULL);
 
         if (display_name == NULL && display_device == NULL) {
-                goto out;
+                if (display_seat_id == NULL)
+                        goto out;
+
+                display_name = g_strdup ("login screen");
+                display_device = g_strdup (display_seat_id);
         }
 
         switch (record) {
@@ -706,6 +712,7 @@ out:
         g_free (display_name);
         g_free (hostname);
         g_free (display_device);
+        g_free (display_seat_id);
 
         return recorded;
 }
