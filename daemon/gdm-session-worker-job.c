@@ -359,10 +359,7 @@ gdm_session_worker_job_stop_now (GdmSessionWorkerJob *session_worker_job)
         }
 
         /* remove watch source before we can wait on child */
-        if (session_worker_job->child_watch_id > 0) {
-                g_source_remove (session_worker_job->child_watch_id);
-                session_worker_job->child_watch_id = 0;
-        }
+        g_clear_handle_id (&session_worker_job->child_watch_id, g_source_remove);
 
         gdm_session_worker_job_stop (session_worker_job);
         handle_session_worker_job_death (session_worker_job);

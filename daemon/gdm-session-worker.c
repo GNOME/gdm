@@ -3550,17 +3550,6 @@ gdm_session_worker_init (GdmSessionWorker *worker)
 }
 
 static void
-gdm_session_worker_unwatch_child (GdmSessionWorker *worker)
-{
-        if (worker->child_watch_id == 0)
-                return;
-
-        g_source_remove (worker->child_watch_id);
-        worker->child_watch_id = 0;
-}
-
-
-static void
 gdm_session_worker_finalize (GObject *object)
 {
         GdmSessionWorker *worker;
@@ -3572,7 +3561,7 @@ gdm_session_worker_finalize (GObject *object)
 
         g_return_if_fail (worker != NULL);
 
-        gdm_session_worker_unwatch_child (worker);
+        g_clear_handle_id (&worker->child_watch_id, g_source_remove);
 
         if (worker->child_pid > 0) {
                 gdm_signal_pid (worker->child_pid, SIGTERM);

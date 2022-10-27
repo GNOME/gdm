@@ -1379,14 +1379,8 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 factory->seat_properties_changed_id = 0;
         }
 #if defined(ENABLE_USER_DISPLAY_SERVER)
-        if (factory->active_vt_watch_id) {
-                g_source_remove (factory->active_vt_watch_id);
-                factory->active_vt_watch_id = 0;
-        }
-        if (factory->wait_to_finish_timeout_id != 0) {
-                g_source_remove (factory->wait_to_finish_timeout_id);
-                factory->wait_to_finish_timeout_id = 0;
-        }
+        g_clear_handle_id (&factory->active_vt_watch_id, g_source_remove);
+        g_clear_handle_id (&factory->wait_to_finish_timeout_id, g_source_remove);
 #endif
 }
 
