@@ -733,25 +733,66 @@ on_seat0_graphics_check_timeout (gpointer user_data)
         return G_SOURCE_REMOVE;
 }
 
+GdmDisplay *
+get_display_for_seat (GdmLocalDisplayFactory *factory,
+                      const char             *seat_id)
+{
+        GdmDisplay *display;
+        GdmDisplayStore *store;
+        gboolean is_seat0;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
+        if (is_seat0)
+                display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
+        else
+                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+
+        return display;
+}
+
 static void
 ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                          const char             *seat_id)
 {
-        int ret;
         gboolean seat_supports_graphics;
         gboolean is_seat0;
         g_auto (GStrv) session_types = NULL;
         const char *legacy_session_types[] = { "x11", NULL };
-        GdmDisplayStore *store;
         GdmDisplay      *display = NULL;
         g_autofree char *login_session_id = NULL;
-        gboolean wayland_enabled = FALSE, xorg_enabled = FALSE;
         g_autofree gchar *preferred_display_server = NULL;
-        gboolean falling_back = FALSE;
         gboolean waiting_on_udev = FALSE;
 
-        gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled);
-        gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &xorg_enabled);
+        g_debug ("GdmLocalDisplayFactory: display for seat %s requested", seat_id);
+
+        /* Ensure we don't create the same display more than once */
+        display = get_display_for_seat (factory, seat_id);
+        if (display != NULL) {
+                g_debug ("GdmLocalDisplayFactory: display for %s already created", seat_id);
+                return;
+        }
+
+        /* If we already have a login window, switch to it */
+        if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
+                GdmDisplay *display;
+                GdmDisplayStore *store;
+
+                store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+                display = gdm_display_store_find (store,
+                                                  lookup_by_session_id,
+                                                  (gpointer) login_session_id);
+                if (display != NULL &&
+                    (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED ||
+                     gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)) {
+                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
+                        g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
+                                 login_session_id);
+                        gdm_activate_session_by_id (factory->connection, seat_id, login_session_id);
+                        return;
+                }
+        }
 
         preferred_display_server = get_preferred_display_server (factory);
 
@@ -765,6 +806,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 #endif
 
         if (!waiting_on_udev) {
+                int ret;
+
                 ret = sd_seat_can_graphical (seat_id);
 
                 if (ret < 0) {
@@ -784,8 +827,9 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                seat_supports_graphics = FALSE;
         }
 
-        if (g_strcmp0 (seat_id, "seat0") == 0) {
-                is_seat0 = TRUE;
+        is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
+        if (is_seat0) {
+                gboolean falling_back;
 
                 falling_back = factory->num_failures > 0;
                 session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
@@ -798,8 +842,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                                  session_types[0], falling_back? " fallback" : "");
                 }
         } else {
-                is_seat0 = FALSE;
-
                 g_debug ("GdmLocalDisplayFactory: New displays on seat %s will use X11 fallback", seat_id);
                 /* Force legacy X11 for all auxiliary seats */
                 seat_supports_graphics = TRUE;
@@ -841,7 +883,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                         g_debug ("GdmLocalDisplayFactory: Assuming we can use seat0 for X11 even though system says it doesn't support graphics!");
                         g_debug ("GdmLocalDisplayFactory: This might indicate an issue where the framebuffer device is not tagged as master-of-seat in udev.");
                         seat_supports_graphics = TRUE;
-                        wayland_enabled = FALSE;
                         g_strfreev (session_types);
                         session_types = g_strdupv ((char **) legacy_session_types);
                 } else {
@@ -852,43 +893,14 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         if (!seat_supports_graphics)
                 return;
 
-        if (session_types != NULL)
-                g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
-                         session_types[0], seat_id);
-        else if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0)
+        g_assert (session_types != NULL);
+
+        if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0)
                 g_debug ("GdmLocalDisplayFactory: Legacy Xorg login display for seat %s requested",
                          seat_id);
-
-        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
-
-        if (is_seat0)
-                display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
         else
-                display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
-
-        /* Ensure we don't create the same display more than once */
-        if (display != NULL) {
-                g_debug ("GdmLocalDisplayFactory: display already created");
-                return;
-        }
-
-        /* If we already have a login window, switch to it */
-        if (gdm_get_login_window_session_id (seat_id, &login_session_id)) {
-                GdmDisplay *display;
-
-                display = gdm_display_store_find (store,
-                                                  lookup_by_session_id,
-                                                  (gpointer) login_session_id);
-                if (display != NULL &&
-                    (gdm_display_get_status (display) == GDM_DISPLAY_MANAGED ||
-                     gdm_display_get_status (display) == GDM_DISPLAY_WAITING_TO_FINISH)) {
-                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
-                        g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
-                                 login_session_id);
-                        gdm_activate_session_by_id (factory->connection, seat_id, login_session_id);
-                        return;
-                }
-        }
+                g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
+                         session_types[0], seat_id);
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
