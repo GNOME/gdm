@@ -265,8 +265,6 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
         GPtrArray       *args;
         GPtrArray       *env;
 
-        ret = FALSE;
-
         g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s %s",
                  name != NULL? name : "", session_worker_job->command);
 

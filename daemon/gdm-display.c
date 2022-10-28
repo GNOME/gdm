@@ -178,13 +178,9 @@ _create_access_file_for_user (GdmDisplay  *self,
                               GError     **error)
 {
         GdmDisplayAccessFile *access_file;
-        GError *file_error;
 
         access_file = gdm_display_access_file_new (username);
-
-        file_error = NULL;
-        if (!gdm_display_access_file_open (access_file, &file_error)) {
-                g_propagate_error (error, file_error);
+        if (!gdm_display_access_file_open (access_file, error)) {
                 return NULL;
         }
 
@@ -1881,7 +1877,6 @@ gdm_display_connect (GdmDisplay *self)
         gboolean ret;
 
         priv = gdm_display_get_instance_private (self);
-        ret = FALSE;
 
         g_debug ("GdmDisplay: Server is ready - opening display %s", priv->x11_display_name);
 

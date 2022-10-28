@@ -690,7 +690,6 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         worker->timed_out = FALSE;
 
         user_answer = NULL;
-        res = FALSE;
         switch (query->msg_style) {
         case PAM_PROMPT_ECHO_ON:
                 res = gdm_session_worker_ask_question (worker, utf8_msg, &user_answer);
@@ -1158,6 +1157,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         int                    error_code;
         char tty_string[256];
 
+        g_assert (service != NULL);
         g_assert (worker->pam_handle == NULL);
 
         g_debug ("GdmSessionWorker: initializing PAM; service=%s username=%s seat=%s",
@@ -1482,7 +1482,6 @@ _lookup_passwd_info (const char *username,
 
         ret = FALSE;
         aux_buffer = NULL;
-        aux_buffer_size = 0;
 
         required_aux_buffer_size = sysconf (_SC_GETPW_R_SIZE_MAX);
 
@@ -2270,7 +2269,6 @@ set_xdg_vtnr_to_current_vt (GdmSessionWorker *worker)
         }
 
         close (fd);
-        fd = -1;
 
         g_snprintf (vt_string, sizeof (vt_string), "%d", vt_state.v_active);
 

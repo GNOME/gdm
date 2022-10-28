@@ -43,8 +43,6 @@ main (int argc, char **argv)
         int             failed;
         GError         *error;
 
-        failed = 0;
-
         context = g_option_context_new ("");
         g_option_context_add_main_entries (context, entries, NULL);
         error = NULL;

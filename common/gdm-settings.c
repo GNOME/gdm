@@ -83,6 +83,7 @@ gdm_settings_get_value (GdmSettings *settings,
         GList   *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
+        g_return_val_if_fail (settings->backends != NULL, FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
 
         local_error = NULL;
@@ -120,6 +121,7 @@ gdm_settings_set_value (GdmSettings *settings,
         GList   *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
+        g_return_val_if_fail (settings->backends != NULL, FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
 
         g_debug ("Setting value %s", key);

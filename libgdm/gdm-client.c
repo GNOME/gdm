@@ -96,11 +96,9 @@ on_got_manager (GObject             *object,
                 gpointer             user_data)
 {
         g_autoptr(GTask)      task = user_data;
-        g_autoptr(GdmClient)  client = NULL;
         g_autoptr(GdmManager) manager = NULL;
         g_autoptr(GError)     error = NULL;
 
-        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (task)));
         manager = gdm_manager_proxy_new_finish (result, &error);
 
         if (error != NULL) {
