@@ -123,6 +123,7 @@ gdm_settings_set_value (GdmSettings *settings,
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
         g_return_val_if_fail (settings->backends != NULL, FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (value != NULL, FALSE);
 
         g_debug ("Setting value %s", key);
 
@@ -191,6 +192,8 @@ gdm_settings_reload (GdmSettings *settings)
 {
         GList *l;
         GdmSettingsBackend *backend;
+
+        g_return_if_fail (GDM_IS_SETTINGS (settings));
 
         g_list_foreach (settings->backends, (GFunc) g_object_unref, NULL);
         g_list_free (settings->backends);

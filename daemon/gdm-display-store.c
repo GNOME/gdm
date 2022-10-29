@@ -101,7 +101,7 @@ gdm_display_store_error_quark (void)
 void
 gdm_display_store_clear (GdmDisplayStore    *store)
 {
-        g_return_if_fail (store != NULL);
+        g_return_if_fail (GDM_IS_DISPLAY_STORE (store));
         g_debug ("GdmDisplayStore: Clearing display store");
         g_hash_table_remove_all (store->displays);
 }
@@ -121,7 +121,8 @@ gboolean
 gdm_display_store_remove (GdmDisplayStore    *store,
                           GdmDisplay         *display)
 {
-        g_return_val_if_fail (store != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), FALSE);
+        g_return_val_if_fail (display != NULL, FALSE);
 
         gdm_display_store_foreach_remove (store,
                                           (GdmDisplayStoreFunc)remove_display,
@@ -162,7 +163,7 @@ gdm_display_store_foreach (GdmDisplayStore    *store,
 {
         FindClosure  closure;
 
-        g_return_if_fail (store != NULL);
+        g_return_if_fail (GDM_IS_DISPLAY_STORE (store));
         g_return_if_fail (func != NULL);
 
         closure.predicate = func;
@@ -179,7 +180,7 @@ gdm_display_store_lookup (GdmDisplayStore *store,
 {
         StoredDisplay *stored_display;
 
-        g_return_val_if_fail (store != NULL, NULL);
+        g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), NULL);
         g_return_val_if_fail (id != NULL, NULL);
 
         stored_display = g_hash_table_lookup (store->displays,
@@ -199,7 +200,7 @@ gdm_display_store_find (GdmDisplayStore    *store,
         StoredDisplay *stored_display;
         FindClosure    closure;
 
-        g_return_val_if_fail (store != NULL, NULL);
+        g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), NULL);
         g_return_val_if_fail (predicate != NULL, NULL);
 
         closure.predicate = predicate;
@@ -224,7 +225,7 @@ gdm_display_store_foreach_remove (GdmDisplayStore    *store,
         FindClosure closure;
         guint       ret;
 
-        g_return_val_if_fail (store != NULL, 0);
+        g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), 0);
         g_return_val_if_fail (func != NULL, 0);
 
         closure.predicate = func;
@@ -243,7 +244,7 @@ gdm_display_store_add (GdmDisplayStore *store,
         char          *id;
         StoredDisplay *stored_display;
 
-        g_return_if_fail (store != NULL);
+        g_return_if_fail (GDM_IS_DISPLAY_STORE (store));
         g_return_if_fail (display != NULL);
 
         gdm_display_get_id (display, &id, NULL);
@@ -305,7 +306,6 @@ gdm_display_store_finalize (GObject *object)
 {
         GdmDisplayStore *store;
 
-        g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_DISPLAY_STORE (object));
 
         store = GDM_DISPLAY_STORE (object);

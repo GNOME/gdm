@@ -682,6 +682,8 @@ void
 gdm_session_select_user (GdmSession *self,
                          const char *text)
 {
+        g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (text != NULL);
 
         g_debug ("GdmSession: selecting user '%s' for session '%s' (%p)",
                  text,
@@ -2293,6 +2295,7 @@ gdm_session_start_conversation (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+        g_return_val_if_fail (service_name != NULL, FALSE);
 
         conversation = g_hash_table_lookup (self->conversations,
                                             service_name);
@@ -2324,6 +2327,7 @@ gdm_session_stop_conversation (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         g_debug ("GdmSession: stopping conversation %s", service_name);
 
@@ -2448,6 +2452,7 @@ gdm_session_setup (GdmSession *self,
 {
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         update_session_type (self);
 
@@ -2463,6 +2468,7 @@ gdm_session_setup_for_user (GdmSession *self,
 {
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
         g_return_if_fail (username != NULL);
 
         update_session_type (self);
@@ -2486,6 +2492,7 @@ gdm_session_setup_for_program (GdmSession *self,
 {
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         self->is_program_session = TRUE;
         initialize (self, service_name, username, log_file);
@@ -2498,6 +2505,7 @@ gdm_session_authenticate (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
         if (conversation != NULL) {
@@ -2515,6 +2523,7 @@ gdm_session_authorize (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
         if (conversation != NULL) {
@@ -2532,6 +2541,7 @@ gdm_session_accredit (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
         if (conversation != NULL) {
@@ -2571,6 +2581,7 @@ gdm_session_send_environment (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
         if (conversation != NULL) {
@@ -2645,6 +2656,7 @@ gdm_session_set_environment_variable (GdmSession *self,
                                       const char *key,
                                       const char *value)
 {
+        g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (key != NULL);
         g_return_if_fail (value != NULL);
 
@@ -2775,6 +2787,7 @@ gdm_session_open_session (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
 
@@ -2896,6 +2909,7 @@ gdm_session_start_session (GdmSession *self,
         gboolean               register_session;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
         g_return_if_fail (self->session_conversation == NULL);
 
         conversation = find_conversation_by_name (self, service_name);
@@ -3053,6 +3067,8 @@ gdm_session_answer_query (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
+        g_return_if_fail (text != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
 
@@ -3072,6 +3088,8 @@ gdm_session_cancel  (GdmSession *self)
 void
 gdm_session_reset (GdmSession *self)
 {
+        g_return_if_fail (GDM_IS_SESSION (self));
+
         if (self->user_verifier_interface != NULL) {
                 gdm_dbus_user_verifier_emit_reset (self->user_verifier_interface);
         }
@@ -3084,6 +3102,9 @@ gdm_session_set_timed_login_details (GdmSession *self,
                                      const char *username,
                                      int         delay)
 {
+        g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (username != NULL);
+
         g_debug ("GdmSession: timed login details %s %d", username, delay);
         self->timed_login_username = g_strdup (username);
         self->timed_login_delay = delay;
@@ -3092,6 +3113,8 @@ gdm_session_set_timed_login_details (GdmSession *self,
 gboolean
 gdm_session_is_running (GdmSession *self)
 {
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+
         return self->session_pid > 0;
 }
 
@@ -3110,13 +3133,16 @@ gdm_session_get_allowed_user (GdmSession *self)
 }
 
 void
-gdm_session_start_reauthentication (GdmSession *session,
+gdm_session_start_reauthentication (GdmSession *self,
                                     GPid        pid_of_caller,
                                     uid_t       uid_of_caller)
 {
-        GdmSessionConversation *conversation = session->session_conversation;
+        GdmSessionConversation *conversation;
 
-        g_return_if_fail (conversation != NULL);
+        g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (self->session_conversation != NULL);
+
+        conversation = self->session_conversation;
 
         g_debug ("GdmSession: starting reauthentication for session %s for client with pid %d",
                  conversation->session_id,
@@ -3187,6 +3213,7 @@ gdm_session_get_conversation_session_id (GdmSession *self,
         GdmSessionConversation *conversation;
 
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
+        g_return_val_if_fail (service_name != NULL, NULL);
 
         conversation = find_conversation_by_name (self, service_name);
 
@@ -3260,7 +3287,6 @@ gdm_session_session_registers (GdmSession *self)
         gboolean session_registers = FALSE;
         g_autofree char *filename = NULL;
 
-        g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         filename = get_session_filename (self);
@@ -3293,7 +3319,6 @@ gdm_session_bypasses_xsession (GdmSession *self)
         gboolean    bypasses_xsession = FALSE;
         char       *filename = NULL;
 
-        g_return_val_if_fail (self != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
 #ifdef ENABLE_WAYLAND_SUPPORT
@@ -3331,6 +3356,8 @@ out:
 GdmSessionDisplayMode
 gdm_session_get_display_mode (GdmSession *self)
 {
+        g_return_val_if_fail (GDM_IS_SESSION (self), GDM_SESSION_DISPLAY_MODE_NEW_VT);
+
         g_debug ("GdmSession: type %s, program? %s, seat %s",
                  self->session_type,
                  self->is_program_session? "yes" : "no",
@@ -3384,6 +3411,7 @@ void
 gdm_session_select_program (GdmSession *self,
                             const char *text)
 {
+        g_return_if_fail (GDM_IS_SESSION (self));
 
         g_free (self->selected_program);
 
@@ -3396,6 +3424,9 @@ gdm_session_select_session (GdmSession *self,
 {
         GHashTableIter iter;
         gpointer key, value;
+
+        g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (text != NULL);
 
         g_debug ("GdmSession: selecting session '%s'", text);
 
@@ -4126,7 +4157,9 @@ gdm_session_display_mode_to_string (GdmSessionDisplayMode mode)
 }
 
 GPid
-gdm_session_get_pid (GdmSession *session)
+gdm_session_get_pid (GdmSession *self)
 {
-        return session->session_pid;
+        g_return_val_if_fail (GDM_IS_SESSION (self), 0);
+
+        return self->session_pid;
 }

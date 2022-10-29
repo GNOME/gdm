@@ -168,6 +168,8 @@ gdm_display_get_session_id (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
 
+        g_return_val_if_fail (GDM_IS_DISPLAY (self), NULL);
+
         priv = gdm_display_get_instance_private (self);
         return priv->session_id;
 }
@@ -261,6 +263,8 @@ gdm_display_add_user_authorization (GdmDisplay *self,
         xcb_void_cookie_t         cookies[3];
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
+        g_return_val_if_fail (username != NULL, FALSE);
+        g_return_val_if_fail (filename != NULL, FALSE);
 
         priv = gdm_display_get_instance_private (self);
 
@@ -340,6 +344,7 @@ gdm_display_remove_user_authorization (GdmDisplay *self,
         GdmDisplayPrivate *priv;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
+        g_return_val_if_fail (username != NULL, FALSE);
 
         priv = gdm_display_get_instance_private (self);
 
@@ -1470,6 +1475,8 @@ gdm_display_get_object_skeleton (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
 
+        g_return_val_if_fail (GDM_IS_DISPLAY (self), NULL);
+
         priv = gdm_display_get_instance_private (self);
         return priv->object_skeleton;
 }
@@ -1695,6 +1702,8 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         char          *hostname;
         char          *auth_file = NULL;
 
+        g_return_if_fail (GDM_IS_DISPLAY (self));
+
         priv = gdm_display_get_instance_private (self);
         g_return_if_fail (g_strcmp0 (priv->session_class, "greeter") == 0);
 
@@ -1760,6 +1769,8 @@ void
 gdm_display_stop_greeter_session (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
+
+        g_return_if_fail (GDM_IS_DISPLAY (self));
 
         priv = gdm_display_get_instance_private (self);
 
@@ -1875,6 +1886,8 @@ gdm_display_connect (GdmDisplay *self)
         GdmDisplayPrivate *priv;
         xcb_auth_info_t *auth_info = NULL;
         gboolean ret;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
         priv = gdm_display_get_instance_private (self);
 

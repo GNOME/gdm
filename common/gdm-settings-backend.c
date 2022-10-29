@@ -90,6 +90,8 @@ gdm_settings_backend_get_value (GdmSettingsBackend *settings_backend,
         gboolean ret;
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (value != NULL, FALSE);
 
         g_object_ref (settings_backend);
         ret = GDM_SETTINGS_BACKEND_GET_CLASS (settings_backend)->get_value (settings_backend, key, value, error);
@@ -107,6 +109,8 @@ gdm_settings_backend_set_value (GdmSettingsBackend *settings_backend,
         gboolean ret;
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (value != NULL, FALSE);
 
         g_object_ref (settings_backend);
         ret = GDM_SETTINGS_BACKEND_GET_CLASS (settings_backend)->set_value (settings_backend, key, value, error);

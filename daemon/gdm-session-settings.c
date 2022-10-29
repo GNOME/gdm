@@ -272,6 +272,8 @@ gdm_session_settings_new (void)
 gboolean
 gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
 {
+        g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
+
         if (settings->user == NULL) {
                 return FALSE;
         }
@@ -338,7 +340,7 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
 {
         ActUser *old_user;
 
-        g_return_val_if_fail (settings != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
 
