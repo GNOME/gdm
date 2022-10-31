@@ -133,21 +133,18 @@ parse_key_string (const char *keystring,
                   char      **locale,
                   char      **value)
 {
-        char   **split1;
-        char   **split2;
+        g_auto(GStrv) split1 = NULL;
+        g_auto(GStrv) split2 = NULL;
         char    *g;
         char    *k;
         char    *l;
         char    *v;
         char    *tmp1;
         char    *tmp2;
-        gboolean ret;
 
         g_return_val_if_fail (keystring != NULL, FALSE);
 
-        ret = FALSE;
         g = k = v = l = NULL;
-        split1 = split2 = NULL;
 
         if (group != NULL) {
                 *group = g;
@@ -171,7 +168,7 @@ parse_key_string (const char *keystring,
             || split1 [0][0] == '\0'
             || split1 [1][0] == '\0') {
                 g_warning ("GdmSettingsDesktopBackend: invalid key: %s", keystring);
-                goto out;
+                return FALSE;
         }
 
         g = split1 [0];
@@ -192,8 +189,6 @@ parse_key_string (const char *keystring,
                 *tmp1 = '\0';
         }
 
-        ret = TRUE;
-
         if (group != NULL) {
                 *group = g_strdup (g);
         }
@@ -206,12 +201,8 @@ parse_key_string (const char *keystring,
         if (value != NULL) {
                 *value = g_strdup (v);
         }
- out:
 
-        g_strfreev (split1);
-        g_strfreev (split2);
-
-        return ret;
+        return TRUE;
 }
 
 static gboolean
@@ -220,55 +211,44 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
                                         char              **value,
                                         GError            **error)
 {
-        GError  *local_error;
-        char    *val;
-        char    *g;
-        char    *k;
-        char    *l;
-        gboolean ret;
+        g_autoptr(GError) local_error = NULL;
+        g_autofree char *val = NULL;
+        g_autofree char *g = NULL;
+        g_autofree char *k = NULL;
+        g_autofree char *l = NULL;
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
         g_return_val_if_fail (value != NULL, FALSE);
 
-        ret = FALSE;
         *value = NULL;
 
-        val = g = k = l = NULL;
         /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
         if (! parse_key_string (key, &g, &k, &l, NULL)) {
                 g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-                goto out;
+                return FALSE;
         }
 
         /*g_debug ("Getting key: %s %s %s", g, k, l);*/
-        local_error = NULL;
         val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->key_file,
                                     g,
                                     k,
                                     &local_error);
         if (local_error != NULL) {
-                g_error_free (local_error);
                 g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-                goto out;
+                return FALSE;
         }
 
         *value = g_strdup (val);
-        ret = TRUE;
- out:
-        g_free (val);
-        g_free (g);
-        g_free (k);
-        g_free (l);
 
-        return ret;
+        return TRUE;
 }
 
 static void
 save_settings (GdmSettingsDesktopBackend *backend)
 {
-        GError   *local_error;
-        char     *contents;
+        g_autoptr(GError) local_error = NULL;
+        g_autofree char *contents = NULL;
         gsize     length;
 
         if (! backend->dirty) {
@@ -277,27 +257,20 @@ save_settings (GdmSettingsDesktopBackend *backend)
 
         g_debug ("Saving settings to %s", backend->filename);
 
-        local_error = NULL;
         contents = g_key_file_to_data (backend->key_file, &length, &local_error);
         if (local_error != NULL) {
                 g_warning ("Unable to save settings: %s", local_error->message);
-                g_error_free (local_error);
                 return;
         }
 
-        local_error = NULL;
         g_file_set_contents (backend->filename,
                              contents,
                              length,
                              &local_error);
         if (local_error != NULL) {
                 g_warning ("Unable to save settings: %s", local_error->message);
-                g_error_free (local_error);
-                g_free (contents);
                 return;
         }
-
-        g_free (contents);
 
         backend->dirty = FALSE;
 }
