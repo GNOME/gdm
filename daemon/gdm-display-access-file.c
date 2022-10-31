@@ -222,7 +222,7 @@ _get_uid_and_gid_for_user (const char *username,
 static void
 clean_up_stale_auth_subdirs (void)
 {
-        GDir *dir;
+        g_autoptr(GDir) dir = NULL;
         const char *filename;
 
         dir = g_dir_open (GDM_XAUTH_DIR, 0, NULL);
@@ -232,16 +232,14 @@ clean_up_stale_auth_subdirs (void)
         }
 
         while ((filename = g_dir_read_name (dir)) != NULL) {
-                char *path;
+                g_autofree char *path = NULL;
 
                 path = g_build_filename (GDM_XAUTH_DIR, filename, NULL);
 
                 /* Will only succeed if the directory is empty
                  */
                 g_rmdir (path);
-                g_free (path);
         }
-        g_dir_close (dir);
 }
 
 static FILE *
@@ -249,9 +247,9 @@ _create_xauth_file_for_user (const char  *username,
                              char       **filename,
                              GError     **error)
 {
-        char   *template;
+        g_autofree char *template = NULL;
+        g_autofree char *auth_filename = NULL;
         const char *dir_name;
-        char   *auth_filename;
         int     fd;
         FILE   *fp;
         uid_t   uid;
@@ -261,11 +259,6 @@ _create_xauth_file_for_user (const char  *username,
 
         *filename = NULL;
 
-        template = NULL;
-        auth_filename = NULL;
-        fp = NULL;
-        fd = -1;
-
         /* Create directory if not exist, then set permission 0711 and ownership root:gdm */
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
                 g_remove (GDM_XAUTH_DIR);
@@ -274,7 +267,7 @@ _create_xauth_file_for_user (const char  *username,
                                              G_FILE_ERROR,
                                              g_file_error_from_errno (errno),
                                              g_strerror (errno));
-                        goto out;
+                        return NULL;
                 }
 
                 g_chmod (GDM_XAUTH_DIR, 0711);
@@ -284,7 +277,7 @@ _create_xauth_file_for_user (const char  *username,
                                      GDM_DISPLAY_ERROR_GETTING_USER_INFO,
                                      _("Could not find user “%s” on system"),
                                      GDM_USERNAME);
-                        goto out;
+                        return NULL;
                 }
 
                 if (chown (GDM_XAUTH_DIR, 0, gid) != 0) {
@@ -305,8 +298,7 @@ _create_xauth_file_for_user (const char  *username,
                              GDM_DISPLAY_ERROR_GETTING_USER_INFO,
                              _("Could not find user “%s” on system"),
                              username);
-                goto out;
-
+                return NULL;
         }
 
         template = g_strdup_printf (GDM_XAUTH_DIR
@@ -324,7 +316,7 @@ _create_xauth_file_for_user (const char  *username,
                              "Unable to create temp dir from tempalte '%s': %s",
                              template,
                              g_strerror (errno));
-                goto out;
+                return NULL;
         }
 
         g_debug ("GdmDisplayAccessFile: chowning %s to %u:%u",
@@ -337,7 +329,7 @@ _create_xauth_file_for_user (const char  *username,
                              "Unable to change permission of '%s': %s",
                              dir_name,
                              g_strerror (errno));
-                goto out;
+                return NULL;
         }
 
         auth_filename = g_build_filename (dir_name, "database", NULL);
@@ -356,7 +348,7 @@ _create_xauth_file_for_user (const char  *username,
                              "Unable to open '%s': %s",
                              auth_filename,
                              g_strerror (errno));
-                goto out;
+                return NULL;
         }
 
         g_debug ("GdmDisplayAccessFile: chowning %s to %u:%u", auth_filename, (guint)uid, (guint)gid);
@@ -369,8 +361,7 @@ _create_xauth_file_for_user (const char  *username,
                              auth_filename,
                              g_strerror (errno));
                 close (fd);
-                fd = -1;
-                goto out;
+                return NULL;
         }
 
         /* now open up permissions on per-session directory */
@@ -385,22 +376,12 @@ _create_xauth_file_for_user (const char  *username,
                                      g_file_error_from_errno (errno),
                                      g_strerror (errno));
                 close (fd);
-                fd = -1;
-                goto out;
+                return NULL;
         }
 
-        *filename = auth_filename;
-        auth_filename = NULL;
+        *filename = g_steal_pointer (&auth_filename);
 
-        /* don't close it */
-        fd = -1;
-out:
-        g_free (template);
-        g_free (auth_filename);
-        if (fd != -1) {
-                close (fd);
-        }
-
+        /* don't close fd on purpose */
         return fp;
 }
 
@@ -408,19 +389,18 @@ gboolean
 gdm_display_access_file_open (GdmDisplayAccessFile  *file,
                               GError               **error)
 {
-        GError *create_error;
+        g_autoptr(GError) create_error = NULL;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_ACCESS_FILE (file), FALSE);
         g_return_val_if_fail (file->fp == NULL, FALSE);
         g_return_val_if_fail (file->path == NULL, FALSE);
 
-        create_error = NULL;
         file->fp = _create_xauth_file_for_user (file->username,
                                                 &file->path,
                                                 &create_error);
 
         if (file->fp == NULL) {
-                g_propagate_error (error, create_error);
+                g_propagate_error (error, g_steal_pointer (&create_error));
                 return FALSE;
         }
 
@@ -477,7 +457,7 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
                                      gsize                 *cookie_size,
                                      GError               **error)
 {
-        GError  *add_error;
+        g_autoptr(GError) add_error = NULL;
         gboolean display_added;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_ACCESS_FILE (file), FALSE);
@@ -485,12 +465,11 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
         g_return_val_if_fail (display != NULL, FALSE);
         g_return_val_if_fail (cookie != NULL, FALSE);
 
-        add_error = NULL;
         *cookie = gdm_generate_random_bytes (GDM_DISPLAY_ACCESS_COOKIE_SIZE,
                                              &add_error);
 
         if (*cookie == NULL) {
-                g_propagate_error (error, add_error);
+                g_propagate_error (error, g_steal_pointer (&add_error));
                 return FALSE;
         }
 
@@ -503,7 +482,7 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
         if (!display_added) {
                 g_free (*cookie);
                 *cookie = NULL;
-                g_propagate_error (error, add_error);
+                g_propagate_error (error, g_steal_pointer (&add_error));
                 return FALSE;
         }
 
@@ -574,7 +553,7 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
 void
 gdm_display_access_file_close (GdmDisplayAccessFile  *file)
 {
-        char *auth_dir;
+        g_autofree char *auth_dir = NULL;
 
         g_return_if_fail (GDM_IS_DISPLAY_ACCESS_FILE (file));
         g_return_if_fail (file->fp != NULL);
@@ -598,7 +577,6 @@ gdm_display_access_file_close (GdmDisplayAccessFile  *file)
                                    auth_dir,
                                    g_strerror (errno));
                 }
-                g_free (auth_dir);
         }
 
         g_free (file->path);
