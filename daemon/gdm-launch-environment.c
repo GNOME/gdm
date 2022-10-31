@@ -160,7 +160,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 "XDG_CONFIG_DIRS",
                 NULL
         };
-        char *system_data_dirs;
+        g_autofree char *system_data_dirs = NULL;
         g_auto (GStrv) supported_session_types = NULL;
         int i;
 
@@ -244,7 +244,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                                               DATADIR "/gdm/greeter",
                                               DATADIR,
                                               system_data_dirs));
-        g_free (system_data_dirs);
 
         g_object_get (launch_environment->session,
                       "supported-session-types",
@@ -262,7 +261,7 @@ on_session_setup_complete (GdmSession        *session,
                            const char        *service_name,
                            GdmLaunchEnvironment *launch_environment)
 {
-        GHashTable       *hash;
+        g_autoptr(GHashTable) hash = NULL;
         GHashTableIter    iter;
         gpointer          key, value;
 
@@ -272,7 +271,6 @@ on_session_setup_complete (GdmSession        *session,
         while (g_hash_table_iter_next (&iter, &key, &value)) {
                 gdm_session_set_environment_variable (launch_environment->session, key, value);
         }
-        g_hash_table_destroy (hash);
 }
 
 static void
@@ -331,8 +329,8 @@ on_conversation_started (GdmSession           *session,
                          const char           *service_name,
                          GdmLaunchEnvironment *launch_environment)
 {
-        char             *log_path;
-        char             *log_file;
+        g_autofree char *log_path = NULL;
+        g_autofree char *log_file = NULL;
 
         if (launch_environment->x11_display_name != NULL)
                 log_file = g_strdup_printf ("%s-greeter.log", launch_environment->x11_display_name);
@@ -340,13 +338,11 @@ on_conversation_started (GdmSession           *session,
                 log_file = g_strdup ("greeter.log");
 
         log_path = g_build_filename (LOGDIR, log_file, NULL);
-        g_free (log_file);
 
         gdm_session_setup_for_program (launch_environment->session,
                                        "gdm-launch-environment",
                                        launch_environment->user_name,
                                        log_path);
-        g_free (log_path);
 }
 
 static void
@@ -354,10 +350,9 @@ on_conversation_stopped (GdmSession           *session,
                          const char           *service_name,
                          GdmLaunchEnvironment *launch_environment)
 {
-        GdmSession *conversation_session;
+        g_autoptr(GdmSession) conversation_session = NULL;
 
-        conversation_session = launch_environment->session;
-        launch_environment->session = NULL;
+        conversation_session = g_steal_pointer (&launch_environment->session);
 
         g_debug ("GdmLaunchEnvironment: conversation stopped");
 
@@ -368,7 +363,6 @@ on_conversation_stopped (GdmSession           *session,
 
         if (conversation_session != NULL) {
                 gdm_session_close (conversation_session);
-                g_object_unref (conversation_session);
         }
 }
 
@@ -402,9 +396,7 @@ ensure_directory_with_uid_gid (const char  *path,
 gboolean
 gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 {
-        gboolean          res = FALSE;
-        GError           *local_error = NULL;
-        GError          **error = &local_error;
+        g_autoptr(GError) error = NULL;
         struct passwd    *passwd_entry;
         uid_t             uid;
         gid_t             gid;
@@ -414,10 +406,8 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         g_debug ("GdmLaunchEnvironment: Starting...");
 
         if (!gdm_get_pwent_for_name (launch_environment->user_name, &passwd_entry)) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             "Unknown user %s",
-                             launch_environment->user_name);
-                goto out;
+                g_critical ("GdmLaunchEnvironment: Unknown user %s", launch_environment->user_name);
+                return FALSE;
         }
 
         uid = passwd_entry->pw_uid;
@@ -425,13 +415,16 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 
         g_debug ("GdmLaunchEnvironment: Setting up run time dir %s",
                  launch_environment->runtime_dir);
-        if (!ensure_directory_with_uid_gid (launch_environment->runtime_dir, uid, gid, error)) {
-                goto out;
+        if (!ensure_directory_with_uid_gid (launch_environment->runtime_dir, uid, gid, &error)) {
+                g_critical ("GdmLaunchEnvironment: %s", error->message);
+                return FALSE;
         }
 
         /* Create the home directory too */
-        if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, error))
-                goto out;
+        if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, &error)) {
+                g_critical ("GdmLaunchEnvironment: %s", error->message);
+                return FALSE;
+        }
 
         launch_environment->session = gdm_session_new (launch_environment->verification_mode,
                                                        uid,
@@ -494,13 +487,7 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                               NULL);
         }
 
-        res = TRUE;
- out:
-        if (local_error) {
-                g_critical ("GdmLaunchEnvironment: %s", local_error->message);
-                g_clear_error (&local_error);
-        }
-        return res;
+        return TRUE;
 }
 
 gboolean
@@ -947,10 +934,10 @@ create_gnome_session_environment (const char *session_id,
                                   gboolean    display_is_local)
 {
         gboolean debug = FALSE;
-        char *command;
         GdmLaunchEnvironment *launch_environment;
-        char **argv;
-        GPtrArray *args;
+        g_autoptr(GPtrArray) args = NULL;
+        g_autofree char **argv = NULL;
+        g_autofree char *command = NULL;
 
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
 
@@ -971,9 +958,8 @@ create_gnome_session_environment (const char *session_id,
 
         g_ptr_array_add (args, NULL);
 
-        argv = (char **) g_ptr_array_free (args, FALSE);
+        argv = (char **) g_ptr_array_steal (args, NULL);
         command = g_strjoinv (" ", argv);
-        g_free (argv);
 
         launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                                            "command", command,
@@ -987,7 +973,6 @@ create_gnome_session_environment (const char *session_id,
                                            "runtime-dir", GDM_SCREENSHOT_DIR,
                                            NULL);
 
-        g_free (command);
         return launch_environment;
 }
 
