@@ -68,18 +68,11 @@ static gboolean
 get_value (const char *key,
            char      **value)
 {
-        GError  *error;
         char    *str;
         gboolean res;
 
-        error = NULL;
-        res = gdm_settings_get_value (settings_object, key, &str, &error);
+        res = gdm_settings_get_value (settings_object, key, &str, NULL);
         if (! res) {
-                if (error != NULL) {
-                        g_error_free (error);
-                } else {
-                }
-
                 return FALSE;
         }
 
