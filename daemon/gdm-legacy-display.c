@@ -141,8 +141,8 @@ on_server_ready (GdmServer       *server,
                 g_debug ("GdmDisplay: could not connect to display");
                 gdm_display_unmanage (GDM_DISPLAY (self));
         } else {
-                GdmLaunchEnvironment *launch_environment;
-                char *display_device;
+                g_autoptr(GdmLaunchEnvironment) launch_environment = NULL;
+                g_autofree char *display_device = NULL;
 
                 display_device = gdm_server_get_display_device (server);
 
@@ -153,8 +153,6 @@ on_server_ready (GdmServer       *server,
                               "x11-display-device",
                               display_device,
                               NULL);
-                g_clear_pointer(&display_device, g_free);
-                g_clear_object (&launch_environment);
 
                 g_debug ("GdmDisplay: connected to display");
                 g_object_set (G_OBJECT (self), "status", GDM_DISPLAY_MANAGED, NULL);
@@ -187,9 +185,9 @@ static void
 gdm_legacy_display_manage (GdmDisplay *display)
 {
         GdmLegacyDisplay *self = GDM_LEGACY_DISPLAY (display);
-        char            *display_name;
-        char            *auth_file;
-        char            *seat_id;
+        g_autofree char *display_name = NULL;
+        g_autofree char *auth_file = NULL;
+        g_autofree char *seat_id = NULL;
         gboolean         is_initial;
         gboolean         res;
         gboolean         disable_tcp;
@@ -202,10 +200,6 @@ gdm_legacy_display_manage (GdmDisplay *display)
                       NULL);
 
         self->server = gdm_server_new (display_name, seat_id, auth_file, is_initial);
-
-        g_free (display_name);
-        g_free (auth_file);
-        g_free (seat_id);
 
         disable_tcp = TRUE;
         if (gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disable_tcp)) {
@@ -286,14 +280,13 @@ GdmDisplay *
 gdm_legacy_display_new (int display_number)
 {
         GObject *object;
-        char    *x11_display;
+        g_autofree char *x11_display = NULL;
 
         x11_display = g_strdup_printf (":%d", display_number);
         object = g_object_new (GDM_TYPE_LEGACY_DISPLAY,
                                "x11-display-number", display_number,
                                "x11-display-name", x11_display,
                                NULL);
-        g_free (x11_display);
 
         return GDM_DISPLAY (object);
 }
