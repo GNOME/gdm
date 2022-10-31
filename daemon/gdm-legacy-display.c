@@ -93,13 +93,10 @@ static gboolean
 gdm_legacy_display_prepare (GdmDisplay *display)
 {
         GdmLegacyDisplay *self = GDM_LEGACY_DISPLAY (display);
-        GdmLaunchEnvironment *launch_environment;
-        char          *display_name;
-        char          *seat_id;
+        g_autoptr(GdmLaunchEnvironment) launch_environment = NULL;
+        g_autofree char *display_name = NULL;
+        g_autofree gchar *seat_id = NULL;
         gboolean       doing_initial_setup = FALSE;
-
-        display_name = NULL;
-        seat_id = NULL;
 
         g_object_get (self,
                       "x11-display-name", &display_name,
@@ -122,7 +119,6 @@ gdm_legacy_display_prepare (GdmDisplay *display)
         }
 
         g_object_set (self, "launch-environment", launch_environment, NULL);
-        g_object_unref (launch_environment);
 
         if (!gdm_display_create_authority (display)) {
                 g_warning ("Unable to set up access control for display %s",
