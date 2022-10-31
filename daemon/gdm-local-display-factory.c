@@ -1144,7 +1144,6 @@ on_vt_changed (GIOChannel    *source,
         GdmDisplayStore *store;
         g_autofree char *tty_of_active_vt = NULL;
         g_autofree char *login_session_id = NULL;
-        g_autofree char *active_session_id = NULL;
         unsigned int previous_vt, new_vt, login_window_vt = 0;
         int n_returned;
 
