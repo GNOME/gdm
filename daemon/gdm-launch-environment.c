@@ -916,8 +916,6 @@ gdm_launch_environment_finalize (GObject *object)
 
         launch_environment = GDM_LAUNCH_ENVIRONMENT (object);
 
-        g_return_if_fail (launch_environment != NULL);
-
         gdm_launch_environment_stop (launch_environment);
 
         if (launch_environment->session) {
