@@ -333,10 +333,10 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
                                         const char         *value,
                                         GError            **error)
 {
-        char   *old_val;
-        char   *g;
-        char   *k;
-        char   *l;
+        g_autofree char *old_val = NULL;
+        g_autofree char *g = NULL;
+        g_autofree char *k = NULL;
+        g_autofree char *l = NULL;
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
@@ -363,8 +363,6 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
         queue_save (GDM_SETTINGS_DESKTOP_BACKEND (backend));
 
         gdm_settings_backend_value_changed (backend, key, old_val, value);
-
-        g_free (old_val);
 
         return TRUE;
 }
