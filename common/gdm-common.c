@@ -395,9 +395,6 @@ gdm_get_login_window_session_id (const char  *seat_id,
         gboolean   ret;
         int        res, i;
         char     **sessions;
-        char      *service_id;
-        char      *service_class;
-        char      *state;
 
         g_return_val_if_fail (session_id != NULL, FALSE);
 
@@ -414,6 +411,9 @@ gdm_get_login_window_session_id (const char  *seat_id,
         }
 
         for (i = 0; sessions[i]; i ++) {
+                char *service_id = NULL;
+                char *service_class = NULL;
+                char *state = NULL;
 
                 res = sd_session_get_class (sessions[i], &service_class);
                 if (res < 0) {
