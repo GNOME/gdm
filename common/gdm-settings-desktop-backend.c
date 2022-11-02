@@ -62,15 +62,14 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
                                              const char                *filename)
 {
         gboolean res;
-        GError  *error;
-        char *contents;
+        g_autoptr(GError) error = NULL;
+        g_autofree char *contents = NULL;
 
         g_free (backend->filename);
         backend->filename = g_strdup (filename);
 
         backend->key_file = g_key_file_new ();
 
-        error = NULL;
         res = g_key_file_load_from_file (backend->key_file,
                                          backend->filename,
                                          G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
@@ -83,7 +82,6 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
 
         if (contents != NULL) {
                 g_debug ("GdmSettings: %s is:\n%s\n", backend->filename, contents);
-                g_free (contents);
         }
 
 }
