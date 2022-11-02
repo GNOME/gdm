@@ -1616,7 +1616,7 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
 static gboolean
 kernel_cmdline_initial_setup_force_state (gboolean *force_state)
 {
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gchar *contents = NULL;
         gchar *setup_argument = NULL;
 
@@ -1625,7 +1625,6 @@ kernel_cmdline_initial_setup_force_state (gboolean *force_state)
         if (!g_file_get_contents ("/proc/cmdline", &contents, NULL, &error)) {
                 g_debug ("GdmDisplay: Could not check kernel parameters, not forcing initial setup: %s",
                           error->message);
-                g_clear_error (&error);
                 return FALSE;
         }
 
