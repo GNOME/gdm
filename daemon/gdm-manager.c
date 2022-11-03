@@ -1608,14 +1608,14 @@ start_user_session (GdmManager *manager,
         display = get_display_for_user_session (operation->session);
 
         if (display != NULL) {
-                char *auth_file;
-                const char *username;
                 gboolean is_connected = FALSE;
 
                 g_object_get (G_OBJECT (display), "is-connected", &is_connected, NULL);
 
                 if (is_connected) {
-                        auth_file = NULL;
+                        char *auth_file = NULL;
+                        const char *username;
+
                         username = gdm_session_get_username (operation->session);
                         gdm_display_add_user_authorization (display,
                                                             username,
