@@ -1506,7 +1506,7 @@ on_display_status_changed (GdmDisplay *display,
 {
         int         status;
         int         display_number = -1;
-        char       *session_type = NULL;
+        g_autofree char *session_type = NULL;
         gboolean    doing_initial_setup = FALSE;
 #ifdef WITH_PLYMOUTH
         gboolean    display_is_local = FALSE;
@@ -1531,14 +1531,13 @@ on_display_status_changed (GdmDisplay *display,
                 case GDM_DISPLAY_MANAGED:
                         if ((display_number == -1 && status == GDM_DISPLAY_PREPARED) ||
                             (display_number != -1 && status == GDM_DISPLAY_MANAGED)) {
-                                char *session_class;
+                                g_autofree char *session_class = NULL;
 
                                 g_object_get (display,
                                               "session-class", &session_class,
                                               NULL);
                                 if (g_strcmp0 (session_class, "greeter") == 0)
                                         set_up_session (manager, display);
-                                g_free (session_class);
                         }
                         break;
                 case GDM_DISPLAY_FAILED:
