@@ -979,7 +979,7 @@ on_reauthentication_client_rejected (GdmSession              *session,
 
         if (pid != pid_of_client) {
                 const char *session_id;
-                char *client_session_id;
+                g_autofree char *client_session_id = NULL;
 
                 /* rejected client isn't the process that started the
                  * transient reauthentication session. If it's not even from the
