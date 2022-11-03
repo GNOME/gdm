@@ -428,15 +428,9 @@ gdm_server_setup_journal_fds (GdmServer *server)
 #ifdef ENABLE_SYSTEMD_JOURNAL
     if (sd_booted () > 0) {
         int out, err;
-        const char *prefix = "gdm-Xorg-";
-        char *identifier;
-        gsize size;
+        g_autofree char *identifier = NULL;
 
-        size = strlen (prefix) + strlen (server->display_name) + 1;
-        identifier = g_alloca (size);
-        strcpy (identifier, prefix);
-        strcat (identifier, server->display_name);
-        identifier[size - 1] = '\0';
+        identifier = g_strdup_printf("gdm-Xorg-%s", server->display_name);
 
         out = sd_journal_stream_fd (identifier, LOG_INFO, FALSE);
         if (out < 0)
