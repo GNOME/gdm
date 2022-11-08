@@ -54,9 +54,9 @@ log_user_message (GdmSessionAuditor *auditor,
 {
         GdmSessionLinuxAuditor   *linux_auditor;
         char                      buf[512];
-        char                     *username;
-        char                     *hostname;
-        char                     *display_device;
+        g_autofree char *username = NULL;
+        g_autofree char *hostname = NULL;
+        g_autofree char *display_device = NULL;
         struct passwd            *pw;
 
         linux_auditor = GDM_SESSION_LINUX_AUDITOR (auditor);
@@ -83,10 +83,6 @@ log_user_message (GdmSessionAuditor *auditor,
                                         buf, hostname, NULL, display_device,
                                         result);
         }
-
-        g_free (username);
-        g_free (hostname);
-        g_free (display_device);
 }
 
 static void
