@@ -376,7 +376,7 @@ gboolean
 gdm_session_settings_save (GdmSessionSettings  *settings,
                            const char          *username)
 {
-        ActUser  *user;
+        g_autoptr(ActUser) user = NULL;
 
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
@@ -387,7 +387,6 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
 
 
         if (!act_user_is_loaded (user)) {
-                g_object_unref (user);
                 return FALSE;
         }
 
@@ -410,12 +409,10 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
 
                 if (error != NULL) {
                         g_debug ("GdmSessionSettings: Could not locally cache remote user: %s", error->message);
-                        g_object_unref (user);
                         return FALSE;
                 }
 
         }
-        g_object_unref (user);
 
         return TRUE;
 }
