@@ -578,7 +578,7 @@ gdm_get_script_environment (const char *username,
         GHashTable    *hash;
         struct passwd *pwent;
 
-        env = g_ptr_array_new ();
+        env = g_ptr_array_new_with_free_func (g_free);
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -724,7 +724,6 @@ gdm_run_script (const char *dir,
                             &status,
                             &error);
 
-        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
         g_strfreev (argv);
 
