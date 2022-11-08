@@ -810,8 +810,7 @@ gdm_server_stop (GdmServer *server)
         g_debug ("GdmServer: Stopping server");
 
         res = gdm_signal_pid (server->pid, SIGTERM);
-        if (res < 0) {
-        } else {
+        if (res >= 0) {
                 server_died (server);
         }
 
