@@ -2970,7 +2970,7 @@ filter_extensions (const char * const *extensions)
         GPtrArray *array = NULL;
         char **filtered_extensions = NULL;
 
-        array = g_ptr_array_new ();
+        array = g_ptr_array_new_with_free_func (g_free);
 
         for (i = 0; extensions[i] != NULL; i++) {
                 for (j = 0; gdm_supported_pam_extensions[j] != NULL; j++) {
