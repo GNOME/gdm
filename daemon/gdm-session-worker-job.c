@@ -207,7 +207,7 @@ get_job_arguments (GdmSessionWorkerJob *job,
                 return NULL;
         }
 
-        args = g_ptr_array_new ();
+        args = g_ptr_array_new_with_free_func (g_free);
         g_ptr_array_add (args, g_strdup (argv[0]));
         g_ptr_array_add (args, g_strdup (name));
         for (i = 1; argv[i] != NULL; i++) {
@@ -225,7 +225,7 @@ get_job_environment (GdmSessionWorkerJob *job)
         g_autoptr(GPtrArray) env = NULL;
         g_autoptr(GHashTable) hash = NULL;
 
-        env = g_ptr_array_new ();
+        env = g_ptr_array_new_with_free_func (g_free);
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -274,10 +274,6 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                                         NULL,
                                         NULL,
                                         &error);
-
-        g_ptr_array_foreach (args, (GFunc)g_free, NULL);
-
-        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
 
         if (! ret) {
                 g_warning ("Could not start command '%s': %s",
