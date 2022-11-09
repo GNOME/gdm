@@ -536,9 +536,9 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
                                         GdmChoiceList    *list,
                                         char            **answerp)
 {
+        g_autoptr(GVariant) choices_as_variant = NULL;
+        g_autoptr(GError) error = NULL;
         GVariantBuilder builder;
-        GVariant *choices_as_variant;
-        GError *error = NULL;
         gboolean res;
         size_t i;
 
@@ -569,7 +569,6 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
 
         if (! res) {
                 g_debug ("GdmSessionWorker: list request failed: %s", error->message);
-                g_clear_error (&error);
         } else {
                 g_debug ("GdmSessionWorker: user selected '%s'", *answerp);
         }
