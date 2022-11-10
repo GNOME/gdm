@@ -459,6 +459,13 @@ load_key_file_for_file (GdmSession   *self,
 }
 
 static gboolean
+is_wayland_headless (GdmSession *self)
+{
+        return g_strcmp0 (self->session_type, "wayland") == 0 &&
+                          !self->display_is_local;
+}
+
+static gboolean
 get_session_command_for_file (GdmSession  *self,
                               const char  *file,
                               const char  *type,
@@ -496,6 +503,19 @@ get_session_command_for_file (GdmSession  *self,
         if (error == NULL && res) {
                 g_debug ("GdmSession: Session %s is marked as hidden", file);
                 goto out;
+        }
+
+        if (is_wayland_headless (self)) {
+                gboolean can_run_headless;
+
+                can_run_headless = g_key_file_get_boolean (key_file,
+                                                           G_KEY_FILE_DESKTOP_GROUP,
+                                                           "X-GDM-CanRunHeadless",
+                                                           NULL);
+                if (!can_run_headless && is_wayland_headless (self)) {
+                        g_debug ("GdmSession: Session %s is not headless capable", file);
+                        goto out;
+                }
         }
 
         exec = g_key_file_get_string (key_file,
