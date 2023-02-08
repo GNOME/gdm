@@ -333,7 +333,6 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
                                         const char         *value,
                                         GError            **error)
 {
-        GError *local_error;
         char   *old_val;
         char   *g;
         char   *k;
@@ -349,17 +348,12 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
                 return FALSE;
         }
 
-        local_error = NULL;
         old_val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->key_file,
                                         g,
                                         k,
-                                        &local_error);
-        if (local_error != NULL) {
-                g_error_free (local_error);
-        }
+                                        NULL);
 
         /*g_debug ("Setting key: %s %s %s", g, k, l);*/
-        local_error = NULL;
         g_key_file_set_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->key_file,
                               g,
                               k,
