@@ -3,21 +3,21 @@
 # Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015 Free Software Foundation, Inc.
 # Copyright (C) 2016, 2017 Free Software Foundation, Inc.
 # Copyright (C) 2010 Krasimir Chonov <mk2616@abv.bg>.
-# Copyright (C) 2021 Alexander Shopov <ash@kambanaria.org>.
+# Copyright (C) 2021, 2023 Alexander Shopov <ash@kambanaria.org>.
 # Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>, 2002.
 # Yanko Kaneti <yaneti@declera.com>, 2002.
 # Alexander Shopov <ash@kambanaria.org>, 2002, 2005, 2006, 2007, 2008, 2009.
 # Alexander Shopov <ash@kambanaria.org>, 2010, 2011, 2012, 2014, 2015, 2016.
-# Alexander Shopov <ash@kambanaria.org>, 2017, 2021.
+# Alexander Shopov <ash@kambanaria.org>, 2017, 2021, 2023.
 # Rostislav Raykov <zbrox@dir.bg>, 2004.
 # Krasimir Chonov <mk2616@abv.bg>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm master\n"
+"Project-Id-Version: gdm main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2021-07-09 17:07+0000\n"
-"PO-Revision-Date: 2021-07-11 09:18+0200\n"
+"POT-Creation-Date: 2023-02-21 10:52+0000\n"
+"PO-Revision-Date: 2023-02-25 18:31+0200\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -62,18 +62,18 @@ msgstr "XMDCP: Адресът не може да се анализира"
 msgid "/dev/urandom is not a character device"
 msgstr "„/dev/urandom“ не е знаково устройство"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:507 libgdm/gdm-user-switching.c:207
 msgid "Could not identify the current session: "
 msgstr "Текущата сесия не може да бъде определена: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:516 libgdm/gdm-user-switching.c:216
 msgid "Could not identify the current seat."
 msgstr "Правилната сесия не може да бъде определена."
 
-#: daemon/gdm-display-access-file.c:298
+#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
 #, c-format
-msgid "could not find user “%s” on system"
-msgstr "потребителят „%s“ не бе открит в системата"
+msgid "Could not find user “%s” on system"
+msgstr "Потребителят „%s“ не бе открит в системата"
 
 #: daemon/gdm-legacy-display.c:236
 msgid ""
@@ -87,67 +87,67 @@ msgstr ""
 "диагностика. Този дисплей ще бъде забранен. Рестартирайте GDM, когато "
 "проблемът е коригиран."
 
-#: daemon/gdm-manager.c:764
+#: daemon/gdm-manager.c:769
 msgid "No display available"
 msgstr "Няма екран"
 
-#: daemon/gdm-manager.c:862 daemon/gdm-manager.c:1146
+#: daemon/gdm-manager.c:867 daemon/gdm-manager.c:1151
 msgid "No session available"
 msgstr "Няма сесии"
 
-#: daemon/gdm-manager.c:881
+#: daemon/gdm-manager.c:886
 msgid "Chooser session unavailable"
 msgstr "Няма избор на сесии"
 
-#: daemon/gdm-manager.c:897
+#: daemon/gdm-manager.c:902
 msgid "Can only be called before user is logged in"
 msgstr "Може да се стартира само преди влизането на потребителя"
 
-#: daemon/gdm-manager.c:908
+#: daemon/gdm-manager.c:913
 msgid "Caller not GDM"
 msgstr "Викащата програма не е GDM"
 
-#: daemon/gdm-manager.c:918
+#: daemon/gdm-manager.c:923
 msgid "Unable to open private communication channel"
 msgstr "Не може да се отвори частен канал за комуникация"
 
-#: daemon/gdm-server.c:383
+#: daemon/gdm-server.c:384
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Сървърът бе породен от потребителя „%s“, но такъв потребител не съществува"
 
-#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Идентификаторът на група не може да се зададе да е %d"
 
-#: daemon/gdm-server.c:400
+#: daemon/gdm-server.c:401
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "неуспешно изпълнение на initgroups() за %s"
 
-#: daemon/gdm-server.c:406
+#: daemon/gdm-server.c:407
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "Идентификаторът на потребител не може да се зададе да е %d"
 
-#: daemon/gdm-server.c:484
+#: daemon/gdm-server.c:485
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Не може да се отвори журналният файл за дисплей %s!"
 
-#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
+#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Грешка при задаване на %s да е %s"
 
-#: daemon/gdm-server.c:537
+#: daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Не може да се зададе %d като приоритет на сървър: %s"
 
-#: daemon/gdm-server.c:689
+#: daemon/gdm-server.c:690
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Празна команда за дисплей %s"
@@ -176,11 +176,11 @@ msgstr "Устройство на дисплея"
 msgid "The display device"
 msgstr "Устройството на дисплея"
 
-#: daemon/gdm-session.c:1289
+#: daemon/gdm-session.c:1336
 msgid "Could not create authentication helper process"
 msgstr "Помощният процес за идентификация не може да бъде стартиран"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -188,15 +188,7 @@ msgstr ""
 "Достигнахте максималния брой проби за идентификация с парола. Пробвайте друг "
 "метод"
 
-#: daemon/gdm-session-worker.c:753
-msgid ""
-"You reached the maximum PIN authentication attempts, please try another "
-"method"
-msgstr ""
-"Достигнахте максималния брой проби за идентификация с ПИН. Пробвайте друг "
-"метод"
-
-#: daemon/gdm-session-worker.c:756
+#: daemon/gdm-session-worker.c:755
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -204,7 +196,7 @@ msgstr ""
 "Достигнахте максималния брой проби за автоматично влизане. Пробвайте друг "
 "метод"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:758
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -212,7 +204,7 @@ msgstr ""
 "Достигнахте максималния брой проби за идентификация с пръстов отпечатък. "
 "Пробвайте друг метод"
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:761
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -220,51 +212,47 @@ msgstr ""
 "Достигнахте максималния брой проби за идентификация чип карта. Пробвайте "
 "друг метод"
 
-#: daemon/gdm-session-worker.c:764
+#: daemon/gdm-session-worker.c:763
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Достигнахте максималния брой проби за идентификация. Пробвайте друг метод"
 
-#: daemon/gdm-session-worker.c:771
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "За съжаление идентификацията с парола не сработи. Пробвайте наново."
 
-#: daemon/gdm-session-worker.c:774
-msgid "Sorry, PIN authentication didn’t work. Please try again."
-msgstr "За съжаление идентификацията с ПИН не сработи. Пробвайте наново."
-
-#: daemon/gdm-session-worker.c:777
+#: daemon/gdm-session-worker.c:773
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "За съжаление автоматичното влизане не сработи. Пробвайте наново."
 
-#: daemon/gdm-session-worker.c:780
+#: daemon/gdm-session-worker.c:776
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "За съжаление идентификацията с пръстов отпечатък не сработи. Пробвайте "
 "наново."
 
-#: daemon/gdm-session-worker.c:783
+#: daemon/gdm-session-worker.c:779
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "За съжаление идентификацията с чип карта не сработи. Пробвайте наново."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:781
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "За съжаление това не сработи. Пробвайте наново."
 
-#: daemon/gdm-session-worker.c:800
+#: daemon/gdm-session-worker.c:796
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Регистрацията ви е ограничена по време, а то е изтекло."
 
-#: daemon/gdm-session-worker.c:1202
+#: daemon/gdm-session-worker.c:1197
 msgid "Username:"
 msgstr "Потребител:"
 
-#: daemon/gdm-session-worker.c:1603 daemon/gdm-session-worker.c:1620
+#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
 msgid "no user account available"
 msgstr "няма потребител"
 
-#: daemon/gdm-session-worker.c:1647
+#: daemon/gdm-session-worker.c:1641
 msgid "Unable to change to user"
 msgstr "Потребителят не може да бъде сменен"
 
@@ -325,24 +313,24 @@ msgstr "Не може да се намери групата на GDM (%s). Пр�
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Групата на GDM не може да е „root“. Програмата спира!"
 
-#: daemon/main.c:317
+#: daemon/main.c:309
 msgid "Make all warnings fatal"
 msgstr "Всички предупреждения да са фатални"
 
-#: daemon/main.c:318
+#: daemon/main.c:310
 msgid "Exit after a time (for debugging)"
 msgstr "Спиране на програмата след период от време (за изчистване на грешки)"
 
-#: daemon/main.c:319
+#: daemon/main.c:311
 msgid "Print GDM version"
 msgstr "Извеждане на версията на GDM"
 
-#: daemon/main.c:330
+#: daemon/main.c:322
 msgid "GNOME Display Manager"
 msgstr "Управление на дисплеи на GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:350
+#: daemon/main.c:342
 msgid "Only the root user can run GDM"
 msgstr "Само администраторът може да изпълни GDM"
 
