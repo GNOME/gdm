@@ -87,10 +87,17 @@ on_state_changed (GdmSessionWorker *worker,
                 return;
 
         g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGHUP, on_shutdown_signal_cb, main_loop);
 }
 
 static void
 on_sigterm_cb (int signal_number)
+{
+        _exit (EXIT_SUCCESS);
+}
+
+static void
+on_sighup_cb (int signal_number)
 {
         _exit (EXIT_SUCCESS);
 }
@@ -109,6 +116,7 @@ main (int    argc,
         };
 
         signal (SIGTERM, on_sigterm_cb);
+        signal (SIGHUP, on_sighup_cb);
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         textdomain (GETTEXT_PACKAGE);
