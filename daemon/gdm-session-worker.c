@@ -3572,7 +3572,7 @@ gdm_session_worker_finalize (GObject *object)
 
         jump_back_to_initial_vt (worker);
 
-        g_object_unref (worker->user_settings);
+        g_clear_object (&worker->user_settings);
         g_free (worker->service);
         g_free (worker->x11_display_name);
         g_free (worker->x11_authority_file);
