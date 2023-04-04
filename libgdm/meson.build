@@ -56,7 +56,7 @@ libgdm_deps = [
   glib_dep,
   gio_dep,
   gio_unix_dep,
-  libsystemd_dep,
+  logind_dep,
   libgdmcommon_dep,
 ]
 
