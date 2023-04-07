@@ -179,14 +179,14 @@ gdm_daemon_ensure_dirs (uid_t uid,
 
         /* Set up /var/run/gdm */
         if (!ensure_dir_with_perms (GDM_RAN_ONCE_MARKER_DIR, 0, gid, 0711, &error)) {
-                gdm_fail (_("Failed to create ran once marker dir %s: %s"),
-                          GDM_RAN_ONCE_MARKER_DIR, error->message);
+                g_critical (_("Failed to create ran once marker dir %s: %s"),
+                            GDM_RAN_ONCE_MARKER_DIR, error->message);
         }
 
         /* Set up /var/log/gdm */
         if (!ensure_dir_with_perms (LOGDIR, 0, gid, 0711, &error)) {
-                gdm_fail (_("Failed to create LogDir %s: %s"),
-                          LOGDIR, error->message);
+                g_critical (_("Failed to create LogDir %s: %s"),
+                            LOGDIR, error->message);
         }
 }
 
@@ -220,25 +220,25 @@ gdm_daemon_lookup_user (uid_t *uidp,
 
         /* Set uid and gid */
         if G_UNLIKELY (pwent == NULL) {
-                gdm_fail (_("Can’t find the GDM user “%s”. Aborting!"), username);
+                g_critical (_("Can’t find the GDM user “%s”. Aborting!"), username);
         } else {
                 uid = pwent->pw_uid;
         }
 
         if G_UNLIKELY (uid == 0) {
-                gdm_fail (_("The GDM user should not be root. Aborting!"));
+                g_critical (_("The GDM user should not be root. Aborting!"));
         }
 
         grent = getgrnam (groupname);
 
         if G_UNLIKELY (grent == NULL) {
-                gdm_fail (_("Can’t find the GDM group “%s”. Aborting!"), groupname);
+                g_critical (_("Can’t find the GDM group “%s”. Aborting!"), groupname);
         } else  {
                 gid = grent->gr_gid;
         }
 
         if G_UNLIKELY (gid == 0) {
-                gdm_fail (_("The GDM group should not be root. Aborting!"));
+                g_critical (_("The GDM group should not be root. Aborting!"));
         }
 
         if (uidp != NULL) {
