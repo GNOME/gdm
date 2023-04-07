@@ -33,15 +33,6 @@ void      gdm_log_toggle_debug    (void);
 void      gdm_log_init            (void);
 void      gdm_log_shutdown        (void);
 
-/* compatibility */
-#define   gdm_fail               g_critical
-#define   gdm_error              g_warning
-#define   gdm_info               g_message
-#define   gdm_debug              g_debug
-
-#define   gdm_assert             g_assert
-#define   gdm_assert_not_reached g_assert_not_reached
-
 G_END_DECLS
 
 #endif /* __GDM_LOG_H */
