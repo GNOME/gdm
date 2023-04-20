@@ -143,6 +143,7 @@ load_session_file (const char              *id,
 
         if (!key_file_is_relevant (key_file)) {
                 g_debug ("\"%s\" is hidden or contains non-executable TryExec program\n", path);
+                g_hash_table_remove (gdm_available_sessions_map, id);
                 goto out;
         }
 
@@ -322,7 +323,7 @@ collect_sessions (void)
         }
 
         if (!supported_session_types || g_strv_contains ((const char * const *) supported_session_types, "x11")) {
-                for (i = 0; i < xorg_search_array->len; i++) {
+                for (i = xorg_search_array->len - 1; i >= 0; i--) {
                         collect_sessions_from_directory (g_ptr_array_index (xorg_search_array, i));
                 }
         }
@@ -330,7 +331,7 @@ collect_sessions (void)
 #ifdef ENABLE_WAYLAND_SUPPORT
 #ifdef ENABLE_USER_DISPLAY_SERVER
         if (!supported_session_types  || g_strv_contains ((const char * const *) supported_session_types, "wayland")) {
-                for (i = 0; i < wayland_search_array->len; i++) {
+                for (i = wayland_search_array->len - 1; i >= 0; i--) {
                         collect_sessions_from_directory (g_ptr_array_index (wayland_search_array, i));
                 }
         }
