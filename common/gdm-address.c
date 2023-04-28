@@ -236,19 +236,15 @@ _gdm_address_debug (GdmAddress *address,
 void
 gdm_address_debug (GdmAddress *address)
 {
-        char *hostname = NULL;
-        char *host = NULL;
-        char *port = NULL;
+        g_autofree char *hostname = NULL;
+        g_autofree char *host = NULL;
+        g_autofree char *port = NULL;
 
         g_return_if_fail (address != NULL);
 
         gdm_address_get_numeric_info (address, &host, &port);
 
         _gdm_address_debug (address, host, port);
-
-        g_free (hostname);
-        g_free (host);
-        g_free (port);
 }
 
 gboolean

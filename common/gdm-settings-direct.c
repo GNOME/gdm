@@ -68,26 +68,17 @@ static gboolean
 get_value (const char *key,
            char      **value)
 {
-        GError  *error;
-        char    *str;
+        g_autofree char *str = NULL;
         gboolean res;
 
-        error = NULL;
-        res = gdm_settings_get_value (settings_object, key, &str, &error);
+        res = gdm_settings_get_value (settings_object, key, &str, NULL);
         if (! res) {
-                if (error != NULL) {
-                        g_error_free (error);
-                } else {
-                }
-
                 return FALSE;
         }
 
         if (value != NULL) {
                 *value = g_strdup (str);
         }
-
-        g_free (str);
 
         return TRUE;
 }
@@ -99,7 +90,7 @@ gdm_settings_direct_get_int (const char        *key,
         GdmSettingsEntry *entry;
         gboolean          ret;
         gboolean          res;
-        char             *str;
+        g_autofree char *str = NULL;
 
         g_return_val_if_fail (key != NULL, FALSE);
         g_return_val_if_fail (value != NULL, FALSE);
@@ -117,8 +108,6 @@ gdm_settings_direct_get_int (const char        *key,
         }
 
         ret = gdm_settings_parse_value_as_integer (str, value);
-
-        g_free (str);
 
         return ret;
 }
@@ -150,7 +139,7 @@ gdm_settings_direct_get_boolean (const char        *key,
         GdmSettingsEntry *entry;
         gboolean          ret;
         gboolean          res;
-        char             *str;
+        g_autofree char *str = NULL;
 
         g_return_val_if_fail (key != NULL, FALSE);
         g_return_val_if_fail (value != NULL, FALSE);
@@ -169,8 +158,6 @@ gdm_settings_direct_get_boolean (const char        *key,
 
         ret = gdm_settings_parse_value_as_boolean  (str, value);
 
-        g_free (str);
-
         return ret;
 }
 
@@ -181,7 +168,7 @@ gdm_settings_direct_get_string (const char        *key,
         GdmSettingsEntry *entry;
         gboolean          ret;
         gboolean          res;
-        char             *str;
+        g_autofree char *str = NULL;
 
         g_return_val_if_fail (key != NULL, FALSE);
         g_return_val_if_fail (value != NULL, FALSE);
@@ -201,8 +188,6 @@ gdm_settings_direct_get_string (const char        *key,
         }
 
         *value = g_strdup (str);
-
-        g_free (str);
 
         return ret;
 }

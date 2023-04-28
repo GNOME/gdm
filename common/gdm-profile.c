@@ -41,8 +41,8 @@ _gdm_profile_log (const char *func,
                   ...)
 {
         va_list args;
-        char *str;
-        char *formatted;
+        g_autofree char *str = NULL;
+        g_autofree char *formatted = NULL;
         const char *prgname;
 
         if (format == NULL) {
@@ -68,8 +68,5 @@ _gdm_profile_log (const char *func,
                                        formatted);
         }
 
-        g_free (formatted);
-
         g_access (str, F_OK);
-        g_free (str);
 }

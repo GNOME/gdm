@@ -52,8 +52,8 @@ handle_connection (GDBusServer      *server,
                    GDBusConnection  *new_connection,
                    gpointer          user_data)
 {
+        g_autoptr(GDBusNodeInfo) bus_info = NULL;
         GDBusInterfaceVTable bus_vtable = { handle_bus_method };
-        GDBusNodeInfo *bus_info;
 
         bus_info = g_dbus_node_info_new_for_xml (dbus_introspection,
                                                  NULL);
@@ -65,7 +65,6 @@ handle_connection (GDBusServer      *server,
                                            bus_info->interfaces[0],
                                            &bus_vtable,
                                            NULL, NULL, NULL);
-        g_dbus_node_info_unref (bus_info);
 
         /* We're not handling the signal */
         return FALSE;
@@ -75,9 +74,9 @@ GDBusServer *
 gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                                GError            **error)
 {
-        char *guid;
+        g_autofree char *guid = NULL;
         const char *client_address;
-        GDBusServer *server;
+        g_autoptr(GDBusServer) server = NULL;
 
         guid = g_dbus_generate_guid ();
 
@@ -99,9 +98,7 @@ gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                           G_CALLBACK (handle_connection),
                           NULL);
 
-        g_free (guid);
-
-        return server;
+        return g_steal_pointer (&server);
 }
 
 gboolean
@@ -109,9 +106,8 @@ gdm_dbus_get_pid_for_name (const char  *system_bus_name,
                            pid_t       *out_pid,
                            GError     **error)
 {
-        GDBusConnection *bus;
-        GVariant *reply;
-        gboolean retval = FALSE;
+        g_autoptr(GDBusConnection) bus = NULL;
+        g_autoptr(GVariant) reply = NULL;
         unsigned int v;
 
         g_return_val_if_fail (system_bus_name != NULL, FALSE);
@@ -133,18 +129,13 @@ gdm_dbus_get_pid_for_name (const char  *system_bus_name,
                                              -1,
                                              NULL, error);
         if (reply == NULL) {
-                goto out;
+                return FALSE;
         }
 
         g_variant_get (reply, "(u)", &v);
         *out_pid = v;
-        g_variant_unref (reply);
 
-        retval = TRUE;
- out:
-        g_object_unref (bus);
-
-        return retval;
+        return TRUE;
 }
 
 gboolean
@@ -152,9 +143,8 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                            uid_t       *out_uid,
                            GError     **error)
 {
-        GDBusConnection *bus;
-        GVariant *reply;
-        gboolean retval = FALSE;
+        g_autoptr(GDBusConnection) bus = NULL;
+        g_autoptr(GVariant) reply = NULL;
         unsigned int v;
 
         g_return_val_if_fail (system_bus_name != NULL, FALSE);
@@ -176,18 +166,13 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                                              -1,
                                              NULL, error);
         if (reply == NULL) {
-                goto out;
+                return FALSE;
         }
 
         g_variant_get (reply, "(u)", &v);
         *out_uid = v;
-        g_variant_unref (reply);
 
-        retval = TRUE;
- out:
-        g_object_unref (bus);
-
-        return retval;
+        return TRUE;
 }
 
 void

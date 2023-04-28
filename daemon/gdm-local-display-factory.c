@@ -1142,18 +1142,18 @@ on_vt_changed (GIOChannel    *source,
                GdmLocalDisplayFactory *factory)
 {
         GdmDisplayStore *store;
-        GIOStatus status;
         g_autofree char *tty_of_active_vt = NULL;
         g_autofree char *login_session_id = NULL;
-        g_autofree char *active_session_id = NULL;
         unsigned int previous_vt, new_vt, login_window_vt = 0;
-        int ret, n_returned;
+        int n_returned;
 
         g_debug ("GdmLocalDisplayFactory: received VT change event");
         g_io_channel_seek_position (source, 0, G_SEEK_SET, NULL);
 
         if (condition & G_IO_PRI) {
                 g_autoptr (GError) error = NULL;
+                GIOStatus status;
+
                 status = g_io_channel_read_line (source, &tty_of_active_vt, NULL, NULL, &error);
 
                 if (error != NULL) {
@@ -1216,7 +1216,7 @@ on_vt_changed (GIOChannel    *source,
         /* if the old VT was running a wayland login screen kill it
          */
         if (gdm_get_login_window_session_id ("seat0", &login_session_id)) {
-                ret = sd_session_get_vt (login_session_id, &login_window_vt);
+                int ret = sd_session_get_vt (login_session_id, &login_window_vt);
                 if (ret == 0 && login_window_vt != 0) {
                         g_debug ("GdmLocalDisplayFactory: VT of login window is %u", login_window_vt);
                         if (login_window_vt == previous_vt) {

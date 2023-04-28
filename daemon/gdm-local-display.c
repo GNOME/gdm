@@ -93,7 +93,6 @@ gdm_local_display_prepare (GdmDisplay *display)
         char          *session_class;
         char          *session_type;
         gboolean       doing_initial_setup = FALSE;
-        gboolean       failed = FALSE;
 
         seat_id = NULL;
 
@@ -132,9 +131,6 @@ out:
         g_free (session_class);
         g_free (session_type);
 
-        if (failed) {
-                return FALSE;
-        }
         return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
 }
 

@@ -3187,7 +3187,7 @@ gdm_session_get_display_seat_id (GdmSession *self)
 {
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
 
-        return g_strdup (self->display_seat_id);
+        return self->display_seat_id;
 }
 
 const char *

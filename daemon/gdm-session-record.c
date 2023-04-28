@@ -114,11 +114,9 @@ record_set_host (UTMP       *u,
                  const char *x11_display_name,
                  const char *host_name)
 {
-        char *hostname;
+        g_autofree char *hostname = NULL;
 
 #if defined(HAVE_UT_UT_HOST)
-        hostname = NULL;
-
         /*
          * Set ut_host to hostname:$DISPLAY if remote, otherwise set
          * to $DISPLAY
@@ -137,7 +135,6 @@ record_set_host (UTMP       *u,
 #ifdef HAVE_UT_UT_SYSLEN
                 u->ut_syslen = MIN (strlen (hostname), sizeof (u->ut_host));
 #endif
-                g_free (hostname);
         }
 #endif
 }

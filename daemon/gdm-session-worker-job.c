@@ -172,7 +172,7 @@ static void
 copy_environment_to_hash (GdmSessionWorkerJob *job,
                           GHashTable          *hash)
 {
-        char **environment;
+        g_auto(GStrv) environment = NULL;
         gint   i;
 
         if (job->environment != NULL) {
@@ -182,58 +182,50 @@ copy_environment_to_hash (GdmSessionWorkerJob *job,
         }
 
         for (i = 0; environment[i]; i++) {
-                char **parts;
+                g_auto(GStrv) parts = NULL;
 
                 parts = g_strsplit (environment[i], "=", 2);
 
                 if (parts[0] != NULL && parts[1] != NULL) {
                         g_hash_table_insert (hash, g_strdup (parts[0]), g_strdup (parts[1]));
                 }
-
-                g_strfreev (parts);
         }
-
-        g_strfreev (environment);
 }
 
 static GPtrArray *
 get_job_arguments (GdmSessionWorkerJob *job,
                    const char          *name)
 {
-        GPtrArray  *args;
-        GError     *error;
-        char      **argv;
+        g_autoptr(GPtrArray) args = NULL;
+        g_autoptr(GError) error = NULL;
+        g_auto(GStrv) argv = NULL;
         int         i;
 
         args = NULL;
-        argv = NULL;
-        error = NULL;
         if (!g_shell_parse_argv (job->command, NULL, &argv, &error)) {
                 g_warning ("Could not parse command: %s", error->message);
-                g_error_free (error);
-                goto out;
+                return NULL;
         }
 
-        args = g_ptr_array_new ();
+        args = g_ptr_array_new_with_free_func (g_free);
         g_ptr_array_add (args, g_strdup (argv[0]));
         g_ptr_array_add (args, g_strdup (name));
         for (i = 1; argv[i] != NULL; i++) {
                 g_ptr_array_add (args, g_strdup (argv[i]));
         }
-        g_strfreev (argv);
 
         g_ptr_array_add (args, NULL);
-out:
-        return args;
+
+        return g_steal_pointer (&args);
 }
 
 static GPtrArray *
 get_job_environment (GdmSessionWorkerJob *job)
 {
-        GPtrArray     *env;
-        GHashTable    *hash;
+        g_autoptr(GPtrArray) env = NULL;
+        g_autoptr(GHashTable) hash = NULL;
 
-        env = g_ptr_array_new ();
+        env = g_ptr_array_new_with_free_func (g_free);
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -246,21 +238,20 @@ get_job_environment (GdmSessionWorkerJob *job)
         }
 
         g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
-        g_hash_table_destroy (hash);
 
         g_ptr_array_add (env, NULL);
 
-        return env;
+        return g_steal_pointer (&env);
 }
 
 static gboolean
 gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                               const char          *name)
 {
-        GError          *error;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GPtrArray) args = NULL;
+        g_autoptr(GPtrArray) env = NULL;
         gboolean         ret;
-        GPtrArray       *args;
-        GPtrArray       *env;
 
         g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s %s",
                  name != NULL? name : "", session_worker_job->command);
@@ -272,7 +263,6 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
         }
         env = get_job_environment (session_worker_job);
 
-        error = NULL;
         ret = g_spawn_async_with_pipes (NULL,
                                         (char **) args->pdata,
                                         (char **)env->pdata,
@@ -285,17 +275,10 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                                         NULL,
                                         &error);
 
-        g_ptr_array_foreach (args, (GFunc)g_free, NULL);
-        g_ptr_array_free (args, TRUE);
-
-        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
-        g_ptr_array_free (env, TRUE);
-
         if (! ret) {
                 g_warning ("Could not start command '%s': %s",
                            session_worker_job->command,
                            error->message);
-                g_error_free (error);
         } else {
                 g_debug ("GdmSessionWorkerJob: : SessionWorkerJob on pid %d", (int)session_worker_job->pid);
         }

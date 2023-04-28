@@ -338,26 +338,18 @@ gboolean
 gdm_session_settings_load (GdmSessionSettings  *settings,
                            const char          *username)
 {
-        ActUser *old_user;
-
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
 
         if (settings->user != NULL) {
-                old_user = settings->user;
-
                 g_signal_handlers_disconnect_by_func (G_OBJECT (settings->user),
                                                       G_CALLBACK (on_user_is_loaded_changed),
                                                       settings);
-        } else {
-                old_user = NULL;
         }
 
         settings->user = act_user_manager_get_user (settings->user_manager,
                                                           username);
-
-        g_clear_object (&old_user);
 
         if (!act_user_is_loaded (settings->user)) {
                 g_signal_connect (settings->user,
@@ -376,7 +368,7 @@ gboolean
 gdm_session_settings_save (GdmSessionSettings  *settings,
                            const char          *username)
 {
-        ActUser  *user;
+        g_autoptr(ActUser) user = NULL;
 
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
@@ -387,7 +379,6 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
 
 
         if (!act_user_is_loaded (user)) {
-                g_object_unref (user);
                 return FALSE;
         }
 
@@ -410,12 +401,10 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
 
                 if (error != NULL) {
                         g_debug ("GdmSessionSettings: Could not locally cache remote user: %s", error->message);
-                        g_object_unref (user);
                         return FALSE;
                 }
 
         }
-        g_object_unref (user);
 
         return TRUE;
 }

@@ -193,8 +193,8 @@ gboolean
 gdm_display_create_authority (GdmDisplay *self)
 {
         GdmDisplayPrivate    *priv;
-        GdmDisplayAccessFile *access_file;
-        GError               *error;
+        g_autoptr(GdmDisplayAccessFile) access_file = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean              res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
@@ -202,12 +202,10 @@ gdm_display_create_authority (GdmDisplay *self)
         priv = gdm_display_get_instance_private (self);
         g_return_val_if_fail (priv->access_file == NULL, FALSE);
 
-        error = NULL;
         access_file = _create_access_file_for_user (self, GDM_USERNAME, &error);
 
         if (access_file == NULL) {
                 g_critical ("could not create display access file: %s", error->message);
-                g_error_free (error);
                 return FALSE;
         }
 
@@ -220,15 +218,12 @@ gdm_display_create_authority (GdmDisplay *self)
                                                    &error);
 
         if (! res) {
-
                 g_critical ("could not add display to access file: %s", error->message);
-                g_error_free (error);
                 gdm_display_access_file_close (access_file);
-                g_object_unref (access_file);
                 return FALSE;
         }
 
-        priv->access_file = access_file;
+        priv->access_file = g_steal_pointer (&access_file);
 
         return TRUE;
 }
@@ -254,8 +249,8 @@ gdm_display_add_user_authorization (GdmDisplay *self,
                                     GError    **error)
 {
         GdmDisplayPrivate    *priv;
-        GdmDisplayAccessFile *access_file;
-        GError               *access_file_error;
+        g_autoptr(GdmDisplayAccessFile) access_file = NULL;
+        g_autoptr(GError) access_file_error = NULL;
         gboolean              res;
 
         int                       i;
@@ -280,13 +275,12 @@ gdm_display_add_user_authorization (GdmDisplay *self,
 
         g_debug ("GdmDisplay: Adding user authorization for %s", username);
 
-        access_file_error = NULL;
         access_file = _create_access_file_for_user (self,
                                                     username,
                                                     &access_file_error);
 
         if (access_file == NULL) {
-                g_propagate_error (error, access_file_error);
+                g_propagate_error (error, g_steal_pointer (&access_file_error));
                 return FALSE;
         }
 
@@ -299,14 +293,13 @@ gdm_display_add_user_authorization (GdmDisplay *self,
                 g_debug ("GdmDisplay: Unable to add user authorization for %s: %s",
                          username,
                          access_file_error->message);
-                g_propagate_error (error, access_file_error);
+                g_propagate_error (error, g_steal_pointer (&access_file_error));
                 gdm_display_access_file_close (access_file);
-                g_object_unref (access_file);
                 return FALSE;
         }
 
         *filename = gdm_display_access_file_get_path (access_file);
-        priv->user_access_file = access_file;
+        priv->user_access_file = g_steal_pointer (&access_file);
 
         g_debug ("GdmDisplay: Added user authorization for %s: %s", username, *filename);
         /* Remove access for the programs run by greeter now that the
@@ -1080,13 +1073,12 @@ handle_get_id (GdmDBusDisplay        *skeleton,
                GDBusMethodInvocation *invocation,
                GdmDisplay            *self)
 {
-        char *id;
+        g_autofree char *id = NULL;
 
         gdm_display_get_id (self, &id, NULL);
 
         gdm_dbus_display_complete_get_id (skeleton, invocation, id);
 
-        g_free (id);
         return TRUE;
 }
 
@@ -1095,7 +1087,7 @@ handle_get_remote_hostname (GdmDBusDisplay        *skeleton,
                             GDBusMethodInvocation *invocation,
                             GdmDisplay            *self)
 {
-        char *hostname;
+        g_autofree char *hostname = NULL;
 
         gdm_display_get_remote_hostname (self, &hostname, NULL);
 
@@ -1103,7 +1095,6 @@ handle_get_remote_hostname (GdmDBusDisplay        *skeleton,
                                                        invocation,
                                                        hostname ? hostname : "");
 
-        g_free (hostname);
         return TRUE;
 }
 
@@ -1112,9 +1103,8 @@ handle_get_seat_id (GdmDBusDisplay        *skeleton,
                     GDBusMethodInvocation *invocation,
                     GdmDisplay            *self)
 {
-        char *seat_id;
+        g_autofree char *seat_id = NULL;
 
-        seat_id = NULL;
         gdm_display_get_seat_id (self, &seat_id, NULL);
 
         if (seat_id == NULL) {
@@ -1122,7 +1112,6 @@ handle_get_seat_id (GdmDBusDisplay        *skeleton,
         }
         gdm_dbus_display_complete_get_seat_id (skeleton, invocation, seat_id);
 
-        g_free (seat_id);
         return TRUE;
 }
 
@@ -1131,13 +1120,12 @@ handle_get_x11_display_name (GdmDBusDisplay        *skeleton,
                              GDBusMethodInvocation *invocation,
                              GdmDisplay            *self)
 {
-        char *name;
+        g_autofree char *name = NULL;
 
         gdm_display_get_x11_display_name (self, &name, NULL);
 
         gdm_dbus_display_complete_get_x11_display_name (skeleton, invocation, name);
 
-        g_free (name);
         return TRUE;
 }
 
@@ -1173,15 +1161,13 @@ static gboolean
 register_display (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
 
         priv = gdm_display_get_instance_private (self);
 
-        error = NULL;
         priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (priv->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 
@@ -1485,12 +1471,11 @@ static void
 on_launch_environment_session_opened (GdmLaunchEnvironment *launch_environment,
                                       GdmDisplay           *self)
 {
-        char       *session_id;
+        g_autofree char *session_id = NULL;
 
         g_debug ("GdmDisplay: Greeter session opened");
         session_id = gdm_launch_environment_get_session_id (launch_environment);
         _gdm_display_set_session_id (self, session_id);
-        g_free (session_id);
 }
 
 static void
@@ -1543,13 +1528,11 @@ on_launch_environment_session_died (GdmLaunchEnvironment *launch_environment,
 static gboolean
 can_create_environment (const char *session_id)
 {
-        char *path;
+        g_autofree char *path = NULL;
         gboolean session_exists;
 
         path = g_strdup_printf (GNOME_SESSION_SESSIONS_PATH "/%s.session", session_id);
         session_exists = g_file_test (path, G_FILE_TEST_EXISTS);
-
-        g_free (path);
 
         return session_exists;
 }
@@ -1570,9 +1553,9 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
                                        gchar       **initial_setup_argument,
                                        GError      **error)
 {
-        GRegex *regex = NULL;
-        GMatchInfo *match_info = NULL;
-        gchar *match_group = NULL;
+        g_autoptr(GRegex) regex = NULL;
+        g_autoptr(GMatchInfo) match_info = NULL;
+        g_autofree gchar *match_group = NULL;
 
         g_return_val_if_fail (initial_setup_argument != NULL, FALSE);
 
@@ -1582,9 +1565,6 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
             return FALSE;
 
         if (!g_regex_match (regex, contents, 0, &match_info)) {
-                g_free (match_info);
-                g_free (regex);
-
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
                              "Could not match gnome.initial-setup= in kernel cmdline");
 
@@ -1594,19 +1574,13 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
         match_group = g_match_info_fetch (match_info, 1);
 
         if (!match_group) {
-                g_free (match_info);
-                g_free (regex);
-
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
                              "Could not match gnome.initial-setup= in kernel cmdline");
 
                 return FALSE;
         }
 
-        *initial_setup_argument = match_group;
-
-        g_free (match_info);
-        g_free (regex);
+        *initial_setup_argument = g_steal_pointer (&match_group);
 
         return TRUE;
 }
@@ -1616,16 +1590,15 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
 static gboolean
 kernel_cmdline_initial_setup_force_state (gboolean *force_state)
 {
-        GError *error = NULL;
-        gchar *contents = NULL;
-        gchar *setup_argument = NULL;
+        g_autoptr(GError) error = NULL;
+        g_autofree gchar *contents = NULL;
+        g_autofree gchar *setup_argument = NULL;
 
         g_return_val_if_fail (force_state != NULL, FALSE);
 
         if (!g_file_get_contents ("/proc/cmdline", &contents, NULL, &error)) {
                 g_debug ("GdmDisplay: Could not check kernel parameters, not forcing initial setup: %s",
                           error->message);
-                g_clear_error (&error);
                 return FALSE;
         }
 
@@ -1633,16 +1606,12 @@ kernel_cmdline_initial_setup_force_state (gboolean *force_state)
 
         if (!kernel_cmdline_initial_setup_argument (contents, &setup_argument, &error)) {
                 g_debug ("GdmDisplay: Failed to read kernel commandline: %s", error->message);
-                g_clear_pointer (&contents, g_free);
                 return FALSE;
         }
-
-        g_clear_pointer (&contents, g_free);
 
         /* Poor-man's check for truthy or falsey values */
         *force_state = setup_argument[0] == '1';
 
-        g_free (setup_argument);
         return TRUE;
 }
 
@@ -1697,10 +1666,10 @@ gdm_display_start_greeter_session (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
         GdmSession    *session;
-        char          *display_name;
-        char          *seat_id;
-        char          *hostname;
-        char          *auth_file = NULL;
+        g_autofree char *display_name = NULL;
+        g_autofree char *seat_id = NULL;
+        g_autofree char *hostname = NULL;
+        g_autofree char *auth_file = NULL;
 
         g_return_if_fail (GDM_IS_DISPLAY (self));
 
@@ -1708,10 +1677,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         g_return_if_fail (g_strcmp0 (priv->session_class, "greeter") == 0);
 
         g_debug ("GdmDisplay: Running greeter");
-
-        display_name = NULL;
-        seat_id = NULL;
-        hostname = NULL;
 
         g_object_get (self,
                       "x11-display-name", &display_name,
@@ -1758,11 +1723,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
                       "display-is-initial", priv->is_initial,
                       "supported-session-types", priv->supported_session_types,
                       NULL);
-
-        g_free (display_name);
-        g_free (seat_id);
-        g_free (hostname);
-        g_free (auth_file);
 }
 
 void
