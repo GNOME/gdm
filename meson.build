@@ -100,16 +100,24 @@ if xdmcp_dep.found() and get_option('tcp-wrappers')
   libwrap_dep = cc.find_library('wrap')
 endif
 # systemd
-systemd_dep = dependency('systemd')
-libsystemd_dep = dependency('libsystemd')
-systemd_multiseat_x = find_program('systemd-multi-seat-x',
-  required: false,
-  dirs: [
-    systemd_dep.get_pkgconfig_variable('systemdutildir'),
-    '/lib/systemd',
-    '/usr/lib/systemd',
-  ])
-systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
+logind_provider = get_option('logind-provider')
+systemd_dep = dependency('systemd', required: false)
+if logind_provider == 'systemd'
+  libsystemd_dep = dependency('libsystemd')
+  logind_dep = libsystemd_dep
+  systemd_multiseat_x = find_program('systemd-multi-seat-x',
+    required: false,
+    dirs: [
+      systemd_dep.get_pkgconfig_variable('systemdutildir'),
+      '/lib/systemd',
+      '/usr/lib/systemd',
+    ])
+  systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
+else
+  elogind_dep = dependency('libelogind')
+  logind_dep = elogind_dep
+  systemd_x_server = 'disabled'
+endif
 # Plymouth
 plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
 # Check for Solaris auditing API (ADT)
@@ -319,6 +327,7 @@ summary({
     'PAM Syslog': have_pam_syslog,
     'Supports PAM Extensions': pam_extensions_supported,
     'SeLinux': libselinux_dep.found(),
+    'Logind Provider': get_option('logind-provider'),
     'Use GDM Xsession': get_option('gdm-xsession'),
     'Use UserDisplayServer': get_option('user-display-server'),
     'Use SystemdJournal': get_option('systemd-journal'),

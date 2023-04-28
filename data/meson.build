@@ -164,41 +164,53 @@ else
   service_config.set('PLYMOUTH_QUIT_SERVICE', '')
 endif
 
-if get_option('systemdsystemunitdir') != ''
-  systemd_systemunitdir = get_option('systemdsystemunitdir')
-else
-  systemd_systemunitdir = systemd_dep.get_pkgconfig_variable('systemdsystemunitdir')
+systemdsystemunitdir = get_option('systemdsystemunitdir')
+if systemdsystemunitdir != 'no'
+  assert(systemd_dep.found(), 'systemd required but not found, please provide a valid systemd system unit dir or disable it')
+  if get_option('systemdsystemunitdir') != ''
+    systemd_systemunitdir = get_option('systemdsystemunitdir')
+  else
+    systemd_systemunitdir = systemd_dep.get_pkgconfig_variable('systemdsystemunitdir')
+  endif
 endif
 
-if get_option('systemduserunitdir') != ''
-  systemd_userunitdir = get_option('systemduserunitdir')
-else
-  systemd_userunitdir = systemd_dep.get_pkgconfig_variable('systemduserunitdir',
-                                                           define_variable: ['prefix', get_option('prefix')])
+systemduserunitdir = get_option('systemduserunitdir')
+if systemduserunitdir != 'no'
+  assert(systemd_dep.found(), 'systemd required but not found, please provide a valid systemd user unit dir or disable it')
+  if get_option('systemduserunitdir') != ''
+    systemd_userunitdir = get_option('systemduserunitdir')
+  else
+    systemd_userunitdir = systemd_dep.get_pkgconfig_variable('systemduserunitdir',
+                                                             define_variable: ['prefix', get_option('prefix')])
+  endif
 endif
 
-configure_file(
-  input: 'gdm.service.in',
-  output: '@BASENAME@',
-  configuration: service_config,
-  install_dir: systemd_systemunitdir,
-  format: 'cmake'
-)
+if systemdsystemunitdir != 'no'
+  configure_file(
+    input: 'gdm.service.in',
+    output: '@BASENAME@',
+    configuration: service_config,
+    install_dir: systemd_systemunitdir,
+    format: 'cmake'
+  )
+endif
 
 gdm_gnome_session_wanted_targets = []
 foreach component: gdm_gnome_user_session_wanted_components
   gdm_gnome_session_wanted_targets += 'Wants=@0@.target'.format(component)
 endforeach
 
-configure_file(
-  input: 'session.conf.in',
-  output: 'session.conf',
-  configuration: {
-    'requires_component': gdm_gnome_shell_component,
-    'wants_required_components': '\n'.join(gdm_gnome_session_wanted_targets),
-  },
-  install_dir: systemd_userunitdir / 'gnome-session@gnome-login.target.d',
-)
+if systemduserunitdir != 'no'
+  configure_file(
+    input: 'session.conf.in',
+    output: 'session.conf',
+    configuration: {
+      'requires_component': gdm_gnome_shell_component,
+      'wants_required_components': '\n'.join(gdm_gnome_session_wanted_targets),
+    },
+    install_dir: systemd_userunitdir / 'gnome-session@gnome-login.target.d',
+  )
+endif
 
 # XSession
 if get_option('gdm-xsession')

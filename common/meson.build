@@ -11,7 +11,7 @@ libgdmcommon_src = files(
 )
 
 libgdmcommon_deps = [
-  libsystemd_dep,
+  logind_dep,
   gobject_dep,
   gio_dep,
   gio_unix_dep,
