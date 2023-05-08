@@ -1644,8 +1644,7 @@ create_display_for_user_session (GdmManager *self,
                                  const char *session_id)
 {
         GdmDisplay *display;
-        /* at the moment we only create GdmLocalDisplay objects on seat0 */
-        const char *seat_id = "seat0";
+        g_autofree const char *seat_id = gdm_session_get_display_seat_id (session);
 
         display = gdm_local_display_new ();
 

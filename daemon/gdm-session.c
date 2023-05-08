@@ -3363,11 +3363,8 @@ gdm_session_get_display_mode (GdmSession *self)
                  self->is_program_session? "yes" : "no",
                  self->display_seat_id);
 
-        /* Non-seat0 sessions share their X server with their login screen
-         * for now.
-         */
         if (g_strcmp0 (self->display_seat_id, "seat0") != 0) {
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+                return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
         }
 
 #ifdef ENABLE_USER_DISPLAY_SERVER
