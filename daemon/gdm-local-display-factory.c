@@ -556,7 +556,7 @@ on_display_status_changed (GdmDisplay             *display,
                 if (is_local &&
                     ((g_strcmp0 (session_class, "greeter") != 0 &&
                       (!seat_active_session || g_strcmp0(session_id, seat_active_session) == 0)) ||
-                     factory->active_vt == GDM_INITIAL_VT ||
+                     (g_strcmp0 (seat_id, "seat0") == 0 && factory->active_vt == GDM_INITIAL_VT) ||
                      g_strcmp0 (seat_id, "seat0") != 0)) {
                         /* reset num failures */
                         factory->num_failures = 0;
