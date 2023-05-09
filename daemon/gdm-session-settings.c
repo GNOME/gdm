@@ -338,12 +338,15 @@ gboolean
 gdm_session_settings_load (GdmSessionSettings  *settings,
                            const char          *username)
 {
+        g_autoptr(ActUser) old_user = NULL;
+
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
 
-        if (settings->user != NULL) {
-                g_signal_handlers_disconnect_by_func (G_OBJECT (settings->user),
+        old_user = g_steal_pointer (&settings->user);
+        if (old_user != NULL) {
+                g_signal_handlers_disconnect_by_func (G_OBJECT (old_user),
                                                       G_CALLBACK (on_user_is_loaded_changed),
                                                       settings);
         }
