@@ -1224,7 +1224,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
-        if (strcmp (seat_id, "seat0") == 0) {
+        if (g_strcmp0 (seat_id, "seat0") == 0) {
                 /* Temporarily set PAM_TTY with the login VT,
                    PAM_TTY will be reset with the users VT right before the user session is opened */
                 g_snprintf (tty_string, 256, "/dev/tty%d", GDM_INITIAL_VT);
