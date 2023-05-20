@@ -321,6 +321,7 @@ gdm_generate_random_bytes (gsize    size,
         close (fd);
         return bytes;
 }
+
 static gboolean
 create_transient_display (GDBusConnection *connection,
                           GError         **error)
