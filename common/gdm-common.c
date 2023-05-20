@@ -543,14 +543,13 @@ goto_login_session (GDBusConnection  *connection,
 gboolean
 gdm_goto_login_session (GError **error)
 {
-        GError *local_error;
-        GDBusConnection *connection;
+        g_autoptr(GDBusConnection) connection = NULL;
+        g_autoptr(GError) local_error = NULL;
 
-        local_error = NULL;
         connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
         if (connection == NULL) {
                 g_debug ("Failed to connect to the D-Bus daemon: %s", local_error->message);
-                g_propagate_error (error, local_error);
+                g_propagate_error (error, g_steal_pointer (&local_error));
                 return FALSE;
         }
 
