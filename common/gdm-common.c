@@ -432,8 +432,8 @@ gdm_get_login_window_session_id (const char  *seat_id,
 
                 free (service_class);
 
-                ret = sd_session_get_state (sessions[i], &state);
-                if (ret < 0) {
+                res = sd_session_get_state (sessions[i], &state);
+                if (res < 0) {
                         if (res == -ENXIO)
                                 continue;
 
