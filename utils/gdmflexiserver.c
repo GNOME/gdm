@@ -168,7 +168,7 @@ main (int argc, char *argv[])
         }
 
         error = NULL;
-        res = gdm_goto_login_session (&error);
+        res = gdm_goto_login_session (NULL, &error);
         if (! res) {
                 g_printerr ("%s", error->message);
         } else {

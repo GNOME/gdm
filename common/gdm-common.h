@@ -71,7 +71,8 @@ char          *gdm_generate_random_bytes (gsize          size,
 gboolean       gdm_get_login_window_session_id (const char  *seat_id,
                                                 char       **session_id);
 
-gboolean       gdm_goto_login_session    (GError **error);
+gboolean       gdm_goto_login_session     (GCancellable  *cancellable,
+                                           GError       **error);
 
 GPtrArray     *gdm_get_script_environment (const char *username,
                                            const char *display_name,
@@ -91,9 +92,10 @@ char *        gdm_shell_expand            (const char *str,
                                            GdmExpandVarFunc expand_func,
                                            gpointer user_data);
 
-gboolean      gdm_activate_session_by_id (GDBusConnection *connection,
-                                          const char      *seat_id,
-                                          const char      *session_id);
+gboolean      gdm_activate_session_by_id  (GDBusConnection *connection,
+                                           GCancellable    *cancellable,
+                                           const char      *seat_id,
+                                           const char      *session_id);
 
 void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
                                            GdmExpandVarFunc  expand_func,

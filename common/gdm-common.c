@@ -324,6 +324,7 @@ gdm_generate_random_bytes (gsize    size,
 
 static gboolean
 create_transient_display (GDBusConnection *connection,
+                          GCancellable    *cancellable,
                           GError         **error)
 {
         GError *local_error = NULL;
@@ -339,7 +340,7 @@ create_transient_display (GDBusConnection *connection,
                                              G_VARIANT_TYPE ("(o)"),
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1,
-                                             NULL, &local_error);
+                                             cancellable, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to create transient display: %s", local_error->message);
                 g_propagate_prefixed_error (error, local_error, _("Unable to create transient display: "));
@@ -355,6 +356,7 @@ create_transient_display (GDBusConnection *connection,
 
 gboolean
 gdm_activate_session_by_id (GDBusConnection *connection,
+                            GCancellable    *cancellable,
                             const char      *seat_id,
                             const char      *session_id)
 {
@@ -374,7 +376,7 @@ gdm_activate_session_by_id (GDBusConnection *connection,
                                              NULL,
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1,
-                                             NULL, &local_error);
+                                             cancellable, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to activate session: %s", local_error->message);
                 g_error_free (local_error);
@@ -484,6 +486,7 @@ out:
 
 static gboolean
 goto_login_session (GDBusConnection  *connection,
+                    GCancellable     *cancellable,
                     GError          **error)
 {
         gboolean        ret;
@@ -521,7 +524,7 @@ goto_login_session (GDBusConnection  *connection,
 
         res = gdm_get_login_window_session_id (seat_id, &session_id);
         if (res && session_id != NULL) {
-                res = gdm_activate_session_by_id (connection, seat_id, session_id);
+                res = gdm_activate_session_by_id (connection, cancellable, seat_id, session_id);
 
                 if (res) {
                         ret = TRUE;
@@ -529,7 +532,7 @@ goto_login_session (GDBusConnection  *connection,
         }
 
         if (! ret && g_strcmp0 (seat_id, "seat0") == 0) {
-                res = create_transient_display (connection, error);
+                res = create_transient_display (connection, cancellable, error);
                 if (res) {
                         ret = TRUE;
                 }
@@ -542,19 +545,20 @@ goto_login_session (GDBusConnection  *connection,
 }
 
 gboolean
-gdm_goto_login_session (GError **error)
+gdm_goto_login_session (GCancellable *cancellable,
+                        GError      **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
         g_autoptr(GError) local_error = NULL;
 
-        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, cancellable, &local_error);
         if (connection == NULL) {
                 g_debug ("Failed to connect to the D-Bus daemon: %s", local_error->message);
                 g_propagate_error (error, g_steal_pointer (&local_error));
                 return FALSE;
         }
 
-        return goto_login_session (connection, error);
+        return goto_login_session (connection, cancellable, error);
 }
 
 static void
