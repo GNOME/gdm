@@ -341,7 +341,7 @@ create_transient_display (GDBusConnection *connection,
                                              NULL, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to create transient display: %s", local_error->message);
-                g_propagate_error (error, local_error);
+                g_propagate_prefixed_error (error, local_error, _("Unable to create transient display: "));
                 return FALSE;
         }
 
