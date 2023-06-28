@@ -67,14 +67,18 @@ gboolean       gdm_clear_close_on_exec_flag (int fd);
 
 char          *gdm_generate_random_bytes (gsize          size,
                                           GError       **error);
+
 gboolean       gdm_get_login_window_session_id (const char  *seat_id,
                                                 char       **session_id);
-gboolean       gdm_goto_login_session    (GError **error);
+
+gboolean       gdm_goto_login_session     (GCancellable  *cancellable,
+                                           GError       **error);
 
 GPtrArray     *gdm_get_script_environment (const char *username,
                                            const char *display_name,
                                            const char *display_hostname,
                                            const char *display_x11_authority_file);
+
 gboolean       gdm_run_script             (const char *dir,
                                            const char *username,
                                            const char *display_name,
@@ -83,13 +87,15 @@ gboolean       gdm_run_script             (const char *dir,
 
 gboolean      gdm_shell_var_is_valid_char (char c,
                                            gboolean first);
+
 char *        gdm_shell_expand            (const char *str,
                                            GdmExpandVarFunc expand_func,
                                            gpointer user_data);
 
-gboolean      gdm_activate_session_by_id (GDBusConnection *connection,
-                                          const char      *seat_id,
-                                          const char      *session_id);
+gboolean      gdm_activate_session_by_id  (GDBusConnection *connection,
+                                           GCancellable    *cancellable,
+                                           const char      *seat_id,
+                                           const char      *session_id);
 
 void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
                                            GdmExpandVarFunc  expand_func,

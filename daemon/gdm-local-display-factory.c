@@ -807,7 +807,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                         g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
                         g_debug ("GdmLocalDisplayFactory: session %s found, activating.",
                                  login_session_id);
-                        gdm_activate_session_by_id (factory->connection, seat_id, login_session_id);
+                        gdm_activate_session_by_id (factory->connection, NULL, seat_id, login_session_id);
                         return;
                 }
         }
