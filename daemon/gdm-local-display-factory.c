@@ -678,6 +678,7 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
 
         if (factory->seat0_graphics_check_timed_out) {
                 g_debug ("GdmLocalDisplayFactory: udev timed out, proceeding anyway.");
+                g_clear_signal_handler (&factory->uevent_handler_id, factory->gudev_client);
                 return TRUE;
         }
 
