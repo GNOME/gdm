@@ -322,11 +322,13 @@ static void
 on_username_set (GdmSessionSolarisAuditor *auditor)
 {
         char          *username;
-        struct passwd *passwd_entry;
+        struct passwd *passwd_entry = NULL;
 
         g_object_get (G_OBJECT (auditor), "username", &username, NULL);
 
-        gdm_get_pwent_for_name (username, &passwd_entry);
+        if (username != NULL) {
+                gdm_get_pwent_for_name (username, &passwd_entry);
+        }
 
         if (passwd_entry != NULL) {
                 auditor->uid = passwd_entry->pw_uid;
