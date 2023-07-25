@@ -182,17 +182,13 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
         if (launch_environment->session_mode != NULL) {
                 g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->session_mode));
+                g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->user_name));
 
 		if (strcmp (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) != 0) {
 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
 			g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
 			g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
 			g_hash_table_insert (hash, g_strdup ("GVFS_REMOTE_VOLUME_MONITOR_IGNORE"), g_strdup ("1"));
-
-			/* The locked down dconf profile should not be used for the initial setup session.
-			 * This allows overridden values from the user profile to take effect.
-			 */
-			g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup ("gdm"));
 		}
         }
 
