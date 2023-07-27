@@ -50,6 +50,7 @@
 #include <X11/Xauth.h>
 
 #include <systemd/sd-daemon.h>
+#include <systemd/sd-login.h>
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
 #include <systemd/sd-journal.h>
@@ -156,6 +157,7 @@ struct _GdmSessionWorker
         guint32           is_reauth_session : 1;
         guint32           display_is_local : 1;
         guint32           display_is_initial : 1;
+        guint32           seat0_has_vts : 1;
         guint             state_change_idle_id;
         GdmSessionDisplayMode display_mode;
 
@@ -1224,7 +1226,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
-        if (g_strcmp0 (seat_id, "seat0") == 0) {
+        if (g_strcmp0 (seat_id, "seat0") == 0 && worker->seat0_has_vts) {
                 /* Temporarily set PAM_TTY with the login VT,
                    PAM_TTY will be reset with the users VT right before the user session is opened */
                 g_snprintf (tty_string, 256, "/dev/tty%d", GDM_INITIAL_VT);
@@ -1726,7 +1728,7 @@ jump_back_to_initial_vt (GdmSessionWorker *worker)
         if (worker->session_vt == GDM_INITIAL_VT)
                 return;
 
-        if (g_strcmp0 (worker->display_seat_id, "seat0") != 0)
+        if (g_strcmp0 (worker->display_seat_id, "seat0") != 0 || !worker->seat0_has_vts)
                 return;
 
 #ifdef ENABLE_USER_DISPLAY_SERVER
@@ -1952,7 +1954,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         /* If we're in new vt mode, jump to the new vt now. There's no need to jump for
          * the other two modes: in the logind case, the session will activate itself when
          * ready, and in the reuse server case, we're already on the correct VT. */
-        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0) {
+        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0 && worker->seat0_has_vts) {
                 if (worker->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
                         jump_to_vt (worker, worker->session_vt);
                 }
@@ -2211,6 +2213,8 @@ set_up_for_new_vt (GdmSessionWorker *worker)
              close (initial_vt_fd);
         }
 
+        worker->seat0_has_vts = sd_seat_can_tty ("seat0");
+
         pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
 
         return TRUE;
@@ -2322,11 +2326,11 @@ set_up_for_current_vt (GdmSessionWorker  *worker,
          }
 #endif
 
-        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0) {
+        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0 && worker->seat0_has_vts) {
                 g_debug ("GdmSessionWorker: setting XDG_VTNR to current vt");
                 set_xdg_vtnr_to_current_vt (worker);
         } else {
-                g_debug ("GdmSessionWorker: not setting XDG_VTNR since not seat0");
+                g_debug ("GdmSessionWorker: not setting XDG_VTNR since no VTs on seat");
         }
 
         return TRUE;
@@ -2343,7 +2347,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         g_assert (worker->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
 
-        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0) {
+        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0 && worker->seat0_has_vts) {
                 switch (worker->display_mode) {
                 case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
                         if (!set_up_for_current_vt (worker, error)) {
