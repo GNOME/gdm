@@ -293,10 +293,8 @@ load_settings_from_user (GdmSessionSettings *settings)
                 return;
         }
 
-        /* if the user doesn't have saved state, they don't have any settings worth reading */
-        if (!act_user_get_saved (settings->user))
-                goto out;
-
+        /* Load settings even if the user doesn't have saved state, as they could have been
+         * configured in AccountsService by the administrator */
         session_type = act_user_get_session_type (settings->user);
         session_name = act_user_get_session (settings->user);
 
