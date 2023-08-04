@@ -2213,8 +2213,6 @@ set_up_for_new_vt (GdmSessionWorker *worker)
              close (initial_vt_fd);
         }
 
-        worker->seat0_has_vts = sd_seat_can_tty ("seat0");
-
         pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
 
         return TRUE;
@@ -3004,6 +3002,8 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                         worker->display_is_initial = g_variant_get_boolean (value);
                 }
         }
+
+        worker->seat0_has_vts = sd_seat_can_tty ("seat0");
 
         worker->pending_invocation = invocation;
 
