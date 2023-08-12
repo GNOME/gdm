@@ -1008,6 +1008,8 @@ jump_to_vt (GdmSessionWorker  *worker,
 
                 fd = worker->session_tty_fd;
 
+                handle_terminal_vt_switches (worker, fd);
+
                 g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
                 if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
                         g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
@@ -1023,8 +1025,6 @@ jump_to_vt (GdmSessionWorker  *worker,
         } else {
                 fd = active_vt_tty_fd;
         }
-
-        handle_terminal_vt_switches (worker, fd);
 
         if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
                 g_debug ("GdmSessionWorker: couldn't get current VT: %m");
