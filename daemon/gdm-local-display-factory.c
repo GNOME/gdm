@@ -700,8 +700,14 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
         while (node != NULL) {
                 GUdevDevice *device = node->data;
                 GList *next_node = node->next;
+                const gchar *id_path = g_udev_device_get_property (device, "ID_PATH");
                 g_autoptr (GUdevDevice) platform_device = NULL;
                 g_autoptr (GUdevDevice) pci_device = NULL;
+
+                if (g_str_has_prefix (id_path, "platform-simple-framebuffer")) {
+                        node = next_node;
+                        continue;
+                }
 
                 platform_device = g_udev_device_get_parent_with_subsystem (device, "platform", NULL);
 
