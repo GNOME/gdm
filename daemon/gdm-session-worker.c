@@ -1014,17 +1014,17 @@ jump_to_vt (GdmSessionWorker  *worker,
                 if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
                         g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
                 }
-
-                /* It's possible that the current VT was left in a broken
-                 * combination of states (KD_GRAPHICS with VT_AUTO), that
-                 * can't be switched away from.  This call makes sure things
-                 * are set in a way that VT_ACTIVATE should work and
-                 * VT_WAITACTIVE shouldn't hang.
-                 */
-                fix_terminal_vt_mode (worker, active_vt_tty_fd);
         } else {
                 fd = active_vt_tty_fd;
         }
+
+        /* It's possible that the current VT was left in a broken
+         * combination of states (KD_GRAPHICS with VT_AUTO), that
+         * can't be switched away from.  This call makes sure things
+         * are set in a way that VT_ACTIVATE should work and
+         * VT_WAITACTIVE shouldn't hang.
+         */
+        fix_terminal_vt_mode (worker, active_vt_tty_fd);
 
         if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
                 g_debug ("GdmSessionWorker: couldn't get current VT: %m");
