@@ -134,7 +134,7 @@ gdm_address_get_sockaddr_storage (GdmAddress *address)
         g_return_val_if_fail (address != NULL, NULL);
         g_return_val_if_fail (address->ss != NULL, NULL);
 
-        ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
+        ss = g_memdup2 (address->ss, sizeof (struct sockaddr_storage));
 
         return ss;
 }
@@ -529,7 +529,7 @@ gdm_address_copy (GdmAddress *address)
         g_return_val_if_fail (address != NULL, NULL);
 
         addr = g_new0 (GdmAddress, 1);
-        addr->ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
+        addr->ss = g_memdup2 (address->ss, sizeof (struct sockaddr_storage));
 
         return addr;
 }
