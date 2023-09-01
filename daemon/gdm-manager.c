@@ -1638,10 +1638,24 @@ create_display_for_user_session (GdmManager *self,
                                  GdmSession *session,
                                  const char *session_id)
 {
-        GdmDisplay *display;
+        GdmDisplay *display = NULL;
         const char *seat_id = gdm_session_get_display_seat_id (session);
+        gboolean display_is_local;
 
-        display = gdm_local_display_new ();
+        g_object_get (G_OBJECT (session), "display-is-local", &display_is_local, NULL);
+
+        if (!display_is_local) {
+                g_autofree char *remote_id = NULL;
+
+                g_object_get (G_OBJECT (session),
+                              "remote-id", &remote_id,
+                              NULL);
+
+                display = gdm_remote_display_new (remote_id);
+        }
+
+        if (display == NULL)
+                display = gdm_local_display_new ();
 
         g_object_set (G_OBJECT (display),
                       "session-class", "user",
@@ -1860,7 +1874,6 @@ on_start_user_session (StartUserSessionOperation *operation)
                 create_display_for_user_session (operation->manager,
                                                  operation->session,
                                                  session_id);
-
 
                 if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
 	            !gdm_session_client_is_connected (operation->session)) {
@@ -2326,6 +2339,13 @@ create_user_session_for_display (GdmManager *manager,
                                    display_auth_file,
                                    display_is_local,
                                    NULL);
+
+        if (GDM_IS_REMOTE_DISPLAY (display)) {
+                g_autofree char *remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (display));
+
+                g_object_set (G_OBJECT (session), "remote-id", remote_id, NULL);
+        }
+
         g_object_set (G_OBJECT (session),
                       "supported-session-types", supported_session_types,
                       NULL);

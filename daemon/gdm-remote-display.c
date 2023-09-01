@@ -39,6 +39,20 @@ static void     gdm_remote_display_init         (GdmRemoteDisplay      *remote_d
 
 G_DEFINE_TYPE (GdmRemoteDisplay, gdm_remote_display, GDM_TYPE_DISPLAY)
 
+char *
+gdm_remote_display_get_remote_id (GdmRemoteDisplay *display)
+{
+        g_autofree char *remote_id = NULL;
+
+        g_return_val_if_fail (GDM_IS_REMOTE_DISPLAY (display), NULL);
+
+        g_object_get (G_OBJECT (display->skeleton),
+                      "remote-id", &remote_id,
+                      NULL);
+
+        return g_steal_pointer (&remote_id);
+}
+
 static GObject *
 gdm_remote_display_constructor (GType                  type,
                                 guint                  n_construct_properties,

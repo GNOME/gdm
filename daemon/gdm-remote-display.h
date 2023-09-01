@@ -34,6 +34,8 @@ G_DECLARE_FINAL_TYPE (GdmRemoteDisplay, gdm_remote_display, GDM, REMOTE_DISPLAY,
 
 GdmDisplay *        gdm_remote_display_new                     (const char *remote_id);
 
+char *              gdm_remote_display_get_remote_id           (GdmRemoteDisplay *self);
+
 G_END_DECLS
 
 #endif /* __GDM_REMOTE_DISPLAY_H */
