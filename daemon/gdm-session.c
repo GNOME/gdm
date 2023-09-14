@@ -3038,7 +3038,7 @@ stop_all_conversations (GdmSession *self)
 
 static void
 free_pending_worker_connection (GdmSession      *self,
-                        GDBusConnection *connection)
+                                GDBusConnection *connection)
 {
         GdmDBusWorkerManager *worker_manager_interface;
 
@@ -3064,6 +3064,8 @@ free_pending_worker_connections (GdmSession *self)
 
                 free_pending_worker_connection (self, connection);
         }
+        g_list_free (self->pending_worker_connections);
+        self->pending_worker_connections = NULL;
 }
 
 static void
@@ -3072,8 +3074,6 @@ do_reset (GdmSession *self)
         stop_all_conversations (self);
 
         free_pending_worker_connections (self);
-        g_list_free_full (self->pending_worker_connections, free_pending_worker_connection);
-        self->pending_worker_connections = NULL;
 
         g_free (self->selected_user);
         self->selected_user = NULL;
