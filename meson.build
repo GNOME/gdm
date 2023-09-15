@@ -43,7 +43,7 @@ config_h_dir = include_directories('.')
 udev_dep = dependency('udev')
 gudev_dep = dependency('gudev-1.0', version: '>= 232')
 
-glib_min_version = '2.56.0'
+glib_min_version = '2.68.0'
 
 glib_dep = dependency('glib-2.0', version: '>=' + glib_min_version)
 gobject_dep = dependency('gobject-2.0', version: '>=' + glib_min_version)

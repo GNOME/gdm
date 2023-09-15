@@ -918,10 +918,10 @@ set_port_for_request (GdmAddress *address,
 
         switch (ss->ss_family) {
         case AF_INET:
-                port->data = (CARD8 *)g_memdup (&(SIN (ss)->sin_port), port->length);
+                port->data = (CARD8 *)g_memdup2 (&(SIN (ss)->sin_port), port->length);
                 break;
         case AF_INET6:
-                port->data = (CARD8 *)g_memdup (&(SIN6 (ss)->sin6_port), port->length);
+                port->data = (CARD8 *)g_memdup2 (&(SIN6 (ss)->sin6_port), port->length);
                 break;
         default:
                 port->data = NULL;
@@ -940,11 +940,11 @@ set_address_for_request (GdmAddress *address,
         switch (ss->ss_family) {
         case AF_INET:
                 addr->length = sizeof (struct in_addr);
-                addr->data = g_memdup (&SIN (ss)->sin_addr, addr->length);
+                addr->data = g_memdup2 (&SIN (ss)->sin_addr, addr->length);
                 break;
         case AF_INET6:
                 addr->length = sizeof (struct in6_addr);
-                addr->data = g_memdup (&SIN6 (ss)->sin6_addr, addr->length);
+                addr->data = g_memdup2 (&SIN6 (ss)->sin6_addr, addr->length);
                 break;
         default:
                 addr->length = 0;
