@@ -17,6 +17,7 @@ add_project_arguments('-D_GNU_SOURCE', language: 'c')
 
 # Options
 gdm_prefix = get_option('prefix')
+gdm_datadir = get_option('datadir') / meson.project_name()
 
 gdmconfdir = (get_option('sysconfsubdir') == '')? gdm_prefix / get_option('sysconfdir') : gdm_prefix / get_option('sysconfdir') / get_option('sysconfsubdir')
 dmconfdir = (get_option('dmconfdir') != '')? get_option('dmconfdir') : gdm_prefix / get_option('sysconfdir') / 'dm'
@@ -25,7 +26,7 @@ at_spi_registryd_dir = (get_option('at-spi-registryd-dir') != '')? get_option('a
 lang_config_file = (get_option('lang-file') != '')? get_option('lang-file') : gdm_prefix / get_option('sysconfdir') / 'locale.conf'
 pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm_prefix / get_option('libdir') / 'security'
 dbus_sys_dir = (get_option('dbus-sys') != '')? get_option('dbus-sys') : get_option('sysconfdir') / 'dbus-1' / 'system.d'
-gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / get_option('datadir') / 'gdm' / 'defaults.conf'
+gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / gdm_datadir / 'defaults.conf'
 gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
 gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get_option('gnome-settings-daemon-dir') : gdm_prefix / get_option('libexecdir')
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : gdm_prefix / get_option('localstatedir') / 'run' / 'gdm'
@@ -35,6 +36,8 @@ ran_once_marker_dir = (get_option('ran-once-marker-dir') != '')? get_option('ran
 working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
 gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir
 gdm_screenshot_dir = (get_option('screenshot-dir') != '')? get_option('screenshot-dir') : gdm_run_dir / 'greeter'
+pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
+pam_profiles_dir = pam_prefix / 'pam.d'
 
 # Common variables
 config_h_dir = include_directories('.')
@@ -50,6 +53,7 @@ gobject_dep = dependency('gobject-2.0', version: '>=' + glib_min_version)
 gio_dep = dependency('gio-2.0', version: '>=' + glib_min_version)
 gio_unix_dep = dependency('gio-unix-2.0', version: '>=' + glib_min_version)
 gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
+dconf_dep = dependency('dconf', required: false)
 libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 xcb_dep = dependency('xcb')
@@ -173,29 +177,41 @@ int main(int argc, char **argv) {
 libpam_dep = cc.find_library('pam')
 pam_extensions_supported = cc.has_header_symbol('security/pam_appl.h', 'PAM_BINARY_PROMPT')
 
-default_pam_config = get_option('default-pam-config')
-# If requested, try autodetecting from release files (see NetworkManager source)
-if default_pam_config == 'autodetect'
-  pam_autodetect_map = {
-    '/etc/redhat-release': 'redhat',
-    '/etc/fedora-release': 'redhat',
-    '/etc/exherbo-release': 'exherbo',
-    '/etc/arch-release': 'arch',
-    '/etc/lfs-release': 'lfs',
-  }
+distro_autodetect_map = {
+  '/etc/redhat-release': 'redhat',
+  '/etc/fedora-release': 'redhat',
+  '/etc/exherbo-release': 'exherbo',
+  '/etc/arch-release': 'arch',
+  '/etc/lfs-release': 'lfs',
+}
 
-  foreach _file, _pam_conf : pam_autodetect_map
-    pam_file_check = run_command('test', '-f', _file)
-    if pam_file_check.returncode() == 0
-      default_pam_config = _pam_conf
+distro = get_option('distro')
+if distro != 'none'
+  foreach _file, _pam_conf : distro_autodetect_map
+    distro_check = run_command('test', '-f', _file)
+    if distro_check.returncode() == 0
+      distro = _pam_conf
     endif
   endforeach
-
-  # If still not detected, default to none
-  if default_pam_config == 'autodetect'
-    default_pam_config = 'none'
-  endif
 endif
+
+# If requested, try autodetecting from release files (see NetworkManager source)
+default_pam_config = get_option('default-pam-config')
+if default_pam_config == 'autodetect'
+  default_pam_config = distro
+endif
+
+# dconf paths, we should fix dconf.pc to provide us more real data though
+if dconf_dep.found()
+  dconf_prefix = dconf_dep.get_pkgconfig_variable('prefix')
+  dconf_sysconfig = (dconf_prefix == '/usr') ? '/etc' : dconf_prefix + '/etc/'
+  dconf_datadir = dconf_prefix / 'share'
+else
+  dconf_sysconfig = gdm_prefix / get_option('sysconfdir')
+  dconf_datadir = gdm_prefix / get_option('datadir')
+endif
+
+dconf_profiles_path = dconf_datadir / 'dconf' / 'profile'
 
 # Configuration
 conf = configuration_data()
@@ -210,16 +226,23 @@ conf.set_quoted('LIBDIR', gdm_prefix / get_option('libdir'))
 conf.set_quoted('LIBEXECDIR', gdm_prefix / get_option('libexecdir'))
 conf.set_quoted('LOGDIR', get_option('log-dir'))
 conf.set_quoted('DMCONFDIR', dmconfdir)
+conf.set_quoted('DISTRO', distro)
+conf.set_quoted('DCONF_SYSCONFIG', dconf_sysconfig)
+conf.set_quoted('DCONF_PROFILES_PATH', dconf_profiles_path)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
+conf.set_quoted('GDM_DATADIR', gdm_prefix / gdm_datadir)
 conf.set_quoted('GDM_SCREENSHOT_DIR', gdm_screenshot_dir)
 conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_RAN_ONCE_MARKER_DIR', ran_once_marker_dir)
 conf.set_quoted('GDM_RUN_DIR', gdm_run_dir)
+conf.set_quoted('GDM_DCONF_PROFILE', 'gdm')
+conf.set_quoted('GDM_WORKING_DIR', working_dir)
 conf.set_quoted('GNOMELOCALEDIR', gdm_prefix / get_option('localedir'))
 conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
 conf.set_quoted('GNOME_SETTINGS_DAEMON_DIR', gnome_settings_daemon_dir)
 conf.set_quoted('LANG_CONFIG_FILE', lang_config_file)
+conf.set_quoted('PAM_PROFILES_DIR', pam_profiles_dir[0] == '/' ? pam_profiles_dir : '/' + pam_profiles_dir)
 conf.set('HAVE_ADT', have_adt)
 conf.set('HAVE_UTMP_H', have_utmp_header)
 conf.set('HAVE_UTMPX_H', have_utmpx_header)

@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+#
+# Copyright (C) 2020 Marco Trevisan <marco.trevisan@canonical.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+command=$1
+action=$2
+action_setting=$3
+
+set -e
+export LANG=C
+
+ENABLED="enabled"
+DISABLED="disabled"
+REQUIRED="required"
+STOP=19
+
+
+case "$command" in
+    show)
+        case "$action" in
+            password)
+            ;;
+            smartcard)
+            ;;
+            fingerprint)
+            ;;
+        esac
+
+        exit 0;
+    ;;
+
+    smartcard)
+        case "$action" in
+            enable)
+            ;;
+            require)
+                # While we can't require anything here, we assume that GDM
+                # will disable the password authentication in this case.
+            ;;
+            disable)
+            ;;
+            removal-action)
+            ;;
+        esac
+
+        # We assume the default handler can manage this, as gdm already
+        # provides a PAM config file for this case
+        exit 0
+    ;;
+
+    fingerprint)
+        case "$action" in
+            enable)
+            ;;
+            require)
+                exit 1
+            ;;
+            disable)
+            ;;
+        esac
+
+        # We assume the default handler can manage this, as gdm already
+        # provides a PAM config file for this case
+        exit 0
+    ;;
+
+    password)
+        # We assume the default handler can manage this, as gdm already
+        # provides a PAM config file for this case
+        exit 0
+    ;;
+
+    reset)
+        exit 0
+    ;;
+
+    *)
+        # Use default behavior
+        exit 0;
+    ;;
+esac
+
+exit 1

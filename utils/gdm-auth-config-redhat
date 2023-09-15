@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+#
+# Copyright (C) 2020 Marco Trevisan <marco.trevisan@canonical.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+command=$1
+action=$2
+action_setting=$3
+
+set -e
+export LANG=C
+
+FINGERPRINT_FEATURE="with-fingerprint"
+SMARTCARD_FEATURE="with-smartcard"
+SMARTCARD_FEATURE_LOCK_ON_REMOVAL="with-smartcard-lock-on-removal"
+SMARTCARD_REQUIRED="with-smartcard-required"
+
+ENABLED="enabled"
+DISABLED="disabled"
+REQUIRED="required"
+STOP=19
+
+if [ -n "$GDM_AUTH_TEST_MODE" ]; then
+    function authselect() {
+        local test_state_file=/tmp/gdm-auth-config-rh-test-state
+        if [ "$1" == "current" ]; then
+            if [ -z "$ENABLED_FEATURES" ] && [ -f "$test_state_file" ]; then
+                sed 's/ -f//g' "$test_state_file"
+            else
+                echo "${ENABLED_FEATURES:-sssd with-smartcard-required with-fingerprint}"
+            fi
+        else
+            echo "Called with" "${@}"
+            shift
+            echo "${@}" > "$test_state_file"
+        fi
+    }
+fi
+
+function authselect_current_config() {
+    current=$(authselect current -r)
+
+    if [ $? -eq 0 ]; then
+        echo "$current"
+    else
+        # No configuration is currently set, so we fallback to the default
+        echo 'sssd'
+    fi
+}
+
+function authselect_has_feature() {
+    [[ " $(authselect_current_config) " == *" ${1} "* ]]
+}
+
+function authselect_disable_features() {
+    local current
+    local -a enabled
+
+    current=$(authselect_current_config)
+    for c in ${current}; do
+        local disabled=false
+        for d in "${@}"; do
+            if [[ "$c" == "$d" ]]; then
+                disabled=true
+                break
+            fi
+        done
+
+        if [[ $disabled != true ]]; then
+            enabled+=("$c")
+        fi
+    done
+
+    authselect select "${enabled[@]}" -f
+}
+
+function authselect_enable_features() {
+    local -a to_enable
+
+    current=$(authselect_current_config)
+    for i in "${@}"; do
+        if [[ " $current " != *" $i "* ]]; then
+            to_enable+=("$i")
+        fi
+    done
+
+    if [ -n "${to_enable[*]}" ]; then
+        # shellcheck disable=SC2086
+        authselect select $current "${to_enable[@]}" -f
+    fi
+}
+
+case "$command" in
+    show)
+        case "$action" in
+            password)
+                if authselect_has_feature $SMARTCARD_REQUIRED; then
+                    echo $DISABLED
+                else
+                    echo $ENABLED
+                fi
+            ;;
+            smartcard)
+                if [ -z "$action_setting" ]; then
+                    if authselect_has_feature $SMARTCARD_REQUIRED; then
+                        echo $REQUIRED
+                    elif authselect_has_feature $SMARTCARD_FEATURE ||
+                         authselect_has_feature $SMARTCARD_FEATURE_LOCK_ON_REMOVAL; then
+                        echo $ENABLED
+                    else
+                        echo $DISABLED
+                    fi
+                elif [[ "$action_setting" == "removal-action" ]]; then
+                    if authselect_has_feature $SMARTCARD_FEATURE_LOCK_ON_REMOVAL; then
+                        echo "lock-screen"
+                    fi
+                fi
+            ;;
+            fingerprint)
+                if authselect_has_feature $FINGERPRINT_FEATURE; then
+                    echo $ENABLED
+                else
+                    echo $DISABLED
+                fi
+            ;;
+        esac
+
+        exit 0
+    ;;
+
+    smartcard)
+        case "$action" in
+            enable)
+                authselect_enable_features $SMARTCARD_FEATURE
+            ;;
+            require)
+                authselect_enable_features $SMARTCARD_REQUIRED
+            ;;
+            disable)
+                authselect_disable_features $SMARTCARD_FEATURE \
+                    $SMARTCARD_FEATURE_LOCK_ON_REMOVAL \
+                    $SMARTCARD_REQUIRED
+            ;;
+            removal-action)
+                if [[ "$action_setting" == "lock-screen" ]]; then
+                    authselect_enable_features $SMARTCARD_FEATURE_LOCK_ON_REMOVAL
+                elif [[ "$action_setting" == "none" ]]; then
+                    authselect_disable_features $SMARTCARD_FEATURE_LOCK_ON_REMOVAL
+                else
+                    # We can't handle other cases via authselect, so let's leave
+                    # gdm-auth-config to handle them
+                    exit 0
+                fi
+            ;;
+        esac
+
+        # All set, no need to continue with deafult behavior
+        exit $STOP
+    ;;
+
+    fingerprint)
+        case "$action" in
+            enable)
+                authselect_enable_features $FINGERPRINT_FEATURE
+            ;;
+            require)
+                exit 1
+            ;;
+            disable)
+                authselect_disable_features $FINGERPRINT_FEATURE
+            ;;
+        esac
+
+        # All set, no need to continue with deafult behavior
+        exit $STOP
+    ;;
+
+    password)
+        case "$action" in
+            enable)
+                if authselect_has_feature $SMARTCARD_REQUIRED; then
+                    authselect_disable_features $SMARTCARD_REQUIRED
+                    authselect_enable_features $SMARTCARD_FEATURE
+                fi
+            ;;
+            *)
+            ;;
+        esac
+        # Continue with default behavior
+        exit 0
+    ;;
+
+    reset)
+        authselect_disable_features $SMARTCARD_FEATURE \
+                    $SMARTCARD_FEATURE_LOCK_ON_REMOVAL \
+                    $SMARTCARD_REQUIRED \
+                    $FINGERPRINT_FEATURE
+        exit $STOP
+    ;;
+
+    *)
+        # Use default behavior
+        exit 0
+    ;;
+esac
+
+exit 1

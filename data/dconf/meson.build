@@ -5,7 +5,7 @@ gdm_dconf = configure_file(
     'DATADIR': gdm_prefix / get_option('datadir'),
     'PACKAGE': meson.project_name(),
   },
-  install_dir: get_option('datadir') / 'dconf' / 'profile',
+  install_dir: dconf_profiles_path,
 )
 
 greeter_dconf_defaults = custom_target('greeter-dconf-defaults',
@@ -21,5 +21,5 @@ greeter_dconf_defaults = custom_target('greeter-dconf-defaults',
     meson.current_source_dir() / 'defaults',
   ],
   install: true,
-  install_dir: get_option('datadir') / meson.project_name(),
+  install_dir: gdm_datadir,
 )
