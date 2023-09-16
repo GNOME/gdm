@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm to kazakh\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-06-28 18:12+0000\n"
+"POT-Creation-Date: 2023-09-16 11:20+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -107,12 +107,12 @@ msgstr "Жеке хабарласу арнасын ашу мүмкін емес"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Серверді %s пайдаланушысы қосқан, бірақ ол пайдаланушысы жоқ болып тұр"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Groupid мәнін %d-ға орнату қатесі"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s үшін initgroups () қатесі"
@@ -166,11 +166,11 @@ msgstr "Экран құрылғысы"
 msgid "The display device"
 msgstr "Экран құрылғысы"
 
-#: daemon/gdm-session.c:1336
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Аутентификациясының көмекші үрдісін жасау мүмкін емес"
 
-#: daemon/gdm-session-worker.c:741
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -178,7 +178,7 @@ msgstr ""
 "Сіз парольмен аутентификациялау талаптарының максималды санына жеттіңіз, "
 "басқа тәсілді қолданып көріңіз"
 
-#: daemon/gdm-session-worker.c:744
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -186,7 +186,7 @@ msgstr ""
 "Сіз автоматты түрде кіру талаптарының максималды санына жеттіңіз, басқа "
 "тәсілді қолданып көріңіз"
 
-#: daemon/gdm-session-worker.c:747
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -194,7 +194,7 @@ msgstr ""
 "Сіз саусақ ізімен аутентификациялау талаптарының максималды санына жеттіңіз, "
 "басқа тәсілді қолданып көріңіз"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -202,50 +202,50 @@ msgstr ""
 "Сіз смарткарта арқылы аутентификациялау талаптарының максималды санына "
 "жеттіңіз, басқа тәсілді қолданып көріңіз"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Сіз аутентификациялау талаптарының максималды санына жеттіңіз, басқа тәсілді "
 "қолданып көріңіз"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr ""
 "Кешіріңіз, парольмен аутентификациялау жұмыс істемеді. Қайтадан көріңіз."
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Кешіріңіз, автоматты түрде кіру жұмыс істемеді. Қайтадан көріңіз."
 
-#: daemon/gdm-session-worker.c:765
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "Кешіріңіз, саусақ ізімен аутентификациялау жұмыс істемеді. Қайтадан көріңіз."
 
-#: daemon/gdm-session-worker.c:768
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
 "Кешіріңіз, смарткарта арқылы аутентификациялау жұмыс істемеді. Қайтадан "
 "көріңіз."
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Кешіріңіз, бұл дұрыс емес болды. Қайтадан көріңіз."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Тіркелгіңіз үшін берілген уақыт мерзімі енді аяқталды."
 
-#: daemon/gdm-session-worker.c:1186
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Пайдаланушы:"
 
-#: daemon/gdm-session-worker.c:1585 daemon/gdm-session-worker.c:1602
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "қолжетерлік пайдаланушы тіркелгілер жоқ"
 
-#: daemon/gdm-session-worker.c:1629
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Пайдаланушыға ауысу мүмкін емес"
 
@@ -437,13 +437,313 @@ msgstr ""
 "Пайдаланушыны таңдау сұхбатына қайта оралуға дейінгі пайдаланушы үшін қанша "
 "жүйеге кіру талабы рұқсат етіледі."
 
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Команда көмегін көрсету"
+
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Кеңейтілген шығысты көрсету"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Жөндеу шығысын көрсету"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Аутентификация тәсілін іске қосу"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Аутентификация тәсілін сөндіру"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Аутентификация тәсілін талап ету"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Смарткартаны алып тастау әрекеті"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Барлық сұраққа иә деп жауап беру"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Парольдік аутентификацияны баптау."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Саусақ ізі аутентификациясын баптау."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Смарткарта аутентификациясын баптау."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "GDM аутентификация баптауларын тастау."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "GDM аутентификация баптауларын көрсету."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Пароль опциялары"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Саусақ ізі опциялары"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Смарткарта опциялары"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Опцияларды тастау"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Опцияларды көрсету"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Парольдік аутентификация үшін PAM модуль қолжетімді емес"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Смарткарта аутентификациясы үшін PAM модуль қолжетімді емес"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Саусақ ізі аутентификациясы үшін PAM модуль қолжетімді емес"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s” кем дегенде бір параметрді талап етеді"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” бір уақытта сөндірілген және іске қосылған болуы мүмкін емес"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s” мәні жарамды %s “%s” мәні емес"
+
+#: utils/gdm-config.c:495
+#, c-format
+#| msgid "Failed to create LogDir %s: %s"
+msgid "Failed to swith to %s user"
+msgstr "%s пайдаланушысына ауысу сәтсіз аяталды"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Userid мәнін %u-ға орнату мүмкін емес"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Ешбір дистрибутив анықталмады, орындалатын хук жоқ"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "“%s” хугын орындау үшін жарамды аргументтер табылмады"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "“%s” дистрибутив хугын орындау\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "“%s” дистрибутив хугы тоқтатуды талап етті"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"Дистрибутив хугы %d қалып-күймен мен %s қатесімен аяқталды:\n"
+"Қалыпты шығыс:\n"
+"%s\n"
+"Қате шығысы:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"Дистрибутив хугы арқылы “%s” командасының “%s” кілтін орнату сәтсіз "
+"аяқталды: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "%s бумасын жасау сәтсіз аяқталды"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "dconf профилі табылмады"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf үшін бапталған system-db жоқ"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "“%s” тақырыптама түсіндірмесін алу қатесі: %s, ол өзгертілді ме?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr ""
+"Файлдың “%s” тақырыптама түсіндірмесі сәйкес келмейді, ол өзгертілді ме?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+"“%s” құлыптау файлында күтілген тақырыптама табылмады, ол өзгертілді ме?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Талап етілетін дистрибутив хугын орындау сәтсіз аяқталды: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "КОМАНДА"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Командалар:\n"
+"  help         Бұл ақпаратты көрсету\n"
+"  password     Парольдік аутентификацияны баптау\n"
+"  fingerprint  Саусақ ізі аутентификациясын баптау\n"
+"  smartcard    Смарткарта аутентификациясын баптау\n"
+"  reset        Бастапқы баптауларға қайтару\n"
+"  show         Ағымдағы баптауларды көрсету\n"
+"\n"
+"Әр команда үшін көмекті алу үшін “%s COMMAND --help” қолданыңыз.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Команда опциялары"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "%s “%s” командасын орындау үшін сіз әкімші (root) болуыңыз керек"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "%s баптауын орнату сәтсіз аяқталды: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Смарткарта баптауын орнату сәтсіз аяқталды"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Пароль баптауын орнату сәтсіз аяқталды"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Іске қосулы"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Сөндірулі"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Қолдауы жоқ"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Талап етіледі"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM авторизация баптаулары\n"
+"\n"
+"  Парольдік аутентификация: %s\n"
+"  Саусақ ізі аутентификациясы: %s\n"
+"  Смарткарта аутентификациясы: %s\n"
+"  Смарткартаны алып тастау әрекеті: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Жалғастыруды қалайсыз ба? [Y/n]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Пайдаланушы сұранымнан бас тартты"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "%s баптауын тастау сәтсіз аяқталды: "
+
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Тек VERSION командасына қолдау бар"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "КОМАНДА"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
