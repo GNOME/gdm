@@ -6,13 +6,13 @@
 # wanderlust <wanderlust@ukr.net>, 2009.
 # Daniel Korostil <ted.korostiled@gmail.com>, 2013, 2015, 2016.
 # vikaig <vikaig99@gmail.com>, 2019.
-# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2022.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.90.0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-10-29 08:46+0300\n"
+"POT-Creation-Date: 2023-09-16 11:20+0000\n"
+"PO-Revision-Date: 2023-09-16 20:22+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -59,21 +59,24 @@ msgstr "XDMCP: неможливо розібрати адресу"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не є символьним пристроєм"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Неможливо створити змінний екран: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "Неможливо розпізнати поточний сеанс: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "Неможливо розпізнати поточне місце."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
-#| msgid "could not find user “%s” on system"
 msgid "Could not find user “%s” on system"
 msgstr "У системі не вдалося знайти користувача «%s»"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -114,12 +117,12 @@ msgstr "Неможливо відкрити закритий канал зв'я�
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Сервер запущено користувачем %s, але цього користувача не існує"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Не вдалось встановити groupid для %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Помилка initgroups() для %s"
@@ -129,22 +132,22 @@ msgstr "Помилка initgroups() для %s"
 msgid "Couldn’t set userid to %d"
 msgstr "Не вдалось встановити userid для %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не вдалось відкрити файл журналу для екрана %s!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: помилка налаштування %s для %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Пріоритет сервера неможливо вказати для %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: порожня команда програми сервера для екрана %s"
@@ -173,11 +176,11 @@ msgstr "Пристрій показу"
 msgid "The display device"
 msgstr "Пристрій показу"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Неможливо створити дію з помічника розпізнавання"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -185,7 +188,7 @@ msgstr ""
 "Вами перевищено максимальну кількість спроб пройти розпізнавання за "
 "допомогою пароля. Будь ласка, спробуйте якийсь інший спосіб."
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -193,7 +196,7 @@ msgstr ""
 "Вами перевищено максимальну кількість спроб автоматичного входу до системи. "
 "Будь ласка, спробуйте якийсь інший спосіб розпізнавання."
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -201,7 +204,7 @@ msgstr ""
 "Вами перевищено максимальну кількість спроб пройти розпізнавання за "
 "допомогою відбитку. Будь ласка, спробуйте якийсь інший спосіб."
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -209,52 +212,52 @@ msgstr ""
 "Вами перевищено максимальну кількість спроб пройти розпізнавання за "
 "допомогою смарт-картки. Будь ласка, спробуйте якийсь інший спосіб."
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Вами перевищено максимальну кількість спроб пройти розпізнавання. Будь "
 "ласка, спробуйте якийсь інший спосіб."
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr ""
 "Вибачте, розпізнавання за паролем не спрацювало. Будь ласка, повторіть "
 "спробу."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Вибачте, автоматичний вхід не спрацював. Спробуйте ще."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "Вибачте, розпізнавання за відбитком не спрацювало. Будь ласка, повторіть "
 "спробу."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
 "Вибачте, розпізнавання за смарт-карткою не спрацювало. Будь ласка, повторіть "
 "спробу."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Вибачте, це не працює. Спробуйте ще."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Ваш обліковий запис має часове обмеження, яке вже вичерпано."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Користувач:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "недоступний обліковий запис користувача"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Неможливо змінити користувача"
 
@@ -334,7 +337,7 @@ msgstr "Лише адміністратор (root) може запускати G
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Менеджер роботи стільничного сеансу GNOME"
 
@@ -448,21 +451,318 @@ msgstr ""
 "Кількість разів, які дозволяють користувачу для спроби розпізнатись, перед "
 "невдачею та переходом назад до вибирання. користувача."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Неможливо створити змінний екран: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Показати довідку щодо команд"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Неможливо ввімкнути сеанс: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Докладне виведення"
+
+#: utils/gdm-config.c:125
+#| msgid "Debugging output"
+msgid "Show debug output"
+msgstr "Показувати діагностичні повідомлення"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Увімкнути спосіб розпізнавання"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Вимкнути спосіб розпізнавання"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Вимагати спосіб розпізнавання"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Дія при вилученні смарт-картки"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Припускати «так» для будь-якого питання"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Налаштувати розпізнавання за паролем."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Налаштувати розпізнавання за відбитками."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Налаштувати розпізнавання за смарт-карткою."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Скинути налаштування розпізнавання у GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Показати налаштування розпізнавання у GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Параметри пароля"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Параметри відбитка"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Параметри смарт-картки"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Скинути параметри"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Показати параметри"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Немає модуля PAM для розпізнавання за паролем"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Немає модуля PAM для розпізнавання за смарт-карткою"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Немає модуля PAM для розпізнавання за відбитком"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "«%s» потребує принаймні одного параметра"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "«%s» не можна одночасно вмикати і вимикати"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "«%s» не є коректним значенням %s «%s»"
+
+#: utils/gdm-config.c:495
+#, c-format
+#| msgid "Failed to create LogDir %s: %s"
+msgid "Failed to swith to %s user"
+msgstr "Не вдалося перемкнутися на користувача %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+#| msgid "Couldn’t set userid to %d"
+msgid "Couldn’t set userid to %u"
+msgstr "Не вдалось встановити userid для %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Не виявлено дистрибутива, немає скрипту для запуску"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "Не знайдено коректних аргументів для запуску скрипту «%s»"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Запущено скрипт для дистрибутива «%s»\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Скрипт дистрибутива «%s» надіслав запит щодо зупинення"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"Скрипт дистрибутива завершив роботу зі станом виходу %d і кодом помилки %s:\n"
+"Стандартне виведення:\n"
+"%s\n"
+"Виведення помилок:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"Не вдалося встановити параметр команди «%s», ключ «%s» за допомогою скрипта"
+" дистрибутива: "
+
+#: utils/gdm-config.c:819
+#, c-format
+#| msgid "Failed to create LogDir %s: %s"
+msgid "Failed to create directory %s"
+msgstr "Не вдалося створити каталог %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "Не знайдено профіль dconf"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "У dconf не налаштовано system-db"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "Не вдалося отримати коментар у заголовку «%s»: %s, внесено зміни?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Коментар у заголовку файла «%s» є невідповідним. Його було змінено?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+"Не знайдено очікуваного заголовка у файлі блокування «%s». Його було змінено?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Не вдалося запустити потрібний скрипт дистрибутива: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "КОМАНДА"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Команди:\n"
+"  help         показати цю довідку\n"
+"  password     налаштувати розпізнавання за паролем\n"
+"  fingerprint  налаштувати розпізнавання за відбитком\n"
+"  smartcard    налаштувати розпізнавання за смарт-карткою\n"
+"  reset        відновити типові налаштування\n"
+"  show         показати поточні налаштування\n"
+"\n"
+"Скористайтеся командою «%s КОМАНДА --help», щоб отримати довідку щодо"
+" будь-якої з команд.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Параметри команди"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Щоб скористатися командою %s «%s», вам потрібні права доступу root"
+
+#: utils/gdm-config.c:1712
+#, c-format
+#| msgid "Failed to create LogDir %s: %s"
+msgid "Failed to set %s setting: "
+msgstr "Не вдалося встановити значення параметра %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Не вдалося встановити варіант зі смарт-карткою"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Не вдалося встановити варіант із паролем"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Увімкнено"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Вимкнено"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Немає підтримки"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Обов'язковий"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"Налаштування уповноваження у GDM\n"
+"\n"
+"  Розпізнавання за паролем: %s\n"
+"  Розпізнавання за відбитком: %s\n"
+"  Розпізнавання за смарт-карткою: %s\n"
+"  Дія при вилученні смарт-картки: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Хочете продовжити? [Y - так/n - ні]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Запит скасовано користувачем"
+
+#: utils/gdm-config.c:1994
+#, c-format
+#| msgid "Failed to create LogDir %s: %s"
+msgid "Failed to reset %s setting: "
+msgstr "Не вдалося відновити початкове значення параметра %s: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Підтримується лише команда VERSION"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "КОМАНДА"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -490,6 +790,9 @@ msgstr "Знімок екрана зроблено"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Зробити знімок екрана"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "Неможливо ввімкнути сеанс: "
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
