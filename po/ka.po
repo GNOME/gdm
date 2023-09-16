@@ -1,22 +1,22 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Georgian translation for gdm.
+# Copyright (C) 2023 gdm's authors.
+# This file is distributed under the same license as the gdm package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-10-28 06:10+0200\n"
-"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"POT-Creation-Date: 2023-09-16 11:20+0000\n"
+"PO-Revision-Date: 2023-09-16 13:32+0200\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: \n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -54,20 +54,24 @@ msgstr "XDMCP: მისამართის დამუშავების 
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom სიმბოლურ მოწყობილობას არ წარმოადგენს"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "დროებითი ეკრანის შექმნა შეუძლებელია: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "მიმდინარე სესიის იდენტიფიკაციის პრობლემა: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "მიმდინარე ადგილის იდენტიფიკაციის პრობლემა."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "სისტემაში მომხმარებელი \"%s\" არ არსებობს"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -107,12 +111,12 @@ msgstr "პირადი კავშირის გახსნა შეუ
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "სერვერი გაეშვა მომხმარებლის (%s) მიერ, მაგრამ მომხმარებელი არ არსებობს"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Groupid-ის %d-ზე დაყენება შეუძლებელია"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups ()-ის შეცდომა %s-სთვის"
@@ -122,22 +126,22 @@ msgstr "initgroups ()-ის შეცდომა %s-სთვის"
 msgid "Couldn’t set userid to %d"
 msgstr "Userid-ის %d-ზე დაყენება შეუძლებელია"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ჟურნალის ფაილის გახნა ეკრანისთვის %s შეუძლებელია!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s-ის %s-ზე დაყენების შეცდომა"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: სერვერის პრიორიტეტი არ შეიძლება იყოს %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s-ე ეკრანის სერვერის ცარიელი ბრძანება"
@@ -166,11 +170,11 @@ msgstr "ეკრანის მოწყობილობა"
 msgid "The display device"
 msgstr "ეკრანის მოწყობილობა"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "ავთენტიკაციის დამხმარე პროცესის შექმნა შეუძლებელია"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -178,14 +182,14 @@ msgstr ""
 "მიაღწიეთ პაროლით ავთენტიკაციის ცდების მაქსიმალურ რაოდენობას. სხვა მეთოდი "
 "აირჩიეთ"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr ""
 "მიაღწიეთ ავტომატური შესვლის ცდების მაქსიმალურ რაოდენობას. სხვა მეთოდი აირჩიეთ"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -193,7 +197,7 @@ msgstr ""
 "მიაღწიეთ თითის ანაბეჭდით ავთენტიკაციის ცდების მაქსიმალურ რაოდენობას. სხვა "
 "მეთოდი აირჩიეთ"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -201,46 +205,46 @@ msgstr ""
 "მიაღწიეთ ჭკვიანი ბარათით ავთენტიკაციის ცდების მაქსიმალურ რაოდენობას. სხვა "
 "მეთოდი აირჩიეთ"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "მიაღწიეთ პაროლით ავთენტიკაციის ცდების მაქსიმალურ რაოდენობას. სხვა მეთოდი "
 "აირჩიეთ"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "უკაცრავად, პაროლით ავთენტიკაციამ არ იმუშავა. კიდევ სცადეთ."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "უკაცრავად, ავტომატურად შესვლამ არ იმუშავა. კიდევ სცადეთ."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "უკაცრავად, თითის ანაბეჭდით ავთენტიკაციამ არ იმუშავა. კიდევ სცადეთ."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "უკაცრავად, ჭკვიანი ბარათით ავთენტიკაციამ არ იმუშავა. კიდევ სცადეთ."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "უკაცრავად, არ იმუშავა. კიდევ სცადეთ."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "თქვენს ანგარიშს ჰქონდა ვადა, რომელიც ახლა გასულია."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "მომხმარებლის სახელი:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "მომხმარებლის ანგარიში მიუწვდომელია"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "მომხმარებლზე გადასვლის შეცდომა"
 
@@ -320,7 +324,7 @@ msgstr "GDM-ის გაშვება მხოლოდ root მომხმ
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME-ის ეკრანის მმართველის სესიის პროცესი"
 
@@ -430,21 +434,290 @@ msgstr ""
 "რიცხვი, რამდენჯერ შეუძლია მომხმარებელს სცადოს ავთენტიკაცია, სანამ შევეშვებით "
 "და დავაბრუნებთ მომხმარებლის არჩევანზე."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "დროებითი ეკრანის შექმნა შეუძლებელია: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "ბრძანების დახმარების ჩვენება"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "სესიის აქტივაცია შეუძლებელია: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "დამატებითი შეტყობინებების გამოტანა"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "გამართვის გამოტანის ჩვენება"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "ავთენტიკაციის მეთოდის ჩართვა"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "ავთენტიკაციის მეთოდის გამორთვა"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "ავთენტიკაციის მეთოდის აუცილებლობის მითითება"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "სმარტ ბარათის გამოერთების ქმედება"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "ყველა კითხვისთვის დადებითი პასუხის ავტომატური გაცემა"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "პაროლით ავთენტიკაციის მორგება."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "ანაბეჭდებით ავთენტიკაციის მორგება."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "ჭკვიანი ბარათით ავთენტიკაციის მორგება."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "GDM-ის ავთენტიკაციის პარამეტრების საწყის მნიშვნელობებზე დაბრუნება."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "GDM-ის ავთენტიკაციის პარამეტრების ჩვენება."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "პაროლის მორგება"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "ანაბეჭდის მორგება"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "ჭკვიანი ბარათის მორგება"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "პარამეტრების საწყის მნიშვნელობებზე დაბრუნება"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "პარამეტრების ჩვენება"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "პაროლით ავთენტიკაციისთვის PAM-ის მოდული აღმოჩენილიარაა"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "ჭკვიანი ბარათით ავთენტიკაციისთვის PAM-ის მოდული აღმოჩენილიარაა"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "თითის ანაბეჭდით ავთენტიკაციისთვის PAM-ის მოდული აღმოჩენილიარაა"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s”-ს სულ ცოტა ერთი პარამეტრი სჭირდება"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” ერთდროულად ჩართული და გამორთული ვერ იქნება"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr ""
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to swith to %s user"
+msgstr "მომხმარებელზე %s გადართვა ჩავარდა"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Userid-ის %u-ზე დაყენება შეუძლებელია"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "დისტრიბუტივი აღმოჩენილი არაა. დამატებითი ბრძანებები არ გაეშვება"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "დამატებითი ბრძანებისთვის \"%s\" შესაბამისი არგუმენტები აღმოჩენილი არაა"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "სრულდება დისროს დამატებითი ბრძანება \"%s\"\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr ""
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "საქაღალდის შექმნის შეცდომა: %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "dconf-ის პროფილი აღმოჩენილი არაა"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf-ს system-db მითითებული არ აქვს"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr ""
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr ""
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "აუცილებელი დისტროს დამატებითი ბრძანება ჩავარდა: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "ბრძანება"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "ბრძანების პარამეტრები"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr ""
+"%s \"%s\": უკაცრავად, მაგრამ ამ პროგრამის გასაშვებად root-ის პრივილეგიები "
+"დაგჭირდებათ"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "%s პარამეტრის დაყენება ჩავარდა: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "ჭკვიანი ბარათის პარამეტრის დაყენება ჩავარდა"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "პაროლის პარამეტრის დაყენება ჩავარდა"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "ჩართული"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "გათიშულია"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "მხარდაუჭერელია"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "საჭიროა"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y(დიახ)"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y(დიახ)"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N(არა)"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n(არა)"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "გნებავთ, გააგრძელოთ [Y(დიახ)/n(არა)]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "შეწყდა მომხმარებლის მოთხოვნით"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "%s პარამეტრის ნაგულისხმევ მნიშვნელობაზე დაბრუნება ჩავარდა: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "მხარდაჭერილია მხოლოდ VERSION ბრძანება"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "ბრძანება"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -472,3 +745,6 @@ msgstr "ეკრანის ანაბეჭდი აღებულია"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "ეკრანის ანაბეჭდის გადაღება"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "სესიის აქტივაცია შეუძლებელია: "
