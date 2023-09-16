@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2023-01-19 23:11+0200\n"
+"POT-Creation-Date: 2023-09-16 11:20+0000\n"
+"PO-Revision-Date: 2023-09-16 23:14+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -24,8 +24,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 42.0\n"
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Project-Style: gnome\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
@@ -64,20 +64,24 @@ msgstr "XDMCP: Nepavyko perskaityti adreso"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nėra simbolių įrenginys"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Nepavyko sukurti pereinamojo ekrano: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "Nepavyko identifikuoti esamo seanso: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "Nepavyko identifikuoti esamo seanso."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Nepavyko sistemoje rasti naudotojo „%s“"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -119,12 +123,12 @@ msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Serveris turėjo būti sukurtas naudotojo %s, bet toks naudotojas neegzistuoja"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Nepavyko nustatyti groupid į %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() %s nepavyko"
@@ -134,22 +138,22 @@ msgstr "initgroups() %s nepavyko"
 msgid "Couldn’t set userid to %d"
 msgstr "Nepavyko nustatyti userid į %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nepavyko atverti ekrano %s žurnalo failo!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Klaida nustatant %s į %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Serverio prioriteto nepavyko nustatyti į %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tuščia serverio komanda ekranui %s"
@@ -178,74 +182,74 @@ msgstr "Vaizdavimo įrenginys"
 msgid "The display device"
 msgstr "Vaizdavimo įrenginys"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Nepavyko sukurti tapatybės patvirtinimo pagalbinio proceso"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "Pasiekėte bandymų ribą slaptažodžiui, bandykite kitą metodą"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr ""
 "Pasiekėte bandymų ribą automatiniam prisijungimui, bandykite kitą metodą"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr ""
 "Pasiekėte bandymų ribą prisijungimui piršto atspaudu, bandykite kitą metodą"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr "Pasiekėte bandymų ribą kortelei, bandykite kitą metodą"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "Pasiekėte bandymų ribą prisijungimui, bandykite kitą metodą"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Atleiskite, slaptažodis nesuveikė. Bandykite dar kartą."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Atleiskite, automatinis prisijungimas nesuveikė. Bandykite dar kartą."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Atleiskite, piršto atspaudas nesuveikė nesuveikė. Bandykite dar kartą."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Atleiskite, išmanioji kortelė nesuveikė. Bandykite dar kartą."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Atleiskite, tai nesuveikė. Bandykite dar kartą."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Jūsų paskyrai buvo suteiktas laiko limitas, kuris dabar baigėsi."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
@@ -325,7 +329,7 @@ msgstr "Tik root naudotojas gali paleisti GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ekrano tvarkytuvės seanso darbininkas"
 
@@ -438,21 +442,310 @@ msgstr ""
 "Skaičius kartų, kiek naudotojui leidžiama mėginti patvirtinti tapatybę prieš "
 "grįžtant į naudotojų pasirinkimą."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Nepavyko sukurti pereinamojo ekrano:"
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Rodyti komandos pagalbą"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Nepavyko aktyvuoti seanso:"
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Rodyti išsamią išvestį"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Rodyti derinimo išvestį"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Įjungti tapatybės patvirtinimo metodą"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Išjungti tapatybės patvirtinimo metodą"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Reikalauti tapatybės patvirtinimo metodo"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Veiksmas, vykdomas pašalinant išmaniąją kortelę"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Laikyti visus atsakymus teigiamais"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Konfigūruoti tapatybės patvirtinimą slaptažodžiu."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Konfigūruoti tapatybės patvirtinimą piršto atspaudu."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Konfigūruoti tapatybės patvirtinimą išmaniąją kortele."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Atstatyti GDM tapatybės patvirtinimo konfigūraciją."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Rodyti GDM tapatybės patvirtinimo konfigūraciją."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Slaptažodžio parametrai"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Piršto atspaudo parametrai"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Išmaniosios kortelės parametrai"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Atstatyti parametrus"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Rodyti parametrus"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Nėra PAM modulio tapatybės patvirtinimui slaptažodžiu"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Nėra PAM modulio tapatybės patvirtinimui išmaniąją kortele"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Nėra PAM modulio tapatybės patvirtinimui piršto atspaudu"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "„%s“ reikia bent vieno parametro"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "„%s“ negali būti įjungta ir išjungta tuo pat metu"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "„%s“ nėra tinkama %s „%s“ vertė"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to swith to %s user"
+msgstr "Nepavyko pakeisti naudotojo į %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Nepavyko nustatyti userid į %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Nepasirinkta distribucija, nėra ką vykdyti"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "Nerasta tinkamų argumentų priekabai „%s“ vykdyti"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Vykdoma distribucijos priekaba „%s“\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Distribucijos priekaba „%s“ prašo stabdymo"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"Distribucijos priekaba išėjo su statusu %d bei klaida %s:\n"
+"Standartinė išvestis:\n"
+"%s\n"
+"Klaidų išvestis:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"Nepavyko nustatyti komandos „%s“ parametro rakto „%s“ naudojant "
+"distribucijos priekabą: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Nepavyko sukurti katalogo %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "nerastas dconf profilis"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf neturi sukonfigūruotos system-db"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "Nepavyko gauti „%s“ antraštės komentaro: %s, ar jis buvo pakeistas?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Failo „%s“ antraštės komentaras nesutampa, ar jis buvo pakeistas?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "Nerasta tikėtasi antraštė užrakto faile „%s“, ar jis buvo pakeistas?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Nepavyko įvykdyti būtinos distribucijos priekabos: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "KOMANDA"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Komandos:\n"
+" help         Parodo šią informacija\n"
+" password     Konfigūruoti tapatybės patvirtinimą slaptažodžiu\n"
+"  fingerprint  Konfigūruoti tapatybės patvirtinimą piršto atspaudu\n"
+"  smartcard    Konfigūruoti tapatybės patvirtinimą išmaniąją kortele\n"
+"  reset        Atstato numatytąją konfigūraciją\n"
+"  show         Parodo dabartinę konfigūraciją\n"
+"\n"
+"Naudokite „%s KOMANDA --help“ kiekvienos komandos pagalbai gauti.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Komandos parametrai"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Reikia būti root naudotoju, kad naudotumėt komandą %s „%s“"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Nepavyko nustatyti %s nuostatos: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Nepavyko nustatyti išmaniosios kortelės nuostatos"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Nepavyko nustatyti slaptažodžio nuostatos"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Įjungta"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Išjungta"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Nepalaikoma"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Būtina"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM autorizacijos konfigūracija\n"
+"\n"
+" Tapatybės patvirtinimas slaptažodžiu: %s\n"
+" Tapatybės patvirtinimas piršto atspaudu: %s\n"
+" Tapatybės patvirtinimas išmaniąją kortele: %s\n"
+" Išmaniosios kortelės pašalinimo veiksmas: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "T"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "t"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Ar norite tęsti? [T/n]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Naudotojas atšaukė užklausą"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Nepavyko atstatyti %s nuostatos: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Palaikoma tik komanda VERSION"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "KOMANDA"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -480,6 +773,9 @@ msgstr "Ekranvaizdis įrašytas"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Įrašyti ekranvaizdį"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "Nepavyko aktyvuoti seanso:"
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
