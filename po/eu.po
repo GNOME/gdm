@@ -8,11 +8,10 @@
 # Asier Sarasua Garmendia  <asiersarasua@ni.eus>, 2013, 2019, 2020.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: gdm master\n"
+msgstr "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2020-12-27 10:00+0100\n"
+"POT-Creation-Date: 2023-09-17 02:01+0000\n"
+"PO-Revision-Date: 2020-09-17 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -58,29 +57,30 @@ msgstr "XDMCP: Ezin da helbidea analizatu"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ez da karaktere motako gailua"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Ezin da behin-behineko pantaila hasi: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "Ezin izan da uneko saioa identifikatu. "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "Ezin izan da uneko saioa identifikatu."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
+#, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Ezin izan da “%s“ erabiltzailea aurkitu sisteman"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
-msgstr ""
-"Ezin izan da X zerbitzaria (ingurune grafikoa) abiarazi barneko erroreen "
-"ondorioz. Jarri harremanetan sistema-administratzailearekin edo begiratu "
-"syslog-a arazteko. Bitartean pantaila hau desgaitu egingo da.  GDM "
-"berrabiarazi arazoa zuzendutakoan."
+msgstr "Ezin izan da X zerbitzaria (ingurune grafikoa) abiarazi barneko erroreen ondorioz. Jarri harremanetan sistema-administratzailearekin edo begiratu syslog-a arazteko. Bitartean pantaila hau desgaitu egingo da.  GDM berrabiarazi arazoa zuzendutakoan."
 
 #: daemon/gdm-manager.c:769
 msgid "No display available"
@@ -109,16 +109,14 @@ msgstr "Ezin da komunikazio pribatuaren kanala ireki"
 #: daemon/gdm-server.c:384
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
-msgstr ""
-"Zerbitzaria %s erabiltzaileak abiarazi behar zuen, baina erabiltzaile hori "
-"ez da existitzen"
+msgstr "Zerbitzaria %s erabiltzaileak abiarazi behar zuen, baina erabiltzaile hori ez da existitzen"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Ezin izan da groupid ezarri %d(e)n"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s(r)en initgroups()-ek huts egin du"
@@ -128,22 +126,22 @@ msgstr "%s(r)en initgroups()-ek huts egin du"
 msgid "Couldn’t set userid to %d"
 msgstr "Ezin izan da userid ezarri %d(e)n"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ezin izan da %s pantailaren egunkari-fitxategia ireki!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Errorea %s %s(e)n ezartzean"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: zerbitzariaren lehentasuna ezin da %d balioarekin ezarri: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s pantailaren zerbitzari-komando hutsa"
@@ -172,85 +170,72 @@ msgstr "Pantailaren gailua"
 msgid "The display device"
 msgstr "Pantailaren gailua"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Ezin izan dira autentifikazio-izenak irakurri"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
-msgstr ""
-"Pasahitza autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu "
-"beste metodoren bat"
+msgstr "Pasahitza autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
-msgstr ""
-"Saio-hasiera automatikorako gehieneko saialdi kopurua gainditu duzu, probatu "
-"beste metodoren bat"
+msgstr "Saio-hasiera automatikorako gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
-msgstr ""
-"Hatz-marka bidez autentifikatzeko gehieneko saialdi kopurua gainditu duzu, "
-"probatu beste metodoren bat"
+msgstr "Hatz-marka bidez autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
-msgstr ""
-"Txartelaren bidez autentifikatzeko gehieneko saialdi kopurua gainditu duzu, "
-"probatu beste metodoren bat"
+msgstr "Txartelaren bidez autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
-msgstr ""
-"Autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste "
-"metodoren bat"
+msgstr "Autentifikatzeko gehieneko saialdi kopurua gainditu duzu, probatu beste metodoren bat"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
-msgstr ""
-"Pasahitzaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
+msgstr "Pasahitzaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Saio-hasiera automatikoak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
-msgstr ""
-"Hatz-markaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
+msgstr "Hatz-markaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
-msgstr ""
-"Txartelaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
+msgstr "Txartelaren bidezko autentifikazioak ez du funtzionatu. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Huts egin du. Saiatu berriro."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Zure kontuari denbora-muga bat eman zitzaion, orain iraungitu dena."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "ez dago erabiltzailearen konturik erabilgarri"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Ezin da erabiltzailez aldatu"
 
@@ -277,14 +262,12 @@ msgstr "GNOMEren pantaila-kudeatzailearen X saioaren abiarazlea"
 #: daemon/main.c:125 daemon/main.c:138
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr ""
-"Ezin da %s PID fitxategia idatzi, agian ez da lekurik egongo diskoan: %s"
+msgstr "Ezin da %s PID fitxategia idatzi, agian ez da lekurik egongo diskoan: %s"
 
 #: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
-"Huts egin du 'behin exekutatutako' markaren '%s' direktorioa sortzean: %s"
+msgstr "Huts egin du 'behin exekutatutako' markaren '%s' direktorioa sortzean: %s"
 
 #: daemon/main.c:188
 #, c-format
@@ -298,9 +281,7 @@ msgstr "Ezin da GDM-ren “%s“ erabiltzailea aurkitu. Abortatu egingo da!"
 
 #: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
-msgstr ""
-"GDM erabiltzaileak ez luke root izan behar. Abortatu egingo da! Abortatu "
-"egingo da!"
+msgstr "GDM erabiltzaileak ez luke root izan behar. Abortatu egingo da! Abortatu egingo da!"
 
 #: daemon/main.c:235
 #, c-format
@@ -335,7 +316,7 @@ msgstr "Root-ek soilik exekuta dezake GDM"
 #
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOMEren pantaila-kudeatzaileko saio-langilea"
 
@@ -347,9 +328,7 @@ msgstr "Saioa hasteko hatz-marken irakurgailuak onartuko diren ala ez"
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
-msgstr ""
-"Hatz-markak erregistratu dituzten erabiltzaileei saioa hatz-marken bidez "
-"hasteko aukera eman diezaioke saioa hasteko pantailak."
+msgstr "Hatz-markak erregistratu dituzten erabiltzaileei saioa hatz-marken bidez hasteko aukera eman diezaioke saioa hasteko pantailak."
 
 #: data/org.gnome.login-screen.gschema.xml:16
 msgid "Whether or not to allow smartcard readers for login"
@@ -359,9 +338,7 @@ msgstr "Saioa hasteko txartel adimendunen irakurgailuak onartuko diren ala ez"
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
-msgstr ""
-"Txartel adimenduna duten erabiltzaileei saioa txartelen irakurgailuaren "
-"bidez hasteko aukera eman diezaioke saioa hasteko pantailak."
+msgstr "Txartel adimenduna duten erabiltzaileei saioa txartelen irakurgailuaren bidez hasteko aukera eman diezaioke saioa hasteko pantailak."
 
 #: data/org.gnome.login-screen.gschema.xml:26
 msgid "Whether or not to allow passwords for login"
@@ -371,10 +348,7 @@ msgstr "Saioa hasteko pasahitzak baimenduko diren edo ez"
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
-msgstr ""
-"Saio-hasierako pantaila pasahitzen autentifikazioa desgaitzeko konfigura "
-"daiteke, autentifikatzeko hatz-marka edo txartela erabiltzera behartuko da "
-"erabiltzailea."
+msgstr "Saio-hasierako pantaila pasahitzen autentifikazioa desgaitzeko konfigura daiteke, autentifikatzeko hatz-marka edo txartela erabiltzera behartuko da erabiltzailea."
 
 #: data/org.gnome.login-screen.gschema.xml:36
 #: data/org.gnome.login-screen.gschema.xml:46
@@ -385,17 +359,13 @@ msgstr "Erabiltzaileen zerrendaren goiko iruditxorako bide-izena"
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr ""
-"Saioa hasteko pantailak iruditxo bat erakuts dezake, guneen kudeatzaileei "
-"eta banaketei marka ezartzeko aukera emateko."
+msgstr "Saioa hasteko pantailak iruditxo bat erakuts dezake, guneen kudeatzaileei eta banaketei marka ezartzeko aukera emateko."
 
 #: data/org.gnome.login-screen.gschema.xml:49
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
-msgstr ""
-"Ordezko saio-hasieraren pantailak iruditxo bat erakuts dezake, guneen "
-"kudeatzaileei eta banaketei marka ezartzeko aukera emateko."
+msgstr "Ordezko saio-hasieraren pantailak iruditxo bat erakuts dezake, guneen kudeatzaileei eta banaketei marka ezartzeko aukera emateko."
 
 #: data/org.gnome.login-screen.gschema.xml:56
 msgid "Avoid showing user list"
@@ -405,10 +375,7 @@ msgstr "Saihestu erabiltzaileen zerrenda erakustea"
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
-msgstr ""
-"Saio-hasierako pantailak erabiltzaile erabilgarrien zerrenda erakutsi ohi du "
-"saioa hasteko. Ezarpen hau alda daiteke erabiltzaileen zerrenda erakustea "
-"desgaitzeko."
+msgstr "Saio-hasierako pantailak erabiltzaile erabilgarrien zerrenda erakutsi ohi du saioa hasteko. Ezarpen hau alda daiteke erabiltzaileen zerrenda erakustea desgaitzeko."
 
 #: data/org.gnome.login-screen.gschema.xml:66
 msgid "Enable showing the banner message"
@@ -432,9 +399,7 @@ msgstr "Desgaitu berrabiarazteko botoiak erakustea"
 
 #: data/org.gnome.login-screen.gschema.xml:87
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Ezarri true (egia) berrabiarazteko botoiak erakustea desgaitzeko saio-"
-"hasierako leihoan."
+msgstr "Ezarri true (egia) berrabiarazteko botoiak erakustea desgaitzeko saio-hasierako leihoan."
 
 #: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
@@ -444,25 +409,307 @@ msgstr "Onartutako autentifikazio-hutsegiteen kopurua"
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
-msgstr ""
-"Erabiltzaile bat autentifikatzen saia daitekeen aldiak, bertan behera geratu "
-"eta erabiltzaile-hautapenera itzuli baino lehen."
+msgstr "Erabiltzaile bat autentifikatzen saia daitekeen aldiak, bertan behera geratu eta erabiltzaile-hautapenera itzuli baino lehen."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Ezin da behin-behineko pantaila hasi: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Erakutsi komandoen laguntza"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Ezin da saioa aktibatu: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Erakutsi irteera xehea"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Erakutsi arazketarako irteera"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Gaitu autentifikazio-metodoa"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Desgaitu autentifikazio-metodoa"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Behartu autentifikazio-metodoa"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Txartel adimenduna kentzean gauzatuko den ekintza"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Onartu erantzun guztiak baiezkoak direla"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Konfiguratu pasahitz-autentifikazioa."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Konfiguratu hatz-marken autentifikazioa."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Konfiguratu txartel adimendunen autentifikazioa."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Berrezarri GDMren autentifikazio-konfigurazioa."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Erakutsi GDMren autentifikazio-konfigurazioa."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Pasahitzen aukerak"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Hatz-marken aukerak"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Txartel adimendunen aukerak"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Berrezarri aukerak"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Erakutsi aukerak"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Ez dago PAM modulurik erabilgarri pasahitz bidezko autentifikaziorako."
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Ez dago PAM modulurik erabilgarri txartel adimendun bidezko autentifikaziorako."
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Ez dago PAM modulurik erabilgarri hatz-marka bidezko autentifikaziorako."
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s”(e)k gutxienez parametro bat behar du"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” ezin da aldi berean gaitu eta desgaitu"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s” ez da baliozko %s “%s” balioa"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "Huts egin du %s erabiltzailera aldatzeak"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Ezin da erabiltzaile-IDa ezarri %u izan dadin"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Ez da banaketarik detektatu, ez dago kakorik exekutatzeko"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "Ez da baliozko argumenturik aurkitu “%s” kakoa exekutatzeko"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "“%s” banaketa-kakoa exekutatzen\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "“%s” banaketa-kakoak gelditzea eskatu du"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr "Banaketa-kakoak huts egin du eta %d irteera-egoera eta %s errorea eman ditu:\n"
+"Irteera estandarra:\n"
+"%s\n"
+"Errore-irteera:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr "Huts egin du banaketa-kakoaren bidez “%s” komandoaren “%s” aukera-gakoa ezartzeak: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Huts egin du %s direktorioa sortzeak"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "ez da dconf profila aurkitu"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf aplikazioak ez du system-db konfiguratuta"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "Huts egin du “%s” goiburu-iruzkina eskuratzeak: %s, aldatu egin al da?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Fitxategiaren “%s” goiburu-iruzkina ez dator bat, aldatu egin al da?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "Ez da esperotako goiburua aurkitu “%s” blokeo-fitxategian, aldatu egin al da?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Huts egin du beharrezkoa den banaketa-kakoa exekutatzeak: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "KOMANDOA"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr "Komandoak:\n"
+"  help         Informazio hau erakusten du\n"
+"  password     Konfiguratu pasahitz bidezko autentifikazioa\n"
+"  fingerprint  Konfiguratu hatz-marka bidezko autentifikazioa\n"
+"  smartcard    Konfiguratu txartel adimendun bidezko autentifikazioa\n"
+"  reset        Konfigurazio lehenetsia berrezartzen du\n"
+"  show         Uneko konfigurazioa erakusten du\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Komando-aukerak"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Erroa izan behar duzu %s “%s” komandoa erabiltzeko"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Huts egin du %s ezarpena ezartzeak: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Huts egin du txartel adimendunaren ezarpena ezartzeak"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Huts egin du pasahitzaren ezarpena ezartzeak"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Gaituta"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Desgaituta"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Ez dago onartuta"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Beharrezkoa"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr "GDM baimenaren konfigurazioa\n"
+"\n"
+"  Pasahitz bidezko konfigurazioa: %s\n"
+"  Hatz-markaren bidezko konfigurazioa: %s\n"
+"  Txartel adimendunaren bidezko konfigurazioa: %s\n"
+"  Txartel adimenduna kentzeko ekintza: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "B"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "b"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "E"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "e"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Jarraitu nahi duzu? [B/e] "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Erabiltzaileak eskaria bertan behera utzi du"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Huts egin du %s ezarpena berrezartzeak: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "VERSION komandoa soilik dago onartuta"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "KOMANDOA"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -491,3 +738,5 @@ msgstr "Hartutako pantaila-argazkia"
 msgid "Take a picture of the screen"
 msgstr "Egin pantailaren argazkia"
 
+#~ msgid "Unable to activate session: "
+#~ msgstr "Ezin da saioa aktibatu: "
