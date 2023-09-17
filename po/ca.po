@@ -8,15 +8,15 @@
 # Jordi Serratosa <jordis@softcatala.cat>, 2012.
 # Gil Forcada <gilforcada@guifi.net>, 2012, 2013, 2018.
 # Josep Sànchez <papapep@gmx.com>, 2013.
-# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2017
+# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2017, 2023
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-11-01 12:07+0100\n"
-"Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>"
+"POT-Creation-Date: 2023-09-17 02:01+0000\n"
+"PO-Revision-Date: 2023-09-17 12:07+0100\n"
+"Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -61,25 +61,29 @@ msgstr "XDMCP: no s'ha pogut analitzar l'adreça"
 msgid "/dev/urandom is not a character device"
 msgstr "El /dev/urandom no és un dispositiu de caràcters"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "No s'ha pogut crear una visualització temporal: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "No s'ha pogut identificar la sessió actual: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "No s'ha pogut identificar el seient actual."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "No s'ha pogut trobar l'usuari «%s» al sistema"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
+"Could not start the X server (your graphical environment) due to an internal"
+" error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM"
+" when the problem is corrected."
 msgstr ""
 "No s'ha pogut iniciar el servidor X (l'entorn gràfic) a causa d'un error "
 "intern. Hauríeu de contactar amb l'administrador del sistema o comprovar el "
@@ -117,12 +121,12 @@ msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "L'usuari %s havia d'engendrar el servidor, però aquest usuari no existeix"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "No s'ha pogut definir el groupid com a %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "ha fallat l'initgroups () per a %s"
@@ -132,22 +136,22 @@ msgstr "ha fallat l'initgroups () per a %s"
 msgid "Couldn’t set userid to %d"
 msgstr "No s'ha pogut definir l'userid com a %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: no s'ha pogut obrir el fitxer de registre per a la pantalla %s."
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: s'ha produït un error en establir %s a %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: no s'ha pogut establir la prioritat del servidor a %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: l'ordre del servidor per a la pantalla %s està buida"
@@ -176,27 +180,27 @@ msgstr "Dispositiu de pantalla"
 msgid "The display device"
 msgstr "El dispositiu de pantalla"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "No s'ha pogut crear un procés auxiliar d'autenticació"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
-"You reached the maximum password authentication attempts, please try another "
-"method"
+"You reached the maximum password authentication attempts, please try another"
+" method"
 msgstr ""
-"Heu assolit el nombre màxim d'intents d'autenticació de contrasenya. Proveu "
-"un altre mètode"
+"Heu assolit el nombre màxim d'intents d'autenticació amb contrasenya. Proveu"
+" un altre mètode"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr ""
-"Heu assolit el nombre màxim d'intents d'inici de sessió automàtic. Proveu un "
-"altre mètode d'autenticació"
+"Heu assolit el nombre màxim d'intents d'inici de sessió automàtic. Proveu un"
+" altre mètode d'autenticació"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -204,55 +208,55 @@ msgstr ""
 "Heu assolit el nombre màxim d'intents d'autenticació d'empremta dactilar. "
 "Proveu un altre mètode"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr ""
-"Heu assolit el nombre màxim d'intents d'autenticació de targeta "
+"Heu assolit el nombre màxim d'intents d'autenticació amb targeta "
 "intel·ligent. Proveu un altre mètode"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Heu assolit el nombre màxim d'intents d'autenticació. Proveu un altre mètode"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
-msgstr "L'autenticació de contrasenya no ha funcionat. Torneu-ho a provar."
+msgstr "L'autenticació amb contrasenya no ha funcionat. Torneu-ho a provar."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "L'inici de sessió automàtic no ha funcionat. Torneu-ho a provar."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "L'autenticació d'empremta dactilar no ha funcionat. Torneu-ho a provar."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
-"L'autenticació de targeta intel·ligent no ha funcionat. Torneu-ho a provar."
+"L'autenticació amb targeta intel·ligent no ha funcionat. Torneu-ho a provar."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "S'ha produït algun error. Torneu-ho a provar."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "El compte tenia un temps límit que s'ha sobrepassat."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "no hi ha tal compte d'usuari disponible"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "No s'ha pogut commutar a aquest usuari"
 
@@ -336,7 +340,7 @@ msgstr "Només l'usuari primari pot executar el GDM"
 # FIXME (dpm)
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
 
@@ -406,8 +410,8 @@ msgstr "Evita mostra la llista d'usuaris"
 
 #: data/org.gnome.login-screen.gschema.xml:59
 msgid ""
-"The login screen normally shows a list of available users to log in as. This "
-"setting can be toggled to disable showing the user list."
+"The login screen normally shows a list of available users to log in as. This"
+" setting can be toggled to disable showing the user list."
 msgstr ""
 "La pantalla d'entrada normalment mostra una llista dels usuaris disponibles "
 "per a entrar. Aquest paràmetre es pot commutar per no mostrar la llista "
@@ -435,7 +439,8 @@ msgid "Disable showing the restart buttons"
 msgstr "Inhabilita la visualització dels botons de reinici"
 
 #: data/org.gnome.login-screen.gschema.xml:87
-msgid "Set to true to disable showing the restart buttons in the login window."
+msgid ""
+"Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Establiu-ho a «true» (cert) per a evitar que es mostrin els botons de "
 "reinici a la pantalla d'entrada."
@@ -449,24 +454,321 @@ msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
-"El nombre de vegades que es permet que un usuari intenti autenticar-se abans "
-"de deixar-ho estar i tornar a la selecció d'usuaris."
+"El nombre de vegades que es permet que un usuari intenti autenticar-se abans"
+" de deixar-ho estar i tornar a la selecció d'usuaris."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "No s'ha pogut crear una visualització temporal: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Mostra l'ajuda de l'ordre"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "No s'ha pogut activar la sessió: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Mostra la sortida detallada"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Sortida de depuració"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Activa el mètode d'autenticació"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Desactiva el mètode d'autenticació"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Requereix el mètode d'autenticació"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Acció per a realitzar en extreure targetes intel·ligents"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Assumeix que sí a qualsevol resposta"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Configura l'autenticació amb contrasenya."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Configura l'autenticació d'empremtes digitals."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Configura l'autenticació amb targeta intel·ligent."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Reinicia la configuració d'autenticació del GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Mostra la configuració d'autenticació del GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Opcions de contrasenya"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Opcions de l'empremta digital"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Opcions de la targeta intel·ligent"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Restableix les opcions"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Mostra les opcions"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr ""
+"No hi ha cap mòdul PAM disponible per a l'autenticació amb contrasenya"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr ""
+"No hi ha cap mòdul PAM disponible per a l'autenticació amb targeta "
+"intel·ligent"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr ""
+"No hi ha cap mòdul PAM disponible per a l'autenticació amb empremta digital"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "«%s» necessita almenys un paràmetre"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "No es pot activar i desactivar «%s» alhora"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "«%s» no és un valor «%s» vàlid de %s"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "No s'ha pogut canviar a l'usuari %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "No s'ha pogut definir l'userid com a %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "No s'ha detectat cap distribució, no hi ha cap ganxo per executar"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "No s'han trobat arguments vàlids per executar el ganxo «%s»"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "S'està executant el ganxo de la distribució «%s»\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "S'ha demanat aturar el ganxo de la distribució «%s»"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"El ganxo de la distribució ha fallat amb l'estat de sortida %d i l'error %s:\n"
+"Sortida estàndard:\n"
+"%s\n"
+"Sortida d'error:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"No s'ha pogut establir la clau de l'opció «%s» de l'ordre «%s» mitjançant el"
+" ganxo de la distribució:"
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "No s'ha pogut crear el directori %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "no s'ha trobat el perfil dconf"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf no té configurat el «system-db»"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr ""
+"No s'ha pogut obtenir el comentari de la capçalera «%s»: %s, s'ha modificat?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr ""
+"El comentari de capçalera del fitxer «%s» no coincideix, s'ha modificat?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+"No s'ha trobat cap capçalera esperada al fitxer de blocatge «%s», s'ha "
+"modificat?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "No s'ha pogut executar un ganxo de distribució necessari:"
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "ORDRE"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Ordres:\n"
+"  help          Mostra aquesta informació\n"
+"  password     Configura l'autenticació amb contrasenya\n"
+"  fingerprint  Configura de l'autenticació amb empremtes digitals\n"
+"  smartcard    Configura l'autenticació amb targeta intel·ligent\n"
+"  reset        Reinicialitza la configuració predeterminada\n"
+"  show         Mostra la configuració actual\n"
+"\n"
+"Utilitzeu «%s ORDRE --help» per a obtenir ajuda sobre cada ordre.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Opcions de l'ordre"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Necessiteu ser root per a utilitzar l'ordre %s «%s»"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "No s'ha pogut establir la configuració %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "No s'ha pogut establir la configuració de la targeta intel·ligent"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "No s'ha pogut establir la configuració de la contrasenya"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Activat"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "No admès"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Requerit"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"Configuració de l'autorització del GDM\n"
+"\n"
+"  Autenticació amb contrasenya: %s\n"
+"  Autenticació amb empremta digital: %s\n"
+"  Autenticació amb targeta intel·ligent: %s\n"
+"  Acció quan s'extreu la targeta intel·ligent: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "S"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "s"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Voleu continuar? [S/n]?"
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "L'usuari ha cancel·lat la sol·licitud"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "No s'ha pogut restablir la configuració %s: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Només s'admet l'ordre VERSION"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "ORDRE"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -494,4 +796,3 @@ msgstr "S'ha fet una captura de pantalla"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fes una foto de la pantalla"
-
