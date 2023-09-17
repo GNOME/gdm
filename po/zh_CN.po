@@ -19,16 +19,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-11-02 16:18+0800\n"
+"POT-Creation-Date: 2023-09-17 02:01+0000\n"
+"PO-Revision-Date: 2023-09-17 10:19+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 42.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -66,20 +66,24 @@ msgstr "XMDCP：无法解析地址"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符设备"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "无法创建过渡显示界面："
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "无法识别当前会话："
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "无法识别当前位置。"
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "无法在系统中找到用户“%s”"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -118,12 +122,12 @@ msgstr "无法打开专用通信通道"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "服务器是以用户 %s 身份创建的，但此用户不存在"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "无法将组 ID 设置为 %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() 执行 %s 失败"
@@ -133,22 +137,22 @@ msgstr "initgroups() 执行 %s 失败"
 msgid "Couldn’t set userid to %d"
 msgstr "无法将用户 ID 设置为 %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：无法打开显示屏 %s 的日志文件！"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：将 %s 设为 %s 出错"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s：服务器优先级无法设为 %d：%s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：显示画面 %s 的服务器命令为空"
@@ -177,72 +181,72 @@ msgstr "显示设备"
 msgid "The display device"
 msgstr "显示设备"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "无法建立验证助手进程"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "密码验证失败达最大次数，请稍后重试"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr "自动登录失败达最大次数，请稍后重试"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr "指纹验证失败达最大次数，请稍后重试"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr "智能卡验证失败达最大次数，请稍后重试"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "验证失败达最大次数，请尝试其它方式"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "抱歉，密码验证失败，请再试一次。"
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "抱歉，自动登录失败，请再试一次。"
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "抱歉，指纹验证失败，请再试一次。"
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "抱歉，智能卡验证失败，请再试一次。"
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "抱歉，登录失败，请再试一次。"
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
-msgstr "你的帐号设有时间限制，已超过限定时间。"
+msgstr "你的账号设有时间限制，已超过限定时间。"
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "用户名："
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
-msgstr "无可用用户帐户"
+msgstr "无可用用户账号"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
@@ -322,7 +326,7 @@ msgstr "只有 root 用户才能运行 GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME 显示管理器会话工作进程"
 
@@ -418,21 +422,308 @@ msgid ""
 "giving up and going back to user selection."
 msgstr "放弃并返回用户选择界面前，允许某个用户尝试认证的次数。"
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "无法创建过渡显示界面："
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "显示命令帮助"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "无法激活会话："
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "显示详细输出"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "显示调试输出"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "启用身份验证"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "禁用身份验证"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "需要身份验证"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "删除智能卡时要执行的操作"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "假定所有回复均为“是”"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "配置密码身份验证。"
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "配置指纹身份验证。"
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "配置智能卡身份验证。"
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "重置 GDM 身份验证配置。"
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "显示 GDM 身份验证配置。"
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "密码选项"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "指纹选项"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "智能卡选项"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "重置选项"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "显示选项"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "没有可用于密码身份验证的 PAM 模块"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "没有可用于智能卡身份验证的 PAM 模块"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "没有可用于指纹身份验证的 PAM 模块"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s”至少需要一个参数"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s”不能同时启用和禁用"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s”不是有效的 %s “%s”值"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "无法切换到 %s 用户"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "无法将用户 ID 设置为 %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "未检测到发行版，没有要运行的钩子程序"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "找不到运行钩子“%s”的有效参数"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "运行发行版钩子“%s”\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "发行版钩子“%s”请求停止"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"发行版钩子失败，退出状态 %d，错误 %s：\n"
+"标准输出：\n"
+"%s\n"
+"错误输出：\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr "无法通过发行版挂钩设置命令“%s”的选项键“%s”："
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "无法创建目录 %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "未找到 dconf 配置文件"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf 没有配置 system-db"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "无法获取“%s”头注释：%s，是否已被修改？"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "文件“%s”头注释不匹配，是否已被修改？"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "在锁定文件“%s”上未找到预期的标头，是否已被修改？"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "无法运行所需的发行版钩子："
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "命令"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"命令：\n"
+"  help         显示此信息\n"
+"  password     配置密码身份验证\n"
+"  fingerprint  配置指纹身份认证\n"
+"  smartcard    配置智能卡身份验证\n"
+"  reset        重置默认配置\n"
+"  show         显示当前配置\n"
+"\n"
+"使用“%s [命令] --help”获取有关每个命令的帮助。\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "命令选项"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "您需要以 root 身份执行 %s “%s”命令"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "无法设置 %s 设置："
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "无法设置智能卡设置"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "无法设置密码设置"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "已启用"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "已禁用"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "不支持"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "必需"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM 授权设置\n"
+"\n"
+"  密码身份验证：%s\n"
+"  指纹身份认证：%s\n"
+"  智能卡身份验证：%s\n"
+"  智能卡删除操作：%s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "是否要继续？[Y/n]？ "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "用户取消了请求"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "无法重置 %s 设置："
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "只支持 VERSION 命令"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "命令"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -460,6 +751,9 @@ msgstr "已经截屏"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "截取屏幕"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "无法激活会话："
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
