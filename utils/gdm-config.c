@@ -492,7 +492,7 @@ switch_to_gdm_user (GError **error) {
 
         if (pwent == NULL) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-                             _("Failed to swith to %s user"), GDM_USERNAME);
+                             _("Failed to switch to %s user"), GDM_USERNAME);
                 return FALSE;
         }
 
