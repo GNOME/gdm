@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2023-01-07 23:10+0300\n"
+"POT-Creation-Date: 2023-09-17 10:57+0000\n"
+"PO-Revision-Date: 2023-09-17 19:13+0300\n"
 "Last-Translator: Yuras Shumovich <shumovichy@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -52,20 +52,24 @@ msgstr "XDMCP: не ўдалося разабраць адрас"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не з'яўляецца сімвальнай прыладай"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Не ўдалося стварыць пераходны дысплэй: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "Не ўдалося вызначыць бягучы сеанс: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "Не ўдалося вызначыць бягучае працоўнае месца."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Не ўдалося знайсці ў сістэме карыстальніка «%s»"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -108,12 +112,12 @@ msgstr ""
 "Сервер павінен быў запусціцца ад імя карыстальніка %s, але такога "
 "карыстальніка не існуе"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Не ўдалося задаць ідэнтыфікатар групы %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "няўдача initgroups() для %s"
@@ -123,22 +127,22 @@ msgstr "няўдача initgroups() для %s"
 msgid "Couldn’t set userid to %d"
 msgstr "Не ўдалося задаць ідэнтыфікатар карыстальніка %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не ўдалося адкрыць файл журнала для дысплэя %s."
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%1$s: памылка настаўлення значэння %3$s для %2$s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: не ўдалося задаць серверу прыярытэт %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: пустая серверная каманда для дысплэя %s"
@@ -167,11 +171,11 @@ msgstr "Прылада адлюстравання"
 msgid "The display device"
 msgstr "Прылада адлюстравання"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Не ўдалося стварыць дапаможны працэс для праверкі сапраўднасці"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -179,13 +183,13 @@ msgstr ""
 "Вы дасягнулі ліміту спроб на пацвярджэнне сапраўднасці праз пароль, "
 "паспрабуйце іншы метад"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr "Вы дасягнулі ліміту спроб для аўтаўваходу, паспрабуйце іншы метад"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -193,7 +197,7 @@ msgstr ""
 "Вы дасягнулі ліміту спроб на пацвярджэнне сапраўднасці праз адбітак пальца, "
 "паспрабуйце іншы метад"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -201,48 +205,48 @@ msgstr ""
 "Вы дасягнулі ліміту спроб на пацвярджэнне сапраўднасці праз смарт-карту, "
 "паспрабуйце іншы метад"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Вы дасягнулі ліміту спроб на пацвярджэнне сапраўднасці, паспрабуйце іншы "
 "метад"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Не ўдалося пацвердзіць сапраўднасць паролем. Паўтарыце спробу."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Аўтаўваход не спрацаваў. Паўтарыце спробу."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "Не ўдалося пацвердзіць сапраўднасць праз адбітак пальца. Паўтарыце спробу."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
 "Не ўдалося пацвердзіць сапраўднасць праз смарт-карту. Паўтарыце спробу."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Не ўдалося пацвердзіць сапраўднасць. Паўтарыце спробу."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Тэрмін дзеяння ўліковага запісу скончыўся."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Імя карыстальніка:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "уліковы запіс карыстальніка недаступны"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Не ўдалося змяніць карыстальніка"
 
@@ -323,7 +327,7 @@ msgstr "Толькі root-карыстальнік можа запускаць G
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Рабочы працэс сеанса GNOME Display Manager"
 
@@ -420,7 +424,9 @@ msgstr "Схаваць кнопкі перазапуску камп'ютара"
 
 #: data/org.gnome.login-screen.gschema.xml:87
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "Уключыце, каб скаваць кнопкі перазапуску камп'ютара ў акне ўваходу."
+msgstr ""
+"Задайце значэнне «true», каб адключыць паказ кнопкі перазапуску ў акне "
+"ўваходу."
 
 #: data/org.gnome.login-screen.gschema.xml:93
 msgid "Number of allowed authentication failures"
@@ -434,21 +440,306 @@ msgstr ""
 "Колькасць дазволеных карыстальніку спроб пацвердзіць сапраўднасць перад яго "
 "вяртаннем на экран выбару карыстальніка."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Не ўдалося стварыць пераходны дысплэй: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Паказаць даведку па камандзе"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Не ўдалося актываваць сеанс: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Паказаць падрабязную адладачную інфармацыю"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Паказаць адладачную інфармацыю"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Уключыць метад пацвярджэння сапраўднасці"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Адключыць метад пацвярджэння сапраўднасці"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Запытаць метад пацвярджэння сапраўднасці"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Дзеянне пры выманні смарт-карты"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "На ўсе пытанні адказваць «так»"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Наладзіць пацвярджэнне сапраўднасці праз пароль."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Наладзіць пацвярджэнне сапраўднасці праз адбітак пальца."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Наладзіць пацвярджэнне сапраўднасці праз смарт-карту."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Скінуць канфігурацыю пацвярджэння сапраўднасці для GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Паказаць канфігурацыю пацвярджэння сапраўднасці для GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Параметры пароля"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Параметры адбітка пальца"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Параметры смарт-карты"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Скінуць параметры"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Паказаць параметры"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Няма даступнага модуля PAM для пацвярджэння сапраўднасці праз пароль"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr ""
+"Няма даступнага модуля PAM для пацвярджэння сапраўднасці праз смарт-карту"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr ""
+"Няма даступнага модуля PAM для пацвярджэння сапраўднасці праз адбітак пальца"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "«%s» патрабуе прынамсі адзін параметр"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "«%s» можа быць уключана або адключана ў любы момант"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "«%s» не з'яўляецца дапушчальным значэннем %s «%s»"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "Не ўдалося пераключыць на карыстальніка %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Не ўдалося задаць ідэнтыфікатар карыстальніка %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr ""
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr ""
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr ""
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr ""
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Не ўдалося стварыць каталог %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "профіль dconf не знойдзены"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "У dconf не наладжана system-db"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "Не ўдалося атрымаць каментарый загалоўка «%s»: %s, ён быў зменены?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Каментарый загалоўка ў файле «%s» не супадае, ён быў зменены?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "Не знойдзены чаканы загаловак ў файле .lock «%s», ён быў зменены?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr ""
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "КАМАНДА"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Каманды:\n"
+"  help         Паказвае гэту інфармацыю\n"
+"  password     Наладзіць пацвярджэнне сапраўднасці праз пароль\n"
+"  fingerprint  Наладзіць пацвярджэнне сапраўднасці праз адбітак пальца\n"
+"  smartcard    Наладзіць пацвярджэнне сапраўднасці праз смарт-карту\n"
+"  reset        Скідае на прадвызначаную канфігурацыю\n"
+"  show         Паказвае бягучую канфігурацыю\n"
+"\n"
+"Каб атрымаць даведку для пэўнай каманды, выкарыстоўвайце «%s КАМАНДА --"
+"help».\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Параметры каманды"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Для выкарыстання каманды %s «%s», патрабуюцца правы root"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Не ўдалося задаць налады %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Не ўдалося задаць налады смарт-карты"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Не ўдалося задаць налады пароля"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Уключана"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Адключана"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Не падтрымліваецца"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr ""
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"Канфігурацыя пацвярджэння сапраўднасці GDM\n"
+"\n"
+"  Пацвярджэнне сапраўднасці праз пароль: %s\n"
+"  Пацвярджэнне сапраўднасці праз адбітак пальца: %s\n"
+"  Пацвярджэнне сапраўднасці праз смарт-карту: %s\n"
+"  Дзеянне пры выманні смарт-карты: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Хочаце працягнуць? [Y – так/N – не]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Карыстальнік скасаваў запыт"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Не ўдалося скінуць налады %s: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Падтрымліваецца толькі каманда VERSION"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "КАМАНДА"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -476,6 +767,13 @@ msgstr "Здымак экрана гатовы"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Зрабіць здымак экрана"
+
+#, c-format
+#~ msgid "Failed to swith to %s user"
+#~ msgstr "Не ўдалося пераключыць на карыстальніка %s"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "Не ўдалося актываваць сеанс: "
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
