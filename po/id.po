@@ -10,11 +10,11 @@
 # Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2017, 2019, 2021, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm gnome-3-20\n"
+"Project-Id-Version: gdm main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-11-03 10:34+0700\n"
-"Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
+"POT-Creation-Date: 2023-09-17 02:01+0000\n"
+"PO-Revision-Date: 2023-09-17 17:56+0700\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.2.1\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -60,20 +60,24 @@ msgstr "XDMCP: Tak dapat menguraikan alamat"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom bukan perangkat karakter"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Tak dapat membuat tampilan transien: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "Tak dapat mengidentifikasi sesi sekarang: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "Tak dapat mengidentifikasi seat sekarang."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Tidak menemukan pengguna \"%s\" pada sistem"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -114,12 +118,12 @@ msgstr "Tak dapat membuka kanal komunikasi privat"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Server mestinya dijalankan oleh %s, tetapi pengguna tersebut tidak ada"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Tak dapat menentukan groupid menjadi %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () gagal untuk %s"
@@ -129,22 +133,22 @@ msgstr "initgroups () gagal untuk %s"
 msgid "Couldn’t set userid to %d"
 msgstr "Tak dapat menentukan userid menjadi %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Tak dapat membuka berkas log untuk tampilan %s!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Gagal mengatur %s menjadi %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Prioritas server tidak dapat ditentukan menjadi %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tak ada perintah server untuk tampilan %s"
@@ -173,11 +177,11 @@ msgstr "Perangkat Tampilan"
 msgid "The display device"
 msgstr "Perangkat tampilan"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Tak dapat membuat pembantu proses autentikasi"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -185,7 +189,7 @@ msgstr ""
 "Anda telah mencapai upaya autentikasi kata sandi maksimum, silakan coba "
 "metode lain"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -193,7 +197,7 @@ msgstr ""
 "Anda telah mencapai upaya masuk otomatis maksimum, silakan coba metode "
 "autentikasi lain"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -201,7 +205,7 @@ msgstr ""
 "Anda telah mencapai upaya autentikasi sidik jari maksimum, silakan coba "
 "metode lain"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -209,45 +213,45 @@ msgstr ""
 "Anda telah mencapai upaya autentikasi kartu pintar maksimum, silakan coba "
 "metode lain"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Anda telah mencapai upaya autentikasi maksimum, silakan coba metode lain"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Maaf, autentikasi kata sandi tidak berfungsi. Silakan coba lagi."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Maaf, log masuk otomatis tidak berfungsi. Silakan coba lagi."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Maaf, autentikasi sidik jari tidak berfungsi. Silakan coba lagi."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Maaf, autentikasi kartu pintar tidak berfungsi. Silakan coba lagi."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Maaf, itu tidak bisa. Harap coba lagi."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Akun Anda diberi batas waktu yang kini berakhir."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Nama Pengguna:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "akun pengguna tidak tersedia"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Tak dapat berganti pengguna"
 
@@ -329,7 +333,7 @@ msgstr "Hanya root yang bisa menjalankan GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Pekerja Sesi Manajer Tampilan GNOME"
 
@@ -443,21 +447,310 @@ msgstr ""
 "Berapa kali seorang pengguna diizinkan mencoba mengautentikasi, sebelum "
 "menyerah dan kembali ke pemilihan pengguna."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Tak dapat membuat tampilan transien: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Tampilkan bantuan perintah"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Tak dapat mengaktifkan sesi: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Tampilkan keluaran rinci"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Tampilkan keluaran awakutu"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Fungsikan metode otentikasi"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Nonaktifkan metode otentikasi"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Persyaratkan metode otentikasi"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Aksi yang dilakukan saat smartcard dilepas"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Asumsikan ya untuk semua pertanyaan"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Konfigurasikan Otentikasi Kata Sandi."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Konfigurasikan Otentikasi Sidik Jari."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Konfigurasikan Otentikasi Smart Card."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Reset konfigurasi Otentikasi GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Tampilkan konfigurasi Otentikasi GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Opsi kata sandi"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Opsi sidik jari"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Opsi Smart Card"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Reset opsi"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Tampilkan opsi"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Tidak tersedia modul PAM untuk otentikasi Kata Sandi"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Tidak tersedia modul PAM untuk otentikasi Smart Card"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Tidak tersedia modul PAM untuk otentikasi Sidik Jari"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "\"%s\" perlu setidaknya satu parameter"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "\"%s\" tak bisa difungsikan dan dinonaktifkan pada saat yang sama"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "\"%s\" bukan nilai %s \"%s\" yang valid"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "Gagal berganti ke pengguna %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Tak dapat menentukan userid menjadi %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Tidak ada distro yang terdeteksi, tidak ada hook yang akan dijalankan"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "Tidak ada argumen valid yang ditemukan untuk menjalankan hook \"%s\""
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Menjalankan hook distro \"%s\"\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Hook distro \"%s\" meminta penghentian"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"Hook distro gagal dengan status keluar %d dan galat %s:\n"
+"Keluaran standar:\n"
+"%s\n"
+"Keluaran galat:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr "Gagal menata perintah \"%s\" kunci opsi \"%s\" melalui hook distro: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Gagal membuat direktori %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "profil dconf tidak ditemukan"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "system-db dconf tidak dikonfigurasi"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "Gagal mendapat komentar header \"%s\": %s, apakah itu dimodifikasi?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Berkas \"%s\" komentar header tidak cocok, apakah itu diubah?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+"Tidak ditemukan header yang diharapakan pada berkas kunci \"%s\", apakah itu "
+"dimodifikasi?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Gagal menjalankan hook distro yang diperlukan: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "PERINTAH"
+
+#: utils/gdm-config.c:1565
+#, fuzzy, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Opsi perintah"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Anda perlu sebagai root untuk memakai %s perintah \"%s\""
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Gagal menata pengaturan %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Gagal menata pengaturan smartcard"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Gagal menata pengaturan kata sandi"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Difungsikan"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Dinonaktifkan"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Tidak didukung"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Diperlukan"
+
+#: utils/gdm-config.c:1910
+#, fuzzy, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "T"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "t"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Apakah Anda ingin melanjutkan? [Y/t]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Pengguna membatalkan permintaan"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Gagal mereset pengaturan %s: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Hanya perintah VERSION yang didukung"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "PERINTAH"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -485,23 +778,3 @@ msgstr "Cuplikan layar telah diambil"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Mengambil gambar cuplikan layar"
-
-#~ msgid ""
-#~ "The system is unable to determine whether to switch to an existing login "
-#~ "screen or start up a new login screen."
-#~ msgstr ""
-#~ "Sistem tak bisa menentukan apakah akan berpindah ke layar log masuk yang "
-#~ "telah ada atau memulai layar log masuk baru."
-
-#~ msgid "The system is unable to start up a new login screen."
-#~ msgstr "Sistem tak bisa memulai suatu layar log masuk baru."
-
-#~ msgid ""
-#~ "You reached the maximum PIN authentication attempts, please try another "
-#~ "method"
-#~ msgstr ""
-#~ "Anda telah mencapai upaya autentikasi PIN maksimum, silakan coba metode "
-#~ "lain"
-
-#~ msgid "Sorry, PIN authentication didn’t work. Please try again."
-#~ msgstr "Maaf, autentikasi PIN tidak berfungsi. Silakan coba lagi."
