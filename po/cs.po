@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-01-25 17:25+0000\n"
-"PO-Revision-Date: 2023-04-07 00:16+0200\n"
+"POT-Creation-Date: 2023-09-17 10:05+0000\n"
+"PO-Revision-Date: 2023-10-09 12:16+0200\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Project-Style: gnome\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
@@ -66,20 +66,24 @@ msgstr "XDMCP: Nelze zpracovat adresu"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom není znakovým zobrazovačem"
 
-#: common/gdm-common.c:507 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Nelze vytvořit nový displej: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "Nezdařilo se určit aktuální sezení: "
 
-#: common/gdm-common.c:516 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "Nezdařilo se určit aktuální stanici."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "V systému nelze najít uživatele „%s“"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -135,22 +139,22 @@ msgstr "initgroups () selhalo u %s"
 msgid "Couldn’t set userid to %d"
 msgstr "Nelze nastavit userid na %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nelze otevřít soubor záznamu k displeji %s!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Chyba při nastavování %s na %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Priorita serveru nemůže být nastavena na %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Prázdný příkaz serveru k displeji %s"
@@ -179,11 +183,11 @@ msgstr "Zařízení displeje"
 msgid "The display device"
 msgstr "Zařízení displeje"
 
-#: daemon/gdm-session.c:1336
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "Nezdařilo se vytvořit obslužný proces ověření"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -191,7 +195,7 @@ msgstr ""
 "Narazili jste na maximální možný počet pokusů ověření heslem. Zkuste prosím "
 "jiný způsob."
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -199,7 +203,7 @@ msgstr ""
 "Narazili jste na maximální možný počet pokusů automatického přihlášení. "
 "Zkuste prosím jiný způsob."
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -207,7 +211,7 @@ msgstr ""
 "Narazili jste na maximální možný počet pokusů ověření otiskem prstu. Zkuste "
 "prosím jiný způsob."
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -215,46 +219,46 @@ msgstr ""
 "Narazili jste na maximální možný počet pokusů ověření čipovou kartou. Zkuste "
 "prosím jiný způsob."
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Narazili jste na maximální možný počet pokusů ověření. Zkuste prosím jiný "
 "způsob."
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Bohužel, ale ověření heslem nefunguje. Zkuste to prosím znovu."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Bohužel, ale automatické přihlášení nefunguje. Zkuste to prosím znovu."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Bohužel, ale ověření otiskem prstu nefunguje. Zkuste to prosím znovu."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Bohužel, ale ověření čipovou kartou nefunguje. Zkuste to prosím znovu."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Bohužel, ale nefunguje to. Zkuste to prosím znovu."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Váš účet měl omezenou časovou platnost, která nyní vypršela."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Uživatel:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "není dostupný žádný uživatelský účet"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "Nelze změnit uživatele"
 
@@ -334,13 +338,13 @@ msgstr "Spustit GDM může pouze superuživatel"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Sezení správce displeje GNOME (worker)"
 
 #: data/org.gnome.login-screen.gschema.xml:6
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr "Zda povolit čtečky otisků prstů pro přihlášování"
+msgstr "Zda povolit čtečky otisků prstů pro přihlašování"
 
 #: data/org.gnome.login-screen.gschema.xml:9
 msgid ""
@@ -445,14 +449,6 @@ msgstr ""
 "Kolikrát je uživateli povoleno pokusit se o ověření, než dojde k návratu do "
 "výběru uživatelů."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Nelze vytvořit nový displej: "
-
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Nelze aktivovat sezení: "
-
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Podporován je pouze příkaz VERSION"
@@ -487,6 +483,9 @@ msgstr "Vytvořen snímek obrazovky"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Pořídit snímek obrazovky"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "Nelze aktivovat sezení: "
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
