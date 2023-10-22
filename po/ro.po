@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-10-09 10:18+0000\n"
+"POT-Creation-Date: 2023-10-22 13:42+0000\n"
 "PO-Revision-Date: 2023-07-29 13:46+0300\n"
 "Last-Translator: Florentina Mușat <florentina [dot] musat [dot] 28 [at] "
 "gmail [dot] com>\n"
@@ -60,25 +60,20 @@ msgstr "XDMCP: Nu s-a putut prelucra adresa"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nu este un dispozitiv de semne grafice"
 
-# Nu e un „monitor” în sine, ci un obiect afișaj al X11 care e creat temporar după ce utilizatorul iese din sesiunea lui, până înainte de a intra în a altuia.
-#: common/gdm-common.c:346
-msgid "Unable to create transient display: "
-msgstr "Nu s-a putut porni afișajul temporar: "
-
-#: common/gdm-common.c:511
+#: common/gdm-common.c:507 libgdm/gdm-user-switching.c:207
 msgid "Could not identify the current session: "
 msgstr "Nu s-a putut identifica sesiunea curentă: "
 
-#: common/gdm-common.c:520
+#: common/gdm-common.c:516 libgdm/gdm-user-switching.c:216
 msgid "Could not identify the current seat."
 msgstr "Sesiunea actuală nu a putut fi identificată."
 
-#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
+#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Utilizatorul „%s” nu a putut fi găsit în sistem"
 
-#: daemon/gdm-legacy-display.c:226
+#: daemon/gdm-legacy-display.c:236
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -134,22 +129,22 @@ msgstr "initgroups () a eșuat pentru %s"
 msgid "Couldn’t set userid to %d"
 msgstr "Nu s-a putut stabili userid la %d"
 
-#: daemon/gdm-server.c:479
+#: daemon/gdm-server.c:485
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nu s-a putut deschide fișierul jurnal pentru afișajul %s!"
 
-#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
+#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Eroare în stabilirea a „%s” ca fiind %s"
 
-#: daemon/gdm-server.c:532
+#: daemon/gdm-server.c:538
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Prioritatea serverului nu a putut fi stabilită ca fiind %d: %s"
 
-#: daemon/gdm-server.c:684
+#: daemon/gdm-server.c:690
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comandă de server nulă pentru afișajul %s"
@@ -178,11 +173,11 @@ msgstr "Dispozitiv de tip afișaj"
 msgid "The display device"
 msgstr "Dispozitivul de tip afișaj"
 
-#: daemon/gdm-session.c:1353
+#: daemon/gdm-session.c:1336
 msgid "Could not create authentication helper process"
 msgstr "Nu s-a putut crea procesul ajutător de autentificare"
 
-#: daemon/gdm-session-worker.c:743
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -190,7 +185,7 @@ msgstr ""
 "Ați atins numărul maxim de încercări de autentificare prin parolă, încercați "
 "o altă metodă"
 
-#: daemon/gdm-session-worker.c:746
+#: daemon/gdm-session-worker.c:755
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -198,7 +193,7 @@ msgstr ""
 "Ați atins numărul maxim de încercări de autentificare automată, încercați o "
 "altă metodă de autentificare"
 
-#: daemon/gdm-session-worker.c:749
+#: daemon/gdm-session-worker.c:758
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -206,7 +201,7 @@ msgstr ""
 "Ați atins numărul maxim de încercări de autentificare prin amprentă, "
 "încercați o altă metodă"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:761
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -214,46 +209,46 @@ msgstr ""
 "Ați atins numărul maxim de încercări de autentificare prin card smart, "
 "încercați o altă metodă"
 
-#: daemon/gdm-session-worker.c:754
+#: daemon/gdm-session-worker.c:763
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Ați atins numărul maxim de încercări de autentificare, încercați o altă "
 "metodă"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Autentificarea prin parolă nu a reușit. Încercați din nou."
 
-#: daemon/gdm-session-worker.c:764
+#: daemon/gdm-session-worker.c:773
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Autentificarea automată nu a reușit. Încercați din nou."
 
-#: daemon/gdm-session-worker.c:767
+#: daemon/gdm-session-worker.c:776
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Autentificarea prin amprentă nu a reușit. Încercați din nou."
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:779
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Autentificarea prin card smart nu a reușit. Încercați din nou."
 
-#: daemon/gdm-session-worker.c:772
+#: daemon/gdm-session-worker.c:781
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Nu a funcționat. Încercați din nou."
 
-#: daemon/gdm-session-worker.c:787
+#: daemon/gdm-session-worker.c:796
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Contul dumneavoastră a primit o limită de timp care acum a expirat."
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:1197
 msgid "Username:"
 msgstr "Nume de utilizator:"
 
-#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
+#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
 msgid "no user account available"
 msgstr "niciun cont de utilizator disponibil"
 
-#: daemon/gdm-session-worker.c:1631
+#: daemon/gdm-session-worker.c:1641
 msgid "Unable to change to user"
 msgstr "Nu se poate schimba utilizatorul"
 
@@ -448,6 +443,15 @@ msgstr ""
 "De câte ori unui utilizator îi este permis să încerce autentificarea înainte "
 "de a reveni la selecția utilizatorilor."
 
+# Nu e un „monitor” în sine, ci un obiect afișaj al X11 care e creat temporar după ce utilizatorul iese din sesiunea lui, până înainte de a intra în a altuia.
+#: libgdm/gdm-user-switching.c:59
+msgid "Unable to create transient display: "
+msgstr "Nu s-a putut porni afișajul temporar: "
+
+#: libgdm/gdm-user-switching.c:90
+msgid "Unable to activate session: "
+msgstr "Nu s-a putut deschide sesiunea: "
+
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Doar comanda VERSION este suportată"
@@ -502,9 +506,6 @@ msgstr "Capturează imaginea ecranului"
 
 #~ msgid "Sorry, PIN authentication didn’t work. Please try again."
 #~ msgstr "Autentificarea prin PIN nu a reușit. Încercați din nou."
-
-#~ msgid "Unable to activate session: "
-#~ msgstr "Nu s-a putut deschide sesiunea: "
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr "Parola dumneavoastră a expirat, schimbați-o acum."
