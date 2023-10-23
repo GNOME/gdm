@@ -18,6 +18,8 @@
  *
  */
 
+#include "config.h"
+
 #include "gdm-dbus-util.h"
 #include <string.h>
 
@@ -78,9 +80,19 @@ gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
         const char *client_address;
         g_autoptr(GDBusServer) server = NULL;
 
+        /* Ensure the private bus directory exists */
+        if (g_mkdir_with_parents (GDM_PRIVATE_DBUS_DIR, 0711) == -1) {
+                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
+                return NULL;
+        }
+        if (g_chmod (GDM_PRIVATE_DBUS_DIR, 0711) == -1) {
+                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
+                return NULL;
+        }
+
         guid = g_dbus_generate_guid ();
 
-        server = g_dbus_server_new_sync ("unix:tmpdir=/tmp",
+        server = g_dbus_server_new_sync ("unix:dir=" GDM_PRIVATE_DBUS_DIR,
                                          G_DBUS_SERVER_FLAGS_NONE,
                                          guid,
                                          observer,
