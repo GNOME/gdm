@@ -47,6 +47,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include <json-glib/json-glib.h>
+
 #include <X11/Xauth.h>
 
 #include <systemd/sd-daemon.h>
@@ -179,6 +181,7 @@ static char gdm_pam_extension_environment_block[_POSIX_ARG_MAX];
 static const char * const
 gdm_supported_pam_extensions[] = {
         GDM_PAM_EXTENSION_CHOICE_LIST,
+        GDM_PAM_EXTENSION_CUSTOM_JSON,
         NULL
 };
 #endif
@@ -582,6 +585,55 @@ gdm_session_worker_process_choice_list_request (GdmSessionWorker                
 }
 
 static gboolean
+gdm_session_worker_process_custom_json_protocol (GdmSessionWorker            *worker,
+                                                 GdmPamExtensionJSONProtocol *request,
+                                                 GdmPamExtensionJSONProtocol *response)
+{
+        g_autoptr(GError) error = NULL;
+        g_autoptr(JsonParser) parser = NULL;
+        g_autofree char *json_reply = NULL;
+
+        g_debug ("GdmSessionWorker: sending custom JSON protocol request: %s v%d",
+                 request->protocol_name, request->version);
+        g_debug ("GdmSessionWorker: (and waiting for reply)");
+
+        if (!request->json) {
+                g_warning ("GdmSessionWorker: custom JSON request is not valid");
+                return FALSE;
+        }
+
+        parser = json_parser_new_immutable ();
+        if (!json_parser_load_from_data (parser, request->json, -1, &error)) {
+                g_warning ("GdmSessionWorker: custom JSON request is not valid JSON: %s",
+                           error->message);
+                return FALSE;
+        }
+
+        if (!gdm_dbus_worker_manager_call_custom_json_request_sync (worker->manager,
+                                                                    worker->service,
+                                                                    request->protocol_name,
+                                                                    request->version,
+                                                                    request->json,
+                                                                    &response->json,
+                                                                    NULL,
+                                                                    &error)) {
+                g_warning ("GdmSessionWorker: custom JSON request failed: %s",
+                           error->message);
+                return FALSE;
+        }
+
+        if (!response->json) {
+                g_warning ("GdmSessionWorker: custom JSON request returned invalid data");
+                return FALSE;
+        }
+
+        /* No need to validate JSON reply again since that's what we got from
+         * the client and validation happens at daemon level.
+         */
+        return TRUE;
+}
+
+static gboolean
 gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *worker,
                                                  const struct pam_message  *query,
                                                  char                     **response)
@@ -617,6 +669,22 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 }
 
                 *response = GDM_PAM_EXTENSION_MESSAGE_TO_PAM_REPLY (list_response);
+                return TRUE;
+        } else if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CUSTOM_JSON)) {
+                GdmPamExtensionJSONProtocol *json_request = (GdmPamExtensionJSONProtocol *) extended_message;
+                g_autofree GdmPamExtensionJSONProtocol *json_response = malloc (GDM_PAM_EXTENSION_CUSTOM_JSON_SIZE);
+
+                g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CUSTOM_JSON);
+
+                GDM_PAM_EXTENSION_CUSTOM_JSON_RESPONSE_INIT (json_response,
+                                                              json_request->protocol_name,
+                                                              json_request->version);
+
+                if (!gdm_session_worker_process_custom_json_protocol (worker, json_request, json_response)) {
+                        return FALSE;
+                }
+
+                *response = GDM_PAM_EXTENSION_MESSAGE_TO_PAM_REPLY (g_steal_pointer (&json_response));
                 return TRUE;
         } else {
                 g_debug ("GdmSessionWorker: received extended pam message of unknown type %u", (unsigned int) extended_message->type);

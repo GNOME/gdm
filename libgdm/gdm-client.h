@@ -71,6 +71,8 @@ GdmUserVerifier   *gdm_client_get_user_verifier_sync    (GdmClient *client,
 
 GdmUserVerifierChoiceList *gdm_client_get_user_verifier_choice_list  (GdmClient *client);
 
+GdmUserVerifierCustomJSON *gdm_client_get_user_verifier_custom_json (GdmClient *client);
+
 void               gdm_client_get_greeter               (GdmClient     *client,
                                                          GCancellable         *cancellable,
                                                          GAsyncReadyCallback   callback,

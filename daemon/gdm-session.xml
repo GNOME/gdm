@@ -28,6 +28,14 @@
       <arg name="query" direction="in" type="a{ss}"/>
       <arg name="answer" direction="out" type="s"/>
     </method>
+    <method name="CustomJSONRequest">
+      <annotation name="org.gtk.GDBus.C.Name" value="CustomJsonRequest" />
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="protocol" direction="in" type="s"/>
+      <arg name="version" direction="in" type="u"/>
+      <arg name="request" direction="in" type="s"/>
+      <arg name="response" direction="out" type="s"/>
+    </method>
   </interface>
   <interface name="org.gnome.DisplayManager.UserVerifier">
     <method name="EnableExtensions">
@@ -93,6 +101,22 @@
       <arg name="service_name" type="s"/>
       <arg name="prompt_message" type="s"/>
       <arg name="list" type="a{ss}"/>
+    </signal>
+  </interface>
+  <interface name="org.gnome.DisplayManager.UserVerifier.CustomJSON">
+    <method name="Reply">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="reply" direction="in" type="s"/>
+    </method>
+    <method name="ReportError">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="error" direction="in" type="s"/>
+    </method>
+    <signal name="Request">
+      <arg name="service_name" type="s"/>
+      <arg name="protocol" type="s"/>
+      <arg name="version" type="u"/>
+      <arg name="request" type="s"/>
     </signal>
   </interface>
   <interface name="org.gnome.DisplayManager.Greeter">

@@ -72,6 +72,7 @@ gdm_daemon_deps = [
   gobject_dep,
   gio_dep,
   gio_unix_dep,
+  json_glib,
   libpam_dep,
   x_deps,
   xcb_dep,

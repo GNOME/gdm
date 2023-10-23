@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2017 Red Hat, Inc.
+ * Copyright (C) 2023 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,5 +22,6 @@
 #define GDM_PAM_EXTENSIONS_H
 
 #include "gdm-choice-list-pam-extension.h"
+#include "gdm-custom-json-pam-extension.h"
 
 #endif
