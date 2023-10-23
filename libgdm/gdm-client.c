@@ -1420,3 +1420,18 @@ gdm_client_set_enabled_extensions (GdmClient          *client,
 {
         client->enabled_extensions = g_strdupv ((char **) extensions);
 }
+
+/**
+ * gdm_client_get_enabled_extensions:
+ * @client: a #GdmClient
+ *
+ * Gets GDM's enabled pam extensions.  Currently, only
+ * org.gnome.DisplayManager.UserVerifier.ChoiceList is supported.
+ *
+ * Returns: (array zero-terminated=1) (element-type utf8) (transfer: full): a list of extensions
+ */
+GStrv
+gdm_client_get_enabled_extensions (GdmClient *client)
+{
+        return g_strdupv (client->enabled_extensions);
+}

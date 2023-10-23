@@ -41,6 +41,7 @@ GQuark             gdm_client_error_quark              (void);
 GdmClient         *gdm_client_new                      (void);
 void               gdm_client_set_enabled_extensions   (GdmClient *client,
                                                         const char * const * extensions);
+GStrv              gdm_client_get_enabled_extensions   (GdmClient *client);
 
 void               gdm_client_open_reauthentication_channel (GdmClient     *client,
                                                              const char           *username,
