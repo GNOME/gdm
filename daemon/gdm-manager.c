@@ -377,29 +377,19 @@ is_remote_session (GdmManager  *self,
                    const char  *session_id,
                    GError     **error)
 {
-        char *seat;
         int ret;
-        gboolean is_remote;
 
-        /* FIXME: The next release of logind is going to have explicit api for
-         * checking remoteness.
-         */
-        seat = NULL;
-        ret = sd_session_get_seat (session_id, &seat);
+        ret = sd_session_is_remote (session_id);
 
         if (ret < 0 && ret != -ENXIO) {
-                g_debug ("GdmManager: Error while retrieving seat for session %s: %s",
-                         session_id, strerror (-ret));
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "%s", g_strerror (-ret));
+                return FALSE;
         }
 
-        if (seat != NULL) {
-                is_remote = FALSE;
-                free (seat);
-        } else {
-                is_remote = TRUE;
-        }
-
-        return is_remote;
+        return ret != FALSE;
 }
 
 static char *
@@ -554,8 +544,8 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 *out_is_remote = is_remote_session (self, session_id, &error);
 
                 if (error != NULL) {
-                        g_debug ("GdmManager: Error while retrieving remoteness for session: %s",
-                                 error->message);
+                        g_debug ("GdmManager: Error while retrieving remoteness for session %s: %s",
+                                 session_id, error->message);
                         g_clear_error (&error);
                 }
         }
