@@ -1199,11 +1199,19 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         }
 
         /* set RHOST */
-        if (hostname != NULL && hostname[0] != '\0') {
-                error_code = pam_set_item (worker->pam_handle, PAM_RHOST, hostname);
-                g_debug ("error informing authentication system of user's hostname %s: %s",
-                         hostname,
-                         pam_strerror (worker->pam_handle, error_code));
+        if (!display_is_local) {
+                if (hostname != NULL && hostname[0] != '\0') {
+                        error_code = pam_set_item (worker->pam_handle, PAM_RHOST, hostname);
+
+                        g_debug ("error informing authentication system of user's hostname %s: %s",
+                                 hostname,
+                                 pam_strerror (worker->pam_handle, error_code));
+                } else {
+                        error_code = pam_set_item (worker->pam_handle, PAM_RHOST, "0.0.0.0");
+
+                        g_debug ("error informing authentication system user is remote but has indeterminate hostname: %s",
+                                 pam_strerror (worker->pam_handle, error_code));
+                }
 
                 if (error_code != PAM_SUCCESS) {
                         g_set_error_literal (error,
