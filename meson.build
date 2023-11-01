@@ -64,7 +64,7 @@ libselinux_dep = dependency('libselinux', required: get_option('selinux'))
 # udev
 if udev_dir == ''
   if udev_dep.found()
-    udev_prefix = udev_dep.get_pkgconfig_variable('udevdir')
+    udev_prefix = udev_dep.get_variable(pkgconfig: 'udevdir')
   else
     udev_prefix = gdm_prefix / 'lib' / 'udev'
   endif
@@ -113,7 +113,7 @@ if logind_provider == 'systemd'
   systemd_multiseat_x = find_program('systemd-multi-seat-x',
     required: false,
     dirs: [
-      systemd_dep.get_pkgconfig_variable('systemdutildir'),
+      systemd_dep.get_variable(pkgconfig: 'systemdutildir'),
       '/lib/systemd',
       '/usr/lib/systemd',
     ])
@@ -204,7 +204,7 @@ endif
 
 # dconf paths, we should fix dconf.pc to provide us more real data though
 if dconf_dep.found()
-  dconf_prefix = dconf_dep.get_pkgconfig_variable('prefix')
+  dconf_prefix = dconf_dep.get_variable(pkgconfig: 'prefix')
   dconf_sysconfig = (dconf_prefix == '/usr') ? '/etc' : dconf_prefix + '/etc/'
   dconf_datadir = dconf_prefix / 'share'
 else

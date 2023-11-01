@@ -167,7 +167,7 @@ if systemdsystemunitdir != 'no'
   if get_option('systemdsystemunitdir') != ''
     systemd_systemunitdir = get_option('systemdsystemunitdir')
   else
-    systemd_systemunitdir = systemd_dep.get_pkgconfig_variable('systemdsystemunitdir')
+    systemd_systemunitdir = systemd_dep.get_variable(pkgconfig: 'systemdsystemunitdir')
   endif
 endif
 
@@ -177,8 +177,8 @@ if systemduserunitdir != 'no'
   if get_option('systemduserunitdir') != ''
     systemd_userunitdir = get_option('systemduserunitdir')
   else
-    systemd_userunitdir = systemd_dep.get_pkgconfig_variable('systemduserunitdir',
-                                                             define_variable: ['prefix', get_option('prefix')])
+    systemd_userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir',
+                                                   pkgconfig_define: ['prefix', get_option('prefix')])
   endif
 endif
 
