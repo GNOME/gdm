@@ -315,7 +315,6 @@ load_settings_from_user (GdmSessionSettings *settings)
                 gdm_session_settings_set_language_name (settings, language_name);
         }
 
-out:
         g_object_notify (G_OBJECT (settings), "is-loaded");
 }
 
