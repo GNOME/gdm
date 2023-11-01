@@ -3045,7 +3045,7 @@ free_pending_worker_connection (GdmSession      *self,
         worker_manager_interface = g_object_get_data (G_OBJECT (connection),
                                                       "gdm-dbus-worker-manager-interface");
         if (worker_manager_interface != NULL) {
-                g_dbus_interface_skeleton_unexport (worker_manager_interface);
+                g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (worker_manager_interface));
                 g_object_set_data (G_OBJECT (connection),
                                    "gdm-dbus-worker-manager-interface",
                                    NULL);
