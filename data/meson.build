@@ -28,7 +28,7 @@ configure_file(
   input: 'gdm.conf.in',
   output: '@BASENAME@',
   configuration: {
-    'GDM_USERNAME': get_option('user')
+    'GDM_USERNAME': get_option('user'),
   },
   install_dir: dbus_sys_dir,
 )

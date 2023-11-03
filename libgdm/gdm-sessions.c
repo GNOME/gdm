@@ -35,6 +35,8 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 
+#include <systemd/sd-login.h>
+
 #include "gdm-sessions.h"
 
 typedef struct _GdmSessionFile {
@@ -58,14 +60,59 @@ gdm_session_file_free (GdmSessionFile *session)
   g_free (session);
 }
 
+static char *
+get_systemd_session (void)
+{
+        int ret;
+        g_autofree char *systemd_unit = NULL;
+        g_autofree char *session_id = NULL;
+        pid_t pid;
+        uid_t uid;
+
+        pid = getpid ();
+        uid = getuid ();
+
+        ret = sd_pid_get_user_unit (pid, &systemd_unit);
+
+        if (ret == 0)
+                ret = sd_uid_get_display (uid, &session_id);
+        else
+                ret = sd_pid_get_session (pid, &session_id);
+
+        return g_steal_pointer (&session_id);
+}
+
+static char *
+get_systemd_seat (void)
+{
+        g_autofree char *session_id = NULL;
+        g_autofree char *seat = NULL;
+        int ret;
+
+        session_id = get_systemd_session ();
+
+        if (session_id == NULL)
+                return NULL;
+
+        ret = sd_session_get_seat (session_id, &seat);
+
+        if (ret != 0)
+                return NULL;
+
+        return g_steal_pointer (&seat);
+}
+
 /* adapted from gnome-menus desktop-entries.c */
 static gboolean
 key_file_is_relevant (GKeyFile     *key_file)
 {
         GError    *error;
+        g_autofree char *seat = NULL;
         gboolean   no_display;
         gboolean   hidden;
         gboolean   tryexec_failed;
+        gboolean   can_run_headless;
+        gboolean   only_headless_allowed;
         char      *tryexec;
 
         error = NULL;
@@ -88,6 +135,15 @@ key_file_is_relevant (GKeyFile     *key_file)
                 g_error_free (error);
         }
 
+        seat = get_systemd_seat ();
+
+        only_headless_allowed = seat == NULL;
+
+        can_run_headless = g_key_file_get_boolean (key_file,
+                                                   G_KEY_FILE_DESKTOP_GROUP,
+                                                   "X-GDM-CanRunHeadless",
+                                                   NULL);
+
         tryexec_failed = FALSE;
         tryexec = g_key_file_get_string (key_file,
                                          G_KEY_FILE_DESKTOP_GROUP,
@@ -104,7 +160,7 @@ key_file_is_relevant (GKeyFile     *key_file)
                 g_free (tryexec);
         }
 
-        if (no_display || hidden || tryexec_failed) {
+        if (no_display || hidden || tryexec_failed || (only_headless_allowed && !can_run_headless)) {
                 return FALSE;
         }
 
@@ -142,7 +198,7 @@ load_session_file (const char              *id,
         }
 
         if (!key_file_is_relevant (key_file)) {
-                g_debug ("\"%s\" is hidden or contains non-executable TryExec program\n", path);
+                g_debug ("\"%s\" is hidden, contains non-executable TryExec program, or is otherwise not capable of being used\n", path);
                 g_hash_table_remove (gdm_available_sessions_map, id);
                 goto out;
         }

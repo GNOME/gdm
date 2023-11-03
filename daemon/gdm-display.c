@@ -42,6 +42,7 @@
 #include "gdm-display-glue.h"
 #include "gdm-display-access-file.h"
 #include "gdm-launch-environment.h"
+#include "gdm-remote-display.h"
 
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
@@ -1475,7 +1476,7 @@ on_launch_environment_session_opened (GdmLaunchEnvironment *launch_environment,
 
         g_debug ("GdmDisplay: Greeter session opened");
         session_id = gdm_launch_environment_get_session_id (launch_environment);
-        _gdm_display_set_session_id (self, session_id);
+        g_object_set (G_OBJECT (self), "session-id", session_id, NULL);
 }
 
 static void

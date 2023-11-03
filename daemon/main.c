@@ -406,6 +406,7 @@ on_name_acquired (GDBusConnection *bus,
 {
         gboolean xdmcp_enabled;
         gboolean show_local_greeter;
+        gboolean remote_login_enabled;
 
         manager = gdm_manager_new ();
         if (manager == NULL) {
@@ -422,6 +423,10 @@ on_name_acquired (GDBusConnection *bus,
         xdmcp_enabled = FALSE;
         gdm_settings_direct_get_boolean (GDM_KEY_XDMCP_ENABLE, &xdmcp_enabled);
         gdm_manager_set_xdmcp_enabled (manager, xdmcp_enabled);
+
+        remote_login_enabled = FALSE;
+        gdm_settings_direct_get_boolean (GDM_KEY_REMOTE_LOGIN_ENABLE, &remote_login_enabled);
+        gdm_manager_set_remote_login_enabled (manager, remote_login_enabled);
 
         gdm_manager_start (manager);
 }

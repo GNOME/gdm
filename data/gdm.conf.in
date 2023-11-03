@@ -12,7 +12,11 @@
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Display"/>
     <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplay"/>
+    <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplayFactory"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Settings"/>
     <allow send_destination="org.gnome.DisplayManager"
@@ -22,11 +26,20 @@
 
   </policy>
 
+  <policy user="gnome-remote-desktop">
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplayFactory"/>
+  </policy>
+
   <policy context="default">
     <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.Display"/>
     <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.RemoteDisplay"/>
+    <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.RemoteDisplayFactory"/>
     <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.Settings"/>
     <deny send_destination="org.gnome.DisplayManager"
@@ -69,7 +82,11 @@
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Display"/>
     <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplay"/>
+    <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.RemoteDisplayFactory"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Settings"/>
     <allow send_destination="org.gnome.DisplayManager"

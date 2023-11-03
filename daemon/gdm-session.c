@@ -135,6 +135,8 @@ struct _GdmSession
 
         GStrv                supported_session_types;
 
+        char                *remote_id;
+
         guint32              is_program_session : 1;
         guint32              display_is_initial : 1;
 };
@@ -154,6 +156,7 @@ enum {
         PROP_USER_X11_AUTHORITY_FILE,
         PROP_CONVERSATION_ENVIRONMENT,
         PROP_SUPPORTED_SESSION_TYPES,
+        PROP_REMOTE_ID,
 };
 
 enum {
@@ -459,6 +462,13 @@ load_key_file_for_file (GdmSession   *self,
 }
 
 static gboolean
+is_wayland_headless (GdmSession *self)
+{
+        return g_strcmp0 (self->session_type, "wayland") == 0 &&
+                          !self->display_is_local;
+}
+
+static gboolean
 get_session_command_for_file (GdmSession  *self,
                               const char  *file,
                               const char  *type,
@@ -496,6 +506,19 @@ get_session_command_for_file (GdmSession  *self,
         if (error == NULL && res) {
                 g_debug ("GdmSession: Session %s is marked as hidden", file);
                 goto out;
+        }
+
+        if (is_wayland_headless (self)) {
+                gboolean can_run_headless;
+
+                can_run_headless = g_key_file_get_boolean (key_file,
+                                                           G_KEY_FILE_DESKTOP_GROUP,
+                                                           "X-GDM-CanRunHeadless",
+                                                           NULL);
+                if (!can_run_headless && is_wayland_headless (self)) {
+                        g_debug ("GdmSession: Session %s is not headless capable", file);
+                        goto out;
+                }
         }
 
         exec = g_key_file_get_string (key_file,
@@ -3593,6 +3616,14 @@ set_session_type (GdmSession *self,
 }
 
 static void
+set_remote_id (GdmSession *self,
+               const char *remote_id)
+{
+        g_free (self->remote_id);
+        self->remote_id = g_strdup (remote_id);
+}
+
+static void
 gdm_session_set_property (GObject      *object,
                           guint         prop_id,
                           const GValue *value,
@@ -3641,6 +3672,9 @@ gdm_session_set_property (GObject      *object,
                 break;
         case PROP_SUPPORTED_SESSION_TYPES:
                 gdm_session_set_supported_session_types (self, g_value_get_boxed (value));
+                break;
+        case PROP_REMOTE_ID:
+                set_remote_id (self, g_value_get_string (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -3697,6 +3731,9 @@ gdm_session_get_property (GObject    *object,
                 break;
         case PROP_SUPPORTED_SESSION_TYPES:
                 g_value_set_boxed (value, self->supported_session_types);
+                break;
+        case PROP_REMOTE_ID:
+                g_value_set_string (value, self->remote_id);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -4138,6 +4175,14 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                              "supported session types",
                                                              G_TYPE_STRV,
                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
+                                         PROP_REMOTE_ID,
+                                         g_param_spec_string ("remote-id",
+                                                              "remote id",
+                                                              "remote id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         /* Ensure we can resolve errors */
         gdm_dbus_error_ensure (GDM_SESSION_WORKER_ERROR);
