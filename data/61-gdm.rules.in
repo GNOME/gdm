@@ -105,21 +105,12 @@ TEST!="/run/udev/gdm-machine-has-virtual-gpu", GOTO="gdm_virt_multi_gpu_check_en
 TEST=="/run/udev/gdm-machine-has-hardware-gpu", GOTO="gdm_virt_multi_gpu_check_end"
 LABEL="gdm_virt_multi_gpu_check_end"
 
-# Disable wayland when nvidia modeset is disabled or when drivers are a lower
-# version than 470,
-# For versions above 470 but lower than 510 prefer Xorg,
-# Above 510, prefer Wayland.
+# Disable wayland when nvidia modeset is disabled
 KERNEL!="nvidia_drm", GOTO="gdm_nvidia_drm_end"
 SUBSYSTEM!="module", GOTO="gdm_nvidia_drm_end"
 ACTION!="add", GOTO="gdm_nvidia_drm_end"
 # disable wayland if nvidia-drm modeset is not enabled
 ATTR{parameters/modeset}!="Y", GOTO="gdm_disable_wayland"
-# disable wayland for nvidia drivers versions lower than 470
-ATTR{version}=="4[0-6][0-9].*|[0-3][0-9][0-9].*|[0-9][0-9].*|[0-9].*", GOTO="gdm_disable_wayland"
-# For nvidia drivers versions Above 510, keep Wayland by default
-ATTR{version}=="[5-9][1-9][0-9].*", GOTO="gdm_end"
-# For nvidia drivers versions 470-495, prefer Xorg by default
-GOTO="gdm_prefer_xorg"
 LABEL="gdm_nvidia_drm_end"
 
 GOTO="gdm_end"
