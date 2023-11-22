@@ -779,9 +779,9 @@ gdm_session_handle_choice_list_query (GdmDBusWorkerManager  *worker_manager_inte
                                                              gdm_dbus_user_verifier_choice_list_interface_info ()->name);
 
         if (choice_list_interface == NULL) {
-                g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_NOT_SUPPORTED,
-                                                       "ChoiceList interface not supported by client");
+                g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                                               "ChoiceList interface not supported by client");
                 return TRUE;
         }
 
@@ -1227,9 +1227,9 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
         if (conversation == NULL) {
                 g_warning ("GdmSession: New worker connection is from unknown source");
 
-                g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_ACCESS_DENIED,
-                                                       "Connection is not from a known conversation");
+                g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Connection is not from a known conversation");
                 g_dbus_connection_close_sync (connection, NULL, NULL);
                 return TRUE;
         }
@@ -1423,10 +1423,10 @@ begin_verification_conversation (GdmSession            *self,
         }
 
         if (conversation == NULL) {
-                g_dbus_method_invocation_return_error (invocation,
-                                                       G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_SPAWN_FAILED,
-                                                       _("Could not create authentication helper process"));
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_SPAWN_FAILED,
+                                                               _("Could not create authentication helper process"));
         }
 
         return conversation;
