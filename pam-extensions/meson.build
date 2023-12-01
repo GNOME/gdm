@@ -7,8 +7,12 @@ if pam_extensions_supported
     subdirs: meson.project_name(),
   )
 
+  header_files = files('gdm-pam-extensions.h',
+                       'gdm-pam-extensions-common.h',
+                       'gdm-choice-list-pam-extension.h')
+
   pam_extensions_inc = include_directories('.')
-  install_headers('gdm-pam-extensions.h',
+  install_headers(header_files,
     subdir: meson.project_name()
   )
 endif

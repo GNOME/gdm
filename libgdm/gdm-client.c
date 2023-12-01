@@ -68,6 +68,20 @@ gdm_client_error_quark (void)
         return error_quark;
 }
 
+static GQuark
+gdm_client_user_verifier_extensions_quark (void)
+{
+        static gpointer quark_initialized = 0;
+        static GQuark quark = 0;
+
+        if (g_once_init_enter (&quark_initialized)) {
+                quark = g_quark_from_static_string ("gdm-client-user-verifier-extensions");
+                g_once_init_leave (&quark_initialized, GINT_TO_POINTER (TRUE));
+        }
+
+        return quark;
+}
+
 static GDBusConnection *
 gdm_client_get_open_connection (GdmClient *client)
 {
@@ -175,7 +189,8 @@ maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
         GHashTableIter iter;
         gpointer key, value;
 
-        user_verifier_extensions = g_object_get_data (G_OBJECT (data->user_verifier), "gdm-client-user-verifier-extensions");
+        user_verifier_extensions = g_object_get_qdata (G_OBJECT (data->user_verifier),
+                                                       gdm_client_user_verifier_extensions_quark ());
         if (user_verifier_extensions != NULL) {
                 g_hash_table_iter_init (&iter, user_verifier_extensions);
                 while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -199,7 +214,8 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
 
         client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
 
-        user_verifier_extensions = g_object_get_data (G_OBJECT (data->user_verifier), "gdm-client-user-verifier-extensions");
+        user_verifier_extensions = g_object_get_qdata (G_OBJECT (data->user_verifier),
+                                                       gdm_client_user_verifier_extensions_quark ());
         choice_list = gdm_user_verifier_choice_list_proxy_new_finish (result, &error);
 
         if (choice_list == NULL) {
@@ -207,6 +223,35 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
                 g_hash_table_remove (user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name);
         } else {
                 g_hash_table_replace (user_verifier_extensions, gdm_user_verifier_choice_list_interface_info ()->name, choice_list);
+        }
+
+        maybe_complete_user_verifier_proxy_operation (client, data);
+}
+
+static void
+on_user_verifier_custom_json_proxy_created (GObject            *source,
+                                            GAsyncResult       *result,
+                                            UserVerifierData   *data)
+{
+        GHashTable *user_verifier_extensions;
+        g_autoptr(GdmClient) client = NULL;
+        GdmUserVerifierCustomJSON *custom_json;
+        g_autoptr(GError) error = NULL;
+
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
+
+        user_verifier_extensions = g_object_get_qdata (G_OBJECT (data->user_verifier),
+                                                       gdm_client_user_verifier_extensions_quark ());
+        custom_json = gdm_user_verifier_custom_json_proxy_new_finish (result, &error);
+
+        if (custom_json == NULL) {
+                g_warning ("Couldn't create UserVerifier CustomJSON proxy: %s", error->message);
+                g_hash_table_remove (user_verifier_extensions,
+                                     gdm_user_verifier_custom_json_interface_info ()->name);
+        } else {
+                g_hash_table_replace (user_verifier_extensions,
+                                      gdm_user_verifier_custom_json_interface_info ()->name,
+                                      custom_json);
         }
 
         maybe_complete_user_verifier_proxy_operation (client, data);
@@ -226,7 +271,8 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
 
         client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (data->task)));
         cancellable = g_task_get_cancellable (data->task);
-        user_verifier_extensions = g_object_get_data (G_OBJECT (user_verifier), "gdm-client-user-verifier-extensions");
+        user_verifier_extensions = g_object_get_qdata (G_OBJECT (user_verifier),
+                                                       gdm_client_user_verifier_extensions_quark ());
 
         gdm_user_verifier_call_enable_extensions_finish (user_verifier, result, &error);
 
@@ -253,6 +299,17 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                                                                  cancellable,
                                                                  (GAsyncReadyCallback)
                                                                  on_user_verifier_choice_list_proxy_created,
+                                                                 data);
+                } else if (g_str_equal (client->enabled_extensions[i],
+                                        gdm_user_verifier_custom_json_interface_info ()->name)) {
+                        g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], NULL);
+                        gdm_user_verifier_custom_json_proxy_new (connection,
+                                                                 G_DBUS_PROXY_FLAGS_NONE,
+                                                                 NULL,
+                                                                 SESSION_DBUS_PATH,
+                                                                 cancellable,
+                                                                 (GAsyncReadyCallback)
+                                                                 on_user_verifier_custom_json_proxy_created,
                                                                  data);
                 } else {
                         g_debug ("User verifier extension %s is unsupported", client->enabled_extensions[i]);
@@ -311,10 +368,10 @@ on_user_verifier_proxy_created (GObject            *source,
                                                           NULL,
                                                           (GDestroyNotify)
                                                           free_interface_skeleton);
-        g_object_set_data_full (G_OBJECT (user_verifier),
-                                "gdm-client-user-verifier-extensions",
-                                user_verifier_extensions,
-                                (GDestroyNotify) g_hash_table_unref);
+        g_object_set_qdata_full (G_OBJECT (user_verifier),
+                                 gdm_client_user_verifier_extensions_quark (),
+                                 user_verifier_extensions,
+                                 (GDestroyNotify) g_hash_table_unref);
         cancellable = g_task_get_cancellable (task);
         gdm_user_verifier_call_enable_extensions (user_verifier,
                                                   (const char * const *)
@@ -688,10 +745,10 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                                           NULL,
                                                                           (GDestroyNotify)
                                                                           free_interface_skeleton);
-                        g_object_set_data_full (G_OBJECT (client->user_verifier),
-                                                "gdm-client-user-verifier-extensions",
-                                                user_verifier_extensions,
-                                                (GDestroyNotify) g_hash_table_unref);
+                        g_object_set_qdata_full (G_OBJECT (client->user_verifier),
+                                                 gdm_client_user_verifier_extensions_quark (),
+                                                 user_verifier_extensions,
+                                                 (GDestroyNotify) g_hash_table_unref);
 
                         res = gdm_user_verifier_call_enable_extensions_sync (client->user_verifier,
                                                                             (const char * const *)
@@ -713,6 +770,20 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                                                                                               NULL);
                                                         if (choice_list_interface != NULL)
                                                                     g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], choice_list_interface);
+                                            } else if (g_str_equal (client->enabled_extensions[i],
+                                                       gdm_user_verifier_custom_json_interface_info ()->name)) {
+                                                        GdmUserVerifierCustomJSON *custom_json_interface;
+                                                        custom_json_interface = gdm_user_verifier_custom_json_proxy_new_sync (connection,
+                                                                                                                                G_DBUS_PROXY_FLAGS_NONE,
+                                                                                                                                NULL,
+                                                                                                                                SESSION_DBUS_PATH,
+                                                                                                                                cancellable,
+                                                                                                                                NULL);
+                                                        if (custom_json_interface != NULL) {
+                                                                g_hash_table_insert (user_verifier_extensions,
+                                                                                     client->enabled_extensions[i],
+                                                                                     custom_json_interface);
+                                                        }
                                             }
                                 }
                         }
@@ -819,6 +890,24 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
         return user_verifier;
 }
 
+static GHashTable *
+get_user_verifier_extensions (GdmClient *client)
+{
+        GHashTable *user_verifier_extensions = NULL;
+
+        if (client->user_verifier_for_reauth != NULL) {
+                user_verifier_extensions = g_object_get_qdata (G_OBJECT (client->user_verifier_for_reauth),
+                                                               gdm_client_user_verifier_extensions_quark ());
+        }
+
+        if (user_verifier_extensions == NULL && client->user_verifier != NULL) {
+                user_verifier_extensions = g_object_get_qdata (G_OBJECT (client->user_verifier),
+                                                               gdm_client_user_verifier_extensions_quark ());
+        }
+
+        return user_verifier_extensions;
+}
+
 /**
  * gdm_client_get_user_verifier_choice_list:
  * @client: a #GdmClient
@@ -832,19 +921,43 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 GdmUserVerifierChoiceList *
 gdm_client_get_user_verifier_choice_list (GdmClient *client)
 {
-        GHashTable *user_verifier_extensions = NULL;
+        GHashTable *user_verifier_extensions = get_user_verifier_extensions (client);
 
-        if (client->user_verifier_for_reauth != NULL)
-                user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier_for_reauth), "gdm-client-user-verifier-extensions");
+        if (client->user_verifier_for_reauth != NULL) {
+                user_verifier_extensions = g_object_get_qdata (G_OBJECT (client->user_verifier_for_reauth),
+                                                               gdm_client_user_verifier_extensions_quark ());
+        }
 
-        if (user_verifier_extensions == NULL && client->user_verifier != NULL)
-                user_verifier_extensions = g_object_get_data (G_OBJECT (client->user_verifier), "gdm-client-user-verifier-extensions");
+        if (user_verifier_extensions == NULL && client->user_verifier != NULL) {
+                user_verifier_extensions = g_object_get_qdata (G_OBJECT (client->user_verifier),
+                                                               gdm_client_user_verifier_extensions_quark ());
+        }
+
+        return g_hash_table_lookup (user_verifier_extensions,
+                                    gdm_user_verifier_choice_list_interface_info ()->name);
+}
+
+/**
+ * gdm_client_get_user_verifier_custom_json:
+ * @client: a #GdmClient
+ *
+ * Gets a #GdmUserVerifierCustomJSON object that can be used to
+ * verify a user's local account.
+ *
+ * Returns: (transfer none): #GdmUserVerifierCustomJSON or %NULL if user
+ * verifier isn't yet fetched, or daemon doesn't support the custom JSON
+ * protocol
+ */
+GdmUserVerifierCustomJSON *
+gdm_client_get_user_verifier_custom_json (GdmClient *client)
+{
+        GHashTable *user_verifier_extensions = get_user_verifier_extensions (client);
 
         if (user_verifier_extensions == NULL)
                 return NULL;
 
         return g_hash_table_lookup (user_verifier_extensions,
-                                    gdm_user_verifier_choice_list_interface_info ()->name);
+                                    gdm_user_verifier_custom_json_interface_info ()->name);
 }
 
 static void
@@ -1412,11 +1525,28 @@ gdm_client_new (void)
  * @extensions: (array zero-terminated=1) (element-type utf8): a list of extensions
  *
  * Enables GDM's pam extensions.  Currently, only
- * org.gnome.DisplayManager.UserVerifier.ChoiceList is supported.
+ * `org.gnome.DisplayManager.UserVerifier.ChoiceList` and
+ * `org.gnome.DisplayManager.UserVerifier.CustomJSON` are supported.
  */
 void
 gdm_client_set_enabled_extensions (GdmClient          *client,
                                    const char * const *extensions)
 {
         client->enabled_extensions = g_strdupv ((char **) extensions);
+}
+
+/**
+ * gdm_client_get_enabled_extensions:
+ * @client: a #GdmClient
+ *
+ * Gets GDM's enabled pam extensions.  Currently, only
+ * `org.gnome.DisplayManager.UserVerifier.ChoiceList` and
+ * `org.gnome.DisplayManager.UserVerifier.CustomJSON` are supported.
+ *
+ * Returns: (array zero-terminated=1) (element-type utf8) (transfer: full): a list of extensions
+ */
+GStrv
+gdm_client_get_enabled_extensions (GdmClient *client)
+{
+        return g_strdupv (client->enabled_extensions);
 }

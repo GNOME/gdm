@@ -43,6 +43,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include <json-glib/json-glib.h>
+
 #include "gdm-session.h"
 #include "gdm-session-glue.h"
 #include "gdm-dbus-util.h"
@@ -777,9 +779,9 @@ gdm_session_handle_choice_list_query (GdmDBusWorkerManager  *worker_manager_inte
                                                              gdm_dbus_user_verifier_choice_list_interface_info ()->name);
 
         if (choice_list_interface == NULL) {
-                g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_NOT_SUPPORTED,
-                                                       "ChoiceList interface not supported by client");
+                g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                                               "ChoiceList interface not supported by client");
                 return TRUE;
         }
 
@@ -792,6 +794,49 @@ gdm_session_handle_choice_list_query (GdmDBusWorkerManager  *worker_manager_inte
                                                                       service_name,
                                                                       prompt_message,
                                                                       query);
+        }
+
+        return TRUE;
+}
+
+static gboolean
+gdm_session_handle_custom_json_request (GdmDBusWorkerManager  *worker_manager_interface,
+                                        GDBusMethodInvocation *invocation,
+                                        const char            *service_name,
+                                        const char            *protocol,
+                                        unsigned int           version,
+                                        const char            *request,
+                                        GdmSession            *self)
+{
+        GdmSessionConversation *conversation;
+        GdmDBusUserVerifierCustomJSON *custom_json_interface = NULL;
+
+        g_debug ("GdmSession: custom JSON request for service '%s'", service_name);
+
+        if (self->user_verifier_extensions != NULL) {
+                custom_json_interface =
+                        g_hash_table_lookup (self->user_verifier_extensions,
+                                             gdm_dbus_user_verifier_custom_json_interface_info ()->name);
+        }
+
+        if (custom_json_interface == NULL) {
+                g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                                               "custom JSON interface not supported by client");
+                return TRUE;
+        }
+
+        conversation = find_conversation_by_name (self, service_name);
+        if (conversation != NULL) {
+                set_pending_query (conversation, invocation);
+
+                g_debug ("GdmSession: emitting custom JSON request '%s' v%u",
+                         protocol, version);
+                gdm_dbus_user_verifier_custom_json_emit_request (custom_json_interface,
+                                                                 service_name,
+                                                                 protocol,
+                                                                 version,
+                                                                 request);
         }
 
         return TRUE;
@@ -1182,9 +1227,9 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
         if (conversation == NULL) {
                 g_warning ("GdmSession: New worker connection is from unknown source");
 
-                g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_ACCESS_DENIED,
-                                                       "Connection is not from a known conversation");
+                g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Connection is not from a known conversation");
                 g_dbus_connection_close_sync (connection, NULL, NULL);
                 return TRUE;
         }
@@ -1291,6 +1336,11 @@ export_worker_manager_interface (GdmSession      *self,
                                  G_CALLBACK (gdm_session_handle_choice_list_query),
                                  self,
                                  0);
+        g_signal_connect_object (worker_manager_interface,
+                                 "handle-custom-json-request",
+                                 G_CALLBACK (gdm_session_handle_custom_json_request),
+                                 self,
+                                 0);
 
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (worker_manager_interface),
                                           connection,
@@ -1325,6 +1375,9 @@ unexport_worker_manager_interface (GdmSession           *self,
                                               self);
         g_signal_handlers_disconnect_by_func (worker_manager_interface,
                                               G_CALLBACK (gdm_session_handle_choice_list_query),
+                                              self);
+        g_signal_handlers_disconnect_by_func (worker_manager_interface,
+                                              G_CALLBACK (gdm_session_handle_custom_json_request),
                                               self);
 }
 
@@ -1370,10 +1423,10 @@ begin_verification_conversation (GdmSession            *self,
         }
 
         if (conversation == NULL) {
-                g_dbus_method_invocation_return_error (invocation,
-                                                       G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_SPAWN_FAILED,
-                                                       _("Could not create authentication helper process"));
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_SPAWN_FAILED,
+                                                               _("Could not create authentication helper process"));
         }
 
         return conversation;
@@ -1416,6 +1469,81 @@ export_user_verifier_choice_list_interface (GdmSession      *self,
 }
 
 static gboolean
+gdm_session_handle_client_custom_json_reply (GdmDBusUserVerifierCustomJSON *custom_json_interface,
+                                             GDBusMethodInvocation         *invocation,
+                                             const char                    *service_name,
+                                             const char                    *json,
+                                             GdmSession                    *self)
+{
+        g_autoptr(GError) error = NULL;
+        g_autoptr(JsonParser) parser = NULL;
+
+        g_debug ("GdmSession: user replied with custom JSON");
+
+        parser = json_parser_new_immutable ();
+        if (!json_parser_load_from_data (parser, json, -1, &error)) {
+                g_autofree char *message = NULL;
+
+                message = g_strdup_printf ("JSON reply is not valid: %s", error->message);
+                g_warning ("GdmSession: %s", message);
+
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                                               message);
+                gdm_session_report_error (self, service_name,
+                                          G_DBUS_ERROR_NOT_SUPPORTED,
+                                          message);
+                return TRUE;
+        }
+
+        gdm_dbus_user_verifier_custom_json_complete_reply (custom_json_interface, invocation);
+        gdm_session_answer_query (self, service_name, json);
+        return TRUE;
+}
+
+static gboolean
+gdm_session_handle_client_custom_json_report_error (GdmDBusUserVerifierCustomJSON *custom_json_interface,
+                                                    GDBusMethodInvocation         *invocation,
+                                                    const char                    *service_name,
+                                                    const char                    *message,
+                                                    GdmSession                    *self)
+{
+        g_debug ("GdmSession: user reported custom JSON error: %s", message);
+
+        gdm_dbus_user_verifier_custom_json_complete_report_error (custom_json_interface, invocation);
+        gdm_session_report_error (self, service_name, G_DBUS_ERROR_ACCESS_DENIED, message);
+        return TRUE;
+}
+
+static void
+export_user_verifier_custom_json_interface (GdmSession      *self,
+                                             GDBusConnection *connection)
+{
+        GdmDBusUserVerifierCustomJSON *interface;
+
+        interface = GDM_DBUS_USER_VERIFIER_CUSTOM_JSON (gdm_dbus_user_verifier_custom_json_skeleton_new ());
+
+        g_signal_connect (interface,
+                          "handle-reply",
+                          G_CALLBACK (gdm_session_handle_client_custom_json_reply),
+                          self);
+        g_signal_connect (interface,
+                          "handle-report-error",
+                          G_CALLBACK (gdm_session_handle_client_custom_json_report_error),
+                          self);
+
+        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (interface),
+                                          connection,
+                                          GDM_SESSION_DBUS_OBJECT_PATH,
+                                          NULL);
+
+        g_hash_table_insert (self->user_verifier_extensions,
+                             gdm_dbus_user_verifier_custom_json_interface_info ()->name,
+                             interface);
+}
+
+static gboolean
 gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifier_interface,
                                              GDBusMethodInvocation  *invocation,
                                              const char * const *    extensions,
@@ -1433,6 +1561,10 @@ gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifi
                 if (strcmp (extensions[i],
                             gdm_dbus_user_verifier_choice_list_interface_info ()->name) == 0)
                         export_user_verifier_choice_list_interface (self, connection);
+
+                if (g_str_equal (extensions[i],
+                                 gdm_dbus_user_verifier_custom_json_interface_info ()->name))
+                        export_user_verifier_custom_json_interface (self, connection);
 
         }
 
@@ -3148,6 +3280,25 @@ gdm_session_answer_query (GdmSession *self,
         if (conversation != NULL) {
                 answer_pending_query (conversation, text);
         }
+}
+
+void
+gdm_session_report_error (GdmSession *self,
+                          const char *service_name,
+                          GDBusError  code,
+                          const char *message)
+{
+        GdmSessionConversation *conversation;
+
+        g_return_if_fail (GDM_IS_SESSION (self));
+        g_return_if_fail (service_name != NULL);
+
+        conversation = find_conversation_by_name (self, service_name);
+        if (conversation == NULL)
+                return;
+
+        g_dbus_method_invocation_return_error_literal (g_steal_pointer (&conversation->pending_invocation),
+                                                       G_DBUS_ERROR, code, message);
 }
 
 void

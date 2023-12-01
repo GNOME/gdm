@@ -47,6 +47,12 @@ config_h_dir = include_directories('.')
 udev_dep = dependency('udev')
 gudev_dep = dependency('gudev-1.0', version: '>= 232')
 
+# PAM
+libpam_dep = cc.find_library('pam')
+pam_extensions_supported = cc.has_header_symbol(
+  'security/pam_appl.h', 'PAM_BINARY_PROMPT',
+  dependencies: libpam_dep)
+
 glib_min_version = '2.68.0'
 
 glib_dep = dependency('glib-2.0', version: '>=' + glib_min_version)
@@ -55,6 +61,8 @@ gio_dep = dependency('gio-2.0', version: '>=' + glib_min_version)
 gio_unix_dep = dependency('gio-unix-2.0', version: '>=' + glib_min_version)
 gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
 dconf_dep = dependency('dconf', required: false)
+json_glib = dependency('json-glib-1.0', version: '>= 1.2.0',
+  required: pam_extensions_supported)
 libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 xcb_dep = dependency('xcb')
@@ -173,10 +181,6 @@ int main(int argc, char **argv) {
      || error == ENOSYS;
 }
 ''')
-
-# PAM
-libpam_dep = cc.find_library('pam')
-pam_extensions_supported = cc.has_header_symbol('security/pam_appl.h', 'PAM_BINARY_PROMPT')
 
 distro_autodetect_map = {
   '/etc/redhat-release': 'redhat',
