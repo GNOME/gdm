@@ -7,14 +7,14 @@
 # Hedayat Vatankhah <hedayat@grad.com>, 2008.
 # Mahyar Moghimi <mahyar.moqimi@gmail.com>, 2010.
 # Arash Mousavi <mousavi.arash@gmail.com>, 2011-2017.
-# Danial Behzadi <dani.behzi@ubuntu.com>, 2018-2022.
+# Danial Behzadi <dani.behzi@ubuntu.com>, 2018-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-11-07 03:43+0330\n"
+"POT-Creation-Date: 2023-09-17 10:05+0000\n"
+"PO-Revision-Date: 2024-01-18 02:56+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -61,20 +61,24 @@ msgstr "XMDCP: ناتوان در تجزیهٔ نشانی"
 msgid "/dev/urandom is not a character device"
 msgstr "پروندهٔ ‪/dev/urandom‬ یک دستگاه نویسه‌ای نیست"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "نمی‌توان نمایشگر گذرا را ساخت: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "شناسایی نشست جاری ممکن نبود: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "شناسایی مقر جاری ممکن نبود."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "نتوانست کاربر «%s» را روی سامانه بیابد"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -114,12 +118,12 @@ msgstr "گشودن کانال ارتباط خصوصی امکان‌پذیر نب
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "کارساز قرار بود که با کاربر %s راه‌اندازی شود ولی این کاربر وجود ندارد"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "تنظیم شناسهٔ گروه به %Id ممکن نبود"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "تابع initgroups () برای %s شکست خورد"
@@ -129,22 +133,22 @@ msgstr "تابع initgroups () برای %s شکست خورد"
 msgid "Couldn’t set userid to %d"
 msgstr "تنظیم شناسهٔ کاربر به %Id ممکن نبود"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: نمی‌توان پروندهٔ گزارش را برای نمایش %s گشود!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: خطا در تنظیم %s به %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: اولویت کارساز نمی‌تواند به %Id تنظیم شود: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: دستور کارساز خالی برای نمایش %s"
@@ -173,71 +177,71 @@ msgstr "دستگاه نمایشگر"
 msgid "The display device"
 msgstr "دستگاه نمایشگر"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "نمی‌توان فرایند یاریگر تأیید هویت را ساخت"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "به بیشینهٔ تلاش تأیید هویت با گذرواژه رسیدید. لطفاً روش دیگری برگزینید"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another authentication "
 "method"
 msgstr "به بیشینهٔ تلاش ورود خودکار رسیدید. لطفاً روش تأیید هویت دیگری برگزینید"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try another "
 "method"
 msgstr "به بیشینهٔ تلاش تأیید هویت با اثر انگشت رسیدید. لطفاً روش دیگری برگزینید"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try another "
 "method"
 msgstr "به بیشینهٔ تلاش تأیید هویت با کارت هوشمند رسیدید. لطفاً روش دیگری برگزینید"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid "You reached the maximum authentication attempts, please try another method"
 msgstr "به بیشینهٔ تلاش تأیید هویت رسیدید. لطفاً روش دیگری برگزینید"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "متأسّفانه تأیید هویت با گذرواژه کار نکرد. لطفاً دوباره تلاش کنید."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "متأسّفانه ورود خودکار کار نکرد. لطفاً دوباره تلاش کنید."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "متأسّفانه تأیید هویت با اثر انگشت کار نکرد. لطفاً دوباره تلاش کنید."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "متأسّفانه تأیید هویت با کارت هوشمند کار نکرد. لطفاً دوباره تلاش کنید."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "متأسّفانه کار نکرد. لطفاً دوباره تلاش کنید."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "برای حساب شما یک محدودیت زمانی ثبت شده است که اکنون به پایان رسید."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "نام کاربر:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "هیچ حساب کاربری موجود نیست"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "ناتوان در تعویض کاربر"
 
@@ -317,7 +321,7 @@ msgstr "فقط کاربر ریشه می‌تواند GDM را اجرا کند"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "کارگر نشست مدیر نمایش گنوم"
 
@@ -428,21 +432,309 @@ msgstr ""
 "تعداد دفعاتی که کاربر می‌تواند برای تصدیق‌هویت، قبل از بازگشت به قسمت انتخاب "
 "کاربر، تلاش کند."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "نمی‌توان نمایشگر گذرا را ساخت: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "نمایش راهنمای دستور"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "نمی‌توان نشست را فعال کرد: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "نمایش خروجی پرگو"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "نمایش خروجی اشکال‌زدایی"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "به کار انداختن روش هویت‌سنجی"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "از کار انداختن روش هویت‌سنجی"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "نیازمند روش هویت‌سنجی"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "کنش برداشتن کارت هوشمند"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "در نظر گرفتن بله برای هر پرسشی"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "پیکربندی هویت‌سنجی گذرواژه‌ای."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "پیکربندی هویت‌سنجی اثرانگشتی."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "پیکربندی هویت‌سنجی با کارت هوشمند."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "بازنشانی پیکربندی هویت‌سنجی GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "نمایش پیکربندی هویت‌سنجی GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "گزینه‌های گذرواژه"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "گزینه‌های اثرانگشت"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "گزینه‌های کارت هوشمند"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "بازنشانی گزینه‌ها"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "نمایش گزینه‌ها"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "هیچ پیمانهٔ PAMای برای هویت‌سنجی با گذرواژه وجود ندارد"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "هیچ پیمانهٔ PAMای برای هویت‌سنجی با کارت هوشمند وجود ندارد"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "هیچ پیمانهٔ PAMای برای هویت‌سنجی با اثر انگشت وجود ندارد"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "لااقل یک پارامتر برای %s لازم است"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "نمی‌توان در آن واحد %s را هم به کار و هم از کار انداخت"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "«%s» یک مقدار %s «%s» معتبر نیست"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "شکست در تعویض به کاربر %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "نتوانست شناسهٔ کاربری را روی %Iu تنظیم کند"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "توزیعی تشخیص داده نشد. قلّابی برای اجرا وجود ندارد"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "هیچ آرگومان معتبری برای اجرای قلّاب «%s» وجود ندارد"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "اجرا کردن قلاّب توزیع %s\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "قلّاب توزیع %s درخواست توقّف داد"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"قلّاب توزیع با وضعیت %Id و خطای %s شکست خورد:\n"
+"خروجی استاندارد:\n"
+"%s\n"
+"خروجی خطا:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr "شکست در تنظیم دستور %s و کلید %s با قلّاب توزیع: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "شکست در ایجاد شاخهٔ %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "نمایهٔ dconf پیدا نشد"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "پیکربندی system-dv برای dcong پیکربندی نشده"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "شکست در گرفتن نظر سرایند %s: %s. تغییر کرده؟"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "سرایند پروندهٔ %s مطابق نیست. تغییر کرده؟"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "سرایند مورد انتظار در پروندهٔ قفل %s پیدا نشد. تغییر کرده؟"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "شکست در اجرای قلّاب توزیع مورد نیاز: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "COMMAND"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"دستورها:\n"
+"  help         نمایش این اطّلاعات\n"
+"  password     پیکربنnی هویت‌سنجی با گذرواژه\n"
+"  fingerprint  پیکربندی هویت‌سنجی با اثر انگشت\n"
+"  smartcard    پیکربندی هویت‌سنجی با کارت هوشمند\n"
+"  reset        بازنشانی پیکربندی پیش‌گزیده\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "گزینه‌های دستور"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "برای استفاده از دستور %s «%s» باید ریشه باشید"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "شکست در تنظیم تنظیمات %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "شکست در تنظیم تنظیمات کارت هوشمند"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "شکست در تنظیم تنظیمات گذرواژه"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "به کار افتاده"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "از کار افتاده"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "پشتیبانی نشده"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "لازم"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM Authorization configuration\n"
+"پیکربندی هویت‌سنجی GDM\n"
+"\n"
+"  هویت‌سنجی با گذرواژه: %s\n"
+"  هویت‌سنجی با اثر انگشت: %s\n"
+"  هویت‌سنجی با کارت هوشمند: %s\n"
+"  کنش برداشتن کارت هوشمند: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "ب"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "ا"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "ن"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "خ"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "می‌خواهید ادامه دهید؟ [«ب»/خ]؟ "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "کاربر درخواست را لغو کرد"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "شکست در بازنشانی تنظیمات %s: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "فقط دستور VERSION پشتیبانی می‌شود"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "COMMAND"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47 utils/gdmflexiserver.c:49
 #: utils/gdmflexiserver.c:50
@@ -470,6 +762,9 @@ msgstr "نماگرفت انجام شد"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "گرفتن عکسی از صفحه"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "نمی‌توان نشست را فعال کرد: "
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
