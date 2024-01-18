@@ -191,7 +191,7 @@ distro_autodetect_map = {
 }
 
 distro = get_option('distro')
-if distro != 'none'
+if distro == 'none'
   foreach _file, _pam_conf : distro_autodetect_map
     distro_check = run_command('test', '-f', _file)
     if distro_check.returncode() == 0
