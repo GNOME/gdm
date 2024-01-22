@@ -6,6 +6,36 @@
   </enum>
 
   <schema id="org.gnome.login-screen" path="/org/gnome/login-screen/">
+    <key name="enable-switchable-authentication" type="b">
+      <default>true</default>
+      <summary>
+        Whether or not to allow switchable authentication for login
+      </summary>
+      <description>
+        The login screen can optionally allow a single PAM service to provide
+        multiple authentication mechanisms via a GDM PAM.
+      </description>
+    </key>
+    <key name="enable-web-authentication" type="b">
+      <default>true</default>
+      <summary>
+        Whether or not to allow authentication via external web site
+      </summary>
+      <description>
+        The login screen can optionally allow users to authenticate via
+        web login.
+      </description>
+    </key>
+    <key name="enable-passkey-authentication" type="b">
+      <default>true</default>
+      <summary>
+        Whether or not to allow authentication using a passkey
+      </summary>
+      <description>
+        The login screen can optionally allow users who have passkeys to log
+        in using those passkeys.
+      </description>
+    </key>
     <key name="enable-fingerprint-authentication" type="b">
       <default>true</default>
       <summary>
