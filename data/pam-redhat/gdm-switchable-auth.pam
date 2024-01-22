@@ -1,0 +1,26 @@
+auth     [success=done ignore=ignore default=bad] pam_selinux_permit.so
+auth     required                                     pam_env.so
+auth     required                                     pam_faildelay.so delay=2000000
+auth     [default=1 ignore=ignore success=ok]         pam_usertype.so isregular
+auth     [default=1 ignore=ignore success=ok]         pam_localuser.so
+auth     sufficient                                   pam_unix.so nullok
+auth     [default=1 ignore=ignore success=ok]         pam_usertype.so isregular
+auth     sufficient                                   pam_sss.so
+auth     required                                     pam_deny.so
+auth     optional      pam_gnome_keyring.so
+auth     include       postlogin
+
+account     required      pam_nologin.so
+account     include       password-auth
+
+password    substack       password-auth
+-password   optional       pam_gnome_keyring.so use_authtok
+
+session     required      pam_selinux.so close
+session     required      pam_loginuid.so
+session     required      pam_selinux.so open
+session     optional      pam_keyinit.so force revoke
+session     required      pam_namespace.so
+session     include       password-auth
+session     optional      pam_gnome_keyring.so auto_start
+session     include       postlogin
