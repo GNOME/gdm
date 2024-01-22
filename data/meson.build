@@ -74,6 +74,7 @@ pam_data_files_map = {
     'gdm-fingerprint',
     'gdm-smartcard',
     'gdm-password',
+    'gdm-switchable-auth',
   ],
   'openembedded': [
     'gdm-autologin',
