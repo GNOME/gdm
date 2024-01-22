@@ -331,10 +331,9 @@ session_unlock (GdmManager *manager,
 }
 
 static GdmSession *
-find_session_for_user_on_seat (GdmManager *manager,
-                               const char *username,
-                               const char *seat_id,
-                               GdmSession *dont_count_session)
+find_session_for_user (GdmManager *manager,
+                       const char *username,
+                       GdmSession *dont_count_session)
 {
         GList *node;
 
@@ -364,8 +363,7 @@ find_session_for_user_on_seat (GdmManager *manager,
                          candidate_seat_id,
                          candidate_username);
 
-                if (g_strcmp0 (candidate_username, username) == 0 &&
-                    g_strcmp0 (candidate_seat_id, seat_id) == 0) {
+                if (g_strcmp0 (candidate_username, username) == 0) {
                         g_debug ("GdmManager: yes, found session %s", candidate_session_id);
                         return candidate_session;
                 }
@@ -598,7 +596,7 @@ switch_to_compatible_user_session (GdmManager *manager,
                 session = NULL;
         }
 
-        existing_session = find_session_for_user_on_seat (manager, username, seat_id, session);
+        existing_session = find_session_for_user (manager, username, session);
 
         if (existing_session != NULL) {
                 ssid_to_activate = gdm_session_get_session_id (existing_session);
@@ -1136,6 +1134,24 @@ open_temporary_reauthentication_channel (GdmManager            *self,
 }
 
 static gboolean
+are_sessions_compatible (GdmSession *session_a,
+                         GdmSession *session_b)
+{
+        gboolean session_a_is_local = FALSE;
+        gboolean session_b_is_local = FALSE;
+        const char *session_a_seat_id, *session_b_seat_id;
+
+        g_object_get (G_OBJECT (session_a), "display-is-local", &session_a_is_local, NULL);
+        g_object_get (G_OBJECT (session_b), "display-is-local", &session_b_is_local, NULL);
+
+        session_a_seat_id = gdm_session_get_display_seat_id (session_a);
+        session_b_seat_id = gdm_session_get_display_seat_id (session_b);
+
+        return session_a_is_local && session_b_is_local &&
+               g_strcmp0 (session_a_seat_id, session_b_seat_id) == 0;
+}
+
+static gboolean
 gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager,
                                                   GDBusMethodInvocation *invocation,
                                                   const char            *username)
@@ -1144,6 +1160,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         const char       *sender;
         GdmDisplay       *display = NULL;
         GdmSession       *session;
+        GdmSession       *login_session = NULL;
         GDBusConnection  *connection;
         char             *seat_id = NULL;
         char             *session_id = NULL;
@@ -1169,17 +1186,24 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         }
 
         if (is_login_screen) {
-                g_debug ("GdmManager: looking for login screen session for user %s on seat %s", username, seat_id);
-                session = find_session_for_user_on_seat (self,
-                                                         username,
-                                                         seat_id,
-                                                         NULL);
+                g_debug ("GdmManager: looking for login screen session for user %s", username);
+                session = find_session_for_user (self,
+                                                 username,
+                                                 NULL);
+                login_session = get_user_session_for_display (display);
         } else {
                 g_debug ("GdmManager: looking for user session on display");
                 session = get_user_session_for_display (display);
         }
 
-        if (session != NULL && gdm_session_is_running (session)) {
+        if (session != NULL && login_session != NULL &&
+            !are_sessions_compatible (session, login_session)) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Login session is not compatible with user session");
+                return TRUE;
+        } else if (session != NULL && gdm_session_is_running (session)) {
                 if (!gdm_session_is_frozen (session)) {
                         gdm_session_start_reauthentication (session, pid, uid);
                         g_hash_table_insert (self->open_reauthentication_requests,
