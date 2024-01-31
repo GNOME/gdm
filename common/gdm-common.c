@@ -389,6 +389,38 @@ gdm_activate_session_by_id (GDBusConnection *connection,
 }
 
 gboolean
+gdm_terminate_session_by_id (GDBusConnection *connection,
+                             GCancellable    *cancellable,
+                             const char      *session_id)
+{
+        GError *local_error = NULL;
+        GVariant *reply;
+
+        g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
+        g_return_val_if_fail (session_id != NULL, FALSE);
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "TerminateSession",
+                                             g_variant_new ("(s)", session_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             cancellable, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to terminate session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
+        }
+
+        g_variant_unref (reply);
+
+        return TRUE;
+}
+
+gboolean
 gdm_get_login_window_session_id (const char  *seat_id,
                                  char       **session_id)
 {

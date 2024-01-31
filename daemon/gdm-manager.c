@@ -2121,6 +2121,34 @@ on_session_reauthenticated (GdmSession *session,
 }
 
 static void
+on_stop_conflicting_session (GdmSession *login_session,
+                             const char *username,
+                             GdmManager *manager)
+{
+        const char *session_id;
+        GdmSession *user_session;
+
+        user_session = find_session_for_user (manager,
+                                              username,
+                                              NULL);
+        if (user_session == NULL) {
+                g_warning ("Couldn't find session for user");
+                return;
+        }
+
+        if (are_sessions_compatible (login_session, user_session)) {
+                g_warning ("Session requested to stop is compatible, it won't be stopped");
+                return;
+        }
+
+        session_id = gdm_session_get_session_id (user_session);
+        if (!gdm_terminate_session_by_id (manager->connection, NULL, session_id)) {
+                g_warning ("Failed to terminate conflicting session");
+                return;
+        }
+}
+
+static void
 on_session_client_ready_for_session_to_start (GdmSession      *session,
                                               const char      *service_name,
                                               gboolean         client_is_ready,
@@ -2415,6 +2443,10 @@ create_user_session_for_display (GdmManager *manager,
         g_signal_connect (session,
                           "reauthenticated",
                           G_CALLBACK (on_session_reauthenticated),
+                          manager);
+        g_signal_connect (session,
+                          "stop-conflicting-session",
+                          G_CALLBACK (on_stop_conflicting_session),
                           manager);
         g_signal_connect (session,
                           "client-ready-for-session-to-start",

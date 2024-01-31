@@ -143,6 +143,7 @@ struct _GdmSession
 
         guint32              is_program_session : 1;
         guint32              display_is_initial : 1;
+        guint32              is_opened : 1;
 };
 
 enum {
@@ -184,6 +185,7 @@ enum {
         SESSION_DIED,
         REAUTHENTICATION_STARTED,
         REAUTHENTICATED,
+        STOP_CONFLICTING_SESSION,
         LAST_SIGNAL
 };
 
@@ -978,6 +980,8 @@ on_opened (GdmDBusWorker *worker,
 
                 g_debug ("GdmSession: Emitting 'session-opened' signal");
                 g_signal_emit (self, signals[SESSION_OPENED], 0, service_name, session_id);
+
+                self->is_opened = TRUE;
         } else {
                 report_and_stop_conversation (self, service_name, error);
 
@@ -1765,6 +1769,28 @@ gdm_session_handle_get_timed_login_details (GdmDBusGreeter        *greeter_inter
 }
 
 static gboolean
+gdm_session_handle_client_stop_conflicting_session (GdmDBusGreeter        *greeter_interface,
+                                                    GDBusMethodInvocation *invocation,
+                                                    GdmSession            *self)
+{
+        if (!self->is_opened) {
+                g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               "Can't stop conflicting session if this session is not opened yet");
+                return TRUE;
+        }
+
+        g_signal_emit (self, signals[STOP_CONFLICTING_SESSION], 0, self->selected_user);
+
+        if (self->greeter_interface != NULL) {
+                gdm_dbus_greeter_complete_stop_conflicting_session (self->greeter_interface,
+                                                                    invocation);
+        }
+
+        return TRUE;
+}
+
+static gboolean
 gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_interface,
                                             GDBusMethodInvocation *invocation,
                                             const char            *username,
@@ -1866,6 +1892,10 @@ export_greeter_interface (GdmSession      *self,
         g_signal_connect (greeter_interface,
                           "handle-get-timed-login-details",
                           G_CALLBACK (gdm_session_handle_get_timed_login_details),
+                          self);
+        g_signal_connect (greeter_interface,
+                          "handle-stop-conflicting-session",
+                          G_CALLBACK (gdm_session_handle_client_stop_conflicting_session),
                           self);
 
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (greeter_interface),
@@ -4258,6 +4288,17 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+        signals [STOP_CONFLICTING_SESSION] =
+                g_signal_new ("stop-conflicting-session",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              0,
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
 
         g_object_class_install_property (object_class,
                                          PROP_VERIFICATION_MODE,
