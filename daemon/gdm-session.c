@@ -975,7 +975,8 @@ on_opened (GdmDBusWorker *worker,
 
                 if (self->greeter_interface != NULL) {
                         gdm_dbus_greeter_emit_session_opened (self->greeter_interface,
-                                                              service_name);
+                                                              service_name,
+                                                              session_id);
                 }
 
                 g_debug ("GdmSession: Emitting 'session-opened' signal");
