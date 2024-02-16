@@ -9,16 +9,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2022-10-28 03:34+0000\n"
-"PO-Revision-Date: 2022-10-28 09:37+0300\n"
-"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
+"POT-Creation-Date: 2023-09-17 10:05+0000\n"
+"PO-Revision-Date: 2024-02-17 00:42+0200\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <yoseforb@gmail.com>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n>2||n==0) ? 1 : 2\n"
-"X-Generator: Gtranslator 42.0\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n>2||n==0) ? 1 : 2;\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -38,11 +38,11 @@ msgstr "בחירת מערכת"
 
 #: chooser/gdm-host-chooser-widget.c:253
 msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: לא ניתן ליצור חוצץ XDMCP!"
 
 #: chooser/gdm-host-chooser-widget.c:259
 msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: לא ניתן ליצור כותרת XDMCP!"
 
 #: chooser/gdm-host-chooser-widget.c:265
 msgid "XDMCP: Incorrect XDMCP version!"
@@ -54,22 +54,26 @@ msgstr "XDMCP: לא ניתן לנתח את הכתובת"
 
 #: common/gdm-common.c:307
 msgid "/dev/urandom is not a character device"
-msgstr "/dev/urandom is not a character device"
+msgstr "‎/dev/urandom הוא לא התקן תווים"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "לא ניתן ליצור תצוגה חולפת: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
-msgstr "לא ניתן לזהות את ההפעלה הנוכחית."
+msgstr "לא ניתן לזהות את ההפעלה הנוכחית: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "לא ניתן לזהות את המושב הנוכחי."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "לא ניתן למצוא את המשתמש „%s“ במערכת"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -110,37 +114,37 @@ msgstr "לא ניתן לפתוח ערוץ התקשרות פרטי"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Server was to be spawned by user %s but that user doesn’t exist"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Couldn’t set groupid to %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
-msgstr "initgroups () failed for %s"
+msgstr "initgroups ()‎ נכשלה עבור %s"
 
 #: daemon/gdm-server.c:407
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "Couldn’t set userid to %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Could not open log file for display %s!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Error setting %s to %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Server priority couldn’t be set to %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
@@ -169,72 +173,72 @@ msgstr "התקן תצוגה"
 msgid "The display device"
 msgstr "התקן התצוגה"
 
-#: daemon/gdm-session.c:1334
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "לא ניתן ליצור תהליך מסייע אימות"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "הגעת למספר המרבי של ניסיונות אימות ססמה, יש לנסות דרך אחרת"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr "הגעת למספר המרבי של ניסיונות התחברות אוטומטית, יש לנסות דרך אחרת"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr "הגעת למספר המרבי של ניסיונות אימות טביעת אצבע, יש לנסות דרך אחרת"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr "הגעת למספר המרבי של ניסיונות אימות כרטיס חכם, יש לנסות דרך אחרת"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "הגעת למספר המרבי של ניסיונות אימות, יש לנסות דרך אחרת"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
-msgstr "לצערינו אימות הססמה לא צלח. יש לנסות שוב."
+msgstr "לצערנו אימות הססמה לא צלח. יש לנסות שוב."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
-msgstr "לצערינו ההתחברות האוטומטית לא צלחה. יש לנסות שוב."
+msgstr "לצערנו הכניסה האוטומטית לא צלחה. יש לנסות שוב."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
-msgstr "לצערינו אימות טביעת האצבע לא צלחה. יש לנסות שוב."
+msgstr "לצערנו אימות טביעת האצבע לא צלח. יש לנסות שוב."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
-msgstr "לצערינו אימות הכרטיס החכם לא צלח. יש לנסות שוב."
+msgstr "לצערנו אימות הכרטיס החכם לא צלח. יש לנסות שוב."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
-msgstr "לצערינו פעולה זו לא צלחה. יש לנסות שוב."
+msgstr "לצערנו פעולה זו לא צלחה. יש לנסות שוב."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "לחשבון שלך ניתנה מגבלת זמן שחלפה זה עתה."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
@@ -244,7 +248,7 @@ msgstr "GNOME Display Manager Wayland Session Launcher"
 
 #: daemon/gdm-xdmcp-display-factory.c:612
 msgid "Could not create socket!"
-msgstr "Could not create socket!"
+msgstr "לא ניתן ליצור שקע!"
 
 #: daemon/gdm-x-session.c:879
 msgid "Run program through /etc/gdm/Xsession wrapper script"
@@ -314,7 +318,7 @@ msgstr "Only the root user can run GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
@@ -424,21 +428,299 @@ msgstr ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "לא ניתן ליצור תצוגה חולפת:"
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "הצגת עזרה לפקודה"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "לא ניתן לגשת את ההפעלה:"
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "הצגת פלט מפורט"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "הצגת פלט ניפוי שגיאות"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "הפעלת שיטת האימות"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "השבתת שיטת האימות"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "דרישת שיטת האימות"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "פעולה לביצוע עם הסרת כרטיס חכם"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "להניח שהתשובה היא כן לכל השאלות"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "הגדרת אימות בסיסמה."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "הגדרת אימות בטביעת אצבע."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "הגדרת אימות עם כרטיס חכם."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "איפוס הגדרות האימות של GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "הצגת הגדרות האימות של GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "אפשרויות ססמה"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "אפשרויות טביעות אצבע"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "אפשרויות טביעות אצבע"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "איפוס האפשרויות"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "הצגת האפשרויות"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "אין מודול PAM זמין לאימות עם ססמה"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "אין מודול PAM זמין לאימות עם כרטיס חכם"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "אין מודול PAM זמין לאימות עם טביעת אצבע"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "ל־„%s” נחוץ משתנה אחד לפחות"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "אי אפשר להפעיל ולהשבית את „%s” בו־זמנית"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "„%s” זה לא ערך %s „%s” תקין"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "מעבר למשתמש %s נכשל"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "לא ניתן להגדיר את מזהה המשתמש לערך %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "לא זוהתה הפצה, אין התליה להרצה"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "לא נמצאו ארגומנטים תקפים להרצת ההתליה „%s”"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "התליית ההפצה „%s” פועלת\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "התליית ההפצה „%s” ביקשה לעצור"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"התליית ההפצה נכשלה עם מצב היציאה %d והשגיאה %s:\n"
+"פלט תקני (stdout):\n"
+"%s\n"
+"פלט שגיאה:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "יצירת התיקייה %s נכשלה"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "לא נמצא פרופיל dconf"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "ל־dconf אין system-db (מסד נתוני מערכת) מוגדר"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr ""
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr ""
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "הרצת התליית ההפצה הנחוצה נכשלה: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "COMMAND"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "אפשרויות פקודה"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "צריך להיות משתמש על (root) כדי להשתמש בפקודת %s‏ „%s”"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "הגדרת ההגדרה %s נכשלה: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "הגדרת תצורת כרטיס חכם נכשלה"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "הגדרת תצורת ססמה נכשלה"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "פעיל"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "מושבת"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "אין תמיכה"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "הכרחי"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"הגדרות אימות של GDM\n"
+"\n"
+"  אימות בססמה: %s\n"
+"  אימות בטביעת אצבע: %s\n"
+"  אימות עם כרטיס חכם: %s\n"
+"  פעולה בשליפת כרטיס חכם: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr ""
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr ""
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr ""
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr ""
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr ""
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "המשתמש ביטל את הבקשה"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "איפוס הגדרות %s נכשל: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Only the VERSION command is supported"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "COMMAND"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -466,6 +748,9 @@ msgstr "המסך צולם"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "צילום המסך"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "לא ניתן לגשת את ההפעלה:"
 
 #~ msgid ""
 #~ "You reached the maximum PIN authentication attempts, please try another "
