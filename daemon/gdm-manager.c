@@ -1132,6 +1132,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         uid_t             uid = (uid_t) -1;
         gboolean          is_login_screen = FALSE;
         gboolean          is_remote = FALSE;
+        char             *address = NULL;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
@@ -1160,30 +1161,33 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         }
 
         if (session != NULL && gdm_session_is_running (session)) {
-                gdm_session_start_reauthentication (session, pid, uid);
-                g_hash_table_insert (self->open_reauthentication_requests,
-                                     GINT_TO_POINTER (pid),
-                                     invocation);
+                if (!gdm_session_is_frozen (session)) {
+                        gdm_session_start_reauthentication (session, pid, uid);
+                        g_hash_table_insert (self->open_reauthentication_requests,
+                                             GINT_TO_POINTER (pid),
+                                             invocation);
+                        return TRUE;
+                } else {
+                        g_debug("GdmManager: user session is frozen; using temporary reauthentication channel");
+                }
         } else if (is_login_screen) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
                                                                "Login screen only allowed to open reauthentication channels for running sessions");
                 return TRUE;
-        } else {
-                char *address;
-                address = open_temporary_reauthentication_channel (self,
-                                                                   seat_id,
-                                                                   session_id,
-                                                                   pid,
-                                                                   uid,
-                                                                   is_remote);
-                gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
-                                                                         invocation,
-                                                                         address);
-                g_free (address);
         }
 
+        address = open_temporary_reauthentication_channel (self,
+                                                           seat_id,
+                                                           session_id,
+                                                           pid,
+                                                           uid,
+                                                           is_remote);
+        gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
+                                                                 invocation,
+                                                                 address);
+        g_free (address);
         return TRUE;
 }
 

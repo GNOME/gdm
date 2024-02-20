@@ -45,6 +45,8 @@
 
 #include <json-glib/json-glib.h>
 
+#include <systemd/sd-login.h>
+
 #include "gdm-session.h"
 #include "gdm-session-glue.h"
 #include "gdm-dbus-util.h"
@@ -3340,6 +3342,34 @@ gdm_session_is_running (GdmSession *self)
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         return self->session_pid > 0;
+}
+
+gboolean
+gdm_session_is_frozen (GdmSession *self)
+{
+        g_autofree char *cgroup = NULL, *path = NULL, *data = NULL;
+        g_auto (GStrv) arr = NULL;
+
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+
+        if (self->session_pid <= 0)
+                return FALSE;
+
+        if (sd_pid_get_cgroup (self->session_pid, &cgroup) < 0)
+                return FALSE;
+
+        path = g_build_filename ("/sys/fs/cgroup", cgroup, "cgroup.events", NULL);
+
+        if (!g_file_get_contents (path, &data, NULL, NULL))
+                return FALSE;
+
+        arr = g_strsplit_set (data, " \n", -1);
+
+        for (gsize i = 0; arr[i] != NULL; i++) {
+                if (g_str_equal (arr[i], "frozen"))
+                        return g_str_equal (arr[i + 1], "1");
+        }
+        return FALSE;
 }
 
 gboolean
