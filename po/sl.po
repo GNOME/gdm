@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
 "POT-Creation-Date: 2024-02-19 12:45+0000\n"
-"PO-Revision-Date: 2024-02-19 20:58+0100\n"
+"PO-Revision-Date: 2024-02-20 19:24+0100\n"
 "Last-Translator: Matej Urbančič <mateju@src.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -542,7 +542,7 @@ msgstr "»%s« ne more biti sočasno omogočen in onemogočen"
 #: utils/gdm-config.c:385
 #, c-format
 msgid "“%s” is not a valid %s “%s” value"
-msgstr ""
+msgstr "»%s« ni veljavna vrednost %s »%s«"
 
 #: utils/gdm-config.c:495
 #, c-format
@@ -550,29 +550,29 @@ msgid "Failed to switch to %s user"
 msgstr "Preklop na uporabnika %s je spodletel"
 
 #: utils/gdm-config.c:516
-#, fuzzy, c-format
-#| msgid "Couldn’t set userid to %d"
+#, c-format
 msgid "Couldn’t set userid to %u"
-msgstr "Ni mogoče nastaviti vrednosti ID uporabnika na %d"
+msgstr "Ni mogoče nastaviti vrednosti userid na %u"
 
 #: utils/gdm-config.c:679
 msgid "No distro detected, no hook to run"
 msgstr ""
+"Ni zaznanega podatka distribucije, zato ni mogoče zagnati priključka (hook)"
 
 #: utils/gdm-config.c:697
 #, c-format
 msgid "No valid args found to run hook “%s”"
-msgstr ""
+msgstr "Ni najdenih veljavnih argumentov za zagon priključka (hook) »%s«"
 
 #: utils/gdm-config.c:702
 #, c-format
 msgid "Running distro hook “%s”\n"
-msgstr ""
+msgstr "Poteka priključevanje na distribucijo (hook) »%s«\n"
 
 #: utils/gdm-config.c:716
 #, c-format
 msgid "Distro hook “%s” requested stopping"
-msgstr ""
+msgstr "Priključitev (hook) na distribucijo »%s« zahteva zaustavitev"
 
 #: utils/gdm-config.c:729
 #, c-format
@@ -583,11 +583,19 @@ msgid ""
 "Error output:\n"
 "%s"
 msgstr ""
+"Izvajanje ukaza za priključitev (hook) na distribucijo je spodletelo s "
+"stanjem %d in napako %s:\n"
+"Standardni odvod:\n"
+"%s\n"
+"Odvod napake:\n"
+"%s"
 
 #: utils/gdm-config.c:779
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
+"Za ukaz »%s« je nastavljanje možnosti ključa »%s« spodletelo za priključitev "
+"na distribucijo: "
 
 #: utils/gdm-config.c:819
 #, c-format
@@ -600,28 +608,29 @@ msgstr "Profila dconf ni mogoče najti"
 
 #: utils/gdm-config.c:980
 msgid "dconf has no system-db configured"
-msgstr ""
+msgstr "Ukaz dconf nima nastavljenega podatka system-db"
 
 #. TRANSLATORS: First value is a file path, second is an error message
 #: utils/gdm-config.c:1129
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
 msgstr ""
+"Pridobivanje opombe glave »%s« je spodletelo: %s, je vrednosti spremenjena?"
 
 #: utils/gdm-config.c:1132
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
-msgstr ""
+msgstr "Opomba glave datoteke »%s« ni skladna; je vrednosti spremenjena?"
 
 #. XXX: Fail with an error instead?
 #: utils/gdm-config.c:1260
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
-msgstr ""
+msgstr "Ni zaznane glave v datoteki zaklepa »%s«; je vrednosti spremenjena?"
 
 #: utils/gdm-config.c:1545
 msgid "Failed to run a required distro hook: "
-msgstr ""
+msgstr "Izvajanje zahtevanega priključka (hook) distribucije je spodletelo:"
 
 #: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
 msgid "COMMAND"
@@ -640,6 +649,15 @@ msgid ""
 "\n"
 "Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
+"Ukazi:\n"
+"  help         Pokaže te podrobnosti\n"
+"  password     Nastavi overitev z geslom\n"
+"  fingerprint  Nastavi overitev s prstnim odtisom\n"
+"  smartcard    Nastavi overitev s pametno kartico\n"
+"  reset        Ponastavi privzeto nastavitev\n"
+"  show         Pokaže trenutno nastavitev\n"
+"\n"
+"Uporaba »%s UKAZ --help« za pomoč o vsakem ukazu.\n"
 
 #: utils/gdm-config.c:1627
 msgid "Command options"
@@ -649,21 +667,20 @@ msgstr "Možnosti ukaza"
 #: utils/gdm-config.c:1662
 #, c-format
 msgid "You need to be root to use %s “%s” command"
-msgstr ""
+msgstr "Za uporabo ukaza %s »%s« so zahtevana skrbniška dovoljenja"
 
 #: utils/gdm-config.c:1712
-#, fuzzy, c-format
-#| msgid "Failed to create LogDir %s: %s"
+#, c-format
 msgid "Failed to set %s setting: "
-msgstr "Napaka med ustvarjanjem dnevniške mape %s: %s"
+msgstr "Prilagajanje nastavitve %s je spodletelo: "
 
 #: utils/gdm-config.c:1804
 msgid "Failed to set smartcard setting"
-msgstr ""
+msgstr "Prilagajanje nastavitve pametne kartice je spodletelo"
 
 #: utils/gdm-config.c:1810
 msgid "Failed to set password setting"
-msgstr ""
+msgstr "Prilagajanje nastavitve gesla je spodletelo"
 
 #: utils/gdm-config.c:1824
 msgid "Enabled"
@@ -691,6 +708,12 @@ msgid ""
 "  Smart Card authentication: %s\n"
 "  Smart Card removal action: %s\n"
 msgstr ""
+"Nastavitev overjanja prijave GDM\n"
+"\n"
+"  Overjanje z geslom: %s\n"
+"  Overjanje s prstnim odtisom: %s\n"
+"  Overjanje s pametno kartico: %s\n"
+"  Dejanje odstranjevanja pametne kartice: %s\n"
 
 #: utils/gdm-config.c:1938
 msgctxt "Interactive question"
@@ -722,10 +745,9 @@ msgid "User cancelled the request"
 msgstr "Uporabnik je preklical zahtevo"
 
 #: utils/gdm-config.c:1994
-#, fuzzy, c-format
-#| msgid "Failed to create AuthDir %s: %s"
+#, c-format
 msgid "Failed to reset %s setting: "
-msgstr "Napaka med ustvarjanjem programske mape %s: %s"
+msgstr "Ponastavljanje nastavitve %s je spodletelo: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
