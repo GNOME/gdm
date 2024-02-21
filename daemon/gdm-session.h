@@ -131,6 +131,7 @@ void              gdm_session_set_timed_login_details     (GdmSession *session,
                                                            int         delay);
 gboolean          gdm_session_client_is_connected         (GdmSession *session);
 gboolean          gdm_session_is_running                  (GdmSession *session);
+gboolean          gdm_session_is_frozen                   (GdmSession *session);
 GPid              gdm_session_get_pid                     (GdmSession *session);
 
 G_END_DECLS

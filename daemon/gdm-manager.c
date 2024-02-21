@@ -1026,18 +1026,32 @@ on_reauthentication_verification_complete (GdmSession *session,
                                            const char *service_name,
                                            GdmManager *self)
 {
-        const char *session_id;
-        session_id = g_object_get_data (G_OBJECT (session), "caller-session-id");
-        g_debug ("GdmManager: reauthenticated user in unmanaged session '%s' with service '%s'",
-                 session_id, service_name);
-        session_unlock (self, session_id);
+        GdmSession *user_session;
+        const char *caller_session_id;
+
+        user_session = g_object_get_data (G_OBJECT (session), "user-session");
+        caller_session_id = g_object_get_data (G_OBJECT (session), "caller-session-id");
+
+        if (user_session != NULL) {
+                g_debug ("GdmManager: reauthenticated user in frozen session '%s' with service '%s'",
+                         gdm_session_get_session_id (user_session), service_name);
+
+                switch_to_compatible_user_session (self, user_session, TRUE);
+        } else if (caller_session_id != NULL) {
+                g_debug ("GdmManager: reauthenticated user in unmanaged session '%s' with service '%s'",
+                         caller_session_id, service_name);
+
+                session_unlock (self, caller_session_id);
+        }
+
         close_transient_session (self, session);
 }
 
 static char *
 open_temporary_reauthentication_channel (GdmManager            *self,
+                                         GdmSession            *user_session,
                                          char                  *seat_id,
-                                         char                  *session_id,
+                                         char                  *caller_session_id,
                                          GPid                   pid,
                                          uid_t                  uid,
                                          gboolean               is_remote)
@@ -1072,9 +1086,14 @@ open_temporary_reauthentication_channel (GdmManager            *self,
 
         g_object_set_data_full (G_OBJECT (session),
                                 "caller-session-id",
-                                g_strdup (session_id),
+                                g_strdup (caller_session_id),
                                 (GDestroyNotify)
                                 g_free);
+        g_object_set_data_full (G_OBJECT (session),
+                                "user-session",
+                                g_object_ref (user_session),
+                                (GDestroyNotify)
+                                g_object_unref);
         g_object_set_data (G_OBJECT (session),
                            "caller-pid",
                            GUINT_TO_POINTER (pid));
@@ -1132,6 +1151,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         uid_t             uid = (uid_t) -1;
         gboolean          is_login_screen = FALSE;
         gboolean          is_remote = FALSE;
+        char             *address = NULL;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
@@ -1160,30 +1180,34 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         }
 
         if (session != NULL && gdm_session_is_running (session)) {
-                gdm_session_start_reauthentication (session, pid, uid);
-                g_hash_table_insert (self->open_reauthentication_requests,
-                                     GINT_TO_POINTER (pid),
-                                     invocation);
+                if (!gdm_session_is_frozen (session)) {
+                        gdm_session_start_reauthentication (session, pid, uid);
+                        g_hash_table_insert (self->open_reauthentication_requests,
+                                             GINT_TO_POINTER (pid),
+                                             invocation);
+                        return TRUE;
+                } else {
+                        g_debug("GdmManager: user session is frozen; using temporary reauthentication channel");
+                }
         } else if (is_login_screen) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
                                                                "Login screen only allowed to open reauthentication channels for running sessions");
                 return TRUE;
-        } else {
-                char *address;
-                address = open_temporary_reauthentication_channel (self,
-                                                                   seat_id,
-                                                                   session_id,
-                                                                   pid,
-                                                                   uid,
-                                                                   is_remote);
-                gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
-                                                                         invocation,
-                                                                         address);
-                g_free (address);
         }
 
+        address = open_temporary_reauthentication_channel (self,
+                                                           is_login_screen? session : NULL,
+                                                           seat_id,
+                                                           session_id,
+                                                           pid,
+                                                           uid,
+                                                           is_remote);
+        gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
+                                                                 invocation,
+                                                                 address);
+        g_free (address);
         return TRUE;
 }
 
