@@ -11,14 +11,14 @@
 # Lucas Vieites <lucas@codexion.com>, 2008.
 # 
 # Jorge González <jorgegonz@svn.gnome.org>, 2008-2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011-2023.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-01-25 17:25+0000\n"
-"PO-Revision-Date: 2023-02-21 11:40+0100\n"
+"POT-Creation-Date: 2023-09-17 10:05+0000\n"
+"PO-Revision-Date: 2024-02-21 11:34+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -28,7 +28,7 @@ msgstr ""
 "Group-Coordinator: Francisco Javier F. Serrador <serrador@openshine.com>\n"
 "Translation-Asignee: Lucas Vieites <lucas@asixinformatica.com> \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 42.0\n"
+"X-Generator: Gtranslator 45.3\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -66,20 +66,24 @@ msgstr "XMDCP: no se puede analizar la dirección"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom no es un dispositivo de caracteres"
 
-#: common/gdm-common.c:507 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "No se pudo crear la pantalla de transición: "
+
+#: common/gdm-common.c:511
 msgid "Could not identify the current session: "
 msgstr "No se pudo identificar la sesión actual: "
 
-#: common/gdm-common.c:516 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:520
 msgid "Could not identify the current seat."
 msgstr "No se pudo identificar la sesión actual."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "No se pudo encontrar el usuario «%s» en el sistema"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -120,12 +124,12 @@ msgstr "No se puede abrir el cana de comunicación privada"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "El servidor debía lanzarlo el usuario %s pero ese usuario no existe"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "No se pudo establecer el id de grupo a %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Ha fallado initgroups() para %s"
@@ -135,22 +139,22 @@ msgstr "Ha fallado initgroups() para %s"
 msgid "Couldn’t set userid to %d"
 msgstr "No se pudo establecer el id de usuario a %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: No se pudo abrir el archivo de registro de la pantalla %s."
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Ha ocurrido un error al establecer %s a %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: la prioridad del servidor no se pudo establecer a %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comando de servidor vacío para la pantalla %s"
@@ -179,11 +183,11 @@ msgstr "Pantalla"
 msgid "The display device"
 msgstr "La pantalla"
 
-#: daemon/gdm-session.c:1336
+#: daemon/gdm-session.c:1353
 msgid "Could not create authentication helper process"
 msgstr "No se pudo crear el proceso de ayuda de autenticación"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:743
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -191,7 +195,7 @@ msgstr ""
 "Ha alcanzado el máximo de intentos de autenticación con contraseña. Pruebe "
 "con otro método"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:746
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -199,7 +203,7 @@ msgstr ""
 "Ha alcanzado el máximo de intentos de inicio de sesión automático. Pruebe "
 "con otro método"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:749
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -207,7 +211,7 @@ msgstr ""
 "Ha alcanzado el máximo de intentos de autenticación con huella dactilar. "
 "Pruebe con otro método"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:752
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -215,48 +219,48 @@ msgstr ""
 "Ha alcanzado el máximo de intentos de autenticación con tarjeta inteligente. "
 "Pruebe con otro método"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:754
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Ha alcanzado el máximo de intentos de autenticación. Pruebe con otro método"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:761
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "La autenticación con contraseña no ha funcionado. Inténtelo de nuevo."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:764
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "El inicio de sesión automático no ha funcionado. Inténtelo de nuevo."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:767
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "La autenticación con huella dactilar no ha funcionado. Inténtelo de nuevo."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:770
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
 "La autenticación con tarjeta inteligente no ha funcionado. Inténtelo de "
 "nuevo."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:772
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Eso no ha funcionado. Inténtelo de nuevo."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:787
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Su cuenta tiene un tiempo límite, y lo ha superado."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1188
 msgid "Username:"
 msgstr "Usuario:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1631
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
@@ -339,7 +343,7 @@ msgstr "Solo el administrador puede ejecutar GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Trabajador de sesión de GDM"
 
@@ -455,21 +459,317 @@ msgstr ""
 "El número de veces que se permite a un usuario intentar la autenticación, "
 "antes de abandonar y volver a la selección de usuarios."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "No se pudo crear la pantalla de transición: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Mostrar el comando de ayuda"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "No se pudo activar la sesión: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Mostrar salida detallada"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Mostrar la salida de depuración"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Activar el método de autenticación"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Desactivar el método de autenticación"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Solicitar el método de autenticación"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Acción que realizar al extraer la tarjeta inteligente"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Asumir \"Sí\"como cualquier respuesta"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Configurar la autenticación con contraseña."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Configurar la autenticación con huella dactilar."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Configurar la autenticación con tarjeta inteligente."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Restablecer la configuración de autenticación de GDM."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Mostrar la configuración de autenticación de GDM."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Opciones de contraseña"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Opciones de huella dactilar"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Opciones de tarjeta inteligente"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Restaurar opciones"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Mostrar opciones"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr ""
+"No hay ningún módulo PAM disponible para la autenticación con contraseña"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr ""
+"No hay ningún módulo PAM disponible para la autenticación con tarjeta "
+"inteligente"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr ""
+"No hay ningún módulo PAM disponible para la autenticación con huella dactilar"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "«%s» necesita al menos un parámetro"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "«%s» no se puede estar activado y desactivado al mismo tiempo"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "«%s» no es un valor de %s «%s» válido"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "Falló al cambiar al usuario %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "No se pudo establecer el ID de usuario a %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Ninguna distro detectada, no se lanza ningún gancho"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "No se han encontrado argumentos válidos para ejecutar el gancho «%s»"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Ejecutando el gancho de distro «%s»\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Gancho de distro «%s» ha solicitado detenerse"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"El gancho de la distro ha fallado con el código de salida %d y el error %s:\n"
+"Salida estándar:\n"
+"%s\n"
+"Error de salida:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"Falló al establecer el comando «%s» tecla de opción «%s» mediante el gancho "
+"de la distro: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Falló al crear la carpeta %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "perfil de dconf no encontrado"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf no tiene system-db configurado"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr ""
+"Falló al obtener la cabecera del comentario «%s»: ¿se ha modificado %s?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "La cabecera del archivo «%s» no coincide ¿se ha modificado?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+"No se ha encontrado la cabecera esperada en el archivo de bloqueo «%s», ¿se "
+"ha modificado?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Falló al ejecutar un gancho de la distro necesario: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "COMANDO"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Commandos:\n"
+"  help         Muestra esta información\n"
+"  password     Configura la autenticación con contraseña\n"
+"  fingerprint  Configura la autenticación con huella dactilar\n"
+"  smartcard    Configura la autenticación con tarjeta inteligente\n"
+"  reset        Restaura la configuración original\n"
+"  show         Muestra la configuración actual\n"
+"\n"
+"Use «%s COMANDO --help» para obtener ayuda sobre cada comando.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Opciones del comando"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Debe ser root para ejecutar el comando «%s %s»"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Falló al establecer la opción %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Falló al establecer la configuración de la tarjeta inteligente"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Falló al establecer la configuración de la contraseña"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Activada"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Desactivada"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "No está soportado"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Requerida"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"Configuración de autorización de GDM\n"
+"\n"
+"  Autenticación con contraseña: %s\n"
+"  Autenticación con huela dactilar: %s\n"
+"  Autenticación con tarjeta inteligente: %s\n"
+"  Acción al extraer la tarjeta inteligente: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "S"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "s"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "¿Quiere continuar [S|n]?"
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "El usuario ha cancelado la solicitud"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Falló al restaurar la opción %s: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Sólo se soporta el comando VERSION"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "COMANDO"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -497,6 +797,9 @@ msgstr "Captura de pantalla obtenida"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Tomar una captura de la pantalla"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "No se pudo activar la sesión: "
 
 #~ msgid ""
 #~ "The system is unable to determine whether to switch to an existing login "
