@@ -138,6 +138,8 @@
       <arg name="service_name" direction="in" type="s"/>
       <arg name="should_start_session" direction="in" type="b"/>
     </method>
+    <method name="StopConflictingSession">
+    </method>
     <signal name="SelectedUserChanged">
       <arg name="username" type="s"/>
     </signal>
@@ -153,6 +155,7 @@
     </signal>
     <signal name="SessionOpened">
       <arg name="service_name" type="s"/>
+      <arg name="session_id" type="s"/>
     </signal>
     <signal name="Reauthenticated">
       <arg name="service_name" type="s"/>

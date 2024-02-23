@@ -97,6 +97,10 @@ gboolean      gdm_activate_session_by_id  (GDBusConnection *connection,
                                            const char      *seat_id,
                                            const char      *session_id);
 
+gboolean gdm_terminate_session_by_id      (GDBusConnection *connection,
+                                           GCancellable    *cancellable,
+                                           const char      *session_id);
+
 void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
                                            GdmExpandVarFunc  expand_func,
                                            gpointer          user_data);
