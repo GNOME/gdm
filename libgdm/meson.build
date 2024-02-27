@@ -87,12 +87,17 @@ libgdm_dep = declare_dependency(
 )
 
 libgdm_gir = gnome.generate_gir(libgdm,
-  sources: libgdm_headers + libgdm_sources,
+  sources: [
+    libgdm_headers,
+    libgdm_sources,
+    libgdm_built_sources,
+  ],
   namespace: 'Gdm',
   nsversion: '1.0',
   identifier_prefix: 'Gdm',
   includes: libgdm_gir_includes,
   install: true,
+  fatal_warnings: true,
 )
 
 # Pkg-config file
