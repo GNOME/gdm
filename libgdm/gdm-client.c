@@ -1543,7 +1543,7 @@ gdm_client_set_enabled_extensions (GdmClient          *client,
  * `org.gnome.DisplayManager.UserVerifier.ChoiceList` and
  * `org.gnome.DisplayManager.UserVerifier.CustomJSON` are supported.
  *
- * Returns: (array zero-terminated=1) (element-type utf8) (transfer: full): a list of extensions
+ * Returns: (array zero-terminated=1) (element-type utf8) (transfer full): a list of extensions
  */
 GStrv
 gdm_client_get_enabled_extensions (GdmClient *client)
