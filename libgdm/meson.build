@@ -97,6 +97,7 @@ libgdm_gir = gnome.generate_gir(libgdm,
   identifier_prefix: 'Gdm',
   includes: libgdm_gir_includes,
   install: true,
+  fatal_warnings: true,
 )
 
 # Pkg-config file
