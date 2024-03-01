@@ -1348,6 +1348,14 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                                      GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
                                      "");
                 goto out;
+        } else if (error_code == PAM_MODULE_UNKNOWN) {
+                g_debug ("GdmSessionWorker: authentication module unavailable");
+
+                g_set_error_literal (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
+                                     "");
+                goto out;
         } else if (error_code == PAM_MAXTRIES) {
                 g_debug ("GdmSessionWorker: authentication service had too many retries");
                 g_set_error_literal (error,
