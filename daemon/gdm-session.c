@@ -3648,6 +3648,11 @@ gdm_session_get_display_mode (GdmSession *self)
                  self->is_program_session? "yes" : "no",
                  self->display_seat_id);
 
+        if (self->display_seat_id == NULL &&
+            g_strcmp0 (self->session_type, "wayland") != 0) {
+                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
+        }
+
         if (g_strcmp0 (self->display_seat_id, "seat0") != 0) {
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
         }
