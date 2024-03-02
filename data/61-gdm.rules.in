@@ -13,20 +13,6 @@ ATTR{vendor}=="0x1234", ATTR{device}=="0x1111", RUN+="/usr/bin/touch /run/udev/g
 # disable Wayland on Hi1710 chipsets
 ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
 
-# disable Wayland on Matrox chipsets
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0522", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0524", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0530", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0532", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0533", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0534", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0536", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x102b", ATTR{device}=="0x0538", GOTO="gdm_disable_wayland"
-
-# disable Wayland on aspeed chipsets
-ATTR{vendor}=="0x1a03", ATTR{device}=="0x2010", GOTO="gdm_disable_wayland"
-ATTR{vendor}=="0x1a03", ATTR{device}=="0x2000", GOTO="gdm_disable_wayland"
-
 LABEL="gdm_pci_device_end"
 
 # disable Wayland if modesetting is disabled
