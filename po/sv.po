@@ -1,20 +1,20 @@
 # Swedish messages for gdm.
-# Copyright © 1999-2023 Free Software Foundation, Inc.
+# Copyright © 1999-2024 Free Software Foundation, Inc.
 # Anders Carlsson <anders.carlsson@tordata.se>, 1999.
 # Christian Rose <menthos@menthos.com>, 2001, 2002, 2003, 2004, 2005.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2001.
 # Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010, 2011, 2012.
 # Göran Uddeborg <goeran@uddeborg.se>, 2014.
 # Sebastian Rasmussen <sebras@gmail.com>, 2015.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2016, 2017, 2019, 2021, 2022, 2023.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2016, 2017, 2019, 2021, 2022, 2023, 2024.
 # Luna Jernberg <droidbittin@gmail.com>, 2020, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-06-28 18:12+0000\n"
-"PO-Revision-Date: 2023-08-17 16:12+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
+"POT-Creation-Date: 2024-02-23 13:43+0000\n"
+"PO-Revision-Date: 2024-03-03 13:23+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -64,12 +64,12 @@ msgstr "/dev/urandom är inte en teckenenhet"
 msgid "Unable to create transient display: "
 msgstr "Kan inte skapa en transient display: "
 
-#: common/gdm-common.c:511
+#: common/gdm-common.c:543
 msgid "Could not identify the current session: "
 msgstr "Kunde inte identifiera den aktuella sessionen: "
 
 # FIXME: Seat = säte?
-#: common/gdm-common.c:520
+#: common/gdm-common.c:552
 msgid "Could not identify the current seat."
 msgstr "Kunde inte identifiera det aktuella sätet."
 
@@ -90,27 +90,27 @@ msgstr ""
 "att analysera felet. Under tiden kommer denna display att vara inaktiverad. "
 "Starta om GDM när problemet är åtgärdat."
 
-#: daemon/gdm-manager.c:769
+#: daemon/gdm-manager.c:762
 msgid "No display available"
 msgstr "Ingen skärm tillgänglig"
 
-#: daemon/gdm-manager.c:867 daemon/gdm-manager.c:1151
+#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1183
 msgid "No session available"
 msgstr "Ingen session tillgänglig"
 
-#: daemon/gdm-manager.c:886
+#: daemon/gdm-manager.c:879
 msgid "Chooser session unavailable"
 msgstr "Väljarsession ej tillgänglig"
 
-#: daemon/gdm-manager.c:902
+#: daemon/gdm-manager.c:895
 msgid "Can only be called before user is logged in"
 msgstr "Kan endast anropas innan en användare är inloggad"
 
-#: daemon/gdm-manager.c:913
+#: daemon/gdm-manager.c:906
 msgid "Caller not GDM"
 msgstr "Anroparen är inte GDM"
 
-#: daemon/gdm-manager.c:923
+#: daemon/gdm-manager.c:916
 msgid "Unable to open private communication channel"
 msgstr "Kunde inte öppna privat kommunikationskanal"
 
@@ -119,12 +119,12 @@ msgstr "Kunde inte öppna privat kommunikationskanal"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Servern skulle startas av användaren %s, men den användaren finns inte"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Kunde inte ställa in grupp-id till %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:510
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () misslyckades för %s"
@@ -178,11 +178,11 @@ msgstr "Visningsenhet"
 msgid "The display device"
 msgstr "Visningsenheten"
 
-#: daemon/gdm-session.c:1336
+#: daemon/gdm-session.c:1436
 msgid "Could not create authentication helper process"
 msgstr "Kunde inte skapa en autentiseringshjälpprocess"
 
-#: daemon/gdm-session-worker.c:741
+#: daemon/gdm-session-worker.c:811
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -190,7 +190,7 @@ msgstr ""
 "Du uppnådde maximala antalet försök med lösenordsautentisering. Försök med "
 "en annan metod"
 
-#: daemon/gdm-session-worker.c:744
+#: daemon/gdm-session-worker.c:814
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -198,7 +198,7 @@ msgstr ""
 "Du uppnådde maximala antalet försök med automatisk inloggning. Försök med en "
 "annan autentiseringsmetod"
 
-#: daemon/gdm-session-worker.c:747
+#: daemon/gdm-session-worker.c:817
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -206,7 +206,7 @@ msgstr ""
 "Du uppnådde maximala antalet försök med fingeravtrycksautentisering. Försök "
 "med en annan metod"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:820
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -214,45 +214,45 @@ msgstr ""
 "Du uppnådde maximala antalet försök med autentisering med smartkort. Försök "
 "med en annan metod"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:822
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Du uppnådde maximala antalet autentiseringsförsök. Försök med en annan metod"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:829
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Ledsen, lösenordsautentisering fungerade inte. Försök igen."
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:832
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Ledsen, automatisk inloggning fungerade inte. Försök igen."
 
-#: daemon/gdm-session-worker.c:765
+#: daemon/gdm-session-worker.c:835
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Ledsen, fingeravtrycksautentisering fungerade inte. Försök igen."
 
-#: daemon/gdm-session-worker.c:768
+#: daemon/gdm-session-worker.c:838
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Ledsen, autentisering med smartkort fungerade inte. Försök igen."
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:840
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Ledsen, det fungerade inte. Försök igen."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:855
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Ditt konto gavs en tidsgräns som nu har passerats."
 
-#: daemon/gdm-session-worker.c:1186
+#: daemon/gdm-session-worker.c:1256
 msgid "Username:"
 msgstr "Användarnamn:"
 
-#: daemon/gdm-session-worker.c:1585 daemon/gdm-session-worker.c:1602
+#: daemon/gdm-session-worker.c:1663 daemon/gdm-session-worker.c:1680
 msgid "no user account available"
 msgstr "inget användarkonto tillgängligt"
 
-#: daemon/gdm-session-worker.c:1629
+#: daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "Kan inte byta till användaren"
 
@@ -446,13 +446,311 @@ msgstr ""
 "Antalet gånger en användare får försöka autentisera, innan gdm ger upp och "
 "återgår till användarvalet."
 
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Visa kommandohjälp"
+
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Visa utförlig utmatning"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Visa felsökningsutmatning"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Aktivera autentiseringsmetoden"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Inaktivera autentiseringsmetoden"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Kräv autentiseringsmetoden"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Åtgärd att utföra vid smartkortsborttagning"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Anta ja som svar på allt"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Konfigurera lösenordsautentisering."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Konfigurera fingeravtrycksautentisering."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Konfigurera smartkortsautentisering."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Återställ GDM-autentiseringskonfigurationen."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Visa GDM-autentiseringskonfiguration."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Lösenordsflaggor"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Fingeravtrycksflaggor"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Smartkortsflaggor"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Återställ flaggor"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Visa flaggor"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Ingen PAM-modul tillgänglig för lösenordsautentisering"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Ingen PAM-modul tillgänglig för smartkortsautentisering"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Ingen PAM-modul tillgänglig för fingeravtrycksautentisering"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "”%s” behöver minst en parameter"
+
+#: utils/gdm-config.c:362
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "”%s” kan inte vara aktiverad och inaktiverad samtidigt"
+
+#: utils/gdm-config.c:385
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "”%s” är inte ett giltigt %s ”%s”-värde"
+
+#: utils/gdm-config.c:495
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "Misslyckades med att växla till användaren %s"
+
+#: utils/gdm-config.c:516
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Kunde inte ställa in användar-id till %u"
+
+#: utils/gdm-config.c:679
+msgid "No distro detected, no hook to run"
+msgstr "Ingen distribution upptäckt, ingen krok att köra"
+
+#: utils/gdm-config.c:697
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "Inga giltiga argument hittades för att köra kroken ”%s”"
+
+#: utils/gdm-config.c:702
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Kör distributionskrok ”%s”\n"
+
+#: utils/gdm-config.c:716
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Distributionskroken ”%s” begärde stopp"
+
+#: utils/gdm-config.c:729
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"Distributionskroken misslyckades med felstatus %d och fel %s:\n"
+"Standard ut:\n"
+"%s\n"
+"Felutmatning:\n"
+"%s"
+
+#: utils/gdm-config.c:779
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"Misslyckades med att ställa in kommandot ”%s”:s flaggnyckel ”%s” via "
+"distributionskrok: "
+
+#: utils/gdm-config.c:819
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Misslyckades med att skapa katalogen %s"
+
+#: utils/gdm-config.c:890
+msgid "dconf profile not found"
+msgstr "dconf-profil hittades inte"
+
+#: utils/gdm-config.c:980
+msgid "dconf has no system-db configured"
+msgstr "dconf har ingen system-db konfigurerad"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1129
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr ""
+"Misslyckades med att hämta huvudkommentaren ”%s”: %s, hade den ändrats?"
+
+#: utils/gdm-config.c:1132
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Huvudkommentar för filen ”%s” matchar inte, hade den ändrats?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1260
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "Inget förväntat huvud hittades på låsfilen ”%s”, hade den ändrats?"
+
+#: utils/gdm-config.c:1545
+msgid "Failed to run a required distro hook: "
+msgstr "Misslyckades med att köra en distributionskrok som krävdes: "
+
+#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "KOMMANDO"
+
+#: utils/gdm-config.c:1565
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Kommandon:\n"
+"  help         Visar denna information\n"
+"  password     Konfigurera lösenordsautentiseringen\n"
+"  fingerprint  Konfigurera fingeravtrycksautentiseringen\n"
+"  smartcard    Konfigurera smartkortsautentiseringen\n"
+"  reset        Återställer standardkonfigurationen\n"
+"  show         Visar den aktuella konfigurationen\n"
+"\n"
+"Använd ”%s KOMMANDO --help” för att få hjälp om varje kommando.\n"
+
+#: utils/gdm-config.c:1627
+msgid "Command options"
+msgstr "Kommandoflaggor"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1662
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Du måste vara root för att använda %s ”%s”-kommando"
+
+#: utils/gdm-config.c:1712
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Misslyckades med att ställa in inställningen %s: "
+
+#: utils/gdm-config.c:1804
+msgid "Failed to set smartcard setting"
+msgstr "Misslyckades med att ställa in smartkortsinställning"
+
+#: utils/gdm-config.c:1810
+msgid "Failed to set password setting"
+msgstr "Misslyckades med att ställa in lösenordsinställning"
+
+#: utils/gdm-config.c:1824
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: utils/gdm-config.c:1824
+msgid "Disabled"
+msgstr "Inaktiverad"
+
+#: utils/gdm-config.c:1833
+msgid "Not supported"
+msgstr "Stöds inte"
+
+#: utils/gdm-config.c:1849
+msgid "Required"
+msgstr "Krävs"
+
+#: utils/gdm-config.c:1910
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM-auktoriseringskonfiguration\n"
+"\n"
+"  Lösenordsautentisering: %s\n"
+"  Fingeravtrycksautentisering: %s\n"
+"  Smartkortsautentisering: %s\n"
+"  Smartkortsborttagningsåtgärd: %s\n"
+
+#: utils/gdm-config.c:1938
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "J"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "y"
+msgstr "j"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1945
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Vill du fortsätta? [J/n]? "
+
+#: utils/gdm-config.c:1963
+msgid "User cancelled the request"
+msgstr "Förfrågan avbröts av användaren"
+
+#: utils/gdm-config.c:1994
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Misslyckades med att återställa inställningen %s: "
+
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Endast VERSION-kommandot stöds"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "KOMMANDO"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
