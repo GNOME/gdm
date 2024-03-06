@@ -357,8 +357,9 @@ toggle_option_check (GOptionContext *context,
         }
 
         if (get_requested_action () == ACTION_INVALID) {
-                /* TRANSLATORS: “command” can't be enabled... */
+
                 g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
+                             /* TRANSLATORS: “command” can't be enabled... */
                              _("“%s” can't be enabled and disabled at the same time"),
                              config_command_to_string (data->config_command));
                 return FALSE;
@@ -380,8 +381,8 @@ smartcard_option_check (GOptionContext *context,
 
         if (opt_removal_action &&
             !smartcard_option_is_valid (GSD_SC_REMOVAL_ACTION_KEY, opt_removal_action)) {
-                /* TRANSLATORS: option is not a valid command “option-key” value */
                 g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
+                             /* TRANSLATORS: option is not a valid command “option-key” value */
                              _("“%s” is not a valid %s “%s” value"),
                              opt_removal_action,
                              config_command_to_string (data->config_command),
@@ -774,8 +775,8 @@ set_distro_hook_config (GdmConfigCommand   config_command,
                         local_error->message);
                 }
 
-                /* TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook */
                 g_propagate_prefixed_error (error, g_steal_pointer (&local_error),
+                                            /* TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook */
                                             _("Failed to set command “%s” option key “%s” via distro hook: "),
                                             config_command_to_string (config_command),
                                             option_key);
