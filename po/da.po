@@ -1,5 +1,5 @@
 # Danish translation of GDM.
-# Copyright (C) 1998-2010, 2015-2023
+# Copyright (C) 1998-2010, 2015-2024
 # This file is distributed under the same license as the gdm package.
 # Kenneth Christiansen <kenneth@ripen.dk>, 1998, 1999.
 # Birger Langkjer <birger.langkjer@image.dk>, 2000.
@@ -8,7 +8,7 @@
 # Marie Lund <marielund@post.cybercity.dk>, 2004.
 # Martin Willemoes Hansen <mwh@sysrq.dk>, 2004, 05.
 # Lasse Bang Mikkelsen <lbm@fatalerror.dk>, 2006.
-# Ask Hjorth Larsen <asklarsen@gmail.com>, 2008, 09, 2015-2019, 2021, 2023.
+# Ask Hjorth Larsen <asklarsen@gmail.com>, 2008, 09, 2015-2019, 2021, 2023. 2024.
 # Kenneth Nielsen <k.nielsen81@gmail.com>, 2009, 2010-2012.
 # flemming christensen <fc@stromata.dk>, 2011
 # Kris Thomsen <mail@kristhomsen.dk>, 2013
@@ -29,9 +29,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-01-25 17:25+0000\n"
-"PO-Revision-Date: 2023-03-07 20:16+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
+"POT-Creation-Date: 2024-03-07 10:39+0000\n"
+"PO-Revision-Date: 2024-03-11 00:33+0100\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -77,20 +77,24 @@ msgstr "XDMCP: Kan ikke fortolke adresse"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom er ikke en tegn-enhed"
 
-#: common/gdm-common.c:507 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "Kan ikke oprette midlertidig skærm: "
+
+#: common/gdm-common.c:543
 msgid "Could not identify the current session: "
 msgstr "Kunne ikke identificere den aktuelle session: "
 
-#: common/gdm-common.c:516 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:552
 msgid "Could not identify the current seat."
 msgstr "Kunne ikke identificere det aktuelle sæde."
 
-#: daemon/gdm-display-access-file.c:285 daemon/gdm-display-access-file.c:306
+#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Kunne ikke finde brugeren “%s” på systemet"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -102,27 +106,27 @@ msgstr ""
 "diagnosticere problemet. I mellemtiden bliver denne terminal deaktiveret. "
 "Genstart GDM når problemet er løst."
 
-#: daemon/gdm-manager.c:769
+#: daemon/gdm-manager.c:762
 msgid "No display available"
 msgstr "Ingen terminal tilgængelig"
 
-#: daemon/gdm-manager.c:867 daemon/gdm-manager.c:1151
+#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1183
 msgid "No session available"
 msgstr "Ingen session tilgængelig"
 
-#: daemon/gdm-manager.c:886
+#: daemon/gdm-manager.c:879
 msgid "Chooser session unavailable"
 msgstr "Vælgersession er ikke tilgængelig"
 
-#: daemon/gdm-manager.c:902
+#: daemon/gdm-manager.c:895
 msgid "Can only be called before user is logged in"
 msgstr "Kan kun kaldes før brugeren er logget ind"
 
-#: daemon/gdm-manager.c:913
+#: daemon/gdm-manager.c:906
 msgid "Caller not GDM"
 msgstr "Kaldeophav er ikke GDM"
 
-#: daemon/gdm-manager.c:923
+#: daemon/gdm-manager.c:916
 msgid "Unable to open private communication channel"
 msgstr "Kan ikke åbne den private kommunikationskanal"
 
@@ -131,12 +135,12 @@ msgstr "Kan ikke åbne den private kommunikationskanal"
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "Serveren skulle være startet af brugeren %s, men brugeren findes ikke"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:505
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "Kunne ikke sætte gruppe-id til %d"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:401 utils/gdm-config.c:511
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () mislykkedes for %s"
@@ -146,22 +150,22 @@ msgstr "initgroups () mislykkedes for %s"
 msgid "Couldn’t set userid to %d"
 msgstr "Kunne ikke sætte bruger-id til %d"
 
-#: daemon/gdm-server.c:485
+#: daemon/gdm-server.c:479
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kunne ikke åbne logfil for terminalen %s!"
 
-#: daemon/gdm-server.c:506 daemon/gdm-server.c:512 daemon/gdm-server.c:518
+#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Fejl ved sætning af %s til %s"
 
-#: daemon/gdm-server.c:538
+#: daemon/gdm-server.c:532
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Serverprioritet kunne ikke angives til %d: %s"
 
-#: daemon/gdm-server.c:690
+#: daemon/gdm-server.c:684
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tom serverkommando til terminalen %s"
@@ -191,11 +195,11 @@ msgid "The display device"
 msgstr "Skærmenheden"
 
 # Kunne strengt taget også være: hjælpeproces til autentificering, men mon ikke dette er det mest sandsynlige
-#: daemon/gdm-session.c:1336
+#: daemon/gdm-session.c:1436
 msgid "Could not create authentication helper process"
 msgstr "Kunne ikke oprette proces for autentificeringshjælp"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:811
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -203,7 +207,7 @@ msgstr ""
 "Du har nået det maksimale antal forsøg på at indtaste adgangskode – prøv "
 "venligst en anden metode"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:814
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -211,7 +215,7 @@ msgstr ""
 "Du har nået det maksimale antal forsøg på at logge ind automatisk – prøv "
 "venligst en anden metode"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:817
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -219,7 +223,7 @@ msgstr ""
 "Du har nået det maksimale antal forsøg på at godkende via fingeraftryk – "
 "prøv venligst en anden metode"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:820
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -227,46 +231,46 @@ msgstr ""
 "Du har nået det maksimale antal forsøg på at godkende med smartcard – prøv "
 "venligst en anden metode"
 
-#: daemon/gdm-session-worker.c:763
+#: daemon/gdm-session-worker.c:822
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Du har nået det maksimale antal forsøg på at godkende – prøv venligst en "
 "anden metode"
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:829
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Beklager, godkendelse med adgangskode lykkedes ikke. Prøv igen."
 
-#: daemon/gdm-session-worker.c:773
+#: daemon/gdm-session-worker.c:832
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Beklager, automatisk login lykkedes ikke. Prøv igen."
 
-#: daemon/gdm-session-worker.c:776
+#: daemon/gdm-session-worker.c:835
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Beklager, godkendelse med fingeraftryk lykkedes ikke. Prøv igen."
 
-#: daemon/gdm-session-worker.c:779
+#: daemon/gdm-session-worker.c:838
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Beklager, godkendelse med smartcard lykkedes ikke. Prøv igen."
 
-#: daemon/gdm-session-worker.c:781
+#: daemon/gdm-session-worker.c:840
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Beklager, det virkede ikke. Prøv igen."
 
-#: daemon/gdm-session-worker.c:796
+#: daemon/gdm-session-worker.c:855
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Din konto fik en tidsgrænse, som nu er overskredet."
 
-#: daemon/gdm-session-worker.c:1197
+#: daemon/gdm-session-worker.c:1256
 msgid "Username:"
 msgstr "Brugernavn:"
 
-#: daemon/gdm-session-worker.c:1597 daemon/gdm-session-worker.c:1614
+#: daemon/gdm-session-worker.c:1663 daemon/gdm-session-worker.c:1680
 msgid "no user account available"
 msgstr "ingen brugerkonto tilgængelig"
 
-#: daemon/gdm-session-worker.c:1641
+#: daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "Kan ikke skifte til bruger"
 
@@ -346,7 +350,7 @@ msgstr "Kun root-brugeren kan køre GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Sessionsarbejder for GNOME-skærmhåndtering"
 
@@ -458,21 +462,311 @@ msgstr ""
 "Antallet af gange en bruger har lov til at forsøge autentificering, før der "
 "gives op og vendes tilbage til brugervalget."
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "Kan ikke oprette midlertidig skærm: "
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Vis hjælp til kommando"
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "Kan ikke aktivere session: "
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Vis uddybende output"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "Vis fejlsøgingsinformation"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Slå godkendelsesmetoden til"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Slå godkendelsesmetoden fra"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Kræv godkendelsesmetoden"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Handling som udføres ved fjernelse af smartcard"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "Antag ja til alle spørgsmål"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Konfigurér godkendelse med adgangskode."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Konfigurér godkendelse med fingeraftryk."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Konfigurér godkendelse med smartcard."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "Nulstil konfigurationen af GDM-godkendelse."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "Vis GDM-godkendelseskonfigurationen."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Indstillinger for adgangskode"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Indstillinger for fingeraftryk"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Indstillinger for smartcard"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Nulstil indstillinger"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Vis indstillinger"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Intet tilgængeligt PAM-modul til godkendelse med adgangskode"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "Intet tilgængeligt PAM-modul til godkendelse med smartcard"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "Intet tilgængeligt PAM-modul til godkendelse med fingeraftryk"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s” kræver mindst én parameter"
+
+#. TRANSLATORS: “command” can't be enabled...
+#: utils/gdm-config.c:363
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” kan ikke være aktiveret og deaktiveret på samme tid"
+
+#. TRANSLATORS: option is not a valid command “option-key” value
+#: utils/gdm-config.c:386
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s” er ikke en gyldig værdi for %s “%s”"
+
+#: utils/gdm-config.c:496
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "Kunne ikke skifte til brugeren %s"
+
+#: utils/gdm-config.c:517
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "Kunne ikke sætte bruger-id til %u"
+
+#: utils/gdm-config.c:680
+msgid "No distro detected, no hook to run"
+msgstr "Ingen distribution fundet; ingen hook at køre"
+
+#: utils/gdm-config.c:698
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "Ingen gyldige argumenter fundet til at køre hook “%s”"
+
+#: utils/gdm-config.c:703
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Kører distributions-hook “%s”\n"
+
+#: utils/gdm-config.c:717
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Distributions-hook “%s” anmodede om at stoppe"
+
+#: utils/gdm-config.c:730
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"Distributions-hook fejlede med slutstatus %d og fejl %s:\n"
+"Standard-output:\n"
+"%s\n"
+"Fejl-output:\n"
+"%s"
+
+#. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
+#: utils/gdm-config.c:780
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr "Kunne ikke sætte indstillingsnøglen “%2$s” for kommandoen “%1$s” via distributions-hook: "
+
+#: utils/gdm-config.c:820
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "Kunne ikke oprette kataloget %s"
+
+#: utils/gdm-config.c:891
+msgid "dconf profile not found"
+msgstr "dconf-profil ikke fundet"
+
+#: utils/gdm-config.c:981
+msgid "dconf has no system-db configured"
+msgstr "dconf har ikke nogen system-db konfigureret"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1130
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "Kunne ikke finde headerkommentaren i “%s”: %s. Er den ændret?"
+
+#: utils/gdm-config.c:1133
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "Headerkommentaren for filen “%s” stemmer ikke. Er den ændret?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1261
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "Ingen forventet header fundet på låsefilen “%s”. Er den ændret?"
+
+#: utils/gdm-config.c:1546
+msgid "Failed to run a required distro hook: "
+msgstr "Kunne ikke køre en påkrævet distributions-hook: "
+
+#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "KOMMANDO"
+
+#: utils/gdm-config.c:1566
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"Kommandoer:\n"
+"  help         Viser denne information\n"
+"  password     Konfigurér godkendelse med adgangskode\n"
+"  fingerprint  Konfigurér godkendelse med fingeraftryk\n"
+"  smartcard    Konfigurér godkendelse med smartcard\n"
+"  reset        Nulstiller til standardkonfigurationen\n"
+"  show         Viser den nuværende konfiguration\n"
+"\n"
+"Brug “%s KOMMANDO --help” for at få hjælp til hver kommando.\n"
+
+#: utils/gdm-config.c:1628
+msgid "Command options"
+msgstr "Kommandotilvalg"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1663
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "Du skal være root for at bruge kommandoen %s “%s”"
+
+#: utils/gdm-config.c:1713
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "Kunne ikke angive %s-indstilling: "
+
+#: utils/gdm-config.c:1805
+msgid "Failed to set smartcard setting"
+msgstr "Kunne ikke angive smardcard-indstilling"
+
+#: utils/gdm-config.c:1811
+msgid "Failed to set password setting"
+msgstr "Kunne ikke angive adgangskodeindstilling"
+
+#: utils/gdm-config.c:1825
+msgid "Enabled"
+msgstr "Aktiveret"
+
+#: utils/gdm-config.c:1825
+msgid "Disabled"
+msgstr "Deaktiveret"
+
+#: utils/gdm-config.c:1834
+msgid "Not supported"
+msgstr "Ikke understøttet"
+
+#: utils/gdm-config.c:1850
+msgid "Required"
+msgstr "Påkrævet"
+
+#: utils/gdm-config.c:1911
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM-godkendelseskonfiguration\n"
+"\n"
+"  Godkendelse med adgangskode: %s\n"
+"  Godkendelse med fingeraftryk: %s\n"
+"  Godkendelse med smartcard: %s\n"
+"  Handling for fjernelse af smartcard: %s\n"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "J"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "y"
+msgstr "j"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1942
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1946
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Vil du fortsætte? [J/n]?"
+
+#: utils/gdm-config.c:1964
+msgid "User cancelled the request"
+msgstr "Brugeren annullerede forespørgslen"
+
+#: utils/gdm-config.c:1995
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "Kunne ikke nulstille %s-indstilling: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "Kun VERSION-kommandoen er understøttet"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "KOMMANDO"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
@@ -500,6 +794,9 @@ msgstr "Skærmbillede taget"
 #: utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Tag et billede af skærmen"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "Kan ikke aktivere session: "
 
 #~ msgid ""
 #~ "You reached the maximum PIN authentication attempts, please try another "
