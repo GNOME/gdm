@@ -176,6 +176,7 @@ enum {
         CLIENT_READY_FOR_SESSION_TO_START,
         DISCONNECTED,
         AUTHENTICATION_FAILED,
+        CREDENTIALS_ESTABLISHED,
         VERIFICATION_COMPLETE,
         SESSION_OPENED,
         SESSION_OPENED_FAILED,
@@ -330,6 +331,12 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         service_name = g_strdup (conversation->service_name);
 
         if (worked) {
+                g_signal_emit (self,
+                               signals[CREDENTIALS_ESTABLISHED],
+                               0,
+                               service_name,
+                               conversation->worker_pid);
+
                 switch (self->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
                 case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
@@ -4108,6 +4115,17 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_INT);
+        signals [CREDENTIALS_ESTABLISHED] =
+                g_signal_new ("credentials-established",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              0,
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
         signals [VERIFICATION_COMPLETE] =
                 g_signal_new ("verification-complete",
                               GDM_TYPE_SESSION,
