@@ -163,20 +163,20 @@ endif
 
 systemdsystemunitdir = get_option('systemdsystemunitdir')
 if systemdsystemunitdir != 'no'
-  assert(systemd_dep.found(), 'systemd required but not found, please provide a valid systemd system unit dir or disable it')
   if get_option('systemdsystemunitdir') != ''
     systemd_systemunitdir = get_option('systemdsystemunitdir')
   else
+    assert(systemd_dep.found(), 'systemd required but not found, please provide a valid systemd system unit dir or disable it')
     systemd_systemunitdir = systemd_dep.get_variable(pkgconfig: 'systemdsystemunitdir')
   endif
 endif
 
 systemduserunitdir = get_option('systemduserunitdir')
 if systemduserunitdir != 'no'
-  assert(systemd_dep.found(), 'systemd required but not found, please provide a valid systemd user unit dir or disable it')
   if get_option('systemduserunitdir') != ''
     systemd_userunitdir = get_option('systemduserunitdir')
   else
+    assert(systemd_dep.found(), 'systemd required but not found, please provide a valid systemd user unit dir or disable it')
     systemd_userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir',
                                                    pkgconfig_define: ['prefix', get_option('prefix')])
   endif
