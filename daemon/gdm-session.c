@@ -1069,11 +1069,12 @@ on_reauthentication_started_cb (GdmDBusWorker *worker,
 static void
 worker_on_reauthenticated (GdmDBusWorker          *worker,
                            const char             *service_name,
+                           int                     reauth_pid,
                            GdmSessionConversation *conversation)
 {
         GdmSession *self = conversation->session;
         g_debug ("GdmSession: Emitting 'reauthenticated' signal ");
-        g_signal_emit (self, signals[REAUTHENTICATED], 0, service_name);
+        g_signal_emit (self, signals[REAUTHENTICATED], 0, service_name, reauth_pid);
 }
 
 static void
@@ -4227,8 +4228,9 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               NULL,
                               NULL,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING,
+                              G_TYPE_INT);
         signals [CANCELLED] =
                 g_signal_new ("cancelled",
                               GDM_TYPE_SESSION,
