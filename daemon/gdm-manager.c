@@ -1824,6 +1824,8 @@ chown_initial_setup_home_dir (void)
                 goto out;
         }
 
+        g_debug ("Changing ownership of %s to %u:%u", gis_dir_path, pwe->pw_uid, pwe->pw_gid);
+
         error = NULL;
         dir = g_file_new_for_path (gis_dir_path);
         if (!chown_recursively (dir, pwe->pw_uid, pwe->pw_gid, &error)) {
@@ -1843,7 +1845,6 @@ on_start_user_session (StartUserSessionOperation *operation)
         GdmManager *self = operation->manager;
         gboolean migrated;
         gboolean fail_if_already_switched = TRUE;
-        gboolean doing_initial_setup = FALSE;
         GdmDisplay *display;
         const char *session_id;
 
@@ -1868,13 +1869,6 @@ on_start_user_session (StartUserSessionOperation *operation)
 
         display = get_display_for_user_session (operation->session);
 
-        g_object_get (G_OBJECT (display),
-                      "doing-initial-setup", &doing_initial_setup,
-                      NULL);
-
-        if (doing_initial_setup)
-                chown_initial_setup_home_dir ();
-
         session_id = gdm_session_get_conversation_session_id (operation->session,
                                                               operation->service_name);
 
@@ -1888,7 +1882,12 @@ on_start_user_session (StartUserSessionOperation *operation)
                                 "session-id", session_id,
                                 NULL);
         } else {
+                gboolean doing_initial_setup = FALSE;
                 uid_t allowed_uid;
+
+                g_object_get (G_OBJECT (display),
+                              "doing-initial-setup", &doing_initial_setup,
+                              NULL);
 
                 g_object_ref (display);
                 if (doing_initial_setup) {
@@ -1980,6 +1979,30 @@ on_session_authentication_failed (GdmSession *session,
                                   GdmManager *manager)
 {
         add_session_record (manager, session, conversation_pid, SESSION_RECORD_FAILED);
+}
+
+static void
+on_session_credentials_established (GdmSession *session,
+                                    const char *service_name,
+                                    GdmManager *manager)
+{
+        GdmDisplay *display;
+        gboolean    doing_initial_setup = FALSE;
+
+        display = get_display_for_user_session (session);
+        if (display == NULL) {
+                g_debug ("GdmManager: session has no associated display");
+                return;
+        }
+
+        /* If this is the initial setup, chown the g-i-s homedir now before the
+         * PAM session is opened and the consumers are started.
+         */
+        g_object_get (G_OBJECT (display),
+                      "doing-initial-setup", &doing_initial_setup,
+                      NULL);
+        if (doing_initial_setup)
+                chown_initial_setup_home_dir ();
 }
 
 static void
@@ -2475,6 +2498,10 @@ create_user_session_for_display (GdmManager *manager,
         g_signal_connect (session,
                           "authentication-failed",
                           G_CALLBACK (on_session_authentication_failed),
+                          manager);
+        g_signal_connect (session,
+                          "credentials-established",
+                          G_CALLBACK (on_session_credentials_established),
                           manager);
         g_signal_connect (session,
                           "session-opened",
