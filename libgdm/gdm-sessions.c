@@ -79,6 +79,9 @@ get_systemd_session (void)
         else
                 ret = sd_pid_get_session (pid, &session_id);
 
+        if (ret < 0)
+                return NULL;
+
         return g_steal_pointer (&session_id);
 }
 
