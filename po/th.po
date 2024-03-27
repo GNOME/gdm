@@ -12,9 +12,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-09-17 10:05+0000\n"
-"PO-Revision-Date: 2024-01-31 23:40+0700\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
+"POT-Creation-Date: 2024-03-07 10:39+0000\n"
+"PO-Revision-Date: 2024-03-27 20:28+0700\n"
 "Last-Translator: Akom Chotiphantawanon <knight2000@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "Language: th\n"
@@ -64,11 +64,11 @@ msgstr "/dev/urandom ไม่ได้เป็นอุปกรณ์แบ�
 msgid "Unable to create transient display: "
 msgstr "ไม่สามารถสร้างดิสเพลย์ชั่วคราวได้: "
 
-#: common/gdm-common.c:511
+#: common/gdm-common.c:543
 msgid "Could not identify the current session: "
 msgstr "ไม่สามารถระบุวาระปัจจุบันได้: "
 
-#: common/gdm-common.c:520
+#: common/gdm-common.c:552
 msgid "Could not identify the current seat."
 msgstr "ไม่สามารถระบุที่นั่งปัจจุบันได้"
 
@@ -88,27 +88,27 @@ msgstr ""
 "กรุณาติดต่อผู้ดูแลระบบของคุณ หรือตรวจสอบปูมของระบบเพื่อหาสาเหตุ ในระหว่างนี้ หน้าจอนี้จะถูกปิดใช้งาน กรุณาเริ่ม GDM "
 "ใหม่เมื่อแก้ปัญหาแล้ว"
 
-#: daemon/gdm-manager.c:769
+#: daemon/gdm-manager.c:762
 msgid "No display available"
 msgstr "ไม่มีจอแสดงผลให้ใช้"
 
-#: daemon/gdm-manager.c:867 daemon/gdm-manager.c:1151
+#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1183
 msgid "No session available"
 msgstr "ไม่มีวาระให้ใช้"
 
-#: daemon/gdm-manager.c:886
+#: daemon/gdm-manager.c:879
 msgid "Chooser session unavailable"
 msgstr "วาระเครื่องมือเลือกไม่พร้อมใช้"
 
-#: daemon/gdm-manager.c:902
+#: daemon/gdm-manager.c:895
 msgid "Can only be called before user is logged in"
 msgstr "ถูกเรียกได้ก่อนผู้ใช้เข้าระบบเท่านั้น"
 
-#: daemon/gdm-manager.c:913
+#: daemon/gdm-manager.c:906
 msgid "Caller not GDM"
 msgstr "ผู้เรียกไม่ใช่ GDM"
 
-#: daemon/gdm-manager.c:923
+#: daemon/gdm-manager.c:916
 msgid "Unable to open private communication channel"
 msgstr "ไม่สามารถเปิดช่องสื่อสารเป็นการภายในได้"
 
@@ -117,12 +117,12 @@ msgstr "ไม่สามารถเปิดช่องสื่อสาร
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "จะสร้างโพรเซสเซิร์ฟเวอร์ในนามผู้ใช้ %s แต่ผู้ใช้นั้นไม่มีอยู่จริง"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:504
+#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:505
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "ไม่สามารถกำหนด groupid เป็น %d"
 
-#: daemon/gdm-server.c:401 utils/gdm-config.c:510
+#: daemon/gdm-server.c:401 utils/gdm-config.c:511
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () ล้มเหลวสำหรับ %s"
@@ -176,71 +176,63 @@ msgstr "อุปกรณ์ดิสเพลย์"
 msgid "The display device"
 msgstr "อุปกรณ์ดิสเพลย์"
 
-#: daemon/gdm-session.c:1353
+#: daemon/gdm-session.c:1436
 msgid "Could not create authentication helper process"
 msgstr "ไม่สามารถสร้างโพรเซสสำหรับช่วยยืนยันตัวบุคคลได้"
 
-#: daemon/gdm-session-worker.c:743
+#: daemon/gdm-session-worker.c:811
 msgid "You reached the maximum password authentication attempts, please try another method"
-msgstr ""
+msgstr "คุณพยายามยืนยันตัวตนด้วยรหัสผ่านครบจำนวนครั้งสูงสุดแล้ว กรุณาลองใช้วิธีอื่น"
 
-#: daemon/gdm-session-worker.c:746
+#: daemon/gdm-session-worker.c:814
 msgid "You reached the maximum auto login attempts, please try another authentication method"
-msgstr ""
+msgstr "คุณพยายามเข้าระบบอัตโนมัติครบจำนวนครั้งสูงสุดแล้ว กรุณาลองยืนยันตัวตนโดยใช้วิธีอื่น"
 
-#: daemon/gdm-session-worker.c:749
+#: daemon/gdm-session-worker.c:817
 msgid "You reached the maximum fingerprint authentication attempts, please try another method"
-msgstr ""
+msgstr "คุณพยายามยืนยันตัวตนด้วยลายนิ้วมือครบจำนวนครั้งสูงสุดแล้ว กรุณาลองใช้วิธีอื่น"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:820
 msgid "You reached the maximum smart card authentication attempts, please try another method"
-msgstr ""
+msgstr "คุณพยายามยืนยันตัวตนด้วยสมาร์ทการ์ดครบจำนวนครั้งสูงสุดแล้ว กรุณาลองใช้วิธีอื่น"
 
-#: daemon/gdm-session-worker.c:754
+#: daemon/gdm-session-worker.c:822
 msgid "You reached the maximum authentication attempts, please try another method"
-msgstr ""
+msgstr "คุณพยายามยืนยันตัวตนครบจำนวนครั้งสูงสุดแล้ว กรุณาลองใช้วิธีอื่น"
 
-#: daemon/gdm-session-worker.c:761
-#, fuzzy
-#| msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:829
 msgid "Sorry, password authentication didn’t work. Please try again."
-msgstr "ขออภัย ยังไม่ถูกต้อง กรุณาลองใหม่"
+msgstr "ขออภัย การยืนยันตัวตนด้วยรหัสผ่านไม่สำเร็จ กรุณาลองใหม่"
 
-#: daemon/gdm-session-worker.c:764
-#, fuzzy
-#| msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:832
 msgid "Sorry, auto login didn’t work. Please try again."
-msgstr "ขออภัย ยังไม่ถูกต้อง กรุณาลองใหม่"
+msgstr "ขออภัย การเข้าระบบอัตโนมัติไม่สำเร็จ กรุณาลองใหม่"
 
-#: daemon/gdm-session-worker.c:767
-#, fuzzy
-#| msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:835
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
-msgstr "ขออภัย ยังไม่ถูกต้อง กรุณาลองใหม่"
+msgstr "ขออภัย การยืนยันตัวตนด้วยลายนิ้วมือไม่สำเร็จ กรุณาลองใหม่"
 
-#: daemon/gdm-session-worker.c:770
-#, fuzzy
-#| msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:838
 msgid "Sorry, smart card authentication didn’t work. Please try again."
-msgstr "ขออภัย ยังไม่ถูกต้อง กรุณาลองใหม่"
+msgstr "ขออภัย การยืนยันตัวตนด้วยสมาร์ทการ์ดไม่สำเร็จ กรุณาลองใหม่"
 
-#: daemon/gdm-session-worker.c:772
+#: daemon/gdm-session-worker.c:840
 msgid "Sorry, that didn’t work. Please try again."
-msgstr "ขออภัย ยังไม่ถูกต้อง กรุณาลองใหม่"
+msgstr "ขออภัย ยังไม่สำเร็จ กรุณาลองใหม่"
 
-#: daemon/gdm-session-worker.c:787
+#: daemon/gdm-session-worker.c:855
 msgid "Your account was given a time limit that’s now passed."
 msgstr "บัญชีของคุณมีกำหนดอายุการใช้งาน ซึ่งขณะนี้หมดอายุแล้ว"
 
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:1256
 msgid "Username:"
 msgstr "ชื่อผู้ใช้:"
 
-#: daemon/gdm-session-worker.c:1587 daemon/gdm-session-worker.c:1604
+#: daemon/gdm-session-worker.c:1663 daemon/gdm-session-worker.c:1680
 msgid "no user account available"
 msgstr "ไม่มีบัญชีผู้ใช้"
 
-#: daemon/gdm-session-worker.c:1631
+#: daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "ไม่สามารถเปลี่ยนไปเป็นผู้ใช้ได้"
 
@@ -507,48 +499,50 @@ msgstr ""
 msgid "“%s” needs at least one parameter"
 msgstr ""
 
-#: utils/gdm-config.c:362
+#. TRANSLATORS: “command” can't be enabled...
+#: utils/gdm-config.c:363
 #, c-format
 msgid "“%s” can't be enabled and disabled at the same time"
 msgstr ""
 
-#: utils/gdm-config.c:385
+#. TRANSLATORS: option is not a valid command “option-key” value
+#: utils/gdm-config.c:386
 #, c-format
 msgid "“%s” is not a valid %s “%s” value"
 msgstr ""
 
-#: utils/gdm-config.c:495
+#: utils/gdm-config.c:496
 #, fuzzy, c-format
 #| msgid "Unable to change to user"
 msgid "Failed to switch to %s user"
 msgstr "ไม่สามารถเปลี่ยนไปเป็นผู้ใช้ได้"
 
-#: utils/gdm-config.c:516
+#: utils/gdm-config.c:517
 #, fuzzy, c-format
 #| msgid "Couldn't set userid to %d"
 msgid "Couldn’t set userid to %u"
 msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %d"
 
-#: utils/gdm-config.c:679
+#: utils/gdm-config.c:680
 msgid "No distro detected, no hook to run"
 msgstr ""
 
-#: utils/gdm-config.c:697
+#: utils/gdm-config.c:698
 #, c-format
 msgid "No valid args found to run hook “%s”"
 msgstr ""
 
-#: utils/gdm-config.c:702
+#: utils/gdm-config.c:703
 #, c-format
 msgid "Running distro hook “%s”\n"
 msgstr ""
 
-#: utils/gdm-config.c:716
+#: utils/gdm-config.c:717
 #, c-format
 msgid "Distro hook “%s” requested stopping"
 msgstr ""
 
-#: utils/gdm-config.c:729
+#: utils/gdm-config.c:730
 #, c-format
 msgid ""
 "Distro hook failed with exit status %d and error %s:\n"
@@ -558,51 +552,52 @@ msgid ""
 "%s"
 msgstr ""
 
-#: utils/gdm-config.c:779
+#. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
+#: utils/gdm-config.c:780
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
 
-#: utils/gdm-config.c:819
+#: utils/gdm-config.c:820
 #, fuzzy, c-format
 #| msgid "Failed to create LogDir %s: %s"
 msgid "Failed to create directory %s"
 msgstr "สร้าง LogDir %s ไม่สำเร็จ: %s"
 
-#: utils/gdm-config.c:890
+#: utils/gdm-config.c:891
 msgid "dconf profile not found"
 msgstr ""
 
-#: utils/gdm-config.c:980
+#: utils/gdm-config.c:981
 msgid "dconf has no system-db configured"
 msgstr ""
 
 #. TRANSLATORS: First value is a file path, second is an error message
-#: utils/gdm-config.c:1129
+#: utils/gdm-config.c:1130
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
 msgstr ""
 
-#: utils/gdm-config.c:1132
+#: utils/gdm-config.c:1133
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
 msgstr ""
 
 #. XXX: Fail with an error instead?
-#: utils/gdm-config.c:1260
+#: utils/gdm-config.c:1261
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
 msgstr ""
 
-#: utils/gdm-config.c:1545
+#: utils/gdm-config.c:1546
 msgid "Failed to run a required distro hook: "
 msgstr ""
 
-#: utils/gdm-config.c:1561 utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "คำสั่ง"
 
-#: utils/gdm-config.c:1565
+#: utils/gdm-config.c:1566
 #, c-format
 msgid ""
 "Commands:\n"
@@ -616,47 +611,47 @@ msgid ""
 "Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
 
-#: utils/gdm-config.c:1627
+#: utils/gdm-config.c:1628
 msgid "Command options"
 msgstr ""
 
 #. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
-#: utils/gdm-config.c:1662
+#: utils/gdm-config.c:1663
 #, c-format
 msgid "You need to be root to use %s “%s” command"
 msgstr ""
 
-#: utils/gdm-config.c:1712
+#: utils/gdm-config.c:1713
 #, fuzzy, c-format
 #| msgid "Failed to create LogDir %s: %s"
 msgid "Failed to set %s setting: "
 msgstr "สร้าง LogDir %s ไม่สำเร็จ: %s"
 
-#: utils/gdm-config.c:1804
+#: utils/gdm-config.c:1805
 msgid "Failed to set smartcard setting"
 msgstr ""
 
-#: utils/gdm-config.c:1810
+#: utils/gdm-config.c:1811
 msgid "Failed to set password setting"
 msgstr ""
 
-#: utils/gdm-config.c:1824
+#: utils/gdm-config.c:1825
 msgid "Enabled"
 msgstr ""
 
-#: utils/gdm-config.c:1824
+#: utils/gdm-config.c:1825
 msgid "Disabled"
 msgstr ""
 
-#: utils/gdm-config.c:1833
+#: utils/gdm-config.c:1834
 msgid "Not supported"
 msgstr ""
 
-#: utils/gdm-config.c:1849
+#: utils/gdm-config.c:1850
 msgid "Required"
 msgstr ""
 
-#: utils/gdm-config.c:1910
+#: utils/gdm-config.c:1911
 #, c-format
 msgid ""
 "GDM Authorization configuration\n"
@@ -667,36 +662,36 @@ msgid ""
 "  Smart Card removal action: %s\n"
 msgstr ""
 
-#: utils/gdm-config.c:1938
+#: utils/gdm-config.c:1939
 msgctxt "Interactive question"
 msgid "Y"
 msgstr ""
 
-#: utils/gdm-config.c:1939
+#: utils/gdm-config.c:1940
 msgctxt "Interactive question"
 msgid "y"
 msgstr ""
 
-#: utils/gdm-config.c:1940
+#: utils/gdm-config.c:1941
 msgctxt "Interactive question"
 msgid "N"
 msgstr ""
 
-#: utils/gdm-config.c:1941
+#: utils/gdm-config.c:1942
 msgctxt "Interactive question"
 msgid "n"
 msgstr ""
 
-#: utils/gdm-config.c:1945
+#: utils/gdm-config.c:1946
 msgctxt "Interactive question"
 msgid "Do you want to continue? [Y/n]? "
 msgstr ""
 
-#: utils/gdm-config.c:1963
+#: utils/gdm-config.c:1964
 msgid "User cancelled the request"
 msgstr ""
 
-#: utils/gdm-config.c:1994
+#: utils/gdm-config.c:1995
 #, fuzzy, c-format
 #| msgid "Failed to create LogDir %s: %s"
 msgid "Failed to reset %s setting: "
