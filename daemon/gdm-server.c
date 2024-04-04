@@ -275,7 +275,8 @@ gdm_server_resolve_command_line (GdmServer  *server,
 
         gdm_server_init_command (server);
 
-        g_shell_parse_argv (server->command, &argc, &argv, NULL);
+        if (!g_shell_parse_argv (server->command, &argc, &argv, NULL))
+                return FALSE;
 
         for (len = 0; argv != NULL && argv[len] != NULL; len++) {
                 char *arg = argv[len];
@@ -670,10 +671,13 @@ gdm_server_spawn (GdmServer    *server,
         /* Figure out the server command */
         argv = NULL;
         argc = 0;
-        gdm_server_resolve_command_line (server,
-                                         vtarg,
-                                         &argc,
-                                         &argv);
+
+        if (!gdm_server_resolve_command_line (server,
+                                              vtarg,
+                                              &argc,
+                                              &argv)) {
+                return FALSE;
+        }
 
         if (server->session_args) {
                 server_add_xserver_args (server, &argc, &argv);
