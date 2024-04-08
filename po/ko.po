@@ -4,14 +4,15 @@
 # update by ChiDeok, Hwang <hwang@mizi.co.kr>, 2001.
 # Eunju Kim <eukim@redhat.com>, 2007.
 # Changwoo Ryu <cwryu@debian.org>, 1999, 2002, 2004, 2006-2013, 2015-2019, 2021.
+# Gwan-gyeong Mun <elongbug@gmail.com>, 2024.
 #
 # 새로 번역하시는 분은 translator-credit에 추가하세요.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2023-06-28 18:12+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
+"POT-Creation-Date: 2024-04-04 09:35+0000\n"
 "PO-Revision-Date: 2023-09-02 18:23+0300\n"
 "Last-Translator: Gwan-gyeong Mun <elongbug@gmail.com>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
@@ -61,11 +62,11 @@ msgstr "/dev/urandom이 캐릭터 장치가 아닙니다"
 msgid "Unable to create transient display: "
 msgstr "임시 디스플레이를 만들 수 없습니다: "
 
-#: common/gdm-common.c:511
+#: common/gdm-common.c:543
 msgid "Could not identify the current session: "
 msgstr "현재 세션을 구별할 수 없습니다: "
 
-#: common/gdm-common.c:520
+#: common/gdm-common.c:552
 msgid "Could not identify the current seat."
 msgstr "현재 자리를 구별할 수 없습니다."
 
@@ -85,66 +86,66 @@ msgstr ""
 "템 관리자에게 연락을 하거나 시스템 기록을 확인하십시오. 이 화면은 곧 사라질"
 "것 입니다. 문제가 해결되면 GDM을 다시 시작해 주십시오."
 
-#: daemon/gdm-manager.c:769
+#: daemon/gdm-manager.c:762
 msgid "No display available"
 msgstr "디스플레이가 없습니다"
 
-#: daemon/gdm-manager.c:867 daemon/gdm-manager.c:1151
+#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1183
 msgid "No session available"
 msgstr "세션이 없습니다"
 
-#: daemon/gdm-manager.c:886
+#: daemon/gdm-manager.c:879
 msgid "Chooser session unavailable"
 msgstr "선택창에 세션이 없습니다"
 
-#: daemon/gdm-manager.c:902
+#: daemon/gdm-manager.c:895
 msgid "Can only be called before user is logged in"
 msgstr "사용자가 로그인하기 전에만 부를 수 있습니다"
 
-#: daemon/gdm-manager.c:913
+#: daemon/gdm-manager.c:906
 msgid "Caller not GDM"
 msgstr "GDM에서 호출하지 않았습니다"
 
-#: daemon/gdm-manager.c:923
+#: daemon/gdm-manager.c:916
 msgid "Unable to open private communication channel"
 msgstr "안전한 통신 채널을 열 수 없습니다"
 
-#: daemon/gdm-server.c:384
+#: daemon/gdm-server.c:385
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "%s 사용자가 서버를 실행했지만 해당 사용자가 없습니다"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415
+#: daemon/gdm-server.c:396 daemon/gdm-server.c:416 utils/gdm-config.c:505
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "그룹 아이디를 %d(으)로 맞출 수 없습니다"
 
-#: daemon/gdm-server.c:401
+#: daemon/gdm-server.c:402 utils/gdm-config.c:511
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s에 대해 initgroups () 실패"
 
-#: daemon/gdm-server.c:407
+#: daemon/gdm-server.c:408
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "사용자 아이디를 %d(으)로 맞출 수 없습니다"
 
-#: daemon/gdm-server.c:479
+#: daemon/gdm-server.c:480
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: 디스플레이 %s에 대한 기록 파일을 열지 못했습니다!"
 
-#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
+#: daemon/gdm-server.c:501 daemon/gdm-server.c:507 daemon/gdm-server.c:513
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s을(를) %s(으)로 설정하는 데 오류가 발생했습니다"
 
-#: daemon/gdm-server.c:532
+#: daemon/gdm-server.c:533
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: server 우선순위를 %d(으)로 설정할 수 없습니다: %s"
 
-#: daemon/gdm-server.c:684
+#: daemon/gdm-server.c:688
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: 화면 %s에 비어있는 서버 명령"
@@ -173,73 +174,73 @@ msgstr "디스플레이 장치"
 msgid "The display device"
 msgstr "디스플레이 장치"
 
-#: daemon/gdm-session.c:1336
+#: daemon/gdm-session.c:1443
 msgid "Could not create authentication helper process"
 msgstr "인증 도우미 프로세스를 만들지 못했습니다"
 
-#: daemon/gdm-session-worker.c:741
+#: daemon/gdm-session-worker.c:811
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "암호 인증 시도 최대 제한에 도달했습니다. 다른 방법을 시도해 보십시오"
 
-#: daemon/gdm-session-worker.c:744
+#: daemon/gdm-session-worker.c:814
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr "자동 로그인 시도 최대 제한에 도달했습니다. 다른 방법을 시도해 보십시오"
 
-#: daemon/gdm-session-worker.c:747
+#: daemon/gdm-session-worker.c:817
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr "지문 인증 시도 최대 제한에 도달했습니다. 다른 방법을 시도해 보십시오"
 
-#: daemon/gdm-session-worker.c:750
+#: daemon/gdm-session-worker.c:820
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr ""
 "스마트 카드 인증 시도 최대 제한에 도달했습니다. 다른 방법을 시도해 보십시오"
 
-#: daemon/gdm-session-worker.c:752
+#: daemon/gdm-session-worker.c:822
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "인증 시도 최대 제한에 도달했습니다. 다른 방법을 시도해 보십시오"
 
-#: daemon/gdm-session-worker.c:759
+#: daemon/gdm-session-worker.c:829
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "죄송합니다. 암호 인증이 동작하지 않았습니다. 다시 시도하십시오."
 
-#: daemon/gdm-session-worker.c:762
+#: daemon/gdm-session-worker.c:832
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "죄송합니다. 자동 로그인이 동작하지 않았습니다. 다시 시도하십시오."
 
-#: daemon/gdm-session-worker.c:765
+#: daemon/gdm-session-worker.c:835
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "죄송합니다. 지문 인증이 동작하지 않았습니다. 다시 시도하십시오."
 
-#: daemon/gdm-session-worker.c:768
+#: daemon/gdm-session-worker.c:838
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "죄송합니다. 스마트 카드 인증이 동작하지 않습니다. 다시 시도하십시오."
 
-#: daemon/gdm-session-worker.c:770
+#: daemon/gdm-session-worker.c:840
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "죄송합니다. 동작하지 않았습니다. 다시 시도하십시오."
 
-#: daemon/gdm-session-worker.c:785
+#: daemon/gdm-session-worker.c:855
 msgid "Your account was given a time limit that’s now passed."
 msgstr "계정에 시간 제한이 걸려 있었고, 지금 그 제한이 지났습니다."
 
-#: daemon/gdm-session-worker.c:1186
+#: daemon/gdm-session-worker.c:1256
 msgid "Username:"
 msgstr "사용자 이름:"
 
-#: daemon/gdm-session-worker.c:1585 daemon/gdm-session-worker.c:1602
+#: daemon/gdm-session-worker.c:1671 daemon/gdm-session-worker.c:1688
 msgid "no user account available"
 msgstr "사용자 계정이 없습니다"
 
-#: daemon/gdm-session-worker.c:1629
+#: daemon/gdm-session-worker.c:1715
 msgid "Unable to change to user"
 msgstr "다른 사용자로 바꿀 수 없습니다"
 
@@ -425,13 +426,311 @@ msgstr ""
 "한 사용자가 인증을 시도하는 게 허용된 최대 횟수. 넘어가면 사용자 선택으로 돌"
 "아갑니다."
 
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "명령 도움말 표시"
+
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "자세한 출력 표시"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "디버그 출력 표시"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "인증 방법 사용"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "인증 방법 비활성화"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "인증 방법 필요"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "스마트 카드 제거 시 수행할 동작"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "모든 답변에 예라고 가정합니다"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "암호 인증을 구성합니다."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "지문 인증을 구성합니다."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "스마트 카드 인증을 구성합니다."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "GDM 인증 구성을 재설정합니다."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "GDM 인증 구성을 표시합니다."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "암호 옵션"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "지문 옵션"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "스마트 카드 옵션"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "재설정 옵션"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "옵션 보기"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "암호 인증에 사용할 수 있는 PAM 모듈이 없습니다"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "스마트 카드 인증에 사용할 수 있는 PAM 모듈이 없습니다"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "지문 인증에 사용할 수 있는 PAM 모듈이 없습니다"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s”에 하나 이상의 매개 변수가 필요합니다"
+
+#. TRANSLATORS: “command” can't be enabled...
+#: utils/gdm-config.c:363
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” 은(는) 동시에 활성화 및 비활성화할 수 없습니다"
+
+#. TRANSLATORS: option is not a valid command “option-key” value
+#: utils/gdm-config.c:386
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s”은(는) 유효한 %s “%s” 값이 아닙니다"
+
+#: utils/gdm-config.c:496
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "%s 사용자로 바꿀 수 없습니다"
+
+#: utils/gdm-config.c:517
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "사용자 아이디를 %u(으)로 맞출 수 없습니다"
+
+#: utils/gdm-config.c:680
+msgid "No distro detected, no hook to run"
+msgstr "배포판을 감지할 수 없으며 실행할 후크가 없습니다"
+
+#: utils/gdm-config.c:698
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "“%s” 후크를 실행하는 데 유효한 인수가 없습니다"
+
+#: utils/gdm-config.c:703
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "“%s” 배포판 후크 실행\n"
+
+#: utils/gdm-config.c:717
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "“%s” 배포판 후크가 중지를 요청했습니다"
+
+#: utils/gdm-config.c:730
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
+msgstr ""
+"종료 상태 %d 및 오류 %s로 인해 배포판 후크가 실패했습니다:\n"
+"표준 출력:\n"
+"%s\n"
+"오류 출력:\n"
+"%s"
+
+#. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
+#: utils/gdm-config.c:780
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr "배포판 후크를 통해 명령어 “%s” 옵션 키 “%s” 설정에 실패했습니다: "
+
+#: utils/gdm-config.c:820
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "%s 디렉터리를 만드는데 실패했습니다"
+
+#: utils/gdm-config.c:891
+msgid "dconf profile not found"
+msgstr "dconf 프로필을 찾을 수 없습니다"
+
+#: utils/gdm-config.c:981
+msgid "dconf has no system-db configured"
+msgstr "dconf에 system-db가 구성되지 않았습니다"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1130
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "“%s” 헤더 설명을 가져오지 못했습니다: %s, 수정되었습니까?"
+
+#: utils/gdm-config.c:1133
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "“%s” 파일 헤더 설명이 일치하지 않습니다. 수정되었습니까?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1261
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "“%s” 잠금 파일에 예상된 헤더가 없습니다. 수정되었습니까?"
+
+#: utils/gdm-config.c:1546
+msgid "Failed to run a required distro hook: "
+msgstr "필수 배포판 후크를 실행하지 못했습니다: "
+
+#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "<명령>"
+
+#: utils/gdm-config.c:1566
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"<명령>:\n"
+"  help         이 정보를 표시\n"
+"  password     암호 인증 구성\n"
+"  fingerprint  지문 인증 구성\n"
+"  smartcard    스마트카드 인증 구성\n"
+"  reset        기본 구성 재설정\n"
+"  show         현재 구성을 표시\n"
+"\n"
+"각 명령에 대한 도움말을 보려면 “%s <명령> --help”를 사용하세요.\n"
+
+#: utils/gdm-config.c:1628
+msgid "Command options"
+msgstr "명령 옵션"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1663
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "%s “%s” 명령을 사용하려면 루트 권한이 있어야 합니다"
+
+#: utils/gdm-config.c:1713
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "%s 설정에 실패했습니다: "
+
+#: utils/gdm-config.c:1805
+msgid "Failed to set smartcard setting"
+msgstr "스마트카드 설정에 실패했습니다"
+
+#: utils/gdm-config.c:1811
+msgid "Failed to set password setting"
+msgstr "암호 설정에 실패했습니다"
+
+#: utils/gdm-config.c:1825
+msgid "Enabled"
+msgstr "사용 가능"
+
+#: utils/gdm-config.c:1825
+msgid "Disabled"
+msgstr "사용 안 함"
+
+#: utils/gdm-config.c:1834
+msgid "Not supported"
+msgstr "지원되지 않음"
+
+#: utils/gdm-config.c:1850
+msgid "Required"
+msgstr "필수"
+
+#: utils/gdm-config.c:1911
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM 인증 구성\n"
+"\n"
+"  암호 인증: %s\n"
+"  지문 인증: %s\n"
+"  스마트 카드 인증: %s\n"
+"  스마트 카드 제거시 동작: %s\n"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1942
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1946
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "계속하시겠습니까? [Y/n]? "
+
+#: utils/gdm-config.c:1964
+msgid "User cancelled the request"
+msgstr "사용자가 요청을 취소했습니다"
+
+#: utils/gdm-config.c:1995
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "%s 재설정에 실패했습니다: "
+
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "VERSION 명령만 지원합니다"
-
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "<명령>"
 
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
