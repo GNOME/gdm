@@ -26,6 +26,14 @@ ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}!="1", RUN+="/usr/bin/touch /run/udev/gdm-machin
 IMPORT{cmdline}="nomodeset", GOTO="gdm_disable_wayland"
 LABEL="gdm_nomodeset_end"
 
+# The vendor nvidia driver has multiple modules that need to be loaded before GDM can make an
+# informed choice on which way to proceed, so force GDM to wait until NVidia's modules are
+# loaded before starting up.
+KERNEL!="nvidia", GOTO="gdm_nvidia_end"
+SUBSYSTEM!="module", GOTO="gdm_nvidia_end"
+ACTION!="add", GOTO="gdm_nvidia_end"
+RUN+="/usr/bin/touch /run/udev/gdm-machine-has-vendor-nvidia-driver"
+
 # Import nvidia kernel parameters
 IMPORT{program}="/bin/sh -c \"sed -e 's/: /=/g' -e 's/\([^[:upper:]]\)\([[:upper:]]\)/\1_\2/g' -e 's/[[:lower:]]/\U&/g' -e 's/^/NVIDIA_/' /proc/driver/nvidia/params\""
 
