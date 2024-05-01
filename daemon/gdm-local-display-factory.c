@@ -71,6 +71,8 @@ struct _GdmLocalDisplayFactory
         guint            seat_new_id;
         guint            seat_removed_id;
         guint            seat_properties_changed_id;
+        guint            seat_attention_key;
+
 
         gboolean         seat0_has_platform_graphics;
         gboolean         seat0_has_boot_up_graphics;
@@ -1019,13 +1021,13 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 }
 
 static void
-on_seat_new (GDBusConnection *connection,
-             const gchar     *sender_name,
-             const gchar     *object_path,
-             const gchar     *interface_name,
-             const gchar     *signal_name,
-             GVariant        *parameters,
-             gpointer         user_data)
+on_seat_activate_greeter (GDBusConnection *connection,
+                          const gchar     *sender_name,
+                          const gchar     *object_path,
+                          const gchar     *interface_name,
+                          const gchar     *signal_name,
+                          GVariant        *parameters,
+                          gpointer         user_data)
 {
         const char *seat;
 
@@ -1363,7 +1365,7 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                          "/org/freedesktop/login1",
                                                                          NULL,
                                                                          G_DBUS_SIGNAL_FLAGS_NONE,
-                                                                         on_seat_new,
+                                                                         on_seat_activate_greeter,
                                                                          g_object_ref (factory),
                                                                          g_object_unref);
         factory->seat_removed_id = g_dbus_connection_signal_subscribe (factory->connection,
@@ -1386,6 +1388,17 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                                   on_seat_properties_changed,
                                                                                   g_object_ref (factory),
                                                                                   g_object_unref);
+        factory->seat_attention_key = g_dbus_connection_signal_subscribe (factory->connection,
+                                                                                "org.freedesktop.login1",
+                                                                                "org.freedesktop.login1.Manager",
+                                                                                "SecureAttentionKey",
+                                                                                "/org/freedesktop/login1",
+                                                                                NULL,
+                                                                                G_DBUS_SIGNAL_FLAGS_NONE,
+                                                                                on_seat_activate_greeter,
+                                                                                g_object_ref (factory),
+                                                                                g_object_unref);
+
 #ifdef HAVE_UDEV
         factory->gudev_client = g_udev_client_new (subsystems);
         factory->uevent_handler_id = g_signal_connect (factory->gudev_client,
@@ -1431,6 +1444,11 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                 g_dbus_connection_signal_unsubscribe (factory->connection,
                                                       factory->seat_properties_changed_id);
                 factory->seat_properties_changed_id = 0;
+        }
+        if (factory->seat_attention_key) {
+                g_dbus_connection_signal_unsubscribe (factory->connection,
+                                                      factory->seat_attention_key);
+                factory->seat_attention_key = 0;
         }
 #if defined(ENABLE_USER_DISPLAY_SERVER)
         g_clear_handle_id (&factory->active_vt_watch_id, g_source_remove);
