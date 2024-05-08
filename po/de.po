@@ -17,14 +17,15 @@
 # Jonatan Zeidler <jonatan_zeidler@gmx.de>, 2015.
 # Tim Sabsch <tim@sabsch.com>, 2019.
 # Philipp Kiemle <philipp.kiemle@gmail.com>, 2021, 2024.
+# Jürgen Benvenuti <gastornis@posteo.org>, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GDM master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2024-03-11 10:49+0000\n"
-"PO-Revision-Date: 2024-03-12 22:28+0100\n"
-"Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
+"POT-Creation-Date: 2024-04-04 09:35+0000\n"
+"PO-Revision-Date: 2024-04-28 20:55+0200\n"
+"Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -123,44 +124,44 @@ msgstr "Aufruf nicht durch GDM"
 msgid "Unable to open private communication channel"
 msgstr "Es kann kein privater Kommunikationskanal geöffnet werden"
 
-#: daemon/gdm-server.c:384
+#: daemon/gdm-server.c:385
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "Server sollte für den Benutzer %s gestartet werden, aber dieser Benutzer "
 "existiert nicht"
 
-#: daemon/gdm-server.c:395 daemon/gdm-server.c:415 utils/gdm-config.c:505
+#: daemon/gdm-server.c:396 daemon/gdm-server.c:416 utils/gdm-config.c:505
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "%d konnte nicht als Gruppenkennung festgelegt werden"
 
-#: daemon/gdm-server.c:401 utils/gdm-config.c:511
+#: daemon/gdm-server.c:402 utils/gdm-config.c:511
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () für %s gescheitert"
 
-#: daemon/gdm-server.c:407
+#: daemon/gdm-server.c:408
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "%d konnte nicht als Benutzerkennung festgelegt werden"
 
-#: daemon/gdm-server.c:479
+#: daemon/gdm-server.c:480
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Protokolldatei für Anzeige %s konnte nicht geöffnet werden!"
 
-#: daemon/gdm-server.c:500 daemon/gdm-server.c:506 daemon/gdm-server.c:512
+#: daemon/gdm-server.c:501 daemon/gdm-server.c:507 daemon/gdm-server.c:513
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s konnte nicht auf %s gesetzt werden"
 
-#: daemon/gdm-server.c:532
+#: daemon/gdm-server.c:533
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: Priorität des Servers konnte nicht auf %d gesetzt werden: %s"
 
-#: daemon/gdm-server.c:684
+#: daemon/gdm-server.c:688
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Leerer Server-Befehl für Anzeige %s"
@@ -189,7 +190,7 @@ msgstr "Anzeigegerät"
 msgid "The display device"
 msgstr "Das Anzeigegerät"
 
-#: daemon/gdm-session.c:1436
+#: daemon/gdm-session.c:1443
 msgid "Could not create authentication helper process"
 msgstr "Hilfsprozess zur Legitimierung konnte nicht erstellt werden"
 
@@ -499,7 +500,7 @@ msgstr "Die Anmeldemethode erzwingen"
 
 #: utils/gdm-config.c:151
 msgid "Action to perform on smartcard removal"
-msgstr "Aktion, die beim Entfernen einer SmartCard ausgeführt werden soll"
+msgstr "Aktion, die beim Entfernen einer Smartcard ausgeführt werden soll"
 
 # etwas freier übersetzt
 #: utils/gdm-config.c:160
@@ -516,7 +517,7 @@ msgstr "Anmeldung mit Fingerabdruck einrichten."
 
 #: utils/gdm-config.c:266
 msgid "Configure Smart Card Authentication."
-msgstr "Anmeldung mit Smart Card einrichten."
+msgstr "Anmeldung mit Smartcard einrichten."
 
 #: utils/gdm-config.c:268
 msgid "Reset the GDM Authentication configuration."
@@ -536,7 +537,7 @@ msgstr "Fingerabdruck-Optionen"
 
 #: utils/gdm-config.c:285
 msgid "Smart Card options"
-msgstr "Smart-Card-Optionen"
+msgstr "Smartcard-Optionen"
 
 #: utils/gdm-config.c:287
 msgid "Reset options"
@@ -552,7 +553,7 @@ msgstr "Es ist kein PAM-Modul verfügbar für die Anmeldung mit Passwort"
 
 #: utils/gdm-config.c:321
 msgid "No PAM module available for Smart Card authentication"
-msgstr "Es ist kein PAM-Modul verfügbar für die Anmeldung mit SmartCard"
+msgstr "Es ist kein PAM-Modul verfügbar für die Anmeldung mit Smartcard"
 
 #: utils/gdm-config.c:323
 msgid "No PAM module available for Fingerprint authentication"
@@ -573,7 +574,7 @@ msgstr "»%s« kann nicht gleichzeitig ein- und ausgeschaltet sein"
 #: utils/gdm-config.c:386
 #, c-format
 msgid "“%s” is not a valid %s “%s” value"
-msgstr ""
+msgstr "»%s« ist ein ungültiger%s »%s« Wert"
 
 #: utils/gdm-config.c:496
 #, c-format
@@ -583,26 +584,26 @@ msgstr "Wechsel zum %s Benutzer fehlgeschlagen"
 #: utils/gdm-config.c:517
 #, c-format
 msgid "Couldn’t set userid to %u"
-msgstr "userid konnte nicht auf %u gesetzt werden"
+msgstr "Benutzerkennung (userid) konnte nicht auf %u gesetzt werden"
 
 #: utils/gdm-config.c:680
 msgid "No distro detected, no hook to run"
-msgstr ""
+msgstr "Keine Distribution erkannt. Es wurde kein Hook ausgeführt."
 
 #: utils/gdm-config.c:698
 #, c-format
 msgid "No valid args found to run hook “%s”"
-msgstr ""
+msgstr "Keine gültigen Argumente gefunden, um das Hook »%s« auszuführen"
 
 #: utils/gdm-config.c:703
 #, c-format
 msgid "Running distro hook “%s”\n"
-msgstr ""
+msgstr "Distro-Hook »%s« wird ausgeführt.\n"
 
 #: utils/gdm-config.c:717
 #, c-format
 msgid "Distro hook “%s” requested stopping"
-msgstr ""
+msgstr "Distro-Hook »%s« forderte einen Stopp an"
 
 #: utils/gdm-config.c:730
 #, c-format
@@ -613,12 +614,19 @@ msgid ""
 "Error output:\n"
 "%s"
 msgstr ""
+"Distro-Hook ist fehlgeschlagen mit Beenden-Status %d und dem Fehler »%s«:\n"
+"Standard-Ausgabe:\n"
+"%s\n"
+"Fehlerausgabe:\n"
+"%s"
 
 #. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
 #: utils/gdm-config.c:780
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
+"Festlegen des Befehls »%s« mit Optionsschlüssel »%s« ist fehlgeschlagen "
+"mittels Distro-Hook: "
 
 #: utils/gdm-config.c:820
 #, c-format
@@ -638,21 +646,24 @@ msgstr "dconf hat keine system-db eingerichtet"
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
 msgstr ""
+"Ermitteln des Kopfkommentars »%s« ist fehlgeschlagen: %s . Wurde er geändert?"
 
 #: utils/gdm-config.c:1133
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
-msgstr ""
+msgstr "Kopfkommentars »%s« der Datei stimmt nicht überein. Wurde er geändert?"
 
 #. XXX: Fail with an error instead?
 #: utils/gdm-config.c:1261
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
 msgstr ""
+"Es wurde kein erwarteter Kopfteil der Sperrdatei »%s« gefunden. Wurde er "
+"geändert?"
 
 #: utils/gdm-config.c:1546
 msgid "Failed to run a required distro hook: "
-msgstr ""
+msgstr "Ausführen eines notwendigen Distro-Hook ist fehlgeschlagen: "
 
 #: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
 msgid "COMMAND"
@@ -671,6 +682,16 @@ msgid ""
 "\n"
 "Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
+"Befehle:\n"
+"  help         Zeigt diese informationen\n"
+"  password     Das Passwort zur Anmeldung einrichten\n"
+"  fingerprint  Den Fingerabdruck zur Anmeldung einrichten\n"
+"  smartcard    Smartcard zur Anmeldung einrichten\n"
+"  reset        Die Standard-Konfiguration zurücksetzen\n"
+"  show         Die aktuelle Konfiguration anzeigen\n"
+"\n"
+"Verwenden Sie “%s BEFEHL --help”, um eine Hilfe für jeden Befehl zu "
+"erhalten.\n"
 
 #: utils/gdm-config.c:1628
 msgid "Command options"
@@ -691,7 +712,7 @@ msgstr "%s-Einstellung konnte nicht gesetzt werden: "
 
 #: utils/gdm-config.c:1805
 msgid "Failed to set smartcard setting"
-msgstr "Festlegen der SmartCard-Einstellung ist fehlgeschlagen"
+msgstr "Festlegen der Smartcard-Einstellung ist fehlgeschlagen"
 
 #: utils/gdm-config.c:1811
 msgid "Failed to set password setting"
@@ -723,6 +744,12 @@ msgid ""
 "  Smart Card authentication: %s\n"
 "  Smart Card removal action: %s\n"
 msgstr ""
+"GDM Anmelde-Konfiguration\n"
+"\n"
+"  Passwort-Anmeldung: %s\n"
+"  Anmeldung mit Fingerabdruck: %s\n"
+"  Anmeldung mit Smartcard : %s\n"
+"  Aktion bei Entfernen der Smartcard: %s\n"
 
 #: utils/gdm-config.c:1939
 msgctxt "Interactive question"
