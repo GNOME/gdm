@@ -32,6 +32,11 @@ struct _GdmRemoteDisplayFactory
 
         GdmDBusRemoteDisplayFactory *skeleton;
         GDBusConnection             *connection;
+
+        int                          remote_displays_count;
+
+       gboolean                      suspend_inhibited;
+       int                           inhibit_suspend_fd;
 };
 
 static void     gdm_remote_display_factory_class_init    (GdmRemoteDisplayFactoryClass *klass);
@@ -145,6 +150,9 @@ gdm_remote_display_factory_finalize (GObject *object)
         g_clear_object (&factory->connection);
         g_clear_object (&factory->skeleton);
 
+        if (factory->inhibit_suspend_fd != -1)
+                close (factory->inhibit_suspend_fd);
+
         G_OBJECT_CLASS (gdm_remote_display_factory_parent_class)->finalize (object);
 }
 
@@ -168,11 +176,138 @@ gdm_remote_display_factory_constructor (GType                  type,
         return G_OBJECT (factory);
 }
 
+static void
+on_inhibit_suspend_done (GObject      *source,
+                         GAsyncResult *result,
+                         gpointer      user_data)
+{
+        GDBusProxy *proxy = G_DBUS_PROXY (source);
+        GdmRemoteDisplayFactory *factory = user_data;
+        g_autoptr (GUnixFDList) fd_list = NULL;
+        g_autoptr (GVariant) res = NULL;
+        g_autoptr (GError) error = NULL;
+        int idx;
+
+        res = g_dbus_proxy_call_with_unix_fd_list_finish (proxy,
+                                                          &fd_list,
+                                                          result,
+                                                          &error);
+        if (!res) {
+                g_warning ("Unable to inhibit suspend: %s", error->message);
+                factory->suspend_inhibited = FALSE;
+                return;
+        }
+
+        g_variant_get (res, "(h)", &idx);
+        factory->inhibit_suspend_fd = g_unix_fd_list_get (fd_list, idx, &error);
+        if (factory->inhibit_suspend_fd == -1) {
+                g_warning ("Failed to receive system inhibitor fd: %s", error->message);
+                factory->suspend_inhibited = FALSE;
+        }
+}
+
+static void
+inhibit_suspend (GdmRemoteDisplayFactory *factory)
+{
+        g_autoptr (GDBusProxy) proxy = NULL;
+        g_autoptr (GError) error = NULL;
+
+        if (factory->suspend_inhibited)
+                return;
+
+        proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                               G_DBUS_PROXY_FLAGS_NONE,
+                                               NULL,
+                                               "org.freedesktop.login1",
+                                               "/org/freedesktop/login1",
+                                               "org.freedesktop.login1.Manager",
+                                               NULL,
+                                               &error);
+        if (!proxy) {
+                g_warning ("Failed to acquire login1 manager proxy: %s", error->message);
+                return;
+        }
+
+        factory->suspend_inhibited = TRUE;
+        g_dbus_proxy_call_with_unix_fd_list (proxy,
+                                             "Inhibit",
+                                             g_variant_new ("(ssss)",
+                                                            "sleep",
+                                                            g_get_user_name (),
+                                                            "Remote sessions would die on suspend",
+                                                            "block"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             G_MAXINT,
+                                             NULL,
+                                             NULL,
+                                             on_inhibit_suspend_done,
+                                             factory);
+}
+
+
+static void
+on_display_added (GdmDisplayStore         *store,
+                  const char              *id,
+                  GdmRemoteDisplayFactory *factory)
+{
+        GdmDisplay *display = gdm_display_store_lookup (store, id);
+
+        g_return_if_fail (GDM_IS_REMOTE_DISPLAY (display));
+
+        factory->remote_displays_count++;
+
+        if (factory->remote_displays_count > 0)
+                inhibit_suspend (factory);
+}
+
+static void
+uninhibit_suspend (GdmRemoteDisplayFactory *factory)
+{
+        if (factory->inhibit_suspend_fd == -1)
+                return;
+
+        close (factory->inhibit_suspend_fd);
+        factory->inhibit_suspend_fd = -1;
+        factory->suspend_inhibited = FALSE;
+}
+
+static void
+on_display_removed (GdmDisplayStore         *display_store,
+                    GdmDisplay              *display,
+                    GdmRemoteDisplayFactory *factory)
+{
+        g_assert (factory->remote_displays_count >= 0);
+
+        g_return_if_fail (GDM_IS_REMOTE_DISPLAY (display));
+
+        factory->remote_displays_count--;
+
+        if (factory->remote_displays_count == 0)
+                uninhibit_suspend (factory);
+}
+
 static gboolean
 gdm_remote_display_factory_start (GdmDisplayFactory *base_factory)
 {
         GdmRemoteDisplayFactory *factory = GDM_REMOTE_DISPLAY_FACTORY (base_factory);
+        GdmDisplayStore *store;
+
         g_return_val_if_fail (GDM_IS_REMOTE_DISPLAY_FACTORY (factory), FALSE);
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        g_signal_connect_object (G_OBJECT (store),
+                                 "display-added",
+                                 G_CALLBACK (on_display_added),
+                                 factory,
+                                 G_CONNECT_DEFAULT);
+
+        g_signal_connect_object (G_OBJECT (store),
+                                 "display-removed",
+                                 G_CALLBACK (on_display_removed),
+                                 factory,
+                                 G_CONNECT_DEFAULT);
+
         return TRUE;
 }
 
@@ -200,6 +335,7 @@ gdm_remote_display_factory_class_init (GdmRemoteDisplayFactoryClass *klass)
 static void
 gdm_remote_display_factory_init (GdmRemoteDisplayFactory *factory)
 {
+  factory->inhibit_suspend_fd = -1;
 }
 
 GdmRemoteDisplayFactory *
