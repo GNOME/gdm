@@ -2636,6 +2636,8 @@ gdm_manager_start (GdmManager *manager)
 
         /* Accept remote connections */
         if (manager->remote_login_enabled) {
+                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->remote_factory));
+
 #ifdef WITH_PLYMOUTH
                 /* Quit plymouth if remote is the only display */
                 if (!manager->show_local_greeter && manager->plymouth_is_running) {
