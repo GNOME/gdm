@@ -252,7 +252,8 @@ on_display_added (GdmDisplayStore         *store,
 {
         GdmDisplay *display = gdm_display_store_lookup (store, id);
 
-        g_return_if_fail (GDM_IS_REMOTE_DISPLAY (display));
+        if (!GDM_IS_REMOTE_DISPLAY (display))
+                return;
 
         factory->remote_displays_count++;
 
@@ -278,7 +279,8 @@ on_display_removed (GdmDisplayStore         *display_store,
 {
         g_assert (factory->remote_displays_count >= 0);
 
-        g_return_if_fail (GDM_IS_REMOTE_DISPLAY (display));
+        if (!GDM_IS_REMOTE_DISPLAY (display))
+                return;
 
         factory->remote_displays_count--;
 
