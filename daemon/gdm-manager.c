@@ -1147,8 +1147,13 @@ are_sessions_compatible (GdmSession *session_a,
         session_a_seat_id = gdm_session_get_display_seat_id (session_a);
         session_b_seat_id = gdm_session_get_display_seat_id (session_b);
 
-        return session_a_is_local && session_b_is_local &&
-               g_strcmp0 (session_a_seat_id, session_b_seat_id) == 0;
+        if (session_a_is_local != session_b_is_local)
+                return FALSE;
+
+        if (!session_a_is_local && !session_b_is_local)
+                return TRUE;
+
+        return g_strcmp0 (session_a_seat_id, session_b_seat_id) == 0;
 }
 
 static gboolean
@@ -1191,6 +1196,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                                  username,
                                                  NULL);
                 login_session = get_user_session_for_display (display);
+                g_object_set_data (G_OBJECT (display), "reauth-pid-of-caller", GINT_TO_POINTER (pid));
         } else {
                 g_debug ("GdmManager: looking for user session on display");
                 session = get_user_session_for_display (display);
@@ -2109,29 +2115,62 @@ get_display_device (GdmManager *manager,
         return NULL;
 }
 
+static gboolean
+lookup_by_reauth_pid (const char *id,
+                      GdmDisplay *display,
+                      gpointer    user_data)
+{
+        GPid looking_for;
+        GPid current;
+
+        looking_for = GPOINTER_TO_INT (user_data);
+        current = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (display), "reauth-pid-of-caller"));
+
+        if (looking_for == 0 || current == 0)
+                return FALSE;
+
+        return looking_for == current;
+}
+
 static void
 on_session_reauthenticated (GdmSession *session,
                             const char *service_name,
+                            int         pid_of_caller,
                             GdmManager *manager)
 {
         gboolean fail_if_already_switched = FALSE;
+        GdmDisplay *login_display = gdm_display_store_find (manager->display_store,
+                                                            lookup_by_reauth_pid,
+                                                            GINT_TO_POINTER (pid_of_caller));
 
-        if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                const char *seat_id;
-                char *session_id;
+        if (login_display != NULL) {
+                if (GDM_IS_REMOTE_DISPLAY (login_display)) {
+                        const char *session_id;
+                        GdmDisplay *user_display;
 
-                seat_id = gdm_session_get_display_seat_id (session);
-                if (gdm_get_login_window_session_id (seat_id, &session_id)) {
-                        GdmDisplay *display = gdm_display_store_find (manager->display_store,
-                                                                      lookup_by_session_id,
-                                                                      (gpointer) session_id);
+                        session_id = gdm_session_get_session_id (session);
+                        user_display = gdm_display_store_find (manager->display_store,
+                                                               lookup_by_session_id,
+                                                               (gpointer) session_id);
 
-                        if (display != NULL) {
-                                gdm_display_stop_greeter_session (display);
-                                gdm_display_unmanage (display);
-                                gdm_display_finish (display);
+                        if (user_display != NULL && GDM_IS_REMOTE_DISPLAY (user_display)) {
+                                /* Transferring the remote id from the new login screen display to the
+                                 * preexisting user session display, notifies the remoting software to redirect
+                                 * the connection. That same software will also ensure after the redirection has
+                                 * happened that the login screen session is closed, so we don't have to manage that
+                                 * ourselves.
+                                 */
+                                g_autofree char *remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (login_display));
+                                gdm_remote_display_set_remote_id (GDM_REMOTE_DISPLAY (user_display), remote_id);
+                        } else {
+                                g_warning ("GdmManager: Couldn't find remote display associated with reauthenticated user session");
                         }
-                        g_free (session_id);
+                }
+
+                if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
+                        gdm_display_stop_greeter_session (login_display);
+                        gdm_display_unmanage (login_display);
+                        gdm_display_finish (login_display);
                 }
         }
 

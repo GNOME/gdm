@@ -36,6 +36,9 @@ GdmDisplay *        gdm_remote_display_new                     (const char *remo
 
 char *              gdm_remote_display_get_remote_id           (GdmRemoteDisplay *self);
 
+void                gdm_remote_display_set_remote_id           (GdmRemoteDisplay *self,
+                                                                const char       *remote_id);
+
 G_END_DECLS
 
 #endif /* __GDM_REMOTE_DISPLAY_H */

@@ -53,6 +53,13 @@ gdm_remote_display_get_remote_id (GdmRemoteDisplay *display)
         return g_steal_pointer (&remote_id);
 }
 
+void
+gdm_remote_display_set_remote_id (GdmRemoteDisplay *display,
+                                  const char       *remote_id)
+{
+        g_object_set (G_OBJECT (display->skeleton), "remote-id", remote_id, NULL);
+}
+
 static GObject *
 gdm_remote_display_constructor (GType                  type,
                                 guint                  n_construct_properties,
