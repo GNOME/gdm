@@ -331,14 +331,9 @@ collect_sessions (void)
         g_autoptr(GPtrArray) wayland_search_array = NULL;
         gchar      *session_dir = NULL;
         int         i;
-        const char *xorg_search_dirs[] = {
-                "/etc/X11/sessions/",
-                DMCONFDIR "/Sessions/",
-                DATADIR "/gdm/BuiltInSessions/",
-                DATADIR "/xsessions/",
-        };
         const gchar *supported_session_types_env = NULL;
         g_auto (GStrv) supported_session_types = NULL;
+        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
 
         supported_session_types_env = g_getenv ("GDM_SUPPORTED_SESSION_TYPES");
         if (supported_session_types_env != NULL) {
@@ -346,9 +341,15 @@ collect_sessions (void)
         }
 
         names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
-        xorg_search_array = g_ptr_array_new_with_free_func (g_free);
 
-        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
+#ifdef ENABLE_X11_SUPPORT
+        const char *xorg_search_dirs[] = {
+                "/etc/X11/sessions/",
+                DMCONFDIR "/Sessions/",
+                DATADIR "/gdm/BuiltInSessions/",
+                DATADIR "/xsessions/",
+        };
+        xorg_search_array = g_ptr_array_new_with_free_func (g_free);
 
         for (i = 0; system_data_dirs[i]; i++) {
                 session_dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
@@ -358,6 +359,7 @@ collect_sessions (void)
         for (i = 0; i < G_N_ELEMENTS (xorg_search_dirs); i++) {
                 g_ptr_array_add (xorg_search_array, g_strdup (xorg_search_dirs[i]));
         }
+#endif
 
 #ifdef ENABLE_WAYLAND_SUPPORT
         const char *wayland_search_dirs[] = {
@@ -381,11 +383,13 @@ collect_sessions (void)
                                                                     g_free, (GDestroyNotify)gdm_session_file_free);
         }
 
+#ifdef ENABLE_X11_SUPPORT
         if (!supported_session_types || g_strv_contains ((const char * const *) supported_session_types, "x11")) {
                 for (i = xorg_search_array->len - 1; i >= 0; i--) {
                         collect_sessions_from_directory (g_ptr_array_index (xorg_search_array, i));
                 }
         }
+#endif
 
 #ifdef ENABLE_WAYLAND_SUPPORT
 #ifdef ENABLE_USER_DISPLAY_SERVER

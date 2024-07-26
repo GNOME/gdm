@@ -221,21 +221,27 @@ get_preferred_display_server (GdmLocalDisplayFactory *factory)
         if (g_strcmp0 (preferred_display_server, "wayland") == 0) {
                 if (wayland_enabled)
                         return g_strdup (preferred_display_server);
+#ifdef ENABLE_X11_SUPPORT
                 else
                         return g_strdup ("xorg");
+#endif
         }
 
         if (g_strcmp0 (preferred_display_server, "xorg") == 0) {
+#ifdef ENABLE_X11_SUPPORT
                 if (xorg_enabled)
                         return g_strdup (preferred_display_server);
                 else
+#endif
                         return g_strdup ("wayland");
         }
 
+#ifdef ENABLE_X11_SUPPORT
         if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0) {
                 if (xorg_enabled)
                         return g_strdup (preferred_display_server);
         }
+#endif
 
         return g_strdup ("none");
 }
@@ -318,20 +324,24 @@ gdm_local_display_factory_get_session_types (GdmLocalDisplayFactory *factory,
         wayland_preferred = g_str_equal (preferred_display_server, "wayland");
         xorg_preferred = g_str_equal (preferred_display_server, "xorg");
 
+#ifdef ENABLE_X11_SUPPORT
         if (wayland_preferred)
                 fallback_display_server = "xorg";
         else if (xorg_preferred)
                 fallback_display_server = "wayland";
         else
                 return NULL;
+#endif
 
-        if (!should_fall_back) {
+        if (!should_fall_back || fallback_display_server == NULL) {
                 if (display_server_enabled (factory, preferred_display_server))
                       g_ptr_array_add (session_types_array, (gpointer) get_session_type_for_display_server (factory, preferred_display_server));
         }
 
+#ifdef ENABLE_X11_SUPPORT
         if (display_server_enabled (factory, fallback_display_server))
                 g_ptr_array_add (session_types_array, (gpointer) get_session_type_for_display_server (factory, fallback_display_server));
+#endif
 
         if (session_types_array->len == 0)
                 return NULL;
