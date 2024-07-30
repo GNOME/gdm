@@ -62,7 +62,6 @@ gio_unix_dep = dependency('gio-unix-2.0', version: '>=' + glib_min_version)
 dconf_dep = dependency('dconf', required: false)
 json_glib = dependency('json-glib-1.0', version: '>= 1.2.0',
   required: pam_extensions_supported)
-libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 keyutils_dep = dependency('libkeyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
