@@ -53,7 +53,9 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 
+#ifdef ENABLE_X11_SUPPORT
 #include <X11/Xlib.h> /* for Display */
+#endif
 
 #include "gdm-common.h"
 #include "gdm-settings-direct.h"

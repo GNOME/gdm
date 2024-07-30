@@ -34,8 +34,10 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#ifdef ENABLE_X11_SUPPORT
 #include <xcb/xcb.h>
 #include <X11/Xlib.h>
+#endif
 
 #include "gdm-common.h"
 #include "gdm-display.h"
@@ -74,8 +76,10 @@ typedef struct _GdmDisplayPrivate
 
         guint                 finish_idle_id;
 
+#ifdef ENABLE_X11_SUPPORT
         xcb_connection_t     *xcb_connection;
         int                   xcb_screen_number;
+#endif
 
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
@@ -229,6 +233,7 @@ gdm_display_create_authority (GdmDisplay *self)
         return TRUE;
 }
 
+#ifdef ENABLE_X11_SUPPORT
 static void
 setup_xhost_auth (XHostAddress              *host_entries)
 {
@@ -242,6 +247,7 @@ setup_xhost_auth (XHostAddress              *host_entries)
         host_entries[2].address   = "localuser\0gnome-initial-setup";
         host_entries[2].length    = sizeof ("localuser\0gnome-initial-setup");
 }
+#endif
 
 gboolean
 gdm_display_add_user_authorization (GdmDisplay *self,
@@ -249,6 +255,7 @@ gdm_display_add_user_authorization (GdmDisplay *self,
                                     char      **filename,
                                     GError    **error)
 {
+#ifdef ENABLE_X11_SUPPORT
         GdmDisplayPrivate    *priv;
         g_autoptr(GdmDisplayAccessFile) access_file = NULL;
         g_autoptr(GError) access_file_error = NULL;
@@ -328,6 +335,9 @@ gdm_display_add_user_authorization (GdmDisplay *self,
         }
 
         return TRUE;
+#else
+    return FALSE;
+#endif
 }
 
 gboolean
@@ -627,6 +637,7 @@ gdm_display_finish (GdmDisplay *self)
 static void
 gdm_display_disconnect (GdmDisplay *self)
 {
+#ifdef ENABLE_X11_SUPPORT
         GdmDisplayPrivate *priv;
         /* These 3 bits are reserved/unused by the X protocol */
         guint32 unused_bits = 0b11100000000000000000000000000000;
@@ -660,6 +671,7 @@ gdm_display_disconnect (GdmDisplay *self)
         xcb_flush (priv->xcb_connection);
 
         g_clear_pointer (&priv->xcb_connection, xcb_disconnect);
+#endif
 }
 
 gboolean
@@ -1040,7 +1052,11 @@ gdm_display_get_property (GObject        *object,
                 g_value_set_boolean (value, priv->is_local);
                 break;
         case PROP_IS_CONNECTED:
+#ifdef ENABLE_X11_SUPPORT
                 g_value_set_boolean (value, priv->xcb_connection != NULL);
+#else
+                g_value_set_boolean (value, FALSE);
+#endif
                 break;
         case PROP_LAUNCH_ENVIRONMENT:
                 g_value_set_object (value, priv->launch_environment);
@@ -1757,6 +1773,7 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
         }
 }
 
+#ifdef ENABLE_X11_SUPPORT
 static xcb_window_t
 get_root_window (xcb_connection_t *connection,
                  int               screen_number)
@@ -1840,10 +1857,12 @@ out:
         g_clear_pointer (&atom_reply, free);
         g_clear_pointer (&get_property_reply, free);
 }
+#endif
 
 gboolean
 gdm_display_connect (GdmDisplay *self)
 {
+#ifdef ENABLE_X11_SUPPORT
         GdmDisplayPrivate *priv;
         xcb_auth_info_t *auth_info = NULL;
         gboolean ret;
@@ -1917,5 +1936,7 @@ gdm_display_connect (GdmDisplay *self)
         }
 
         return ret;
+#else
+    return FALSE;
+#endif
 }
-
