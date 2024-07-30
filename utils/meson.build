@@ -15,9 +15,13 @@ gdm_flexiserver = executable('gdmflexiserver',
 gdm_screenshot_deps = [
   glib_dep,
   gtk_dep,
-  x_deps,
   libcanberra_gtk_dep,
 ]
+if have_x11_support
+  gdm_screenshot_deps += [
+    x_deps,
+  ]
+endif
 
 gdm_screenshot = executable('gdm-screenshot',
   'gdm-screenshot.c',

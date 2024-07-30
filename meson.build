@@ -39,7 +39,7 @@ gdm_screenshot_dir = (get_option('screenshot-dir') != '')? get_option('screensho
 gdm_private_dbus_dir = (get_option('private-dbus-dir') != '')? get_option('private-dbus-dir') : gdm_run_dir / 'dbus'
 pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
 pam_profiles_dir = pam_prefix / 'pam.d'
-
+have_x11_support = get_option('x11-support')
 # Common variables
 config_h_dir = include_directories('.')
 
@@ -80,37 +80,42 @@ if udev_dir == ''
 endif
 
 # X11
-x_deps = declare_dependency(
-  dependencies: [
-    dependency('x11'),
-    dependency('xau'),
-  ],
-)
-# Xserver 1.17 & later default to -nolisten and require -listen for remote access
-xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
-xserver_has_listen = xserver_deps.found()
-find_x_server_script = find_program('build-aux/find-x-server.sh', native: true)
-find_x_server_out = run_command(find_x_server_script).stdout().strip()
-if find_x_server_out != ''
-  x_bin = find_x_server_out
-  x_bin_path_split = x_bin.split('/')
-  i = 0
-  x_path = '/'
-  foreach dir : x_bin_path_split
-    if i < x_bin_path_split.length() - 1
-      x_path = x_path / dir
-    endif
-    i = i + 1
-  endforeach
+# defaults
+x_path = '/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin'
+x_bin = '/usr/bin/X'
+if have_x11_support
+  x_deps = declare_dependency(
+    dependencies: [
+      dependency('x11'),
+      dependency('xau'),
+    ],
+  )
+  # Xserver 1.17 & later default to -nolisten and require -listen for remote access
+  xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
+  xserver_has_listen = xserver_deps.found()
+  find_x_server_script = find_program('build-aux/find-x-server.sh', native: true)
+  find_x_server_out = run_command(find_x_server_script).stdout().strip()
+  if find_x_server_out != ''
+    x_bin = find_x_server_out
+    x_bin_path_split = x_bin.split('/')
+    i = 0
+    x_path = '/'
+    foreach dir : x_bin_path_split
+      if i < x_bin_path_split.length() - 1
+        x_path = x_path / dir
+      endif
+      i = i + 1
+    endforeach
+  endif
+
+  xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
+  have_xdmcp = xdmcp_dep.found()
+  if have_xdmcp and get_option('tcp-wrappers')
+    libwrap_dep = cc.find_library('wrap')
+  endif
 else
-  # what to do, what to do, this is wrong, but this just sets the
-  # defaults, perhaps this user is cross compiling or some such
-  x_path = '/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin'
-  x_bin = '/usr/bin/X'
-endif
-xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
-if xdmcp_dep.found() and get_option('tcp-wrappers')
-  libwrap_dep = cc.find_library('wrap')
+  xserver_has_listen = false
+  have_xdmcp = false
 endif
 # systemd
 logind_provider = get_option('logind-provider')
@@ -268,6 +273,7 @@ conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
 conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
+conf.set('ENABLE_X11_SUPPORT', get_option('x11-support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('GDM_INITIAL_VT', get_option('initial-vt'))
 conf.set_quoted('GDM_DEFAULTS_CONF', gdm_defaults_conf)
@@ -276,7 +282,7 @@ conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
 conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
 conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
-conf.set('HAVE_LIBXDMCP', xdmcp_dep.found())
+conf.set('HAVE_LIBXDMCP', have_xdmcp)
 conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('WITH_PLYMOUTH', plymouth_dep.found())
 conf.set_quoted('X_SERVER', x_bin)
@@ -309,7 +315,7 @@ subdir('po')
 if libcheck_dep.found()
   subdir('tests')
 endif
-if xdmcp_dep.found()
+if have_xdmcp
   subdir('chooser')
 endif
 subdir('docs')
@@ -361,6 +367,7 @@ summary({
     'Use UserDisplayServer': get_option('user-display-server'),
     'Use SystemdJournal': get_option('systemd-journal'),
     'Use WaylandSupport': get_option('wayland-support'),
+    'Use X11Support': have_x11_support,
     'Use Profiling': get_option('profiling'),
     'Initial VT': get_option('initial-vt'),
     'Username': get_option('user'),
