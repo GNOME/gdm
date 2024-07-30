@@ -210,7 +210,7 @@ if systemduserunitdir != 'no'
 endif
 
 # XSession
-if get_option('gdm-xsession')
+if get_option('gdm-xsession') and have_x11_support
   configure_file(
     input: 'Xsession.in',
     output: '@BASENAME@',
