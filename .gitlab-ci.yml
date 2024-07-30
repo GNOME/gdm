@@ -1,3 +1,32 @@
+variables:
+  COMMON_DEPENDENCIES: accountsservice-devel
+    audit-libs-devel
+    check-devel
+    dconf
+    desktop-file-utils
+    gettext-devel
+    git
+    gobject-introspection-devel
+    iso-codes-devel
+    itstool
+    json-glib-devel
+    keyutils-libs-devel
+    libattr-devel
+    libgudev-devel
+    libdmx-devel
+    libselinux-devel
+    libtool
+    meson
+    nss-devel
+    pam-devel
+    plymouth-devel
+    redhat-rpm-config
+    systemd
+    systemd-devel
+    which
+    yelp-devel
+  COMMON_BUILD_OPTIONS: --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+
 stages:
   - build
 
@@ -6,40 +35,28 @@ build-fedora:
   stage: build
   before_script:
     - dnf -y install
-        accountsservice-devel
-        audit-libs-devel
-        check-devel
-        dconf
-        desktop-file-utils
-        gettext-devel
-        git
-        gobject-introspection-devel
+        ${COMMON_DEPENDENCIES}
         gtk3-devel
-        iso-codes-devel
-        itstool
-        json-glib-devel
-        keyutils-libs-devel
         libXau-devel
         libXdmcp-devel
-        libattr-devel
-        libcanberra-devel
-        libgudev-devel
-        libdmx-devel
-        libselinux-devel
-        libtool
-        meson
-        nss-devel
-        pam-devel
-        plymouth-devel
-        redhat-rpm-config
-        systemd
-        systemd-devel
-        which
         xorg-x11-server-Xorg
         xorg-x11-server-devel
-
   script:
-    - meson . build --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+    - meson . build ${COMMON_BUILD_OPTIONS}
+    - ninja -C build
+    - ninja -C build install
+    - ninja -C build dist
+    - ninja -C build test
+  except:
+    - tags
+
+build-fedora-wayland:
+  image: fedora:38
+  stage: build
+  before_script:
+    - dnf -y install ${COMMON_DEPENDENCIES}
+  script:
+    - meson . build ${COMMON_BUILD_OPTIONS} -Dx11-support=false
     - ninja -C build
     - ninja -C build install
     - ninja -C build dist
