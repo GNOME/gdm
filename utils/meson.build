@@ -11,25 +11,6 @@ gdm_flexiserver = executable('gdmflexiserver',
   install: true,
 )
 
-# gdm-screenshot
-gdm_screenshot_deps = [
-  glib_dep,
-  gtk_dep,
-  libcanberra_gtk_dep,
-]
-if have_x11_support
-  gdm_screenshot_deps += [
-    x_deps,
-  ]
-endif
-
-gdm_screenshot = executable('gdm-screenshot',
-  'gdm-screenshot.c',
-  dependencies: gdm_screenshot_deps,
-  include_directories: config_h_dir,
-  install: true,
-)
-
 # gdm-runtime-config
 gdm_runtime_config_deps = [
   glib_dep,
