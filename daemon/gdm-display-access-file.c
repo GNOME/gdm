@@ -407,6 +407,7 @@ gdm_display_access_file_open (GdmDisplayAccessFile  *file,
         return TRUE;
 }
 
+#ifdef ENABLE_X11_SUPPORT
 static void
 _get_auth_info_for_display (GdmDisplayAccessFile *file,
                             GdmDisplay           *display,
@@ -449,6 +450,7 @@ _get_auth_info_for_display (GdmDisplayAccessFile *file,
         *name = g_strdup ("MIT-MAGIC-COOKIE-1");
         *name_length = strlen (*name);
 }
+#endif
 
 gboolean
 gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
@@ -496,6 +498,7 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
                                                  gsize                  cookie_size,
                                                  GError               **error)
 {
+#ifdef ENABLE_X11_SUPPORT
         Xauth auth_entry;
         gboolean display_added;
 
@@ -548,6 +551,9 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
         g_free (auth_entry.name);
 
         return display_added;
+#else
+    return FALSE;
+#endif
 }
 
 void
