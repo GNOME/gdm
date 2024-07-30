@@ -74,10 +74,10 @@ gdm_daemon_deps = [
   gio_unix_dep,
   json_glib,
   libpam_dep,
-  xcb_dep,
 ]
 if have_x11_support
   gdm_daemon_deps += [
+    xcb_dep,
     x_deps,
   ]
 endif
