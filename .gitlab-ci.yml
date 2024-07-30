@@ -31,7 +31,7 @@ stages:
   - build
 
 build-fedora:
-  image: fedora:38
+  image: fedora:40
   stage: build
   before_script:
     - dnf -y install
@@ -51,7 +51,7 @@ build-fedora:
     - tags
 
 build-fedora-wayland:
-  image: fedora:38
+  image: fedora:40
   stage: build
   before_script:
     - dnf -y install ${COMMON_DEPENDENCIES}
