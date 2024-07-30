@@ -65,7 +65,6 @@ json_glib = dependency('json-glib-1.0', version: '>= 1.2.0',
   required: pam_extensions_supported)
 libcanberra_gtk_dep = dependency('libcanberra-gtk3', version: '>= 0.4')
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
-xcb_dep = dependency('xcb')
 keyutils_dep = dependency('libkeyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
 
@@ -84,6 +83,7 @@ endif
 x_path = '/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin'
 x_bin = '/usr/bin/X'
 if have_x11_support
+  xcb_dep = dependency('xcb')
   x_deps = declare_dependency(
     dependencies: [
       dependency('x11'),
