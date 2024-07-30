@@ -59,7 +59,6 @@ glib_dep = dependency('glib-2.0', version: '>=' + glib_min_version)
 gobject_dep = dependency('gobject-2.0', version: '>=' + glib_min_version)
 gio_dep = dependency('gio-2.0', version: '>=' + glib_min_version)
 gio_unix_dep = dependency('gio-unix-2.0', version: '>=' + glib_min_version)
-gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
 dconf_dep = dependency('dconf', required: false)
 json_glib = dependency('json-glib-1.0', version: '>= 1.2.0',
   required: pam_extensions_supported)
@@ -110,6 +109,9 @@ if have_x11_support
 
   xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
   have_xdmcp = xdmcp_dep.found()
+  if have_xdmcp
+    gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
+  endif
   if have_xdmcp and get_option('tcp-wrappers')
     libwrap_dep = cc.find_library('wrap')
   endif
