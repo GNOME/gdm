@@ -1,13 +1,13 @@
 # Hungarian translation for gdm.
-# Copyright (C) 2014, 2023 Free Software Foundation, Inc.
+# Copyright (C) 2014, 2023, 2024 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm package.
 #
-# Balázs Úr <ur.balazs at fsf dot hu>, 2014, 2023.
+# Balázs Úr <ur.balazs at fsf dot hu>, 2014, 2023, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"POT-Creation-Date: 2023-09-18 14:48+0000\n"
-"PO-Revision-Date: 2023-09-19 21:37+0200\n"
+"POT-Creation-Date: 2024-08-03 13:40+0000\n"
+"PO-Revision-Date: 2024-08-06 18:21+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -15,12 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 23.04.3\n"
+"X-Generator: Lokalize 23.08.4\n"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr "Úr Balázs <ur dot balazs at fsf dot hu>, 2014, 2023."
+msgstr "Úr Balázs <ur dot balazs at fsf dot hu>, 2014, 2023, 2024."
 
 #. (itstool) path: articleinfo/title
 #: C/index.docbook:13
@@ -2135,14 +2135,19 @@ msgstr "User=gdm"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1262
+#| msgid ""
+#| "The username under which the greeter and other GUI programs are run. "
+#| "Refer to the <filename>Group</filename> configuration key and to the "
+#| "\"Security-&gt;GDM User And Group\" section of this document for more "
+#| "information."
 msgid ""
 "The username under which the greeter and other GUI programs are run. Refer "
-"to the <filename>Group</filename> configuration key and to the \"Security-"
-"&gt;GDM User And Group\" section of this document for more information."
+"to the <filename>User</filename> configuration key and to the \"Security-&gt;"
+"GDM User And Group\" section of this document for more information."
 msgstr ""
 "Az a felhasználónév, amely alatt az üdvözlő és más grafikus felhasználói "
 "felületű programok futnak. További információkért olvassa el a "
-"<filename>Group</filename> beállítási kulcsot és ennek a dokumentumnak a "
+"<filename>User</filename> beállítási kulcsot és ennek a dokumentumnak a "
 "„Biztonság → A GDM felhasználója és csoportja” szakaszát."
 
 #. (itstool) path: varlistentry/term
@@ -2158,14 +2163,19 @@ msgstr "Group=gdm"
 
 #. (itstool) path: listitem/para
 #: C/index.docbook:1275
+#| msgid ""
+#| "The group name under which the greeter and other GUI programs are run. "
+#| "Refer to the <filename>User</filename> configuration key and to the "
+#| "\"Security-&gt;GDM User And Group\" section of this document for more "
+#| "information."
 msgid ""
 "The group name under which the greeter and other GUI programs are run. Refer "
-"to the <filename>User</filename> configuration key and to the \"Security-&gt;"
-"GDM User And Group\" section of this document for more information."
+"to the <filename>Group</filename> configuration key and to the \"Security-"
+"&gt;GDM User And Group\" section of this document for more information."
 msgstr ""
 "Az a csoportnév, amely alatt az üdvözlő és más grafikus felhasználói "
 "felületű programok futnak. További információkért olvassa el a "
-"<filename>User</filename> beállítási kulcsot és ennek a dokumentumnak a "
+"<filename>Group</filename> beállítási kulcsot és ennek a dokumentumnak a "
 "„Biztonság → A GDM felhasználója és csoportja” szakaszát."
 
 #. (itstool) path: sect3/title
@@ -2179,12 +2189,12 @@ msgid "[debug]"
 msgstr "[debug]"
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1293 C/index.docbook:1424
+#: C/index.docbook:1293 C/index.docbook:1357
 msgid "Enable"
 msgstr "Enable"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1295 C/index.docbook:1426
+#: C/index.docbook:1295 C/index.docbook:1359
 #, no-wrap
 msgid "Enable=false"
 msgstr "Enable=false"
@@ -2207,145 +2217,27 @@ msgstr ""
 
 #. (itstool) path: sect3/title
 #: C/index.docbook:1311
-msgid "Greeter Options"
-msgstr "Üdvözlő beállításai"
-
-#. (itstool) path: variablelist/title
-#: C/index.docbook:1314
-msgid "[greeter]"
-msgstr "[greeter]"
-
-#. (itstool) path: varlistentry/term
-#: C/index.docbook:1317
-msgid "IncludeAll"
-msgstr "IncludeAll"
-
-#. (itstool) path: listitem/synopsis
-#: C/index.docbook:1319
-#, no-wrap
-msgid "IncludeAll=true"
-msgstr "IncludeAll=true"
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1320
-msgid ""
-"If true, then the face browser will show all users on the local machine. If "
-"false, the face browser will only show users who have recently logged in."
-msgstr ""
-"Ha igaz, akkor az arcböngésző a helyi gépen lévő összes felhasználót "
-"megjeleníti. Ha hamis, akkor az arcböngésző csak azokat a felhasználókat "
-"jeleníti meg, akik nemrég jelentkeztek be."
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1326
-msgid ""
-"When this key is true, GDM will call fgetpwent() to get a list of local "
-"users on the system. Any users with a user id less than 500 (or 100 if "
-"running on Oracle Solaris) are filtered out. The Face Browser also will "
-"display any users that have previously logged in on the system (for example "
-"NIS/LDAP users). It gets this list via calling the <command>ck-history</"
-"command> ConsoleKit interface. It will also filter out any users which do "
-"not have a valid shell (valid shells are any shell that getusershell() "
-"returns - /sbin/nologin or /bin/false are considered invalid shells even if "
-"getusershell() returns them)."
-msgstr ""
-"Ha ez a kulcs igaz, akkor a GDM meghívja az fgetpwent() függvényt a "
-"rendszerben lévő helyi felhasználók listájának lekérdezéséhez. Az 500-nál "
-"(vagy Oracle Solarison történő futtatáskor 100-nál) kisebb felhasználó-"
-"azonosítóval rendelkező felhasználók kiszűrésre kerülnek. Az arcböngésző "
-"megjeleníti azokat a felhasználókat is, akik korábban bejelentkeztek a "
-"rendszerbe (például a NIS/LDAP felhasználók). Ezt a listát a <command>ck-"
-"history</command> ConsoleKit-interfész meghívásával kapja meg. Kiszűri "
-"azokat a felhasználókat is, akiknek nincs érvényes parancsértelmezőjük "
-"(érvényes parancsértelmezőnek számít minden olyan parancsértelmező, amelyet "
-"a getusershell() visszaad – az /sbin/nologin vagy a /bin/false akkor is "
-"érvénytelen parancsértelmezőnek számít, ha a getusershell() ezeket adja "
-"vissza)."
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1340
-msgid ""
-"If false, then GDM more simply only displays users that have previously "
-"logged in on the system (local or NIS/LDAP users) by calling the <command>ck-"
-"history</command> ConsoleKit interface."
-msgstr ""
-"Ha hamis, akkor a GDM egyszerűbben csak azokat a felhasználókat jeleníti "
-"meg, akik korábban bejelentkeztek a rendszerbe (helyi vagy NIS/LDAP "
-"felhasználók) a <command>ck-history</command> ConsoleKit-interfész "
-"meghívásával."
-
-#. (itstool) path: varlistentry/term
-#: C/index.docbook:1349
-msgid "Include"
-msgstr "Include"
-
-#. (itstool) path: listitem/synopsis
-#: C/index.docbook:1351
-#, no-wrap
-msgid "Include="
-msgstr "Include="
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1352
-msgid ""
-"Set to a list of users to always include in the Face Browser. This value is "
-"set to a list of users separated by commas. By default, the value is empty."
-msgstr ""
-"Azon felhasználók listájának beállítása, akiket mindig tartalmaznia kell az "
-"arcböngészőnek. Ez az érték a felhasználók vesszővel elválasztott listájára "
-"van beállítva. Alapértelmezetten az érték üres."
-
-#. (itstool) path: varlistentry/term
-#: C/index.docbook:1361
-msgid "Exclude"
-msgstr "Exclude"
-
-#. (itstool) path: listitem/synopsis
-#: C/index.docbook:1363
-#, no-wrap
-msgid "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
-msgstr "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1364
-msgid ""
-"Set to a list of users to always exclude in the Face Browser. This value is "
-"set to a list of users separated by commas. Note that the setting in the "
-"<filename>custom.conf</filename> overrides the default value, so if you wish "
-"to add additional users to the list, then you need to set the value to the "
-"default value with additional users appended to the list."
-msgstr ""
-"Azon felhasználók listájának beállítása, akiket mindig ki kell venni az "
-"arcböngészőből. Ez az érték a felhasználók vesszővel elválasztott listájára "
-"van beállítva. Ne feledje, hogy a <filename>custom.conf</filename> fájlban "
-"lévő beállítás felülbírálja az alapértelmezett értéket, így ha további "
-"felhasználókat szeretne hozzáadni a listához, akkor az értéket az "
-"alapértelmezett értékre kell beállítania úgy, hogy a további felhasználókat "
-"hozzáfűzi a listához."
-
-#. (itstool) path: sect3/title
-#: C/index.docbook:1378
 msgid "Security Options"
 msgstr "Biztonsági beállítások"
 
 #. (itstool) path: variablelist/title
-#: C/index.docbook:1381
+#: C/index.docbook:1314
 msgid "[security]"
 msgstr "[security]"
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1384
+#: C/index.docbook:1317
 msgid "DisallowTCP"
 msgstr "DisallowTCP"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1386
+#: C/index.docbook:1319
 #, no-wrap
 msgid "DisallowTCP=true"
 msgstr "DisallowTCP=true"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1387
+#: C/index.docbook:1320
 msgid ""
 "If true, then always append <filename>-nolisten tcp</filename> to the "
 "command line when starting attached Xservers, thus disallowing TCP "
@@ -2358,28 +2250,28 @@ msgstr ""
 "kapcsolatokat."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:1399
+#: C/index.docbook:1332
 msgid "XDCMP Support"
 msgstr "XDCMP-támogatás"
 
 #. (itstool) path: variablelist/title
-#: C/index.docbook:1402
+#: C/index.docbook:1335
 msgid "[xdmcp]"
 msgstr "[xdmcp]"
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1405
+#: C/index.docbook:1338
 msgid "DisplaysPerHost"
 msgstr "DisplaysPerHost"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1407
+#: C/index.docbook:1340
 #, no-wrap
 msgid "DisplaysPerHost=1"
 msgstr "DisplaysPerHost=1"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1408
+#: C/index.docbook:1341
 msgid ""
 "To prevent attackers from filling up the pending queue, GDM will only allow "
 "one connection for each remote computer. If you want to provide display "
@@ -2392,7 +2284,7 @@ msgstr ""
 "megjelenítési szolgáltatásokat nyújtani, akkor növelnie kell ezt az értéket."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1415
+#: C/index.docbook:1348
 msgid ""
 "Note that the number of attached DISPLAYS allowed is not limited. Only "
 "remote connections via XDMCP are limited by this configuration option."
@@ -2402,7 +2294,7 @@ msgstr ""
 "beállítási lehetőség."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1427
+#: C/index.docbook:1360
 msgid ""
 "Setting this to true enables XDMCP support allowing remote displays/X "
 "terminals to be managed by GDM."
@@ -2411,7 +2303,7 @@ msgstr ""
 "a távoli kijelzők/X-terminálok GDM általi kezelését."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1432
+#: C/index.docbook:1365
 msgid ""
 "<filename>gdm</filename> listens for requests on UDP port 177. See the Port "
 "option for more information."
@@ -2420,7 +2312,7 @@ msgstr ""
 "információkért nézze meg a Port beállítást."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1437
+#: C/index.docbook:1370
 msgid ""
 "If GDM is compiled to support it, access from remote displays can be "
 "controlled using the TCP Wrappers library. The service name is "
@@ -2431,7 +2323,7 @@ msgstr ""
 "vezérelhető. A szolgáltatás neve <filename>gdm</filename>."
 
 #. (itstool) path: para/screen
-#: C/index.docbook:1445
+#: C/index.docbook:1378
 #, no-wrap
 msgid ""
 "\n"
@@ -2441,7 +2333,7 @@ msgstr ""
 "gdm:.my.domain\n"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1443
+#: C/index.docbook:1376
 msgid ""
 "You should add <_:screen-1/> to your <filename>&lt;etc&gt;/hosts.allow</"
 "filename>, depending on your TCP Wrappers configuration. See the <ulink "
@@ -2454,7 +2346,7 @@ msgstr ""
 "allow</ulink> kézikönyvoldalt."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1454
+#: C/index.docbook:1387
 msgid ""
 "Please note that XDMCP is not a particularly secure protocol and that it is "
 "a good idea to block UDP port 177 on your firewall unless you really need it."
@@ -2464,18 +2356,18 @@ msgstr ""
 "szüksége rá."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1463
+#: C/index.docbook:1396
 msgid "HonorIndirect"
 msgstr "HonorIndirect"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1465
+#: C/index.docbook:1398
 #, no-wrap
 msgid "HonorIndirect=true"
 msgstr "HonorIndirect=true"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1466
+#: C/index.docbook:1399
 msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of "
 "<filename>gdmchooser</filename>) for X-terminals which do not supply their "
@@ -2486,18 +2378,18 @@ msgstr ""
 "rendelkeznek saját kijelzőböngészővel."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1475
+#: C/index.docbook:1408
 msgid "MaxPending"
 msgstr "MaxPending"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1477
+#: C/index.docbook:1410
 #, no-wrap
 msgid "MaxPending=4"
 msgstr "MaxPending=4"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1478
+#: C/index.docbook:1411
 msgid ""
 "To avoid denial of service attacks, GDM has fixed size queue of pending "
 "connections. Only MaxPending displays can start at the same time."
@@ -2507,7 +2399,7 @@ msgstr ""
 "Egyszerre csak a MaxPending beállításban megadott kijelzők indulhatnak el."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1484
+#: C/index.docbook:1417
 msgid ""
 "Please note that this parameter does not limit the number of remote displays "
 "which can be managed. It only limits the number of displays initiating a "
@@ -2518,18 +2410,18 @@ msgstr ""
 "korlátozza."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1493
+#: C/index.docbook:1426
 msgid "MaxSessions"
 msgstr "MaxSessions"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1495
+#: C/index.docbook:1428
 #, no-wrap
 msgid "MaxSessions=16"
 msgstr "MaxSessions=16"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1496
+#: C/index.docbook:1429
 msgid ""
 "Determines the maximum number of remote display connections which will be "
 "managed simultaneously. I.e. the total number of remote displays that can "
@@ -2540,18 +2432,18 @@ msgstr ""
 "gépét."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1505
+#: C/index.docbook:1438
 msgid "MaxWait"
 msgstr "MaxWait"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1507
+#: C/index.docbook:1440
 #, no-wrap
 msgid "MaxWait=30"
 msgstr "MaxWait=30"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1508
+#: C/index.docbook:1441
 msgid ""
 "When GDM is ready to manage a display an ACCEPT packet is sent to it "
 "containing a unique session id which will be used in future XDMCP "
@@ -2562,7 +2454,7 @@ msgstr ""
 "XDMCP-beszélgetésekben lesz használva."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1514
+#: C/index.docbook:1447
 msgid ""
 "GDM will then place the session id in the pending queue waiting for the "
 "display to respond with a MANAGE request."
@@ -2571,7 +2463,7 @@ msgstr ""
 "hogy a kijelző egy MANAGE kéréssel válaszoljon."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1519
+#: C/index.docbook:1452
 msgid ""
 "If no response is received within MaxWait seconds, GDM will declare the "
 "display dead and erase it from the pending queue freeing up the slot for "
@@ -2582,18 +2474,18 @@ msgstr ""
 "sorból, felszabadítva ezzel a helyet más kijelzők számára."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1528
+#: C/index.docbook:1461
 msgid "MaxWaitIndirect"
 msgstr "MaxWaitIndirect"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1530
+#: C/index.docbook:1463
 #, no-wrap
 msgid "MaxWaitIndirect=30"
 msgstr "MaxWaitIndirect=30"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1531
+#: C/index.docbook:1464
 msgid ""
 "The MaxWaitIndirect parameter determines the maximum number of seconds "
 "between the time where a user chooses a host and the subsequent indirect "
@@ -2613,62 +2505,18 @@ msgstr ""
 "gép próbál közvetett lekérdezést küldeni."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1545
-msgid "PingIntervalSeconds"
-msgstr "PingIntervalSeconds"
-
-#. (itstool) path: listitem/synopsis
-#: C/index.docbook:1547
-#, no-wrap
-msgid "PingIntervalSeconds=60"
-msgstr "PingIntervalSeconds=60"
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1548
-msgid ""
-"If the Xserver does not respond in the specified number of seconds, then the "
-"connection is stopped and the session ended. When this happens the daemon "
-"dies with an ALARM signal. Note that GDM 2.20 and earlier multiplied this "
-"setting by 2, so it may be necessary to increase the timeout if upgrading "
-"from GDM 2.20 and earlier to a newer version."
-msgstr ""
-"Ha az X-kiszolgáló nem válaszol a megadott számú másodpercen belül, akkor a "
-"kapcsolat leáll és a munkamenet véget ér. Ha ez megtörténik, akkor a démon "
-"ALARM jelzéssel meghal. Ne feledje, hogy a GDM 2.20-as és korábbi verziói "
-"ezt a beállítást megszorozták 2-vel, így szükség lehet az időkorlát "
-"növelésére, ha a GDM 2.20-as vagy korábbi verziójáról újabb verzióra frissít."
-
-#. (itstool) path: listitem/para
-#: C/index.docbook:1557
-msgid ""
-"Note that GDM in the past used to have a <filename>PingInterval</filename> "
-"configuration key which was also in minutes. For most purposes you'd want "
-"this setting to be lower than one minute. However since in most cases where "
-"XDMCP would be used (such as terminal labs), a lag of more than 15 or so "
-"seconds would really mean that the terminal was turned off or restarted and "
-"you would want to end the session."
-msgstr ""
-"Ne feledje, hogy a GDM-nek régebben volt egy <filename>PingInterval</"
-"filename> beállítási kulcsa, amely szintén percben volt megadva. A legtöbb "
-"célra ezt a beállítást egy percnél alacsonyabbra kellene állítani. Mivel "
-"azonban a legtöbb esetben, ahol XDMCP-t használnánk (például "
-"terminállaborokban), a 15 vagy annál több másodpercnél nagyobb késés valóban "
-"azt jelentené, hogy a terminál ki lett kapcsolva vagy újra lett indítva, és "
-"be szerette volna fejezni a munkamenetet."
-
-#. (itstool) path: varlistentry/term
-#: C/index.docbook:1570
+#: C/index.docbook:1478
 msgid "Port"
 msgstr "Port"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1572
+#: C/index.docbook:1480
 #, no-wrap
 msgid "Port=177"
 msgstr "Port=177"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1573
+#: C/index.docbook:1481
 msgid ""
 "The UDP port number <filename>gdm</filename> should listen to for XDMCP "
 "requests. Do not change this unless you know what you are doing."
@@ -2678,18 +2526,18 @@ msgstr ""
 "csinál."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1582
+#: C/index.docbook:1490
 msgid "Willing"
 msgstr "Willing"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1584
+#: C/index.docbook:1492
 #, no-wrap
 msgid "Willing=&lt;etc&gt;/gdm/Xwilling"
 msgstr "Willing=&lt;etc&gt;/gdm/Xwilling"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1585
+#: C/index.docbook:1493
 msgid ""
 "When the machine sends a WILLING packet back after a QUERY it sends a string "
 "that gives the current status of this server. The default message is the "
@@ -2712,12 +2560,12 @@ msgstr ""
 "szolgáltatásmegtagadást."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:1604
+#: C/index.docbook:1512
 msgid "Simple Greeter Configuration"
 msgstr "Egyszerű üdvözlő beállítása"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1606
+#: C/index.docbook:1514
 msgid ""
 "The GDM default greeter is called the simple Greeter and is configured via "
 "GConf. Default values are stored in GConf in the <filename>gdm-simple-"
@@ -2737,63 +2585,63 @@ msgstr ""
 "támogatottak:"
 
 #. (itstool) path: variablelist/title
-#: C/index.docbook:1617
+#: C/index.docbook:1525
 msgid "Greeter Configuration Keys"
 msgstr "Üdvözlő beállítási kulcsai"
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1620
+#: C/index.docbook:1528
 msgid "/apps/gdm/simple-greeter/banner_message_enable"
 msgstr "/apps/gdm/simple-greeter/banner_message_enable"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1622 C/index.docbook:1643 C/index.docbook:1654
-#: C/index.docbook:1719 C/index.docbook:1784 C/index.docbook:1795
-#: C/index.docbook:1806 C/index.docbook:1817
+#: C/index.docbook:1530 C/index.docbook:1551 C/index.docbook:1562
+#: C/index.docbook:1627 C/index.docbook:1692 C/index.docbook:1703
+#: C/index.docbook:1714 C/index.docbook:1725
 #, no-wrap
 msgid "false (boolean)"
 msgstr "false (logikai)"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1623
+#: C/index.docbook:1531
 msgid "Controls whether the banner message text is displayed."
 msgstr "Azt szabályozza, hogy a szalagcímüzenet szövege megjelenjen-e."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1630
+#: C/index.docbook:1538
 msgid "/apps/gdm/simple-greeter/banner_message_text"
 msgstr "/apps/gdm/simple-greeter/banner_message_text"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1632
+#: C/index.docbook:1540
 #, no-wrap
 msgid "NULL (string)"
 msgstr "NULL (karakterlánc)"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1633
+#: C/index.docbook:1541
 msgid "Specifies the text banner message to show on the greeter window."
 msgstr "Megadja az üdvözlőablakban megjelenítendő szöveges szalagcímüzenetet."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1641
+#: C/index.docbook:1549
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
 msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1644
+#: C/index.docbook:1552
 msgid "Controls whether to show the restart buttons in the login window."
 msgstr ""
 "Azt szabályozza, hogy megjelenjenek-e az újraindítási gombok a "
 "bejelentkezési ablakban."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1652
+#: C/index.docbook:1560
 msgid "/apps/gdm/simple-greeter/disable_user_list"
 msgstr "/apps/gdm/simple-greeter/disable_user_list"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1655
+#: C/index.docbook:1563
 msgid ""
 "If true, then the face browser with known users is not shown in the login "
 "window."
@@ -2802,34 +2650,34 @@ msgstr ""
 "meg a bejelentkezési ablakban."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1663
+#: C/index.docbook:1571
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
 msgstr "/apps/gdm/simple-greeter/logo_icon_name"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1665
+#: C/index.docbook:1573
 #, no-wrap
 msgid "computer (string)"
 msgstr "computer (karakterlánc)"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1666
+#: C/index.docbook:1574
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Az üdvözlő logóhoz használandó tematikus ikon nevének beállítása."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1673
+#: C/index.docbook:1581
 msgid "/apps/gdm/simple-greeter/recent-languages"
 msgstr "/apps/gdm/simple-greeter/recent-languages"
 
 #. (itstool) path: listitem/synopsis
-#: C/index.docbook:1675 C/index.docbook:1697
+#: C/index.docbook:1583 C/index.docbook:1605
 #, no-wrap
 msgid "[] (string list)"
 msgstr "[] (karakterlánclista)"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1676
+#: C/index.docbook:1584
 msgid ""
 "Set to a list of languages to be shown by default in the login window. "
 "Default value is \"[]\". With the default setting only the system default "
@@ -2843,7 +2691,7 @@ msgstr ""
 "párbeszédpanelt jeleníti meg, hogy a felhasználó választhasson közülük."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1684
+#: C/index.docbook:1592
 msgid ""
 "Users are not intended to change this setting by hand. Instead GDM keeps "
 "track of any languages selected in this configuration key, and will show "
@@ -2857,12 +2705,12 @@ msgstr ""
 "könnyebb kiválasztani."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1695
+#: C/index.docbook:1603
 msgid "/apps/gdm/simple-greeter/recent-layouts"
 msgstr "/apps/gdm/simple-greeter/recent-layouts"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1698
+#: C/index.docbook:1606
 msgid ""
 "Set to a list of keyboard layouts to be shown by default in the login panel. "
 "Default value is \"[]\". With the default setting only the system default "
@@ -2878,7 +2726,7 @@ msgstr ""
 "jeleníti meg, hogy a felhasználó választhasson közülük."
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1706
+#: C/index.docbook:1614
 msgid ""
 "Users are not intended to change this setting by hand. Instead GDM keeps "
 "track of any keyboard layouts selected in this configuration key, and will "
@@ -2892,12 +2740,12 @@ msgstr ""
 "gyakran kiválasztott billentyűzetkiosztásokat könnyebb kiválasztani."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1717
+#: C/index.docbook:1625
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
 msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1720
+#: C/index.docbook:1628
 msgid ""
 "Controls whether compiz is used as the window manager instead of metacity."
 msgstr ""
@@ -2905,12 +2753,12 @@ msgstr ""
 "helyett."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:1730
+#: C/index.docbook:1638
 msgid "Accessibility Configuration"
 msgstr "Akadálymentesítési beállítások"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1732
+#: C/index.docbook:1640
 msgid ""
 "This section describes the accessibility configuration options available in "
 "GDM."
@@ -2919,12 +2767,12 @@ msgstr ""
 "ismerteti."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:1738
+#: C/index.docbook:1646
 msgid "GDM Accessibility Dialog And GConf Keys"
 msgstr "A GDM akadálymentesítési párbeszédablaka és a GConf-kulcsok"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1740
+#: C/index.docbook:1648
 msgid ""
 "The GDM greeter panel at the login screen displays an accessibility icon. "
 "Clicking on that icon opens the GDM Accessibility Dialog. In the GDM "
@@ -2938,7 +2786,7 @@ msgstr ""
 "felhasználó engedélyezheti vagy letilthatja a kapcsolódó segédeszközöket."
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1747
+#: C/index.docbook:1655
 msgid ""
 "The checkboxes that correspond to the on-screen keyboard, screen magnifier "
 "and screen reader assistive tools act on the three GConf keys that are "
@@ -2966,7 +2814,7 @@ msgstr ""
 "munkamenetnél."
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1761
+#: C/index.docbook:1669
 msgid ""
 "The other checkboxes in the GDM Accessibility Dialog do not have "
 "corresponding GConf keys because no additional program is launched to "
@@ -2981,12 +2829,12 @@ msgstr ""
 "GDM-munkamenet során mindig futó X-kiszolgáló biztosít."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:1771
+#: C/index.docbook:1679
 msgid "Accessibility GConf Keys"
 msgstr "Akadálymentesítési GConf-kulcsok"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1773
+#: C/index.docbook:1681
 msgid ""
 "GDM offers the following GConf keys to control its accessibility features:"
 msgstr ""
@@ -2994,17 +2842,17 @@ msgstr ""
 "vezérléséhez:"
 
 #. (itstool) path: variablelist/title
-#: C/index.docbook:1779
+#: C/index.docbook:1687
 msgid "GDM Configuration Keys"
 msgstr "GDM beállítási kulcsok"
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1782
+#: C/index.docbook:1690
 msgid "/desktop/gnome/interface/accessibility"
 msgstr "/desktop/gnome/interface/accessibility"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1785
+#: C/index.docbook:1693
 msgid ""
 "Controls whether the Accessibility infrastructure will be started with the "
 "GDM GUI. This is needed for many accessibility technology programs to work."
@@ -3014,12 +2862,12 @@ msgstr ""
 "technológiai programnak szüksége van a működéséhez."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1793
+#: C/index.docbook:1701
 msgid "/desktop/gnome/applications/at/screen_magnifier_enabled"
 msgstr "/desktop/gnome/applications/at/screen_magnifier_enabled"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1796
+#: C/index.docbook:1704
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen magnifier application."
@@ -3029,12 +2877,12 @@ msgstr ""
 "Alapértelmezetten ez egy képernyőnagyító alkalmazás."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1804
+#: C/index.docbook:1712
 msgid "/desktop/gnome/applications/at/screen_keyboard_enabled"
 msgstr "/desktop/gnome/applications/at/screen_keyboard_enabled"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1807
+#: C/index.docbook:1715
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is an on-screen keyboard "
@@ -3045,12 +2893,12 @@ msgstr ""
 "Alapértelmezetten ez egy képernyő-billentyűzet alkalmazás."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:1815
+#: C/index.docbook:1723
 msgid "/desktop/gnome/applications/at/screen_reader_enabled"
 msgstr "/desktop/gnome/applications/at/screen_reader_enabled"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:1818
+#: C/index.docbook:1726
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen reader application."
@@ -3060,12 +2908,12 @@ msgstr ""
 "Alapértelmezetten ez egy képernyőolvasó alkalmazás."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:1829
+#: C/index.docbook:1737
 msgid "Linking GConf Keys to Accessibility Tools"
 msgstr "GConf-kulcsok összekapcsolása az akadálymentesítési eszközökkel"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1831
+#: C/index.docbook:1739
 msgid ""
 "For the screen_magnifier_enabled, the screen_keyboard_enabled, and the "
 "screen_reader_enabled GConf keys, the assistive tool which gets launched "
@@ -3087,21 +2935,27 @@ msgstr ""
 "alábbiak egyike lehet:"
 
 #. (itstool) path: sect3/screen
-#: C/index.docbook:1843
+#: C/index.docbook:1751
 #, no-wrap
 msgid ""
 "\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enable"
+"d\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabl"
+"ed\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled"
+"\n"
 msgstr ""
 "\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enable"
+"d\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabl"
+"ed\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled"
+"\n"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1849
+#: C/index.docbook:1757
 msgid ""
 "When an accessibility key is true, then any program which is linked to that "
 "key in a GDM autostart desktop file will be launched (unless the Hidden key "
@@ -3117,12 +2971,12 @@ msgstr ""
 "bejegyzéssel rendelkező asztali fájl is megtalálható."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:1859
+#: C/index.docbook:1767
 msgid "Example Of Modifying Accessibility Tool Configuration"
 msgstr "Példa az akadálymentesítési eszköz beállításainak módosítására"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1861
+#: C/index.docbook:1769
 msgid ""
 "For example, if GNOME is distributed with GOK as the default on-screen "
 "keyboard, then this could be replaced with a different program if desired. "
@@ -3137,7 +2991,7 @@ msgstr ""
 "használati támogatásának aktiválásához a következő beállításra van szükség."
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1869
+#: C/index.docbook:1777
 msgid ""
 "Create a desktop file for onboard and a second one for mousetweaks; for "
 "example, onboard.desktop and mousetweaks.desktop. These files must be placed "
@@ -3151,12 +3005,12 @@ msgstr ""
 "formátumban kell lenniük."
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1877
+#: C/index.docbook:1785
 msgid "The following is an example <filename>onboard.desktop</filename> file:"
 msgstr "A következő egy példa az <filename>onboard.desktop</filename> fájlra:"
 
 #. (itstool) path: sect3/screen
-#: C/index.docbook:1881
+#: C/index.docbook:1789
 #, no-wrap
 msgid ""
 "\n"
@@ -3170,7 +3024,8 @@ msgid ""
 "Type=Application\n"
 "StartupNotify=true\n"
 "Categories=GNOME;GTK;Accessibility;\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enable"
+"d\n"
 msgstr ""
 "\n"
 "[Desktop Entry]\n"
@@ -3183,17 +3038,18 @@ msgstr ""
 "Type=Application\n"
 "StartupNotify=true\n"
 "Categories=GNOME;GTK;Accessibility;\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enable"
+"d\n"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1895
+#: C/index.docbook:1803
 msgid ""
 "The following is an example <filename>mousetweaks.desktop</filename> file:"
 msgstr ""
 "A következő egy példa a <filename>mousetweaks.desktop</filename> fájlra:"
 
 #. (itstool) path: sect3/screen
-#: C/index.docbook:1900
+#: C/index.docbook:1808
 #, no-wrap
 msgid ""
 "\n"
@@ -3207,7 +3063,8 @@ msgid ""
 "Type=Application\n"
 "StartupNotify=true\n"
 "Categories=GNOME;GTK;Accessibility;\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enable"
+"d\n"
 msgstr ""
 "\n"
 "[Desktop Entry]\n"
@@ -3220,10 +3077,11 @@ msgstr ""
 "Type=Application\n"
 "StartupNotify=true\n"
 "Categories=GNOME;GTK;Accessibility;\n"
-"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
+"AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enable"
+"d\n"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1914
+#: C/index.docbook:1822
 msgid ""
 "Note the line with the AutostartCondition that links both desktop files to "
 "the GConf key for the on-screen keyboard."
@@ -3232,7 +3090,7 @@ msgstr ""
 "fájlt a képernyő-billentyűzet GConf-kulcsához."
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1919
+#: C/index.docbook:1827
 msgid ""
 "To disable GOK from starting, the desktop file for the GOK on-screen "
 "keyboard must be removed or deactivated. Otherwise onboard and GOK would "
@@ -3247,7 +3105,7 @@ msgstr ""
 "„Hidden=true” kulcsbeállítást a gok.desktop fájlhoz."
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:1927
+#: C/index.docbook:1835
 msgid ""
 "After making these changes, GOK will no longer be started when the user "
 "activates the on-screen keyboard in the GDM session; but onboard and "
@@ -3258,12 +3116,12 @@ msgstr ""
 "Ehelyett az onboard és a mousetweaks lesz elindítva."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:1936
+#: C/index.docbook:1844
 msgid "General Session Settings"
 msgstr "Általános munkamenet-beállítások"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1945
+#: C/index.docbook:1853
 msgid ""
 "The GDM Greeter uses some of the same framework that your desktop session "
 "will use. And so, it is influenced by a number of the same GConf settings. "
@@ -3281,12 +3139,12 @@ msgstr ""
 "okokból lezárjon."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:1956
+#: C/index.docbook:1864
 msgid "GNOME Settings Daemon"
 msgstr "GNOME beállítási démon"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1969
+#: C/index.docbook:1877
 msgid ""
 "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, "
 "background, sound, xsettings."
@@ -3295,7 +3153,7 @@ msgstr ""
 "keyboard, background, sound, xsettings."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1974
+#: C/index.docbook:1882
 msgid ""
 "These are responsible for things like the background image, font and theme "
 "settings, sound events, etc."
@@ -3304,7 +3162,7 @@ msgstr ""
 "témabeállítások, a hangesemények stb."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1979
+#: C/index.docbook:1887
 msgid ""
 "Plugins can also be disabled using GConf. For example, if you want to "
 "disable the sound plugin then unset the following key: <filename>/apps/gdm/"
@@ -3316,12 +3174,12 @@ msgstr ""
 "filename>."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:1987
+#: C/index.docbook:1895
 msgid "GDM Session Configuration"
 msgstr "A GDM-munkamenet beállítása"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1989
+#: C/index.docbook:1897
 msgid ""
 "GDM sessions are specified using the FreeDesktop.org Desktop Entry "
 "Specification, which can be referenced at the following URL: <ulink "
@@ -3335,7 +3193,7 @@ msgstr ""
 "ulink>."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:1996
+#: C/index.docbook:1904
 msgid ""
 "By default, GDM will install desktop files in the <filename>&lt;share&gt;/"
 "xsessions</filename> directory. GDM will search the following directories in "
@@ -3357,7 +3215,7 @@ msgstr ""
 "használjon a „--with-dmconfdir” kapcsolón keresztül."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2009
+#: C/index.docbook:1917
 msgid ""
 "A session can be disabled by editing the desktop file and adding a line as "
 "follows: <filename>Hidden=true</filename>."
@@ -3366,7 +3224,7 @@ msgstr ""
 "hozzáadásával: <filename>Hidden=true</filename>."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2014
+#: C/index.docbook:1922
 msgid ""
 "GDM desktop files support a GDM-specific extension, a key named \"X-GDM-"
 "BypassXsession\". If the key is not specified in a desktop file, the value "
@@ -3382,26 +3240,25 @@ msgid ""
 msgstr ""
 "A GDM asztali fájlok támogatnak egy GDM-specifikus kiterjesztést, egy „X-GDM-"
 "BypassXsession” nevű kulcsot. Ha a kulcs nincs megadva egy asztali fájlban, "
-"akkor az értéke alapértelmezetten „false” (hamis). Ha ez a kulcs "
-"„true” (igaz) értékkel van megadva egy asztali fájlban, akkor a GDM "
-"elindítja az asztali fájl „Exec” kulcsa által meghatározott programot "
-"közvetlenül a felhasználói munkamenet indításakor. Nem fogja futtatni a "
-"programot az <filename>&lt;etc&gt;/gdm/Xsession</filename> parancsfájlon "
-"keresztül, ami a normális viselkedés. Mivel az <filename>&lt;etc&gt;/gdm/"
-"Xsession</filename> parancsfájl megkerülésével elkerüli a felhasználói "
-"munkamenet normál rendszer- és felhasználói beállításokkal történő "
-"beállítását, az így indított munkamenetek hasznosak lehetnek a rendszer vagy "
-"a felhasználói parancsfájlok azon problémáinak hibakereséséhez, amelyek "
-"megakadályozhatnak egy felhasználót abban, hogy képes legyen munkamenetet "
-"indítani."
+"akkor az értéke alapértelmezetten „false” (hamis). Ha ez a kulcs „true” "
+"(igaz) értékkel van megadva egy asztali fájlban, akkor a GDM elindítja az "
+"asztali fájl „Exec” kulcsa által meghatározott programot közvetlenül a "
+"felhasználói munkamenet indításakor. Nem fogja futtatni a programot az "
+"<filename>&lt;etc&gt;/gdm/Xsession</filename> parancsfájlon keresztül, ami a "
+"normális viselkedés. Mivel az <filename>&lt;etc&gt;/gdm/Xsession</filename> "
+"parancsfájl megkerülésével elkerüli a felhasználói munkamenet normál "
+"rendszer- és felhasználói beállításokkal történő beállítását, az így "
+"indított munkamenetek hasznosak lehetnek a rendszer vagy a felhasználói "
+"parancsfájlok azon problémáinak hibakereséséhez, amelyek megakadályozhatnak "
+"egy felhasználót abban, hogy képes legyen munkamenetet indítani."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:2033
+#: C/index.docbook:1941
 msgid "GDM User Session and Language Configuration"
 msgstr "GDM felhasználói munkamenet és nyelvbeállítás"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2034
+#: C/index.docbook:1942
 msgid ""
 "The user's default session and language choices are stored in the "
 "<filename>~/.dmrc</filename> file. When a user logs in for the first time, "
@@ -3417,7 +3274,7 @@ msgstr ""
 "ezt a változtatást a későbbi bejelentkezéseknél."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2042
+#: C/index.docbook:1950
 msgid ""
 "The <filename>~/.dmrc</filename> file is in the standard <filename>INI</"
 "filename> format. It has one section called <filename>[Desktop]</filename> "
@@ -3430,7 +3287,7 @@ msgstr ""
 "filename>."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2049
+#: C/index.docbook:1957
 msgid ""
 "The <filename>Session</filename> key specifies the basename of the session "
 "<filename>.desktop</filename> file that the user wishes to normally use "
@@ -3448,7 +3305,7 @@ msgstr ""
 "általában a következőképpen néz ki:"
 
 #. (itstool) path: sect2/screen
-#: C/index.docbook:2058
+#: C/index.docbook:1966
 #, no-wrap
 msgid ""
 "\n"
@@ -3462,17 +3319,17 @@ msgstr ""
 "Language=cs_CZ.UTF-8\n"
 
 #. (itstool) path: sect1/title
-#: C/index.docbook:2070
+#: C/index.docbook:1978
 msgid "GDM Commands"
 msgstr "GDM parancsok"
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:2073
+#: C/index.docbook:1981
 msgid "GDM Root User Commands"
 msgstr "GDM rendszergazda-felhasználói parancsok"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2075
+#: C/index.docbook:1983
 msgid ""
 "The GDM package provides the following commands in <filename>sbindir</"
 "filename> intended to be run by the root user:"
@@ -3482,12 +3339,12 @@ msgstr ""
 
 #. (itstool) path: sect3/title
 #. (itstool) path: variablelist/title
-#: C/index.docbook:2081 C/index.docbook:2089
+#: C/index.docbook:1989 C/index.docbook:1997
 msgid "<command>gdm</command> Command Line Options"
 msgstr "A <command>gdm</command> parancssori kapcsolói"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:2083
+#: C/index.docbook:1991
 msgid ""
 "<command>gdm</command> is the main daemon which sets up graphical login "
 "environment and starts necessary helpers."
@@ -3496,52 +3353,52 @@ msgstr ""
 "bejelentkezési környezetet és elindítja a szükséges segédprogramokat."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:2092
+#: C/index.docbook:2000
 msgid "-?, --help"
 msgstr "-?, --help"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:2094
+#: C/index.docbook:2002
 msgid "Gives a brief overview of the command line options."
 msgstr "Rövid áttekintést ad a parancssori kapcsolókról."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:2101
+#: C/index.docbook:2009
 msgid "--fatal-warnings"
 msgstr "--fatal-warnings"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:2103
+#: C/index.docbook:2011
 msgid "Make all warnings cause GDM to exit."
 msgstr "Olyanná teszi az összes figyelmeztetést, hogy a GDM kilépését okozza."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:2110
+#: C/index.docbook:2018
 msgid "--timed-exit"
 msgstr "--timed-exit"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:2112
+#: C/index.docbook:2020
 msgid "Exit after 30 seconds. Useful for debugging."
 msgstr "Kilépés 30 másodperc után. Hibakereséshez hasznos."
 
 #. (itstool) path: varlistentry/term
-#: C/index.docbook:2119
+#: C/index.docbook:2027
 msgid "--version"
 msgstr "--version"
 
 #. (itstool) path: listitem/para
-#: C/index.docbook:2121
+#: C/index.docbook:2029
 msgid "Print the version of the GDM daemon."
 msgstr "A GDM-démon verziójának kiírása."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:2130
+#: C/index.docbook:2038
 msgid "<command>gdm-restart</command> Command Line Options"
 msgstr "A <command>gdm-restart</command> parancssori kapcsolói"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:2132
+#: C/index.docbook:2040
 msgid ""
 "<command>gdm-restart</command> stops and restarts GDM by sending the GDM "
 "daemon a HUP signal. This command will immediately terminate all sessions "
@@ -3553,12 +3410,12 @@ msgstr ""
 "felhasználókat."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:2140
+#: C/index.docbook:2048
 msgid "<command>gdm-safe-restart</command> Command Line Options"
 msgstr "A <command>gdm-safe-restart</command> parancssori kapcsolói"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:2142
+#: C/index.docbook:2050
 msgid ""
 "<command>gdm-safe-restart</command> stops and restarts GDM by sending the "
 "GDM daemon a USR1 signal. GDM will be restarted as soon as all users log out."
@@ -3568,12 +3425,12 @@ msgstr ""
 "felhasználó kijelentkezik."
 
 #. (itstool) path: sect3/title
-#: C/index.docbook:2150
+#: C/index.docbook:2058
 msgid "<command>gdm-stop</command> Command Line Options"
 msgstr "A <command>gdm-stop</command> parancssori kapcsolói"
 
 #. (itstool) path: sect3/para
-#: C/index.docbook:2152
+#: C/index.docbook:2060
 msgid ""
 "<command>gdm-stop</command> stops GDM by sending the GDM daemon a TERM "
 "signal."
@@ -3582,12 +3439,12 @@ msgstr ""
 "szignállal."
 
 #. (itstool) path: sect1/title
-#: C/index.docbook:2163
+#: C/index.docbook:2071
 msgid "Troubleshooting"
 msgstr "Hibaelhárítás"
 
 #. (itstool) path: sect1/para
-#: C/index.docbook:2171
+#: C/index.docbook:2079
 msgid ""
 "This section discusses helpful tips for getting GDM working. In general, if "
 "you have a problem using GDM, you can submit a bug or send an email to the "
@@ -3601,7 +3458,7 @@ msgstr ""
 "szakaszában találhatók."
 
 #. (itstool) path: sect1/para
-#: C/index.docbook:2178
+#: C/index.docbook:2086
 msgid ""
 "If GDM is failing to work properly, it is always a good idea to include "
 "debug information. To enable debugging, set the debug/Enable key to \"true\" "
@@ -3629,12 +3486,12 @@ msgstr ""
 "type=\"help\" url=\"man:syslog\">syslog</ulink> kézikönyvoldalt)."
 
 #. (itstool) path: sect2/title
-#: C/index.docbook:2194
+#: C/index.docbook:2102
 msgid "GDM Will Not Start"
 msgstr "A GDM nem indul el"
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2196
+#: C/index.docbook:2104
 msgid ""
 "There are a many problems that can cause GDM to fail to start, but this "
 "section will discuss a few common problems and how to approach tracking down "
@@ -3650,7 +3507,7 @@ msgstr ""
 "GDM visszajelzés nélkül lesz működésképtelen."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2205
+#: C/index.docbook:2113
 msgid ""
 "First make sure that the Xserver is configured properly. The GDM "
 "configuration file contains a command in the [server-Standard] section that "
@@ -3674,7 +3531,7 @@ msgstr ""
 "fájlban úgy, hogy az megfeleljen az Ön rendszerének."
 
 #. (itstool) path: sect2/para
-#: C/index.docbook:2218
+#: C/index.docbook:2126
 msgid ""
 "Also make sure that the <filename>/tmp</filename> directory has reasonable "
 "ownership and permissions, and that the machine's file system is not full. "
@@ -3686,12 +3543,12 @@ msgstr ""
 "sikertelenségét okozzák."
 
 #. (itstool) path: sect1/title
-#: C/index.docbook:2229
+#: C/index.docbook:2137
 msgid "License"
 msgstr "Licenc"
 
 #. (itstool) path: sect1/para
-#: C/index.docbook:2230
+#: C/index.docbook:2138
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the <ulink type=\"help\" url=\"gnome-help:gpl\"> "
@@ -3706,7 +3563,7 @@ msgstr ""
 "változata szerint."
 
 #. (itstool) path: sect1/para
-#: C/index.docbook:2238
+#: C/index.docbook:2146
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -3719,7 +3576,7 @@ msgstr ""
 "részletekért tanulmányozza a <citetitle>GNU GPL licencet</citetitle>."
 
 #. (itstool) path: para/address
-#: C/index.docbook:2252
+#: C/index.docbook:2160
 #, no-wrap
 msgid ""
 "\n"
@@ -3737,7 +3594,7 @@ msgstr ""
 "      "
 
 #. (itstool) path: sect1/para
-#: C/index.docbook:2244
+#: C/index.docbook:2152
 msgid ""
 "A copy of the <citetitle>GNU General Public License</citetitle> is included "
 "as an appendix to the <citetitle>GNOME Users Guide</citetitle>. You may also "
