@@ -16,6 +16,7 @@ build-fedora:
         gobject-introspection-devel
         gtk3-devel
         iso-codes-devel
+        itstool
         json-glib-devel
         keyutils-libs-devel
         libXau-devel
@@ -36,8 +37,6 @@ build-fedora:
         which
         xorg-x11-server-Xorg
         xorg-x11-server-devel
-        yelp-devel
-        yelp-tools
 
   script:
     - meson . build --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
