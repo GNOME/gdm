@@ -43,6 +43,10 @@ have_x11_support = get_option('x11-support')
 # Common variables
 config_h_dir = include_directories('.')
 
+if not get_option('wayland-support') and not have_x11_support
+  error('GDM requires either Wayland or X11 support')
+endif
+
 # Dependencies
 udev_dep = dependency('udev')
 gudev_dep = dependency('gudev-1.0', version: '>= 232')
