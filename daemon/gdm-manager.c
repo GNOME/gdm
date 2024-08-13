@@ -1034,7 +1034,7 @@ on_reauthentication_verification_complete (GdmSession *session,
                 g_debug ("GdmManager: reauthenticated user in frozen session '%s' with service '%s'",
                          gdm_session_get_session_id (user_session), service_name);
 
-                switch_to_compatible_user_session (self, user_session, TRUE);
+                switch_to_compatible_user_session (self, user_session, FALSE);
         } else if (caller_session_id != NULL) {
                 g_debug ("GdmManager: reauthenticated user in unmanaged session '%s' with service '%s'",
                          caller_session_id, service_name);
@@ -1089,7 +1089,7 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                 g_free);
         g_object_set_data_full (G_OBJECT (session),
                                 "user-session",
-                                g_object_ref (user_session),
+                                user_session? g_object_ref (user_session) : NULL,
                                 (GDestroyNotify)
                                 g_object_unref);
         g_object_set_data (G_OBJECT (session),
