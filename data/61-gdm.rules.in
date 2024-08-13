@@ -90,10 +90,6 @@ LABEL="gdm_nvidia_drm_end"
 
 GOTO="gdm_end"
 
-LABEL="gdm_prefer_xorg"
-RUN+="@libexecdir@/gdm-runtime-config set daemon PreferredDisplayServer xorg"
-GOTO="gdm_end"
-
 LABEL="gdm_disable_wayland"
 RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
 GOTO="gdm_end"
