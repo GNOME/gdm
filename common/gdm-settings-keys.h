@@ -34,8 +34,12 @@ G_BEGIN_DECLS
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay"
 #define GDM_KEY_INITIAL_SETUP_ENABLE "daemon/InitialSetupEnable"
 #define GDM_KEY_PREFERRED_DISPLAY_SERVER "daemon/PreferredDisplayServer"
+#ifdef ENABLE_WAYLAND_SUPPORT
 #define GDM_KEY_WAYLAND_ENABLE "daemon/WaylandEnable"
+#endif
+#ifdef ENABLE_X11_SUPPORT
 #define GDM_KEY_XORG_ENABLE "daemon/XorgEnable"
+#endif
 #define GDM_KEY_REMOTE_LOGIN_ENABLE "daemon/RemoteLoginEnable"
 
 #define GDM_KEY_DEBUG "debug/Enable"

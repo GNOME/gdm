@@ -205,8 +205,16 @@ get_preferred_display_server (GdmLocalDisplayFactory *factory)
         g_autofree gchar *preferred_display_server = NULL;
         gboolean wayland_enabled = FALSE, xorg_enabled = FALSE;
 
+#if defined (ENABLE_WAYLAND_SUPPORT) && defined (ENABLE_X11_SUPPORT)
         gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled);
         gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &xorg_enabled);
+#elif defined (ENABLE_WAYLAND_SUPPORT)
+        wayland_enabled = TRUE;
+#elif defined (ENABLE_X11_SUPPORT)
+        xorg_enabled = TRUE;
+#else
+#error "GDM needs to be compiled with support for either wayland or Xorg or both"
+#endif
 
         if (wayland_enabled && !xorg_enabled) {
                 return g_strdup ("wayland");
@@ -221,21 +229,27 @@ get_preferred_display_server (GdmLocalDisplayFactory *factory)
         if (g_strcmp0 (preferred_display_server, "wayland") == 0) {
                 if (wayland_enabled)
                         return g_strdup (preferred_display_server);
+#ifdef ENABLE_X11_SUPPORT
                 else
                         return g_strdup ("xorg");
+#endif
         }
 
         if (g_strcmp0 (preferred_display_server, "xorg") == 0) {
+#ifdef ENABLE_X11_SUPPORT
                 if (xorg_enabled)
                         return g_strdup (preferred_display_server);
                 else
+#endif
                         return g_strdup ("wayland");
         }
 
+#ifdef ENABLE_X11_SUPPORT
         if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0) {
                 if (xorg_enabled)
                         return g_strdup (preferred_display_server);
         }
+#endif
 
         return g_strdup ("none");
 }
@@ -249,7 +263,9 @@ struct GdmDisplayServerConfiguration {
 #ifdef ENABLE_WAYLAND_SUPPORT
         { "wayland", GDM_KEY_WAYLAND_ENABLE, "/usr/bin/Xwayland", "wayland" },
 #endif
+#ifdef HAVE_X11_SUPPORT
         { "xorg", GDM_KEY_XORG_ENABLE, "/usr/bin/Xorg", "x11" },
+#endif
         { NULL, NULL, NULL },
 };
 
@@ -268,8 +284,10 @@ display_server_enabled (GdmLocalDisplayFactory *factory,
                                   display_server))
                         continue;
 
+#if defined (ENABLE_WAYLAND_SUPPORT) && defined (ENABLE_X11_SUPPORT)
                 if (!gdm_settings_direct_get_boolean (key, &enabled) || !enabled)
                         return FALSE;
+#endif
 
                 if (!g_file_test (binary, G_FILE_TEST_IS_EXECUTABLE))
                         return FALSE;
@@ -318,20 +336,24 @@ gdm_local_display_factory_get_session_types (GdmLocalDisplayFactory *factory,
         wayland_preferred = g_str_equal (preferred_display_server, "wayland");
         xorg_preferred = g_str_equal (preferred_display_server, "xorg");
 
+#ifdef ENABLE_X11_SUPPORT
         if (wayland_preferred)
                 fallback_display_server = "xorg";
         else if (xorg_preferred)
                 fallback_display_server = "wayland";
         else
                 return NULL;
+#endif
 
-        if (!should_fall_back) {
+        if (!should_fall_back || fallback_display_server == NULL) {
                 if (display_server_enabled (factory, preferred_display_server))
                       g_ptr_array_add (session_types_array, (gpointer) get_session_type_for_display_server (factory, preferred_display_server));
         }
 
+#ifdef ENABLE_X11_SUPPORT
         if (display_server_enabled (factory, fallback_display_server))
                 g_ptr_array_add (session_types_array, (gpointer) get_session_type_for_display_server (factory, fallback_display_server));
+#endif
 
         if (session_types_array->len == 0)
                 return NULL;

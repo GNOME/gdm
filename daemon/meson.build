@@ -74,11 +74,15 @@ gdm_daemon_deps = [
   gio_unix_dep,
   json_glib,
   libpam_dep,
-  x_deps,
-  xcb_dep,
 ]
+if have_x11_support
+  gdm_daemon_deps += [
+    xcb_dep,
+    x_deps,
+  ]
+endif
 
-if xdmcp_dep.found() and get_option('tcp-wrappers')
+if have_xdmcp and get_option('tcp-wrappers')
   gdm_daemon_deps += libwrap_dep
 endif
 
@@ -161,18 +165,20 @@ gdm_wayland_session = executable('gdm-wayland-session',
 )
 
 # X session
-gdm_x_session_src = [
-  'gdm-x-session.c',
-  manager_dbus_gen,
-]
+if have_x11_support
+  gdm_x_session_src = [
+    'gdm-x-session.c',
+    manager_dbus_gen,
+  ]
 
-gdm_x_session = executable('gdm-x-session',
-  gdm_x_session_src,
-  dependencies: gdm_daemon_deps,
-  include_directories: gdm_session_worker_includes,
-  install: true,
-  install_dir: get_option('libexecdir'),
-)
+  gdm_x_session = executable('gdm-x-session',
+    gdm_x_session_src,
+    dependencies: gdm_daemon_deps,
+    include_directories: gdm_session_worker_includes,
+    install: true,
+    install_dir: get_option('libexecdir'),
+  )
+endif
 
 # GDM daemon
 gdm_daemon_sources = files(
@@ -208,7 +214,7 @@ gdm_daemon_gen_sources = [
   gdm_session_enums,
 ]
 
-if xdmcp_dep.found()
+if have_xdmcp
   gdm_daemon_deps += xdmcp_dep
 
   gdm_daemon_sources = [
