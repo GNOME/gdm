@@ -141,14 +141,16 @@ foreach _pam_filename : pam_data_files
   )
 endforeach
 
-gdm_rules = configure_file(
-  input: '61-gdm.rules.in',
-  output: '@BASENAME@',
-  configuration: {
-    'libexecdir': gdm_prefix / get_option('libexecdir'),
-  },
-  install_dir: udev_dir,
-)
+if have_x11_support
+  configure_file(
+    input: '61-gdm.rules.in',
+    output: '@BASENAME@',
+    configuration: {
+      'libexecdir': gdm_prefix / get_option('libexecdir'),
+    },
+    install_dir: udev_dir,
+  )
+endif
 
 # DBus service files
 service_config = configuration_data()
