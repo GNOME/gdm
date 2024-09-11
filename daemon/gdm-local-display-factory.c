@@ -922,11 +922,13 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                                 return;
                         }
 
+#ifdef ENABLE_X11_SUPPORT
                         g_debug ("GdmLocalDisplayFactory: Assuming we can use seat0 for X11 even though system says it doesn't support graphics!");
                         g_debug ("GdmLocalDisplayFactory: This might indicate an issue where the framebuffer device is not tagged as master-of-seat in udev.");
                         seat_supports_graphics = TRUE;
                         g_strfreev (session_types);
                         session_types = g_strdupv ((char **) legacy_session_types);
+#endif
                 } else {
                         g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
                 }
