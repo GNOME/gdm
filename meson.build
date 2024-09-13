@@ -304,6 +304,7 @@ conf.set('HAVE_UT_UT_TIME', utmp_has_time_field)
 conf.set('HAVE_UT_UT_TV', utmp_has_tv_field)
 conf.set('HAVE_UT_UT_SYSLEN', utmp_has_syslen_field)
 conf.set('ENABLE_IPV6', get_option('ipv6'))
+conf.set('HAVE_SYS_SOCKIO_H', cc.has_header('sys/sockio.h'))
 configure_file(output: 'config.h', configuration: conf)
 
 # Subdirs
