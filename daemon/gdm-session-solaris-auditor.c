@@ -39,7 +39,7 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-struct GdmSessionSolarisAuditor
+struct _GdmSessionSolarisAuditor
 {
         GdmSessionAuditor parent;
 
