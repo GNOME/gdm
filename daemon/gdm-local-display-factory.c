@@ -289,8 +289,10 @@ display_server_enabled (GdmLocalDisplayFactory *factory,
                         return FALSE;
 #endif
 
+#ifdef ENABLE_X11_SUPPORT
                 if (!g_file_test (binary, G_FILE_TEST_IS_EXECUTABLE))
                         return FALSE;
+#endif
 
                 return TRUE;
         }
