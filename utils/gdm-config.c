@@ -636,7 +636,7 @@ try_run_distro_hook (GdmConfigCommand   config_command,
         g_autoptr(GError) local_error = NULL;
         g_autofree char *distro_hook = NULL;
         g_autofree char *local_stdout = NULL;
-        g_autofree char *stderr = NULL;
+        g_autofree char *local_stderr = NULL;
         gint exit_status;
 
         /* Distro hooks need to follow these rules:
@@ -703,12 +703,12 @@ try_run_distro_hook (GdmConfigCommand   config_command,
                 g_print (_("Running distro hook “%s”\n"), distro_hook);
 
         g_spawn_sync (NULL, (GStrv) call_args->pdata, NULL, G_SPAWN_DEFAULT,
-                      NULL, NULL, &local_stdout, &stderr, &exit_status, &local_error);
+                      NULL, NULL, &local_stdout, &local_stderr, &exit_status, &local_error);
 
         if (local_stdout)
                 local_stdout = g_strstrip (local_stdout);
-        if (stderr)
-                stderr = g_strstrip (stderr);
+        if (local_stderr)
+                local_stderr = g_strstrip (local_stderr);
 
         if (!local_error) {
                 if (WEXITSTATUS (exit_status) == SIGSTOP) {
@@ -731,7 +731,7 @@ try_run_distro_hook (GdmConfigCommand   config_command,
                              "Standard output:\n%s\n"
                              "Error output:\n%s"),
                            WEXITSTATUS (exit_status), local_error->message,
-                           stderr, local_stdout);
+                           local_stderr, local_stdout);
                 g_propagate_error (error, g_steal_pointer (&local_error));
                 return FALSE;
         }
@@ -739,7 +739,7 @@ try_run_distro_hook (GdmConfigCommand   config_command,
         g_debug ("Distro hook ran correctly\n"
                  "Standard output:\n%s\n"
                  "Error output:\n%s",
-                local_stdout, stderr);
+                local_stdout, local_stderr);
 
         if (stdout_out)
                 *stdout_out = g_steal_pointer (&local_stdout);
@@ -755,13 +755,13 @@ set_distro_hook_config (GdmConfigCommand   config_command,
 {
         g_autoptr(GPtrArray) command_args = NULL;
         g_autoptr(GError) local_error = NULL;
-        g_autofree char *stdout = NULL;
+        g_autofree char *local_stdout = NULL;
 
         command_args = g_ptr_array_sized_new (2);
         g_ptr_array_add (command_args, (char *) option_key);
         g_ptr_array_add (command_args, (char *) option_value);
 
-        if (!try_run_distro_hook (config_command, command_args, &stdout, &local_error)) {
+        if (!try_run_distro_hook (config_command, command_args, &local_stdout, &local_error)) {
                 if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                         g_debug ("Distro hook for %s %s requested us to stop",
                                  config_command_to_string (config_command), option_key);
@@ -786,7 +786,7 @@ set_distro_hook_config (GdmConfigCommand   config_command,
         g_debug ("Distro hook for %s %s completed, "
                  "continuing with default action...",
                  config_command_to_string (config_command), option_key);
-        g_print ("%s\n", stdout);
+        g_print ("%s\n", local_stdout);
 
         return TRUE;
 }
