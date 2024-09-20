@@ -156,7 +156,7 @@ libcheck_dep = dependency('check', required: false, version: '>= 0.9.4')
 
 cc.has_header('security/pam_modutil.h')
 cc.has_header('security/pam_ext.h')
-have_pam_syslog = cc.has_function('pam_syslog', args: 'pam')
+have_pam_syslog = cc.has_function('pam_syslog', args: '-lpam')
 
 # UTMP
 have_utmpx_header = cc.has_header('utmpx.h')
