@@ -149,6 +149,9 @@ plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
 # required.  Solaris auditing is only supported on systems that
 # support the ADT_USER enumeration value.
 have_adt = cc.has_header_symbol('bsm/adt.h', 'ADT_USER')
+if have_adt
+  adt_dep = cc.find_library('bsm')
+endif
 # libaudit
 libaudit_dep = dependency('audit', required: get_option('libaudit'))
 # unit testsheadername
