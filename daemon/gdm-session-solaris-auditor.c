@@ -25,6 +25,7 @@
  */
 #include "config.h"
 #include "gdm-session-solaris-auditor.h"
+#include "gdm-common.h"
 
 #include <syslog.h>
 #include <security/pam_appl.h>
@@ -38,7 +39,7 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-struct GdmSessionSolarisAuditor
+struct _GdmSessionSolarisAuditor
 {
         GdmSessionAuditor parent;
 

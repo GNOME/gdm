@@ -430,9 +430,9 @@ _get_auth_info_for_display (GdmDisplayAccessFile *file,
                  *
                  * https://bugs.freedesktop.org/show_bug.cgi?id=43425
                  */
-                char localhost[HOST_NAME_MAX + 1] = "";
+                char localhost[_POSIX_HOST_NAME_MAX + 1] = "";
                 *family = FamilyLocal;
-                if (gethostname (localhost, HOST_NAME_MAX) == 0) {
+                if (gethostname (localhost, _POSIX_HOST_NAME_MAX) == 0) {
                         *address = g_strdup (localhost);
                 } else {
                         *address = g_strdup ("localhost");

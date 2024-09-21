@@ -139,6 +139,7 @@ if libaudit_dep.found()
 endif
 
 if have_adt
+  gdm_session_worker_deps += adt_dep
   gdm_session_worker_src += 'gdm-session-solaris-auditor.c'
 endif
 
