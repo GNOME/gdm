@@ -80,14 +80,6 @@ TEST!="/run/udev/gdm-machine-has-virtual-gpu", GOTO="gdm_virt_multi_gpu_check_en
 TEST=="/run/udev/gdm-machine-has-hardware-gpu", GOTO="gdm_virt_multi_gpu_check_end"
 LABEL="gdm_virt_multi_gpu_check_end"
 
-# Disable wayland when nvidia modeset is disabled
-KERNEL!="nvidia_drm", GOTO="gdm_nvidia_drm_end"
-SUBSYSTEM!="module", GOTO="gdm_nvidia_drm_end"
-ACTION!="add", GOTO="gdm_nvidia_drm_end"
-# disable wayland if nvidia-drm modeset is not enabled
-ATTR{parameters/modeset}!="Y", GOTO="gdm_disable_wayland"
-LABEL="gdm_nvidia_drm_end"
-
 GOTO="gdm_end"
 
 LABEL="gdm_disable_wayland"
