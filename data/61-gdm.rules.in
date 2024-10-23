@@ -15,16 +15,14 @@ ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
 
 LABEL="gdm_pci_device_end"
 
-# disable Wayland if modesetting is disabled
-KERNEL!="card[0-9]*", GOTO="gdm_nomodeset_end"
-KERNEL=="card[0-9]-*", GOTO="gdm_nomodeset_end"
-SUBSYSTEM!="drm", GOTO="gdm_nomodeset_end"
-# but keep it enabled for simple framebuffer drivers
-DRIVERS=="simple-framebuffer", GOTO="gdm_nomodeset_end"
+# If this machine has a hardware GPU, take note
+KERNEL!="card[0-9]*", GOTO="gdm_hardware_gpu_end"
+KERNEL=="card[0-9]-*", GOTO="gdm_hardware_gpu_end"
+SUBSYSTEM!="drm", GOTO="gdm_hardware_gpu_end"
+DRIVERS=="simple-framebuffer", GOTO="gdm_hardware_gpu_end"
 IMPORT{parent}="GDM_MACHINE_HAS_VIRTUAL_GPU"
 ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}!="1", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-hardware-gpu"
-IMPORT{cmdline}="nomodeset", GOTO="gdm_disable_wayland"
-LABEL="gdm_nomodeset_end"
+LABEL="gdm_hardware_gpu_end"
 
 # The vendor nvidia driver has multiple modules that need to be loaded before GDM can make an
 # informed choice on which way to proceed, so force GDM to wait until NVidia's modules are
@@ -79,14 +77,6 @@ TEST!="/run/udev/gdm-machine-has-hybrid-graphics", GOTO="gdm_virt_multi_gpu_chec
 TEST!="/run/udev/gdm-machine-has-virtual-gpu", GOTO="gdm_virt_multi_gpu_check_end"
 TEST=="/run/udev/gdm-machine-has-hardware-gpu", GOTO="gdm_virt_multi_gpu_check_end"
 LABEL="gdm_virt_multi_gpu_check_end"
-
-# Disable wayland when nvidia modeset is disabled
-KERNEL!="nvidia_drm", GOTO="gdm_nvidia_drm_end"
-SUBSYSTEM!="module", GOTO="gdm_nvidia_drm_end"
-ACTION!="add", GOTO="gdm_nvidia_drm_end"
-# disable wayland if nvidia-drm modeset is not enabled
-ATTR{parameters/modeset}!="Y", GOTO="gdm_disable_wayland"
-LABEL="gdm_nvidia_drm_end"
 
 GOTO="gdm_end"
 
