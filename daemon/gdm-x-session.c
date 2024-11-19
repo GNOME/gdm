@@ -35,7 +35,10 @@
 #include <glib.h>
 #include <gio/gunixinputstream.h>
 #include <glib-unix.h>
+
+#ifdef ENABLE_X11_SUPPORT
 #include <X11/Xauth.h>
+#endif
 
 #define DISPLAY_FILENO (STDERR_FILENO + 1)
 #define BUS_ADDRESS_FILENO (DISPLAY_FILENO + 1)

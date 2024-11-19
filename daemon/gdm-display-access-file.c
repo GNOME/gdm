@@ -36,7 +36,9 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 
+#ifdef ENABLE_X11_SUPPORT
 #include <X11/Xauth.h>
+#endif
 
 #include "gdm-display-access-file.h"
 #include "gdm-common.h"
