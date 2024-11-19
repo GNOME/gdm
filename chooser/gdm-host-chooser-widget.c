@@ -35,8 +35,10 @@
 #include <sys/sockio.h>
 #endif
 
+#ifdef ENABLE_X11_SUPPORT
 #include <X11/Xmd.h>
 #include <X11/Xdmcp.h>
+#endif
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -158,7 +160,7 @@ find_known_host (GdmHostChooserWidget *widget,
                 host = li->data;
 
                 other_address = gdm_chooser_host_get_address (host);
-                        
+
                 if (address_hostnames_equal (address, other_address)) {
                         goto out;
                 }

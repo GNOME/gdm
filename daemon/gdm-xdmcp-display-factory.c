@@ -48,9 +48,11 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#ifdef ENABLE_X11_SUPPORT
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 #include <X11/Xdmcp.h>
+#endif
 
 #include "gdm-common.h"
 #include "gdm-xdmcp-chooser-display.h"
