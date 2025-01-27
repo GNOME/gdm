@@ -44,7 +44,7 @@ gboolean                  gdm_settings_parse_schemas           (const char  *fil
                                                                 GSList     **list);
 
 gboolean                  gdm_settings_parse_value_as_boolean  (const char *value,
-                                                                gboolean   *bool);
+                                                                gboolean   *boolval);
 gboolean                  gdm_settings_parse_value_as_integer  (const char *value,
                                                                 int        *intval);
 gboolean                  gdm_settings_parse_value_as_double   (const char *value,
