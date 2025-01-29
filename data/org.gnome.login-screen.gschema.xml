@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gdm">
+  <enum id="org.gnome.login-screen.BannerSource">
+    <value value="1" nick="settings"/>
+    <value value="2" nick="file"/>
+  </enum>
+
   <schema id="org.gnome.login-screen" path="/org/gnome/login-screen/">
     <key name="enable-fingerprint-authentication" type="b">
       <default>true</default>
@@ -70,6 +75,15 @@
         Set to true to show the banner message text.
       </description>
     </key>
+    <key name="banner-message-source" enum="org.gnome.login-screen.BannerSource">
+      <default>"settings"</default>
+      <summary>
+        Banner message source
+      </summary>
+      <description>
+        The source of the text banner message on the login screen.
+      </description>
+    </key>
     <key name="banner-message-text" type="s">
       <default>''</default>
       <summary>
@@ -77,6 +91,15 @@
       </summary>
       <description>
         Text banner message to show in the login window.
+      </description>
+    </key>
+    <key name="banner-message-path" type="s">
+      <default>''</default>
+      <summary>
+        Banner message path
+      </summary>
+      <description>
+        Path to text file with banner message to show in the login window.
       </description>
     </key>
     <key name="disable-restart-buttons" type="b">
