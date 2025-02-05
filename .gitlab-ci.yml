@@ -1,13 +1,20 @@
 include:
  - https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/master/templates/fedora.yml
+ - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
+   inputs:
+     job-stage: "release"
+     dist-job-name: "build-fedora"
+     tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
 
 variables:
   COMMON_BUILD_OPTIONS: --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
   MESON_BUILD_DIR: build
+  TARBALL_ARTIFACT_PATH: "${MESON_BUILD_DIR}/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
 
 stages:
   - prepare
   - build
+  - release
 
 workflow:
   rules:
@@ -20,6 +27,7 @@ workflow:
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
       when: never
     - if: '$CI_COMMIT_BRANCH'
+    - if: '$CI_COMMIT_TAG'
 
 .gdm.fedora:
   variables:
@@ -64,7 +72,7 @@ build-fedora-container:
     - .gdm.fedora
   stage: prepare
   rules:
-    - if: $CI_COMMIT_TAG == null
+    - when: always
 
 build-fedora:
   extends:
@@ -78,7 +86,12 @@ build-fedora:
     - meson dist -C ${MESON_BUILD_DIR}
     - meson test -C ${MESON_BUILD_DIR}
   rules:
-    - if: $CI_COMMIT_TAG == null
+    - when: always
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
+    paths:
+      - "${TARBALL_ARTIFACT_PATH}"
 
 build-fedora-wayland:
   extends:
