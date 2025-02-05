@@ -3,6 +3,7 @@ include:
 
 variables:
   COMMON_BUILD_OPTIONS: --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+  MESON_BUILD_DIR: build
 
 stages:
   - prepare
@@ -71,11 +72,11 @@ build-fedora:
     - .gdm.fedora
   stage: build
   script:
-    - meson setup build ${COMMON_BUILD_OPTIONS}
-    - meson compile -C build
-    - meson install -C build
-    - meson dist -C build
-    - meson test -C build
+    - meson setup ${MESON_BUILD_DIR} ${COMMON_BUILD_OPTIONS}
+    - meson compile -C ${MESON_BUILD_DIR}
+    - meson install -C ${MESON_BUILD_DIR}
+    - meson dist -C ${MESON_BUILD_DIR}
+    - meson test -C ${MESON_BUILD_DIR}
   rules:
     - if: $CI_COMMIT_TAG == null
 
@@ -85,10 +86,10 @@ build-fedora-wayland:
     - .gdm.fedora
   stage: build
   script:
-    - meson setup build ${COMMON_BUILD_OPTIONS} -Dx11-support=false
-    - meson compile -C build
-    - meson install -C build
-    - meson dist -C build
-    - meson test -C build
+    - meson setup ${MESON_BUILD_DIR} ${COMMON_BUILD_OPTIONS} -Dx11-support=false
+    - meson compile -C ${MESON_BUILD_DIR}
+    - meson install -C ${MESON_BUILD_DIR}
+    - meson dist -C ${MESON_BUILD_DIR}
+    - meson test -C ${MESON_BUILD_DIR}
   rules:
     - if: $CI_COMMIT_TAG == null
