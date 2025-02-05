@@ -50,6 +50,8 @@ build-fedora-container:
     - .fdo.container-build@fedora@x86_64
     - .gdm.fedora
   stage: prepare
+  rules:
+    - if: $CI_COMMIT_TAG == null
 
 build-fedora:
   extends:
@@ -62,8 +64,8 @@ build-fedora:
     - meson install -C build
     - meson dist -C build
     - meson test -C build
-  except:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG == null
 
 build-fedora-wayland:
   extends:
@@ -76,5 +78,5 @@ build-fedora-wayland:
     - meson install -C build
     - meson dist -C build
     - meson test -C build
-  except:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG == null
