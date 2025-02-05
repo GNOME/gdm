@@ -57,11 +57,11 @@ build-fedora:
     - .gdm.fedora
   stage: build
   script:
-    - meson . build ${COMMON_BUILD_OPTIONS}
-    - ninja -C build
-    - ninja -C build install
-    - ninja -C build dist
-    - ninja -C build test
+    - meson setup build ${COMMON_BUILD_OPTIONS}
+    - meson compile -C build
+    - meson install -C build
+    - meson dist -C build
+    - meson test -C build
   except:
     - tags
 
@@ -71,10 +71,10 @@ build-fedora-wayland:
     - .gdm.fedora
   stage: build
   script:
-    - meson . build ${COMMON_BUILD_OPTIONS} -Dx11-support=false
-    - ninja -C build
-    - ninja -C build install
-    - ninja -C build dist
-    - ninja -C build test
+    - meson setup build ${COMMON_BUILD_OPTIONS} -Dx11-support=false
+    - meson compile -C build
+    - meson install -C build
+    - meson dist -C build
+    - meson test -C build
   except:
     - tags
