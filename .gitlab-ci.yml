@@ -8,6 +8,18 @@ stages:
   - prepare
   - build
 
+workflow:
+  rules:
+    # Allow to switch from branch pipelines to MR pipelines seamlessly
+    # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # Don't trigger a branch pipeline if there is an open MR
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
 .gdm.fedora:
   variables:
     FDO_DISTRIBUTION_VERSION: 41
