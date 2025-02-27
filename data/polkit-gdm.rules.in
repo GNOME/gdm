@@ -1,0 +1,9 @@
+polkit.addRule(function(action, subject) {
+    if (subject.user !== "@GDM_USERNAME@")
+        return undefined;
+
+    if (action.id == "org.freedesktop.NetworkManager.settings.modify.system" &&
+        subject.local && subject.active) {
+        return polkit.Result.YES;
+    }
+});
