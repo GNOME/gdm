@@ -10,9 +10,6 @@ ATTR{vendor}=="0x1b36", ATTR{device}=="0x0100", RUN+="/usr/bin/touch /run/udev/g
 # vga
 ATTR{vendor}=="0x1234", ATTR{device}=="0x1111", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-virtual-gpu", ENV{GDM_MACHINE_HAS_VIRTUAL_GPU}="1", GOTO="gdm_pci_device_end"
 
-# disable Wayland on Hi1710 chipsets
-ATTR{vendor}=="0x19e5", ATTR{device}=="0x1711", GOTO="gdm_disable_wayland"
-
 LABEL="gdm_pci_device_end"
 
 # If this machine has a hardware GPU, take note
@@ -39,17 +36,6 @@ IMPORT{program}="/bin/sh -c \"sed -e 's/: /=/g' -e 's/\([^[:upper:]]\)\([[:upper
 # If it is, there's no need to check for the suspend/resume services
 ENV{NVIDIA_ENABLE_S0IX_POWER_MANAGEMENT}=="1", GOTO="gdm_nvidia_suspend_end"
 
-# Check if suspend/resume services necessary for working wayland support is available
-TEST{0711}!="/usr/bin/nvidia-sleep.sh", GOTO="gdm_disable_wayland"
-TEST{0711}!="/usr/lib/systemd/system-sleep/nvidia", GOTO="gdm_disable_wayland"
-
-ENV{NVIDIA_PRESERVE_VIDEO_MEMORY_ALLOCATIONS}!="1", GOTO="gdm_disable_wayland"
-IMPORT{program}="/bin/sh -c 'echo NVIDIA_HIBERNATE=`systemctl is-enabled nvidia-hibernate`'"
-ENV{NVIDIA_HIBERNATE}!="enabled", GOTO="gdm_disable_wayland"
-IMPORT{program}="/bin/sh -c 'echo NVIDIA_RESUME=`systemctl is-enabled nvidia-resume`'"
-ENV{NVIDIA_RESUME}!="enabled", GOTO="gdm_disable_wayland"
-IMPORT{program}="/bin/sh -c 'echo NVIDIA_SUSPEND=`systemctl is-enabled nvidia-suspend`'"
-ENV{NVIDIA_SUSPEND}!="enabled", GOTO="gdm_disable_wayland"
 LABEL="gdm_nvidia_suspend_end"
 LABEL="gdm_nvidia_end"
 
@@ -63,14 +49,6 @@ ENV{GDM_NUMBER_OF_GRAPHICS_CARDS}=="1", RUN+="/usr/bin/rm -f /run/udev/gdm-machi
 ENV{GDM_NUMBER_OF_GRAPHICS_CARDS}!="1", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-hybrid-graphics"
 LABEL="gdm_hybrid_graphics_check_end"
 
-# Disable wayland in situation where we're in a guest with a virtual gpu and host passthrough gpu
-#LABEL="gdm_virt_passthrough_check"
-TEST!="/run/udev/gdm-machine-has-hybrid-graphics", GOTO="gdm_virt_passthrough_check_end"
-TEST!="/run/udev/gdm-machine-has-virtual-gpu", GOTO="gdm_virt_passthrough_check_end"
-TEST!="/run/udev/gdm-machine-has-hardware-gpu", GOTO="gdm_virt_passthrough_check_end"
-GOTO="gdm_disable_wayland"
-LABEL="gdm_virt_passthrough_check_end"
-
 # Disable wayland when there are multiple virtual gpus
 #LABEL="gdm_virt_multi_gpu_check"
 TEST!="/run/udev/gdm-machine-has-hybrid-graphics", GOTO="gdm_virt_multi_gpu_check_end"
@@ -80,9 +58,6 @@ LABEL="gdm_virt_multi_gpu_check_end"
 
 GOTO="gdm_end"
 
-LABEL="gdm_disable_wayland"
-RUN+="@libexecdir@/gdm-runtime-config set daemon WaylandEnable false"
-GOTO="gdm_end"
 
 LABEL="gdm_end"
 
