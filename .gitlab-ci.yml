@@ -66,9 +66,14 @@ workflow:
       xorg-x11-server-Xorg
       xorg-x11-server-devel
 
+.dummy-container-build:
+  script:
+    - echo Dummy container build
+
 build-fedora-container:
   extends:
-    - .fdo.container-build@fedora@x86_64
+    #- .fdo.container-build@fedora@x86_64
+    - .dummy-container-build
     - .gdm.fedora
   stage: prepare
   rules:
