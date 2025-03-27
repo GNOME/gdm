@@ -287,16 +287,16 @@ gdm_settings_parse_boolean_as_value  (gboolean boolval)
 /* adapted from GKeyFile */
 gboolean
 gdm_settings_parse_value_as_boolean (const char *value,
-                                     gboolean   *bool)
+                                     gboolean   *boolval)
 {
         g_return_val_if_fail (value != NULL, FALSE);
-        g_return_val_if_fail (bool != NULL, FALSE);
+        g_return_val_if_fail (boolval != NULL, FALSE);
 
         if (g_ascii_strcasecmp (value, "true") == 0 || strcmp (value, "1") == 0) {
-                *bool = TRUE;
+                *boolval = TRUE;
                 return TRUE;
         } else if (g_ascii_strcasecmp (value, "false") == 0 || strcmp (value, "0") == 0) {
-                *bool = FALSE;
+                *boolval = FALSE;
                 return TRUE;
         } else {
                 return FALSE;
