@@ -1408,6 +1408,7 @@ set_up_automatic_login_session (GdmManager *manager,
         gdm_session_start_conversation (session, "gdm-autologin");
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 set_up_chooser_session (GdmManager *manager,
                         GdmDisplay *display)
@@ -1427,6 +1428,7 @@ set_up_chooser_session (GdmManager *manager,
 
         gdm_display_start_greeter_session (display);
 }
+#endif
 
 static void
 set_up_greeter_session (GdmManager *manager,
