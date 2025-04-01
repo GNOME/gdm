@@ -222,7 +222,7 @@ endif
 # dconf paths, we should fix dconf.pc to provide us more real data though
 if dconf_dep.found()
   dconf_prefix = dconf_dep.get_variable(pkgconfig: 'prefix')
-  dconf_sysconfig = (dconf_prefix == '/usr') ? '/etc' : dconf_prefix + '/etc/'
+  dconf_sysconfig = (dconf_prefix == '/usr') ? '/etc' : dconf_prefix + '/etc'
   dconf_datadir = dconf_prefix / 'share'
 else
   dconf_sysconfig = gdm_prefix / get_option('sysconfdir')

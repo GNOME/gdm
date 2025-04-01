@@ -34,8 +34,8 @@
 
 #include "gdm-common.h"
 
-#define DCONF_SYSCONFIG_PROFILES_PATH DCONF_SYSCONFIG "dconf/profile"
-#define DCONF_SYSCONFIG_DB_PATH DCONF_SYSCONFIG "dconf/db"
+#define DCONF_SYSCONFIG_PROFILES_PATH DCONF_SYSCONFIG "/dconf/profile"
+#define DCONF_SYSCONFIG_DB_PATH DCONF_SYSCONFIG "/dconf/db"
 #define DCONF_SYSTEM_DB_PREFIX "system-db:"
 #define DCONF_SYSTEM_DB_DEFAULT_NAME "gdm_auth_config"
 
