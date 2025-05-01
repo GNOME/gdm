@@ -175,7 +175,7 @@ plymouth_prepare_for_transition (void)
         }
 }
 
-static gboolean
+static void
 plymouth_quit_with_transition (void)
 {
         gboolean res;
@@ -187,8 +187,6 @@ plymouth_quit_with_transition (void)
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
         }
-
-        return G_SOURCE_REMOVE;
 }
 
 static void
@@ -1506,6 +1504,13 @@ on_display_status_changed (GdmDisplay *display,
                                 if (g_strcmp0 (session_class, "greeter") == 0)
                                         set_up_session (manager, display);
                         }
+
+#ifdef WITH_PLYMOUTH
+                        if (status == GDM_DISPLAY_MANAGED && quit_plymouth) {
+                                plymouth_quit_with_transition ();
+                                manager->plymouth_is_running = FALSE;
+                        }
+#endif
                         break;
                 case GDM_DISPLAY_FAILED:
                 case GDM_DISPLAY_UNMANAGED:
@@ -1892,15 +1897,6 @@ on_user_session_started (GdmSession      *session,
 {
         g_debug ("GdmManager: session started %d", pid);
         add_session_record (manager, session, pid, SESSION_RECORD_LOGIN);
-
-#ifdef WITH_PLYMOUTH
-        if (g_strcmp0 (service_name, "gdm-autologin") == 0) {
-                if (manager->plymouth_is_running) {
-                        g_timeout_add_seconds (20, (GSourceFunc) plymouth_quit_with_transition, NULL);
-                        manager->plymouth_is_running = FALSE;
-                }
-        }
-#endif
 }
 
 static void
@@ -2123,13 +2119,6 @@ on_session_client_connected (GdmSession      *session,
         if (!display_is_on_seat0 (display)) {
                 return;
         }
-
-#ifdef WITH_PLYMOUTH
-        if (manager->plymouth_is_running) {
-                plymouth_quit_with_transition ();
-                manager->plymouth_is_running = FALSE;
-        }
-#endif
 
         g_object_get (G_OBJECT (display), "allow-timed-login", &allow_timed_login, NULL);
 
