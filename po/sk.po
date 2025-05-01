@@ -7,14 +7,15 @@
 # Pavol Šimo <palo.simo@gmail.com>, 2006-2011.
 # Dušan Kazik <prescott66@gmail.com>, 2012.
 # Matej Mrenica <matejm98mthw@gmail.com>, 2021.
+# Nostragodus <nostragodus@gmail.com>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2024-08-31 23:21+0000\n"
-"PO-Revision-Date: 2024-09-10 13:42+0200\n"
-"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
+"POT-Creation-Date: 2025-04-09 16:56+0000\n"
+"PO-Revision-Date: 2025-05-01 16:57+0200\n"
+"Last-Translator: Peter Mráz <etkinator@gmail.com>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
@@ -45,19 +46,19 @@ msgid "Select System"
 msgstr "Vyberte systém"
 
 # PK: komunikacnu schranku??? buffer je vyrovnavacia pamet, zasobnik alebo to neprekladat
-#: chooser/gdm-host-chooser-widget.c:253
+#: chooser/gdm-host-chooser-widget.c:255
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: Nepodarilo sa vytvoriť komunikačnú schránku pre XDMCP!"
 
-#: chooser/gdm-host-chooser-widget.c:259
+#: chooser/gdm-host-chooser-widget.c:261
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Nepodarilo sa prečítať hlavičku XDMCP!"
 
-#: chooser/gdm-host-chooser-widget.c:265
+#: chooser/gdm-host-chooser-widget.c:267
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Nesprávna verzia XDMCP!"
 
-#: chooser/gdm-host-chooser-widget.c:271
+#: chooser/gdm-host-chooser-widget.c:273
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: Nepodarilo sa analyzovať adresu"
 
@@ -77,7 +78,7 @@ msgstr "Nepodarilo sa identifikovať aktuálnu reláciu: "
 msgid "Could not identify the current seat."
 msgstr "Nepodarilo sa rozpoznať aktuálne sedenie."
 
-#: daemon/gdm-display-access-file.c:278 daemon/gdm-display-access-file.c:299
+#: daemon/gdm-display-access-file.c:280 daemon/gdm-display-access-file.c:301
 #, c-format
 msgid "Could not find user “%s” on system"
 msgstr "Nepodarilo sa nájsť používateľa „%s“ v systéme"
@@ -218,7 +219,7 @@ msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr ""
-"Dosiahli ste maximálny počet pokusov o overenie totožnosti pomocou smart "
+"Dosiahli ste maximálny počet pokusov o overenie totožnosti pomocou čipovej "
 "karty, prosím, skúste inú metódu"
 
 #: daemon/gdm-session-worker.c:824
@@ -248,7 +249,7 @@ msgstr ""
 #: daemon/gdm-session-worker.c:840
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
-"Prepáčte, overenie totožnosti pomocou smart karty nefungovalo. Prosím, "
+"Prepáčte, overenie totožnosti pomocou čipovej karty nefungovalo. Prosím, "
 "skúste to znovu."
 
 #: daemon/gdm-session-worker.c:842
@@ -263,11 +264,11 @@ msgstr "Vášmu účtu bol pridelený časový limit, ktorý práve teraz vyprš
 msgid "Username:"
 msgstr "Používateľské meno:"
 
-#: daemon/gdm-session-worker.c:1673 daemon/gdm-session-worker.c:1690
+#: daemon/gdm-session-worker.c:1675 daemon/gdm-session-worker.c:1692
 msgid "no user account available"
 msgstr "nie je k dispozícií žiaden používateľský účet"
 
-#: daemon/gdm-session-worker.c:1717
+#: daemon/gdm-session-worker.c:1719
 msgid "Unable to change to user"
 msgstr "Nepodarilo sa zmeniť na používateľa"
 
@@ -276,20 +277,20 @@ msgstr "Nepodarilo sa zmeniť na používateľa"
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Spúšťač relácie Wayland pre Správcu prihlásenia GNOME"
 
-#: daemon/gdm-xdmcp-display-factory.c:612
+#: daemon/gdm-xdmcp-display-factory.c:614
 msgid "Could not create socket!"
 msgstr "Nepodarilo sa vytvoriť soket!"
 
-#: daemon/gdm-x-session.c:879
+#: daemon/gdm-x-session.c:882
 msgid "Run program through /etc/gdm/Xsession wrapper script"
 msgstr "Spustí program cez wrapper skript /etc/gdm/Xsession"
 
-#: daemon/gdm-x-session.c:880
+#: daemon/gdm-x-session.c:883
 msgid "Listen on TCP socket"
 msgstr "Bude načúvať na sokete TCP"
 
 # PM: to znie šialene, čo takto Správca relácií pre...
-#: daemon/gdm-x-session.c:892
+#: daemon/gdm-x-session.c:895
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "Spúšťač relácie X pre Správcu prihlásenia GNOME"
 
@@ -357,11 +358,11 @@ msgstr "Len používateľ root môže spúšťať GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "Správca relácií pre Správcu prihlásenia GNOME"
 
-#: data/org.gnome.login-screen.gschema.xml:6
+#: data/org.gnome.login-screen.gschema.xml:11
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Určuje, či povoliť alebo zakázať snímač odtlačku prsta pre prihlásenie"
 
-#: data/org.gnome.login-screen.gschema.xml:9
+#: data/org.gnome.login-screen.gschema.xml:14
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -369,40 +370,39 @@ msgstr ""
 "Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov na "
 "základe odtlačku prstov, ktoré majú nasnímané pre prihlásenie."
 
-#: data/org.gnome.login-screen.gschema.xml:16
+#: data/org.gnome.login-screen.gschema.xml:21
 msgid "Whether or not to allow smartcard readers for login"
 msgstr ""
-"Určuje, či povoliť alebo zakázať čítačky čipových kariet smartcard pre "
-"prihlásenie"
+"Určuje, či povoliť alebo zakázať čítačky čipových kariet pre prihlásenie"
 
-#: data/org.gnome.login-screen.gschema.xml:19
+#: data/org.gnome.login-screen.gschema.xml:24
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
 "Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov "
-"pomocou čipových kariet smartcard."
+"pomocou čipových kariet."
 
 # DK: "smartcard" = čipová karta SmartCard
-#: data/org.gnome.login-screen.gschema.xml:26
+#: data/org.gnome.login-screen.gschema.xml:31
 msgid "Whether or not to allow passwords for login"
 msgstr "Určuje, či povoliť alebo zakázať heslá na prihlásenie"
 
-#: data/org.gnome.login-screen.gschema.xml:29
+#: data/org.gnome.login-screen.gschema.xml:34
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
 "Prihlasovacia obrazovka môže byť konfigurovaná tak, aby nepovolila overenie "
 "totožnosti pomocou hesla a prinútila tak používateľa použiť overenie "
-"totožnosti pomocou čipovej karty smartcard alebo odtlačku prsta."
+"totožnosti pomocou čipovej karty alebo odtlačku prsta."
 
-#: data/org.gnome.login-screen.gschema.xml:36
-#: data/org.gnome.login-screen.gschema.xml:46
+#: data/org.gnome.login-screen.gschema.xml:41
+#: data/org.gnome.login-screen.gschema.xml:51
 msgid "Path to small image at top of user list"
 msgstr "Cesta k malému obrázku navrchu zoznamu používateľov"
 
-#: data/org.gnome.login-screen.gschema.xml:39
+#: data/org.gnome.login-screen.gschema.xml:44
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -410,7 +410,7 @@ msgstr ""
 "Prihlasovacia obrazovka môže voliteľne zobraziť obrázok a poskytnúť tak "
 "priestor pre prezentáciu správcov a distribúcií."
 
-#: data/org.gnome.login-screen.gschema.xml:49
+#: data/org.gnome.login-screen.gschema.xml:54
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -418,11 +418,11 @@ msgstr ""
 "Núdzová prihlasovacia obrazovka môže voliteľne zobraziť malý obrázok a "
 "poskytnúť tak priestor pre prezentáciu správcov a distribúcií."
 
-#: data/org.gnome.login-screen.gschema.xml:56
+#: data/org.gnome.login-screen.gschema.xml:61
 msgid "Avoid showing user list"
 msgstr "Zabrániť zobrazeniu zoznamu používateľov"
 
-#: data/org.gnome.login-screen.gschema.xml:59
+#: data/org.gnome.login-screen.gschema.xml:64
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -431,39 +431,57 @@ msgstr ""
 "používateľov. Týmto nastavením môže byť zobrazenie zoznamu používateľov "
 "zakázané."
 
-#: data/org.gnome.login-screen.gschema.xml:66
+#: data/org.gnome.login-screen.gschema.xml:71
 msgid "Enable showing the banner message"
 msgstr "Povoliť zobrazenie uvítacej správy"
 
 # PK: prekladame true a false? viackrat
 # DK: ja by som neprekladal
-#: data/org.gnome.login-screen.gschema.xml:69
+#: data/org.gnome.login-screen.gschema.xml:74
 msgid "Set to true to show the banner message text."
 msgstr "Nastavte na true, ak chcete zobraziť text uvítacej správy."
 
-#: data/org.gnome.login-screen.gschema.xml:75
+#: data/org.gnome.login-screen.gschema.xml:80
+msgid "Banner message source"
+msgstr "Zdroj správy v pútači"
+
+#: data/org.gnome.login-screen.gschema.xml:83
+msgid "The source of the text banner message on the login screen."
+msgstr "Zdroj textovej správy v pútači na prihlasovacej obrazovke."
+
+#: data/org.gnome.login-screen.gschema.xml:89
 msgid "Banner message text"
 msgstr "Text uvítacej správy"
 
-#: data/org.gnome.login-screen.gschema.xml:78
+#: data/org.gnome.login-screen.gschema.xml:92
 msgid "Text banner message to show in the login window."
 msgstr "Textová uvítacia správa zobrazená v prihlasovacom okne."
 
-#: data/org.gnome.login-screen.gschema.xml:84
+#: data/org.gnome.login-screen.gschema.xml:98
+msgid "Banner message path"
+msgstr "Cesta k správe v pútači"
+
+#: data/org.gnome.login-screen.gschema.xml:101
+msgid "Path to text file with banner message to show in the login window."
+msgstr ""
+"Cesta k textovému súboru so správou v pútači, ktorá sa má zobraziť v "
+"prihlasovacom okne."
+
+#: data/org.gnome.login-screen.gschema.xml:107
 msgid "Disable showing the restart buttons"
 msgstr "Zakázať zobrazenie tlačidiel reštartu"
 
-#: data/org.gnome.login-screen.gschema.xml:87
+#: data/org.gnome.login-screen.gschema.xml:110
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Nastavte na true, ak chcete v prihlasovacej obrazovke zakázať zobrazovanie "
 "tlačidiel na reštartovanie."
 
-#: data/org.gnome.login-screen.gschema.xml:93
+#: data/org.gnome.login-screen.gschema.xml:116
 msgid "Number of allowed authentication failures"
 msgstr "Počet povolených zlyhaní overení totožnosti"
 
-#: data/org.gnome.login-screen.gschema.xml:96
+#: data/org.gnome.login-screen.gschema.xml:119
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -473,57 +491,55 @@ msgstr ""
 
 #: utils/gdm-config.c:117
 msgid "Show command help"
-msgstr ""
+msgstr "Zobraziť pomoc pre príkaz"
 
 #: utils/gdm-config.c:121
 msgid "Show verbose output"
-msgstr ""
+msgstr "Zobraziť podrobný výstup"
 
 #: utils/gdm-config.c:125
-#, fuzzy
-#| msgid "Debugging output"
 msgid "Show debug output"
-msgstr "Výstup pre ladenie"
+msgstr "Zobraziť výstup pre ladenie"
 
 #: utils/gdm-config.c:134
 msgid "Enable the authentication method"
-msgstr ""
+msgstr "Povolí metódu autentifikácie"
 
 #: utils/gdm-config.c:138
 msgid "Disable the authentication method"
-msgstr ""
+msgstr "Zakáže metódu autentifikácie"
 
 #: utils/gdm-config.c:147
 msgid "Require the authentication method"
-msgstr ""
+msgstr "Vyžaduje metódu autentifikácie"
 
 #: utils/gdm-config.c:151
 msgid "Action to perform on smartcard removal"
-msgstr ""
+msgstr "Akcia, ktorá sa má vykonať po odpojení čipovej karty"
 
 #: utils/gdm-config.c:160
 msgid "Assume yes to any answer"
-msgstr ""
+msgstr "Predpokladá áno na akúkoľvek otázku"
 
 #: utils/gdm-config.c:262
 msgid "Configure Password Authentication."
-msgstr ""
+msgstr "Konfiguruje autentifikáciu heslom."
 
 #: utils/gdm-config.c:264
 msgid "Configure Fingerprint Authentication."
-msgstr ""
+msgstr "Konfiguruje autentifikáciu odtlačkom prsta."
 
 #: utils/gdm-config.c:266
 msgid "Configure Smart Card Authentication."
-msgstr ""
+msgstr "Konfiguruje autentifikáciu čipovou kartou."
 
 #: utils/gdm-config.c:268
 msgid "Reset the GDM Authentication configuration."
-msgstr ""
+msgstr "Obnoví konfiguráciu autentifikácie GDM."
 
 #: utils/gdm-config.c:270
 msgid "Show GDM Authentication configuration."
-msgstr ""
+msgstr "Zobrazí konfiguráciu autentifikácie GDM."
 
 #: utils/gdm-config.c:281
 msgid "Password options"
@@ -535,7 +551,7 @@ msgstr "Voľby odtlačku prsta"
 
 #: utils/gdm-config.c:285
 msgid "Smart Card options"
-msgstr "Voľby čipovej karty Smart Card"
+msgstr "Voľby čipovej karty"
 
 #: utils/gdm-config.c:287
 msgid "Reset options"
@@ -547,38 +563,37 @@ msgstr "Voľby zobrazenia"
 
 #: utils/gdm-config.c:319
 msgid "No PAM module available for Password authentication"
-msgstr ""
+msgstr "Pre autentifikáciu heslom nie je dostupný žiadny modul PAM"
 
 #: utils/gdm-config.c:321
 msgid "No PAM module available for Smart Card authentication"
-msgstr ""
+msgstr "Pre autentifikáciu čipovou kartou nie je dostupný žiadny modul PAM"
 
 #: utils/gdm-config.c:323
 msgid "No PAM module available for Fingerprint authentication"
-msgstr ""
+msgstr "Pre autentifikáciu odtlačkom prsta nie je dostupný žiadny modul PAM"
 
 #: utils/gdm-config.c:354
 #, c-format
 msgid "“%s” needs at least one parameter"
-msgstr ""
+msgstr "„%s“ potrebuje aspoň jeden parameter"
 
 #. TRANSLATORS: “command” can't be enabled...
 #: utils/gdm-config.c:363
 #, c-format
 msgid "“%s” can't be enabled and disabled at the same time"
-msgstr ""
+msgstr "„%s“ nemôže byť zároveň povolený a zakázaný"
 
 #. TRANSLATORS: option is not a valid command “option-key” value
 #: utils/gdm-config.c:386
 #, c-format
 msgid "“%s” is not a valid %s “%s” value"
-msgstr ""
+msgstr "„%1$s“ nie je platná hodnota voľby „%3$s“ pre príkaz „%2$s“"
 
 #: utils/gdm-config.c:496
-#, fuzzy, c-format
-#| msgid "Unable to change to user"
+#, c-format
 msgid "Failed to switch to %s user"
-msgstr "Nepodarilo sa zmeniť na používateľa"
+msgstr "Nepodarilo sa prepnúť na používateľa %s"
 
 #  PK: prekladat alebo neprekladat? identifikator pouzivatela
 #: utils/gdm-config.c:517
@@ -588,22 +603,22 @@ msgstr "Nepodarilo sa nastaviť identifikátor používateľa na %u"
 
 #: utils/gdm-config.c:680
 msgid "No distro detected, no hook to run"
-msgstr ""
+msgstr "Nebola zistená žiadna distribúcia, nie je k dispozícii žiadny hák"
 
 #: utils/gdm-config.c:698
 #, c-format
 msgid "No valid args found to run hook “%s”"
-msgstr ""
+msgstr "Nenašli sa žiadne platné argumenty na spustenie háku „%s“"
 
 #: utils/gdm-config.c:703
 #, c-format
 msgid "Running distro hook “%s”\n"
-msgstr ""
+msgstr "Spúšťa sa hák distribúcie „%s“\n"
 
 #: utils/gdm-config.c:717
 #, c-format
 msgid "Distro hook “%s” requested stopping"
-msgstr ""
+msgstr "Hák distribúcie „%s“ požiadal o zastavenie"
 
 #: utils/gdm-config.c:730
 #, c-format
@@ -614,12 +629,18 @@ msgid ""
 "Error output:\n"
 "%s"
 msgstr ""
+"Hák distribúcie zlyhal s ukončovacím kódom %d a chybou %s:\n"
+"Štandardný výstup:\n"
+"%s\n"
+"Chybový výstup:\n"
+"%s"
 
 #. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
 #: utils/gdm-config.c:780
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
+"Nepodarilo sa nastaviť kľúč voľby „%s“ príkazu „%s“ cez hák distribúcie: "
 
 #: utils/gdm-config.c:820
 #, c-format
@@ -628,32 +649,32 @@ msgstr "Zlyhalo vytvorenie adresára %s"
 
 #: utils/gdm-config.c:891
 msgid "dconf profile not found"
-msgstr ""
+msgstr "dconf profil nebol nájdený"
 
 #: utils/gdm-config.c:981
 msgid "dconf has no system-db configured"
-msgstr ""
+msgstr "dconf nemá nakonfigurovanú žiadnu systémovú databázu"
 
 #. TRANSLATORS: First value is a file path, second is an error message
 #: utils/gdm-config.c:1130
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
-msgstr ""
+msgstr "Nepodarilo sa získať komentár hlavičky „%s“: %s, bol zmenený?"
 
 #: utils/gdm-config.c:1133
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
-msgstr ""
+msgstr "Komentár hlavičky súboru „%s“ sa nezhoduje, bol zmenený?"
 
 #. XXX: Fail with an error instead?
 #: utils/gdm-config.c:1261
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
-msgstr ""
+msgstr "Na súbore zámku „%s“ sa nenašla očakávaná hlavička, bol zmenený?"
 
 #: utils/gdm-config.c:1546
 msgid "Failed to run a required distro hook: "
-msgstr ""
+msgstr "Nepodarilo sa spustiť požadovaný hák distribúcie: "
 
 #: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
 msgid "COMMAND"
@@ -672,16 +693,25 @@ msgid ""
 "\n"
 "Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
+"Príkazy:\n"
+"help         Zobrazí tieto informácie\n"
+"password     Konfiguruje autentifikáciu heslom\n"
+"fingerprint  Konfiguruje autentifikáciu odtlačkom prsta\n"
+"smartcard    Konfiguruje autentifikáciu čipovou kartou\n"
+"reset        Obnoví predvolenú konfiguráciu\n"
+"show         Zobrazí aktuálnu konfiguráciu\n"
+"\n"
+"Použite „%s PRÍKAZ --help“, aby ste získali pomoc k jednotlivým príkazom.\n"
 
 #: utils/gdm-config.c:1628
 msgid "Command options"
-msgstr ""
+msgstr "Voľby príkazu"
 
 #. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
 #: utils/gdm-config.c:1663
 #, c-format
 msgid "You need to be root to use %s “%s” command"
-msgstr ""
+msgstr "Na použitie príkazu „%s“ s voľbou „%s“ musíte byť root"
 
 #: utils/gdm-config.c:1713
 #, c-format
@@ -690,27 +720,27 @@ msgstr "Zlyhalo nastavenie nastavenia %s: "
 
 #: utils/gdm-config.c:1805
 msgid "Failed to set smartcard setting"
-msgstr ""
+msgstr "Nepodarilo sa nastavenie čipovej karty"
 
 #: utils/gdm-config.c:1811
 msgid "Failed to set password setting"
-msgstr ""
+msgstr "Nepodarilo sa nastavenie hesla"
 
 #: utils/gdm-config.c:1825
 msgid "Enabled"
-msgstr ""
+msgstr "Povolené"
 
 #: utils/gdm-config.c:1825
 msgid "Disabled"
-msgstr ""
+msgstr "Zakázané"
 
 #: utils/gdm-config.c:1834
 msgid "Not supported"
-msgstr ""
+msgstr "Nepodporované"
 
 #: utils/gdm-config.c:1850
 msgid "Required"
-msgstr ""
+msgstr "Vyžadované"
 
 #: utils/gdm-config.c:1911
 #, c-format
@@ -722,6 +752,12 @@ msgid ""
 "  Smart Card authentication: %s\n"
 "  Smart Card removal action: %s\n"
 msgstr ""
+"Konfigurácia autorizácie GDM:\n"
+"\n"
+"Autentifikácia heslom: %s\n"
+"Autentifikácia odtlačkom prsta: %s\n"
+"Autentifikácia čipovou kartou: %s\n"
+"Akcia po odpojení čipovej karty: %s\n"
 
 #: utils/gdm-config.c:1939
 msgctxt "Interactive question"
