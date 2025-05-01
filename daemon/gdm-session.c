@@ -3121,6 +3121,7 @@ gdm_session_start_session (GdmSession *self,
         gboolean                allow_remote_connections = FALSE;
         char                   *command;
         char                   *program;
+        gboolean               register_display;
         gboolean               register_session;
 
         g_return_if_fail (GDM_IS_SESSION (self));
@@ -3148,6 +3149,7 @@ gdm_session_start_session (GdmSession *self,
                 run_launcher = TRUE;
         }
 
+        register_display = !gdm_session_display_registers (self);
         register_session = !gdm_session_session_registers (self);
 
         if (self->selected_program == NULL) {
@@ -3173,7 +3175,8 @@ gdm_session_start_session (GdmSession *self,
                                                            allow_remote_connections? "--allow-remote-connections " : "",
                                                            command);
                         } else {
-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s%s\"%s\"",
+                                                           register_display ? "--register-display " : "",
                                                            register_session ? "--register-session " : "",
                                                            command);
                         }
@@ -3570,6 +3573,37 @@ update_session_type (GdmSession *self)
                 set_session_type (self, NULL);
         }
 #endif
+}
+
+gboolean
+gdm_session_display_registers (GdmSession *self)
+{
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GKeyFile) key_file = NULL;
+        gboolean display_registers = FALSE;
+        g_autofree char *filename = NULL;
+
+        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
+
+        filename = get_session_filename (self);
+
+        key_file = load_key_file_for_file (self, filename, NULL, NULL);
+
+        display_registers = g_key_file_get_boolean (key_file,
+                                                    G_KEY_FILE_DESKTOP_GROUP,
+                                                    "X-GDM-DisplayRegisters",
+                                                    &error);
+        if (!display_registers &&
+            error != NULL &&
+            !g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+                g_warning ("GdmSession: Couldn't read session file '%s'", filename);
+                return FALSE;
+        }
+
+        g_debug ("GdmSession: '%s' %s display", filename,
+                 display_registers ? "registers" : "does not register");
+
+        return display_registers;
 }
 
 gboolean

@@ -54,6 +54,7 @@ typedef struct
         char         *session_command;
         int           session_exit_status;
 
+        guint         register_display_id;
         guint         register_session_id;
 
         GMainLoop    *main_loop;
@@ -404,29 +405,6 @@ wait_on_subprocesses (State *state)
         }
 }
 
-static gboolean
-register_display (State        *state,
-                  GCancellable *cancellable)
-{
-        GError          *error = NULL;
-        gboolean         registered = FALSE;
-        GVariantBuilder  details;
-
-        g_variant_builder_init (&details, G_VARIANT_TYPE ("a{ss}"));
-        g_variant_builder_add (&details, "{ss}", "session-type", "wayland");
-
-        registered = gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
-                                                                  g_variant_builder_end (&details),
-                                                                  cancellable,
-                                                                  &error);
-        if (error != NULL) {
-                g_debug ("Could not register display: %s", error->message);
-                g_error_free (error);
-        }
-
-        return registered;
-}
-
 static void
 init_state (State **state)
 {
@@ -445,6 +423,7 @@ clear_state (State **out_state)
         g_clear_object (&state->session_subprocess);
         g_clear_pointer (&state->environment, g_strfreev);
         g_clear_pointer (&state->main_loop, g_main_loop_unref);
+        g_clear_handle_id (&state->register_display_id, g_source_remove);
         g_clear_handle_id (&state->register_session_id, g_source_remove);
         *out_state = NULL;
 }
@@ -459,6 +438,31 @@ on_sigterm (State *state)
         }
 
         return G_SOURCE_CONTINUE;
+}
+
+static gboolean
+register_display_timeout_cb (gpointer user_data)
+{
+        State           *state;
+        GError          *error = NULL;
+        GVariantBuilder  details;
+
+        state = (State *) user_data;
+
+        g_variant_builder_init (&details, G_VARIANT_TYPE ("a{ss}"));
+        g_variant_builder_add (&details, "{ss}", "session-type", "wayland");
+
+        gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
+                                                     g_variant_builder_end (&details),
+                                                     state->cancellable,
+                                                     &error);
+
+        if (error != NULL) {
+                g_warning ("Could not register display: %s", error->message);
+                g_error_free (error);
+        }
+
+        return G_SOURCE_REMOVE;
 }
 
 static gboolean
@@ -514,9 +518,11 @@ main (int    argc,
         gboolean         debug = FALSE;
         gboolean         ret;
         int              exit_status = EX_OK;
+        static gboolean  register_display = FALSE;
         static gboolean  register_session = FALSE;
 
         static GOptionEntry entries []   = {
+                { "register-display", 0, 0, G_OPTION_ARG_NONE, &register_display, "Register display after a delay", NULL },
                 { "register-session", 0, 0, G_OPTION_ARG_NONE, &register_session, "Register session after a delay", NULL },
                 { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", "" },
                 { NULL }
@@ -584,12 +590,13 @@ main (int    argc,
         if (!connect_to_display_manager (state))
                 goto out;
 
-        ret = register_display (state, state->cancellable);
-
-        if (!ret) {
-                g_printerr ("Unable to register display with display manager\n");
-                exit_status = EX_SOFTWARE;
-                goto out;
+        if (register_display) {
+                g_debug ("gdm-wayland-session: Will register display in %d seconds", REGISTER_DISPLAY_TIMEOUT);
+                state->register_session_id = g_timeout_add_seconds (REGISTER_DISPLAY_TIMEOUT,
+                                                                    register_display_timeout_cb,
+                                                                    state);
+        } else {
+                g_debug ("gdm-wayland-session: Display will register itself");
         }
 
         if (register_session) {
