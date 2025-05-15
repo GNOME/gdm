@@ -1133,6 +1133,21 @@ handle_get_seat_id (GdmDBusDisplay        *skeleton,
 }
 
 static gboolean
+handle_get_session_id (GdmDBusDisplay        *skeleton,
+                       GDBusMethodInvocation *invocation,
+                       GdmDisplay            *self)
+{
+        GdmDisplayPrivate *priv = gdm_display_get_instance_private (self);
+
+        gdm_dbus_display_complete_get_session_id (skeleton,
+                                                  invocation,
+                                                  priv->session_id ?
+                                                  priv->session_id : "");
+
+        return TRUE;
+}
+
+static gboolean
 handle_get_x11_display_name (GdmDBusDisplay        *skeleton,
                              GDBusMethodInvocation *invocation,
                              GdmDisplay            *self)
@@ -1197,6 +1212,8 @@ register_display (GdmDisplay *self)
                                  G_CALLBACK (handle_get_remote_hostname), self, 0);
         g_signal_connect_object (priv->display_skeleton, "handle-get-seat-id",
                                  G_CALLBACK (handle_get_seat_id), self, 0);
+        g_signal_connect_object (priv->display_skeleton, "handle-get-session-id",
+                                 G_CALLBACK (handle_get_session_id), self, 0);
         g_signal_connect_object (priv->display_skeleton, "handle-get-x11-display-name",
                                  G_CALLBACK (handle_get_x11_display_name), self, 0);
         g_signal_connect_object (priv->display_skeleton, "handle-is-local",
