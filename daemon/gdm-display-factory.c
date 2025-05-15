@@ -173,10 +173,13 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
 {
         g_autoptr (PolkitAuthorizationResult) result = NULL;
         g_autoptr (PolkitSubject) subject = NULL;
+        g_autoptr (PolkitDetails) details = NULL;
         g_autoptr (GError) local_error = NULL;
+        const char *user = NULL;
         const char *action;
         const char *method;
         const char *sender;
+        GVariant *parameters;
         PolkitCheckAuthorizationFlags flags;
         GdmDisplayFactoryPrivate *priv;
 
@@ -196,13 +199,18 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
 
         priv = gdm_display_factory_get_instance_private (factory);
 
+        parameters = g_dbus_method_invocation_get_parameters (invocation);
+        g_variant_get (parameters, "(s)", &user);
+        details = polkit_details_new ();
+        polkit_details_insert (details, "user", user);
+
         sender = g_dbus_method_invocation_get_sender (invocation);
         subject = polkit_system_bus_name_new (sender);
         action = GDM_DISPLAY_FACTORY_MANAGE_DISPLAYS_POLKIT_ACTION;
         flags = POLKIT_CHECK_AUTHORIZATION_FLAGS_ALLOW_USER_INTERACTION;
         result = polkit_authority_check_authorization_sync (priv->authority,
                                                             subject, action,
-                                                            NULL, flags, NULL,
+                                                            details, flags, NULL,
                                                             &local_error);
         if (!result) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,

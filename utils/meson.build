@@ -35,6 +35,21 @@ gdm_auth_config = executable('gdm-config',
   install: true,
 )
 
+# gdm-new-session
+gdm_new_session_deps = [
+  glib_dep,
+  gio_dep,
+  logind_dep,
+]
+
+gdm_new_session = executable('gdm-new-session',
+  'gdm-new-session.c',
+  dependencies: gdm_new_session_deps,
+  include_directories: config_h_dir,
+  install: true,
+  install_dir: get_option('libexecdir'),
+)
+
 auth_config_distro_hooks = [
   'redhat',
   'generic',
