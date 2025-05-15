@@ -1304,45 +1304,38 @@ get_timed_login_details (GdmManager *manager,
 }
 
 static gboolean
-get_automatic_login_details (GdmManager *manager,
-                             char      **usernamep)
+get_automatic_login_details (GdmManager  *manager,
+                             GdmDisplay  *display,
+                             char       **out_username)
 {
-        gboolean res;
         gboolean enabled;
-        char    *username = NULL;
+        g_autofree char *seat_id = NULL;
+        g_autofree char *username = NULL;
 
-        enabled = FALSE;
-        username = NULL;
+        g_object_get (G_OBJECT (display),
+                      "seat-id", &seat_id,
+                      NULL);
 
-        res = gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
-        if (res && enabled) {
-            res = gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &username);
-        }
+        if (seat_id == NULL || !g_str_equal (seat_id, "seat0"))
+                return FALSE;
 
-        if (enabled && res && username != NULL && username[0] != '\0') {
-                goto out;
-        }
+        if (manager->did_automatic_login || manager->automatic_login_display != NULL)
+                return FALSE;
 
-        g_free (username);
-        username = NULL;
-        enabled = FALSE;
+        if (!gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled))
+                return FALSE;
 
- out:
-        if (enabled) {
-                g_debug ("GdmDisplay: Got automatic login details for display: %d %s",
-                         enabled,
-                         username);
-        } else {
-                g_debug ("GdmDisplay: Got automatic login details for display: 0");
-        }
+        if (!gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &username))
+                return FALSE;
 
-        if (usernamep != NULL) {
-                *usernamep = username;
-        } else {
-                g_free (username);
-        }
+        if (!enabled || username == NULL || username[0] == '\0')
+                return FALSE;
 
-        return enabled;
+        g_debug ("GdmDisplay: Got automatic login details for user: %s", username);
+
+        *out_username = g_steal_pointer (&username);
+
+        return TRUE;
 }
 
 static void
@@ -1436,25 +1429,12 @@ set_up_session (GdmManager *manager,
         ActUserManager *user_manager;
         ActUser *user;
         gboolean loaded;
-        gboolean seat_can_autologin = FALSE, seat_did_autologin = FALSE;
-        gboolean autologin_enabled = FALSE;
-        g_autofree char *seat_id = NULL;
-        char *username = NULL;
+        gboolean autologin_enabled;
+        g_autofree char *username = NULL;
 
-        g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
-
-        if (g_strcmp0 (seat_id, "seat0") == 0)
-                seat_can_autologin = TRUE;
-
-        if (manager->did_automatic_login || manager->automatic_login_display != NULL)
-                seat_did_autologin = TRUE;
-
-        if (seat_can_autologin && !seat_did_autologin)
-                autologin_enabled = get_automatic_login_details (manager, &username);
+        autologin_enabled = get_automatic_login_details (manager, display, &username);
 
         if (!autologin_enabled) {
-                g_free (username);
-
                 set_up_greeter_session (manager, display);
                 return;
         }
@@ -1472,7 +1452,7 @@ set_up_session (GdmManager *manager,
                 operation = g_new (UsernameLookupOperation, 1);
                 operation->manager = g_object_ref (manager);
                 operation->display = g_object_ref (display);
-                operation->username = username;
+                operation->username = g_steal_pointer (&username);
 
                 g_signal_connect (user,
                                   "notify::is-loaded",
@@ -2238,7 +2218,7 @@ on_session_conversation_started (GdmSession *session,
 {
         GdmDisplay *display;
         gboolean    enabled;
-        char       *username;
+        g_autofree char *username = NULL;
 
         g_debug ("GdmManager: session conversation started for service %s on session", service_name);
 
@@ -2254,11 +2234,7 @@ on_session_conversation_started (GdmSession *session,
                 return;
         }
 
-        if (!display_is_on_seat0 (display)) {
-                return;
-        }
-
-        enabled = get_automatic_login_details (manager, &username);
+        enabled = get_automatic_login_details (manager, display, &username);
 
         if (! enabled) {
                 return;
@@ -2269,8 +2245,6 @@ on_session_conversation_started (GdmSession *session,
         /* service_name will be "gdm-autologin"
          */
         gdm_session_setup_for_user (session, service_name, username);
-
-        g_free (username);
 }
 
 static void
