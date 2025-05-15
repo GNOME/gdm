@@ -47,20 +47,11 @@ static gpointer remote_display_factory_object = NULL;
 
 G_DEFINE_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
-static void
-on_display_status_changed (GdmDisplay              *display,
-                           GParamSpec              *arg1,
-                           GdmRemoteDisplayFactory *factory)
-{
-        g_debug ("GdmRemoteDisplayFactory: remote display status changed: %d",
-                 gdm_display_get_status (display));
-}
-
 static gboolean
-gdm_remote_display_factory_create_remote_display (GdmRemoteDisplayFactory *factory,
-                                                  const char              *remote_id)
+gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
+                                           const char              *remote_id)
 {
-        GdmDisplay      *display  = NULL;
+        g_autoptr (GdmDisplay) display = NULL;
         GdmDisplayStore *store;
 
         g_debug ("GdmRemoteDisplayFactory: Creating remote display");
@@ -72,16 +63,8 @@ gdm_remote_display_factory_create_remote_display (GdmRemoteDisplayFactory *facto
 
         if (!gdm_display_prepare (display)) {
                 gdm_display_unmanage (display);
-                g_object_unref (display);
                 return FALSE;
         }
-
-        g_signal_connect_after (display,
-                                "notify::status",
-                                G_CALLBACK (on_display_status_changed),
-                                factory);
-
-        g_object_unref (display);
 
         return TRUE;
 }
@@ -92,7 +75,7 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
                               const char                  *remote_id,
                               GdmRemoteDisplayFactory     *factory)
 {
-        if (!gdm_remote_display_factory_create_remote_display (factory, remote_id))
+        if (!gdm_remote_display_factory_create_display (factory, remote_id))
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_FAILED,
@@ -101,7 +84,7 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
                 gdm_dbus_remote_display_factory_complete_create_remote_display (factory->skeleton,
                                                                                 invocation);
 
-        return TRUE;
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
 
 static gboolean

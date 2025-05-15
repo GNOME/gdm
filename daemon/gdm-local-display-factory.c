@@ -395,21 +395,16 @@ store_display (GdmLocalDisplayFactory *factory,
   /org/gnome/DisplayManager/Manager \
   org.gnome.DisplayManager.Manager.GetDisplays
 */
-gboolean
-gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
-                                                    char                  **id,
-                                                    GError                **error)
+static gboolean
+gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
+                                          char                   **id,
+                                          GError                 **error)
 {
-        gboolean         ret;
-        GdmDisplay      *display = NULL;
-        gboolean         is_initial = FALSE;
+        gboolean is_initial = FALSE;
+        g_autoptr (GdmDisplay) display = NULL;
         g_autofree gchar *preferred_display_server = NULL;
 
-        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
-
-        ret = FALSE;
-
-        g_debug ("GdmLocalDisplayFactory: Creating transient display");
+        g_debug ("GdmLocalDisplayFactory: Creating local display");
 
         preferred_display_server = get_preferred_display_server (factory);
 
@@ -460,22 +455,23 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         store_display (factory, display);
 
-        if (! gdm_display_manage (display)) {
-                display = NULL;
-                goto out;
+        if (!gdm_display_manage (display)) {
+                g_set_error_literal (error,
+                                     GDM_DISPLAY_ERROR,
+                                     GDM_DISPLAY_ERROR_GENERAL,
+                                     "Failed managing display");
+                return FALSE;
         }
 
-        if (! gdm_display_get_id (display, id, NULL)) {
-                display = NULL;
-                goto out;
+        if (!gdm_display_get_id (display, id, NULL)) {
+                g_set_error_literal (error,
+                                     GDM_DISPLAY_ERROR,
+                                     GDM_DISPLAY_ERROR_GENERAL,
+                                     "Failed getting display id");
+                return FALSE;
         }
 
-        ret = TRUE;
- out:
-        /* ref either held by store or not at all */
-        g_object_unref (display);
-
-        return ret;
+        return TRUE;
 }
 
 static void
@@ -1590,16 +1586,16 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
         g_autofree char *id = NULL;
         gboolean created;
 
-        created = gdm_local_display_factory_create_transient_display (factory,
-                                                                      &id,
-                                                                      &error);
+        created = gdm_local_display_factory_create_display (factory,
+                                                            &id,
+                                                            &error);
         if (!created) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
         } else {
                 gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
         }
 
-        return TRUE;
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
 
 static gboolean
