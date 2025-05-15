@@ -960,6 +960,64 @@ _systemd_session_is_active (const char *session_id)
         return TRUE;
 }
 
+static gboolean
+find_graphical_sessions (const uid_t    uid,
+                         char        ***out_sessions)
+{
+        g_auto (GStrv) sessions = NULL;
+        g_autoptr (GStrvBuilder) builder = NULL;
+        int n_sessions;
+
+        g_debug ("Finding a graphical session for user %d", uid);
+
+        n_sessions = sd_uid_get_sessions (uid,
+                                          GDM_SYSTEMD_SESSION_REQUIRE_ONLINE,
+                                          &sessions);
+        if (n_sessions < 0)
+                return FALSE;
+
+        builder = g_strv_builder_new ();
+
+        for (int i = 0; i < n_sessions; ++i) {
+                g_debug ("Considering session '%s'", sessions[i]);
+
+                if (!_systemd_session_is_graphical (sessions[i]))
+                        continue;
+
+                if (!_systemd_session_is_active (sessions[i]))
+                        continue;
+
+                g_strv_builder_add (builder, g_strdup (sessions[i]));
+        }
+
+        *out_sessions = g_strv_builder_end (builder);
+
+        return TRUE;
+}
+
+gboolean
+gdm_find_graphical_sessions_for_username (const char   *username,
+                                          char       ***sessions,
+                                          GError      **error)
+{
+        struct passwd *pwent;
+
+        gdm_get_pwent_for_name (username, &pwent);
+        if (pwent == NULL) {
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                             "Couldn't get pw entry for username %s", username);
+                return FALSE;
+        }
+
+        if (!find_graphical_sessions (pwent->pw_uid, sessions)) {
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                             "Couldn't find sessions for username %s", username);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
 gboolean
 gdm_find_display_session (GPid        pid,
                           const uid_t uid,
@@ -968,7 +1026,6 @@ gdm_find_display_session (GPid        pid,
 {
         char *local_session_id = NULL;
         g_auto(GStrv) sessions = NULL;
-        int n_sessions;
         int res;
 
         g_return_val_if_fail (out_session_id != NULL, FALSE);
@@ -993,13 +1050,7 @@ gdm_find_display_session (GPid        pid,
                                    pid, strerror (-res));
         }
 
-        g_debug ("Finding a graphical session for user %d", uid);
-
-        n_sessions = sd_uid_get_sessions (uid,
-                                          GDM_SYSTEMD_SESSION_REQUIRE_ONLINE,
-                                          &sessions);
-
-        if (n_sessions < 0) {
+        if (!find_graphical_sessions (uid, &sessions)) {
                 g_set_error (error,
                              GDM_COMMON_ERROR,
                              0,
@@ -1008,23 +1059,7 @@ gdm_find_display_session (GPid        pid,
                 return FALSE;
         }
 
-        for (int i = 0; i < n_sessions; ++i) {
-                g_debug ("Considering session '%s'", sessions[i]);
-
-                if (!_systemd_session_is_graphical (sessions[i]))
-                        continue;
-
-                if (!_systemd_session_is_active (sessions[i]))
-                        continue;
-
-                /*
-                 * We get the sessions from newest to oldest, so take the last
-                 * one we find that's good
-                 */
-                local_session_id = sessions[i];
-        }
-
-        if (local_session_id == NULL) {
+        if (g_strv_length (sessions) == 0) {
                 g_set_error (error,
                              GDM_COMMON_ERROR,
                              0,
@@ -1033,7 +1068,11 @@ gdm_find_display_session (GPid        pid,
                 return FALSE;
         }
 
-        *out_session_id = g_strdup (local_session_id);
+        /*
+         * We get the sessions from newest to oldest, so take the last
+         * one we find that's good
+         */
+        *out_session_id = g_strdup (sessions[0]);
 
         return TRUE;
 }
