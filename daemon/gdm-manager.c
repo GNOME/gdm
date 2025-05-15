@@ -1314,7 +1314,11 @@ get_automatic_login_details (GdmManager  *manager,
 
         g_object_get (G_OBJECT (display),
                       "seat-id", &seat_id,
+                      "autologin-user", &username,
                       NULL);
+
+        if (username != NULL)
+                goto out;
 
         if (seat_id == NULL || !g_str_equal (seat_id, "seat0"))
                 return FALSE;
@@ -1331,6 +1335,7 @@ get_automatic_login_details (GdmManager  *manager,
         if (!enabled || username == NULL || username[0] == '\0')
                 return FALSE;
 
+out:
         g_debug ("GdmDisplay: Got automatic login details for user: %s", username);
 
         *out_username = g_steal_pointer (&username);
