@@ -53,6 +53,15 @@ gboolean                   gdm_display_factory_start                   (GdmDispl
 gboolean                   gdm_display_factory_stop                    (GdmDisplayFactory *manager);
 GdmDisplayStore *          gdm_display_factory_get_display_store       (GdmDisplayFactory *manager);
 void                       gdm_display_factory_queue_purge_displays    (GdmDisplayFactory *manager);
+gboolean                   gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *factory,
+                                                                               GDBusMethodInvocation  *invocation,
+                                                                               GError                **error);
+gboolean                   gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
+                                                                         const char         *user,
+                                                                         GError            **error);
+gboolean                   gdm_display_factory_on_user_display_destruction (GdmDisplayFactory  *factory,
+                                                                            const char         *user,
+                                                                            GError            **error);
 
 G_END_DECLS
 

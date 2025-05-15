@@ -203,3 +203,7 @@ configure_file(
   },
   install_dir: get_option('datadir') / 'polkit-1' / 'rules.d',
 )
+install_data(
+  'org.gnome.displaymanager.policy',
+  install_dir: get_option('datadir') / 'polkit-1' / 'actions',
+)

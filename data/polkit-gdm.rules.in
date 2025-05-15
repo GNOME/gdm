@@ -12,4 +12,8 @@ polkit.addRule(function(action, subject) {
         subject.local && subject.active) {
         return polkit.Result.YES;
     }
+
+    if (action.id == "org.gnome.displaymanager.displayfactory.manage-user-displays") {
+        return polkit.Result.YES;
+    }
 });

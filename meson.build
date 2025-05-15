@@ -67,6 +67,7 @@ json_glib = dependency('json-glib-1.0', version: '>= 1.2.0',
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 keyutils_dep = dependency('libkeyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
+polkit_dep = dependency('polkit-gobject-1')
 
 # udev
 if udev_dir == ''
