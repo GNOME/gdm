@@ -60,6 +60,19 @@ gdm_remote_display_set_remote_id (GdmRemoteDisplay *display,
         g_object_set (G_OBJECT (display->skeleton), "remote-id", remote_id, NULL);
 }
 
+static gboolean
+handle_set_remote_id (GdmDBusRemoteDisplay    *skeleton,
+                      GDBusMethodInvocation   *invocation,
+                      const char              *remote_id,
+                      GdmRemoteDisplay        *display)
+{
+        g_object_set (G_OBJECT (display->skeleton), "remote-id", remote_id, NULL);
+
+        gdm_dbus_remote_display_complete_set_remote_id (skeleton, invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
 static GObject *
 gdm_remote_display_constructor (GType                  type,
                                 guint                  n_construct_properties,
@@ -77,6 +90,11 @@ gdm_remote_display_constructor (GType                  type,
                                               G_DBUS_INTERFACE_SKELETON (display->skeleton));
 
         g_object_bind_property (display, "session-id", display->skeleton, "session-id", G_BINDING_SYNC_CREATE);
+
+        g_signal_connect (display->skeleton,
+                          "handle-set-remote-id",
+                          G_CALLBACK (handle_set_remote_id),
+                          display);
 
         return G_OBJECT (display);
 }
