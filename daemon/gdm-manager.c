@@ -45,6 +45,7 @@
 #include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
+#include "gdm-dynamic-user-store.h"
 #include "gdm-launch-environment.h"
 #include "gdm-local-display.h"
 #include "gdm-local-display-factory.h"
@@ -75,6 +76,7 @@ typedef struct
 struct _GdmManager
 {
         GdmDBusManagerSkeleton parent;
+        GdmDynamicUserStore    *dyn_user_store;
         GdmDisplayStore        *display_store;
         GdmLocalDisplayFactory *local_factory;
 #ifdef HAVE_LIBXDMCP
@@ -2925,6 +2927,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
 static void
 gdm_manager_init (GdmManager *manager)
 {
+        manager->dyn_user_store = gdm_dynamic_user_store_new ();
         manager->display_store = gdm_display_store_new ();
         manager->user_sessions = NULL;
         manager->open_reauthentication_requests = g_hash_table_new_full (NULL,
@@ -3027,6 +3030,7 @@ gdm_manager_dispose (GObject *object)
         g_clear_object (&manager->connection);
         g_clear_object (&manager->object_manager);
         g_clear_object (&manager->display_store);
+        g_clear_object (&manager->dyn_user_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->dispose (object);
 }
