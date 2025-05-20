@@ -35,6 +35,7 @@ gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_
 working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
 gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir / 'xauth'
 gdm_private_dbus_dir = (get_option('private-dbus-dir') != '')? get_option('private-dbus-dir') : gdm_run_dir / 'dbus'
+gdm_dyn_home_dir = (get_option('dyn-home-dir') != '')? get_option('dyn-home-dir') : gdm_run_dir / 'home'
 pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
 pam_profiles_dir = pam_prefix / 'pam.d'
 have_x11_support = get_option('x11-support')
@@ -134,11 +135,24 @@ if logind_provider == 'systemd'
       '/usr/lib/systemd',
     ])
   systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
+
+  have_userdb = libsystemd_dep.version().version_compare('>= 257')
+
+  # Our range is documented at https://systemd.io/UIDS-GIDS/
+  greeter_uid_min = systemd_dep.get_variable('greeter_uid_min', default_value: '60578')
+  greeter_uid_max = systemd_dep.get_variable('greeter_uid_max', default_value: '60705')
 else
   elogind_dep = dependency('libelogind')
   logind_dep = elogind_dep
   systemd_x_server = 'disabled'
+  have_userdb = false
+  greeter_uid_min = 0
+  greeter_uid_max = 0
 endif
+
+nologin_program = find_program('nologin', required: false)
+nologin_path = nologin_program.found()? nologin_program.path() : '/sbin/nologin'
+
 # Plymouth
 plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
 # Check for Solaris auditing API (ADT)
@@ -289,6 +303,11 @@ conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
 conf.set('HAVE_LIBXDMCP', have_xdmcp)
 conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
+conf.set('HAVE_USERDB', have_userdb)
+conf.set('GREETER_UID_MIN', greeter_uid_min)
+conf.set('GREETER_UID_MAX', greeter_uid_max)
+conf.set_quoted('GDM_DYN_HOME_DIR', gdm_dyn_home_dir)
+conf.set_quoted('NOLOGIN_PATH', nologin_path)
 conf.set('WITH_PLYMOUTH', plymouth_dep.found())
 conf.set_quoted('X_SERVER', x_bin)
 conf.set_quoted('X_PATH', x_path)
@@ -342,6 +361,7 @@ summary({
     'GDM conf': gdmconfdir,
     'GDM Xauth': gdm_xauth_dir,
     'GDM Run': gdm_run_dir,
+    'GDM Dynamic Homes': gdm_dyn_home_dir,
     'GDM PID file': gdm_pid_file,
     'GDM Defaults config': gdm_defaults_conf,
     'GDM Custom config': gdm_custom_conf,
