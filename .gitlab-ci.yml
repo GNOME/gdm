@@ -85,7 +85,7 @@ build-fedora:
     - .gdm.fedora
   stage: build
   script:
-    - meson setup ${MESON_BUILD_DIR} ${COMMON_BUILD_OPTIONS}
+    - meson setup ${MESON_BUILD_DIR} ${COMMON_BUILD_OPTIONS} -Dx11-support=true
     - meson compile -C ${MESON_BUILD_DIR}
     - meson install -C ${MESON_BUILD_DIR}
     - meson dist -C ${MESON_BUILD_DIR}
@@ -104,7 +104,7 @@ build-fedora-wayland:
     - .gdm.fedora
   stage: build
   script:
-    - meson setup ${MESON_BUILD_DIR} ${COMMON_BUILD_OPTIONS} -Dx11-support=false
+    - meson setup ${MESON_BUILD_DIR} ${COMMON_BUILD_OPTIONS}
     - meson compile -C ${MESON_BUILD_DIR}
     - meson install -C ${MESON_BUILD_DIR}
     - meson dist -C ${MESON_BUILD_DIR}
