@@ -66,7 +66,6 @@ struct _GdmLaunchEnvironment
         GdmSessionVerificationMode verification_mode;
 
         char           *user_name;
-        char           *runtime_dir;
 
         char           *session_id;
         char           *session_type;
@@ -91,7 +90,6 @@ enum {
         PROP_X11_AUTHORITY_FILE,
         PROP_X11_DISPLAY_IS_LOCAL,
         PROP_USER_NAME,
-        PROP_RUNTIME_DIR,
         PROP_COMMAND,
 };
 
@@ -409,13 +407,6 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         uid = passwd_entry->pw_uid;
         gid = passwd_entry->pw_gid;
 
-        g_debug ("GdmLaunchEnvironment: Setting up run time dir %s",
-                 launch_environment->runtime_dir);
-        if (!ensure_directory_with_uid_gid (launch_environment->runtime_dir, uid, gid, &error)) {
-                g_critical ("GdmLaunchEnvironment: %s", error->message);
-                return FALSE;
-        }
-
         /* Create the home directory too */
         if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, &error)) {
                 g_critical ("GdmLaunchEnvironment: %s", error->message);
@@ -601,14 +592,6 @@ _gdm_launch_environment_set_user_name (GdmLaunchEnvironment *launch_environment,
 }
 
 static void
-_gdm_launch_environment_set_runtime_dir (GdmLaunchEnvironment *launch_environment,
-                                         const char           *dir)
-{
-        g_free (launch_environment->runtime_dir);
-        launch_environment->runtime_dir = g_strdup (dir);
-}
-
-static void
 _gdm_launch_environment_set_command (GdmLaunchEnvironment *launch_environment,
                                      const char           *name)
 {
@@ -656,9 +639,6 @@ gdm_launch_environment_set_property (GObject      *object,
                 break;
         case PROP_USER_NAME:
                 _gdm_launch_environment_set_user_name (self, g_value_get_string (value));
-                break;
-        case PROP_RUNTIME_DIR:
-                _gdm_launch_environment_set_runtime_dir (self, g_value_get_string (value));
                 break;
         case PROP_COMMAND:
                 _gdm_launch_environment_set_command (self, g_value_get_string (value));
@@ -709,9 +689,6 @@ gdm_launch_environment_get_property (GObject    *object,
                 break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->user_name);
-                break;
-        case PROP_RUNTIME_DIR:
-                g_value_set_string (value, self->runtime_dir);
                 break;
         case PROP_COMMAND:
                 g_value_set_string (value, self->command);
@@ -801,13 +778,6 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                               "user name",
                                                               "user name",
                                                               GDM_USERNAME,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_RUNTIME_DIR,
-                                         g_param_spec_string ("runtime-dir",
-                                                              "runtime dir",
-                                                              "runtime dir",
-                                                              NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_COMMAND,
@@ -907,7 +877,6 @@ gdm_launch_environment_finalize (GObject *object)
 
         g_free (launch_environment->command);
         g_free (launch_environment->user_name);
-        g_free (launch_environment->runtime_dir);
         g_free (launch_environment->x11_display_name);
         g_free (launch_environment->x11_display_seat_id);
         g_free (launch_environment->x11_display_device);
@@ -966,7 +935,6 @@ create_gnome_session_environment (const char *session_id,
                                            "x11-display-seat-id", seat_id,
                                            "x11-display-hostname", display_hostname,
                                            "x11-display-is-local", display_is_local,
-                                           "runtime-dir", GDM_SCREENSHOT_DIR,
                                            NULL);
 
         return launch_environment;
@@ -1024,7 +992,6 @@ gdm_create_chooser_launch_environment (const char *display_name,
                                            "x11-display-seat-id", seat_id,
                                            "x11-display-hostname", display_hostname,
                                            "x11-display-is-local", FALSE,
-                                           "runtime-dir", GDM_SCREENSHOT_DIR,
                                            NULL);
 
         return launch_environment;
