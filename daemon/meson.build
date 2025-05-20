@@ -188,6 +188,7 @@ gdm_daemon_sources = files(
   'gdm-display-factory.c',
   'gdm-display-store.c',
   'gdm-display.c',
+  'gdm-dynamic-user-store.c',
   'gdm-launch-environment.c',
   'gdm-legacy-display.c',
   'gdm-local-display-factory.c',

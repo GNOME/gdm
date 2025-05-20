@@ -135,11 +135,17 @@ if logind_provider == 'systemd'
       '/usr/lib/systemd',
     ])
   systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
+  have_userdb = libsystemd_dep.version().version_compare('>= 257')
 else
   elogind_dep = dependency('libelogind')
   logind_dep = elogind_dep
   systemd_x_server = 'disabled'
+  have_userdb = false
 endif
+
+nologin_program = find_program('nologin', required: false)
+nologin_path = nologin_program.found()? nologin_program.path() : '/sbin/nologin'
+
 # Plymouth
 plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
 # Check for Solaris auditing API (ADT)
@@ -291,6 +297,8 @@ conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
 conf.set('HAVE_LIBXDMCP', have_xdmcp)
 conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
+conf.set('HAVE_USERDB', have_userdb)
+conf.set_quoted('NOLOGIN_PATH', nologin_path)
 conf.set('WITH_PLYMOUTH', plymouth_dep.found())
 conf.set_quoted('X_SERVER', x_bin)
 conf.set_quoted('X_PATH', x_path)
