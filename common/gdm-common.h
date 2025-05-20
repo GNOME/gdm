@@ -24,6 +24,7 @@
 #include <glib-unix.h>
 #include <gio/gio.h>
 
+#include <grp.h>
 #include <pwd.h>
 #include <errno.h>
 
@@ -62,6 +63,12 @@ gboolean       gdm_find_display_session (GPid        pid,
 
 gboolean       gdm_get_pwent_for_name    (const char     *name,
                                           struct passwd **pwentp);
+
+gboolean       gdm_get_pwent_for_uid     (uid_t           uid,
+                                          struct passwd **pwentp);
+
+gboolean       gdm_get_grent_for_name    (const char     *name,
+                                          struct group  **grentp);
 
 gboolean       gdm_clear_close_on_exec_flag (int fd);
 
