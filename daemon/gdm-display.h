@@ -25,6 +25,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include "gdm-dynamic-user-store.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_DISPLAY (gdm_display_get_type ())
@@ -107,6 +109,9 @@ gboolean            gdm_display_add_user_authorization         (GdmDisplay *disp
 gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
                                                                 const char *username,
                                                                 GError    **error);
+gboolean            gdm_display_prepare_greeter_session        (GdmDisplay          *display,
+                                                                GdmDynamicUserStore *dyn_user_store,
+                                                                uid_t               *ret_uid);
 void                gdm_display_start_greeter_session          (GdmDisplay  *display);
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
 

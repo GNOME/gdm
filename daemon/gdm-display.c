@@ -1678,6 +1678,32 @@ wants_initial_setup (GdmDisplay *self)
         return enabled;
 }
 
+gboolean
+gdm_display_prepare_greeter_session (GdmDisplay          *self,
+                                     GdmDynamicUserStore *dyn_user_store,
+                                     uid_t               *ret_uid)
+{
+        g_autoptr (GError) error = NULL;
+        GdmDisplayPrivate *priv;
+        uid_t uid;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
+        priv = gdm_display_get_instance_private (self);
+        g_return_val_if_fail (g_strcmp0 (priv->session_class, "greeter") == 0, FALSE);
+
+        if (!gdm_launch_environment_ensure_uid (priv->launch_environment,
+                                                dyn_user_store, &uid, &error)) {
+                g_warning ("GdmDisplay: Failed to allocate UID for greeter: %s",
+                           error->message);
+                return FALSE;
+        }
+
+        if (ret_uid != NULL)
+                *ret_uid = uid;
+
+        return TRUE;
+}
+
 void
 gdm_display_start_greeter_session (GdmDisplay *self)
 {
