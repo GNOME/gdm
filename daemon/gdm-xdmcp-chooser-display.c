@@ -118,7 +118,8 @@ gdm_xdmcp_chooser_display_prepare (GdmDisplay          *display,
                       "remote-hostname", &hostname,
                       NULL);
 
-        launch_environment = gdm_create_chooser_launch_environment (display_name,
+        launch_environment = gdm_create_chooser_launch_environment (dyn_user_store,
+                                                                    display_name,
                                                                     seat_id,
                                                                     hostname);
         g_object_set (self, "launch-environment", launch_environment, NULL);

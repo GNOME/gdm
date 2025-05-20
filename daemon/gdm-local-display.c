@@ -111,13 +111,15 @@ gdm_local_display_prepare (GdmDisplay          *display,
         g_debug ("doing initial setup? %s", doing_initial_setup? "yes" : "no");
 
         if (!doing_initial_setup) {
-                launch_environment = gdm_create_greeter_launch_environment (NULL,
+                launch_environment = gdm_create_greeter_launch_environment (dyn_user_store,
+                                                                            NULL,
                                                                             seat_id,
                                                                             session_type,
                                                                             NULL,
                                                                             TRUE);
         } else {
-                launch_environment = gdm_create_initial_setup_launch_environment (NULL,
+                launch_environment = gdm_create_initial_setup_launch_environment (dyn_user_store,
+                                                                                  NULL,
                                                                                   seat_id,
                                                                                   session_type,
                                                                                   NULL,

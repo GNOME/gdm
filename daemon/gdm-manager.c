@@ -62,7 +62,6 @@
 #define GDM_MANAGER_PATH          GDM_DBUS_PATH "/Manager"
 #define GDM_MANAGER_DISPLAYS_PATH GDM_DBUS_PATH "/Displays"
 
-#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT GDM_RUN_DIR "/gdm.ran-initial-setup"
 
 typedef struct
@@ -1367,23 +1366,6 @@ get_automatic_login_details (GdmManager *manager,
         return enabled;
 }
 
-static const char *
-get_username_for_greeter_display (GdmManager *manager,
-                                  GdmDisplay *display)
-{
-        gboolean doing_initial_setup = FALSE;
-
-        g_object_get (G_OBJECT (display),
-                      "doing-initial-setup", &doing_initial_setup,
-                      NULL);
-
-        if (doing_initial_setup) {
-                return INITIAL_SETUP_USERNAME;
-        } else {
-                return GDM_USERNAME;
-        }
-}
-
 static void
 set_up_automatic_login_session (GdmManager *manager,
                                 GdmDisplay *display)
@@ -1414,14 +1396,7 @@ static void
 set_up_chooser_session (GdmManager *manager,
                         GdmDisplay *display)
 {
-        const char *allowed_user;
-        struct passwd *passwd_entry;
-
-        allowed_user = get_username_for_greeter_display (manager, display);
-
-        if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
-                g_warning ("GdmManager: couldn't look up username %s",
-                           allowed_user);
+        if (!gdm_display_prepare_greeter_session (display, NULL)) {
                 gdm_display_unmanage (display);
                 gdm_display_finish (display);
                 return;
@@ -1434,20 +1409,15 @@ static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
-        const char *allowed_user;
-        struct passwd *passwd_entry;
+        uid_t greeter_uid;
 
-        allowed_user = get_username_for_greeter_display (manager, display);
-
-        if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
-                g_warning ("GdmManager: couldn't look up username %s",
-                           allowed_user);
+        if (!gdm_display_prepare_greeter_session (display, &greeter_uid)) {
                 gdm_display_unmanage (display);
                 gdm_display_finish (display);
                 return;
         }
 
-        create_user_session_for_display (manager, display, passwd_entry->pw_uid);
+        create_user_session_for_display (manager, display, greeter_uid);
         gdm_display_start_greeter_session (display);
 }
 
@@ -1800,7 +1770,7 @@ out:
 }
 
 static void
-chown_initial_setup_home_dir (void)
+chown_initial_setup_home_dir (uid_t greeter_uid)
 {
         GFile *dir;
         GError *error;
@@ -1810,8 +1780,8 @@ chown_initial_setup_home_dir (void)
         struct passwd *pwe;
         uid_t uid;
 
-        if (!gdm_get_pwent_for_name (INITIAL_SETUP_USERNAME, &pwe)) {
-                g_warning ("Unknown user %s", INITIAL_SETUP_USERNAME);
+        if (!gdm_get_pwent_for_uid (greeter_uid, &pwe)) {
+                g_warning ("Failed to resolve gnome-initial-setup UID: %d", greeter_uid);
                 return;
         }
 
@@ -2010,7 +1980,7 @@ on_session_credentials_established (GdmSession *session,
                       "doing-initial-setup", &doing_initial_setup,
                       NULL);
         if (doing_initial_setup)
-                chown_initial_setup_home_dir ();
+                chown_initial_setup_home_dir (gdm_session_get_allowed_user (session));
 }
 
 static void

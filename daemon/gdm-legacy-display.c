@@ -106,13 +106,15 @@ gdm_legacy_display_prepare (GdmDisplay          *display,
                       NULL);
 
         if (!doing_initial_setup) {
-                launch_environment = gdm_create_greeter_launch_environment (display_name,
+                launch_environment = gdm_create_greeter_launch_environment (dyn_user_store,
+                                                                            display_name,
                                                                             seat_id,
                                                                             NULL,
                                                                             NULL,
                                                                             TRUE);
         } else {
-                launch_environment = gdm_create_initial_setup_launch_environment (display_name,
+                launch_environment = gdm_create_initial_setup_launch_environment (dyn_user_store,
+                                                                                  display_name,
                                                                                   seat_id,
                                                                                   NULL,
                                                                                   NULL,

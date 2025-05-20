@@ -103,7 +103,8 @@ gdm_remote_display_prepare (GdmDisplay          *display,
                       "session-type", &session_type,
                       NULL);
 
-        launch_environment = gdm_create_greeter_launch_environment (NULL,
+        launch_environment = gdm_create_greeter_launch_environment (dyn_user_store,
+                                                                    NULL,
                                                                     NULL,
                                                                     session_type,
                                                                     NULL,
