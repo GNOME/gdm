@@ -88,6 +88,42 @@ gdm_get_pwent_for_name (const char     *name,
         return (pwent != NULL);
 }
 
+gboolean
+gdm_get_pwent_for_uid (uid_t           uid,
+                       struct passwd **pwentp)
+{
+        struct passwd *pwent;
+
+        do {
+                errno = 0;
+                pwent = getpwuid (uid);
+        } while (pwent == NULL && errno == EINTR);
+
+        if (pwentp != NULL) {
+                *pwentp = pwent;
+        }
+
+        return (pwent != NULL);
+}
+
+gboolean
+gdm_get_grent_for_name (const char    *name,
+                        struct group **grentp)
+{
+        struct group *grent;
+
+        do {
+                errno = 0;
+                grent = getgrnam (name);
+        } while (grent == NULL && errno == EINTR);
+
+        if (grentp != NULL) {
+                *grentp = grent;
+        }
+
+        return (grent != NULL);
+}
+
 static gboolean
 gdm_get_grent_for_gid (gint           gid,
                        struct group **grentp)
