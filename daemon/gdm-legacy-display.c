@@ -90,7 +90,8 @@ gdm_legacy_display_finalize (GObject *object)
 }
 
 static gboolean
-gdm_legacy_display_prepare (GdmDisplay *display)
+gdm_legacy_display_prepare (GdmDisplay          *display,
+                            GdmDynamicUserStore *dyn_user_store)
 {
         GdmLegacyDisplay *self = GDM_LEGACY_DISPLAY (display);
         g_autoptr(GdmLaunchEnvironment) launch_environment = NULL;
@@ -126,7 +127,7 @@ gdm_legacy_display_prepare (GdmDisplay *display)
                 return FALSE;
         }
 
-        return GDM_DISPLAY_CLASS (gdm_legacy_display_parent_class)->prepare (display);
+        return GDM_DISPLAY_CLASS (gdm_legacy_display_parent_class)->prepare (display, dyn_user_store);
 }
 
 static void

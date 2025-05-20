@@ -29,16 +29,19 @@
 
 #include "gdm-display-factory.h"
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 
 typedef struct _GdmDisplayFactoryPrivate
 {
-        GdmDisplayStore *display_store;
-        guint            purge_displays_id;
+        GdmDisplayStore     *display_store;
+        GdmDynamicUserStore *dyn_user_store;
+        guint                purge_displays_id;
 } GdmDisplayFactoryPrivate;
 
 enum {
         PROP_0,
         PROP_DISPLAY_STORE,
+        PROP_DYN_USER_STORE,
 };
 
 static void     gdm_display_factory_class_init  (GdmDisplayFactoryClass *klass);
@@ -114,6 +117,17 @@ gdm_display_factory_get_display_store (GdmDisplayFactory *factory)
         return priv->display_store;
 }
 
+GdmDynamicUserStore *
+gdm_display_factory_get_dyn_user_store (GdmDisplayFactory *factory)
+{
+        GdmDisplayFactoryPrivate *priv;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), NULL);
+
+        priv = gdm_display_factory_get_instance_private (factory);
+        return priv->dyn_user_store;
+}
+
 gboolean
 gdm_display_factory_start (GdmDisplayFactory *factory)
 {
@@ -157,6 +171,20 @@ gdm_display_factory_set_display_store (GdmDisplayFactory *factory,
 }
 
 static void
+gdm_display_factory_set_dyn_user_store (GdmDisplayFactory   *factory,
+                                        GdmDynamicUserStore *dyn_user_store)
+{
+        GdmDisplayFactoryPrivate *priv;
+
+        priv = gdm_display_factory_get_instance_private (factory);
+        g_clear_object (&priv->dyn_user_store);
+
+        if (dyn_user_store != NULL) {
+                priv->dyn_user_store = g_object_ref (dyn_user_store);
+        }
+}
+
+static void
 gdm_display_factory_set_property (GObject      *object,
                                   guint         prop_id,
                                   const GValue *value,
@@ -169,6 +197,9 @@ gdm_display_factory_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_DISPLAY_STORE:
                 gdm_display_factory_set_display_store (self, g_value_get_object (value));
+                break;
+        case PROP_DYN_USER_STORE:
+                gdm_display_factory_set_dyn_user_store (self, g_value_get_object (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -192,6 +223,9 @@ gdm_display_factory_get_property (GObject    *object,
         case PROP_DISPLAY_STORE:
                 g_value_set_object (value, priv->display_store);
                 break;
+        case PROP_DYN_USER_STORE:
+                g_value_set_object (value, priv->dyn_user_store);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -213,6 +247,13 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
                                                               "display store",
                                                               "display store",
                                                               GDM_TYPE_DISPLAY_STORE,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_DYN_USER_STORE,
+                                         g_param_spec_object ("dyn-user-store",
+                                                              "dyn user store",
+                                                              "dyn user store",
+                                                              GDM_TYPE_DYNAMIC_USER_STORE,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
@@ -236,6 +277,9 @@ gdm_display_factory_finalize (GObject *object)
         g_return_if_fail (priv != NULL);
 
         g_clear_handle_id (&priv->purge_displays_id, g_source_remove);
+
+        // TODO: Do I need to clear the dyn_user_store, or does it happen automatically?
+        // TODO: Also apply whatever we decide here to gdm-launch-env.c
 
         G_OBJECT_CLASS (gdm_display_factory_parent_class)->finalize (object);
 }

@@ -57,7 +57,8 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_xdmcp_chooser_display_class_init    (GdmXdmcpChooserDisplayClass *klass);
 static void     gdm_xdmcp_chooser_display_init          (GdmXdmcpChooserDisplay      *xdmcp_chooser_display);
-static gboolean gdm_xdmcp_chooser_display_prepare       (GdmDisplay *display);
+static gboolean gdm_xdmcp_chooser_display_prepare       (GdmDisplay          *display,
+                                                         GdmDynamicUserStore *store);
 
 G_DEFINE_TYPE (GdmXdmcpChooserDisplay, gdm_xdmcp_chooser_display, GDM_TYPE_XDMCP_DISPLAY)
 
@@ -97,7 +98,8 @@ gdm_xdmcp_chooser_display_init (GdmXdmcpChooserDisplay *xdmcp_chooser_display)
 }
 
 static gboolean
-gdm_xdmcp_chooser_display_prepare (GdmDisplay *display)
+gdm_xdmcp_chooser_display_prepare (GdmDisplay          *display,
+                                   GdmDynamicUserStore *dyn_user_store)
 {
         GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
         GdmLaunchEnvironment *launch_environment;
@@ -125,7 +127,7 @@ gdm_xdmcp_chooser_display_prepare (GdmDisplay *display)
         g_signal_connect (launch_environment, "hostname-selected",
                           G_CALLBACK (on_hostname_selected), display);
 
-        return GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->prepare (display);
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->prepare (display, dyn_user_store);
 }
 
 GdmDisplay *

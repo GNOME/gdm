@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 
 G_BEGIN_DECLS
 
@@ -52,6 +53,7 @@ GType                      gdm_display_factory_get_type                (void);
 gboolean                   gdm_display_factory_start                   (GdmDisplayFactory *manager);
 gboolean                   gdm_display_factory_stop                    (GdmDisplayFactory *manager);
 GdmDisplayStore *          gdm_display_factory_get_display_store       (GdmDisplayFactory *manager);
+GdmDynamicUserStore *      gdm_display_factory_get_dyn_user_store      (GdmDisplayFactory *manager);
 void                       gdm_display_factory_queue_purge_displays    (GdmDisplayFactory *manager);
 
 G_END_DECLS

@@ -507,7 +507,8 @@ _gdm_display_set_status (GdmDisplay *self,
 }
 
 static gboolean
-gdm_display_real_prepare (GdmDisplay *self)
+gdm_display_real_prepare (GdmDisplay          *self,
+                          GdmDynamicUserStore *dyn_user_store)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
@@ -560,7 +561,8 @@ look_for_existing_users_sync (GdmDisplay *self)
 }
 
 gboolean
-gdm_display_prepare (GdmDisplay *self)
+gdm_display_prepare (GdmDisplay          *self,
+                     GdmDynamicUserStore *dyn_user_store)
 {
         GdmDisplayPrivate *priv;
         gboolean ret;
@@ -581,7 +583,7 @@ gdm_display_prepare (GdmDisplay *self)
         priv->doing_initial_setup = wants_initial_setup (self);
 
         g_object_ref (self);
-        ret = GDM_DISPLAY_GET_CLASS (self)->prepare (self);
+        ret = GDM_DISPLAY_GET_CLASS (self)->prepare (self, dyn_user_store);
         g_object_unref (self);
 
         return ret;
@@ -591,21 +593,12 @@ gboolean
 gdm_display_manage (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        gboolean res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
         priv = gdm_display_get_instance_private (self);
 
         g_debug ("GdmDisplay: Managing display: %s", priv->id);
-
-        /* If not explicitly prepared, do it now */
-        if (priv->status == GDM_DISPLAY_UNMANAGED) {
-                res = gdm_display_prepare (self);
-                if (! res) {
-                        return FALSE;
-                }
-        }
 
         if (g_strcmp0 (priv->session_class, "greeter") == 0) {
                 if (GDM_DISPLAY_GET_CLASS (self)->manage != NULL) {

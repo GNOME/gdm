@@ -60,6 +60,7 @@
 #include "gdm-launch-environment.h"
 #include "gdm-xdmcp-display-factory.h"
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
@@ -2130,10 +2131,11 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                           GdmAddress             *address,
                           int                     displaynum)
 {
-        GdmDisplay      *display;
-        GdmDisplayStore *store;
-        gboolean         use_chooser;
-        const char      *session_types[] = { "x11", NULL };
+        GdmDisplay          *display;
+        GdmDisplayStore     *store;
+        gboolean             use_chooser;
+        const char          *session_types[] = { "x11", NULL };
+        GdmDynamicUserStore *dyn_user_store;
 
         g_debug ("GdmXdmcpDisplayFactory: Creating xdmcp display for %s:%d",
                 hostname ? hostname : "(null)", displaynum);
@@ -2173,7 +2175,9 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                       "supported-session-types", session_types,
                       NULL);
 
-        if (! gdm_display_prepare (display)) {
+        dyn_user_store = gdm_display_factory_get_dyn_user_store (GDM_DISPLAY_FACTORY (factory));
+
+        if (! gdm_display_prepare (display, dyn_user_store)) {
                 gdm_display_unmanage (display);
                 g_object_unref (display);
                 display = NULL;
@@ -3467,13 +3471,15 @@ gdm_xdmcp_display_factory_finalize (GObject *object)
 }
 
 GdmXdmcpDisplayFactory *
-gdm_xdmcp_display_factory_new (GdmDisplayStore *store)
+gdm_xdmcp_display_factory_new (GdmDisplayStore     *display_store,
+                               GdmDynamicUserStore *dyn_user_store)
 {
         if (xdmcp_display_factory_object != NULL) {
                 g_object_ref (xdmcp_display_factory_object);
         } else {
                 xdmcp_display_factory_object = g_object_new (GDM_TYPE_XDMCP_DISPLAY_FACTORY,
-                                                             "display-store", store,
+                                                             "display-store", display_store,
+                                                             "dyn-user-store", dyn_user_store,
                                                              NULL);
                 g_object_add_weak_pointer (xdmcp_display_factory_object,
                                            (gpointer *) &xdmcp_display_factory_object);

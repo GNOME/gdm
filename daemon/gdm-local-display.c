@@ -85,7 +85,8 @@ gdm_local_display_finalize (GObject *object)
 }
 
 static gboolean
-gdm_local_display_prepare (GdmDisplay *display)
+gdm_local_display_prepare (GdmDisplay          *display,
+                           GdmDynamicUserStore *dyn_user_store)
 {
         GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
         GdmLaunchEnvironment *launch_environment;
@@ -131,7 +132,7 @@ out:
         g_free (session_class);
         g_free (session_type);
 
-        return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
+        return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display, dyn_user_store);
 }
 
 static void

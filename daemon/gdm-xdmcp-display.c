@@ -156,7 +156,8 @@ gdm_xdmcp_display_get_property (GObject    *object,
 }
 
 static gboolean
-gdm_xdmcp_display_prepare (GdmDisplay *display)
+gdm_xdmcp_display_prepare (GdmDisplay          *display,
+                           GdmDynamicUserStore *dyn_user_store)
 {
         GdmXdmcpDisplay *self = GDM_XDMCP_DISPLAY (display);
         GdmLaunchEnvironment *launch_environment;
@@ -192,7 +193,7 @@ gdm_xdmcp_display_prepare (GdmDisplay *display)
                 return FALSE;
         }
 
-        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->prepare (display);
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->prepare (display, dyn_user_store);
 }
 
 static gboolean

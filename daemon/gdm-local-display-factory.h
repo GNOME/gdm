@@ -26,6 +26,7 @@
 
 #include "gdm-display-factory.h"
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 
 G_BEGIN_DECLS
 
@@ -41,7 +42,8 @@ typedef enum
 
 GQuark                     gdm_local_display_factory_error_quark              (void);
 
-GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore        *display_store);
+GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore        *display_store,
+                                                                               GdmDynamicUserStore    *dyn_user_store);
 
 gboolean                   gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
                                                                                char                  **id,

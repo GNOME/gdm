@@ -62,6 +62,7 @@ gdm_remote_display_factory_create_remote_display (GdmRemoteDisplayFactory *facto
 {
         GdmDisplay      *display  = NULL;
         GdmDisplayStore *store;
+        GdmDynamicUserStore *dyn_user_store;
 
         g_debug ("GdmRemoteDisplayFactory: Creating remote display");
 
@@ -70,7 +71,9 @@ gdm_remote_display_factory_create_remote_display (GdmRemoteDisplayFactory *facto
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
 
-        if (!gdm_display_prepare (display)) {
+        dyn_user_store = gdm_display_factory_get_dyn_user_store (GDM_DISPLAY_FACTORY (factory));
+
+        if (!gdm_display_prepare (display, dyn_user_store)) {
                 gdm_display_unmanage (display);
                 g_object_unref (display);
                 return FALSE;
@@ -341,13 +344,15 @@ gdm_remote_display_factory_init (GdmRemoteDisplayFactory *factory)
 }
 
 GdmRemoteDisplayFactory *
-gdm_remote_display_factory_new (GdmDisplayStore *store)
+gdm_remote_display_factory_new (GdmDisplayStore     *display_store,
+                                GdmDynamicUserStore *dyn_user_store)
 {
         if (remote_display_factory_object != NULL) {
                 g_object_ref (remote_display_factory_object);
         } else {
                 remote_display_factory_object = g_object_new (GDM_TYPE_REMOTE_DISPLAY_FACTORY,
-                                                              "display-store", store,
+                                                              "display-store", display_store,
+                                                              "dyn-user-store", dyn_user_store,
                                                               NULL);
                 g_object_add_weak_pointer (remote_display_factory_object,
                                            (gpointer *) &remote_display_factory_object);

@@ -25,6 +25,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include "gdm-dynamic-user-store.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_DISPLAY (gdm_display_get_type ())
@@ -44,7 +46,7 @@ struct _GdmDisplayClass
         GObjectClass   parent_class;
 
         /* methods */
-        gboolean (*prepare) (GdmDisplay *display);
+        gboolean (*prepare) (GdmDisplay *display, GdmDynamicUserStore *dyn_user_store);
         void     (*manage)  (GdmDisplay *self);
 };
 
@@ -63,7 +65,8 @@ int                 gdm_display_get_status                     (GdmDisplay *disp
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
 const char *        gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
-gboolean            gdm_display_prepare                        (GdmDisplay *display);
+gboolean            gdm_display_prepare                        (GdmDisplay          *display,
+                                                                GdmDynamicUserStore *dyn_user_store);
 gboolean            gdm_display_manage                         (GdmDisplay *display);
 gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);

@@ -26,13 +26,15 @@
 
 #include "gdm-display-factory.h"
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 
 G_BEGIN_DECLS
 
 #define GDM_TYPE_REMOTE_DISPLAY_FACTORY (gdm_remote_display_factory_get_type ())
 G_DECLARE_FINAL_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM, REMOTE_DISPLAY_FACTORY, GdmDisplayFactory)
 
-GdmRemoteDisplayFactory *    gdm_remote_display_factory_new                      (GdmDisplayStore         *display_store);
+GdmRemoteDisplayFactory *    gdm_remote_display_factory_new                      (GdmDisplayStore         *display_store,
+                                                                                  GdmDynamicUserStore     *dyn_user_store);
 
 G_END_DECLS
 

@@ -43,6 +43,7 @@
 #include "gdm-settings-keys.h"
 #include "gdm-settings-direct.h"
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 #include "gdm-local-display.h"
 #include "gdm-legacy-display.h"
 
@@ -400,6 +401,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         GdmDisplay      *display = NULL;
         gboolean         is_initial = FALSE;
         g_autofree gchar *preferred_display_server = NULL;
+        GdmDynamicUserStore *dyn_user_store;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -457,6 +459,12 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                       NULL);
 
         store_display (factory, display);
+
+        dyn_user_store = gdm_display_factory_get_dyn_user_store (GDM_DISPLAY_FACTORY (factory));
+        if (! gdm_display_prepare (display, dyn_user_store)) {
+                display = NULL;
+                goto out;
+        }
 
         if (! gdm_display_manage (display)) {
                 display = NULL;
@@ -823,6 +831,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
         g_autofree char *login_session_id = NULL;
         g_autofree gchar *preferred_display_server = NULL;
         gboolean waiting_on_udev = FALSE;
+        GdmDynamicUserStore *dyn_user_store;
 
         g_debug ("GdmLocalDisplayFactory: display for seat %s requested", seat_id);
 
@@ -987,6 +996,12 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         /* let store own the ref */
         g_object_unref (display);
+
+        dyn_user_store = gdm_display_factory_get_dyn_user_store (GDM_DISPLAY_FACTORY (factory));
+        if (! gdm_display_prepare (display, dyn_user_store)) {
+                gdm_display_unmanage (display);
+                return;
+        }
 
         if (! gdm_display_manage (display)) {
                 gdm_display_unmanage (display);
@@ -1706,13 +1721,15 @@ gdm_local_display_factory_finalize (GObject *object)
 }
 
 GdmLocalDisplayFactory *
-gdm_local_display_factory_new (GdmDisplayStore *store)
+gdm_local_display_factory_new (GdmDisplayStore     *display_store,
+                               GdmDynamicUserStore *dyn_user_store)
 {
         if (local_display_factory_object != NULL) {
                 g_object_ref (local_display_factory_object);
         } else {
                 local_display_factory_object = g_object_new (GDM_TYPE_LOCAL_DISPLAY_FACTORY,
-                                                             "display-store", store,
+                                                             "display-store", display_store,
+                                                             "dyn-user-store", dyn_user_store,
                                                              NULL);
                 g_object_add_weak_pointer (local_display_factory_object,
                                            (gpointer *) &local_display_factory_object);

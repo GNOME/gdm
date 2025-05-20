@@ -2752,7 +2752,8 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
                 manager->xdmcp_enabled = enabled;
 #ifdef HAVE_LIBXDMCP
                 if (manager->xdmcp_enabled) {
-                        manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store);
+                        manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store,
+                                                                                manager->dyn_user_store);
                         if (manager->started) {
                                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
                         }
@@ -2787,7 +2788,8 @@ gdm_manager_set_remote_login_enabled (GdmManager *manager,
         if (manager->remote_login_enabled != enabled) {
                 manager->remote_login_enabled = enabled;
                 if (manager->remote_login_enabled) {
-                        manager->remote_factory = gdm_remote_display_factory_new (manager->display_store);
+                        manager->remote_factory = gdm_remote_display_factory_new (manager->display_store,
+                                                                                  manager->dyn_user_store);
                 } else {
                         g_clear_object (&manager->remote_factory);
                 }
@@ -2859,15 +2861,18 @@ gdm_manager_constructor (GType                  type,
 
         gdm_dbus_manager_set_version (GDM_DBUS_MANAGER (manager), PACKAGE_VERSION);
 
-        manager->local_factory = gdm_local_display_factory_new (manager->display_store);
+        manager->local_factory = gdm_local_display_factory_new (manager->display_store,
+                                                                manager->dyn_user_store);
 
         if (manager->remote_login_enabled) {
-                manager->remote_factory = gdm_remote_display_factory_new (manager->display_store);
+                manager->remote_factory = gdm_remote_display_factory_new (manager->display_store,
+                                                                          manager->dyn_user_store);
         }
 
 #ifdef HAVE_LIBXDMCP
         if (manager->xdmcp_enabled) {
-                manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store);
+                manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store,
+                                                                        manager->dyn_user_store);
         }
 #endif
 

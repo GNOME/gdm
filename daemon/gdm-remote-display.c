@@ -92,7 +92,8 @@ gdm_remote_display_finalize (GObject *object)
 }
 
 static gboolean
-gdm_remote_display_prepare (GdmDisplay *display)
+gdm_remote_display_prepare (GdmDisplay          *display,
+                            GdmDynamicUserStore *dyn_user_store)
 {
         GdmRemoteDisplay *self = GDM_REMOTE_DISPLAY (display);
         g_autoptr (GdmLaunchEnvironment) launch_environment = NULL;
@@ -110,7 +111,7 @@ gdm_remote_display_prepare (GdmDisplay *display)
 
         g_object_set (self, "launch-environment", launch_environment, NULL);
 
-        return GDM_DISPLAY_CLASS (gdm_remote_display_parent_class)->prepare (display);
+        return GDM_DISPLAY_CLASS (gdm_remote_display_parent_class)->prepare (display, dyn_user_store);
 }
 
 static void

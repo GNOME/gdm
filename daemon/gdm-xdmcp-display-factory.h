@@ -26,6 +26,7 @@
 
 #include "gdm-display-factory.h"
 #include "gdm-display-store.h"
+#include "gdm-dynamic-user-store.h"
 
 G_BEGIN_DECLS
 
@@ -41,7 +42,8 @@ typedef enum
 
 GQuark                     gdm_xdmcp_display_factory_error_quark      (void);
 
-GdmXdmcpDisplayFactory *   gdm_xdmcp_display_factory_new              (GdmDisplayStore        *display_store);
+GdmXdmcpDisplayFactory *   gdm_xdmcp_display_factory_new              (GdmDisplayStore        *display_store,
+                                                                       GdmDynamicUserStore    *dyn_user_store);
 
 void                       gdm_xdmcp_display_factory_set_port         (GdmXdmcpDisplayFactory *manager,
                                                                        guint                   port);
