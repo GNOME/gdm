@@ -28,7 +28,7 @@ configure_file(
   input: 'gdm.conf.in',
   output: '@BASENAME@',
   configuration: {
-    'GDM_USERNAME': get_option('user'),
+    'GDM_GROUPNAME': get_option('group'),
   },
   install_dir: dbus_sys_dir,
 )
@@ -217,7 +217,7 @@ configure_file(
   input: 'polkit-gdm.rules.in',
   output: '20-gdm.rules',
   configuration: {
-    'GDM_USERNAME': get_option('user'),
+    'GDM_GROUPNAME': get_option('group'),
   },
   install_dir: get_option('datadir') / 'polkit-1' / 'rules.d',
 )
