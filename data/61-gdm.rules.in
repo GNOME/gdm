@@ -49,13 +49,6 @@ ENV{GDM_NUMBER_OF_GRAPHICS_CARDS}=="1", RUN+="/usr/bin/rm -f /run/udev/gdm-machi
 ENV{GDM_NUMBER_OF_GRAPHICS_CARDS}!="1", RUN+="/usr/bin/touch /run/udev/gdm-machine-has-hybrid-graphics"
 LABEL="gdm_hybrid_graphics_check_end"
 
-# Disable wayland when there are multiple virtual gpus
-#LABEL="gdm_virt_multi_gpu_check"
-TEST!="/run/udev/gdm-machine-has-hybrid-graphics", GOTO="gdm_virt_multi_gpu_check_end"
-TEST!="/run/udev/gdm-machine-has-virtual-gpu", GOTO="gdm_virt_multi_gpu_check_end"
-TEST=="/run/udev/gdm-machine-has-hardware-gpu", GOTO="gdm_virt_multi_gpu_check_end"
-LABEL="gdm_virt_multi_gpu_check_end"
-
 GOTO="gdm_end"
 
 
