@@ -32,7 +32,6 @@ gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : gdm_prefix / get_option('localstatedir') / 'run' / 'gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
-ran_once_marker_dir = (get_option('ran-once-marker-dir') != '')? get_option('ran-once-marker-dir') : gdm_run_dir
 working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
 gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir
 gdm_private_dbus_dir = (get_option('private-dbus-dir') != '')? get_option('private-dbus-dir') : gdm_run_dir / 'dbus'
@@ -250,7 +249,6 @@ conf.set_quoted('GDMCONFDIR', gdmconfdir)
 conf.set_quoted('GDM_DATADIR', gdm_prefix / gdm_datadir)
 conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_PRIVATE_DBUS_DIR', gdm_private_dbus_dir)
-conf.set_quoted('GDM_RAN_ONCE_MARKER_DIR', ran_once_marker_dir)
 conf.set_quoted('GDM_RUN_DIR', gdm_run_dir)
 conf.set_quoted('GDM_DCONF_PROFILE', 'gdm')
 conf.set_quoted('GDM_WORKING_DIR', working_dir)
@@ -343,7 +341,6 @@ summary({
     'DM conf': dmconfdir,
     'GDM conf': gdmconfdir,
     'GDM Xauth': gdm_xauth_dir,
-    'GDM RanOnceMarker': ran_once_marker_dir,
     'GDM Run': gdm_run_dir,
     'GDM PID file': gdm_pid_file,
     'GDM Defaults config': gdm_defaults_conf,
