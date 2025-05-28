@@ -482,53 +482,6 @@ config_command_handler_add_to_group (GdmConfigCommandHandler *command_handler,
                                         command_handler->post_parse_func);
 }
 
-static gboolean
-switch_to_gdm_user (GError **error) {
-        struct passwd *pwent;
-
-        /* We don't care about forking here, as we need to do just one action
-         * so, once we switch, there's no point of return */
-
-        gdm_get_pwent_for_name (GDM_USERNAME, &pwent);
-
-        if (pwent == NULL) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-                             _("Failed to switch to %s user"), GDM_USERNAME);
-                return FALSE;
-        }
-
-        g_debug ("Switching to %s user (uid:gid) %d:%d",
-                 GDM_USERNAME, pwent->pw_uid, pwent->pw_gid);
-
-        if (setgid (pwent->pw_gid) < 0)  {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             _("Couldn’t set groupid to %d"), pwent->pw_gid);
-                return FALSE;
-        }
-
-        if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             _("initgroups () failed for %s"), pwent->pw_name);
-                return FALSE;
-        }
-
-        if (setuid (pwent->pw_uid) < 0)  {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             _("Couldn’t set userid to %u"), pwent->pw_uid);
-                return FALSE;
-        }
-
-        g_unsetenv ("XDG_RUNTIME_DIR");
-        g_unsetenv ("DISPLAY");
-
-        if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
-                g_setenv ("HOME", pwent->pw_dir, TRUE);
-                g_setenv ("PWD", GDM_WORKING_DIR, TRUE);
-        }
-
-        return TRUE;
-}
-
 static GPtrArray *
 read_file_contents_to_array (const char  *file_path,
                              GError     **error)
@@ -1898,15 +1851,6 @@ handle_show (GdmConfigCommand   config_command,
         g_setenv ("DCONF_PROFILE", GDM_DCONF_PROFILE, TRUE);
 
         removal_setting = get_smartcard_option (GSD_SC_REMOVAL_ACTION_KEY);
-
-        /* While this may be not super-needed it ensures that we act as if we
-         * were gdm itself */
-        if (!g_getenv ("UNDER_JHBUILD") && !switch_to_gdm_user (&local_error)) {
-                g_critical ("Impossible to switch to GDM user %s: %s",
-                            GDM_USERNAME, local_error->message);
-                g_propagate_error (error, g_steal_pointer (&local_error));
-                return FALSE;
-        }
 
         g_print(_("GDM Authorization configuration\n"
                   "\n"
