@@ -50,7 +50,8 @@
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
 #define GDM_MANAGER_DBUS_NAME               "org.gnome.DisplayManager.LocalDisplayFactory"
 
-#define MAX_DISPLAY_FAILURES 5
+#define MAX_DISPLAY_FAILURES 10
+#define N_FAILURES_UNTIL_FALLBACK 5
 #define WAIT_TO_FINISH_TIMEOUT 10 /* seconds */
 #define SEAT0_GRAPHICS_CHECK_TIMEOUT 10 /* seconds */
 
@@ -881,7 +882,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
 
-        falling_back = factory->num_failures > 0;
+        falling_back = factory->num_failures > N_FAILURES_UNTIL_FALLBACK;
         session_types = gdm_local_display_factory_get_session_types (factory, falling_back);
 
         if (session_types == NULL) {
