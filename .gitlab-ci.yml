@@ -1,7 +1,9 @@
 include:
   - project: "GNOME/citemplates"
     file: "templates/default-rules.yml"
-  - https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/master/templates/fedora.yml
+  - project: "Infrastructure/freedesktop-ci-templates"
+    file: "templates/fedora.yml"
+    ref: "c6aeb16f86e32525fa630fb99c66c4f3e62fc3cb"
   - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
     inputs:
       job-stage: "release"
