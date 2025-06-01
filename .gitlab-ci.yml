@@ -74,7 +74,6 @@ build-fedora:
     - meson install -C ${MESON_BUILD_DIR}
     - meson dist -C ${MESON_BUILD_DIR}
     - meson test -C ${MESON_BUILD_DIR}
-    - mkdir -p public-dist
     - cp -r "${MESON_BUILD_DIR}/meson-dist/" "${CI_PROJECT_DIR}/public-dist/"
   rules:
     - when: always
