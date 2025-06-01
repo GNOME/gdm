@@ -55,14 +55,9 @@ stages:
       xorg-x11-server-Xorg
       xorg-x11-server-devel
 
-.dummy-container-build:
-  script:
-    - echo Dummy container build
-
 build-fedora-container:
   extends:
-    #- .fdo.container-build@fedora@x86_64
-    - .dummy-container-build
+    - .fdo.container-build@fedora@x86_64
     - .gdm.fedora
   stage: prepare
   rules:
