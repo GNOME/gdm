@@ -177,7 +177,7 @@ gdm_daemon_ensure_dirs (uid_t uid,
 {
         GError *error = NULL;
 
-        /* Set up /var/run/gdm */
+        /* Set up /run/gdm */
         if (!ensure_dir_with_perms (GDM_RUN_DIR, 0, gid, 0711, &error)) {
                 g_warning ("Failed to create " GDM_RUN_DIR ": %s", error->message);
         }
