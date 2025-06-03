@@ -237,5 +237,7 @@ gdm_display_factory_finalize (GObject *object)
 
         g_clear_handle_id (&priv->purge_displays_id, g_source_remove);
 
+        g_clear_object (&priv->display_store);
+
         G_OBJECT_CLASS (gdm_display_factory_parent_class)->finalize (object);
 }
