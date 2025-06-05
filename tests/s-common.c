@@ -55,7 +55,8 @@ expand_fn (const char *var, gpointer data)
 
 static gboolean expands_to (const char *to_expand, const char *expanded)
 {
-        return strcmp (gdm_shell_expand (to_expand, expand_fn, NULL), expanded) == 0;
+        g_autofree gchar *result = gdm_shell_expand (to_expand, expand_fn, NULL);
+        return (strcmp (result, expanded) == 0);
 }
 
 START_TEST (test_gdm_shell_expand)

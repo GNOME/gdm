@@ -823,10 +823,14 @@ gdm_shell_var_is_valid_char (gchar c, gboolean first)
                 g_ascii_isalpha (c);
 }
 
-/* This expands a string somewhat similar to how a shell would do it
-   if it was enclosed inside double quotes.  It handles variable
-   expansion like $FOO and ${FOO}, single-char escapes using \, and
-   non-escaped # at the begining of a word is taken as a comment and ignored */
+/*
+ * This expands a string somewhat similar to how a shell would do it
+ * if it was enclosed inside double quotes.  It handles variable
+ * expansion like $FOO and ${FOO}, single-char escapes using \, and
+ * non-escaped # at the begining of a word is taken as a comment and ignored
+
+ * The caller must free the returned string.
+ */
 char *
 gdm_shell_expand (const char *str,
                   GdmExpandVarFunc expand_var_func,
@@ -899,7 +903,7 @@ gdm_shell_expand (const char *str,
                         at_new_word = g_ascii_isspace (c);
                 }
         }
-        return g_string_free (s, FALSE);
+        return g_string_free_and_steal (s);
 }
 
 static gboolean
