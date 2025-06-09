@@ -347,7 +347,6 @@ collect_sessions (void)
                 "/etc/X11/sessions/",
                 DMCONFDIR "/Sessions/",
                 DATADIR "/gdm/BuiltInSessions/",
-                DATADIR "/xsessions/",
         };
         xorg_search_array = g_ptr_array_new_with_free_func (g_free);
 
@@ -362,19 +361,11 @@ collect_sessions (void)
 #endif
 
 #ifdef ENABLE_WAYLAND_SUPPORT
-        const char *wayland_search_dirs[] = {
-                DATADIR "/wayland-sessions/",
-        };
-
         wayland_search_array = g_ptr_array_new_with_free_func (g_free);
 
         for (i = 0; system_data_dirs[i]; i++) {
                 session_dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
                 g_ptr_array_add (wayland_search_array, session_dir);
-        }
-
-        for (i = 0; i < G_N_ELEMENTS (wayland_search_dirs); i++) {
-                g_ptr_array_add (wayland_search_array, g_strdup (wayland_search_dirs[i]));
         }
 #endif
 
