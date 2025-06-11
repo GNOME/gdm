@@ -1840,7 +1840,8 @@ static void
 export_user_verifier_interface (GdmSession      *self,
                                 GDBusConnection *connection)
 {
-        GdmDBusUserVerifier   *user_verifier_interface;
+        g_autoptr (GdmDBusUserVerifier) user_verifier_interface = NULL;
+
         user_verifier_interface = GDM_DBUS_USER_VERIFIER (gdm_dbus_user_verifier_skeleton_new ());
 
         g_object_set_data (G_OBJECT (connection), "gdm-session", self);
@@ -1871,14 +1872,14 @@ export_user_verifier_interface (GdmSession      *self,
                                           GDM_SESSION_DBUS_OBJECT_PATH,
                                           NULL);
 
-        self->user_verifier_interface = user_verifier_interface;
+        g_set_object (&self->user_verifier_interface, user_verifier_interface);
 }
 
 static void
 export_greeter_interface (GdmSession      *self,
                           GDBusConnection *connection)
 {
-        GdmDBusGreeter *greeter_interface;
+        g_autoptr (GdmDBusGreeter) greeter_interface = NULL;
 
         greeter_interface = GDM_DBUS_GREETER (gdm_dbus_greeter_skeleton_new ());
 
@@ -1912,8 +1913,7 @@ export_greeter_interface (GdmSession      *self,
                                           GDM_SESSION_DBUS_OBJECT_PATH,
                                           NULL);
 
-        self->greeter_interface = greeter_interface;
-
+        g_set_object (&self->greeter_interface, greeter_interface);
 }
 
 static gboolean
@@ -1931,7 +1931,7 @@ static void
 export_remote_greeter_interface (GdmSession      *self,
                                  GDBusConnection *connection)
 {
-        GdmDBusRemoteGreeter *remote_greeter_interface;
+        g_autoptr (GdmDBusRemoteGreeter) remote_greeter_interface = NULL;
 
         remote_greeter_interface = GDM_DBUS_REMOTE_GREETER (gdm_dbus_remote_greeter_skeleton_new ());
 
@@ -1945,8 +1945,7 @@ export_remote_greeter_interface (GdmSession      *self,
                                           GDM_SESSION_DBUS_OBJECT_PATH,
                                           NULL);
 
-        self->remote_greeter_interface = remote_greeter_interface;
-
+        g_set_object (&self->remote_greeter_interface, remote_greeter_interface);
 }
 
 static gboolean
@@ -1966,7 +1965,7 @@ static void
 export_chooser_interface (GdmSession      *self,
                           GDBusConnection *connection)
 {
-        GdmDBusChooser *chooser_interface;
+        g_autoptr (GdmDBusChooser) chooser_interface = NULL;
 
         chooser_interface = GDM_DBUS_CHOOSER (gdm_dbus_chooser_skeleton_new ());
 
@@ -1980,7 +1979,7 @@ export_chooser_interface (GdmSession      *self,
                                           GDM_SESSION_DBUS_OBJECT_PATH,
                                           NULL);
 
-        self->chooser_interface = chooser_interface;
+        g_set_object (&self->chooser_interface, chooser_interface);
 }
 
 static void
