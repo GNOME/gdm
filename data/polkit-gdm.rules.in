@@ -6,4 +6,10 @@ polkit.addRule(function(action, subject) {
         subject.local && subject.active) {
         return polkit.Result.YES;
     }
+
+    if ((action.id == "org.debian.pcsc-lite.access_pcsc" ||
+         action.id == "org.debian.pcsc-lite.access_card") &&
+        subject.local && subject.active) {
+        return polkit.Result.YES;
+    }
 });
