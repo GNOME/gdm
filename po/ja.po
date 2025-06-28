@@ -1,5 +1,5 @@
 # gdm ja.po.
-# Copyright (C) 1999-2015, 2019, 2021-2022 Free Software Foundation, Inc.
+# Copyright (C) 1999-2015, 2019, 2021-2022, 2025 Free Software Foundation, Inc.
 # Yukihiro Nakai <nacai@iname.com>, 1999.
 # ITANI Eiichiro <emu@ceres.dti.ne.jp>, 1999.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2000, 2010, 2012.
@@ -17,21 +17,22 @@
 # Hajime Taira <htaira@redhat.com>, 2015.
 # sicklylife <translation@sicklylife.jp>, 2019, 2022.
 # Peniel Vargas <penieru@gmail.com>, 2021.
+# Makoto Sakaguchi <ycco34vx@gmail.com>, 2025.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues\n"
-"POT-Creation-Date: 2019-08-05 22:13+0000\n"
-"PO-Revision-Date: 2022-03-13 21:30-0400\n"
-"Last-Translator: sicklylife <translation@sicklylife.jp>\n"
-"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"Project-Id-Version: gdm main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
+"POT-Creation-Date: 2025-06-23 08:33+0000\n"
+"PO-Revision-Date: 2025-06-28 20:53+0900\n"
+"Last-Translator: Makoto Sakaguchi <ycco34vx@gmail.com>\n"
+"Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.7.3\n"
+"X-Generator: Poedit 3.6\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -49,19 +50,19 @@ msgstr "接続(_O)"
 msgid "Select System"
 msgstr "システムの選択"
 
-#: chooser/gdm-host-chooser-widget.c:253
+#: chooser/gdm-host-chooser-widget.c:255
 msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: XDMCP のバッファーを生成できませんでした"
+msgstr "XDMCP: XDMCP のバッファーを生成できませんでした!"
 
-#: chooser/gdm-host-chooser-widget.c:259
+#: chooser/gdm-host-chooser-widget.c:261
 msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP のヘッダーを読み取れませんでした"
+msgstr "XDMCP: XDMCP のヘッダーを読み取れませんでした!"
 
-#: chooser/gdm-host-chooser-widget.c:265
+#: chooser/gdm-host-chooser-widget.c:267
 msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: XDMCP のバージョンが間違っています!"
 
-#: chooser/gdm-host-chooser-widget.c:271
+#: chooser/gdm-host-chooser-widget.c:273
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: アドレスを解析できません"
 
@@ -69,58 +70,49 @@ msgstr "XDMCP: アドレスを解析できません"
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom はキャラクターデバイスではありません"
 
-#: common/gdm-common.c:501 libgdm/gdm-user-switching.c:207
+#: common/gdm-common.c:346
+msgid "Unable to create transient display: "
+msgstr "一時的なディスプレイを作成できません: "
+
+#: common/gdm-common.c:543
 msgid "Could not identify the current session: "
 msgstr "現在のセッションを取得できませんでした: "
 
-#: common/gdm-common.c:510 libgdm/gdm-user-switching.c:216
+#: common/gdm-common.c:552
 msgid "Could not identify the current seat."
 msgstr "現在のシートを識別できませんでした。"
 
-#: common/gdm-common.c:520 libgdm/gdm-user-switching.c:226
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"既存のログイン画面に切り替えるか、新しいログイン画面を起動するのかを、システ"
-"ムが決定することができませんでした。"
-
-#: common/gdm-common.c:528 libgdm/gdm-user-switching.c:234
-msgid "The system is unable to start up a new login screen."
-msgstr "新しいログイン画面を起動できません。"
-
-#: daemon/gdm-display-access-file.c:298
+#: daemon/gdm-display-access-file.c:280 daemon/gdm-display-access-file.c:301
 #, c-format
-msgid "could not find user “%s” on system"
+msgid "Could not find user “%s” on system"
 msgstr "システムに“%s”というユーザーは見つかりませんでした"
 
-#: daemon/gdm-legacy-display.c:236
+#: daemon/gdm-legacy-display.c:226
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"何らかの内部エラーが原因で、X サーバー(グラフィカル環境)を起動できませんでし"
-"た。システム管理者に問い合わせるか、syslog の内容をチェックして調査してみてく"
-"ださい。とりあえず、このディスプレイを無効にします。問題が解決したら GDM を再"
-"起動してください。"
+"内部エラーのため、X サーバー (グラフィカル環境) を開始できませんでした。シス"
+"テム管理者に問い合わせるか、syslog を確認して調査してください。この間、この"
+"ディスプレイは無効になります。問題が解決したら、GDM を再起動してください。"
 
 #: daemon/gdm-manager.c:762
 msgid "No display available"
 msgstr "利用できるディスプレイがありません"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1144
+#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1188
 msgid "No session available"
 msgstr "利用できるセッションがありません"
 
 #: daemon/gdm-manager.c:879
 msgid "Chooser session unavailable"
-msgstr ""
+msgstr "選択セッションが利用できません"
 
 #: daemon/gdm-manager.c:895
 msgid "Can only be called before user is logged in"
-msgstr "ユーザーがログインする前にしか呼び出しできません"
+msgstr "ユーザーがログインする前にのみ呼び出すことができます"
 
 #: daemon/gdm-manager.c:906
 msgid "Caller not GDM"
@@ -130,44 +122,44 @@ msgstr "呼び出し側が GDM ではありません"
 msgid "Unable to open private communication channel"
 msgstr "プライベートコミュニケーションチャンネルを開けません"
 
-#: daemon/gdm-server.c:383
+#: daemon/gdm-server.c:387
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 "ユーザー %s としてサーバーを起動しようとしましたが、そのようなユーザーは存在"
 "しません"
 
-#: daemon/gdm-server.c:394 daemon/gdm-server.c:414
+#: daemon/gdm-server.c:398 daemon/gdm-server.c:418 utils/gdm-config.c:505
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "グループ ID を %d に設定できませんでした"
 
-#: daemon/gdm-server.c:400
+#: daemon/gdm-server.c:404 utils/gdm-config.c:511
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s に対する initgroups () の呼び出しに失敗しました"
 
-#: daemon/gdm-server.c:406
+#: daemon/gdm-server.c:410
 #, c-format
 msgid "Couldn’t set userid to %d"
 msgstr "ユーザー ID を %d に設定できませんでした"
 
-#: daemon/gdm-server.c:484
+#: daemon/gdm-server.c:482
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ディスプレイ (%s) のログファイルを開けません!"
 
-#: daemon/gdm-server.c:505 daemon/gdm-server.c:511 daemon/gdm-server.c:517
+#: daemon/gdm-server.c:503 daemon/gdm-server.c:509 daemon/gdm-server.c:515
 #, c-format
 msgid "%s: Error setting %s to %s"
-msgstr "%s: %s を %s に設定する際にエラー"
+msgstr "%s: %s を %s に設定する際にエラーが発生しました"
 
-#: daemon/gdm-server.c:537
+#: daemon/gdm-server.c:535
 #, c-format
 msgid "%s: Server priority couldn’t be set to %d: %s"
 msgstr "%s: サーバーの優先度を %d にセットできませんでした: %s"
 
-#: daemon/gdm-server.c:689
+#: daemon/gdm-server.c:690
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ディスプレイ (%s) のサーバーコマンドが空です"
@@ -178,7 +170,7 @@ msgstr "ユーザー名"
 
 #: daemon/gdm-session-auditor.c:89
 msgid "The username"
-msgstr "ユーザー名です"
+msgstr "ユーザー名"
 
 #: daemon/gdm-session-auditor.c:93
 msgid "Hostname"
@@ -186,102 +178,109 @@ msgstr "ホスト名"
 
 #: daemon/gdm-session-auditor.c:94
 msgid "The hostname"
-msgstr "ホスト名です"
+msgstr "ホスト名"
 
 #: daemon/gdm-session-auditor.c:99
 msgid "Display Device"
-msgstr "ディスプレイのデバイス"
+msgstr "ディスプレイデバイス"
 
 #: daemon/gdm-session-auditor.c:100
 msgid "The display device"
-msgstr "ディスプレイのデバイスです"
+msgstr "ディスプレイデバイス"
 
-#: daemon/gdm-session.c:1285
+#: daemon/gdm-session.c:1444
 msgid "Could not create authentication helper process"
-msgstr "認証ヘルパーのプロセスを作成できませんでした"
+msgstr "認証ヘルパープロセスを作成できませんでした"
 
-#: daemon/gdm-session-worker.c:755
+#: daemon/gdm-session-worker.c:813
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
-msgstr "パスワード認証の試行回数上限に達したため別の方法でやり直してください"
+msgstr "パスワード認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:758
+#: daemon/gdm-session-worker.c:816
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
-msgstr "自動ログインの試行回数上限に達したため別の認証方法でやり直してください"
+msgstr "自動ログインの試行回数上限に達しました。別の認証方法をお試しください"
 
-#: daemon/gdm-session-worker.c:761
+#: daemon/gdm-session-worker.c:819
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
-msgstr "指紋認証の試行回数上限に達したため別の方法でやり直してください"
+msgstr "指紋認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:764
+#: daemon/gdm-session-worker.c:822
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
-msgstr "スマートカード認証の試行回数上限に達したため別の方法でやり直してください"
+msgstr "スマートカード認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:766
+#: daemon/gdm-session-worker.c:824
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
-msgstr "認証の試行回数上限に達したため別の方法でやり直してください"
+msgstr "認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:756
+#: daemon/gdm-session-worker.c:831
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr ""
+"申し訳ございません、パスワード認証が機能しませんでした。もう一度お試しくださ"
+"い。"
+
+#: daemon/gdm-session-worker.c:834
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr ""
+"申し訳ございません、自動ログインが機能しませんでした。もう一度お試しくださ"
+"い。"
+
+#: daemon/gdm-session-worker.c:837
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr ""
+"申し訳ございません、指紋認証が機能しませんでした。もう一度お試しください。"
+
+#: daemon/gdm-session-worker.c:840
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr ""
+"申し訳ございません、スマートカード認証が機能しませんでした。もう一度お試しく"
+"ださい。"
+
+#: daemon/gdm-session-worker.c:842
+msgid "Sorry, that didn’t work. Please try again."
+msgstr "申し訳ございません、認証が機能しませんでした。もう一度お試しください。"
+
+#: daemon/gdm-session-worker.c:857
 msgid "Your account was given a time limit that’s now passed."
 msgstr "アカウントに設定されていた有効期限が切れました。"
 
-#: daemon/gdm-session-worker.c:773
-msgid "Sorry, password authentication didn’t work. Please try again."
-msgstr "パスワード認証に失敗しました。やり直してください。"
-
-#: daemon/gdm-session-worker.c:776
-msgid "Sorry, auto login didn’t work. Please try again."
-msgstr "自動ログインに失敗しました。やり直してください。"
-
-#: daemon/gdm-session-worker.c:779
-msgid "Sorry, fingerprint authentication didn’t work. Please try again."
-msgstr "指紋認証に失敗しました。やり直してください。"
-
-#: daemon/gdm-session-worker.c:782
-msgid "Sorry, smart card authentication didn’t work. Please try again."
-msgstr "スマートカード認証に失敗しました。やり直してください。"
-
-#: daemon/gdm-session-worker.c:763
-msgid "Sorry, that didn’t work. Please try again."
-msgstr "認証に失敗しました。やり直してください。"
-
-#: daemon/gdm-session-worker.c:1188
+#: daemon/gdm-session-worker.c:1258
 msgid "Username:"
 msgstr "ユーザー名:"
 
-#: daemon/gdm-session-worker.c:1692 daemon/gdm-session-worker.c:1709
+#: daemon/gdm-session-worker.c:1675 daemon/gdm-session-worker.c:1692
 msgid "no user account available"
-msgstr "利用できるアカウントがありません"
+msgstr "利用可能なユーザーアカウントがありません"
 
-#: daemon/gdm-session-worker.c:1736
+#: daemon/gdm-session-worker.c:1719
 msgid "Unable to change to user"
-msgstr "ユーザーを変更できません"
+msgstr "ユーザーに変更できません"
 
-#: daemon/gdm-wayland-session.c:511
+#: daemon/gdm-wayland-session.c:531
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME ディスプレイマネージャー Wayland セッションランチャー"
 
-#: daemon/gdm-xdmcp-display-factory.c:612
+#: daemon/gdm-xdmcp-display-factory.c:614
 msgid "Could not create socket!"
-msgstr "ソケットを生成できませんでした"
+msgstr "ソケットを生成できませんでした!"
 
-#: daemon/gdm-x-session.c:858
+#: daemon/gdm-x-session.c:882
 msgid "Run program through /etc/gdm/Xsession wrapper script"
-msgstr "/etc/gdm/Xsession のラッパースクリプトを介してプログラムを起動する"
+msgstr "/etc/gdm/Xsession ラッパースクリプトを介してプログラムを実行する"
 
-#: daemon/gdm-x-session.c:859
+#: daemon/gdm-x-session.c:883
 msgid "Listen on TCP socket"
-msgstr "TCP ソケットでリッスンする"
+msgstr "TCP ソケットで待機する"
 
-#: daemon/gdm-x-session.c:871
+#: daemon/gdm-x-session.c:895
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "GNOME ディスプレイマネージャー X セッションランチャー"
 
@@ -289,12 +288,13 @@ msgstr "GNOME ディスプレイマネージャー X セッションランチャ
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
-"PID ファイル %s に書き込めません; ディスクの空き容量が足りないようです: %s"
+"PID ファイル %s を書き込めません: ディスクの空き容量が不足している可能性があ"
+"りますす: %s"
 
 #: daemon/main.c:182
 #, c-format
 msgid "Failed to create ran once marker dir %s: %s"
-msgstr "起動済みマーカーディレクトリ %s の作成に失敗しました: %s"
+msgstr "実行済みマーカーディレクトリ %s の作成に失敗しました: %s"
 
 #: daemon/main.c:188
 #, c-format
@@ -304,196 +304,515 @@ msgstr "ログディレクトリ %s の作成に失敗しました: %s"
 #: daemon/main.c:223
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
-msgstr "GDM ユーザー“%s”が見つからないので処理を中止します!"
+msgstr "GDM ユーザー “%s” が見つかりません。処理を中止します!"
 
 #: daemon/main.c:229
 msgid "The GDM user should not be root. Aborting!"
-msgstr "root を GDM ユーザーにしないでください; 処理を中止します!"
+msgstr "GDM ユーザーは root であってはなりません。処理を中止します!"
 
 #: daemon/main.c:235
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
-msgstr "GDM グループ“%s”が見つからないので処理を中止します!"
+msgstr "GDM グループ “%s” が見つかりません。処理を中止します!"
 
 #: daemon/main.c:241
 msgid "The GDM group should not be root. Aborting!"
-msgstr "root を GDM グループにしないでください; 処理を中止します!"
+msgstr "GDM グループは root であってはいけません。処理を中止します!"
 
-#: daemon/main.c:317
+#: daemon/main.c:309
 msgid "Make all warnings fatal"
-msgstr "警告をすべて致命的にする"
+msgstr "すべての警告を致命的エラーにする"
 
-#: daemon/main.c:318
+#: daemon/main.c:310
 msgid "Exit after a time (for debugging)"
-msgstr "時間が経過したら終了する (デバッグ用)"
+msgstr "一定時間経過後に終了する (デバッグ用)"
 
-#: daemon/main.c:319
+#: daemon/main.c:311
 msgid "Print GDM version"
 msgstr "GDM のバージョンを表示する"
 
-#: daemon/main.c:330
+#: daemon/main.c:322
 msgid "GNOME Display Manager"
 msgstr "GNOME ディスプレイマネージャー"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:350
+#: daemon/main.c:342
 msgid "Only the root user can run GDM"
 msgstr "root ユーザーのみが GDM を起動できます"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: daemon/session-worker-main.c:119
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
-msgstr "GDM セッションワーカー"
+msgstr "GNOME Display Manager セッションワーカー"
 
-#: data/org.gnome.login-screen.gschema.xml:6
+#: data/org.gnome.login-screen.gschema.xml:11
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr "指紋リーダーによるログイン認証を許可する"
+msgstr "ログイン時に指紋リーダーの使用を許可するかどうか"
 
-#: data/org.gnome.login-screen.gschema.xml:9
+#: data/org.gnome.login-screen.gschema.xml:14
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"ログイン画面では、指紋を登録したユーザーがそれを使ってログインするのを任意に"
-"許可することができます。"
+"ログイン画面では、指紋を登録したユーザーがその指紋を使用してログインすること"
+"をオプションで許可できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:16
+#: data/org.gnome.login-screen.gschema.xml:21
 msgid "Whether or not to allow smartcard readers for login"
-msgstr "スマートカードリーダーによるログイン認証を許可する"
+msgstr "ログイン時にスマートカードリーダーの使用を許可するかどうか"
 
-#: data/org.gnome.login-screen.gschema.xml:19
+#: data/org.gnome.login-screen.gschema.xml:24
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"ログイン画面では、スマートカードを持つユーザーがスマートカードを使ってログイ"
-"ンするのを任意に許可することができます。"
+"ログイン画面では、スマートカードを登録したユーザーがそのスマートカードを使用"
+"してログインすることをオプションで許可できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:26
+#: data/org.gnome.login-screen.gschema.xml:31
 msgid "Whether or not to allow passwords for login"
-msgstr "パスワードによるログイン認証を許可する"
+msgstr "ログイン時にパスワードの使用を許可するかどうか"
 
-#: data/org.gnome.login-screen.gschema.xml:29
+#: data/org.gnome.login-screen.gschema.xml:34
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
-"ログイン画面では、パスワード認証を無効化して、スマートカードや指紋による認証"
-"をユーザーに強制するよう設定できます。"
+"ログイン画面では、パスワード認証を無効化し、ユーザーにスマートカードまたは指"
+"紋認証の使用を強制できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:36
-#: data/org.gnome.login-screen.gschema.xml:46
+#: data/org.gnome.login-screen.gschema.xml:41
+#: data/org.gnome.login-screen.gschema.xml:51
 msgid "Path to small image at top of user list"
-msgstr "ユーザーリストの一番上にある小さな画像へのパス"
+msgstr "ユーザーリストの上部に表示する小さな画像へのパス"
 
-#: data/org.gnome.login-screen.gschema.xml:39
+#: data/org.gnome.login-screen.gschema.xml:44
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
 msgstr ""
-"ログイン画面では、サイトの管理者やディストリビューションがブランドを示す方法"
-"として、小さな画像を任意に表示できます。"
+"ログイン画面では、サイト管理者やディストリビューションがブランドを表示する手"
+"段として、オプションで小さな画像を表示できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:49
+#: data/org.gnome.login-screen.gschema.xml:54
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
 msgstr ""
-"フォールバックログイン画面では、サイトの管理者やディストリビューションがブラ"
-"ンドを示す方法として、小さな画像を任意に表示できます。"
+"フォールバックログイン画面では、サイト管理者やディストリビューションがブラン"
+"ドを表示する手段として、オプションで小さな画像を表示できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:56
+#: data/org.gnome.login-screen.gschema.xml:61
 msgid "Avoid showing user list"
 msgstr "ユーザー一覧を表示しない"
 
-#: data/org.gnome.login-screen.gschema.xml:59
+#: data/org.gnome.login-screen.gschema.xml:64
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
 msgstr ""
-"ログインスクリーンでは、利用可能なユーザーが通常表示されています。この設定で"
-"はユーザー一覧表示を無効に設定可能です。"
+"ログイン画面では通常、ログイン可能なユーザーの一覧が表示されます。この設定を"
+"切り替えることで、ユーザーリストの表示を無効にできます。"
 
-#: data/org.gnome.login-screen.gschema.xml:66
+#: data/org.gnome.login-screen.gschema.xml:71
 msgid "Enable showing the banner message"
-msgstr "バナーメッセージを表示するかどうか"
+msgstr "バナーメッセージの表示を有効にする"
 
-#: data/org.gnome.login-screen.gschema.xml:69
+#: data/org.gnome.login-screen.gschema.xml:74
 msgid "Set to true to show the banner message text."
-msgstr "true にすると、バナーメッセージを表示します。"
+msgstr "バナーメッセージテキストを表示するには true に設定します。"
 
-#: data/org.gnome.login-screen.gschema.xml:75
+#: data/org.gnome.login-screen.gschema.xml:80
+msgid "Banner message source"
+msgstr "バナーメッセージソース"
+
+#: data/org.gnome.login-screen.gschema.xml:83
+msgid "The source of the text banner message on the login screen."
+msgstr "ログイン画面のテキストバナーメッセージの取得元。"
+
+#: data/org.gnome.login-screen.gschema.xml:89
 msgid "Banner message text"
-msgstr "バナーメッセージの文字列"
+msgstr "バナーメッセージテキスト"
 
-#: data/org.gnome.login-screen.gschema.xml:78
+#: data/org.gnome.login-screen.gschema.xml:92
 msgid "Text banner message to show in the login window."
-msgstr "ログインウィンドウに表示するバナーメッセージの文字列です。"
+msgstr "ログインウィンドウに表示するテキストバナーメッセージ。"
 
-#: data/org.gnome.login-screen.gschema.xml:84
+#: data/org.gnome.login-screen.gschema.xml:98
+msgid "Banner message path"
+msgstr "バナーメッセージパス"
+
+#: data/org.gnome.login-screen.gschema.xml:101
+msgid "Path to text file with banner message to show in the login window."
+msgstr ""
+"ログインウィンドウに表示するバナーメッセージが記載されたテキストファイルのパ"
+"ス。"
+
+#: data/org.gnome.login-screen.gschema.xml:107
 msgid "Disable showing the restart buttons"
-msgstr "再起動のボタンを表示しないかどうか"
+msgstr "再起動ボタンの表示を無効にする"
 
-#: data/org.gnome.login-screen.gschema.xml:87
+#: data/org.gnome.login-screen.gschema.xml:110
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
-"true にすると、ログインウィンドウに再起動のボタンが表示されなくなります。"
+"ログインウィンドウの再起動ボタンの表示を無効にするには true に設定します。"
 
-#: data/org.gnome.login-screen.gschema.xml:93
+#: data/org.gnome.login-screen.gschema.xml:116
 msgid "Number of allowed authentication failures"
-msgstr "許容できる認証失敗の回数です"
+msgstr "許可される認証失敗回数"
 
-#: data/org.gnome.login-screen.gschema.xml:96
+#: data/org.gnome.login-screen.gschema.xml:119
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
+msgstr "認証を断念してユーザー選択に戻るまでに、ユーザーが試行できる回数。"
+
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "コマンドヘルプを表示する"
+
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "詳細出力を表示する"
+
+#: utils/gdm-config.c:125
+msgid "Show debug output"
+msgstr "デバッグ情報を出力する"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "認証方式を有効にする"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "認証方式を無効にする"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "認証方式を必須にする"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "スマートカード取り外し時に実行するアクション"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "すべての回答で「はい」と仮定する"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "パスワード認証を構成する。"
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "指紋認証を構成する。"
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "スマートカード認証を構成する。"
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "GDM 認証構成をリセットする。"
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "GDM 認証構成を表示する。"
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "パスワードオプション"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "指紋オプション"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "スマートカードオプション"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "リセットオプション"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "オプションを表示"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "パスワード認証用のPAMモジュールが利用できません"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
+msgstr "スマートカード認証用のPAMモジュールが利用できません"
+
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
+msgstr "パスワード認証用のPAMモジュールが利用できません"
+
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s” には少なくとも 1 つのパラメーターが必要です"
+
+#. TRANSLATORS: “command” can't be enabled...
+#: utils/gdm-config.c:363
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” を同時に有効と無効にすることはできません"
+
+#. TRANSLATORS: option is not a valid command “option-key” value
+#: utils/gdm-config.c:386
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s” は有効な%s「%s」の値ではありません"
+
+#: utils/gdm-config.c:496
+#, c-format
+msgid "Failed to switch to %s user"
+msgstr "%s ユーザーへの切り替えに失敗しました"
+
+#: utils/gdm-config.c:517
+#, c-format
+msgid "Couldn’t set userid to %u"
+msgstr "ユーザー ID を %u に設定できませんでした"
+
+#: utils/gdm-config.c:680
+msgid "No distro detected, no hook to run"
+msgstr "ディストロが検出されませんでした。実行するフックがありません"
+
+#: utils/gdm-config.c:698
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "フック “%s” を実行するための有効な引数が見つかりません"
+
+#: utils/gdm-config.c:703
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "ディストロフック “%s” を実行中\n"
+
+#: utils/gdm-config.c:717
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "ディストロフック “%s” が停止を要求しました"
+
+#: utils/gdm-config.c:730
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
 msgstr ""
-"ユーザーが認証を試行できる回数です。この回数を失敗すると、ユーザー選択に戻る"
-"ことになります。"
+"ディストロフックが終了ステータス %d とエラー %s で失敗しました:\n"
+"標準出力:\n"
+"%s\n"
+"エラー出力:\n"
+"%s"
 
-#: libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
-msgstr "一時的なディスプレイを作成できません:"
+#. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
+#: utils/gdm-config.c:780
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
+msgstr ""
+"ディストロフック経由でコマンド “%s” のオプションキー “%s” の設定に失敗しまし"
+"た: "
 
-#: libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
-msgstr "セッションを開始することができません:"
+#: utils/gdm-config.c:820
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "ディレクトリ %s の作成に失敗しました"
+
+#: utils/gdm-config.c:891
+msgid "dconf profile not found"
+msgstr "dconf プロファイルが見つかりません"
+
+#: utils/gdm-config.c:981
+msgid "dconf has no system-db configured"
+msgstr "dconf に system-db が設定されていません"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1130
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "“%s” ヘッダーコメントの取得に失敗しました: %s、変更されましたか?"
+
+#: utils/gdm-config.c:1133
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "ファイル “%s” のヘッダーコメントが一致しません、変更されましたか?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1261
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr ""
+"ロックファイル “%s” に期待されるヘッダーが見つかりません、変更されましたか?"
+
+#: utils/gdm-config.c:1546
+msgid "Failed to run a required distro hook: "
+msgstr "必須のディストロフックの実行に失敗しました: "
+
+#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+msgid "COMMAND"
+msgstr "COMMAND"
+
+#: utils/gdm-config.c:1566
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
+msgstr ""
+"コマンド:\n"
+"  help               この情報を表示します\n"
+"  password    パスワード認証を構成します\n"
+"  fingerprint  指紋認証を構成します\n"
+"  smartcard   スマートカード認証を構成します\n"
+"  reset             既定の構成にリセットします\n"
+"  show            現在の構成を表示します\n"
+"\n"
+"各コマンドのヘルプを表示するには「%s COMMAND --help」を使用してください。\n"
+
+#: utils/gdm-config.c:1628
+msgid "Command options"
+msgstr "コマンドオプション"
+
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1663
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "%s「%s」コマンドを使用するには root である必要があります"
+
+#: utils/gdm-config.c:1713
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "%s 設定の変更に失敗しました: "
+
+#: utils/gdm-config.c:1805
+msgid "Failed to set smartcard setting"
+msgstr "スマートカード設定の変更に失敗しました"
+
+#: utils/gdm-config.c:1811
+msgid "Failed to set password setting"
+msgstr "パスワード設定の変更に失敗しました"
+
+#: utils/gdm-config.c:1825
+msgid "Enabled"
+msgstr "有効"
+
+#: utils/gdm-config.c:1825
+msgid "Disabled"
+msgstr "無効"
+
+#: utils/gdm-config.c:1834
+msgid "Not supported"
+msgstr "サポートされていません"
+
+#: utils/gdm-config.c:1850
+msgid "Required"
+msgstr "必須"
+
+#: utils/gdm-config.c:1911
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
+msgstr ""
+"GDM 認証設定\n"
+"\n"
+"  パスワード認証: %s\n"
+"  指紋認証: %s\n"
+"  スマートカード認証: %s\n"
+"  スマートカード取り外しアクション: %s\n"
+
+#: utils/gdm-config.c:1939
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "Y"
+
+#: utils/gdm-config.c:1940
+msgctxt "Interactive question"
+msgid "y"
+msgstr "y"
+
+#: utils/gdm-config.c:1941
+msgctxt "Interactive question"
+msgid "N"
+msgstr "N"
+
+#: utils/gdm-config.c:1942
+msgctxt "Interactive question"
+msgid "n"
+msgstr "n"
+
+#: utils/gdm-config.c:1946
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "続行しますか [Y/n]? "
+
+#: utils/gdm-config.c:1964
+msgid "User cancelled the request"
+msgstr "ユーザーがリクエストをキャンセルしました"
+
+#: utils/gdm-config.c:1995
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "%s 設定のリセットに失敗しました: "
 
 #: utils/gdmflexiserver.c:45
 msgid "Only the VERSION command is supported"
 msgstr "VERSION コマンドのみがサポートされています"
 
-#: utils/gdmflexiserver.c:45
-msgid "COMMAND"
-msgstr "COMMAND"
-
 #: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
 #: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
 msgid "Ignored — retained for compatibility"
-msgstr "無視しました - 下位互換のために残してあるだけです"
+msgstr "無視されます — 下位互換性のために残されている"
 
-#: utils/gdmflexiserver.c:48 utils/gdm-screenshot.c:43
+#: utils/gdmflexiserver.c:48
 msgid "Debugging output"
 msgstr "デバッグ情報を出力する"
 
 #: utils/gdmflexiserver.c:52
 msgid "Version of this application"
-msgstr "バージョンを表示する"
+msgstr "このアプリケーションのバージョン"
 
 #. Option parsing
 #: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
-msgstr "— 新しい GDM のログイン"
+msgstr "— 新しい GDM ログイン"
 
-#: utils/gdm-screenshot.c:212
-msgid "Screenshot taken"
-msgstr "スクリーンショットの撮影"
+#~ msgid ""
+#~ "The system is unable to determine whether to switch to an existing login "
+#~ "screen or start up a new login screen."
+#~ msgstr ""
+#~ "既存のログイン画面に切り替えるか、新しいログイン画面を起動するのかを、シス"
+#~ "テムが決定することができませんでした。"
 
-#. Option parsing
-#: utils/gdm-screenshot.c:279
-msgid "Take a picture of the screen"
-msgstr "画面のスクリーンショットを撮る"
+#~ msgid "The system is unable to start up a new login screen."
+#~ msgstr "新しいログイン画面を起動できません。"
+
+#~ msgid "Unable to activate session: "
+#~ msgstr "セッションを開始することができません:"
+
+#~ msgid "Screenshot taken"
+#~ msgstr "スクリーンショットの撮影"
+
+#~ msgid "Take a picture of the screen"
+#~ msgstr "画面のスクリーンショットを撮る"
 
 #~ msgid "Your password has expired, please change it now."
 #~ msgstr "パスワードの有効期限が切れました。直ちに変更してください。"
