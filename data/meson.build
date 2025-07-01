@@ -77,7 +77,6 @@ gdm_gnome_session_required_components = [
   'org.gnome.SettingsDaemon.Sharing',
   'org.gnome.SettingsDaemon.Smartcard',
   'org.gnome.SettingsDaemon.Sound',
-  'org.gnome.SettingsDaemon.Wacom',
 ]
 
 gdm_gnome_user_session_wanted_components = gdm_gnome_session_required_components
