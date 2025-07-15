@@ -2619,6 +2619,16 @@ gdm_manager_get_displays (GdmManager *manager,
         return TRUE;
 }
 
+static void
+on_graphics_unsupported (GdmLocalDisplayFactory *factory,
+                         GdmManager             *manager)
+{
+        if (manager->plymouth_is_running) {
+                plymouth_quit_without_transition ();
+                manager->plymouth_is_running = FALSE;
+        }
+}
+
 void
 gdm_manager_stop (GdmManager *manager)
 {
@@ -2628,6 +2638,9 @@ gdm_manager_stop (GdmManager *manager)
 
         if (manager->local_factory != NULL) {
                 gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->local_factory));
+                g_signal_handlers_disconnect_by_func (manager->local_factory,
+                                                      G_CALLBACK (on_graphics_unsupported),
+                                                      manager);
         }
 
 #ifdef HAVE_LIBXDMCP
@@ -2655,6 +2668,10 @@ gdm_manager_start (GdmManager *manager)
 #endif
         if (!manager->xdmcp_enabled || manager->show_local_greeter) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
+                g_signal_connect (manager->local_factory,
+                                  "graphics-unsupported",
+                                  G_CALLBACK (on_graphics_unsupported),
+                                  manager);
         }
 
         /* Accept remote connections */
