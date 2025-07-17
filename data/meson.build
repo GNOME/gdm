@@ -84,15 +84,9 @@ gdm_gnome_user_session_wanted_components += [
   'org.gnome.SettingsDaemon.XSettings',
 ]
 
-configure_file(
-  input: 'gnome-login.session.in',
-  output: '@BASENAME@',
-  configuration: {
-    'libexecdir': gdm_prefix / get_option('libexecdir'),
-    'gnome_required_components': ';'.join(
-      [ gdm_gnome_shell_component ] + gdm_gnome_session_required_components),
-  },
-  install_dir: get_option('datadir') / 'gnome-session' / 'sessions',
+install_data(
+    'gnome-login.session',
+    install_dir: get_option('datadir') / 'gnome-session' / 'sessions',
 )
 
 # PAM
