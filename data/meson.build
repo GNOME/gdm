@@ -1,5 +1,4 @@
 subdir('applications')
-subdir('autostart')
 subdir('dconf')
 
 # XPath configs
