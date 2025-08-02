@@ -29,7 +29,7 @@ If GDM is not translated in your language or you believe that the
 current translation has errors, you can join one of the various translation
 teams in GNOME. Translators do not commit directly to Git, but are advised to
 use our separate translation infrastructure instead. More info can be found at
-the [translation project wiki page].
+the [Translation Project Welcome page].
 
 ## Licensing
 GDM is licensed under the GNU General Public License v2.0. For more info, see
@@ -39,4 +39,4 @@ the `COPYING` file.
 [help pages on MR's]: https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html
 [GitLab repository]: https://gitlab.gnome.org/GNOME/gdm
 [issue tracker]: https://gitlab.gnome.org/GNOME/gdm/issues
-[translation project wiki page]: https://wiki.gnome.org/TranslationProject/
+[Translation Project Welcome page]: https://welcome.gnome.org/team/translation/
