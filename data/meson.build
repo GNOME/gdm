@@ -1,5 +1,4 @@
 subdir('applications')
-subdir('autostart')
 subdir('dconf')
 
 # XPath configs
@@ -62,37 +61,9 @@ install_data('locale.alias',
   install_dir: gdm_datadir,
 )
 
-gdm_gnome_shell_component = 'org.gnome.Shell'
-gdm_gnome_session_required_components = [
-  'org.gnome.SettingsDaemon.A11ySettings',
-  'org.gnome.SettingsDaemon.Color',
-  'org.gnome.SettingsDaemon.Datetime',
-  'org.gnome.SettingsDaemon.Housekeeping',
-  'org.gnome.SettingsDaemon.Keyboard',
-  'org.gnome.SettingsDaemon.MediaKeys',
-  'org.gnome.SettingsDaemon.Power',
-  'org.gnome.SettingsDaemon.PrintNotifications',
-  'org.gnome.SettingsDaemon.Rfkill',
-  'org.gnome.SettingsDaemon.ScreensaverProxy',
-  'org.gnome.SettingsDaemon.Sharing',
-  'org.gnome.SettingsDaemon.Smartcard',
-  'org.gnome.SettingsDaemon.Sound',
-]
-
-gdm_gnome_user_session_wanted_components = gdm_gnome_session_required_components
-gdm_gnome_user_session_wanted_components += [
-  'org.gnome.SettingsDaemon.XSettings',
-]
-
-configure_file(
-  input: 'gnome-login.session.in',
-  output: '@BASENAME@',
-  configuration: {
-    'libexecdir': gdm_prefix / get_option('libexecdir'),
-    'gnome_required_components': ';'.join(
-      [ gdm_gnome_shell_component ] + gdm_gnome_session_required_components),
-  },
-  install_dir: get_option('datadir') / 'gnome-session' / 'sessions',
+install_data(
+    'gnome-login.session',
+    install_dir: get_option('datadir') / 'gnome-session' / 'sessions',
 )
 
 # PAM
@@ -182,19 +153,9 @@ if systemdsystemunitdir != 'no'
   )
 endif
 
-gdm_gnome_session_wanted_targets = []
-foreach component: gdm_gnome_user_session_wanted_components
-  gdm_gnome_session_wanted_targets += 'Wants=@0@.target'.format(component)
-endforeach
-
 if systemduserunitdir != 'no'
-  configure_file(
-    input: 'session.conf.in',
-    output: 'session.conf',
-    configuration: {
-      'requires_component': gdm_gnome_shell_component,
-      'wants_required_components': '\n'.join(gdm_gnome_session_wanted_targets),
-    },
+  install_data(
+    'gnome-login.session.conf',
     install_dir: systemd_userunitdir / 'gnome-session@gnome-login.target.d',
   )
 endif
