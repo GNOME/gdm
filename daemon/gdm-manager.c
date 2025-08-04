@@ -45,6 +45,7 @@
 #include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
+#include "gdm-dynamic-user-store.h"
 #include "gdm-launch-environment.h"
 #include "gdm-local-display.h"
 #include "gdm-local-display-factory.h"
@@ -61,8 +62,8 @@
 #define GDM_MANAGER_PATH          GDM_DBUS_PATH "/Manager"
 #define GDM_MANAGER_DISPLAYS_PATH GDM_DBUS_PATH "/Displays"
 
-#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT GDM_RUN_DIR "/gdm.ran-initial-setup"
+#define INITIAL_SETUP_EXPORT_DIR GDM_RUN_DIR "/gnome-initial-setup"
 
 typedef struct
 {
@@ -75,6 +76,7 @@ typedef struct
 struct _GdmManager
 {
         GdmDBusManagerSkeleton parent;
+        GdmDynamicUserStore    *dyn_user_store;
         GdmDisplayStore        *display_store;
         GdmLocalDisplayFactory *local_factory;
 #ifdef HAVE_LIBXDMCP
@@ -900,6 +902,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         allowed_user = gdm_session_get_allowed_user (session);
 
         if (uid != allowed_user) {
+                g_debug("GdmSession: Denying access to %d, only %d is allowed", uid, allowed_user);
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
@@ -1365,23 +1368,6 @@ get_automatic_login_details (GdmManager *manager,
         return enabled;
 }
 
-static const char *
-get_username_for_greeter_display (GdmManager *manager,
-                                  GdmDisplay *display)
-{
-        gboolean doing_initial_setup = FALSE;
-
-        g_object_get (G_OBJECT (display),
-                      "doing-initial-setup", &doing_initial_setup,
-                      NULL);
-
-        if (doing_initial_setup) {
-                return INITIAL_SETUP_USERNAME;
-        } else {
-                return GDM_USERNAME;
-        }
-}
-
 static void
 set_up_automatic_login_session (GdmManager *manager,
                                 GdmDisplay *display)
@@ -1413,14 +1399,7 @@ static void
 set_up_chooser_session (GdmManager *manager,
                         GdmDisplay *display)
 {
-        const char *allowed_user;
-        struct passwd *passwd_entry;
-
-        allowed_user = get_username_for_greeter_display (manager, display);
-
-        if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
-                g_warning ("GdmManager: couldn't look up username %s",
-                           allowed_user);
+        if (!gdm_display_prepare_greeter_session (display, manager->dyn_user_store, NULL)) {
                 gdm_display_unmanage (display);
                 gdm_display_finish (display);
                 return;
@@ -1434,20 +1413,15 @@ static void
 set_up_greeter_session (GdmManager *manager,
                         GdmDisplay *display)
 {
-        const char *allowed_user;
-        struct passwd *passwd_entry;
+        uid_t greeter_uid;
 
-        allowed_user = get_username_for_greeter_display (manager, display);
-
-        if (!gdm_get_pwent_for_name (allowed_user, &passwd_entry)) {
-                g_warning ("GdmManager: couldn't look up username %s",
-                           allowed_user);
+        if (!gdm_display_prepare_greeter_session (display, manager->dyn_user_store, &greeter_uid)) {
                 gdm_display_unmanage (display);
                 gdm_display_finish (display);
                 return;
         }
 
-        create_user_session_for_display (manager, display, passwd_entry->pw_uid);
+        create_user_session_for_display (manager, display, greeter_uid);
         gdm_display_start_greeter_session (display);
 }
 
@@ -1799,52 +1773,60 @@ out:
         return retval;
 }
 
-static void
-chown_initial_setup_home_dir (void)
+static gboolean
+export_initial_setup_home_dir (GdmSession *initial_setup_session)
 {
-        GFile *dir;
-        GError *error;
-        char *gis_dir_path;
-        char *gis_uid_path;
-        char *gis_uid_contents;
+        uid_t gis_uid;
         struct passwd *pwe;
-        uid_t uid;
+        g_autoptr (GFile) gis_home = NULL;
+        g_autoptr (GError) error = NULL;
+        g_autofree char *user_uid_path = NULL;
+        g_autofree char *user_uid_contents = NULL;
+        uid_t user_uid;
+        g_autoptr (GFile) gis_export = NULL;
 
-        if (!gdm_get_pwent_for_name (INITIAL_SETUP_USERNAME, &pwe)) {
-                g_warning ("Unknown user %s", INITIAL_SETUP_USERNAME);
-                return;
+        gis_uid = gdm_session_get_allowed_user (initial_setup_session);
+
+        if (!gdm_get_pwent_for_uid (gis_uid, &pwe)) {
+                g_warning ("Failed to resolve gnome-initial-setup UID: %d", gis_uid);
+                return FALSE;
         }
 
-        gis_dir_path = g_strdup (pwe->pw_dir);
+        gis_home = g_file_new_for_path (pwe->pw_dir);
 
-        gis_uid_path = g_build_filename (gis_dir_path,
-                                         "gnome-initial-setup-uid",
-                                         NULL);
-        if (!g_file_get_contents (gis_uid_path, &gis_uid_contents, NULL, NULL)) {
-                g_warning ("Unable to read %s", gis_uid_path);
-                goto out;
+        user_uid_path = g_build_filename (pwe->pw_dir, "gnome-initial-setup-uid", NULL);
+        if (!g_file_get_contents (user_uid_path, &user_uid_contents, NULL, &error)) {
+                g_warning ("Unable to read %s: %s", user_uid_path, error->message);
+                return FALSE;
+        }
+        user_uid = (uid_t) atoi (user_uid_contents);
+
+        if (!gdm_get_pwent_for_uid (user_uid, &pwe)) {
+                g_warning ("UID '%s' in %s is not valid", user_uid_contents, user_uid_path);
+                return FALSE;
         }
 
-        uid = (uid_t) atoi (gis_uid_contents);
-        pwe = getpwuid (uid);
-        if (uid == 0 || pwe == NULL) {
-                g_warning ("UID '%s' in %s is not valid", gis_uid_contents, gis_uid_path);
-                goto out;
+        g_debug ("Moving %s to " INITIAL_SETUP_EXPORT_DIR,
+                 g_file_peek_path (gis_home));
+
+        gis_export = g_file_new_for_path (INITIAL_SETUP_EXPORT_DIR);
+        if (!g_file_move (gis_home, gis_export, G_FILE_COPY_OVERWRITE, NULL,
+                          NULL, NULL, &error)) {
+                g_warning ("Failed to move %s to " INITIAL_SETUP_EXPORT_DIR ": %s",
+                           g_file_peek_path (gis_home), error->message);
+                return FALSE;
         }
 
-        g_debug ("Changing ownership of %s to %u:%u", gis_dir_path, pwe->pw_uid, pwe->pw_gid);
+        g_debug ("Changing ownership of " INITIAL_SETUP_EXPORT_DIR " to %u:%u",
+                 pwe->pw_uid, pwe->pw_gid);
 
-        error = NULL;
-        dir = g_file_new_for_path (gis_dir_path);
-        if (!chown_recursively (dir, pwe->pw_uid, pwe->pw_gid, &error)) {
-                g_warning ("Failed to change ownership for %s: %s", gis_dir_path, error->message);
-                g_error_free (error);
+        if (!chown_recursively (gis_export, pwe->pw_uid, pwe->pw_gid, &error)) {
+                g_warning ("Failed to change ownership of " INITIAL_SETUP_EXPORT_DIR ": %s",
+                           error->message);
+                return FALSE;
         }
-        g_object_unref (dir);
-out:
-        g_free (gis_uid_contents);
-        g_free (gis_uid_path);
-        g_free (gis_dir_path);
+
+        return TRUE;
 }
 
 static gboolean
@@ -2010,7 +1992,7 @@ on_session_credentials_established (GdmSession *session,
                       "doing-initial-setup", &doing_initial_setup,
                       NULL);
         if (doing_initial_setup)
-                chown_initial_setup_home_dir ();
+                export_initial_setup_home_dir (session);
 }
 
 static void
@@ -2925,6 +2907,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
 static void
 gdm_manager_init (GdmManager *manager)
 {
+        manager->dyn_user_store = gdm_dynamic_user_store_new ();
         manager->display_store = gdm_display_store_new ();
         manager->user_sessions = NULL;
         manager->open_reauthentication_requests = g_hash_table_new_full (NULL,
@@ -3027,6 +3010,7 @@ gdm_manager_dispose (GObject *object)
         g_clear_object (&manager->connection);
         g_clear_object (&manager->object_manager);
         g_clear_object (&manager->display_store);
+        g_clear_object (&manager->dyn_user_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->dispose (object);
 }

@@ -31,8 +31,6 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <ctype.h>
-#include <pwd.h>
-#include <grp.h>
 #include <signal.h>
 #ifdef HAVE_SYS_PRCTL_H
 #include <sys/prctl.h>
@@ -50,9 +48,19 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+#define GDM_GREETER_USERNAME "gdm-greeter"
+#define GDM_GREETER_DISP_NAME "GDM Greeter"
 #define GDM_SESSION_MODE "gdm"
+
+#define INITIAL_SETUP_SESSION "gnome-initial-setup"
+#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+#define INITIAL_SETUP_DISP_NAME "GNOME Initial Setup"
 #define INITIAL_SETUP_SESSION_MODE "initial-setup"
+#define INITIAL_SETUP_GROUPNAME "gnome-initial-setup"
+#define INITIAL_SETUP_DCONF_PROFILE "gnome-initial-setup"
+
+#define GDM_CHOOSER_USERNAME "gdm-chooser"
+#define GDM_CHOOSER_DISP_NAME "GDM XDMCP Chooser"
 
 extern char **environ;
 
@@ -65,9 +73,15 @@ struct _GdmLaunchEnvironment
 
         GdmSessionVerificationMode verification_mode;
 
-        char           *user_name;
-        char           *runtime_dir;
+        GdmDynamicUserStore *dyn_user_store;
+        char                *preferred_user_name;
+        char                *user_disp_name;
+        char                *user_member_of;
+        char                *dyn_user_name;
+        uid_t                dyn_uid;
+        char                *dyn_user_home;
 
+        char           *dconf_profile;
         char           *session_id;
         char           *session_type;
         char           *session_mode;
@@ -90,8 +104,10 @@ enum {
         PROP_X11_DISPLAY_HOSTNAME,
         PROP_X11_AUTHORITY_FILE,
         PROP_X11_DISPLAY_IS_LOCAL,
-        PROP_USER_NAME,
-        PROP_RUNTIME_DIR,
+        PROP_PREFERRED_USER_NAME,
+        PROP_USER_DISP_NAME,
+        PROP_USER_MEMBER_OF,
+        PROP_DCONF_PROFILE,
         PROP_COMMAND,
 };
 
@@ -135,7 +151,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                           gboolean              start_session)
 {
         GHashTable    *hash;
-        struct passwd *pwent;
         static const char *const optional_environment[] = {
                 "GI_TYPELIB_PATH",
                 "LANG",
@@ -182,7 +197,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
         if (launch_environment->session_mode != NULL) {
                 g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->session_mode));
-                g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->user_name));
+                g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->dconf_profile));
 
 		if (strcmp (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) != 0) {
 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
@@ -192,26 +207,16 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 		}
         }
 
-        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->user_name));
-        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->user_name));
-        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (launch_environment->user_name));
+        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->dyn_user_name));
+        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->dyn_user_name));
+        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (launch_environment->dyn_user_name));
 
         g_hash_table_insert (hash, g_strdup ("GDM_VERSION"), g_strdup (VERSION));
         g_hash_table_remove (hash, "MAIL");
 
-        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup ("/"));
-        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
-        g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
-
-        gdm_get_pwent_for_name (launch_environment->user_name, &pwent);
-        if (pwent != NULL) {
-                if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
-                        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pwent->pw_dir));
-                        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup (pwent->pw_dir));
-                }
-
-                g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pwent->pw_shell));
-        }
+        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (launch_environment->dyn_user_home));
+        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup (launch_environment->dyn_user_home));
+        g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (NOLOGIN_PATH));
 
         if (start_session && launch_environment->x11_display_seat_id != NULL) {
                 char *seat_id;
@@ -337,7 +342,7 @@ on_conversation_started (GdmSession           *session,
 
         gdm_session_setup_for_program (launch_environment->session,
                                        "gdm-launch-environment",
-                                       launch_environment->user_name,
+                                       launch_environment->dyn_user_name,
                                        log_path);
 }
 
@@ -362,24 +367,31 @@ on_conversation_stopped (GdmSession           *session,
         }
 }
 
-static gboolean
-ensure_directory_with_uid_gid (const char  *path,
-                               uid_t        uid,
-                               gid_t        gid,
-                               GError     **error)
+gboolean
+gdm_launch_environment_ensure_uid (GdmLaunchEnvironment  *launch_environment,
+                                   GdmDynamicUserStore   *dyn_user_store,
+                                   uid_t                 *uid,
+                                   GError               **error)
 {
-        if (mkdir (path, 0700) == -1 && errno != EEXIST) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             "Failed to create directory %s: %s", path,
-                             g_strerror (errno));
-                return FALSE;
+        if (launch_environment->dyn_uid != 0) {
+                *uid = launch_environment->dyn_uid;
+                return TRUE;
         }
-        if (chown (path, uid, gid) == -1) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             "Failed to set owner of %s: %s", path,
-                             g_strerror (errno));
+
+        if (!gdm_dynamic_user_store_create (dyn_user_store,
+                                            launch_environment->preferred_user_name,
+                                            launch_environment->user_disp_name,
+                                            launch_environment->user_member_of,
+                                            &launch_environment->dyn_user_name,
+                                            &launch_environment->dyn_uid,
+                                            &launch_environment->dyn_user_home,
+                                            error))
                 return FALSE;
-        }
+
+        /* We've allocated the UID, so let's make sure we can deallocate later */
+        g_set_object (&launch_environment->dyn_user_store, dyn_user_store);
+
+        *uid = launch_environment->dyn_uid;
         return TRUE;
 }
 
@@ -393,37 +405,14 @@ gboolean
 gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 {
         g_autoptr(GError) error = NULL;
-        struct passwd    *passwd_entry;
-        uid_t             uid;
-        gid_t             gid;
 
         g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), FALSE);
+        g_return_val_if_fail (launch_environment->dyn_uid != 0, FALSE);
 
         g_debug ("GdmLaunchEnvironment: Starting...");
 
-        if (!gdm_get_pwent_for_name (launch_environment->user_name, &passwd_entry)) {
-                g_critical ("GdmLaunchEnvironment: Unknown user %s", launch_environment->user_name);
-                return FALSE;
-        }
-
-        uid = passwd_entry->pw_uid;
-        gid = passwd_entry->pw_gid;
-
-        g_debug ("GdmLaunchEnvironment: Setting up run time dir %s",
-                 launch_environment->runtime_dir);
-        if (!ensure_directory_with_uid_gid (launch_environment->runtime_dir, uid, gid, &error)) {
-                g_critical ("GdmLaunchEnvironment: %s", error->message);
-                return FALSE;
-        }
-
-        /* Create the home directory too */
-        if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, &error)) {
-                g_critical ("GdmLaunchEnvironment: %s", error->message);
-                return FALSE;
-        }
-
         launch_environment->session = gdm_session_new (launch_environment->verification_mode,
-                                                       uid,
+                                                       launch_environment->dyn_uid,
                                                        launch_environment->x11_display_name,
                                                        launch_environment->x11_display_hostname,
                                                        launch_environment->x11_display_device,
@@ -499,6 +488,12 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
                 gdm_session_close (launch_environment->session);
 
                 g_clear_object (&launch_environment->session);
+        }
+
+        if (launch_environment->dyn_uid != 0) {
+                gdm_dynamic_user_store_remove (launch_environment->dyn_user_store,
+                                               launch_environment->dyn_uid);
+                launch_environment->dyn_uid = 0;
         }
 
         g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
@@ -593,19 +588,35 @@ _gdm_launch_environment_set_x11_authority_file (GdmLaunchEnvironment *launch_env
 }
 
 static void
-_gdm_launch_environment_set_user_name (GdmLaunchEnvironment *launch_environment,
-                                       const char           *name)
+_gdm_launch_environment_set_preferred_user_name (GdmLaunchEnvironment *launch_environment,
+                                                 const char           *name)
 {
-        g_free (launch_environment->user_name);
-        launch_environment->user_name = g_strdup (name);
+        g_free (launch_environment->preferred_user_name);
+        launch_environment->preferred_user_name = g_strdup (name);
 }
 
 static void
-_gdm_launch_environment_set_runtime_dir (GdmLaunchEnvironment *launch_environment,
-                                         const char           *dir)
+_gdm_launch_environment_set_user_disp_name (GdmLaunchEnvironment *launch_environment,
+                                            const char           *disp_name)
 {
-        g_free (launch_environment->runtime_dir);
-        launch_environment->runtime_dir = g_strdup (dir);
+        g_free (launch_environment->user_disp_name);
+        launch_environment->user_disp_name = g_strdup (disp_name);
+}
+
+static void
+_gdm_launch_environment_set_user_member_of (GdmLaunchEnvironment *launch_environment,
+                                            const char           *member_of)
+{
+        g_free (launch_environment->user_member_of);
+        launch_environment->user_member_of = g_strdup (member_of);
+}
+
+static void
+_gdm_launch_environment_set_dconf_profile (GdmLaunchEnvironment *launch_environment,
+                                            const char           *profile)
+{
+        g_free (launch_environment->dconf_profile);
+        launch_environment->dconf_profile = g_strdup (profile);
 }
 
 static void
@@ -654,11 +665,17 @@ gdm_launch_environment_set_property (GObject      *object,
         case PROP_X11_AUTHORITY_FILE:
                 _gdm_launch_environment_set_x11_authority_file (self, g_value_get_string (value));
                 break;
-        case PROP_USER_NAME:
-                _gdm_launch_environment_set_user_name (self, g_value_get_string (value));
+        case PROP_PREFERRED_USER_NAME:
+                _gdm_launch_environment_set_preferred_user_name (self, g_value_get_string (value));
                 break;
-        case PROP_RUNTIME_DIR:
-                _gdm_launch_environment_set_runtime_dir (self, g_value_get_string (value));
+        case PROP_USER_DISP_NAME:
+                _gdm_launch_environment_set_user_disp_name (self, g_value_get_string (value));
+                break;
+        case PROP_USER_MEMBER_OF:
+                _gdm_launch_environment_set_user_member_of (self, g_value_get_string (value));
+                break;
+        case PROP_DCONF_PROFILE:
+                _gdm_launch_environment_set_dconf_profile (self, g_value_get_string (value));
                 break;
         case PROP_COMMAND:
                 _gdm_launch_environment_set_command (self, g_value_get_string (value));
@@ -707,11 +724,17 @@ gdm_launch_environment_get_property (GObject    *object,
         case PROP_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->x11_authority_file);
                 break;
-        case PROP_USER_NAME:
-                g_value_set_string (value, self->user_name);
+        case PROP_PREFERRED_USER_NAME:
+                g_value_set_string (value, self->preferred_user_name);
                 break;
-        case PROP_RUNTIME_DIR:
-                g_value_set_string (value, self->runtime_dir);
+        case PROP_USER_DISP_NAME:
+                g_value_set_string (value, self->user_disp_name);
+                break;
+        case PROP_USER_MEMBER_OF:
+                g_value_set_string (value, self->user_member_of);
+                break;
+        case PROP_DCONF_PROFILE:
+                g_value_set_string (value, self->dconf_profile);
                 break;
         case PROP_COMMAND:
                 g_value_set_string (value, self->command);
@@ -796,17 +819,31 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_USER_NAME,
-                                         g_param_spec_string ("user-name",
-                                                              "user name",
-                                                              "user name",
+                                         PROP_PREFERRED_USER_NAME,
+                                         g_param_spec_string ("preferred-user-name",
+                                                              "preferred user name",
+                                                              "preferred user name",
                                                               GDM_USERNAME,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_RUNTIME_DIR,
-                                         g_param_spec_string ("runtime-dir",
-                                                              "runtime dir",
-                                                              "runtime dir",
+                                         PROP_USER_DISP_NAME,
+                                         g_param_spec_string ("user-display-name",
+                                                              "user display name",
+                                                              "user display name",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_USER_MEMBER_OF,
+                                         g_param_spec_string ("user-member-of",
+                                                              "user member of",
+                                                              "user member of",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_DCONF_PROFILE,
+                                         g_param_spec_string ("dconf-profile",
+                                                              "dconf profile",
+                                                              "dconf profile",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
@@ -906,8 +943,12 @@ gdm_launch_environment_finalize (GObject *object)
         }
 
         g_free (launch_environment->command);
-        g_free (launch_environment->user_name);
-        g_free (launch_environment->runtime_dir);
+        g_free (launch_environment->preferred_user_name);
+        g_free (launch_environment->dyn_user_name);
+        g_free (launch_environment->dyn_user_home);
+        g_free (launch_environment->user_disp_name);
+        g_free (launch_environment->user_member_of);
+        g_free (launch_environment->dconf_profile);
         g_free (launch_environment->x11_display_name);
         g_free (launch_environment->x11_display_seat_id);
         g_free (launch_environment->x11_display_device);
@@ -916,12 +957,17 @@ gdm_launch_environment_finalize (GObject *object)
         g_free (launch_environment->session_id);
         g_free (launch_environment->session_type);
 
+        g_clear_object (&launch_environment->dyn_user_store);
+
         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
 }
 
 static GdmLaunchEnvironment *
 create_gnome_session_environment (const char *session_id,
-                                  const char *user_name,
+                                  const char *preferred_user_name,
+                                  const char *user_display_name,
+                                  const char *user_member_of,
+                                  const char *dconf_profile,
                                   const char *display_name,
                                   const char *seat_id,
                                   const char *session_type,
@@ -959,14 +1005,16 @@ create_gnome_session_environment (const char *session_id,
 
         launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                                            "command", command,
-                                           "user-name", user_name,
+                                           "preferred-user-name", preferred_user_name,
+                                           "user-display-name", user_display_name,
+                                           "user-member-of", user_member_of,
+                                           "dconf-profile", dconf_profile,
                                            "session-type", session_type,
                                            "session-mode", session_mode,
                                            "x11-display-name", display_name,
                                            "x11-display-seat-id", seat_id,
                                            "x11-display-hostname", display_hostname,
                                            "x11-display-is-local", display_is_local,
-                                           "runtime-dir", GDM_SCREENSHOT_DIR,
                                            NULL);
 
         return launch_environment;
@@ -979,10 +1027,11 @@ gdm_create_greeter_launch_environment (const char *display_name,
                                        const char *display_hostname,
                                        gboolean    display_is_local)
 {
-        const char *session_name = NULL;
-
-        return create_gnome_session_environment (session_name,
-                                                 GDM_USERNAME,
+        return create_gnome_session_environment (NULL,
+                                                 GDM_GREETER_USERNAME,
+                                                 GDM_GREETER_DISP_NAME,
+                                                 GDM_GROUPNAME,
+                                                 GDM_DCONF_PROFILE,
                                                  display_name,
                                                  seat_id,
                                                  session_type,
@@ -998,8 +1047,11 @@ gdm_create_initial_setup_launch_environment (const char *display_name,
                                              const char *display_hostname,
                                              gboolean    display_is_local)
 {
-        return create_gnome_session_environment ("gnome-initial-setup",
+        return create_gnome_session_environment (INITIAL_SETUP_SESSION,
                                                  INITIAL_SETUP_USERNAME,
+                                                 INITIAL_SETUP_DISP_NAME,
+                                                 INITIAL_SETUP_GROUPNAME,
+                                                 INITIAL_SETUP_DCONF_PROFILE,
                                                  display_name,
                                                  seat_id,
                                                  session_type,
@@ -1019,12 +1071,14 @@ gdm_create_chooser_launch_environment (const char *display_name,
         launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                                            "command", LIBEXECDIR "/gdm-simple-chooser",
                                            "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
-                                           "user-name", GDM_USERNAME,
+                                           "preferred-user-name", GDM_CHOOSER_USERNAME,
+                                           "user-display-name", GDM_CHOOSER_DISP_NAME,
+                                           "user-member-of", GDM_GROUPNAME,
+                                           "dconf-profile", GDM_DCONF_PROFILE,
                                            "x11-display-name", display_name,
                                            "x11-display-seat-id", seat_id,
                                            "x11-display-hostname", display_hostname,
                                            "x11-display-is-local", FALSE,
-                                           "runtime-dir", GDM_SCREENSHOT_DIR,
                                            NULL);
 
         return launch_environment;
