@@ -1,3 +1,14 @@
+49.beta
+==========
+
+* Translation updates
+* Switch to using dynamic users for greeter sessions. This enables systemd-based
+  session management on the greeter, removes GDM's dependency on dbus-daemon,
+  and frees us to drop gnome-session's builtin service manager.
+* Adapt to changes in gnome-session 49, which dropped the builtin service manager
+  code and now exclusively relies on systemd for session startup. This means that
+  GDM now depends on gnome-session 49.
+
 49.alpha.1
 ==========
 
