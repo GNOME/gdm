@@ -740,7 +740,7 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
                 g_autoptr (GUdevDevice) platform_device = NULL;
                 g_autoptr (GUdevDevice) pci_device = NULL;
 
-                if (g_str_has_prefix (id_path, "platform-simple-framebuffer")) {
+                if (g_strrstr (id_path, "platform-simple-framebuffer") != NULL) {
                         node = next_node;
                         continue;
                 }
