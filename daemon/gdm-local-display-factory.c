@@ -96,6 +96,13 @@ enum {
         PROP_0,
 };
 
+enum {
+        GRAPHICS_UNSUPPORTED,
+        LAST_SIGNAL,
+};
+
+static guint signals [LAST_SIGNAL] = { 0 };
+
 static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryClass *klass);
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
@@ -937,8 +944,11 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                 }
         }
 
-        if (!seat_supports_graphics)
+        if (!seat_supports_graphics) {
+                if (is_seat0)
+                        g_signal_emit (factory, signals[GRAPHICS_UNSUPPORTED], 0);
                 return;
+        }
 
         g_assert (session_types != NULL);
 
@@ -1676,6 +1686,17 @@ gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
 
         factory_class->start = gdm_local_display_factory_start;
         factory_class->stop = gdm_local_display_factory_stop;
+
+        signals [GRAPHICS_UNSUPPORTED] =
+                g_signal_new ("graphics-unsupported",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              0,
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              0);
 }
 
 static void
