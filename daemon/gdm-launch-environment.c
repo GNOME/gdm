@@ -42,6 +42,7 @@
 #include <glib-object.h>
 
 #include "gdm-common.h"
+#include "gdm-file-utils.h"
 
 #include "gdm-session-enum-types.h"
 #include "gdm-launch-environment.h"
@@ -128,6 +129,108 @@ static void     gdm_launch_environment_init          (GdmLaunchEnvironment      
 static void     gdm_launch_environment_finalize      (GObject                   *object);
 
 G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
+
+#define GID_NOBODY ((gid_t) 65534)
+#define MIGRATED_STAMPFILE_PATH (GDM_WORKING_DIR "/.migrated-dyn-users")
+
+static gboolean
+rename_dir (const char *src, const char *dest, GError **error)
+{
+        if (!g_file_test (src, G_FILE_TEST_IS_DIR))
+                return TRUE;
+
+        if (g_rename (src, dest) < 0) {
+                int errsv = errno;
+                g_set_error (error,
+                             G_IO_ERROR,
+                             g_io_error_from_errno (errsv),
+                             "Failed to rename '%s' -> '%s': %s",
+                             src, dest,
+                             g_strerror (errsv));
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+migrate_working_dir (GError **error)
+{
+        if (g_file_test (MIGRATED_STAMPFILE_PATH, G_FILE_TEST_EXISTS))
+                return TRUE;
+
+        if (g_mkdir_with_parents (GDM_WORKING_DIR "/seat0", 0755) < 0) {
+                int errsv = errno;
+                g_set_error (error,
+                             G_IO_ERROR,
+                             g_io_error_from_errno (errsv),
+                             "Failed to create directory '%s': %s",
+                             GDM_WORKING_DIR "/seat0",
+                             g_strerror (errsv));
+                return FALSE;
+        }
+
+        if (!rename_dir (GDM_WORKING_DIR "/.local/state",
+                         GDM_WORKING_DIR "/seat0/state",
+                         error))
+                return FALSE;
+
+        if (!rename_dir (GDM_WORKING_DIR "/.config",
+                         GDM_WORKING_DIR "/seat0/config",
+                         error))
+                return FALSE;
+
+        if (!g_file_set_contents (MIGRATED_STAMPFILE_PATH, "1", -1, error))
+                return FALSE;
+
+        return TRUE;
+}
+
+static gboolean
+setup_seat_persist_dirs (const char  *seat_id,
+                         uid_t        owner,
+                         char       **out_config_dir,
+                         char       **out_state_dir)
+{
+        g_autoptr (GError) error = NULL;
+        g_autofree char *config_dir = NULL;
+        g_autofree char *state_dir = NULL;
+
+        /* HACK: This is a hack to address a regression introduced by the
+         *       transition to dynamic users in GDM 49. GDM would no longer
+         *       store settings changes, and thus lose the screen-reader enabled
+         *       state and similar settings. The long-term fix would be to
+         *       transition to userdb, store user settings in userdb, and then
+         *       load these settings from GDM. Until then, this hack will do.
+         *       Note that this hack will break once we implement homed support!
+         *       This hack operates on the assumption that there's only ever one
+         *       login screen per seat, which is true for now. This isn't
+         *       necessarily true in the future, however, because the greeter
+         *       and homed lock screen may coexist */
+
+        if (!migrate_working_dir (&error)) {
+                g_warning ("Failed to migrate " GDM_WORKING_DIR ": %s", error->message);
+                g_clear_error (&error);
+        }
+
+        config_dir = g_strdup_printf (GDM_WORKING_DIR "/%s/config", seat_id);
+        if (!gdm_ensure_dir (config_dir, owner, GID_NOBODY, 0700, TRUE, &error)) {
+                g_warning ("Failed to initialize persist config dir for seat %s: %s",
+                           seat_id, error->message);
+                return FALSE;
+        }
+
+        state_dir = g_strdup_printf (GDM_WORKING_DIR "/%s/state", seat_id);
+        if (!gdm_ensure_dir (state_dir, owner, GID_NOBODY, 0700, TRUE, &error)) {
+                g_warning ("Failed to initialize persist state dir for seat %s: %s",
+                           seat_id, error->message);
+                return FALSE;
+        }
+
+        *out_config_dir = g_steal_pointer (&config_dir);
+        *out_state_dir = g_steal_pointer (&state_dir);
+        return TRUE;
+}
 
 static char *
 get_var_cb (const char *var,
@@ -220,10 +323,17 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
         if (start_session && launch_environment->x11_display_seat_id != NULL) {
                 char *seat_id;
+                char *config_dir;
+                char *state_dir;
 
                 seat_id = launch_environment->x11_display_seat_id;
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
+
+                if (setup_seat_persist_dirs(seat_id, launch_environment->dyn_uid, &config_dir, &state_dir)) {
+                        g_hash_table_insert (hash, g_strdup ("XDG_CONFIG_HOME"), config_dir);
+                        g_hash_table_insert (hash, g_strdup ("XDG_STATE_HOME"), state_dir);
+                }
         }
 
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
