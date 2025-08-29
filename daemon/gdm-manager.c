@@ -39,6 +39,7 @@
 #include <systemd/sd-login.h>
 
 #include "gdm-common.h"
+#include "gdm-file-utils.h"
 
 #include "gdm-dbus-util.h"
 #include "gdm-manager.h"
@@ -1703,77 +1704,6 @@ create_display_for_user_session (GdmManager *self,
 }
 
 static gboolean
-chown_file (GFile   *file,
-            uid_t    uid,
-            gid_t    gid,
-            GError **error)
-{
-        if (!g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_UID, uid,
-                                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                          NULL, error)) {
-                return FALSE;
-        }
-        if (!g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_GID, gid,
-                                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                          NULL, error)) {
-                return FALSE;
-        }
-        return TRUE;
-}
-
-static gboolean
-chown_recursively (GFile   *dir,
-                   uid_t    uid,
-                   gid_t    gid,
-                   GError **error)
-{
-        GFile *file = NULL;
-        GFileInfo *info = NULL;
-        GFileEnumerator *enumerator = NULL;
-        gboolean retval = FALSE;
-
-        if (chown_file (dir, uid, gid, error) == FALSE) {
-                goto out;
-        }
-
-        enumerator = g_file_enumerate_children (dir,
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE","
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                NULL, error);
-        if (!enumerator) {
-                goto out;
-        }
-
-        while ((info = g_file_enumerator_next_file (enumerator, NULL, error)) != NULL) {
-                file = g_file_get_child (dir, g_file_info_get_name (info));
-
-                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-                        if (chown_recursively (file, uid, gid, error) == FALSE) {
-                                goto out;
-                        }
-                } else if (chown_file (file, uid, gid, error) == FALSE) {
-                        goto out;
-                }
-
-                g_clear_object (&file);
-                g_clear_object (&info);
-        }
-
-        if (*error) {
-                goto out;
-        }
-
-        retval = TRUE;
-out:
-        g_clear_object (&file);
-        g_clear_object (&info);
-        g_clear_object (&enumerator);
-
-        return retval;
-}
-
-static gboolean
 export_initial_setup_home_dir (GdmSession *initial_setup_session)
 {
         uid_t gis_uid;
@@ -1820,7 +1750,7 @@ export_initial_setup_home_dir (GdmSession *initial_setup_session)
         g_debug ("Changing ownership of " INITIAL_SETUP_EXPORT_DIR " to %u:%u",
                  pwe->pw_uid, pwe->pw_gid);
 
-        if (!chown_recursively (gis_export, pwe->pw_uid, pwe->pw_gid, &error)) {
+        if (!gdm_chown_recursively (gis_export, pwe->pw_uid, pwe->pw_gid, &error)) {
                 g_warning ("Failed to change ownership of " INITIAL_SETUP_EXPORT_DIR ": %s",
                            error->message);
                 return FALSE;

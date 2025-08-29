@@ -32,6 +32,7 @@ gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : '/run/gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
+working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
 gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir / 'xauth'
 gdm_private_dbus_dir = (get_option('private-dbus-dir') != '')? get_option('private-dbus-dir') : gdm_run_dir / 'dbus'
 gdm_dyn_home_dir = (get_option('dyn-home-dir') != '')? get_option('dyn-home-dir') : gdm_run_dir / 'home'
@@ -264,6 +265,7 @@ conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_PRIVATE_DBUS_DIR', gdm_private_dbus_dir)
 conf.set_quoted('GDM_RUN_DIR', gdm_run_dir)
 conf.set_quoted('GDM_DCONF_PROFILE', 'gdm')
+conf.set_quoted('GDM_WORKING_DIR', working_dir)
 conf.set_quoted('GNOMELOCALEDIR', gdm_prefix / get_option('localedir'))
 conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
@@ -365,6 +367,7 @@ summary({
     'GDM Custom config': gdm_custom_conf,
     'GDM Runtime config': gdm_runtime_conf,
     'GDM Session default path': get_option('default-path'),
+    'GDM Working dir': working_dir,
     'GNOME locale': gdm_prefix / get_option('localedir'),
     'GNOME Settings Daemon': gnome_settings_daemon_dir,
     'AT SPI registryd': at_spi_registryd_dir,
