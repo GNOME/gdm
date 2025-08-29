@@ -1,3 +1,25 @@
+49.rc
+==========
+
+* Translation updates
+* Fixed a bug in PAM config files, introduced by transition to dynamic users
+* Added logic to retry preferred display server (usually Wayland) before falling
+  back (usually to X11)
+* Fixed a bug where Plymouth keeps running if not display is plugged into the
+  system. This would prevent bootup from completing and would prevent the user
+  from logging in on a serial console
+* Fixed GDM's session file loading logic to search directories in correct
+  precedence order
+* Fix simpledrm device detection to match the kernel's new device naming scheme
+* Re-enabled X11 support by default. We found it difficult to cleanly separate
+  GDM's ability to launch modern X11 sessions (which we intended to keep enabled
+  in GNOME 49) from the rest of GDM's X11 integration (which we intended to
+  disable but leave intact for GNOME 49). We still plan to remove GDM's full
+  X11 integration in a future version, and leave only the ability to launch
+  modern X11 sessions.
+* Worked around a regression introduced by the switch to dynamic users, where
+  the login screen no longer persists any settings
+
 49.beta
 ==========
 
