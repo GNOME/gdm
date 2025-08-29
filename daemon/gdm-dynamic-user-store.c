@@ -27,6 +27,7 @@
 #endif
 
 #include "gdm-common.h"
+#include "gdm-file-utils.h"
 #include "gdm-dynamic-user-store.h"
 
 G_STATIC_ASSERT (sizeof(uid_t) == sizeof(guint));
@@ -119,39 +120,6 @@ dynamic_user_new (const char   *username,
         return user;
 }
 
-static gboolean
-rm_r (GFile   *dir,
-      GError **error)
-{
-        g_autoptr (GFileEnumerator) enumerator = NULL;
-        GFileInfo *info;
-        GFile *child;
-
-        enumerator = g_file_enumerate_children (dir,
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE","
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                NULL, error);
-        if (enumerator == NULL)
-                return FALSE;
-
-        while (TRUE) {
-                if (!g_file_enumerator_iterate (enumerator, &info, &child, NULL, error))
-                        return FALSE;
-
-                if (info == NULL)
-                        break;
-
-                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-                        if (!rm_r (child, error))
-                                return FALSE;
-                } else if (!g_file_delete (child, NULL, error))
-                        return FALSE;
-        }
-
-        return g_file_delete (dir, NULL, error);
-}
-
 static void
 dynamic_user_free (DynamicUser *user)
 {
@@ -166,7 +134,7 @@ dynamic_user_free (DynamicUser *user)
         g_assert (!g_str_has_prefix (user->home, "/home"));
 
         home = g_file_new_for_path (user->home);
-        if (!rm_r (home, &error))
+        if (!gdm_rm_recursively (home, &error))
                 g_warning ("Failed to delete '%s', continuing: %s",
                            user->home, error->message);
 
@@ -313,47 +281,6 @@ pick_username (GdmDynamicUserStore *store,
         g_assert_not_reached ();
 }
 
-static gboolean
-ensure_home_dir (const char  *home,
-                 uid_t        uid,
-                 GError     **error)
-{
-        if (g_mkdir_with_parents (home, 0755) < 0) {
-                int errsv = errno;
-                g_set_error (error,
-                             G_IO_ERROR,
-                             g_io_error_from_errno (errsv),
-                             "Failed to create home directory '%s': %s",
-                             home,
-                             g_strerror (errsv));
-                return FALSE;
-        }
-
-        if (chown (home, uid, GID_NOBODY) < 0) {
-                int errsv = errno;
-                g_set_error (error,
-                             G_IO_ERROR,
-                             g_io_error_from_errno (errsv),
-                             "Failed to chown home directory '%s': %s",
-                             home,
-                             g_strerror (errsv));
-                return FALSE;
-        }
-
-        if (chmod (home, 0700) < 0) {
-                int errsv = errno;
-                g_set_error (error,
-                             G_IO_ERROR,
-                             g_io_error_from_errno (errsv),
-                             "Failed to chmod home directory '%s': %s",
-                             home,
-                             g_strerror (errsv));
-                return FALSE;
-        }
-
-        return TRUE;
-}
-
 gboolean
 gdm_dynamic_user_store_create (GdmDynamicUserStore  *store,
                                const char           *preferred_username,
@@ -395,7 +322,7 @@ gdm_dynamic_user_store_create (GdmDynamicUserStore  *store,
         }
 
         home = g_build_filename (GDM_DYN_HOME_DIR, username, NULL);
-        if (!ensure_home_dir (home, uid, error))
+        if (!gdm_ensure_dir (home, uid, GID_NOBODY, 0700, FALSE, error))
                 return FALSE;
 
         user = dynamic_user_new (username, display_name, home, uid, grp);

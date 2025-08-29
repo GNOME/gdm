@@ -43,6 +43,7 @@
 #include "gdm-manager.h"
 #include "gdm-log.h"
 #include "gdm-common.h"
+#include "gdm-file-utils.h"
 
 #include "gdm-settings.h"
 #include "gdm-settings-direct.h"
@@ -144,47 +145,22 @@ write_pid (void)
         atexit (delete_pid);
 }
 
-static gboolean
-ensure_dir_with_perms (const char *path,
-                       uid_t       uid,
-                       gid_t       gid,
-                       mode_t      mode,
-                       GError    **error)
-{
-        gboolean ret = FALSE;
-
-        if (g_mkdir_with_parents (path, 0755) == -1) {
-                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
-                goto out;
-        }
-        if (g_chmod (path, mode) == -1) {
-                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
-                goto out;
-        }
-        if (chown (path, uid, gid) == -1) {
-                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-        return ret;
-}
-
 static void
 gdm_daemon_ensure_dirs (uid_t uid,
                         gid_t gid)
 {
-        GError *error = NULL;
+        g_autoptr (GError) error = NULL;
 
         /* Set up /run/gdm */
-        if (!ensure_dir_with_perms (GDM_RUN_DIR, 0, 0, 0755, &error)) {
+        if (!gdm_ensure_dir (GDM_RUN_DIR, 0, 0, 0755, FALSE, &error)) {
                 g_warning ("Failed to create " GDM_RUN_DIR ": %s", error->message);
+                g_clear_error (&error);
         }
 
         /* Set up /var/log/gdm */
-        if (!ensure_dir_with_perms (LOGDIR, 0, gid, 0711, &error)) {
+        if (!gdm_ensure_dir (LOGDIR, 0, gid, 0711, FALSE, &error)) {
                 g_warning ("Failed to create " LOGDIR ": %s", error->message);
+                g_clear_error (&error);
         }
 }
 
