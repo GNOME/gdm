@@ -48,4 +48,8 @@ gboolean gdm_ensure_dir (const char  *path,
                          gboolean     recursive_chown,
                          GError     **error);
 
+gboolean gdm_copy_dir_recursively (const char  *source,
+                                   const char  *dest,
+                                   GError     **error);
+
 G_END_DECLS

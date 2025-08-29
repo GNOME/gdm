@@ -134,26 +134,6 @@ G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 #define MIGRATED_STAMPFILE_PATH (GDM_WORKING_DIR "/.migrated-dyn-users")
 
 static gboolean
-rename_dir (const char *src, const char *dest, GError **error)
-{
-        if (!g_file_test (src, G_FILE_TEST_IS_DIR))
-                return TRUE;
-
-        if (g_rename (src, dest) < 0) {
-                int errsv = errno;
-                g_set_error (error,
-                             G_IO_ERROR,
-                             g_io_error_from_errno (errsv),
-                             "Failed to rename '%s' -> '%s': %s",
-                             src, dest,
-                             g_strerror (errsv));
-                return FALSE;
-        }
-
-        return TRUE;
-}
-
-static gboolean
 migrate_working_dir (GError **error)
 {
         if (g_file_test (MIGRATED_STAMPFILE_PATH, G_FILE_TEST_EXISTS))
@@ -170,15 +150,24 @@ migrate_working_dir (GError **error)
                 return FALSE;
         }
 
-        if (!rename_dir (GDM_WORKING_DIR "/.local/state",
-                         GDM_WORKING_DIR "/seat0/state",
-                         error))
-                return FALSE;
+        if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.local/state",
+                                       GDM_WORKING_DIR "/seat0/state",
+                                       error)) {
+               if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+                       return FALSE;
 
-        if (!rename_dir (GDM_WORKING_DIR "/.config",
-                         GDM_WORKING_DIR "/seat0/config",
-                         error))
-                return FALSE;
+                /* The directory not existing isn't an error */
+                g_clear_error (error);
+       }
+
+        if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.config",
+                                       GDM_WORKING_DIR "/seat0/config",
+                                       error)) {
+                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+                       return FALSE;
+
+                g_clear_error (error);
+        }
 
         if (!g_file_set_contents (MIGRATED_STAMPFILE_PATH, "1", -1, error))
                 return FALSE;

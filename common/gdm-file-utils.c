@@ -164,3 +164,78 @@ gdm_ensure_dir (const char  *path,
 
         return TRUE;
 }
+
+static gboolean
+recursive_copy_dir (GFile   *source,
+                    GFile   *dest,
+                    GError **error)
+{
+        g_autoptr (GFileEnumerator) enumerator = NULL;
+        GFileInfo *info;
+        GFile *source_child;
+
+        if (!g_file_make_directory (dest, NULL, error)) {
+                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+                        return FALSE;
+
+                /* It's not an error if the directory exists */
+                g_clear_error (error);
+        }
+
+        enumerator = g_file_enumerate_children (source,
+                                                G_FILE_ATTRIBUTE_STANDARD_TYPE","
+                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                NULL, error);
+        if (enumerator == NULL)
+                return FALSE;
+
+        while (TRUE) {
+                g_autoptr (GFile) dest_child = NULL;
+
+                if (!g_file_enumerator_iterate (enumerator, &info, &source_child, NULL, error))
+                        return FALSE;
+
+                if (info == NULL)
+                        break;
+
+                dest_child = g_file_get_child (dest, g_file_info_get_name (info));
+
+                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+                        if (!recursive_copy_dir (source_child, dest_child, error))
+                                return FALSE;
+                } else if (!g_file_copy (source_child, dest_child,
+                                         G_FILE_COPY_NOFOLLOW_SYMLINKS |
+                                         G_FILE_COPY_ALL_METADATA |
+                                         G_FILE_COPY_OVERWRITE,
+                                         NULL, NULL, NULL, error))
+                        return FALSE;
+        }
+
+        return TRUE;
+}
+
+gboolean
+gdm_copy_dir_recursively (const char *source,
+                          const char *dest,
+                          GError **error)
+{
+        g_autoptr (GFile) gio_source = NULL;
+        g_autoptr (GFile) gio_dest = NULL;
+
+        gio_source = g_file_new_for_path (source);
+        gio_dest = g_file_new_for_path (dest);
+
+        if (!recursive_copy_dir (gio_source, gio_dest, error)) {
+                g_autoptr (GError) inner_error = NULL;
+
+                if (!gdm_rm_recursively (gio_dest, &inner_error)) {
+                        g_warning ("Failed to clean up '%s' after failed recursive copy: %s",
+                                   dest, inner_error->message);
+                }
+
+                return FALSE;
+        }
+
+        return TRUE;
+}
