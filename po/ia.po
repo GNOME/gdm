@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-07-31 20:24+0000\n"
-"PO-Revision-Date: 2025-08-02 19:50-0400\n"
+"POT-Creation-Date: 2025-09-04 16:13+0000\n"
+"PO-Revision-Date: 2025-09-08 14:22-0300\n"
 "Last-Translator: Emilio Sepúlveda <emism.translations@gmail.com>\n"
 "Language-Team: Interlingua <softinterlingua@gmail.com>\n"
 "Language: ia\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-DL-Module: gdm\n"
 "X-DL-Branch: main\n"
 "X-DL-Domain: po\n"
-"X-DL-State: Translating\n"
+"X-DL-State: None\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 48.0\n"
 
@@ -56,19 +56,21 @@ msgstr ""
 msgid "XDMCP: Unable to parse address"
 msgstr ""
 
-#: common/gdm-common.c:307
+#: common/gdm-common.c:343
+#, c-format
 msgid "/dev/urandom is not a character device"
 msgstr ""
 
-#: common/gdm-common.c:346
+#: common/gdm-common.c:382
 msgid "Unable to create transient display: "
 msgstr ""
 
-#: common/gdm-common.c:543
+#: common/gdm-common.c:579
 msgid "Could not identify the current session: "
 msgstr ""
 
-#: common/gdm-common.c:552
+#: common/gdm-common.c:588
+#, c-format
 msgid "Could not identify the current seat."
 msgstr ""
 
@@ -85,27 +87,27 @@ msgid ""
 "when the problem is corrected."
 msgstr ""
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:765
 msgid "No display available"
 msgstr ""
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1188
+#: daemon/gdm-manager.c:863 daemon/gdm-manager.c:1192
 msgid "No session available"
 msgstr ""
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:882
 msgid "Chooser session unavailable"
 msgstr ""
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:898
 msgid "Can only be called before user is logged in"
 msgstr ""
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:910
 msgid "Caller not GDM"
 msgstr ""
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:920
 msgid "Unable to open private communication channel"
 msgstr ""
 
@@ -114,12 +116,12 @@ msgstr ""
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr ""
 
-#: daemon/gdm-server.c:398 daemon/gdm-server.c:418 utils/gdm-config.c:505
+#: daemon/gdm-server.c:398 daemon/gdm-server.c:418
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr ""
 
-#: daemon/gdm-server.c:404 utils/gdm-config.c:511
+#: daemon/gdm-server.c:404
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr ""
@@ -209,10 +211,11 @@ msgstr ""
 #: daemon/gdm-session-worker.c:831
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr ""
+"Pardono, le authentication per contrasigno non functiona. Tenta de novo."
 
 #: daemon/gdm-session-worker.c:834
 msgid "Sorry, auto login didn’t work. Please try again."
-msgstr ""
+msgstr "Pardono, le initio de session automatic non functiona. Tenta de novo."
 
 #: daemon/gdm-session-worker.c:837
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
@@ -235,8 +238,9 @@ msgid "Username:"
 msgstr "Nomine de usator:"
 
 #: daemon/gdm-session-worker.c:1675 daemon/gdm-session-worker.c:1692
+#, c-format
 msgid "no user account available"
-msgstr ""
+msgstr "nulle conto de usator disponibile"
 
 #: daemon/gdm-session-worker.c:1719
 msgid "Unable to change to user"
@@ -262,59 +266,49 @@ msgstr ""
 msgid "GNOME Display Manager X Session Launcher"
 msgstr ""
 
-#: daemon/main.c:125 daemon/main.c:138
+#: daemon/main.c:126 daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 
-#: daemon/main.c:182
-#, c-format
-msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
-
-#: daemon/main.c:188
-#, c-format
-msgid "Failed to create LogDir %s: %s"
-msgstr ""
-
-#: daemon/main.c:223
+#: daemon/main.c:197
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr ""
 
-#: daemon/main.c:229
+#: daemon/main.c:203
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
 
-#: daemon/main.c:235
+#: daemon/main.c:209
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr ""
 
-#: daemon/main.c:241
+#: daemon/main.c:215
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 
-#: daemon/main.c:309
+#: daemon/main.c:283
 msgid "Make all warnings fatal"
 msgstr ""
 
-#: daemon/main.c:310
+#: daemon/main.c:284
 msgid "Exit after a time (for debugging)"
 msgstr ""
 
-#: daemon/main.c:311
+#: daemon/main.c:285
 msgid "Print GDM version"
-msgstr ""
+msgstr "Imprime le version de GDM"
 
-#: daemon/main.c:322
+#: daemon/main.c:296
 msgid "GNOME Display Manager"
 msgstr ""
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:342
+#: daemon/main.c:316
 msgid "Only the root user can run GDM"
-msgstr ""
+msgstr "Solmente le usator root pote executar GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
@@ -530,36 +524,27 @@ msgstr ""
 msgid "“%s” is not a valid %s “%s” value"
 msgstr ""
 
-#: utils/gdm-config.c:496
+#: utils/gdm-config.c:633
 #, c-format
-msgid "Failed to switch to %s user"
-msgstr ""
-
-#: utils/gdm-config.c:517
-#, c-format
-msgid "Couldn’t set userid to %u"
-msgstr ""
-
-#: utils/gdm-config.c:680
 msgid "No distro detected, no hook to run"
 msgstr ""
 
-#: utils/gdm-config.c:698
+#: utils/gdm-config.c:651
 #, c-format
 msgid "No valid args found to run hook “%s”"
 msgstr ""
 
-#: utils/gdm-config.c:703
+#: utils/gdm-config.c:656
 #, c-format
 msgid "Running distro hook “%s”\n"
 msgstr ""
 
-#: utils/gdm-config.c:717
+#: utils/gdm-config.c:670
 #, c-format
 msgid "Distro hook “%s” requested stopping"
 msgstr ""
 
-#: utils/gdm-config.c:730
+#: utils/gdm-config.c:683
 #, c-format
 msgid ""
 "Distro hook failed with exit status %d and error %s:\n"
@@ -570,50 +555,52 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
-#: utils/gdm-config.c:780
+#: utils/gdm-config.c:733
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
 
-#: utils/gdm-config.c:820
+#: utils/gdm-config.c:773
 #, c-format
 msgid "Failed to create directory %s"
 msgstr ""
 
-#: utils/gdm-config.c:891
+#: utils/gdm-config.c:844
+#, c-format
 msgid "dconf profile not found"
 msgstr ""
 
-#: utils/gdm-config.c:981
+#: utils/gdm-config.c:934
+#, c-format
 msgid "dconf has no system-db configured"
 msgstr ""
 
 #. TRANSLATORS: First value is a file path, second is an error message
-#: utils/gdm-config.c:1130
+#: utils/gdm-config.c:1083
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
 msgstr ""
 
-#: utils/gdm-config.c:1133
+#: utils/gdm-config.c:1086
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
 msgstr ""
 
 #. XXX: Fail with an error instead?
-#: utils/gdm-config.c:1261
+#: utils/gdm-config.c:1214
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
 msgstr ""
 
-#: utils/gdm-config.c:1546
+#: utils/gdm-config.c:1499
 msgid "Failed to run a required distro hook: "
 msgstr ""
 
-#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:1515 utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr ""
 
-#: utils/gdm-config.c:1566
+#: utils/gdm-config.c:1519
 #, c-format
 msgid ""
 "Commands:\n"
@@ -627,46 +614,46 @@ msgid ""
 "Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
 
-#: utils/gdm-config.c:1628
+#: utils/gdm-config.c:1581
 msgid "Command options"
 msgstr ""
 
 #. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
-#: utils/gdm-config.c:1663
+#: utils/gdm-config.c:1616
 #, c-format
 msgid "You need to be root to use %s “%s” command"
 msgstr ""
 
-#: utils/gdm-config.c:1713
+#: utils/gdm-config.c:1666
 #, c-format
 msgid "Failed to set %s setting: "
 msgstr ""
 
-#: utils/gdm-config.c:1805
+#: utils/gdm-config.c:1758
 msgid "Failed to set smartcard setting"
 msgstr ""
 
-#: utils/gdm-config.c:1811
+#: utils/gdm-config.c:1764
 msgid "Failed to set password setting"
 msgstr ""
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Enabled"
 msgstr "Activate"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Disabled"
 msgstr "Disactivate"
 
-#: utils/gdm-config.c:1834
+#: utils/gdm-config.c:1787
 msgid "Not supported"
 msgstr "Non supportate"
 
-#: utils/gdm-config.c:1850
+#: utils/gdm-config.c:1803
 msgid "Required"
 msgstr "Requirite"
 
-#: utils/gdm-config.c:1911
+#: utils/gdm-config.c:1855
 #, c-format
 msgid ""
 "GDM Authorization configuration\n"
@@ -677,36 +664,37 @@ msgid ""
 "  Smart Card removal action: %s\n"
 msgstr ""
 
-#: utils/gdm-config.c:1939
+#: utils/gdm-config.c:1883
 msgctxt "Interactive question"
 msgid "Y"
 msgstr "S"
 
-#: utils/gdm-config.c:1940
+#: utils/gdm-config.c:1884
 msgctxt "Interactive question"
 msgid "y"
 msgstr "s"
 
-#: utils/gdm-config.c:1941
+#: utils/gdm-config.c:1885
 msgctxt "Interactive question"
 msgid "N"
 msgstr "N"
 
-#: utils/gdm-config.c:1942
+#: utils/gdm-config.c:1886
 msgctxt "Interactive question"
 msgid "n"
 msgstr ""
 
-#: utils/gdm-config.c:1946
+#: utils/gdm-config.c:1890
 msgctxt "Interactive question"
 msgid "Do you want to continue? [Y/n]? "
 msgstr "Desira tu continuar? [S/n]? "
 
-#: utils/gdm-config.c:1964
+#: utils/gdm-config.c:1908
+#, c-format
 msgid "User cancelled the request"
 msgstr ""
 
-#: utils/gdm-config.c:1995
+#: utils/gdm-config.c:1939
 #, c-format
 msgid "Failed to reset %s setting: "
 msgstr ""
@@ -726,9 +714,9 @@ msgstr ""
 
 #: utils/gdmflexiserver.c:52
 msgid "Version of this application"
-msgstr ""
+msgstr "Version de iste application"
 
 #. Option parsing
 #: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
-msgstr ""
+msgstr "— Nove initio de session de GDM"
