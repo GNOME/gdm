@@ -182,3 +182,25 @@ configure_file(
   },
   install_dir: get_option('datadir') / 'polkit-1' / 'rules.d',
 )
+
+# SELinux policy
+if selinux
+  gdm_userdb_mod = custom_target('gdm_userdb.mod',
+    input: 'gdm_userdb.te',
+    output: 'gdm_userdb.mod',
+    command: [checkmodule, '-M', '-m', '-o', '@OUTPUT@', '@INPUT@'],
+  )
+  gdm_userdb_pp = custom_target('gdm_userdb.pp',
+    input: gdm_userdb_mod,
+    output: 'gdm_userdb.pp',
+    command: [semodule_package, '-o', '@OUTPUT@', '-m', '@INPUT@'],
+  )
+  gdm_userdb_pp_bz2 = custom_target('gdm_userdb.pp.bz2',
+    input: gdm_userdb_pp,
+    output: 'gdm_userdb.pp.bz2',
+    command: [bzip2, '-9', '-c', '@INPUT@'],
+    capture: true,
+    install: true,
+    install_dir: get_option('datadir') / 'selinux' / 'packages' / 'targeted',
+  )
+endif

@@ -1,0 +1,57 @@
+# GDM Dynamic User Support Policy
+module gdm_userdb 1.0;
+
+require {
+    type xdm_t;
+    type systemd_userdbd_runtime_t;
+    type passwd_file_t;
+    type vmtools_exec_t;
+
+    # System domains that need userdb access
+    attribute domain;
+    type systemd_userdbd_t;
+    type systemd_logind_t;
+    type policykit_t;
+    type policykit_auth_t;
+    type abrt_t;
+    type abrt_dump_oops_t;
+    type init_t;
+    type auditd_t;
+    type chkpwd_t;
+
+    class dir { add_name write remove_name };
+    class sock_file { create write unlink };
+    class file { write execute };
+    class unix_stream_socket { connectto };
+    class dbus { send_msg };
+}
+
+# Create an attribute for domains that can connect to userdb
+attribute userdb_client_domain;
+
+# Define which domains are userdb clients
+typeattribute systemd_userdbd_t userdb_client_domain;
+typeattribute systemd_logind_t userdb_client_domain;
+typeattribute policykit_t userdb_client_domain;
+typeattribute policykit_auth_t userdb_client_domain;
+typeattribute abrt_t userdb_client_domain;
+typeattribute abrt_dump_oops_t userdb_client_domain;
+typeattribute init_t userdb_client_domain;
+typeattribute auditd_t userdb_client_domain;
+typeattribute chkpwd_t userdb_client_domain;
+
+# Allow all userdb clients to connect to GDM's userdb socket
+allow userdb_client_domain xdm_t:unix_stream_socket connectto;
+
+# Allow GDM to create and manage userdb socket for dynamic user management
+allow xdm_t systemd_userdbd_runtime_t:dir { add_name write remove_name };
+allow xdm_t systemd_userdbd_runtime_t:sock_file { create write unlink };
+
+# Allow GDM to write to password database lock file when creating dynamic users
+allow xdm_t passwd_file_t:file write;
+
+# Allow GDM to execute VMware tools (for VM environments)
+allow xdm_t vmtools_exec_t:file execute;
+
+# Allow GDM to communicate with ABRT over D-Bus
+allow xdm_t abrt_t:dbus send_msg;

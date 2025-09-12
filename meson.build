@@ -39,6 +39,7 @@ gdm_dyn_home_dir = (get_option('dyn-home-dir') != '')? get_option('dyn-home-dir'
 pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
 pam_profiles_dir = pam_prefix / 'pam.d'
 have_x11_support = get_option('x11-support')
+selinux = get_option('selinux')
 # Common variables
 config_h_dir = include_directories('.')
 
@@ -67,7 +68,7 @@ json_glib = dependency('json-glib-1.0', version: '>= 1.2.0',
   required: pam_extensions_supported)
 accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 keyutils_dep = dependency('libkeyutils', required: false)
-libselinux_dep = dependency('libselinux', required: get_option('selinux'))
+libselinux_dep = dependency('libselinux', required: selinux)
 
 # udev
 if udev_dir == ''
@@ -242,6 +243,11 @@ else
 endif
 
 dconf_profiles_path = dconf_datadir / 'dconf' / 'profile'
+
+# Selinux policy
+checkmodule = find_program('checkmodule', required: selinux)
+semodule_package = find_program('semodule_package', required: selinux)
+bzip2 = find_program('bzip2', required: selinux)
 
 # Configuration
 conf = configuration_data()
