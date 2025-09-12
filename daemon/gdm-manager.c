@@ -2553,10 +2553,12 @@ static void
 on_graphics_unsupported (GdmLocalDisplayFactory *factory,
                          GdmManager             *manager)
 {
+#ifdef WITH_PLYMOUTH
         if (manager->plymouth_is_running) {
                 plymouth_quit_without_transition ();
                 manager->plymouth_is_running = FALSE;
         }
+#endif
 }
 
 void
