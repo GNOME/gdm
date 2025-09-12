@@ -259,11 +259,16 @@ on_authenticate_cb (GdmDBusWorker *proxy,
         if (worked) {
                 gdm_session_authorize (self, service_name);
         } else {
-                g_signal_emit (self,
-                               signals[AUTHENTICATION_FAILED],
-                               0,
-                               service_name,
-                               conversation->worker_pid);
+                if (!g_error_matches (error,
+                                      GDM_SESSION_WORKER_ERROR,
+                                      GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE)) {
+                        g_signal_emit (self,
+                                       signals[AUTHENTICATION_FAILED],
+                                       0,
+                                       service_name,
+                                       conversation->worker_pid);
+                }
+
                 report_and_stop_conversation (self, service_name, error);
         }
 }
