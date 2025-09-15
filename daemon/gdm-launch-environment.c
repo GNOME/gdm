@@ -150,6 +150,31 @@ migrate_working_dir (GError **error)
                 return FALSE;
         }
 
+        /* Make sure GDM_WORKING_DIR has the right permissions and ownership.
+         * If it existed before the migration, g_mkdir_with_parents won't set
+         * the right mode. On some systems it'll be set to 0700 and gdm:gdm,
+         * which prevents the greeter session from accessing the subdirs within */
+        if (g_chmod (GDM_WORKING_DIR, 0755) < 0) {
+                int errsv = errno;
+                g_set_error (error,
+                             G_IO_ERROR,
+                             g_io_error_from_errno (errsv),
+                             "Failed to chmod directory '%s': %s",
+                             GDM_WORKING_DIR,
+                             g_strerror (errsv));
+                return FALSE;
+        }
+        if (chown (GDM_WORKING_DIR, 0, 0) < 0) {
+                int errsv = errno;
+                g_set_error (error,
+                             G_IO_ERROR,
+                             g_io_error_from_errno (errsv),
+                             "Failed to chown directory '%s': %s",
+                             GDM_WORKING_DIR,
+                             g_strerror (errsv));
+                return FALSE;
+        }
+
         if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.local/state",
                                        GDM_WORKING_DIR "/seat0/state",
                                        error)) {
