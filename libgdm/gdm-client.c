@@ -98,7 +98,15 @@ gdm_client_get_open_connection (GdmClient *client)
         }
 
         if (proxy != NULL) {
-                return g_dbus_proxy_get_connection (proxy);
+                GDBusConnection *connection = g_dbus_proxy_get_connection (proxy);
+
+                if G_UNLIKELY (g_dbus_connection_is_closed (connection)) {
+                        g_critical ("%s: connection is closed",
+                                    g_type_name_from_instance ((GTypeInstance *) proxy));
+                        return NULL;
+                }
+
+                return connection;
         }
 
         return NULL;
