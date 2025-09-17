@@ -582,7 +582,7 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
         g_autoptr(GDBusConnection) connection = NULL;
         g_autoptr(GdmManager)      manager = NULL;
         g_autofree char *address = NULL;
-        GdmUserVerifier *user_verifier = NULL;
+        g_autoptr(GdmUserVerifier) user_verifier = NULL;
         gboolean         ret;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
@@ -627,9 +627,12 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
-        g_set_weak_pointer (&client->user_verifier_for_reauth, user_verifier);
+        g_set_object (&client->user_verifier_for_reauth, user_verifier);
 
-        return user_verifier;
+        if (user_verifier == NULL)
+                return NULL;
+
+        return g_object_ref (client->user_verifier_for_reauth);
 }
 
 /**
@@ -688,15 +691,18 @@ gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
                                                  GAsyncResult    *result,
                                                  GError         **error)
 {
-        GdmUserVerifier *user_verifier;
+        g_autoptr(GdmUserVerifier) user_verifier = NULL;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
         user_verifier = g_task_propagate_pointer (G_TASK (result), error);
 
-        g_set_weak_pointer (&client->user_verifier_for_reauth, user_verifier);
+        g_set_object (&client->user_verifier_for_reauth, user_verifier);
 
-        return user_verifier;
+        if (user_verifier == NULL)
+                return NULL;
+
+        return g_object_ref (client->user_verifier_for_reauth);
 }
 
 /**
@@ -716,7 +722,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                    GError       **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
-        GdmUserVerifier *user_verifier;
+        g_autoptr(GdmUserVerifier) user_verifier = NULL;
 
         if (client->user_verifier != NULL) {
                 return g_object_ref (client->user_verifier);
@@ -735,7 +741,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
-        g_set_weak_pointer (&client->user_verifier, user_verifier);
+        g_set_object (&client->user_verifier, user_verifier);
 
         if (user_verifier == NULL)
                 return NULL;
@@ -793,7 +799,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                 }
         }
 
-        return client->user_verifier;
+        return g_object_ref (client->user_verifier);
 }
 
 static void
@@ -877,7 +883,7 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
                                      GAsyncResult    *result,
                                      GError         **error)
 {
-        GdmUserVerifier *user_verifier;
+        g_autoptr(GdmUserVerifier) user_verifier = NULL;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
@@ -888,9 +894,9 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
         if (user_verifier == NULL)
                 return NULL;
 
-        g_set_weak_pointer (&client->user_verifier, user_verifier);
+        g_set_object (&client->user_verifier, user_verifier);
 
-        return user_verifier;
+        return g_object_ref (client->user_verifier);
 }
 
 static GHashTable *
@@ -1087,7 +1093,7 @@ gdm_client_get_greeter_finish (GdmClient       *client,
                                GAsyncResult    *result,
                                GError         **error)
 {
-        GdmGreeter *greeter;
+        g_autoptr(GdmGreeter) greeter = NULL;
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
@@ -1098,9 +1104,9 @@ gdm_client_get_greeter_finish (GdmClient       *client,
         if (greeter == NULL)
                 return NULL;
 
-        g_set_weak_pointer (&client->greeter, greeter);
+        g_set_object (&client->greeter, greeter);
 
-        return greeter;
+        return g_object_ref (client->greeter);
 }
 
 /**
@@ -1122,7 +1128,7 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                              GError       **error)
 {
         g_autoptr(GDBusConnection) connection = NULL;
-        GdmGreeter *greeter;
+        g_autoptr(GdmGreeter) greeter = NULL;
 
         if (client->greeter != NULL) {
                 return g_object_ref (client->greeter);
@@ -1141,13 +1147,14 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                                               cancellable,
                                               error);
 
-        g_set_weak_pointer (&client->greeter, greeter);
+        g_set_object (&client->greeter, greeter);
 
-        if (client->greeter != NULL) {
-                query_for_timed_login_requested_signal (client->greeter);
-        }
+        if (greeter == NULL)
+                return NULL;
 
-        return client->greeter;
+        query_for_timed_login_requested_signal (greeter);
+
+        return g_object_ref (client->greeter);
 }
 
 static void
@@ -1175,9 +1182,9 @@ gdm_client_finalize (GObject *object)
 
         g_return_if_fail (client != NULL);
 
-        g_clear_weak_pointer (&client->user_verifier);
-        g_clear_weak_pointer (&client->user_verifier_for_reauth);
-        g_clear_weak_pointer (&client->greeter);
+        g_clear_object (&client->user_verifier);
+        g_clear_object (&client->user_verifier_for_reauth);
+        g_clear_object (&client->greeter);
 
         g_strfreev (client->enabled_extensions);
 
