@@ -827,8 +827,9 @@ gdm_session_handle_custom_json_request (GdmDBusWorkerManager  *worker_manager_in
         if (conversation != NULL) {
                 set_pending_query (conversation, invocation);
 
-                g_debug ("GdmSession: emitting custom JSON request '%s' v%u",
-                         protocol, version);
+                if (g_getenv ("GDM_DEBUG_JSON_REQUESTS") != NULL)
+                        g_message ("GdmSession: emitting custom JSON request '%s' v%u: %s",
+                                   protocol, version, request);
                 gdm_dbus_user_verifier_custom_json_emit_request (custom_json_interface,
                                                                  service_name,
                                                                  protocol,
