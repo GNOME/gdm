@@ -108,18 +108,8 @@ if have_x11_support
       i = i + 1
     endforeach
   endif
-
-  xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
-  have_xdmcp = xdmcp_dep.found()
-  if have_xdmcp
-    gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
-  endif
-  if have_xdmcp and get_option('tcp-wrappers')
-    libwrap_dep = cc.find_library('wrap')
-  endif
 else
   xserver_has_listen = false
-  have_xdmcp = false
 endif
 # systemd
 logind_provider = get_option('logind-provider')
@@ -301,7 +291,6 @@ conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
 conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
 conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
-conf.set('HAVE_LIBXDMCP', have_xdmcp)
 conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('HAVE_USERDB', have_userdb)
 conf.set('GREETER_UID_MIN', greeter_uid_min)
@@ -339,9 +328,6 @@ subdir('pam_gdm')
 subdir('po')
 if libcheck_dep.found()
   subdir('tests')
-endif
-if have_xdmcp
-  subdir('chooser')
 endif
 subdir('docs')
 

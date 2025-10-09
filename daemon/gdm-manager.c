@@ -56,8 +56,6 @@
 #include "gdm-session-record.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
-#include "gdm-xdmcp-display-factory.h"
-#include "gdm-xdmcp-chooser-display.h"
 
 #define GDM_DBUS_PATH             "/org/gnome/DisplayManager"
 #define GDM_MANAGER_PATH          GDM_DBUS_PATH "/Manager"
@@ -80,9 +78,6 @@ struct _GdmManager
         GdmDynamicUserStore    *dyn_user_store;
         GdmDisplayStore        *display_store;
         GdmLocalDisplayFactory *local_factory;
-#ifdef HAVE_LIBXDMCP
-        GdmXdmcpDisplayFactory *xdmcp_factory;
-#endif
         GdmRemoteDisplayFactory *remote_factory;
         GdmDisplay             *automatic_login_display;
         GList                  *user_sessions;
@@ -865,25 +860,6 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-#ifdef HAVE_LIBXDMCP
-        if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
-                GdmLaunchEnvironment *launch_environment;
-
-                g_object_get (display, "launch-environment", &launch_environment, NULL);
-
-                if (launch_environment != NULL) {
-                        session = gdm_launch_environment_get_session (launch_environment);
-                }
-
-                if (session == NULL) {
-                        g_dbus_method_invocation_return_error_literal (invocation,
-                                                                       G_DBUS_ERROR,
-                                                                       G_DBUS_ERROR_ACCESS_DENIED,
-                                                                       _("Chooser session unavailable"));
-                        return TRUE;
-                }
-        }
-#endif
         if (session == NULL) {
                 session = get_user_session_for_display (display);
                 g_debug ("GdmSession: Considering session %s for username %s",
@@ -1395,20 +1371,7 @@ set_up_automatic_login_session (GdmManager *manager,
         gdm_session_start_conversation (session, "gdm-autologin");
 }
 
-#ifdef HAVE_LIBXDMCP
-static void
-set_up_chooser_session (GdmManager *manager,
-                        GdmDisplay *display)
-{
-        if (!gdm_display_prepare_greeter_session (display, manager->dyn_user_store, NULL)) {
-                gdm_display_unmanage (display);
-                gdm_display_finish (display);
-                return;
-        }
 
-        gdm_display_start_greeter_session (display);
-}
-#endif
 
 static void
 set_up_greeter_session (GdmManager *manager,
@@ -1491,13 +1454,6 @@ set_up_session (GdmManager *manager,
 
         if (!autologin_enabled) {
                 g_free (username);
-
-#ifdef HAVE_LIBXDMCP
-                if (GDM_IS_XDMCP_CHOOSER_DISPLAY (display)) {
-                        set_up_chooser_session (manager, display);
-                        return;
-                }
-#endif
 
                 set_up_greeter_session (manager, display);
                 return;
@@ -2576,12 +2532,6 @@ gdm_manager_stop (GdmManager *manager)
                                                       manager);
         }
 
-#ifdef HAVE_LIBXDMCP
-        if (manager->xdmcp_factory != NULL) {
-                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
-        }
-#endif
-
         manager->started = FALSE;
 }
 
@@ -2619,23 +2569,6 @@ gdm_manager_start (GdmManager *manager)
                 }
 #endif
         }
-
-#ifdef HAVE_LIBXDMCP
-        /* Accept xdmcp connections */
-        if (manager->xdmcp_enabled) {
-#ifdef WITH_PLYMOUTH
-                /* Quit plymouth if xdmcp is the only display */
-                if (!manager->show_local_greeter && manager->plymouth_is_running) {
-                        plymouth_quit_without_transition ();
-                        manager->plymouth_is_running = FALSE;
-                }
-#endif
-                if (manager->xdmcp_factory != NULL) {
-                        g_debug ("GdmManager: Accepting XDMCP connections...");
-                        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
-                }
-        }
-#endif
 
         manager->started = TRUE;
 }
@@ -2682,21 +2615,6 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
 
         if (manager->xdmcp_enabled != enabled) {
                 manager->xdmcp_enabled = enabled;
-#ifdef HAVE_LIBXDMCP
-                if (manager->xdmcp_enabled) {
-                        manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store);
-                        if (manager->started) {
-                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
-                        }
-                } else {
-                        if (manager->started) {
-                                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->xdmcp_factory));
-                        }
-
-                        g_object_unref (manager->xdmcp_factory);
-                        manager->xdmcp_factory = NULL;
-                }
-#endif
         }
 
 }
@@ -2796,12 +2714,6 @@ gdm_manager_constructor (GType                  type,
         if (manager->remote_login_enabled) {
                 manager->remote_factory = gdm_remote_display_factory_new (manager->display_store);
         }
-
-#ifdef HAVE_LIBXDMCP
-        if (manager->xdmcp_enabled) {
-                manager->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->display_store);
-        }
-#endif
 
         return G_OBJECT (manager);
 }
@@ -2919,9 +2831,6 @@ gdm_manager_dispose (GObject *object)
 
         g_clear_weak_pointer (&manager->automatic_login_display);
 
-#ifdef HAVE_LIBXDMCP
-        g_clear_object (&manager->xdmcp_factory);
-#endif
         g_clear_object (&manager->local_factory);
         g_clear_object (&manager->remote_factory);
         g_clear_pointer (&manager->open_reauthentication_requests,

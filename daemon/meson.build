@@ -82,10 +82,6 @@ if have_x11_support
   ]
 endif
 
-if have_xdmcp and get_option('tcp-wrappers')
-  gdm_daemon_deps += libwrap_dep
-endif
-
 # test-session-client
 test_session_client_src = [
   'test-session-client.c',
@@ -215,19 +211,6 @@ gdm_daemon_gen_sources = [
   session_worker_dbus_gen,
   gdm_session_enums,
 ]
-
-if have_xdmcp
-  gdm_daemon_deps += xdmcp_dep
-
-  gdm_daemon_sources = [
-    gdm_daemon_sources,
-    files(
-      'gdm-xdmcp-display-factory.c',
-      'gdm-xdmcp-display.c',
-      'gdm-xdmcp-chooser-display.c',
-    ),
-  ]
-endif
 
 if gudev_dep.found()
   gdm_daemon_deps += gudev_dep
