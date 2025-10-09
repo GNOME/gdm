@@ -1819,10 +1819,8 @@ jump_back_to_initial_vt (GdmSessionWorker *worker)
         if (g_strcmp0 (worker->display_seat_id, "seat0") != 0 || !worker->seat0_has_vts)
                 return;
 
-#ifdef ENABLE_USER_DISPLAY_SERVER
         jump_to_vt (worker, GDM_INITIAL_VT);
         worker->session_vt = 0;
-#endif
 }
 
 static void

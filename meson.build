@@ -277,7 +277,6 @@ conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
 conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
-conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
 conf.set('ENABLE_X11_SUPPORT', get_option('x11-support'))
@@ -371,7 +370,6 @@ summary({
     'SeLinux': libselinux_dep.found(),
     'Logind Provider': get_option('logind-provider'),
     'Use GDM Xsession': get_option('gdm-xsession'),
-    'Use UserDisplayServer': get_option('user-display-server'),
     'Use SystemdJournal': get_option('systemd-journal'),
     'Use WaylandSupport': get_option('wayland-support'),
     'Use X11Support': have_x11_support,
@@ -385,3 +383,4 @@ summary({
   section: 'Features',
   bool_yn: true,
 )
+
