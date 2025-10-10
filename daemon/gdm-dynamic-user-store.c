@@ -131,8 +131,10 @@ dynamic_user_free (DynamicUser *user)
                  user->username, user->uid);
 
         /* Sanity checks, let's not nuke the system by accident */
-        g_assert (g_strcmp0 (user->home, "/") != 0);
-        g_assert (!g_str_has_prefix (user->home, "/home"));
+        if (g_strcmp0 (user->home, "/") == 0 ||
+            g_str_has_prefix (user->home, "/home")) {
+                g_error ("GdmDynUserStore: Dynamic user home '%s' is in /home or is root! Aborting.", user->home);
+        }
 
         home = g_file_new_for_path (user->home);
         if (!gdm_rm_recursively (home, &error))
