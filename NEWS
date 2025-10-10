@@ -1,3 +1,17 @@
+49.1
+==========
+
+* Translation updates
+* Hotfixed a bug that leaves gnome-shell in a locked up state
+* Fixed implementation of userdb, so we don't list our users when asked about
+  UID 0 (root)
+* Switched safety check that avoids accidentally deleting / and /home from an
+  assertion to an error, so the check always runs even in production builds
+* Fixed bug where gnome-initial-setup's configuration (i.e. input methods)
+  failed to migrate to the final user session
+* Fixed bug where GDM assumed that Wayland is unavailable if Xwayland wasn't
+  installed on the system
+
 49.0.1
 ==========
 
