@@ -269,7 +269,7 @@ struct GdmDisplayServerConfiguration {
         const char *session_type;
 } display_server_configuration[] = {
 #ifdef ENABLE_WAYLAND_SUPPORT
-        { "wayland", GDM_KEY_WAYLAND_ENABLE, "/usr/bin/Xwayland", "wayland" },
+        { "wayland", GDM_KEY_WAYLAND_ENABLE, NULL, "wayland" },
 #endif
 #ifdef ENABLE_X11_SUPPORT
         { "xorg", GDM_KEY_XORG_ENABLE, "/usr/bin/Xorg", "x11" },
@@ -297,10 +297,8 @@ display_server_enabled (GdmLocalDisplayFactory *factory,
                         return FALSE;
 #endif
 
-#ifdef ENABLE_X11_SUPPORT
-                if (!g_file_test (binary, G_FILE_TEST_IS_EXECUTABLE))
+                if (binary && !g_file_test (binary, G_FILE_TEST_IS_EXECUTABLE))
                         return FALSE;
-#endif
 
                 return TRUE;
         }
