@@ -270,6 +270,7 @@ static GHashTable *
 build_launch_environment (GdmLaunchEnvironment *launch_environment,
                           gboolean              start_session)
 {
+        gboolean is_initial_setup = FALSE;
         GHashTable    *hash;
         static const char *const optional_environment[] = {
                 "GI_TYPELIB_PATH",
@@ -319,7 +320,9 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->session_mode));
                 g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->dconf_profile));
 
-		if (strcmp (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) != 0) {
+                is_initial_setup = strcmp (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) == 0;
+
+                if (!is_initial_setup) {
 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
 			g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
 			g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
@@ -347,7 +350,8 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
 
-                if (setup_seat_persist_dirs(seat_id, launch_environment->dyn_uid, &config_dir, &state_dir)) {
+                if (!is_initial_setup &&
+                    setup_seat_persist_dirs(seat_id, launch_environment->dyn_uid, &config_dir, &state_dir)) {
                         g_hash_table_insert (hash, g_strdup ("XDG_CONFIG_HOME"), config_dir);
                         g_hash_table_insert (hash, g_strdup ("XDG_STATE_HOME"), state_dir);
                 }
