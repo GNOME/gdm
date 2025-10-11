@@ -61,9 +61,6 @@
 #define INITIAL_SETUP_GROUPNAME "gnome-initial-setup"
 #define INITIAL_SETUP_DCONF_PROFILE "gnome-initial-setup"
 
-#define GDM_CHOOSER_USERNAME "gdm-chooser"
-#define GDM_CHOOSER_DISP_NAME "GDM XDMCP Chooser"
-
 extern char **environ;
 
 struct _GdmLaunchEnvironment
@@ -1098,38 +1095,6 @@ gdm_launch_environment_finalize (GObject *object)
         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
 }
 
-static GdmLaunchEnvironment *
-create_gnome_session_environment (const char *session_name,
-                                  const char *preferred_user_name,
-                                  const char *user_display_name,
-                                  const char *user_member_of,
-                                  const char *dconf_profile,
-                                  const char *display_name,
-                                  const char *seat_id,
-                                  const char *session_type,
-                                  const char *session_mode,
-                                  const char *display_hostname,
-                                  gboolean    display_is_local)
-{
-        GdmLaunchEnvironment *launch_environment;
-
-        launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
-                                           "session-name", session_name,
-                                           "preferred-user-name", preferred_user_name,
-                                           "user-display-name", user_display_name,
-                                           "user-member-of", user_member_of,
-                                           "dconf-profile", dconf_profile,
-                                           "session-type", session_type,
-                                           "session-mode", session_mode,
-                                           "x11-display-name", display_name,
-                                           "x11-display-seat-id", seat_id,
-                                           "x11-display-hostname", display_hostname,
-                                           "x11-display-is-local", display_is_local,
-                                           NULL);
-
-        return launch_environment;
-}
-
 GdmLaunchEnvironment *
 gdm_create_greeter_launch_environment (const char *display_name,
                                        const char *seat_id,
@@ -1137,17 +1102,19 @@ gdm_create_greeter_launch_environment (const char *display_name,
                                        const char *display_hostname,
                                        gboolean    display_is_local)
 {
-        return create_gnome_session_environment (GDM_GREETER_SESSION,
-                                                 GDM_GREETER_USERNAME,
-                                                 GDM_GREETER_DISP_NAME,
-                                                 GDM_GROUPNAME,
-                                                 GDM_DCONF_PROFILE,
-                                                 display_name,
-                                                 seat_id,
-                                                 session_type,
-                                                 GDM_SESSION_MODE,
-                                                 display_hostname,
-                                                 display_is_local);
+        return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                             "session-name", GDM_GREETER_SESSION,
+                             "preferred-user-name", GDM_GREETER_USERNAME,
+                             "user-display-name", GDM_GREETER_DISP_NAME,
+                             "user-member-of", GDM_GROUPNAME,
+                             "dconf-profile", GDM_DCONF_PROFILE,
+                             "x11-display-name", display_name,
+                             "x11-display-seat-id", seat_id,
+                             "session-type", session_type,
+                             "session-mode", GDM_SESSION_MODE,
+                             "x11-display-hostname", display_hostname,
+                             "x11-display-is-local", display_is_local,
+                             NULL);
 }
 
 GdmLaunchEnvironment *
@@ -1157,40 +1124,17 @@ gdm_create_initial_setup_launch_environment (const char *display_name,
                                              const char *display_hostname,
                                              gboolean    display_is_local)
 {
-        return create_gnome_session_environment (INITIAL_SETUP_SESSION,
-                                                 INITIAL_SETUP_USERNAME,
-                                                 INITIAL_SETUP_DISP_NAME,
-                                                 INITIAL_SETUP_GROUPNAME,
-                                                 INITIAL_SETUP_DCONF_PROFILE,
-                                                 display_name,
-                                                 seat_id,
-                                                 session_type,
-                                                 INITIAL_SETUP_SESSION_MODE,
-                                                 display_hostname,
-                                                 display_is_local);
+        return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                             "session-name", INITIAL_SETUP_SESSION,
+                             "preferred-user-name", INITIAL_SETUP_USERNAME,
+                             "user-display-name", INITIAL_SETUP_DISP_NAME,
+                             "user-member-of", INITIAL_SETUP_GROUPNAME,
+                             "dconf-profile", INITIAL_SETUP_DCONF_PROFILE,
+                             "x11-display-name", display_name,
+                             "x11-display-seat-id", seat_id,
+                             "session-type", session_type,
+                             "session-mode", INITIAL_SETUP_SESSION_MODE,
+                             "x11-display-hostname", display_hostname,
+                             "x11-display-is-local", display_is_local,
+                             NULL);
 }
-
-GdmLaunchEnvironment *
-gdm_create_chooser_launch_environment (const char *display_name,
-                                       const char *seat_id,
-                                       const char *display_hostname)
-
-{
-        GdmLaunchEnvironment *launch_environment;
-
-        launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
-                                           "session-name", "gdm-simple-chooser",
-                                           "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
-                                           "preferred-user-name", GDM_CHOOSER_USERNAME,
-                                           "user-display-name", GDM_CHOOSER_DISP_NAME,
-                                           "user-member-of", GDM_GROUPNAME,
-                                           "dconf-profile", GDM_DCONF_PROFILE,
-                                           "x11-display-name", display_name,
-                                           "x11-display-seat-id", seat_id,
-                                           "x11-display-hostname", display_hostname,
-                                           "x11-display-is-local", FALSE,
-                                           NULL);
-
-        return launch_environment;
-}
-

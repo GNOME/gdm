@@ -53,10 +53,6 @@ GdmLaunchEnvironment *gdm_create_initial_setup_launch_environment (const char *d
                                                                    const char *display_hostname,
                                                                    gboolean    display_is_local);
 
-GdmLaunchEnvironment *gdm_create_chooser_launch_environment (const char *display_name,
-                                                             const char *seat_id,
-                                                             const char *display_hostname);
-
 G_END_DECLS
 
 #endif /* __GDM_LAUNCH_ENVIRONMENT_H */
