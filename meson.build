@@ -28,7 +28,6 @@ pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm
 dbus_sys_dir = (get_option('dbus-sys') != '')? get_option('dbus-sys') : get_option('sysconfdir') / 'dbus-1' / 'system.d'
 gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / gdm_datadir / 'defaults.conf'
 gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
-gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get_option('gnome-settings-daemon-dir') : gdm_prefix / get_option('libexecdir')
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : '/run/gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
@@ -259,7 +258,6 @@ conf.set_quoted('GDM_WORKING_DIR', working_dir)
 conf.set_quoted('GNOMELOCALEDIR', gdm_prefix / get_option('localedir'))
 conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
-conf.set_quoted('GNOME_SETTINGS_DAEMON_DIR', gnome_settings_daemon_dir)
 conf.set_quoted('LANG_CONFIG_FILE', lang_config_file)
 conf.set_quoted('PAM_PROFILES_DIR', pam_profiles_dir[0] == '/' ? pam_profiles_dir : '/' + pam_profiles_dir)
 conf.set('HAVE_ADT', have_adt)
@@ -355,7 +353,6 @@ summary({
     'GDM Session default path': get_option('default-path'),
     'GDM Working dir': working_dir,
     'GNOME locale': gdm_prefix / get_option('localedir'),
-    'GNOME Settings Daemon': gnome_settings_daemon_dir,
     'AT SPI registryd': at_spi_registryd_dir,
     'Lang config file': lang_config_file,
     'Pam MOD': pam_mod_dir,
