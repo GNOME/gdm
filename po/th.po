@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-05-10 13:02+0000\n"
-"PO-Revision-Date: 2025-06-29 23:07+0700\n"
+"POT-Creation-Date: 2025-10-18 20:58+0000\n"
+"PO-Revision-Date: 2025-10-23 16:14+0700\n"
 "Last-Translator: Akom Chotiphantawanon <knight2000@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "Language: th\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 #: chooser/gdm-host-chooser-dialog.c:139
 msgid "_Refresh"
@@ -56,19 +56,19 @@ msgstr "XDMCP: รุ่นของ XDMCP ไม่ถูกต้อง"
 msgid "XDMCP: Unable to parse address"
 msgstr "XDMCP: ไม่สามารถแจงที่อยู่"
 
-#: common/gdm-common.c:307
+#: common/gdm-common.c:343
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ไม่ได้เป็นอุปกรณ์แบบอักขระ"
 
-#: common/gdm-common.c:346
+#: common/gdm-common.c:382
 msgid "Unable to create transient display: "
 msgstr "ไม่สามารถสร้างดิสเพลย์ชั่วคราวได้: "
 
-#: common/gdm-common.c:543
+#: common/gdm-common.c:579
 msgid "Could not identify the current session: "
 msgstr "ไม่สามารถระบุวาระปัจจุบันได้: "
 
-#: common/gdm-common.c:552
+#: common/gdm-common.c:588
 msgid "Could not identify the current seat."
 msgstr "ไม่สามารถระบุที่นั่งปัจจุบันได้"
 
@@ -87,27 +87,27 @@ msgstr ""
 "กรุณาติดต่อผู้ดูแลระบบของคุณ หรือตรวจสอบปูมของระบบเพื่อหาสาเหตุ ในระหว่างนี้ หน้าจอนี้จะถูกปิดใช้งาน กรุณาเริ่ม GDM "
 "ใหม่เมื่อแก้ปัญหาแล้ว"
 
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:765
 msgid "No display available"
 msgstr "ไม่มีจอแสดงผลให้ใช้"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1188
+#: daemon/gdm-manager.c:863 daemon/gdm-manager.c:1192
 msgid "No session available"
 msgstr "ไม่มีวาระให้ใช้"
 
-#: daemon/gdm-manager.c:879
+#: daemon/gdm-manager.c:882
 msgid "Chooser session unavailable"
 msgstr "วาระเครื่องมือเลือกไม่พร้อมใช้"
 
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:898
 msgid "Can only be called before user is logged in"
 msgstr "ถูกเรียกได้ก่อนผู้ใช้เข้าระบบเท่านั้น"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:910
 msgid "Caller not GDM"
 msgstr "ผู้เรียกไม่ใช่ GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:920
 msgid "Unable to open private communication channel"
 msgstr "ไม่สามารถเปิดช่องสื่อสารเป็นการภายในได้"
 
@@ -116,12 +116,12 @@ msgstr "ไม่สามารถเปิดช่องสื่อสาร
 msgid "Server was to be spawned by user %s but that user doesn’t exist"
 msgstr "จะสร้างโพรเซสเซิร์ฟเวอร์ในนามผู้ใช้ %s แต่ผู้ใช้นั้นไม่มีอยู่จริง"
 
-#: daemon/gdm-server.c:398 daemon/gdm-server.c:418 utils/gdm-config.c:505
+#: daemon/gdm-server.c:398 daemon/gdm-server.c:418
 #, c-format
 msgid "Couldn’t set groupid to %d"
 msgstr "ไม่สามารถกำหนด groupid เป็น %d"
 
-#: daemon/gdm-server.c:404 utils/gdm-config.c:511
+#: daemon/gdm-server.c:404
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () ล้มเหลวสำหรับ %s"
@@ -255,57 +255,47 @@ msgstr "รอรับการเชื่อมต่อที่ซ็อก
 msgid "GNOME Display Manager X Session Launcher"
 msgstr "ตัวเรียกวาระ X ของโปรแกรมจัดการการเข้าระบบของ GNOME"
 
-#: daemon/main.c:125 daemon/main.c:138
+#: daemon/main.c:126 daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "ไม่สามารถเขียนไฟล์ PID %s: เป็นไปได้ว่าพื้นที่ดิสก์ไม่พอ: %s"
 
-#: daemon/main.c:182
-#, c-format
-msgid "Failed to create ran once marker dir %s: %s"
-msgstr "สร้างไดเรกทอรี %s สำหรับทำเครื่องหมายว่ามีการทำงานแล้วไม่สำเร็จ: %s"
-
-#: daemon/main.c:188
-#, c-format
-msgid "Failed to create LogDir %s: %s"
-msgstr "สร้าง LogDir %s ไม่สำเร็จ: %s"
-
-#: daemon/main.c:223
+#: daemon/main.c:197
 #, c-format
 msgid "Can’t find the GDM user “%s”. Aborting!"
 msgstr "ไม่พบบัญชีผู้ใช้ “%s” สำหรับ GDM  ขอยกเลิก!"
 
-#: daemon/main.c:229
+#: daemon/main.c:203
 msgid "The GDM user should not be root. Aborting!"
 msgstr "บัญชีผู้ใช้สำหรับ GDM ไม่ควรเป็น root  ขอยกเลิก!"
 
-#: daemon/main.c:235
+#: daemon/main.c:209
 #, c-format
 msgid "Can’t find the GDM group “%s”. Aborting!"
 msgstr "ไม่พบกลุ่ม “%s” ของ GDM  ขอยกเลิก!"
 
-#: daemon/main.c:241
+#: daemon/main.c:215
 msgid "The GDM group should not be root. Aborting!"
 msgstr "กลุ่มของ GDM ไม่ควรเป็น root  ขอยกเลิก!"
 
-#: daemon/main.c:309
+#: daemon/main.c:283
 msgid "Make all warnings fatal"
 msgstr "ถือว่าคำเตือนเสมือนข้อผิดพลาด"
 
-#: daemon/main.c:310
+#: daemon/main.c:284
 msgid "Exit after a time (for debugging)"
 msgstr "จบการทำงานหลังจากระยะเวลาหนึ่ง (สำหรับการดีบั๊ก)"
 
-#: daemon/main.c:311
+#: daemon/main.c:285
 msgid "Print GDM version"
 msgstr "พิมพ์รุ่น GDM"
 
-#: daemon/main.c:322
+#: daemon/main.c:296
 msgid "GNOME Display Manager"
 msgstr "โปรแกรมจัดการการเข้าระบบของ GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:342
+#: daemon/main.c:316
 msgid "Only the root user can run GDM"
 msgstr "ผู้ใช้ root เท่านั้นที่สามารถเรียกทำงาน GDM ได้"
 
@@ -524,36 +514,26 @@ msgstr "“%s” ไม่สามารถเปิดและปิดใช
 msgid "“%s” is not a valid %s “%s” value"
 msgstr "“%s” ไม่ใช่ค่าที่ถูกต้องสำหรับ %s “%s”"
 
-#: utils/gdm-config.c:496
-#, c-format
-msgid "Failed to switch to %s user"
-msgstr "ไม่สามารถสลับไปเป็นผู้ใช้ %s ได้"
-
-#: utils/gdm-config.c:517
-#, c-format
-msgid "Couldn’t set userid to %u"
-msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %u"
-
-#: utils/gdm-config.c:680
+#: utils/gdm-config.c:633
 msgid "No distro detected, no hook to run"
-msgstr ""
+msgstr "ตรวจไม่พบชุดแจกจ่าย ไม่มีฮุคให้เรียกทำงาน"
 
-#: utils/gdm-config.c:698
+#: utils/gdm-config.c:651
 #, c-format
 msgid "No valid args found to run hook “%s”"
-msgstr ""
+msgstr "ไม่พบอาร์กิวเมนต์ที่ใช้ได้สำหรับเรียกทำงานฮุค “%s”"
 
-#: utils/gdm-config.c:703
+#: utils/gdm-config.c:656
 #, c-format
 msgid "Running distro hook “%s”\n"
-msgstr ""
+msgstr "กำลังเรียกทำงานฮุคชุดแจกจ่าย “%s”\n"
 
-#: utils/gdm-config.c:717
+#: utils/gdm-config.c:670
 #, c-format
 msgid "Distro hook “%s” requested stopping"
-msgstr ""
+msgstr "ฮุคชุดแจกจ่าย “%s” ร้องขอการหยุดทำงาน"
 
-#: utils/gdm-config.c:730
+#: utils/gdm-config.c:683
 #, c-format
 msgid ""
 "Distro hook failed with exit status %d and error %s:\n"
@@ -562,52 +542,57 @@ msgid ""
 "Error output:\n"
 "%s"
 msgstr ""
+"ฮุคชุดแจกจ่ายล้มเหลวพร้อมสถานะการออก %d และข้อผิดพลาด %s:\n"
+"เอาต์พุตมาตรฐาน:\n"
+"%s\n"
+"เอาต์พุตข้อผิดพลาด:\n"
+"%s"
 
 #. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
-#: utils/gdm-config.c:780
+#: utils/gdm-config.c:733
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
-msgstr ""
+msgstr "ไม่สามารถกำหนดให้คำสั่ง “%s” มีคีย์ตัวเลือก “%s” ผ่านฮุคชุดแจกจ่าย: "
 
-#: utils/gdm-config.c:820
+#: utils/gdm-config.c:773
 #, c-format
 msgid "Failed to create directory %s"
 msgstr "ไม่สามารถสร้างไดเรกทอรี %s"
 
-#: utils/gdm-config.c:891
+#: utils/gdm-config.c:844
 msgid "dconf profile not found"
 msgstr "ไม่พบโปรไฟล์ dconf"
 
-#: utils/gdm-config.c:981
+#: utils/gdm-config.c:934
 msgid "dconf has no system-db configured"
 msgstr "dconf ไม่มีการกำหนดค่าของ system-db ไว้"
 
 #. TRANSLATORS: First value is a file path, second is an error message
-#: utils/gdm-config.c:1130
+#: utils/gdm-config.c:1083
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
-msgstr ""
+msgstr "ไม่สามารถอ่านความคิดเห็นส่วนหัวของ “%s”: %s ความคิดเห็นถูกแก้ไขหรือเปล่า?"
 
-#: utils/gdm-config.c:1133
+#: utils/gdm-config.c:1086
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
-msgstr ""
+msgstr "ความคิดเห็นส่วนหัวของไฟล์ “%s” ไม่ตรงกัน ความคิดเห็นถูกแก้ไขหรือเปล่า?"
 
 #. XXX: Fail with an error instead?
-#: utils/gdm-config.c:1261
+#: utils/gdm-config.c:1214
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
-msgstr ""
+msgstr "ไม่พบส่วนหัวที่ต้องการในไฟล์ล็อก “%s” ส่วนหัวถูกแก้ไขหรือเปล่า?"
 
-#: utils/gdm-config.c:1546
+#: utils/gdm-config.c:1499
 msgid "Failed to run a required distro hook: "
-msgstr ""
+msgstr "เรียกทำงานฮุคชุดแจกจ่ายที่จำเป็นไม่สำเร็จ: "
 
-#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:1515 utils/gdmflexiserver.c:45
 msgid "COMMAND"
 msgstr "คำสั่ง"
 
-#: utils/gdm-config.c:1566
+#: utils/gdm-config.c:1519
 #, c-format
 msgid ""
 "Commands:\n"
@@ -630,46 +615,46 @@ msgstr ""
 "\n"
 "ใช้ “%s คำสั่ง --help” เพื่อดูวิธีใช้สำหรับคำสั่งนั้นๆ\n"
 
-#: utils/gdm-config.c:1628
+#: utils/gdm-config.c:1581
 msgid "Command options"
 msgstr "ตัวเลือกคำสั่ง"
 
 #. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
-#: utils/gdm-config.c:1663
+#: utils/gdm-config.c:1616
 #, c-format
 msgid "You need to be root to use %s “%s” command"
 msgstr "คุณต้องเข้าระบบในฐานะ root เพื่อใช้คำสั่ง %s “%s”"
 
-#: utils/gdm-config.c:1713
+#: utils/gdm-config.c:1666
 #, c-format
 msgid "Failed to set %s setting: "
 msgstr "ไม่สามารถกำหนดการตั้งค่า %s: "
 
-#: utils/gdm-config.c:1805
+#: utils/gdm-config.c:1758
 msgid "Failed to set smartcard setting"
 msgstr "ไม่สามารถกำหนดการตั้งค่าสมาร์ทการ์ด"
 
-#: utils/gdm-config.c:1811
+#: utils/gdm-config.c:1764
 msgid "Failed to set password setting"
 msgstr "ไม่สามารถกำหนดการตั้งค่ารหัสผ่าน"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Enabled"
 msgstr "เปิดใช้งาน"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Disabled"
 msgstr "ปิดใช้งาน"
 
-#: utils/gdm-config.c:1834
+#: utils/gdm-config.c:1787
 msgid "Not supported"
 msgstr "ไม่รองรับ"
 
-#: utils/gdm-config.c:1850
+#: utils/gdm-config.c:1803
 msgid "Required"
 msgstr "จำเป็น"
 
-#: utils/gdm-config.c:1911
+#: utils/gdm-config.c:1855
 #, c-format
 msgid ""
 "GDM Authorization configuration\n"
@@ -686,36 +671,36 @@ msgstr ""
 "  การยืนยันตัวตนด้วยสมาร์ทการ์ด: %s\n"
 "  การกระทำเมื่อถอดสมาร์ทการ์ด: %s\n"
 
-#: utils/gdm-config.c:1939
+#: utils/gdm-config.c:1883
 msgctxt "Interactive question"
 msgid "Y"
 msgstr "Y"
 
-#: utils/gdm-config.c:1940
+#: utils/gdm-config.c:1884
 msgctxt "Interactive question"
 msgid "y"
 msgstr "y"
 
-#: utils/gdm-config.c:1941
+#: utils/gdm-config.c:1885
 msgctxt "Interactive question"
 msgid "N"
 msgstr "N"
 
-#: utils/gdm-config.c:1942
+#: utils/gdm-config.c:1886
 msgctxt "Interactive question"
 msgid "n"
 msgstr "n"
 
-#: utils/gdm-config.c:1946
+#: utils/gdm-config.c:1890
 msgctxt "Interactive question"
 msgid "Do you want to continue? [Y/n]? "
 msgstr "คุณต้องการดำเนินการต่อหรือไม่? [Y/n]? "
 
-#: utils/gdm-config.c:1964
+#: utils/gdm-config.c:1908
 msgid "User cancelled the request"
 msgstr "ผู้ใช้ยกเลิกคำขอ"
 
-#: utils/gdm-config.c:1995
+#: utils/gdm-config.c:1939
 #, c-format
 msgid "Failed to reset %s setting: "
 msgstr "ไม่สามารถล้างการตั้งค่า %s ใหม่: "
@@ -741,6 +726,22 @@ msgstr "แสดงรุ่นของโปรแกรมนี้"
 #: utils/gdmflexiserver.c:137
 msgid "— New GDM login"
 msgstr "— การเข้าระบบผ่าน GDM"
+
+#, c-format
+#~ msgid "Failed to create ran once marker dir %s: %s"
+#~ msgstr "สร้างไดเรกทอรี %s สำหรับทำเครื่องหมายว่ามีการทำงานแล้วไม่สำเร็จ: %s"
+
+#, c-format
+#~ msgid "Failed to create LogDir %s: %s"
+#~ msgstr "สร้าง LogDir %s ไม่สำเร็จ: %s"
+
+#, c-format
+#~ msgid "Failed to switch to %s user"
+#~ msgstr "ไม่สามารถสลับไปเป็นผู้ใช้ %s ได้"
+
+#, c-format
+#~ msgid "Couldn’t set userid to %u"
+#~ msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %u"
 
 #~ msgid "Screenshot taken"
 #~ msgstr "ภาพหน้าจอถูกจับ"
