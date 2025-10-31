@@ -1973,7 +1973,8 @@ remove_user_session (GdmManager *manager,
 
         if (display != NULL) {
                 gdm_display_unmanage (display);
-                gdm_display_finish (display);
+                if (gdm_display_get_status (display) != GDM_DISPLAY_FAILED)
+                        gdm_display_finish (display);
         }
 
         node = g_list_find (manager->user_sessions, session);
