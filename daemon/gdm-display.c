@@ -1798,12 +1798,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
                                  G_CALLBACK (on_launch_environment_session_died),
                                  self, 0);
 
-        if (auth_file != NULL) {
-                g_object_set (priv->launch_environment,
-                              "x11-authority-file", auth_file,
-                              NULL);
-        }
-
         gdm_launch_environment_start (priv->launch_environment);
 
         session = gdm_launch_environment_get_session (priv->launch_environment);
