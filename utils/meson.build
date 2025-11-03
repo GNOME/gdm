@@ -1,16 +1,3 @@
-# gdm-flexiserver
-gdm_flexiserver_deps = [
-  glib_dep,
-  libgdmcommon_dep,
-]
-
-gdm_flexiserver = executable('gdmflexiserver',
-  'gdmflexiserver.c',
-  dependencies: gdm_flexiserver_deps,
-  include_directories: config_h_dir,
-  install: true,
-)
-
 # gdm-runtime-config
 gdm_runtime_config_deps = [
   glib_dep,
