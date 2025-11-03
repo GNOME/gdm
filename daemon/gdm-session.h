@@ -120,8 +120,6 @@ void              gdm_session_report_error                (GdmSession *session,
                                                            const char *service_name,
                                                            GDBusError  code,
                                                            const char *message);
-void              gdm_session_select_program              (GdmSession *session,
-                                                           const char *command_line);
 void              gdm_session_select_session              (GdmSession *session,
                                                            const char *session_name);
 void              gdm_session_select_user                 (GdmSession *session,

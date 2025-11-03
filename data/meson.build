@@ -66,6 +66,27 @@ install_data(
     install_dir: get_option('datadir') / 'gnome-session' / 'sessions',
 )
 
+desktop_files = [
+  'gdm-simple-chooser.desktop.in',
+  'gnome-greeter.desktop.in',
+  'gnome-initial-setup.desktop.in'
+]
+
+session_dirs = ['wayland-sessions'] + (have_x11_support ? ['xsessions'] : [])
+foreach desktop_file : desktop_files
+  foreach sessions_dir : session_dirs
+    configure_file(
+      input: desktop_file,
+      output: '@BASENAME@',
+      configuration: {
+        'gdmdatadir': gdm_prefix / get_option('datadir') / 'gdm',
+        'libexecdir': gdm_prefix / get_option('libexecdir'),
+      },
+      install_dir: get_option('datadir') / 'gdm' / 'greeter' / sessions_dir,
+    )
+  endforeach
+endforeach
+
 # PAM
 pam_data_files_map = {
   'redhat': [
