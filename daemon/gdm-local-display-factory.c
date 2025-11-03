@@ -44,7 +44,6 @@
 #include "gdm-settings-direct.h"
 #include "gdm-display-store.h"
 #include "gdm-local-display.h"
-#include "gdm-legacy-display.h"
 
 #define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
@@ -64,7 +63,6 @@ struct _GdmLocalDisplayFactory
 
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
-        GHashTable      *used_display_numbers;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
@@ -131,80 +129,6 @@ gdm_local_display_factory_error_quark (void)
         return ret;
 }
 
-static void
-listify_hash (gpointer    key,
-              GdmDisplay *display,
-              GList     **list)
-{
-        *list = g_list_prepend (*list, key);
-}
-
-static int
-sort_nums (gpointer a,
-           gpointer b)
-{
-        guint32 num_a;
-        guint32 num_b;
-
-        num_a = GPOINTER_TO_UINT (a);
-        num_b = GPOINTER_TO_UINT (b);
-
-        if (num_a > num_b) {
-                return 1;
-        } else if (num_a < num_b) {
-                return -1;
-        } else {
-                return 0;
-        }
-}
-
-static guint32
-take_next_display_number (GdmLocalDisplayFactory *factory)
-{
-        GList  *list;
-        GList  *l;
-        guint32 ret;
-
-        ret = 0;
-        list = NULL;
-
-        g_hash_table_foreach (factory->used_display_numbers, (GHFunc)listify_hash, &list);
-        if (list == NULL) {
-                goto out;
-        }
-
-        /* sort low to high */
-        list = g_list_sort (list, (GCompareFunc)sort_nums);
-
-        g_debug ("GdmLocalDisplayFactory: Found the following X displays:");
-        for (l = list; l != NULL; l = l->next) {
-                g_debug ("GdmLocalDisplayFactory: %u", GPOINTER_TO_UINT (l->data));
-        }
-
-        for (l = list; l != NULL; l = l->next) {
-                guint32 num;
-                num = GPOINTER_TO_UINT (l->data);
-
-                /* always fill zero */
-                if (l->prev == NULL && num != 0) {
-                        ret = 0;
-                        break;
-                }
-                /* now find the first hole */
-                if (l->next == NULL || GPOINTER_TO_UINT (l->next->data) != (num + 1)) {
-                        ret = num + 1;
-                        break;
-                }
-        }
- out:
-
-        /* now reserve this number */
-        g_debug ("GdmLocalDisplayFactory: Reserving X display: %u", ret);
-        g_hash_table_insert (factory->used_display_numbers, GUINT_TO_POINTER (ret), NULL);
-
-        return ret;
-}
-
 static char *
 get_preferred_display_server (GdmLocalDisplayFactory *factory)
 {
@@ -249,13 +173,6 @@ get_preferred_display_server (GdmLocalDisplayFactory *factory)
 #endif
                         return g_strdup ("wayland");
         }
-
-#ifdef ENABLE_X11_SUPPORT
-        if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0) {
-                if (xorg_enabled)
-                        return g_strdup (preferred_display_server);
-        }
-#endif
 
         return g_strdup ("none");
 }
@@ -430,15 +347,6 @@ gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
                               NULL);
                 is_initial = TRUE;
         }
-        if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0) {
-                if (display == NULL) {
-                        guint32 num;
-
-                        num = take_next_display_number (factory);
-
-                        display = gdm_legacy_display_new (num);
-                }
-        }
 
         if (display == NULL) {
                 g_set_error_literal (error,
@@ -551,11 +459,6 @@ on_display_status_changed (GdmDisplay             *display,
         g_debug ("GdmLocalDisplayFactory: display status changed: %d", status);
         switch (status) {
         case GDM_DISPLAY_FINISHED:
-                /* remove the display number from factory->used_display_numbers
-                   so that it may be reused */
-                if (num != -1) {
-                        g_hash_table_remove (factory->used_display_numbers, GUINT_TO_POINTER (num));
-                }
                 gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
 
                 /* if this is a local display, ensure that we get a login
@@ -572,8 +475,6 @@ on_display_status_changed (GdmDisplay             *display,
                 }
                 break;
         case GDM_DISPLAY_FAILED:
-                /* leave the display number in factory->used_display_numbers
-                   so that it doesn't get reused */
                 gdm_display_factory_queue_purge_displays (GDM_DISPLAY_FACTORY (factory));
 
                 /* Create a new equivalent display if it was static */
@@ -921,12 +822,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         g_assert (session_types != NULL);
 
-        if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0)
-                g_debug ("GdmLocalDisplayFactory: Legacy Xorg login display for seat %s requested",
-                         seat_id);
-        else
-                g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
-                         session_types[0], seat_id);
+        g_debug ("GdmLocalDisplayFactory: %s login display for seat %s requested",
+                 session_types[0], seat_id);
 
         /* Ensure we don't create the same display more than once */
         display = get_display_for_seat (factory, seat_id);
@@ -937,26 +834,11 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
-        if (g_strcmp0 (preferred_display_server, "wayland") == 0 ||
-            g_strcmp0 (preferred_display_server, "xorg") == 0) {
-                display = gdm_local_display_new ();
-                g_object_set (G_OBJECT (display),
-                              "session-type", session_types[0],
-                              "supported-session-types", session_types,
-                              NULL);
-        }
-
-        if (display == NULL) {
-                guint32 num;
-
-                num = take_next_display_number (factory);
-
-                display = gdm_legacy_display_new (num);
-                g_object_set (G_OBJECT (display),
-                              "session-type", legacy_session_types[0],
-                              "supported-session-types", legacy_session_types,
-                              NULL);
-        }
+        display = gdm_local_display_new ();
+        g_object_set (G_OBJECT (display),
+                      "session-type", session_types[0],
+                      "supported-session-types", session_types,
+                      NULL);
 
         g_object_set (display, "seat-id", seat_id, NULL);
         g_object_set (display, "is-initial", is_seat0, NULL);
@@ -979,7 +861,7 @@ delete_display (GdmLocalDisplayFactory *factory,
 
         GdmDisplayStore *store;
 
-        g_debug ("GdmLocalDisplayFactory: Removing used_display_numbers on seat %s", seat_id);
+        g_debug ("GdmLocalDisplayFactory: Removing displays on seat %s", seat_id);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_foreach_remove (store, lookup_by_seat_id, (gpointer) seat_id);
@@ -1745,7 +1627,6 @@ gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
 static void
 gdm_local_display_factory_init (GdmLocalDisplayFactory *factory)
 {
-        factory->used_display_numbers = g_hash_table_new (NULL, NULL);
 }
 
 static void
@@ -1762,8 +1643,6 @@ gdm_local_display_factory_finalize (GObject *object)
 
         g_clear_object (&factory->connection);
         g_clear_object (&factory->skeleton);
-
-        g_hash_table_destroy (factory->used_display_numbers);
 
         gdm_local_display_factory_stop_monitor (factory);
 
