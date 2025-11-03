@@ -3627,7 +3627,6 @@ gdm_session_get_display_mode (GdmSession *self)
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
         }
 
-#ifdef ENABLE_USER_DISPLAY_SERVER
         /* All other cases (wayland login screen, X login screen,
          * wayland user session, X user session) use the NEW_VT
          * display mode.  That display mode means that GDM allocates
@@ -3650,18 +3649,6 @@ gdm_session_get_display_mode (GdmSession *self)
          *   are paused when handed out.
          */
         return GDM_SESSION_DISPLAY_MODE_NEW_VT;
-#else
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-        /* Wayland sessions are for now assumed to run in a
-         * mutter-launch-like environment, so we allocate
-         * a new VT for them. */
-        if (g_strcmp0 (self->session_type, "wayland") == 0) {
-                return GDM_SESSION_DISPLAY_MODE_NEW_VT;
-        }
-#endif
-        return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
-#endif
 }
 
 void

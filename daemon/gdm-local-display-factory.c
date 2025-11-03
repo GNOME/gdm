@@ -83,11 +83,9 @@ struct _GdmLocalDisplayFactory
 
         gulong           uevent_handler_id;
 
-#if defined(ENABLE_USER_DISPLAY_SERVER)
         unsigned int     active_vt;
         guint            active_vt_watch_id;
         guint            wait_to_finish_timeout_id;
-#endif
 
         gboolean         is_started;
 };
@@ -415,7 +413,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         preferred_display_server = get_preferred_display_server (factory);
 
-#ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_strcmp0 (preferred_display_server, "wayland") == 0 ||
             g_strcmp0 (preferred_display_server, "xorg") == 0) {
                 g_auto(GStrv) session_types = NULL;
@@ -437,7 +434,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                               NULL);
                 is_initial = TRUE;
         }
-#endif
         if (g_strcmp0 (preferred_display_server, "legacy-xorg") == 0) {
                 if (display == NULL) {
                         guint32 num;
@@ -588,10 +584,7 @@ on_display_status_changed (GdmDisplay             *display,
                 if (is_local &&
                     ((g_strcmp0 (session_class, "greeter") != 0 &&
                       (!seat_active_session || g_strcmp0(session_id, seat_active_session) == 0)) ||
-#if defined(ENABLE_USER_DISPLAY_SERVER)
-                     (g_strcmp0 (seat_id, "seat0") == 0 && factory->active_vt == GDM_INITIAL_VT) ||
-#endif
-                     g_strcmp0 (seat_id, "seat0") != 0)) {
+                     factory->active_vt == GDM_INITIAL_VT || g_strcmp0 (seat_id, "seat0") != 0)) {
                         /* reset num failures */
                         factory->num_failures = 0;
 
@@ -620,13 +613,11 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
-#if defined(ENABLE_USER_DISPLAY_SERVER)
                 g_signal_connect_object (display,
                                          "notify::session-registered",
                                          G_CALLBACK (on_session_registered_cb),
                                          factory,
                                          0);
-#endif
                 break;
         case GDM_DISPLAY_WAITING_TO_FINISH:
                 break;
@@ -966,7 +957,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
-#ifdef ENABLE_USER_DISPLAY_SERVER
         if (g_strcmp0 (preferred_display_server, "wayland") == 0 ||
             g_strcmp0 (preferred_display_server, "xorg") == 0) {
                 display = gdm_local_display_new ();
@@ -975,7 +965,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                               "supported-session-types", session_types,
                               NULL);
         }
-#endif
 
         if (display == NULL) {
                 guint32 num;
@@ -1189,7 +1178,6 @@ lookup_by_tty (const char *id,
         return g_strcmp0 (tty_to_check, tty_to_find) == 0;
 }
 
-#if defined(ENABLE_USER_DISPLAY_SERVER)
 static void
 maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
                                   GdmDisplay             *display)
@@ -1363,7 +1351,6 @@ on_vt_changed (GIOChannel    *source,
 
         return G_SOURCE_CONTINUE;
 }
-#endif
 
 #ifdef HAVE_UDEV
 static void
@@ -1442,7 +1429,6 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                        factory);
 #endif
 
-#if defined(ENABLE_USER_DISPLAY_SERVER)
         io_channel = g_io_channel_new_file ("/sys/class/tty/tty0/active", "r", NULL);
 
         if (io_channel != NULL) {
@@ -1453,7 +1439,6 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                         on_vt_changed,
                                         factory);
         }
-#endif
 }
 
 static void
@@ -1485,10 +1470,8 @@ gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
                                                       factory->seat_attention_key);
                 factory->seat_attention_key = 0;
         }
-#if defined(ENABLE_USER_DISPLAY_SERVER)
         g_clear_handle_id (&factory->active_vt_watch_id, g_source_remove);
         g_clear_handle_id (&factory->wait_to_finish_timeout_id, g_source_remove);
-#endif
 }
 
 static void

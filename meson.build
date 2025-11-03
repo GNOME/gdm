@@ -28,7 +28,6 @@ pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm
 dbus_sys_dir = (get_option('dbus-sys') != '')? get_option('dbus-sys') : get_option('sysconfdir') / 'dbus-1' / 'system.d'
 gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / gdm_datadir / 'defaults.conf'
 gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
-gnome_settings_daemon_dir = (get_option('gnome-settings-daemon-dir') != '')? get_option('gnome-settings-daemon-dir') : gdm_prefix / get_option('libexecdir')
 gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : '/run/gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
@@ -108,18 +107,8 @@ if have_x11_support
       i = i + 1
     endforeach
   endif
-
-  xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
-  have_xdmcp = xdmcp_dep.found()
-  if have_xdmcp
-    gtk_dep = dependency('gtk+-3.0', version: '>= 2.91.1')
-  endif
-  if have_xdmcp and get_option('tcp-wrappers')
-    libwrap_dep = cc.find_library('wrap')
-  endif
 else
   xserver_has_listen = false
-  have_xdmcp = false
 endif
 # systemd
 logind_provider = get_option('logind-provider')
@@ -269,7 +258,6 @@ conf.set_quoted('GDM_WORKING_DIR', working_dir)
 conf.set_quoted('GNOMELOCALEDIR', gdm_prefix / get_option('localedir'))
 conf.set_quoted('AT_SPI_REGISTRYD_DIR', at_spi_registryd_dir)
 conf.set_quoted('GDM_PID_FILE', gdm_pid_file)
-conf.set_quoted('GNOME_SETTINGS_DAEMON_DIR', gnome_settings_daemon_dir)
 conf.set_quoted('LANG_CONFIG_FILE', lang_config_file)
 conf.set_quoted('PAM_PROFILES_DIR', pam_profiles_dir[0] == '/' ? pam_profiles_dir : '/' + pam_profiles_dir)
 conf.set('HAVE_ADT', have_adt)
@@ -289,7 +277,6 @@ conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
 conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
-conf.set('ENABLE_USER_DISPLAY_SERVER', get_option('user-display-server'))
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
 conf.set('ENABLE_X11_SUPPORT', get_option('x11-support'))
@@ -301,7 +288,6 @@ conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
 conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
 conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
-conf.set('HAVE_LIBXDMCP', have_xdmcp)
 conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('HAVE_USERDB', have_userdb)
 conf.set('GREETER_UID_MIN', greeter_uid_min)
@@ -340,9 +326,6 @@ subdir('po')
 if libcheck_dep.found()
   subdir('tests')
 endif
-if have_xdmcp
-  subdir('chooser')
-endif
 subdir('docs')
 
 gnome.post_install(
@@ -369,7 +352,6 @@ summary({
     'GDM Session default path': get_option('default-path'),
     'GDM Working dir': working_dir,
     'GNOME locale': gdm_prefix / get_option('localedir'),
-    'GNOME Settings Daemon': gnome_settings_daemon_dir,
     'AT SPI registryd': at_spi_registryd_dir,
     'Lang config file': lang_config_file,
     'Pam MOD': pam_mod_dir,
@@ -388,7 +370,6 @@ summary({
     'SeLinux': libselinux_dep.found(),
     'Logind Provider': get_option('logind-provider'),
     'Use GDM Xsession': get_option('gdm-xsession'),
-    'Use UserDisplayServer': get_option('user-display-server'),
     'Use SystemdJournal': get_option('systemd-journal'),
     'Use WaylandSupport': get_option('wayland-support'),
     'Use X11Support': have_x11_support,
@@ -402,3 +383,4 @@ summary({
   section: 'Features',
   bool_yn: true,
 )
+
