@@ -121,7 +121,6 @@ gdm_remote_display_prepare (GdmDisplay *display)
                       NULL);
 
         launch_environment = gdm_create_greeter_launch_environment (NULL,
-                                                                    NULL,
                                                                     session_type,
                                                                     NULL,
                                                                     FALSE);
