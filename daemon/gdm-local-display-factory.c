@@ -395,21 +395,17 @@ store_display (GdmLocalDisplayFactory *factory,
   /org/gnome/DisplayManager/Manager \
   org.gnome.DisplayManager.Manager.GetDisplays
 */
-gboolean
-gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
-                                                    char                  **id,
-                                                    GError                **error)
+static gboolean
+gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
+                                          const char              *autologin_user,
+                                          char                   **id,
+                                          GError                 **error)
 {
-        gboolean         ret;
-        GdmDisplay      *display = NULL;
-        gboolean         is_initial = FALSE;
+        gboolean is_initial = FALSE;
+        g_autoptr (GdmDisplay) display = NULL;
         g_autofree gchar *preferred_display_server = NULL;
 
-        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
-
-        ret = FALSE;
-
-        g_debug ("GdmLocalDisplayFactory: Creating transient display");
+        g_debug ("GdmLocalDisplayFactory: Creating local display");
 
         preferred_display_server = get_preferred_display_server (factory);
 
@@ -456,26 +452,28 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                       "seat-id", "seat0",
                       "allow-timed-login", FALSE,
                       "is-initial", is_initial,
+                      "autologin-user", autologin_user,
                       NULL);
 
         store_display (factory, display);
 
-        if (! gdm_display_manage (display)) {
-                display = NULL;
-                goto out;
+        if (!gdm_display_manage (display)) {
+                g_set_error_literal (error,
+                                     GDM_DISPLAY_ERROR,
+                                     GDM_DISPLAY_ERROR_GENERAL,
+                                     "Failed managing display");
+                return FALSE;
         }
 
-        if (! gdm_display_get_id (display, id, NULL)) {
-                display = NULL;
-                goto out;
+        if (!gdm_display_get_id (display, id, NULL)) {
+                g_set_error_literal (error,
+                                     GDM_DISPLAY_ERROR,
+                                     GDM_DISPLAY_ERROR_GENERAL,
+                                     "Failed getting display id");
+                return FALSE;
         }
 
-        ret = TRUE;
- out:
-        /* ref either held by store or not at all */
-        g_object_unref (display);
-
-        return ret;
+        return TRUE;
 }
 
 static void
@@ -1590,13 +1588,81 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
         g_autofree char *id = NULL;
         gboolean created;
 
-        created = gdm_local_display_factory_create_transient_display (factory,
-                                                                      &id,
-                                                                      &error);
+        created = gdm_local_display_factory_create_display (factory,
+                                                            NULL,
+                                                            &id,
+                                                            &error);
         if (!created) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
         } else {
                 gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
+        }
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+handle_create_user_display (GdmDBusLocalDisplayFactory *skeleton,
+                            GDBusMethodInvocation      *invocation,
+                            const char                 *user,
+                            GdmLocalDisplayFactory     *factory)
+{
+        g_autoptr (GError) error = NULL;
+
+        if (!gdm_display_factory_on_user_display_creation (GDM_DISPLAY_FACTORY (factory),
+                                                           user,
+                                                           &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        if (!gdm_local_display_factory_create_display (factory,
+                                                       user,
+                                                       NULL,
+                                                       &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        gdm_dbus_local_display_factory_complete_create_user_display (skeleton,
+                                                                     invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+handle_destroy_user_display (GdmDBusLocalDisplayFactory *skeleton,
+                             GDBusMethodInvocation      *invocation,
+                             const char                 *user,
+                             GdmLocalDisplayFactory     *factory)
+{
+        g_autoptr (GError) error = NULL;
+
+        if (!gdm_display_factory_on_user_display_destruction (GDM_DISPLAY_FACTORY (factory),
+                                                              user,
+                                                              &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        gdm_dbus_local_display_factory_complete_destroy_user_display (skeleton,
+                                                                      invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+on_authorize_method (GdmDBusLocalDisplayFactory *skeleton,
+                     GDBusMethodInvocation      *invocation,
+                     GdmLocalDisplayFactory     *factory)
+{
+        g_autoptr (GError) error = NULL;
+
+        if (!gdm_display_factory_authorize_manage_user_displays (GDM_DISPLAY_FACTORY (factory),
+                                                                 invocation,
+                                                                 &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return FALSE;
         }
 
         return TRUE;
@@ -1620,6 +1686,20 @@ register_factory (GdmLocalDisplayFactory *factory)
         g_signal_connect (factory->skeleton,
                           "handle-create-transient-display",
                           G_CALLBACK (handle_create_transient_display),
+                          factory);
+
+        g_signal_connect (factory->skeleton,
+                          "handle-create-user-display",
+                          G_CALLBACK (handle_create_user_display),
+                          factory);
+
+        g_signal_connect (factory->skeleton,
+                          "handle-destroy-user-display",
+                          G_CALLBACK (handle_destroy_user_display),
+                          factory);
+
+        g_signal_connect (factory->skeleton, "g-authorize-method",
+                          G_CALLBACK (on_authorize_method),
                           factory);
 
         if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (factory->skeleton),

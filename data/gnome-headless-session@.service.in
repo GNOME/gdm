@@ -1,0 +1,35 @@
+[Unit]
+Description=GNOME Headless Desktop Session
+Wants=gdm.service
+After=gdm.service
+
+[Service]
+Group=@GDM_GROUPNAME@
+DynamicUser=true
+ExecStart=@libexecdir@/gdm-new-session %i --headless
+Restart=on-failure
+
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectKernelTunables=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectControlGroups=yes
+ProtectHostname=yes
+ProtectProc=invisible
+PrivateDevices=yes
+PrivateNetwork=yes
+NoNewPrivileges=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=graphical.target

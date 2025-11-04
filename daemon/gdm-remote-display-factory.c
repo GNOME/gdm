@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include "gdm-common.h"
 #include "gdm-remote-display.h"
 #include "gdm-remote-display-factory.h"
 #include "gdm-remote-display-factory-glue.h"
@@ -47,41 +48,29 @@ static gpointer remote_display_factory_object = NULL;
 
 G_DEFINE_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
-static void
-on_display_status_changed (GdmDisplay              *display,
-                           GParamSpec              *arg1,
-                           GdmRemoteDisplayFactory *factory)
-{
-        g_debug ("GdmRemoteDisplayFactory: remote display status changed: %d",
-                 gdm_display_get_status (display));
-}
-
 static gboolean
-gdm_remote_display_factory_create_remote_display (GdmRemoteDisplayFactory *factory,
-                                                  const char              *remote_id)
+gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
+                                           const char              *autologin_user,
+                                           const char              *remote_id)
 {
-        GdmDisplay      *display  = NULL;
+        g_autoptr (GdmDisplay) display = NULL;
         GdmDisplayStore *store;
 
         g_debug ("GdmRemoteDisplayFactory: Creating remote display");
 
         display = gdm_remote_display_new (remote_id);
 
+        g_object_set (display,
+                      "autologin-user", autologin_user,
+                      NULL);
+
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
 
         if (!gdm_display_prepare (display)) {
                 gdm_display_unmanage (display);
-                g_object_unref (display);
                 return FALSE;
         }
-
-        g_signal_connect_after (display,
-                                "notify::status",
-                                G_CALLBACK (on_display_status_changed),
-                                factory);
-
-        g_object_unref (display);
 
         return TRUE;
 }
@@ -92,7 +81,7 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
                               const char                  *remote_id,
                               GdmRemoteDisplayFactory     *factory)
 {
-        if (!gdm_remote_display_factory_create_remote_display (factory, remote_id))
+        if (!gdm_remote_display_factory_create_display (factory, NULL, remote_id))
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_FAILED,
@@ -100,6 +89,74 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
         else
                 gdm_dbus_remote_display_factory_complete_create_remote_display (factory->skeleton,
                                                                                 invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+handle_create_user_display (GdmDBusRemoteDisplayFactory *skeleton,
+                            GDBusMethodInvocation       *invocation,
+                            const char                  *user,
+                            GdmRemoteDisplayFactory     *factory)
+{
+        g_auto (GStrv) sessions = NULL;
+        g_autoptr (GError) error = NULL;
+
+        if (!gdm_display_factory_on_user_display_creation (GDM_DISPLAY_FACTORY (factory),
+                                                           user,
+                                                           &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        if (!gdm_remote_display_factory_create_display (factory, user, NULL)) {
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_FAILED,
+                                                       "Error creating remote display");
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        gdm_dbus_remote_display_factory_complete_create_user_display (factory->skeleton,
+                                                                      invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+handle_destroy_user_display (GdmDBusRemoteDisplayFactory *skeleton,
+                             GDBusMethodInvocation       *invocation,
+                             const char                  *user,
+                             GdmRemoteDisplayFactory     *factory)
+{
+        g_autoptr (GError) error = NULL;
+
+        if (!gdm_display_factory_on_user_display_destruction (GDM_DISPLAY_FACTORY (factory),
+                                                              user,
+                                                              &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        gdm_dbus_remote_display_factory_complete_destroy_user_display (skeleton,
+                                                                       invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+on_authorize_method (GdmDBusRemoteDisplayFactory *skeleton,
+                     GDBusMethodInvocation       *invocation,
+                     GdmRemoteDisplayFactory     *factory)
+{
+        g_autoptr (GError) error = NULL;
+
+        if (!gdm_display_factory_authorize_manage_user_displays (GDM_DISPLAY_FACTORY (factory),
+                                                                 invocation,
+                                                                 &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                return FALSE;
+        }
 
         return TRUE;
 }
@@ -121,6 +178,20 @@ register_factory (GdmRemoteDisplayFactory *factory)
         g_signal_connect (factory->skeleton,
                           "handle-create-remote-display",
                           G_CALLBACK (handle_create_remote_display),
+                          factory);
+
+        g_signal_connect (factory->skeleton,
+                          "handle-create-user-display",
+                          G_CALLBACK (handle_create_user_display),
+                          factory);
+
+        g_signal_connect (factory->skeleton,
+                          "handle-destroy-user-display",
+                          G_CALLBACK (handle_destroy_user_display),
+                          factory);
+
+        g_signal_connect (factory->skeleton, "g-authorize-method",
+                          G_CALLBACK (on_authorize_method),
                           factory);
 
         if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (factory->skeleton),

@@ -172,6 +172,16 @@ if systemdsystemunitdir != 'no'
     install_dir: systemd_systemunitdir,
     format: 'cmake'
   )
+
+  configure_file(
+    input: 'gnome-headless-session@.service.in',
+    output: '@BASENAME@',
+    configuration: {
+      'GDM_GROUPNAME': get_option('group'),
+      'libexecdir': gdm_prefix / get_option('libexecdir'),
+    },
+    install_dir: systemd_systemunitdir,
+  )
 endif
 
 if systemduserunitdir != 'no'
@@ -202,4 +212,8 @@ configure_file(
     'GDM_GROUPNAME': get_option('group'),
   },
   install_dir: get_option('datadir') / 'polkit-1' / 'rules.d',
+)
+install_data(
+  'org.gnome.displaymanager.policy',
+  install_dir: get_option('datadir') / 'polkit-1' / 'actions',
 )

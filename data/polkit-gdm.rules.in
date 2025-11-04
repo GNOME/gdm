@@ -12,4 +12,15 @@ polkit.addRule(function(action, subject) {
         subject.local && subject.active) {
         return polkit.Result.YES;
     }
+
+    if (action.id == "org.gnome.displaymanager.displayfactory.manage-user-displays") {
+        const user = action.lookup("user");
+        const system_unit = subject.system_unit;
+
+        if (user && system_unit) {
+            const match = system_unit.match(/^gnome-headless-session@(.+?)\.service$/);
+            if (match && user == match[1])
+                return polkit.Result.YES;
+        }
+    }
 });

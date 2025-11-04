@@ -43,9 +43,6 @@ GQuark                     gdm_local_display_factory_error_quark              (v
 
 GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore        *display_store);
 
-gboolean                   gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
-                                                                               char                  **id,
-                                                                               GError                **error);
 G_END_DECLS
 
 #endif /* __GDM_LOCAL_DISPLAY_FACTORY_H */

@@ -81,6 +81,10 @@ gboolean       gdm_get_login_window_session_id (const char  *seat_id,
 gboolean       gdm_goto_login_session     (GCancellable  *cancellable,
                                            GError       **error);
 
+gboolean       gdm_find_graphical_sessions_for_username (const char   *username,
+                                                         char       ***sessions,
+                                                         GError      **error);
+
 GPtrArray     *gdm_get_script_environment (const char *username,
                                            const char *display_name,
                                            const char *display_hostname,
