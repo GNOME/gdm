@@ -1922,12 +1922,12 @@ export_greeter_interface (GdmSession      *self,
 }
 
 static gboolean
-gdm_session_handle_client_disconnect (GdmDBusChooser        *chooser_interface,
+gdm_session_handle_client_disconnect (GdmDBusRemoteGreeter  *remote_greeter_interface,
                                       GDBusMethodInvocation *invocation,
                                       GdmSession            *self)
 {
-        gdm_dbus_chooser_complete_disconnect (chooser_interface,
-                                              invocation);
+        gdm_dbus_remote_greeter_complete_disconnect (remote_greeter_interface,
+                                                     invocation);
         g_signal_emit (self, signals[DISCONNECTED], 0);
         return TRUE;
 }
