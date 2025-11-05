@@ -3674,10 +3674,12 @@ gdm_session_select_session (GdmSession *self,
 
                 conversation = (GdmSessionConversation *) value;
 
-                gdm_dbus_worker_call_set_session_name (conversation->worker_proxy,
-                                                       get_session_name (self),
-                                                       conversation->worker_cancellable,
-                                                       NULL, NULL);
+                if (conversation->worker_proxy != NULL) {
+                        gdm_dbus_worker_call_set_session_name (conversation->worker_proxy,
+                                                               get_session_name (self),
+                                                               conversation->worker_cancellable,
+                                                               NULL, NULL);
+                }
         }
 }
 
