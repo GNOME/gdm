@@ -524,7 +524,6 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                                                        launch_environment->x11_display_hostname,
                                                        NULL,
                                                        launch_environment->x11_display_seat_id,
-                                                       NULL,
                                                        launch_environment->x11_display_is_local,
                                                        NULL);
 

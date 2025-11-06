@@ -94,7 +94,6 @@ struct _GdmSession
         char                *saved_session_type;
         char                *saved_language;
         char                *selected_user;
-        char                *user_x11_authority_file;
 
         char                *timed_login_username;
         int                  timed_login_delay;
@@ -121,7 +120,6 @@ struct _GdmSession
         char                *display_hostname;
         char                *display_device;
         char                *display_seat_id;
-        char                *display_x11_authority_file;
         gboolean             display_is_local;
 
         GdmSessionVerificationMode verification_mode;
@@ -154,8 +152,6 @@ enum {
         PROP_SESSION_TYPE,
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_SEAT_ID,
-        PROP_DISPLAY_X11_AUTHORITY_FILE,
-        PROP_USER_X11_AUTHORITY_FILE,
         PROP_CONVERSATION_ENVIRONMENT,
         PROP_SUPPORTED_SESSION_TYPES,
         PROP_REMOTE_ID,
@@ -2562,9 +2558,6 @@ initialize (GdmSession *self,
         if (self->display_seat_id != NULL)
                 g_variant_builder_add_parsed (&details, "{'seat-id', <%s>}", self->display_seat_id);
 
-        if (self->display_x11_authority_file != NULL)
-                g_variant_builder_add_parsed (&details, "{'x11-authority-file', <%s>}", self->display_x11_authority_file);
-
         g_debug ("GdmSession: Beginning initialization");
 
         conversation = find_conversation_by_name (self, service_name);
@@ -3133,9 +3126,6 @@ do_reset (GdmSession *self)
         g_free (self->saved_language);
         self->saved_language = NULL;
 
-        g_free (self->user_x11_authority_file);
-        self->user_x11_authority_file = NULL;
-
         g_hash_table_remove_all (self->environment);
 
         self->session_pid = -1;
@@ -3600,22 +3590,6 @@ set_display_seat_id (GdmSession *self,
 }
 
 static void
-set_user_x11_authority_file (GdmSession *self,
-                             const char *name)
-{
-        g_free (self->user_x11_authority_file);
-        self->user_x11_authority_file = g_strdup (name);
-}
-
-static void
-set_display_x11_authority_file (GdmSession *self,
-                                const char *name)
-{
-        g_free (self->display_x11_authority_file);
-        self->display_x11_authority_file = g_strdup (name);
-}
-
-static void
 set_display_is_local (GdmSession *self,
                       gboolean    is_local)
 {
@@ -3697,12 +3671,6 @@ gdm_session_set_property (GObject      *object,
         case PROP_DISPLAY_SEAT_ID:
                 set_display_seat_id (self, g_value_get_string (value));
                 break;
-        case PROP_USER_X11_AUTHORITY_FILE:
-                set_user_x11_authority_file (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_X11_AUTHORITY_FILE:
-                set_display_x11_authority_file (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_IS_LOCAL:
                 set_display_is_local (self, g_value_get_boolean (value));
                 break;
@@ -3755,12 +3723,6 @@ gdm_session_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->display_seat_id);
-                break;
-        case PROP_USER_X11_AUTHORITY_FILE:
-                g_value_set_string (value, self->user_x11_authority_file);
-                break;
-        case PROP_DISPLAY_X11_AUTHORITY_FILE:
-                g_value_set_string (value, self->display_x11_authority_file);
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->display_is_local);
@@ -3821,9 +3783,6 @@ gdm_session_dispose (GObject *object)
 
         g_free (self->display_seat_id);
         self->display_seat_id = NULL;
-
-        g_free (self->display_x11_authority_file);
-        self->display_x11_authority_file = NULL;
 
         g_strfreev (self->conversation_environment);
         self->conversation_environment = NULL;
@@ -4185,21 +4144,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                "display is initial",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_X11_AUTHORITY_FILE,
-                                         g_param_spec_string ("display-x11-authority-file",
-                                                              "display x11 authority file",
-                                                              "display x11 authority file",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         /* not construct only */
-        g_object_class_install_property (object_class,
-                                         PROP_USER_X11_AUTHORITY_FILE,
-                                         g_param_spec_string ("user-x11-authority-file",
-                                                              "",
-                                                              "",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_DEVICE,
                                          g_param_spec_string ("display-device",
@@ -4243,7 +4188,6 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
                  const char                 *display_hostname,
                  const char                 *display_device,
                  const char                 *display_seat_id,
-                 const char                 *display_x11_authority_file,
                  gboolean                    display_is_local,
                  const char * const         *environment)
 {
@@ -4256,7 +4200,6 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
                              "display-hostname", display_hostname,
                              "display-device", display_device,
                              "display-seat-id", display_seat_id,
-                             "display-x11-authority-file", display_x11_authority_file,
                              "display-is-local", display_is_local,
                              "conversation-environment", environment,
                              NULL);

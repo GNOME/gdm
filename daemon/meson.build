@@ -76,12 +76,6 @@ gdm_daemon_deps = [
   libpam_dep,
   polkit_dep,
 ]
-if have_x11_support
-  gdm_daemon_deps += [
-    xcb_dep,
-    x_deps,
-  ]
-endif
 
 # test-session-client
 test_session_client_src = [
@@ -169,9 +163,14 @@ if have_x11_support
     manager_dbus_gen,
   ]
 
+  gdm_x_session_deps = [
+    gdm_daemon_deps,
+    xau_dep,
+  ]
+
   gdm_x_session = executable('gdm-x-session',
     gdm_x_session_src,
-    dependencies: gdm_daemon_deps,
+    dependencies: gdm_x_session_deps,
     include_directories: gdm_session_worker_includes,
     install: true,
     install_dir: get_option('libexecdir'),
@@ -181,7 +180,6 @@ endif
 # GDM daemon
 gdm_daemon_sources = files(
   'gdm-dbus-util.c',
-  'gdm-display-access-file.c',
   'gdm-display-factory.c',
   'gdm-display-store.c',
   'gdm-display.c',

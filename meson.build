@@ -32,7 +32,6 @@ gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : '/run/gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
 working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
-gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir / 'xauth'
 gdm_private_dbus_dir = (get_option('private-dbus-dir') != '')? get_option('private-dbus-dir') : gdm_run_dir / 'dbus'
 gdm_dyn_home_dir = (get_option('dyn-home-dir') != '')? get_option('dyn-home-dir') : gdm_run_dir / 'home'
 pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
@@ -84,13 +83,7 @@ endif
 x_path = '/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin'
 x_bin = '/usr/bin/X'
 if have_x11_support
-  xcb_dep = dependency('xcb')
-  x_deps = declare_dependency(
-    dependencies: [
-      dependency('x11'),
-      dependency('xau'),
-    ],
-  )
+  xau_dep = dependency('xau')
   # Xserver 1.17 & later default to -nolisten and require -listen for remote access
   xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
   xserver_has_listen = xserver_deps.found()
@@ -251,7 +244,6 @@ conf.set_quoted('DCONF_SYSCONFIG', dconf_sysconfig)
 conf.set_quoted('DCONF_PROFILES_PATH', dconf_profiles_path)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
 conf.set_quoted('GDM_DATADIR', gdm_prefix / gdm_datadir)
-conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_PRIVATE_DBUS_DIR', gdm_private_dbus_dir)
 conf.set_quoted('GDM_RUN_DIR', gdm_run_dir)
 conf.set_quoted('GDM_DCONF_PROFILE', 'gdm')
@@ -343,7 +335,6 @@ summary({
     'System DBus': dbus_sys_dir,
     'DM conf': dmconfdir,
     'GDM conf': gdmconfdir,
-    'GDM Xauth': gdm_xauth_dir,
     'GDM Run': gdm_run_dir,
     'GDM Dynamic Homes': gdm_dyn_home_dir,
     'GDM PID file': gdm_pid_file,

@@ -923,7 +923,7 @@ open_temporary_reauthentication_channel (GdmManager            *self,
 {
         GdmSession *session;
         char **environment;
-        const char *display, *auth_file;
+        const char *display;
         const char *address;
 
         /* Note we're just using a minimal environment here rather than the
@@ -931,7 +931,6 @@ open_temporary_reauthentication_channel (GdmManager            *self,
          * associated worker will be privileged */
         environment = g_get_environ ();
         display = "";
-        auth_file = "/dev/null";
 
         session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
                                    uid,
@@ -939,7 +938,6 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                    NULL,
                                    NULL,
                                    seat_id,
-                                   auth_file,
                                    is_remote == FALSE,
                                    (const char * const *)
                                    environment);
@@ -1463,35 +1461,6 @@ static void
 start_user_session (GdmManager *manager,
                     StartUserSessionOperation *operation)
 {
-        GdmDisplay *display;
-
-        display = get_display_for_user_session (operation->session);
-
-        if (display != NULL) {
-                gboolean is_connected = FALSE;
-
-                g_object_get (G_OBJECT (display), "is-connected", &is_connected, NULL);
-
-                if (is_connected) {
-                        char *auth_file = NULL;
-                        const char *username;
-
-                        username = gdm_session_get_username (operation->session);
-                        gdm_display_add_user_authorization (display,
-                                                            username,
-                                                            &auth_file,
-                                                            NULL);
-
-                        g_assert (auth_file != NULL);
-
-                        g_object_set (operation->session,
-                                      "user-x11-authority-file", auth_file,
-                                      NULL);
-
-                        g_free (auth_file);
-                }
-        }
-
         gdm_session_start_session (operation->session,
                                    operation->service_name);
 
@@ -2154,7 +2123,6 @@ create_user_session_for_display (GdmManager *manager,
         char       *display_name = NULL;
         char       *display_device = NULL;
         char       *remote_hostname = NULL;
-        char       *display_auth_file = NULL;
         char       *display_seat_id = NULL;
         char       *display_id = NULL;
         g_auto (GStrv) supported_session_types = NULL;
@@ -2164,7 +2132,6 @@ create_user_session_for_display (GdmManager *manager,
                       "x11-display-name", &display_name,
                       "is-local", &display_is_local,
                       "remote-hostname", &remote_hostname,
-                      "x11-authority-file", &display_auth_file,
                       "seat-id", &display_seat_id,
                       "supported-session-types", &supported_session_types,
                       NULL);
@@ -2176,7 +2143,6 @@ create_user_session_for_display (GdmManager *manager,
                                    remote_hostname,
                                    display_device,
                                    display_seat_id,
-                                   display_auth_file,
                                    display_is_local,
                                    NULL);
 
@@ -2197,7 +2163,6 @@ create_user_session_for_display (GdmManager *manager,
 
         g_free (display_name);
         g_free (remote_hostname);
-        g_free (display_auth_file);
         g_free (display_seat_id);
 
         g_signal_connect (session,
