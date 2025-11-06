@@ -34,15 +34,9 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
-#ifdef ENABLE_X11_SUPPORT
-#include <xcb/xcb.h>
-#include <X11/Xlib.h>
-#endif
-
 #include "gdm-common.h"
 #include "gdm-display.h"
 #include "gdm-display-glue.h"
-#include "gdm-display-access-file.h"
 #include "gdm-launch-environment.h"
 #include "gdm-remote-display.h"
 
@@ -72,19 +66,9 @@ typedef struct _GdmDisplayPrivate
 
         char                 *autologin_user;
 
-        char                 *x11_cookie;
-        gsize                 x11_cookie_size;
-        GdmDisplayAccessFile *access_file;
-
         guint                 finish_idle_id;
 
-#ifdef ENABLE_X11_SUPPORT
-        xcb_connection_t     *xcb_connection;
-        int                   xcb_screen_number;
-#endif
-
         GDBusConnection      *connection;
-        GdmDisplayAccessFile *user_access_file;
 
         GdmDBusDisplay       *display_skeleton;
         GDBusObjectSkeleton  *object_skeleton;
@@ -115,9 +99,6 @@ enum {
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
-        PROP_X11_COOKIE,
-        PROP_X11_AUTHORITY_FILE,
-        PROP_IS_CONNECTED,
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
@@ -180,229 +161,6 @@ gdm_display_get_session_id (GdmDisplay *self)
 
         priv = gdm_display_get_instance_private (self);
         return priv->session_id;
-}
-
-static GdmDisplayAccessFile *
-_create_access_file_for_user (GdmDisplay  *self,
-                              const char  *username,
-                              GError     **error)
-{
-        GdmDisplayAccessFile *access_file;
-
-        access_file = gdm_display_access_file_new (username);
-        if (!gdm_display_access_file_open (access_file, error)) {
-                return NULL;
-        }
-
-        return access_file;
-}
-
-gboolean
-gdm_display_create_authority (GdmDisplay *self)
-{
-        GdmDisplayPrivate    *priv;
-        g_autoptr(GdmDisplayAccessFile) access_file = NULL;
-        g_autoptr(GError) error = NULL;
-        gboolean              res;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-        g_return_val_if_fail (priv->access_file == NULL, FALSE);
-
-        access_file = _create_access_file_for_user (self, GDM_USERNAME, &error);
-
-        if (access_file == NULL) {
-                g_critical ("could not create display access file: %s", error->message);
-                return FALSE;
-        }
-
-        g_free (priv->x11_cookie);
-        priv->x11_cookie = NULL;
-        res = gdm_display_access_file_add_display (access_file,
-                                                   self,
-                                                   &priv->x11_cookie,
-                                                   &priv->x11_cookie_size,
-                                                   &error);
-
-        if (! res) {
-                g_critical ("could not add display to access file: %s", error->message);
-                gdm_display_access_file_close (access_file);
-                return FALSE;
-        }
-
-        priv->access_file = g_steal_pointer (&access_file);
-
-        return TRUE;
-}
-
-#ifdef ENABLE_X11_SUPPORT
-static void
-setup_xhost_auth (XHostAddress              *host_entries)
-{
-        host_entries[0].family    = FamilyServerInterpreted;
-        host_entries[0].address   = "localuser\0root";
-        host_entries[0].length    = sizeof ("localuser\0root");
-        host_entries[1].family    = FamilyServerInterpreted;
-        host_entries[1].address   = "localuser\0" GDM_USERNAME;
-        host_entries[1].length    = sizeof ("localuser\0" GDM_USERNAME);
-        host_entries[2].family    = FamilyServerInterpreted;
-        host_entries[2].address   = "localuser\0gnome-initial-setup";
-        host_entries[2].length    = sizeof ("localuser\0gnome-initial-setup");
-}
-#endif
-
-gboolean
-gdm_display_add_user_authorization (GdmDisplay *self,
-                                    const char *username,
-                                    char      **filename,
-                                    GError    **error)
-{
-#ifdef ENABLE_X11_SUPPORT
-        GdmDisplayPrivate    *priv;
-        g_autoptr(GdmDisplayAccessFile) access_file = NULL;
-        g_autoptr(GError) access_file_error = NULL;
-        gboolean              res;
-
-        int                       i;
-        XHostAddress              host_entries[3];
-        xcb_void_cookie_t         cookies[3];
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-        g_return_val_if_fail (username != NULL, FALSE);
-        g_return_val_if_fail (filename != NULL, FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-
-        g_debug ("GdmDisplay: Adding authorization for user:%s on display %s", username, priv->x11_display_name);
-
-        if (priv->user_access_file != NULL) {
-                g_set_error (error,
-                             G_DBUS_ERROR,
-                             G_DBUS_ERROR_ACCESS_DENIED,
-                             "user access already assigned");
-                return FALSE;
-        }
-
-        g_debug ("GdmDisplay: Adding user authorization for %s", username);
-
-        access_file = _create_access_file_for_user (self,
-                                                    username,
-                                                    &access_file_error);
-
-        if (access_file == NULL) {
-                g_propagate_error (error, g_steal_pointer (&access_file_error));
-                return FALSE;
-        }
-
-        res = gdm_display_access_file_add_display_with_cookie (access_file,
-                                                               self,
-                                                               priv->x11_cookie,
-                                                               priv->x11_cookie_size,
-                                                               &access_file_error);
-        if (! res) {
-                g_debug ("GdmDisplay: Unable to add user authorization for %s: %s",
-                         username,
-                         access_file_error->message);
-                g_propagate_error (error, g_steal_pointer (&access_file_error));
-                gdm_display_access_file_close (access_file);
-                return FALSE;
-        }
-
-        *filename = gdm_display_access_file_get_path (access_file);
-        priv->user_access_file = g_steal_pointer (&access_file);
-
-        g_debug ("GdmDisplay: Added user authorization for %s: %s", username, *filename);
-        /* Remove access for the programs run by greeter now that the
-         * user session is starting.
-         */
-        setup_xhost_auth (host_entries);
-
-        for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
-                cookies[i] = xcb_change_hosts_checked (priv->xcb_connection,
-                                                       XCB_HOST_MODE_DELETE,
-                                                       host_entries[i].family,
-                                                       host_entries[i].length,
-                                                       (uint8_t *) host_entries[i].address);
-        }
-
-        for (i = 0; i < G_N_ELEMENTS (cookies); i++) {
-                xcb_generic_error_t *xcb_error;
-
-                xcb_error = xcb_request_check (priv->xcb_connection, cookies[i]);
-
-                if (xcb_error != NULL) {
-                        g_warning ("Failed to remove greeter program access to the display. Trying to proceed.");
-                        free (xcb_error);
-                }
-        }
-
-        return TRUE;
-#else
-    return FALSE;
-#endif
-}
-
-gboolean
-gdm_display_remove_user_authorization (GdmDisplay *self,
-                                       const char *username,
-                                       GError    **error)
-{
-        GdmDisplayPrivate *priv;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-        g_return_val_if_fail (username != NULL, FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-
-        g_debug ("GdmDisplay: Removing authorization for user:%s on display %s", username, priv->x11_display_name);
-
-        gdm_display_access_file_close (priv->user_access_file);
-
-        return TRUE;
-}
-
-gboolean
-gdm_display_get_x11_cookie (GdmDisplay  *self,
-                            const char **x11_cookie,
-                            gsize       *x11_cookie_size,
-                            GError     **error)
-{
-        GdmDisplayPrivate *priv;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-
-        if (x11_cookie != NULL) {
-                *x11_cookie = priv->x11_cookie;
-        }
-
-        if (x11_cookie_size != NULL) {
-                *x11_cookie_size = priv->x11_cookie_size;
-        }
-
-        return TRUE;
-}
-
-gboolean
-gdm_display_get_x11_authority_file (GdmDisplay *self,
-                                    char      **filename,
-                                    GError    **error)
-{
-        GdmDisplayPrivate *priv;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-        g_return_val_if_fail (filename != NULL, FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-        if (priv->access_file != NULL) {
-                *filename = gdm_display_access_file_get_path (priv->access_file);
-        } else {
-                *filename = NULL;
-        }
-
-        return TRUE;
 }
 
 gboolean
@@ -637,46 +395,6 @@ gdm_display_finish (GdmDisplay *self)
         return TRUE;
 }
 
-static void
-gdm_display_disconnect (GdmDisplay *self)
-{
-#ifdef ENABLE_X11_SUPPORT
-        GdmDisplayPrivate *priv;
-        /* These 3 bits are reserved/unused by the X protocol */
-        guint32 unused_bits = 0b11100000000000000000000000000000;
-        XID highest_client, client;
-        guint32 client_increment;
-        const xcb_setup_t *setup;
-
-        priv = gdm_display_get_instance_private (self);
-
-        if (priv->xcb_connection == NULL) {
-                return;
-        }
-
-        setup = xcb_get_setup (priv->xcb_connection);
-
-        /* resource_id_mask is the bits given to each client for
-         * addressing resources */
-        highest_client = (XID) ~unused_bits & ~setup->resource_id_mask;
-        client_increment = setup->resource_id_mask + 1;
-
-        /* Kill every client but ourselves, then close our own connection
-         */
-        for (client = 0;
-             client <= highest_client;
-             client += client_increment) {
-
-                if (client != setup->resource_id_base)
-                        xcb_kill_client (priv->xcb_connection, client);
-        }
-
-        xcb_flush (priv->xcb_connection);
-
-        g_clear_pointer (&priv->xcb_connection, xcb_disconnect);
-#endif
-}
-
 gboolean
 gdm_display_unmanage (GdmDisplay *self)
 {
@@ -685,20 +403,6 @@ gdm_display_unmanage (GdmDisplay *self)
         g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
 
         priv = gdm_display_get_instance_private (self);
-
-        gdm_display_disconnect (self);
-
-        if (priv->user_access_file != NULL) {
-                gdm_display_access_file_close (priv->user_access_file);
-                g_object_unref (priv->user_access_file);
-                priv->user_access_file = NULL;
-        }
-
-        if (priv->access_file != NULL) {
-                gdm_display_access_file_close (priv->access_file);
-                g_object_unref (priv->access_file);
-                priv->access_file = NULL;
-        }
 
         if (!priv->session_registered) {
                 g_warning ("GdmDisplay: Session never registered, failing");
@@ -854,17 +558,6 @@ _gdm_display_set_x11_display_name (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_x11_cookie (GdmDisplay     *self,
-                             const char     *x11_cookie)
-{
-        GdmDisplayPrivate *priv;
-
-        priv = gdm_display_get_instance_private (self);
-        g_free (priv->x11_cookie);
-        priv->x11_cookie = g_strdup (x11_cookie);
-}
-
-static void
 _gdm_display_set_is_local (GdmDisplay     *self,
                            gboolean        is_local)
 {
@@ -987,9 +680,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_X11_DISPLAY_NAME:
                 _gdm_display_set_x11_display_name (self, g_value_get_string (value));
                 break;
-        case PROP_X11_COOKIE:
-                _gdm_display_set_x11_cookie (self, g_value_get_string (value));
-                break;
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
                 break;
@@ -1057,26 +747,11 @@ gdm_display_get_property (GObject        *object,
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, priv->x11_display_name);
                 break;
-        case PROP_X11_COOKIE:
-                g_value_set_string (value, priv->x11_cookie);
-                break;
-        case PROP_X11_AUTHORITY_FILE:
-                g_value_take_string (value,
-                                     priv->access_file?
-                                     gdm_display_access_file_get_path (priv->access_file) : NULL);
-                break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, priv->is_local);
                 break;
         case PROP_AUTOLOGIN_USER:
                 g_value_set_string (value, priv->autologin_user);
-                break;
-        case PROP_IS_CONNECTED:
-#ifdef ENABLE_X11_SUPPORT
-                g_value_set_boolean (value, priv->xcb_connection != NULL);
-#else
-                g_value_set_boolean (value, FALSE);
-#endif
                 break;
         case PROP_LAUNCH_ENVIRONMENT:
                 g_value_set_object (value, priv->launch_environment);
@@ -1295,8 +970,6 @@ gdm_display_dispose (GObject *object)
         g_clear_pointer (&priv->autologin_user, g_free);
 
         g_warn_if_fail (priv->status != GDM_DISPLAY_MANAGED);
-        g_warn_if_fail (priv->user_access_file == NULL);
-        g_warn_if_fail (priv->access_file == NULL);
 
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
 }
@@ -1394,34 +1067,12 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_X11_COOKIE,
-                                         g_param_spec_string ("x11-cookie",
-                                                              "cookie",
-                                                              "cookie",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_X11_AUTHORITY_FILE,
-                                         g_param_spec_string ("x11-authority-file",
-                                                              "authority file",
-                                                              "authority file",
-                                                              NULL,
-                                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-        g_object_class_install_property (object_class,
                                          PROP_IS_LOCAL,
                                          g_param_spec_boolean ("is-local",
                                                                NULL,
                                                                NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_IS_CONNECTED,
-                                         g_param_spec_boolean ("is-connected",
-                                                               NULL,
-                                                               NULL,
-                                                               TRUE,
-                                                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_HAVE_EXISTING_USER_ACCOUNTS,
                                          g_param_spec_boolean ("have-existing-user-accounts",
@@ -1500,20 +1151,11 @@ gdm_display_finalize (GObject *object)
         g_free (priv->session_class);
         g_free (priv->remote_hostname);
         g_free (priv->x11_display_name);
-        g_free (priv->x11_cookie);
 
         g_clear_object (&priv->display_skeleton);
         g_clear_object (&priv->object_skeleton);
         g_clear_object (&priv->connection);
         g_clear_object (&priv->accountsservice_proxy);
-
-        if (priv->access_file != NULL) {
-                g_object_unref (priv->access_file);
-        }
-
-        if (priv->user_access_file != NULL) {
-                g_object_unref (priv->user_access_file);
-        }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
 }
@@ -1757,7 +1399,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         g_autofree char *display_name = NULL;
         g_autofree char *seat_id = NULL;
         g_autofree char *hostname = NULL;
-        g_autofree char *auth_file = NULL;
 
         g_return_if_fail (GDM_IS_DISPLAY (self));
 
@@ -1771,9 +1412,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
                       "seat-id", &seat_id,
                       "remote-hostname", &hostname,
                       NULL);
-        if (priv->access_file != NULL) {
-                auth_file = gdm_display_access_file_get_path (priv->access_file);
-        }
 
         g_debug ("GdmDisplay: Creating greeter for %s %s", display_name, hostname);
 
@@ -1836,172 +1474,4 @@ gdm_display_stop_greeter_session (GdmDisplay *self)
                 gdm_launch_environment_stop (priv->launch_environment);
                 g_clear_object (&priv->launch_environment);
         }
-}
-
-#ifdef ENABLE_X11_SUPPORT
-static xcb_window_t
-get_root_window (xcb_connection_t *connection,
-                 int               screen_number)
-{
-        xcb_screen_t *screen = NULL;
-        xcb_screen_iterator_t iter;
-
-        iter = xcb_setup_roots_iterator (xcb_get_setup (connection));
-        while (iter.rem) {
-                if (screen_number == 0)
-                        screen = iter.data;
-                screen_number--;
-                xcb_screen_next (&iter);
-        }
-
-        if (screen != NULL) {
-                return screen->root;
-        }
-
-        return XCB_WINDOW_NONE;
-}
-
-static void
-gdm_display_set_windowpath (GdmDisplay *self)
-{
-        GdmDisplayPrivate *priv;
-        /* setting WINDOWPATH for clients */
-        xcb_intern_atom_cookie_t atom_cookie;
-        xcb_intern_atom_reply_t *atom_reply = NULL;
-        xcb_get_property_cookie_t get_property_cookie;
-        xcb_get_property_reply_t *get_property_reply = NULL;
-        xcb_window_t root_window = XCB_WINDOW_NONE;
-        const char *windowpath;
-        g_autofree gchar *newwindowpath = NULL;
-        uint32_t num;
-
-        priv = gdm_display_get_instance_private (self);
-
-        atom_cookie = xcb_intern_atom (priv->xcb_connection, 0, strlen("XFree86_VT"), "XFree86_VT");
-        atom_reply = xcb_intern_atom_reply (priv->xcb_connection, atom_cookie, NULL);
-
-        if (atom_reply == NULL) {
-                g_debug ("no XFree86_VT atom\n");
-                goto out;
-        }
-
-        root_window = get_root_window (priv->xcb_connection,
-                                       priv->xcb_screen_number);
-
-        if (root_window == XCB_WINDOW_NONE) {
-                g_debug ("couldn't find root window\n");
-                goto out;
-        }
-
-        get_property_cookie = xcb_get_property (priv->xcb_connection,
-                                                FALSE,
-                                                root_window,
-                                                atom_reply->atom,
-                                                XCB_ATOM_INTEGER,
-                                                0,
-                                                1);
-
-        get_property_reply = xcb_get_property_reply (priv->xcb_connection, get_property_cookie, NULL);
-
-        if (get_property_reply == NULL) {
-                g_debug ("no XFree86_VT property\n");
-                goto out;
-        }
-
-        num = ((uint32_t *) xcb_get_property_value (get_property_reply))[0];
-
-        windowpath = getenv ("WINDOWPATH");
-        if (!windowpath) {
-                newwindowpath = g_strdup_printf ("%u", num);
-        } else {
-                newwindowpath = g_strdup_printf ("%s:%u", windowpath, num);
-        }
-
-        g_setenv ("WINDOWPATH", newwindowpath, TRUE);
-out:
-        g_clear_pointer (&atom_reply, free);
-        g_clear_pointer (&get_property_reply, free);
-}
-#endif
-
-gboolean
-gdm_display_connect (GdmDisplay *self)
-{
-#ifdef ENABLE_X11_SUPPORT
-        GdmDisplayPrivate *priv;
-        xcb_auth_info_t *auth_info = NULL;
-        gboolean ret;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-
-        g_debug ("GdmDisplay: Server is ready - opening display %s", priv->x11_display_name);
-
-        /* Get access to the display independent of current hostname */
-        if (priv->x11_cookie != NULL) {
-                auth_info = g_alloca (sizeof (xcb_auth_info_t));
-
-                auth_info->namelen = strlen ("MIT-MAGIC-COOKIE-1");
-                auth_info->name = "MIT-MAGIC-COOKIE-1";
-                auth_info->datalen = priv->x11_cookie_size;
-                auth_info->data = priv->x11_cookie;
-
-        }
-
-        priv->xcb_connection = xcb_connect_to_display_with_auth_info (priv->x11_display_name,
-                                                                      auth_info,
-                                                                      &priv->xcb_screen_number);
-
-        if (xcb_connection_has_error (priv->xcb_connection)) {
-                g_clear_pointer (&priv->xcb_connection, xcb_disconnect);
-                g_warning ("Unable to connect to display %s", priv->x11_display_name);
-                ret = FALSE;
-        } else if (priv->is_local) {
-                XHostAddress              host_entries[3];
-                xcb_void_cookie_t         cookies[3];
-                int                       i;
-
-                g_debug ("GdmDisplay: Connected to display %s", priv->x11_display_name);
-                ret = TRUE;
-
-                /* Give programs access to the display independent of current hostname
-                 */
-                setup_xhost_auth (host_entries);
-
-                for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
-                        cookies[i] = xcb_change_hosts_checked (priv->xcb_connection,
-                                                               XCB_HOST_MODE_INSERT,
-                                                               host_entries[i].family,
-                                                               host_entries[i].length,
-                                                               (uint8_t *) host_entries[i].address);
-                }
-
-                for (i = 0; i < G_N_ELEMENTS (cookies); i++) {
-                        xcb_generic_error_t *xcb_error;
-
-                        xcb_error = xcb_request_check (priv->xcb_connection, cookies[i]);
-
-                        if (xcb_error != NULL) {
-                                g_debug ("Failed to give system user '%s' access to the display. Trying to proceed.", host_entries[i].address + sizeof ("localuser"));
-                                free (xcb_error);
-                        } else {
-                                g_debug ("Gave system user '%s' access to the display.", host_entries[i].address + sizeof ("localuser"));
-                        }
-                }
-
-                gdm_display_set_windowpath (self);
-        } else {
-                g_debug ("GdmDisplay: Connected to display %s", priv->x11_display_name);
-                ret = TRUE;
-        }
-
-        if (ret == TRUE) {
-                g_object_notify (G_OBJECT (self), "is-connected");
-        }
-
-        return ret;
-#else
-    return FALSE;
-#endif
 }
