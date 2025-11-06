@@ -37,10 +37,6 @@ typedef enum
 } GdmSessionVerificationMode;
 
 typedef enum {
-        /* We reuse the existing display server, e.g. X server
-         * in "classic" mode from the greeter for the first seat. */
-        GDM_SESSION_DISPLAY_MODE_REUSE_VT,
-
         /* Doesn't know anything about VTs. Tries to set DRM
          * master and will throw a tantrum if something bad
          * happens. e.g. weston-launch or mutter-launch. */
