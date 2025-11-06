@@ -1601,6 +1601,8 @@ on_start_user_session (StartUserSessionOperation *operation)
         gboolean fail_if_already_switched = TRUE;
         GdmDisplay *display;
         const char *session_id;
+        gboolean doing_initial_setup = FALSE;
+        uid_t allowed_uid;
 
         g_debug ("GdmManager: start or jump to session");
 
@@ -1626,68 +1628,54 @@ on_start_user_session (StartUserSessionOperation *operation)
         session_id = gdm_session_get_conversation_session_id (operation->session,
                                                               operation->service_name);
 
-        if (gdm_session_get_display_mode (operation->session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                /* In this case, the greeter's display is morphing into
-                 * the user session display. Kill the greeter on this session
-                 * and let the user session follow the same display. */
-                gdm_display_stop_greeter_session (display);
-                g_object_set (G_OBJECT (display),
-                                "session-class", "user",
-                                "session-id", session_id,
-                                NULL);
+        g_object_get (G_OBJECT (display),
+                      "doing-initial-setup", &doing_initial_setup,
+                      NULL);
+
+        g_object_ref (display);
+        if (doing_initial_setup) {
+                g_autoptr(GError) error = NULL;
+
+                g_debug ("GdmManager: closing down initial setup display in background");
+                g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
+
+                if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                          "1",
+                                          1,
+                                          &error)) {
+                        g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
+                                   ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                   error->message);
+                        g_clear_error (&error);
+                }
         } else {
-                gboolean doing_initial_setup = FALSE;
-                uid_t allowed_uid;
-
-                g_object_get (G_OBJECT (display),
-                              "doing-initial-setup", &doing_initial_setup,
-                              NULL);
-
-                g_object_ref (display);
-                if (doing_initial_setup) {
-                        g_autoptr(GError) error = NULL;
-
-                        g_debug ("GdmManager: closing down initial setup display in background");
-                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
-
-                        if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                                  "1",
-                                                  1,
-                                                  &error)) {
-                                g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
-                                           ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                           error->message);
-                                g_clear_error (&error);
-                        }
-                } else {
-                        g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
-                }
-
-                /* The user session is going to follow the session worker
-                 * into the new display. Untie it from this display and
-                 * create a new session for a future user login. */
-                allowed_uid = gdm_session_get_allowed_user (operation->session);
-                g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
-                g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
-                create_user_session_for_display (operation->manager, display, allowed_uid);
-
-                /* Give the user session a new display object for bookkeeping purposes */
-                create_display_for_user_session (operation->manager,
-                                                 operation->session,
-                                                 session_id);
-
-                if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
-	            !gdm_session_client_is_connected (operation->session)) {
-                        /* remove the unused prepared greeter display since we're not going
-                         * to have a greeter */
-                        gdm_display_store_remove (self->display_store, display);
-
-                        self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
-                        g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
-                }
-
-                g_object_unref (display);
+                g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
         }
+
+        /* The user session is going to follow the session worker
+         * into the new display. Untie it from this display and
+         * create a new session for a future user login. */
+        allowed_uid = gdm_session_get_allowed_user (operation->session);
+        g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
+        g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
+        create_user_session_for_display (operation->manager, display, allowed_uid);
+
+        /* Give the user session a new display object for bookkeeping purposes */
+        create_display_for_user_session (operation->manager,
+                                         operation->session,
+                                         session_id);
+
+        if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
+            !gdm_session_client_is_connected (operation->session)) {
+                /* remove the unused prepared greeter display since we're not going
+                 * to have a greeter */
+                gdm_display_store_remove (self->display_store, display);
+
+                self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
+                g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
+        }
+
+        g_object_unref (display);
 
         start_user_session (operation->manager, operation);
 
@@ -1898,12 +1886,6 @@ on_session_reauthenticated (GdmSession *session,
                         } else {
                                 g_warning ("GdmManager: Couldn't find remote display associated with reauthenticated user session");
                         }
-                }
-
-                if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                        gdm_display_stop_greeter_session (login_display);
-                        gdm_display_unmanage (login_display);
-                        gdm_display_finish (login_display);
                 }
         }
 
@@ -2743,3 +2725,4 @@ gdm_manager_new (void)
 
         return GDM_MANAGER (manager_object);
 }
+

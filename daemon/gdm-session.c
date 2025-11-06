@@ -2822,7 +2822,6 @@ set_up_session_language (GdmSession *self)
 static void
 set_up_session_environment (GdmSession *self)
 {
-        GdmSessionDisplayMode display_mode;
         gchar *desktop_names;
         char *locale;
 
@@ -2855,19 +2854,6 @@ set_up_session_environment (GdmSession *self)
         }
 
         g_free (locale);
-
-        display_mode = gdm_session_get_display_mode (self);
-        if (display_mode == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                gdm_session_set_environment_variable (self,
-                                                      "DISPLAY",
-                                                      self->display_name);
-
-                if (self->user_x11_authority_file != NULL) {
-                        gdm_session_set_environment_variable (self,
-                                                              "XAUTHORITY",
-                                                              self->user_x11_authority_file);
-                }
-        }
 
         if (g_getenv ("WINDOWPATH") != NULL) {
                 gdm_session_set_environment_variable (self,
@@ -3029,9 +3015,7 @@ gdm_session_start_session (GdmSession *self,
                            const char *service_name)
 {
         GdmSessionConversation *conversation;
-        GdmSessionDisplayMode   display_mode;
         gboolean                is_x11 = TRUE;
-        gboolean                run_launcher = FALSE;
         gboolean                run_xsession_script;
         gboolean                allow_remote_connections = FALSE;
         g_autofree char        *command = NULL;
@@ -3052,16 +3036,9 @@ gdm_session_start_session (GdmSession *self,
 
         stop_all_other_conversations (self, conversation, FALSE);
 
-        display_mode = gdm_session_get_display_mode (self);
-
 #ifdef ENABLE_WAYLAND_SUPPORT
         is_x11 = g_strcmp0 (self->session_type, "wayland") != 0;
 #endif
-
-        if (display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED ||
-            display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
-                run_launcher = TRUE;
-        }
 
         register_session = !gdm_session_session_registers (self);
 
@@ -3077,20 +3054,16 @@ gdm_session_start_session (GdmSession *self,
                 allow_remote_connections = TRUE;
         }
 
-        if (run_launcher) {
-                if (is_x11) {
-                        program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
-                                                   register_session ? "--register-session " : "",
-                                                   run_xsession_script? "--run-script " : "",
-                                                   allow_remote_connections? "--allow-remote-connections " : "",
-                                                   command);
-                } else {
-                        program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
-                                                   register_session ? "--register-session " : "",
-                                                   command);
-                }
-        } else if (run_xsession_script) {
-                program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+        if (is_x11) {
+                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
+                                           register_session ? "--register-session " : "",
+                                           run_xsession_script? "--run-script " : "",
+                                           allow_remote_connections? "--allow-remote-connections " : "",
+                                           command);
+        } else {
+                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                           register_session ? "--register-session " : "",
+                                           command);
         }
 
         set_up_session_environment (self);
@@ -3532,11 +3505,6 @@ gdm_session_get_display_mode (GdmSession *self)
                  self->session_type,
                  self->is_program_session? "yes" : "no",
                  self->display_seat_id);
-
-        if (self->display_seat_id == NULL &&
-            g_strcmp0 (self->session_type, "wayland") != 0) {
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
-        }
 
         if (g_strcmp0 (self->display_seat_id, "seat0") != 0) {
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
@@ -4299,8 +4267,6 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
 GdmSessionDisplayMode
 gdm_session_display_mode_from_string (const char *str)
 {
-        if (strcmp (str, "reuse-vt") == 0)
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
         if (strcmp (str, "new-vt") == 0)
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         if (strcmp (str, "logind-managed") == 0)
@@ -4314,8 +4280,6 @@ const char *
 gdm_session_display_mode_to_string (GdmSessionDisplayMode mode)
 {
         switch (mode) {
-        case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
-                return "reuse-vt";
         case GDM_SESSION_DISPLAY_MODE_NEW_VT:
                 return "new-vt";
         case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:

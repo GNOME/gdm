@@ -49,10 +49,6 @@
 
 #include <json-glib/json-glib.h>
 
-#ifdef ENABLE_X11_SUPPORT
-#include <X11/Xauth.h>
-#endif
-
 #include <systemd/sd-daemon.h>
 #include <systemd/sd-login.h>
 
@@ -1158,48 +1154,6 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         g_debug ("GdmSessionWorker: state NONE");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_NONE);
 }
-
-static char *
-_get_tty_for_pam (const char *x11_display_name,
-                  const char *display_device)
-{
-#ifdef __sun
-        return g_strdup (display_device);
-#else
-        return g_strdup (x11_display_name);
-#endif
-}
-
-#if defined(PAM_XAUTHDATA) && defined(ENABLE_X11_SUPPORT)
-static struct pam_xauth_data *
-_get_xauth_for_pam (const char *x11_authority_file)
-{
-        FILE                  *fh;
-        Xauth                 *auth = NULL;
-        struct pam_xauth_data *retval = NULL;
-        gsize                  len = sizeof (*retval) + 1;
-
-        fh = fopen (x11_authority_file, "r");
-        if (fh) {
-                auth = XauReadAuth (fh);
-                fclose (fh);
-        }
-        if (auth) {
-                len += auth->name_length + auth->data_length;
-                retval = g_malloc0 (len);
-        }
-        if (retval) {
-                retval->namelen = auth->name_length;
-                retval->name = (char *) (retval + 1);
-                memcpy (retval->name, auth->name, auth->name_length);
-                retval->datalen = auth->data_length;
-                retval->data = retval->name + auth->name_length + 1;
-                memcpy (retval->data, auth->data, auth->data_length);
-        }
-        XauDisposeAuth (auth);
-        return retval;
-}
-#endif
 
 static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
@@ -2309,118 +2263,6 @@ fail:
 }
 
 static gboolean
-set_xdg_vtnr_to_current_vt (GdmSessionWorker *worker)
-{
-        int fd;
-        char vt_string[256];
-        struct vt_stat vt_state = { 0 };
-
-        fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
-
-        if (fd < 0) {
-                g_debug ("GdmSessionWorker: couldn't open VT master: %m");
-                return FALSE;
-        }
-
-        if (ioctl (fd, VT_GETSTATE, &vt_state) < 0) {
-                g_debug ("GdmSessionWorker: couldn't get current VT: %m");
-                goto fail;
-        }
-
-        close (fd);
-
-        g_snprintf (vt_string, sizeof (vt_string), "%d", vt_state.v_active);
-
-        gdm_session_worker_set_environment_variable (worker,
-                                                     "XDG_VTNR",
-                                                     vt_string);
-
-        return TRUE;
-
-fail:
-        close (fd);
-        return FALSE;
-}
-
-static gboolean
-set_up_for_current_vt (GdmSessionWorker  *worker,
-                       GError           **error)
-{
-#ifdef PAM_XAUTHDATA
-        struct pam_xauth_data *pam_xauth;
-#endif
-        g_autofree char *pam_tty = NULL;
-
-        /* set TTY */
-        pam_tty = _get_tty_for_pam (worker->x11_display_name, worker->display_device);
-        if (pam_tty != NULL && pam_tty[0] != '\0') {
-                int error_code;
-
-                error_code = pam_set_item (worker->pam_handle, PAM_TTY, pam_tty);
-                if (error_code != PAM_SUCCESS) {
-                        g_debug ("error informing authentication system of user's console %s: %s",
-                                 pam_tty,
-                                 pam_strerror (worker->pam_handle, error_code));
-                        g_set_error_literal (error,
-                                             GDM_SESSION_WORKER_ERROR,
-                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                             "");
-                        return FALSE;
-                }
-        }
-
-#ifdef PAM_XDISPLAY
-        /* set XDISPLAY */
-        if (worker->x11_display_name != NULL && worker->x11_display_name[0] != '\0') {
-                int error_code;
-
-                error_code = pam_set_item (worker->pam_handle, PAM_XDISPLAY, worker->x11_display_name);
-                if (error_code != PAM_SUCCESS) {
-                        g_debug ("error informing authentication system of display string %s: %s",
-                                 worker->x11_display_name,
-                                 pam_strerror (worker->pam_handle, error_code));
-                        g_set_error_literal (error,
-                                             GDM_SESSION_WORKER_ERROR,
-                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                             "");
-                        return FALSE;
-                }
-        }
-#endif
-#if defined(PAM_XAUTHDATA) && defined(ENABLE_X11_SUPPORT)
-        /* set XAUTHDATA */
-        pam_xauth = _get_xauth_for_pam (worker->x11_authority_file);
-        if (pam_xauth != NULL) {
-                int error_code;
-
-                error_code = pam_set_item (worker->pam_handle, PAM_XAUTHDATA, pam_xauth);
-                if (error_code != PAM_SUCCESS) {
-                        g_debug ("error informing authentication system of display string %s: %s",
-                                 worker->x11_display_name,
-                                 pam_strerror (worker->pam_handle, error_code));
-                        g_free (pam_xauth);
-
-                        g_set_error_literal (error,
-                                             GDM_SESSION_WORKER_ERROR,
-                                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                             "");
-                        return FALSE;
-                }
-                g_free (pam_xauth);
-         }
-#endif
-
-        if (g_strcmp0 (worker->display_seat_id, "seat0") == 0 && worker->seat0_has_vts) {
-                g_debug ("GdmSessionWorker: setting XDG_VTNR to current vt");
-                set_xdg_vtnr_to_current_vt (worker);
-        } else {
-                g_debug ("GdmSessionWorker: not setting XDG_VTNR since no VTs on seat");
-        }
-
-        return TRUE;
-}
-
-static gboolean
 gdm_session_worker_open_session (GdmSessionWorker  *worker,
                                  GError           **error)
 {
@@ -2432,22 +2274,12 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
         g_assert (geteuid () == 0);
 
         if (g_strcmp0 (worker->display_seat_id, "seat0") == 0 && worker->seat0_has_vts) {
-                switch (worker->display_mode) {
-                case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
-                        if (!set_up_for_current_vt (worker, error)) {
-                                return FALSE;
-                        }
-                        break;
-                case GDM_SESSION_DISPLAY_MODE_NEW_VT:
-                case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:
-                        if (!set_up_for_new_vt (worker)) {
-                                g_set_error (error,
-                                             GDM_SESSION_WORKER_ERROR,
-                                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                                             "Unable to open VT");
-                                return FALSE;
-                        }
-                        break;
+                if (!set_up_for_new_vt (worker)) {
+                        g_set_error (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                                     "Unable to open VT");
+                        return FALSE;
                 }
         }
 
