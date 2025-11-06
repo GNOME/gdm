@@ -134,7 +134,6 @@ struct _GdmSessionWorker
         /* from Setup */
         char             *service;
         char             *x11_display_name;
-        char             *x11_authority_file;
         char             *display_device;
         char             *display_seat_id;
         char             *hostname;
@@ -1163,7 +1162,6 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                                    const char         *hostname,
                                    gboolean            display_is_local,
                                    const char         *x11_display_name,
-                                   const char         *x11_authority_file,
                                    const char         *display_device,
                                    const char         *seat_id,
                                    GError            **error)
@@ -2453,7 +2451,6 @@ do_setup (GdmSessionWorker *worker)
                                                  worker->hostname,
                                                  worker->display_is_local,
                                                  worker->x11_display_name,
-                                                 worker->x11_authority_file,
                                                  worker->display_device,
                                                  worker->display_seat_id,
                                                  &error);
@@ -2871,8 +2868,6 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                         worker->log_file = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "x11-display-name") == 0) {
                         worker->x11_display_name = g_variant_dup_string (value, NULL);
-                } else if (g_strcmp0 (key, "x11-authority-file") == 0) {
-                        worker->x11_authority_file = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "console") == 0) {
                         worker->display_device = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "seat-id") == 0) {
@@ -2933,7 +2928,6 @@ gdm_session_worker_handle_setup (GdmDBusWorker         *object,
                                  GDBusMethodInvocation *invocation,
                                  const char            *service,
                                  const char            *x11_display_name,
-                                 const char            *x11_authority_file,
                                  const char            *console,
                                  const char            *seat_id,
                                  const char            *hostname,
@@ -2945,7 +2939,6 @@ gdm_session_worker_handle_setup (GdmDBusWorker         *object,
 
         worker->service = g_strdup (service);
         worker->x11_display_name = g_strdup (x11_display_name);
-        worker->x11_authority_file = g_strdup (x11_authority_file);
         worker->display_device = g_strdup (console);
         worker->display_seat_id = g_strdup (seat_id);
         worker->hostname = g_strdup (hostname);
@@ -2978,7 +2971,6 @@ gdm_session_worker_handle_setup_for_user (GdmDBusWorker         *object,
                                           const char            *service,
                                           const char            *username,
                                           const char            *x11_display_name,
-                                          const char            *x11_authority_file,
                                           const char            *console,
                                           const char            *seat_id,
                                           const char            *hostname,
@@ -2992,7 +2984,6 @@ gdm_session_worker_handle_setup_for_user (GdmDBusWorker         *object,
 
         worker->service = g_strdup (service);
         worker->x11_display_name = g_strdup (x11_display_name);
-        worker->x11_authority_file = g_strdup (x11_authority_file);
         worker->display_device = g_strdup (console);
         worker->display_seat_id = g_strdup (seat_id);
         worker->hostname = g_strdup (hostname);
@@ -3037,7 +3028,6 @@ gdm_session_worker_handle_setup_for_program (GdmDBusWorker         *object,
                                              const char            *service,
                                              const char            *username,
                                              const char            *x11_display_name,
-                                             const char            *x11_authority_file,
                                              const char            *console,
                                              const char            *seat_id,
                                              const char            *hostname,
@@ -3050,7 +3040,6 @@ gdm_session_worker_handle_setup_for_program (GdmDBusWorker         *object,
 
         worker->service = g_strdup (service);
         worker->x11_display_name = g_strdup (x11_display_name);
-        worker->x11_authority_file = g_strdup (x11_authority_file);
         worker->display_device = g_strdup (console);
         worker->display_seat_id = g_strdup (seat_id);
         worker->hostname = g_strdup (hostname);
@@ -3186,7 +3175,6 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                                             worker->hostname,
                                             worker->display_device,
                                             worker->display_seat_id,
-                                            worker->x11_authority_file,
                                             worker->display_is_local,
                                             environment);
 
@@ -3426,7 +3414,6 @@ gdm_session_worker_finalize (GObject *object)
         g_clear_object (&worker->user_settings);
         g_free (worker->service);
         g_free (worker->x11_display_name);
-        g_free (worker->x11_authority_file);
         g_free (worker->display_device);
         g_free (worker->display_seat_id);
         g_free (worker->hostname);

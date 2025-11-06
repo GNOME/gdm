@@ -181,7 +181,6 @@ endif
 # GDM daemon
 gdm_daemon_sources = files(
   'gdm-dbus-util.c',
-  'gdm-display-access-file.c',
   'gdm-display-factory.c',
   'gdm-display-store.c',
   'gdm-display.c',

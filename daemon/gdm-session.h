@@ -58,7 +58,6 @@ GdmSession      *gdm_session_new                      (GdmSessionVerificationMod
                                                        const char   *display_hostname,
                                                        const char   *display_device,
                                                        const char   *display_seat_id,
-                                                       const char   *display_x11_authority_file,
                                                        gboolean      display_is_local,
                                                        const char * const *environment);
 uid_t             gdm_session_get_allowed_user       (GdmSession     *session);
