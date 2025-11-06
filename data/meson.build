@@ -67,7 +67,6 @@ install_data(
 )
 
 desktop_files = [
-  'gdm-simple-chooser.desktop.in',
   'gnome-greeter.desktop.in',
   'gnome-initial-setup.desktop.in'
 ]
