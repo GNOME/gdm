@@ -95,17 +95,6 @@ GdmRemoteGreeter  *gdm_client_get_remote_greeter_sync   (GdmClient *client,
                                                          GCancellable     *cancellable,
                                                          GError          **error);
 
-void               gdm_client_get_chooser               (GdmClient     *client,
-                                                         GCancellable         *cancellable,
-                                                         GAsyncReadyCallback   callback,
-                                                         gpointer              user_data);
-GdmChooser        *gdm_client_get_chooser_finish        (GdmClient *client,
-                                                         GAsyncResult     *result,
-                                                         GError          **error);
-GdmChooser        *gdm_client_get_chooser_sync          (GdmClient *client,
-                                                         GCancellable     *cancellable,
-                                                         GError          **error);
-
 G_END_DECLS
 
 #endif /* __GDM_CLIENT_H */

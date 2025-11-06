@@ -110,7 +110,6 @@ struct _GdmSession
         GHashTable            *user_verifier_extensions;
         GdmDBusGreeter        *greeter_interface;
         GdmDBusRemoteGreeter  *remote_greeter_interface;
-        GdmDBusChooser        *chooser_interface;
 
         GList               *pending_worker_connections;
         GList               *outside_connections;
@@ -168,7 +167,6 @@ enum {
         CONVERSATION_STOPPED,
         SETUP_COMPLETE,
         CANCELLED,
-        HOSTNAME_SELECTED,
         CLIENT_REJECTED,
         CLIENT_CONNECTED,
         CLIENT_DISCONNECTED,
@@ -338,7 +336,6 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
 
                 switch (self->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
-                case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
                         gdm_session_open_session (self, service_name);
                         break;
                 case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
@@ -1953,40 +1950,6 @@ export_remote_greeter_interface (GdmSession      *self,
         g_set_object (&self->remote_greeter_interface, remote_greeter_interface);
 }
 
-static gboolean
-gdm_session_handle_client_select_hostname (GdmDBusChooser        *chooser_interface,
-                                           GDBusMethodInvocation *invocation,
-                                           const char            *hostname,
-                                           GdmSession            *self)
-{
-
-        gdm_dbus_chooser_complete_select_hostname (chooser_interface,
-                                                   invocation);
-        g_signal_emit (self, signals[HOSTNAME_SELECTED], 0, hostname);
-        return TRUE;
-}
-
-static void
-export_chooser_interface (GdmSession      *self,
-                          GDBusConnection *connection)
-{
-        g_autoptr (GdmDBusChooser) chooser_interface = NULL;
-
-        chooser_interface = GDM_DBUS_CHOOSER (gdm_dbus_chooser_skeleton_new ());
-
-        g_signal_connect (chooser_interface,
-                          "handle-select-hostname",
-                          G_CALLBACK (gdm_session_handle_client_select_hostname),
-                          self);
-
-        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (chooser_interface),
-                                          connection,
-                                          GDM_SESSION_DBUS_OBJECT_PATH,
-                                          NULL);
-
-        g_set_object (&self->chooser_interface, chooser_interface);
-}
-
 static void
 on_outside_connection_closed (GDBusConnection *connection,
                               gboolean         remote_peer_vanished,
@@ -2035,18 +1998,8 @@ handle_connection_from_outside (GDBusServer      *server,
 
         export_user_verifier_interface (self, connection);
 
-        switch (self->verification_mode) {
-                case GDM_SESSION_VERIFICATION_MODE_LOGIN:
-                        export_greeter_interface (self, connection);
-                break;
-
-                case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
-                        export_chooser_interface (self, connection);
-                break;
-
-                default:
-                break;
-        }
+        if (self->verification_mode == GDM_SESSION_VERIFICATION_MODE_LOGIN)
+                export_greeter_interface (self, connection);
 
         if (!self->display_is_local) {
                 export_remote_greeter_interface (self, connection);
@@ -3927,7 +3880,6 @@ gdm_session_dispose (GObject *object)
                          g_hash_table_unref);
         g_clear_object (&self->greeter_interface);
         g_clear_object (&self->remote_greeter_interface);
-        g_clear_object (&self->chooser_interface);
 
         g_free (self->display_name);
         self->display_name = NULL;
@@ -4233,17 +4185,6 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_STRING,
                               G_TYPE_BOOLEAN);
 
-        signals [HOSTNAME_SELECTED] =
-                g_signal_new ("hostname-selected",
-                              GDM_TYPE_SESSION,
-                              G_SIGNAL_RUN_FIRST,
-                              0,
-                              NULL,
-                              NULL,
-                              NULL,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
         signals [DISCONNECTED] =
                 g_signal_new ("disconnected",
                               GDM_TYPE_SESSION,

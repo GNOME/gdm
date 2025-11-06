@@ -46,7 +46,6 @@ struct _GdmClient
 
         GdmGreeter         *greeter;
         GdmRemoteGreeter   *remote_greeter;
-        GdmChooser         *chooser;
 
         char              **enabled_extensions;
 };
@@ -93,8 +92,6 @@ gdm_client_get_open_connection (GdmClient *client)
                 proxy = G_DBUS_PROXY (client->greeter);
         } else if (client->remote_greeter != NULL) {
                 proxy = G_DBUS_PROXY (client->remote_greeter);
-        } else if (client->chooser != NULL) {
-                proxy = G_DBUS_PROXY (client->chooser);
         }
 
         if (proxy != NULL) {
@@ -1316,167 +1313,6 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
 }
 
 static void
-on_chooser_proxy_created (GObject            *source,
-                          GAsyncResult       *result,
-                          gpointer            user_data)
-{
-        GdmChooser   *chooser;
-        g_autoptr(GTask)  task = user_data;
-        g_autoptr(GError) error = NULL;
-
-        chooser = gdm_chooser_proxy_new_finish (result, &error);
-        if (chooser == NULL) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        g_task_return_pointer (task,
-                               chooser,
-                               (GDestroyNotify) g_object_unref);
-}
-
-static void
-on_connection_for_chooser (GdmClient          *client,
-                           GAsyncResult       *result,
-                           gpointer            user_data)
-{
-        GCancellable *cancellable;
-        g_autoptr(GTask)           task = user_data;
-        g_autoptr(GDBusConnection) connection = NULL;
-        g_autoptr(GError)          error = NULL;
-
-        connection = gdm_client_get_connection_finish (client, result, &error);
-
-        if (connection == NULL) {
-                g_task_return_error (task, g_steal_pointer (&error));
-                return;
-        }
-
-        cancellable = g_task_get_cancellable (task);
-        gdm_chooser_proxy_new (connection,
-                               G_DBUS_PROXY_FLAGS_NONE,
-                               NULL,
-                               SESSION_DBUS_PATH,
-                               cancellable,
-                               (GAsyncReadyCallback)
-                               on_chooser_proxy_created,
-                               g_steal_pointer (&task));
-}
-
-/**
- * gdm_client_get_chooser:
- * @client: a #GdmClient
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: The data to pass to @callback
- * @cancellable: a #GCancellable
- *
- * Gets a #GdmChooser object that can be used to
- * verify a user's local account.
- */
-void
-gdm_client_get_chooser (GdmClient           *client,
-                        GCancellable        *cancellable,
-                        GAsyncReadyCallback  callback,
-                        gpointer             user_data)
-{
-        g_autoptr(GTask) task = NULL;
-
-        g_return_if_fail (GDM_IS_CLIENT (client));
-
-        task = g_task_new (G_OBJECT (client),
-                           cancellable,
-                           callback,
-                           user_data);
-
-        if (client->chooser != NULL) {
-                g_task_return_pointer (task,
-                                       g_object_ref (client->chooser),
-                                       (GDestroyNotify) g_object_unref);
-                return;
-        }
-
-        gdm_client_get_connection (client,
-                                   cancellable,
-                                   (GAsyncReadyCallback)
-                                   on_connection_for_chooser,
-                                   g_steal_pointer (&task));
-}
-
-/**
- * gdm_client_get_chooser_finish:
- * @client: a #GdmClient
- * @result: The #GAsyncResult from the callback
- * @error: a #GError
- *
- * Finishes an operation started with
- * gdm_client_get_chooser().
- *
- * Returns: (transfer full): a #GdmChooser
- */
-GdmChooser *
-gdm_client_get_chooser_finish (GdmClient       *client,
-                               GAsyncResult    *result,
-                               GError         **error)
-{
-        GdmChooser *chooser;
-
-        g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
-
-        if (client->chooser != NULL)
-                return g_object_ref (client->chooser);
-
-        chooser = g_task_propagate_pointer (G_TASK (result), error);
-        if (chooser == NULL)
-                return NULL;
-
-        g_set_weak_pointer (&client->chooser, chooser);
-
-        return chooser;
-}
-
-/**
- * gdm_client_get_chooser_sync:
- * @client: a #GdmClient
- * @cancellable: a #GCancellable
- * @error: a #GError
- *
- * Gets a #GdmChooser object that can be used
- * to do do various XDMCP chooser related tasks, such
- * as selecting a host or disconnecting.
- *
- * Returns: (transfer full): #GdmChooser or %NULL if caller is not a chooser
- */
-GdmChooser *
-gdm_client_get_chooser_sync (GdmClient     *client,
-                             GCancellable  *cancellable,
-                             GError       **error)
-{
-        g_autoptr(GDBusConnection) connection = NULL;
-        GdmChooser *chooser;
-
-        if (client->chooser != NULL) {
-                return g_object_ref (client->chooser);
-        }
-
-        connection = gdm_client_get_connection_sync (client, cancellable, error);
-
-        if (connection == NULL) {
-                return NULL;
-        }
-
-        chooser = gdm_chooser_proxy_new_sync (connection,
-                                              G_DBUS_PROXY_FLAGS_NONE,
-                                              NULL,
-                                              SESSION_DBUS_PATH,
-                                              cancellable,
-                                              error);
-
-        g_set_weak_pointer (&client->chooser, chooser);
-
-        return client->chooser;
-}
-
-static void
 gdm_client_class_init (GdmClientClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -1505,7 +1341,6 @@ gdm_client_finalize (GObject *object)
         g_clear_weak_pointer (&client->user_verifier_for_reauth);
         g_clear_weak_pointer (&client->greeter);
         g_clear_weak_pointer (&client->remote_greeter);
-        g_clear_weak_pointer (&client->chooser);
 
         g_strfreev (client->enabled_extensions);
 
