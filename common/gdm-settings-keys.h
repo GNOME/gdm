@@ -58,9 +58,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_MAX_WAIT_INDIRECT "xdmcp/MaxWaitIndirect"
 #define GDM_KEY_WILLING "xdmcp/Willing"
 
-#define GDM_KEY_MULTICAST "chooser/Multicast"
-#define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr"
-
 G_END_DECLS
 
 #endif /* _GDM_SETTINGS_KEYS_H */

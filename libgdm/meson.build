@@ -16,8 +16,6 @@ libgdm_client_dbus_gen = gnome.gdbus_codegen('gdm-client-glue',
     annotations: [
       [ 'org.gnome.DisplayManager.UserVerifier', 'org.gtk.GDBus.C.Name', 'UserVerifier' ],
       [ 'org.gnome.DisplayManager.Greeter', 'org.gtk.GDBus.C.Name', 'Greeter' ],
-      [ 'org.gnome.DisplayManager.RemoteGreeter', 'org.gtk.GDBus.C.Name', 'RemoteGreeter' ],
-      [ 'org.gnome.DisplayManager.Chooser', 'org.gtk.GDBus.C.Name', 'Chooser' ],
     ],
     build_by_default: true,
     install_header: true,

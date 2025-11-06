@@ -105,7 +105,6 @@ enum {
         STOPPED,
         EXITED,
         DIED,
-        HOSTNAME_SELECTED,
         LAST_SIGNAL
 };
 
@@ -437,15 +436,6 @@ on_session_died (GdmSession           *session,
 }
 
 static void
-on_hostname_selected (GdmSession               *session,
-                      const char               *hostname,
-		      GdmLaunchEnvironment     *launch_environment)
-{
-        g_debug ("GdmSession: hostname selected: %s", hostname);
-        g_signal_emit (launch_environment, signals [HOSTNAME_SELECTED], 0, hostname);
-}
-
-static void
 on_conversation_started (GdmSession           *session,
                          const char           *service_name,
                          GdmLaunchEnvironment *launch_environment)
@@ -571,11 +561,6 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         g_signal_connect_object (launch_environment->session,
                                  "session-died",
                                  G_CALLBACK (on_session_died),
-                                 launch_environment,
-                                 0);
-        g_signal_connect_object (launch_environment->session,
-                                 "hostname-selected",
-                                 G_CALLBACK (on_hostname_selected),
                                  launch_environment,
                                  0);
 
@@ -913,18 +898,6 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
-
-        signals [HOSTNAME_SELECTED] =
-                g_signal_new ("hostname-selected",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              0,
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
 }
 
 static void
