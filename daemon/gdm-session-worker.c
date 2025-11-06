@@ -1716,22 +1716,6 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
         return (const char * const *) pam_getenvlist (worker->pam_handle);
 }
 
-static gboolean
-run_script (GdmSessionWorker *worker,
-            const char       *dir)
-{
-        /* scripts are for non-program sessions only */
-        if (worker->is_program_session) {
-                return TRUE;
-        }
-
-        return gdm_run_script (dir,
-                               worker->username,
-                               worker->x11_display_name,
-                               worker->display_is_local? NULL : worker->hostname,
-                               worker->x11_authority_file);
-}
-
 static void
 wait_until_dbus_signal_emission_to_manager_finishes (GdmSessionWorker *worker)
 {
@@ -1795,7 +1779,6 @@ session_worker_child_watch (GPid              pid,
 
         worker->child_pid = -1;
         worker->child_watch_id = 0;
-        run_script (worker, GDMCONFDIR "/PostSession");
 
         gdm_dbus_worker_emit_session_exited (GDM_DBUS_WORKER (worker),
                                              worker->service,
@@ -1998,24 +1981,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 if (worker->display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
                         jump_to_vt (worker, worker->session_vt);
                 }
-        }
-
-        if (!worker->is_program_session && !run_script (worker, GDMCONFDIR "/PostLogin")) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                             "Failed to execute PostLogin script");
-                error_code = PAM_ABORT;
-                goto out;
-        }
-
-        if (!worker->is_program_session && !run_script (worker, GDMCONFDIR "/PreSession")) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                             "Failed to execute PreSession script");
-                error_code = PAM_ABORT;
-                goto out;
         }
 
         session_pid = fork ();
