@@ -513,25 +513,6 @@ on_finish_waiting_for_seat0_displays_timeout (GdmLocalDisplayFactory *factory)
 }
 
 static void
-on_session_registered_cb (GObject *gobject,
-                          GParamSpec *pspec,
-                          gpointer user_data)
-{
-        GdmDisplay *display = GDM_DISPLAY (gobject);
-        GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (user_data);
-        gboolean registered;
-
-        g_object_get (display, "session-registered", &registered, NULL);
-
-        if (!registered)
-                return;
-
-        g_debug ("GdmLocalDisplayFactory: session registered on display, looking for any background displays to kill");
-
-        finish_waiting_displays_on_seat (factory, "seat0");
-}
-
-static void
 on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
                            GdmLocalDisplayFactory *factory)
@@ -545,6 +526,7 @@ on_display_status_changed (GdmDisplay             *display,
         char            *session_id = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
+        gboolean         registered = FALSE;
 
 
         if (!factory->is_started)
@@ -611,11 +593,11 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
-                g_signal_connect_object (display,
-                                         "notify::session-registered",
-                                         G_CALLBACK (on_session_registered_cb),
-                                         factory,
-                                         0);
+                g_object_get (display, "session-registered", &registered, NULL);
+                if (registered) {
+                        g_debug ("GdmLocalDisplayFactory: session registered on display, looking for any background displays to kill");
+                        finish_waiting_displays_on_seat (factory, "seat0");
+                }
                 break;
         case GDM_DISPLAY_WAITING_TO_FINISH:
                 break;

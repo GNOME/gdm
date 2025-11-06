@@ -175,7 +175,7 @@ plymouth_prepare_for_transition (void)
         }
 }
 
-static gboolean
+static void
 plymouth_quit_with_transition (void)
 {
         gboolean res;
@@ -187,8 +187,6 @@ plymouth_quit_with_transition (void)
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
         }
-
-        return G_SOURCE_REMOVE;
 }
 
 static void
@@ -732,7 +730,7 @@ find_user_session_for_display (GdmManager *self,
 }
 
 static gboolean
-gdm_manager_handle_register_display (GdmDBusManager        *manager,
+gdm_manager_handle_register_session (GdmDBusManager        *manager,
                                      GDBusMethodInvocation *invocation,
                                      GVariant              *details)
 {
@@ -744,14 +742,14 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
         GVariantIter     iter;
         char            *key = NULL;
         char            *value = NULL;
-        char            *x11_display_name = NULL;
-        char            *tty = NULL;
-
-        g_debug ("GdmManager: trying to register new display");
+        g_autofree char *x11_display_name = NULL;
+        g_autofree char *tty = NULL;
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
         get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, &tty, NULL, NULL, NULL, NULL);
+
+        g_debug ("GdmManager: trying to register new session on display %p", display);
 
         if (display == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -792,38 +790,10 @@ gdm_manager_handle_register_display (GdmDBusManager        *manager,
                 }
         }
 
-        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_MANAGED, NULL);
-
-        gdm_dbus_manager_complete_register_display (GDM_DBUS_MANAGER (manager),
-                                                    invocation);
-
-        g_clear_pointer (&x11_display_name, g_free);
-        g_clear_pointer (&tty, g_free);
-        return TRUE;
-}
-
-static gboolean
-gdm_manager_handle_register_session (GdmDBusManager        *manager,
-                                     GDBusMethodInvocation *invocation,
-                                     GVariant              *details)
-{
-        GdmManager      *self = GDM_MANAGER (manager);
-        GdmDisplay      *display = NULL;
-        const char      *sender;
-        GDBusConnection *connection;
-
-        sender = g_dbus_method_invocation_get_sender (invocation);
-        connection = g_dbus_method_invocation_get_connection (invocation);
-
-        get_display_and_details_for_bus_sender (self, connection, sender, &display,
-                                                NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
-        g_debug ("GdmManager: trying to register new session on display %p", display);
-
-        if (display != NULL)
-                g_object_set (G_OBJECT (display), "session-registered", TRUE, NULL);
-        else
-                g_debug ("GdmManager: No display, not registering");
+        g_object_set (G_OBJECT (display),
+                      "status", GDM_DISPLAY_MANAGED,
+                      "session-registered", TRUE,
+                      NULL);
 
         gdm_dbus_manager_complete_register_session (GDM_DBUS_MANAGER (manager),
                                                     invocation);
@@ -1224,7 +1194,6 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 static void
 manager_interface_init (GdmDBusManagerIface *interface)
 {
-        interface->handle_register_display = gdm_manager_handle_register_display;
         interface->handle_register_session = gdm_manager_handle_register_session;
         interface->handle_open_session = gdm_manager_handle_open_session;
         interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
@@ -1506,6 +1475,13 @@ on_display_status_changed (GdmDisplay *display,
                                 if (g_strcmp0 (session_class, "greeter") == 0)
                                         set_up_session (manager, display);
                         }
+
+#ifdef WITH_PLYMOUTH
+                        if (status == GDM_DISPLAY_MANAGED && quit_plymouth) {
+                                plymouth_quit_with_transition ();
+                                manager->plymouth_is_running = FALSE;
+                        }
+#endif
                         break;
                 case GDM_DISPLAY_FAILED:
                 case GDM_DISPLAY_UNMANAGED:
@@ -1892,15 +1868,6 @@ on_user_session_started (GdmSession      *session,
 {
         g_debug ("GdmManager: session started %d", pid);
         add_session_record (manager, session, pid, SESSION_RECORD_LOGIN);
-
-#ifdef WITH_PLYMOUTH
-        if (g_strcmp0 (service_name, "gdm-autologin") == 0) {
-                if (manager->plymouth_is_running) {
-                        g_timeout_add_seconds (20, (GSourceFunc) plymouth_quit_with_transition, NULL);
-                        manager->plymouth_is_running = FALSE;
-                }
-        }
-#endif
 }
 
 static void
@@ -2123,13 +2090,6 @@ on_session_client_connected (GdmSession      *session,
         if (!display_is_on_seat0 (display)) {
                 return;
         }
-
-#ifdef WITH_PLYMOUTH
-        if (manager->plymouth_is_running) {
-                plymouth_quit_with_transition ();
-                manager->plymouth_is_running = FALSE;
-        }
-#endif
 
         g_object_get (G_OBJECT (display), "allow-timed-login", &allow_timed_login, NULL);
 
