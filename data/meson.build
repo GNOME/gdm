@@ -31,7 +31,6 @@ gdm_schema = configure_file(
   configuration: {
     'GDM_USERNAME': get_option('user'),
     'GDM_GROUPNAME': get_option('group'),
-    'gdmconfdir': gdmconfdir,
   },
   install_dir: gdm_datadir,
 )

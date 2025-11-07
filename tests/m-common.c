@@ -23,7 +23,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "s-common-address.h"
 #include "s-common.h"
 
 static gboolean no_fork = FALSE;
@@ -55,16 +54,6 @@ main (int argc, char **argv)
                 exit (EXIT_FAILURE);
         }
 
-        r = srunner_create (suite_common_address ());
-
-        if (no_fork) {
-                srunner_set_fork_status (r, CK_NOFORK);
-        }
-
-        srunner_run_all (r, verbose ? CK_VERBOSE : CK_NORMAL);
-        failed = srunner_ntests_failed (r);
-        srunner_free (r);
-
         r = srunner_create (suite_common ());
 
         if (no_fork) {
@@ -72,7 +61,7 @@ main (int argc, char **argv)
         }
 
         srunner_run_all (r, verbose ? CK_VERBOSE : CK_NORMAL);
-        failed |= srunner_ntests_failed (r);
+        failed = srunner_ntests_failed (r);
         srunner_free (r);
 
         return failed != 0;

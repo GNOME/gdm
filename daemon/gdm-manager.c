@@ -83,11 +83,9 @@ struct _GdmManager
         GList                  *user_sessions;
         GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
-        gboolean                xdmcp_enabled;
         gboolean                remote_login_enabled;
 
         gboolean                started;
-        gboolean                show_local_greeter;
 
         GDBusConnection          *connection;
         GDBusObjectManagerServer *object_manager;
@@ -100,8 +98,6 @@ struct _GdmManager
 
 enum {
         PROP_0,
-        PROP_XDMCP_ENABLED,
-        PROP_SHOW_LOCAL_GREETER,
         PROP_REMOTE_LOGIN_ENABLED
 };
 
@@ -2345,26 +2341,15 @@ gdm_manager_start (GdmManager *manager)
                 plymouth_prepare_for_transition ();
         }
 #endif
-        if (!manager->xdmcp_enabled || manager->show_local_greeter) {
-                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
-                g_signal_connect (manager->local_factory,
-                                  "graphics-unsupported",
-                                  G_CALLBACK (on_graphics_unsupported),
-                                  manager);
-        }
+        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
+        g_signal_connect (manager->local_factory,
+                          "graphics-unsupported",
+                          G_CALLBACK (on_graphics_unsupported),
+                          manager);
 
         /* Accept remote connections */
-        if (manager->remote_login_enabled) {
+        if (manager->remote_login_enabled)
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->remote_factory));
-
-#ifdef WITH_PLYMOUTH
-                /* Quit plymouth if remote is the only display */
-                if (!manager->show_local_greeter && manager->plymouth_is_running) {
-                        plymouth_quit_without_transition ();
-                        manager->plymouth_is_running = FALSE;
-                }
-#endif
-        }
 
         manager->started = TRUE;
 }
@@ -2404,27 +2389,6 @@ register_manager (GdmManager *manager)
 }
 
 void
-gdm_manager_set_xdmcp_enabled (GdmManager *manager,
-                               gboolean    enabled)
-{
-        g_return_if_fail (GDM_IS_MANAGER (manager));
-
-        if (manager->xdmcp_enabled != enabled) {
-                manager->xdmcp_enabled = enabled;
-        }
-
-}
-
-void
-gdm_manager_set_show_local_greeter (GdmManager *manager,
-                                    gboolean    show_local_greeter)
-{
-        g_return_if_fail (GDM_IS_MANAGER (manager));
-
-        manager->show_local_greeter = show_local_greeter;
-}
-
-void
 gdm_manager_set_remote_login_enabled (GdmManager *manager,
                                       gboolean    enabled)
 {
@@ -2451,12 +2415,6 @@ gdm_manager_set_property (GObject      *object,
         self = GDM_MANAGER (object);
 
         switch (prop_id) {
-        case PROP_XDMCP_ENABLED:
-                gdm_manager_set_xdmcp_enabled (self, g_value_get_boolean (value));
-                break;
-        case PROP_SHOW_LOCAL_GREETER:
-                gdm_manager_set_show_local_greeter (self, g_value_get_boolean (value));
-                break;
         case PROP_REMOTE_LOGIN_ENABLED:
                 gdm_manager_set_remote_login_enabled (self, g_value_get_boolean (value));
                 break;
@@ -2477,12 +2435,6 @@ gdm_manager_get_property (GObject    *object,
         self = GDM_MANAGER (object);
 
         switch (prop_id) {
-        case PROP_XDMCP_ENABLED:
-                g_value_set_boolean (value, self->xdmcp_enabled);
-                break;
-        case PROP_SHOW_LOCAL_GREETER:
-                g_value_set_boolean (value, self->show_local_greeter);
-                break;
         case PROP_REMOTE_LOGIN_ENABLED:
                 g_value_set_boolean (value, self->remote_login_enabled);
                 break;
@@ -2544,14 +2496,6 @@ gdm_manager_class_init (GdmManagerClass *klass)
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE,
                               1, G_TYPE_OBJECT);
-
-        g_object_class_install_property (object_class,
-                                         PROP_XDMCP_ENABLED,
-                                         g_param_spec_boolean ("xdmcp-enabled",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_REMOTE_LOGIN_ENABLED,
