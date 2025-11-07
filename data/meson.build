@@ -49,19 +49,16 @@ desktop_files = [
   'gnome-initial-setup.desktop.in'
 ]
 
-session_dirs = ['wayland-sessions'] + (have_x11_support ? ['xsessions'] : [])
 foreach desktop_file : desktop_files
-  foreach sessions_dir : session_dirs
-    configure_file(
-      input: desktop_file,
-      output: '@BASENAME@',
-      configuration: {
-        'gdmdatadir': gdm_prefix / get_option('datadir') / 'gdm',
-        'libexecdir': gdm_prefix / get_option('libexecdir'),
-      },
-      install_dir: get_option('datadir') / 'gdm' / 'greeter' / sessions_dir,
-    )
-  endforeach
+  configure_file(
+    input: desktop_file,
+    output: '@BASENAME@',
+    configuration: {
+      'gdmdatadir': gdm_prefix / get_option('datadir') / 'gdm',
+      'libexecdir': gdm_prefix / get_option('libexecdir'),
+    },
+    install_dir: get_option('datadir') / 'gdm' / 'greeter' / 'wayland-sessions',
+  )
 endforeach
 
 # PAM
