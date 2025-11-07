@@ -377,7 +377,6 @@ get_system_session_dirs (GdmSession *self,
                 DATADIR "/xsessions/",
         };
 
-        static const char *gdm_x_search_dir = DATADIR "/gdm/greeter/xsessions/";
         static const char *gdm_wayland_search_dir = DATADIR "/gdm/greeter/wayland-sessions/";
         static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
 
@@ -388,8 +387,6 @@ get_system_session_dirs (GdmSession *self,
 
                 if (g_str_equal (supported_type, "x11") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
-                        g_array_append_val(search_array, gdm_x_search_dir);
-
                         for (i = 0; system_data_dirs[i]; i++) {
                                 gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
                                 g_array_append_val (search_array, dir);
