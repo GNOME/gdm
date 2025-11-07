@@ -378,8 +378,6 @@ on_name_acquired (GDBusConnection *bus,
                   const char      *name,
                   gpointer         user_data)
 {
-        gboolean xdmcp_enabled;
-        gboolean show_local_greeter;
         gboolean remote_login_enabled;
 
         manager = gdm_manager_new ();
@@ -389,14 +387,6 @@ on_name_acquired (GDBusConnection *bus,
         }
 
         g_debug ("Successfully connected to D-Bus");
-
-        show_local_greeter = TRUE;
-        gdm_settings_direct_get_boolean (GDM_KEY_SHOW_LOCAL_GREETER, &show_local_greeter);
-        gdm_manager_set_show_local_greeter (manager, show_local_greeter);
-
-        xdmcp_enabled = FALSE;
-        gdm_settings_direct_get_boolean (GDM_KEY_XDMCP_ENABLE, &xdmcp_enabled);
-        gdm_manager_set_xdmcp_enabled (manager, xdmcp_enabled);
 
         remote_login_enabled = FALSE;
         gdm_settings_direct_get_boolean (GDM_KEY_REMOTE_LOGIN_ENABLE, &remote_login_enabled);
