@@ -1411,13 +1411,11 @@ on_display_status_changed (GdmDisplay *display,
 
                                 manager->did_automatic_login = TRUE;
 
-#ifdef ENABLE_WAYLAND_SUPPORT
                                 if (g_strcmp0 (session_type, "wayland") != 0 && status == GDM_DISPLAY_FAILED) {
                                         /* we're going to fall back to X11, so try to autologin again
                                          */
                                         manager->did_automatic_login = FALSE;
                                 }
-#endif
                         }
                         break;
                 default:

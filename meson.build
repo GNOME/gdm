@@ -40,10 +40,6 @@ have_x11_support = get_option('x11-support')
 # Common variables
 config_h_dir = include_directories('.')
 
-if not get_option('wayland-support') and not have_x11_support
-  error('GDM requires either Wayland or X11 support')
-endif
-
 # Dependencies
 udev_dep = dependency('udev')
 gudev_dep = dependency('gudev-1.0', version: '>= 232')
@@ -271,7 +267,6 @@ conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
 conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
-conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
 conf.set('ENABLE_X11_SUPPORT', get_option('x11-support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('GDM_INITIAL_VT', get_option('initial-vt'))
@@ -362,7 +357,6 @@ summary({
     'Logind Provider': get_option('logind-provider'),
     'Use GDM Xsession': get_option('gdm-xsession'),
     'Use SystemdJournal': get_option('systemd-journal'),
-    'Use WaylandSupport': get_option('wayland-support'),
     'Use X11Support': have_x11_support,
     'Use Profiling': get_option('profiling'),
     'Initial VT': get_option('initial-vt'),

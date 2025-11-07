@@ -181,9 +181,7 @@ enum {
         LAST_SIGNAL
 };
 
-#ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
-#endif
 static void update_session_type (GdmSession *self);
 static void set_session_type (GdmSession *self,
                               const char *session_type);
@@ -395,8 +393,6 @@ get_system_session_dirs (GdmSession *self,
                         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
                 }
 
-
-#ifdef ENABLE_WAYLAND_SUPPORT
                 if (g_str_equal (supported_type, "wayland") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         g_array_append_val (search_array, gdm_wayland_search_dir);
@@ -408,7 +404,6 @@ get_system_session_dirs (GdmSession *self,
 
                         g_array_append_val (search_array, wayland_search_dir);
                 }
-#endif
         }
 
         search_dirs = g_strdupv ((char **) search_array->data);
@@ -3026,9 +3021,7 @@ gdm_session_start_session (GdmSession *self,
 
         stop_all_other_conversations (self, conversation, FALSE);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
         is_x11 = g_strcmp0 (self->session_type, "wayland") != 0;
-#endif
 
         register_session = !gdm_session_session_registers (self);
 
@@ -3360,7 +3353,6 @@ get_session_filename (GdmSession *self)
         return g_strdup_printf ("%s.desktop", get_session_name (self));
 }
 
-#ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean
 gdm_session_is_wayland_session (GdmSession *self)
 {
@@ -3390,12 +3382,10 @@ out:
         g_free (filename);
         return is_wayland_session;
 }
-#endif
 
 static void
 update_session_type (GdmSession *self)
 {
-#ifdef ENABLE_WAYLAND_SUPPORT
         gboolean is_wayland_session = FALSE;
 
         if (supports_session_type (self, "wayland"))
@@ -3406,7 +3396,6 @@ update_session_type (GdmSession *self)
         } else {
                 set_session_type (self, NULL);
         }
-#endif
 }
 
 gboolean
@@ -3451,12 +3440,10 @@ gdm_session_bypasses_xsession (GdmSession *self)
 
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
-#ifdef ENABLE_WAYLAND_SUPPORT
         if (gdm_session_is_wayland_session (self)) {
                 bypasses_xsession = TRUE;
                 goto out;
         }
-#endif
 
         filename = get_session_filename (self);
 
