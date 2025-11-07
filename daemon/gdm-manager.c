@@ -1408,14 +1408,7 @@ on_display_status_changed (GdmDisplay *display,
 
                         if (display == manager->automatic_login_display) {
                                 g_clear_weak_pointer (&manager->automatic_login_display);
-
                                 manager->did_automatic_login = TRUE;
-
-                                if (g_strcmp0 (session_type, "wayland") != 0 && status == GDM_DISPLAY_FAILED) {
-                                        /* we're going to fall back to X11, so try to autologin again
-                                         */
-                                        manager->did_automatic_login = FALSE;
-                                }
                         }
                         break;
                 default:
