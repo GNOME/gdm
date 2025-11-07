@@ -33,7 +33,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_TIMED_LOGIN_USER "daemon/TimedLogin"
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay"
 #define GDM_KEY_INITIAL_SETUP_ENABLE "daemon/InitialSetupEnable"
-#define GDM_KEY_PREFERRED_DISPLAY_SERVER "daemon/PreferredDisplayServer"
 #ifdef ENABLE_X11_SUPPORT
 #define GDM_KEY_XORG_ENABLE "daemon/XorgEnable"
 #endif
