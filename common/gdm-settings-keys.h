@@ -47,17 +47,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_DISALLOW_TCP "security/DisallowTCP"
 #define GDM_KEY_ALLOW_REMOTE_AUTOLOGIN "security/AllowRemoteAutoLogin"
 
-#define GDM_KEY_XDMCP_ENABLE "xdmcp/Enable"
-#define GDM_KEY_SHOW_LOCAL_GREETER "xdmcp/ShowLocalGreeter"
-#define GDM_KEY_MAX_PENDING "xdmcp/MaxPending"
-#define GDM_KEY_MAX_SESSIONS "xdmcp/MaxSessions"
-#define GDM_KEY_MAX_WAIT "xdmcp/MaxWait"
-#define GDM_KEY_DISPLAYS_PER_HOST "xdmcp/DisplaysPerHost"
-#define GDM_KEY_UDP_PORT "xdmcp/Port"
-#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect"
-#define GDM_KEY_MAX_WAIT_INDIRECT "xdmcp/MaxWaitIndirect"
-#define GDM_KEY_WILLING "xdmcp/Willing"
-
 G_END_DECLS
 
 #endif /* _GDM_SETTINGS_KEYS_H */

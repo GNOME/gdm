@@ -45,10 +45,6 @@ GdmManager *        gdm_manager_new                            (void);
 void                gdm_manager_start                          (GdmManager *manager);
 void                gdm_manager_stop                           (GdmManager *manager);
 
-void                gdm_manager_set_xdmcp_enabled              (GdmManager *manager,
-                                                                gboolean    enabled);
-void                gdm_manager_set_show_local_greeter         (GdmManager *manager,
-                                                                gboolean    show_local_greeter);
 void                gdm_manager_set_remote_login_enabled       (GdmManager *manager,
                                                                 gboolean    enabled);
 gboolean            gdm_manager_get_displays                   (GdmManager *manager,
