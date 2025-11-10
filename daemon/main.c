@@ -59,8 +59,6 @@ extern char **environ;
 static GdmManager      *manager       = NULL;
 static int              name_id       = -1;
 static GdmSettings     *settings      = NULL;
-static uid_t            gdm_uid       = -1;
-static gid_t            gdm_gid       = -1;
 
 static gboolean
 timed_exit_cb (GMainLoop *loop)
@@ -146,10 +144,14 @@ write_pid (void)
 }
 
 static void
-gdm_daemon_ensure_dirs (uid_t uid,
-                        gid_t gid)
+gdm_daemon_ensure_dirs (void)
 {
         g_autoptr (GError) error = NULL;
+        struct group *grent;
+
+        grent = getgrnam (GDM_GROUPNAME);
+        if (G_UNLIKELY (grent == NULL))
+                g_warning ("Failed to find the GDM group, things will probably be very broken!");
 
         /* Set up /run/gdm */
         if (!gdm_ensure_dir (GDM_RUN_DIR, 0, 0, 0755, FALSE, &error)) {
@@ -158,73 +160,10 @@ gdm_daemon_ensure_dirs (uid_t uid,
         }
 
         /* Set up /var/log/gdm */
-        if (!gdm_ensure_dir (LOGDIR, 0, gid, 0711, FALSE, &error)) {
+        if (!gdm_ensure_dir (LOGDIR, 0, grent->gr_gid, 0711, FALSE, &error)) {
                 g_warning ("Failed to create " LOGDIR ": %s", error->message);
                 g_clear_error (&error);
         }
-}
-
-static void
-gdm_daemon_lookup_user (uid_t *uidp,
-                        gid_t *gidp)
-{
-        char          *username;
-        char          *groupname;
-        uid_t          uid;
-        gid_t          gid;
-        struct passwd *pwent;
-        struct group  *grent;
-
-        username = NULL;
-        groupname = NULL;
-        uid = 0;
-        gid = 0;
-
-        gdm_settings_direct_get_string (GDM_KEY_USER, &username);
-        gdm_settings_direct_get_string (GDM_KEY_GROUP, &groupname);
-
-        if (username == NULL || groupname == NULL) {
-                return;
-        }
-
-        g_debug ("Changing user:group to %s:%s", username, groupname);
-
-        /* Lookup user and groupid for the GDM user */
-        gdm_get_pwent_for_name (username, &pwent);
-
-        /* Set uid and gid */
-        if G_UNLIKELY (pwent == NULL) {
-                g_critical (_("Can’t find the GDM user “%s”. Aborting!"), username);
-        } else {
-                uid = pwent->pw_uid;
-        }
-
-        if G_UNLIKELY (uid == 0) {
-                g_critical (_("The GDM user should not be root. Aborting!"));
-        }
-
-        grent = getgrnam (groupname);
-
-        if G_UNLIKELY (grent == NULL) {
-                g_critical (_("Can’t find the GDM group “%s”. Aborting!"), groupname);
-        } else  {
-                gid = grent->gr_gid;
-        }
-
-        if G_UNLIKELY (gid == 0) {
-                g_critical (_("The GDM group should not be root. Aborting!"));
-        }
-
-        if (uidp != NULL) {
-                *uidp = uid;
-        }
-
-        if (gidp != NULL) {
-                *gidp = gid;
-        }
-
-        g_free (username);
-        g_free (groupname);
 }
 
 static gboolean
@@ -335,9 +274,7 @@ main (int    argc,
 
         gdm_log_set_debug (is_debug_set ());
 
-        gdm_daemon_lookup_user (&gdm_uid, &gdm_gid);
-
-        gdm_daemon_ensure_dirs (gdm_uid, gdm_gid);
+        gdm_daemon_ensure_dirs ();
 
         /* Connect to the bus, own the name and start the manager */
         bus_reconnect ();

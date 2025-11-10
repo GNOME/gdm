@@ -24,14 +24,7 @@ install_data('org.gnome.login-screen.gschema.xml',
 )
 compiled_gschema = gnome.compile_schemas()
 
-# gdm.schema
-gdm_schema = configure_file(
-  input: 'gdm.schemas.in',
-  output: '@BASENAME@',
-  configuration: {
-    'GDM_USERNAME': get_option('user'),
-    'GDM_GROUPNAME': get_option('group'),
-  },
+install_data('gdm.schemas',
   install_dir: gdm_datadir,
 )
 

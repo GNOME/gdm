@@ -25,8 +25,6 @@
 
 G_BEGIN_DECLS
 
-#define GDM_KEY_USER "daemon/User"
-#define GDM_KEY_GROUP "daemon/Group"
 #define GDM_KEY_AUTO_LOGIN_ENABLE "daemon/AutomaticLoginEnable"
 #define GDM_KEY_AUTO_LOGIN_USER "daemon/AutomaticLogin"
 #define GDM_KEY_TIMED_LOGIN_ENABLE "daemon/TimedLoginEnable"
