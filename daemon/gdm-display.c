@@ -59,7 +59,6 @@ typedef struct _GdmDisplayPrivate
         char                 *session_type;
 
         char                 *remote_hostname;
-        char                 *x11_display_name;
         int                   status;
         time_t                creation_time;
 
@@ -96,7 +95,6 @@ enum {
         PROP_SESSION_CLASS,
         PROP_SESSION_TYPE,
         PROP_REMOTE_HOSTNAME,
-        PROP_X11_DISPLAY_NAME,
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
@@ -413,23 +411,6 @@ gdm_display_get_id (GdmDisplay         *self,
 }
 
 gboolean
-gdm_display_get_x11_display_name (GdmDisplay   *self,
-                                  char        **x11_display,
-                                  GError      **error)
-{
-        GdmDisplayPrivate *priv;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-        if (x11_display != NULL) {
-                *x11_display = g_strdup (priv->x11_display_name);
-        }
-
-        return TRUE;
-}
-
-gboolean
 gdm_display_is_local (GdmDisplay *self,
                       gboolean   *local,
                       GError    **error)
@@ -515,17 +496,6 @@ _gdm_display_set_remote_hostname (GdmDisplay     *self,
         priv = gdm_display_get_instance_private (self);
         g_free (priv->remote_hostname);
         priv->remote_hostname = g_strdup (hostname);
-}
-
-static void
-_gdm_display_set_x11_display_name (GdmDisplay     *self,
-                                   const char     *x11_display)
-{
-        GdmDisplayPrivate *priv;
-
-        priv = gdm_display_get_instance_private (self);
-        g_free (priv->x11_display_name);
-        priv->x11_display_name = g_strdup (x11_display);
 }
 
 static void
@@ -645,9 +615,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_REMOTE_HOSTNAME:
                 _gdm_display_set_remote_hostname (self, g_value_get_string (value));
                 break;
-        case PROP_X11_DISPLAY_NAME:
-                _gdm_display_set_x11_display_name (self, g_value_get_string (value));
-                break;
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
                 break;
@@ -708,9 +675,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_REMOTE_HOSTNAME:
                 g_value_set_string (value, priv->remote_hostname);
-                break;
-        case PROP_X11_DISPLAY_NAME:
-                g_value_set_string (value, priv->x11_display_name);
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, priv->is_local);
@@ -808,20 +772,6 @@ handle_get_session_id (GdmDBusDisplay        *skeleton,
 }
 
 static gboolean
-handle_get_x11_display_name (GdmDBusDisplay        *skeleton,
-                             GDBusMethodInvocation *invocation,
-                             GdmDisplay            *self)
-{
-        g_autofree char *name = NULL;
-
-        gdm_display_get_x11_display_name (self, &name, NULL);
-
-        gdm_dbus_display_complete_get_x11_display_name (skeleton, invocation, name);
-
-        return TRUE;
-}
-
-static gboolean
 handle_is_local (GdmDBusDisplay        *skeleton,
                  GDBusMethodInvocation *invocation,
                  GdmDisplay            *self)
@@ -874,8 +824,6 @@ register_display (GdmDisplay *self)
                                  G_CALLBACK (handle_get_seat_id), self, 0);
         g_signal_connect_object (priv->display_skeleton, "handle-get-session-id",
                                  G_CALLBACK (handle_get_session_id), self, 0);
-        g_signal_connect_object (priv->display_skeleton, "handle-get-x11-display-name",
-                                 G_CALLBACK (handle_get_x11_display_name), self, 0);
         g_signal_connect_object (priv->display_skeleton, "handle-is-local",
                                  G_CALLBACK (handle_is_local), self, 0);
         g_signal_connect_object (priv->display_skeleton, "handle-is-initial",
@@ -966,13 +914,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "remote-hostname",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_NAME,
-                                         g_param_spec_string ("x11-display-name",
-                                                              "x11-display-name",
-                                                              "x11-display-name",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_SEAT_ID,
                                          g_param_spec_string ("seat-id",
@@ -1106,7 +1047,6 @@ gdm_display_finalize (GObject *object)
         g_free (priv->seat_id);
         g_free (priv->session_class);
         g_free (priv->remote_hostname);
-        g_free (priv->x11_display_name);
 
         g_clear_object (&priv->display_skeleton);
         g_clear_object (&priv->object_skeleton);
@@ -1352,7 +1292,6 @@ gdm_display_start_greeter_session (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
         GdmSession    *session;
-        g_autofree char *display_name = NULL;
         g_autofree char *seat_id = NULL;
         g_autofree char *hostname = NULL;
 
@@ -1364,12 +1303,12 @@ gdm_display_start_greeter_session (GdmDisplay *self)
         g_debug ("GdmDisplay: Running greeter");
 
         g_object_get (self,
-                      "x11-display-name", &display_name,
                       "seat-id", &seat_id,
                       "remote-hostname", &hostname,
                       NULL);
 
-        g_debug ("GdmDisplay: Creating greeter for %s %s", display_name, hostname);
+        g_debug ("GdmDisplay: Creating greeter for %s",
+                 hostname != NULL ? hostname : seat_id);
 
         g_signal_connect_object (priv->launch_environment,
                                  "opened",
