@@ -520,7 +520,6 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 
         launch_environment->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                                        launch_environment->dyn_uid,
-                                                       NULL,
                                                        launch_environment->x11_display_hostname,
                                                        NULL,
                                                        launch_environment->x11_display_seat_id,

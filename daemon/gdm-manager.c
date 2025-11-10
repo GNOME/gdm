@@ -658,10 +658,6 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
         GDBusConnection *connection;
         GdmDisplay      *display = NULL;
         GdmSession      *session;
-        GVariantIter     iter;
-        char            *key = NULL;
-        char            *value = NULL;
-        g_autofree char *x11_display_name = NULL;
         g_autofree char *tty = NULL;
 
         sender = g_dbus_method_invocation_get_sender (invocation);
@@ -679,22 +675,9 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        g_variant_iter_init (&iter, details);
-        while (g_variant_iter_loop (&iter, "{&s&s}", &key, &value)) {
-                if (g_strcmp0 (key, "x11-display-name") == 0) {
-                        x11_display_name = g_strdup (value);
-                        break;
-                }
-        }
-
         session = find_user_session_for_display (self, display);
 
         if (session != NULL) {
-                if (x11_display_name != NULL) {
-                        g_object_set (G_OBJECT (session), "display-name", x11_display_name, NULL);
-                        g_object_set (G_OBJECT (display), "x11-display-name", x11_display_name, NULL);
-                }
-
                 /* FIXME: this should happen in gdm-session.c when the session is opened
                  */
                 if (tty != NULL)
@@ -919,18 +902,15 @@ open_temporary_reauthentication_channel (GdmManager            *self,
 {
         GdmSession *session;
         char **environment;
-        const char *display;
         const char *address;
 
         /* Note we're just using a minimal environment here rather than the
          * session's environment because the caller is unprivileged and the
          * associated worker will be privileged */
         environment = g_get_environ ();
-        display = "";
 
         session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
                                    uid,
-                                   display,
                                    NULL,
                                    NULL,
                                    seat_id,
@@ -2107,7 +2087,6 @@ create_user_session_for_display (GdmManager *manager,
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
-        char       *display_name = NULL;
         char       *display_device = NULL;
         char       *remote_hostname = NULL;
         char       *display_seat_id = NULL;
@@ -2116,7 +2095,6 @@ create_user_session_for_display (GdmManager *manager,
 
         g_object_get (G_OBJECT (display),
                       "id", &display_id,
-                      "x11-display-name", &display_name,
                       "is-local", &display_is_local,
                       "remote-hostname", &remote_hostname,
                       "seat-id", &display_seat_id,
@@ -2126,7 +2104,6 @@ create_user_session_for_display (GdmManager *manager,
 
         session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                    allowed_user,
-                                   display_name,
                                    remote_hostname,
                                    display_device,
                                    display_seat_id,
@@ -2148,7 +2125,6 @@ create_user_session_for_display (GdmManager *manager,
                  display_id,
                  display_seat_id);
 
-        g_free (display_name);
         g_free (remote_hostname);
         g_free (display_seat_id);
 
