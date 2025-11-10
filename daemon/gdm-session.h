@@ -54,7 +54,6 @@ const char * gdm_session_display_mode_to_string (GdmSessionDisplayMode mode);
 
 GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,
                                                        uid_t         allowed_user,
-                                                       const char   *display_name,
                                                        const char   *display_hostname,
                                                        const char   *display_device,
                                                        const char   *display_seat_id,
