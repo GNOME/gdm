@@ -274,7 +274,6 @@ conf.set_quoted('GDM_DEFAULTS_CONF', gdm_defaults_conf)
 conf.set_quoted('GDM_CUSTOM_CONF', gdm_custom_conf)
 conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
 conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
-conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
 conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('HAVE_USERDB', have_userdb)
@@ -360,7 +359,6 @@ summary({
     'Use X11Support': have_x11_support,
     'Use Profiling': get_option('profiling'),
     'Initial VT': get_option('initial-vt'),
-    'Username': get_option('user'),
     'Groupname': get_option('group'),
     'Plymouth': plymouth_dep.found(),
   },
