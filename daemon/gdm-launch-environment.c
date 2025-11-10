@@ -81,17 +81,17 @@ struct _GdmLaunchEnvironment
         char           *dconf_profile;
         char           *session_id;
         char           *session_mode;
-        char           *x11_display_seat_id;
-        char           *x11_display_hostname;
-        gboolean        x11_display_is_local;
+        char           *display_seat_id;
+        char           *display_hostname;
+        gboolean        display_is_local;
 };
 
 enum {
         PROP_0,
         PROP_SESSION_MODE,
-        PROP_X11_DISPLAY_SEAT_ID,
-        PROP_X11_DISPLAY_HOSTNAME,
-        PROP_X11_DISPLAY_IS_LOCAL,
+        PROP_DISPLAY_SEAT_ID,
+        PROP_DISPLAY_HOSTNAME,
+        PROP_DISPLAY_IS_LOCAL,
         PROP_PREFERRED_USER_NAME,
         PROP_USER_DISP_NAME,
         PROP_USER_MEMBER_OF,
@@ -329,12 +329,12 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup (launch_environment->dyn_user_home));
         g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (NOLOGIN_PATH));
 
-        if (start_session && launch_environment->x11_display_seat_id != NULL) {
+        if (start_session && launch_environment->display_seat_id != NULL) {
                 char *seat_id;
                 char *config_dir;
                 char *state_dir;
 
-                seat_id = launch_environment->x11_display_seat_id;
+                seat_id = launch_environment->display_seat_id;
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
 
@@ -520,10 +520,10 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 
         launch_environment->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                                        launch_environment->dyn_uid,
-                                                       launch_environment->x11_display_hostname,
+                                                       launch_environment->display_hostname,
                                                        NULL,
-                                                       launch_environment->x11_display_seat_id,
-                                                       launch_environment->x11_display_is_local,
+                                                       launch_environment->display_seat_id,
+                                                       launch_environment->display_is_local,
                                                        NULL);
 
         g_signal_connect_object (launch_environment->session,
@@ -623,26 +623,26 @@ _gdm_launch_environment_set_session_mode (GdmLaunchEnvironment *launch_environme
 }
 
 static void
-_gdm_launch_environment_set_x11_display_seat_id (GdmLaunchEnvironment *launch_environment,
-                                                 const char           *sid)
+_gdm_launch_environment_set_display_seat_id (GdmLaunchEnvironment *launch_environment,
+                                             const char           *sid)
 {
-        g_free (launch_environment->x11_display_seat_id);
-        launch_environment->x11_display_seat_id = g_strdup (sid);
+        g_free (launch_environment->display_seat_id);
+        launch_environment->display_seat_id = g_strdup (sid);
 }
 
 static void
-_gdm_launch_environment_set_x11_display_hostname (GdmLaunchEnvironment *launch_environment,
-                                                  const char           *name)
+_gdm_launch_environment_set_display_hostname (GdmLaunchEnvironment *launch_environment,
+                                              const char           *name)
 {
-        g_free (launch_environment->x11_display_hostname);
-        launch_environment->x11_display_hostname = g_strdup (name);
+        g_free (launch_environment->display_hostname);
+        launch_environment->display_hostname = g_strdup (name);
 }
 
 static void
-_gdm_launch_environment_set_x11_display_is_local (GdmLaunchEnvironment *launch_environment,
-                                                  gboolean              is_local)
+_gdm_launch_environment_set_display_is_local (GdmLaunchEnvironment *launch_environment,
+                                              gboolean              is_local)
 {
-        launch_environment->x11_display_is_local = is_local;
+        launch_environment->display_is_local = is_local;
 }
 
 static void
@@ -698,14 +698,14 @@ gdm_launch_environment_set_property (GObject      *object,
         case PROP_SESSION_MODE:
                 _gdm_launch_environment_set_session_mode (self, g_value_get_string (value));
                 break;
-        case PROP_X11_DISPLAY_SEAT_ID:
-                _gdm_launch_environment_set_x11_display_seat_id (self, g_value_get_string (value));
+        case PROP_DISPLAY_SEAT_ID:
+                _gdm_launch_environment_set_display_seat_id (self, g_value_get_string (value));
                 break;
-        case PROP_X11_DISPLAY_HOSTNAME:
-                _gdm_launch_environment_set_x11_display_hostname (self, g_value_get_string (value));
+        case PROP_DISPLAY_HOSTNAME:
+                _gdm_launch_environment_set_display_hostname (self, g_value_get_string (value));
                 break;
-        case PROP_X11_DISPLAY_IS_LOCAL:
-                _gdm_launch_environment_set_x11_display_is_local (self, g_value_get_boolean (value));
+        case PROP_DISPLAY_IS_LOCAL:
+                _gdm_launch_environment_set_display_is_local (self, g_value_get_boolean (value));
                 break;
         case PROP_PREFERRED_USER_NAME:
                 _gdm_launch_environment_set_preferred_user_name (self, g_value_get_string (value));
@@ -742,14 +742,14 @@ gdm_launch_environment_get_property (GObject    *object,
         case PROP_SESSION_MODE:
                 g_value_set_string (value, self->session_mode);
                 break;
-        case PROP_X11_DISPLAY_SEAT_ID:
-                g_value_set_string (value, self->x11_display_seat_id);
+        case PROP_DISPLAY_SEAT_ID:
+                g_value_set_string (value, self->display_seat_id);
                 break;
-        case PROP_X11_DISPLAY_HOSTNAME:
-                g_value_set_string (value, self->x11_display_hostname);
+        case PROP_DISPLAY_HOSTNAME:
+                g_value_set_string (value, self->display_hostname);
                 break;
-        case PROP_X11_DISPLAY_IS_LOCAL:
-                g_value_set_boolean (value, self->x11_display_is_local);
+        case PROP_DISPLAY_IS_LOCAL:
+                g_value_set_boolean (value, self->display_is_local);
                 break;
         case PROP_PREFERRED_USER_NAME:
                 g_value_set_string (value, self->preferred_user_name);
@@ -789,22 +789,22 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_SEAT_ID,
-                                         g_param_spec_string ("x11-display-seat-id",
+                                         PROP_DISPLAY_SEAT_ID,
+                                         g_param_spec_string ("display-seat-id",
                                                               "seat id",
                                                               "seat id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_HOSTNAME,
-                                         g_param_spec_string ("x11-display-hostname",
+                                         PROP_DISPLAY_HOSTNAME,
+                                         g_param_spec_string ("display-hostname",
                                                               "hostname",
                                                               "hostname",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_IS_LOCAL,
-                                         g_param_spec_boolean ("x11-display-is-local",
+                                         PROP_DISPLAY_IS_LOCAL,
+                                         g_param_spec_boolean ("display-is-local",
                                                                "is local",
                                                                "is local",
                                                                FALSE,
@@ -928,8 +928,8 @@ gdm_launch_environment_finalize (GObject *object)
         g_free (launch_environment->user_disp_name);
         g_free (launch_environment->user_member_of);
         g_free (launch_environment->dconf_profile);
-        g_free (launch_environment->x11_display_seat_id);
-        g_free (launch_environment->x11_display_hostname);
+        g_free (launch_environment->display_seat_id);
+        g_free (launch_environment->display_hostname);
         g_free (launch_environment->session_id);
 
         g_clear_object (&launch_environment->dyn_user_store);
@@ -948,10 +948,10 @@ gdm_create_greeter_launch_environment (const char *seat_id,
                              "user-display-name", GDM_GREETER_DISP_NAME,
                              "user-member-of", GDM_GROUPNAME,
                              "dconf-profile", GDM_DCONF_PROFILE,
-                             "x11-display-seat-id", seat_id,
+                             "display-seat-id", seat_id,
                              "session-mode", GDM_SESSION_MODE,
-                             "x11-display-hostname", display_hostname,
-                             "x11-display-is-local", display_is_local,
+                             "display-hostname", display_hostname,
+                             "display-is-local", display_is_local,
                              NULL);
 }
 
@@ -966,9 +966,9 @@ gdm_create_initial_setup_launch_environment (const char *seat_id,
                              "user-display-name", INITIAL_SETUP_DISP_NAME,
                              "user-member-of", INITIAL_SETUP_GROUPNAME,
                              "dconf-profile", INITIAL_SETUP_DCONF_PROFILE,
-                             "x11-display-seat-id", seat_id,
+                             "display-seat-id", seat_id,
                              "session-mode", INITIAL_SETUP_SESSION_MODE,
-                             "x11-display-hostname", display_hostname,
-                             "x11-display-is-local", display_is_local,
+                             "display-hostname", display_hostname,
+                             "display-is-local", display_is_local,
                              NULL);
 }
