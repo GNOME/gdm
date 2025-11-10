@@ -253,7 +253,6 @@ on_display_status_changed (GdmDisplay             *display,
                            GdmLocalDisplayFactory *factory)
 {
         int              status;
-        int              num;
         char            *seat_id = NULL;
         char            *seat_active_session = NULL;
         char            *session_class = NULL;
@@ -265,9 +264,6 @@ on_display_status_changed (GdmDisplay             *display,
 
         if (!factory->is_started)
                 return;
-
-        num = -1;
-        gdm_display_get_x11_display_number (display, &num, NULL);
 
         g_object_get (display,
                       "seat-id", &seat_id,
