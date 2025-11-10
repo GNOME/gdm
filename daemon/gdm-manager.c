@@ -1681,11 +1681,12 @@ on_start_user_session (StartUserSessionOperation *operation)
                         /* remove the unused prepared greeter display since we're not going
                          * to have a greeter */
                         gdm_display_store_remove (self->display_store, display);
-                        g_object_unref (display);
 
                         self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
                         g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
                 }
+
+                g_object_unref (display);
         }
 
         start_user_session (operation->manager, operation);
