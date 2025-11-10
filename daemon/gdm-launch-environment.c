@@ -814,7 +814,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                          g_param_spec_string ("preferred-user-name",
                                                               "preferred user name",
                                                               "preferred user name",
-                                                              GDM_USERNAME,
+                                                              NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_USER_DISP_NAME,
