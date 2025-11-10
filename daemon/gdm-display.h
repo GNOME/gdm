@@ -78,9 +78,6 @@ gboolean            gdm_display_get_id                         (GdmDisplay *disp
 gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
                                                                 char      **hostname,
                                                                 GError    **error);
-gboolean            gdm_display_get_x11_display_number         (GdmDisplay *display,
-                                                                int        *number,
-                                                                GError    **error);
 gboolean            gdm_display_get_x11_display_name           (GdmDisplay *display,
                                                                 char      **x11_display,
                                                                 GError    **error);

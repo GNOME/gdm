@@ -59,7 +59,6 @@ typedef struct _GdmDisplayPrivate
         char                 *session_type;
 
         char                 *remote_hostname;
-        int                   x11_display_number;
         char                 *x11_display_name;
         int                   status;
         time_t                creation_time;
@@ -97,7 +96,6 @@ enum {
         PROP_SESSION_CLASS,
         PROP_SESSION_TYPE,
         PROP_REMOTE_HOSTNAME,
-        PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
@@ -175,23 +173,6 @@ gdm_display_get_remote_hostname (GdmDisplay *self,
         priv = gdm_display_get_instance_private (self);
         if (hostname != NULL) {
                 *hostname = g_strdup (priv->remote_hostname);
-        }
-
-        return TRUE;
-}
-
-gboolean
-gdm_display_get_x11_display_number (GdmDisplay *self,
-                                    int        *number,
-                                    GError    **error)
-{
-        GdmDisplayPrivate *priv;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
-
-        priv = gdm_display_get_instance_private (self);
-        if (number != NULL) {
-                *number = priv->x11_display_number;
         }
 
         return TRUE;
@@ -537,16 +518,6 @@ _gdm_display_set_remote_hostname (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_x11_display_number (GdmDisplay     *self,
-                                     int             num)
-{
-        GdmDisplayPrivate *priv;
-
-        priv = gdm_display_get_instance_private (self);
-        priv->x11_display_number = num;
-}
-
-static void
 _gdm_display_set_x11_display_name (GdmDisplay     *self,
                                    const char     *x11_display)
 {
@@ -674,9 +645,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_REMOTE_HOSTNAME:
                 _gdm_display_set_remote_hostname (self, g_value_get_string (value));
                 break;
-        case PROP_X11_DISPLAY_NUMBER:
-                _gdm_display_set_x11_display_number (self, g_value_get_int (value));
-                break;
         case PROP_X11_DISPLAY_NAME:
                 _gdm_display_set_x11_display_name (self, g_value_get_string (value));
                 break;
@@ -740,9 +708,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_REMOTE_HOSTNAME:
                 g_value_set_string (value, priv->remote_hostname);
-                break;
-        case PROP_X11_DISPLAY_NUMBER:
-                g_value_set_int (value, priv->x11_display_number);
                 break;
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, priv->x11_display_name);
@@ -1001,15 +966,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "remote-hostname",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_NUMBER,
-                                         g_param_spec_int ("x11-display-number",
-                                                          "x11 display number",
-                                                          "x11 display number",
-                                                          -1,
-                                                          G_MAXINT,
-                                                          -1,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_NAME,
                                          g_param_spec_string ("x11-display-name",
