@@ -1334,21 +1334,12 @@ on_display_status_changed (GdmDisplay *display,
         int         status;
         g_autofree char *session_type = NULL;
         g_autofree char *session_class = NULL;
-        gboolean    doing_initial_setup = FALSE;
-#ifdef WITH_PLYMOUTH
         gboolean    display_is_local = FALSE;
-        gboolean    quit_plymouth = FALSE;
-
-        g_object_get (display,
-                      "is-local", &display_is_local,
-                      NULL);
-        quit_plymouth = display_is_local && manager->plymouth_is_running;
-#endif
 
         g_object_get (display,
                       "session-type", &session_type,
                       "session-class", &session_class,
-                      "doing-initial-setup", &doing_initial_setup,
+                      "is-local", &display_is_local,
                       NULL);
 
         status = gdm_display_get_status (display);
@@ -1360,7 +1351,7 @@ on_display_status_changed (GdmDisplay *display,
                         break;
                 case GDM_DISPLAY_MANAGED:
 #ifdef WITH_PLYMOUTH
-                        if (quit_plymouth) {
+                        if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_with_transition ();
                                 manager->plymouth_is_running = FALSE;
                         }
@@ -1370,7 +1361,7 @@ on_display_status_changed (GdmDisplay *display,
                 case GDM_DISPLAY_UNMANAGED:
                 case GDM_DISPLAY_FINISHED:
 #ifdef WITH_PLYMOUTH
-                        if (quit_plymouth) {
+                        if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_without_transition ();
                                 manager->plymouth_is_running = FALSE;
                         }
