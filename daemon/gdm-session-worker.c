@@ -133,7 +133,6 @@ struct _GdmSessionWorker
 
         /* from Setup */
         char             *service;
-        char             *x11_display_name;
         char             *display_device;
         char             *display_seat_id;
         char             *hostname;
@@ -1161,7 +1160,6 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                                    const char         *username,
                                    const char         *hostname,
                                    gboolean            display_is_local,
-                                   const char         *x11_display_name,
                                    const char         *display_device,
                                    const char         *seat_id,
                                    GError            **error)
@@ -2450,7 +2448,6 @@ do_setup (GdmSessionWorker *worker)
                                                  worker->username,
                                                  worker->hostname,
                                                  worker->display_is_local,
-                                                 worker->x11_display_name,
                                                  worker->display_device,
                                                  worker->display_seat_id,
                                                  &error);
@@ -2866,8 +2863,6 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                         worker->is_program_session = g_variant_get_boolean (value);
                 } else if (g_strcmp0 (key, "log-file") == 0) {
                         worker->log_file = g_variant_dup_string (value, NULL);
-                } else if (g_strcmp0 (key, "x11-display-name") == 0) {
-                        worker->x11_display_name = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "console") == 0) {
                         worker->display_device = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "seat-id") == 0) {
@@ -2927,7 +2922,6 @@ static gboolean
 gdm_session_worker_handle_setup (GdmDBusWorker         *object,
                                  GDBusMethodInvocation *invocation,
                                  const char            *service,
-                                 const char            *x11_display_name,
                                  const char            *console,
                                  const char            *seat_id,
                                  const char            *hostname,
@@ -2938,7 +2932,6 @@ gdm_session_worker_handle_setup (GdmDBusWorker         *object,
         validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
         worker->service = g_strdup (service);
-        worker->x11_display_name = g_strdup (x11_display_name);
         worker->display_device = g_strdup (console);
         worker->display_seat_id = g_strdup (seat_id);
         worker->hostname = g_strdup (hostname);
@@ -2970,7 +2963,6 @@ gdm_session_worker_handle_setup_for_user (GdmDBusWorker         *object,
                                           GDBusMethodInvocation *invocation,
                                           const char            *service,
                                           const char            *username,
-                                          const char            *x11_display_name,
                                           const char            *console,
                                           const char            *seat_id,
                                           const char            *hostname,
@@ -2983,7 +2975,6 @@ gdm_session_worker_handle_setup_for_user (GdmDBusWorker         *object,
                 return TRUE;
 
         worker->service = g_strdup (service);
-        worker->x11_display_name = g_strdup (x11_display_name);
         worker->display_device = g_strdup (console);
         worker->display_seat_id = g_strdup (seat_id);
         worker->hostname = g_strdup (hostname);
@@ -3027,7 +3018,6 @@ gdm_session_worker_handle_setup_for_program (GdmDBusWorker         *object,
                                              GDBusMethodInvocation *invocation,
                                              const char            *service,
                                              const char            *username,
-                                             const char            *x11_display_name,
                                              const char            *console,
                                              const char            *seat_id,
                                              const char            *hostname,
@@ -3039,7 +3029,6 @@ gdm_session_worker_handle_setup_for_program (GdmDBusWorker         *object,
         validate_and_queue_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE);
 
         worker->service = g_strdup (service);
-        worker->x11_display_name = g_strdup (x11_display_name);
         worker->display_device = g_strdup (console);
         worker->display_seat_id = g_strdup (seat_id);
         worker->hostname = g_strdup (hostname);
@@ -3171,7 +3160,6 @@ reauthentication_request_new (GdmSessionWorker      *worker,
         request->uid_of_caller = uid_of_caller;
         request->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
                                             uid_of_caller,
-                                            worker->x11_display_name,
                                             worker->hostname,
                                             worker->display_device,
                                             worker->display_seat_id,
@@ -3413,7 +3401,6 @@ gdm_session_worker_finalize (GObject *object)
 
         g_clear_object (&worker->user_settings);
         g_free (worker->service);
-        g_free (worker->x11_display_name);
         g_free (worker->display_device);
         g_free (worker->display_seat_id);
         g_free (worker->hostname);

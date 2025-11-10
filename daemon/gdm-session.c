@@ -117,7 +117,6 @@ struct _GdmSession
 
         /* object lifetime scope */
         char                *session_type;
-        char                *display_name;
         char                *display_hostname;
         char                *display_device;
         char                *display_seat_id;
@@ -146,7 +145,6 @@ enum {
         PROP_0,
         PROP_VERIFICATION_MODE,
         PROP_ALLOWED_USER,
-        PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_IS_INITIAL,
@@ -2570,9 +2568,6 @@ initialize (GdmSession *self,
         if (self->is_program_session)
                 g_variant_builder_add_parsed (&details, "{'is-program-session', <%b>}", self->is_program_session);
 
-        if (self->display_name != NULL)
-                g_variant_builder_add_parsed (&details, "{'x11-display-name', <%s>}", self->display_name);
-
         if (self->display_hostname != NULL)
                 g_variant_builder_add_parsed (&details, "{'hostname', <%s>}", self->display_hostname);
 
@@ -3579,14 +3574,6 @@ gdm_session_select_session (GdmSession *self,
 }
 
 static void
-set_display_name (GdmSession *self,
-                  const char *name)
-{
-        g_free (self->display_name);
-        self->display_name = g_strdup (name);
-}
-
-static void
 set_display_hostname (GdmSession *self,
                       const char *name)
 {
@@ -3681,9 +3668,6 @@ gdm_session_set_property (GObject      *object,
         case PROP_SESSION_TYPE:
                 set_session_type (self, g_value_get_string (value));
                 break;
-        case PROP_DISPLAY_NAME:
-                set_display_name (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_HOSTNAME:
                 set_display_hostname (self, g_value_get_string (value));
                 break;
@@ -3733,9 +3717,6 @@ gdm_session_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_SESSION_TYPE:
                 g_value_set_string (value, self->session_type);
-                break;
-        case PROP_DISPLAY_NAME:
-                g_value_set_string (value, self->display_name);
                 break;
         case PROP_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->display_hostname);
@@ -3794,9 +3775,6 @@ gdm_session_dispose (GObject *object)
                          g_hash_table_unref);
         g_clear_object (&self->greeter_interface);
         g_clear_object (&self->remote_greeter_interface);
-
-        g_free (self->display_name);
-        self->display_name = NULL;
 
         g_free (self->display_hostname);
         self->display_hostname = NULL;
@@ -4150,13 +4128,6 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_NAME,
-                                         g_param_spec_string ("display-name",
-                                                              "display name",
-                                                              "display name",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
@@ -4217,7 +4188,6 @@ gdm_session_class_init (GdmSessionClass *session_class)
 GdmSession *
 gdm_session_new (GdmSessionVerificationMode  verification_mode,
                  uid_t                       allowed_user,
-                 const char                 *display_name,
                  const char                 *display_hostname,
                  const char                 *display_device,
                  const char                 *display_seat_id,
@@ -4229,7 +4199,6 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
         self = g_object_new (GDM_TYPE_SESSION,
                              "verification-mode", verification_mode,
                              "allowed-user", (guint) allowed_user,
-                             "display-name", display_name,
                              "display-hostname", display_hostname,
                              "display-device", display_device,
                              "display-seat-id", display_seat_id,
