@@ -29,21 +29,20 @@ void
 gdm_session_record_login  (GPid                  session_pid,
                            const char           *user_name,
                            const char           *host_name,
-                           const char           *x11_display_name,
-                           const char           *display_device);
+                           const char           *tty,
+                           const char           *seat_id);
 void
 gdm_session_record_logout (GPid                  session_pid,
                            const char           *user_name,
                            const char           *host_name,
-                           const char           *x11_display_name,
-                           const char           *display_device);
+                           const char           *tty,
+                           const char           *seat_id);
 void
 gdm_session_record_failed (GPid                  session_pid,
                            const char           *user_name,
                            const char           *host_name,
-                           const char           *x11_display_name,
-                           const char           *display_device);
-
+                           const char           *tty,
+                           const char           *seat_id);
 
 G_END_DECLS
 

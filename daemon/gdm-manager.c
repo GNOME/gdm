@@ -642,68 +642,46 @@ add_session_record (GdmManager    *manager,
                     SessionRecord  record)
 {
         const char *username;
-        char *display_name, *hostname, *display_device, *display_seat_id;
-        gboolean recorded = FALSE;
 
-        display_name = NULL;
-        username = NULL;
-        hostname = NULL;
-        display_device = NULL;
-        display_seat_id = NULL;
+        g_autofree char *hostname = NULL;
+        g_autofree char *display_device = NULL;
+        g_autofree char *display_seat_id = NULL;
 
         username = gdm_session_get_username (session);
-
-        if (username == NULL) {
-                goto out;
-        }
+        if (username == NULL)
+                return FALSE;
 
         g_object_get (G_OBJECT (session),
-                      "display-name", &display_name,
                       "display-hostname", &hostname,
                       "display-device", &display_device,
                       "display-seat-id", &display_seat_id,
                       NULL);
-
-        if (display_name == NULL && display_device == NULL) {
-                if (display_seat_id == NULL)
-                        goto out;
-
-                display_name = g_strdup ("login screen");
-                display_device = g_strdup (display_seat_id);
-        }
 
         switch (record) {
             case SESSION_RECORD_LOGIN:
                 gdm_session_record_login (pid,
                                           username,
                                           hostname,
-                                          display_name,
-                                          display_device);
+                                          display_device,
+                                          display_seat_id);
                 break;
             case SESSION_RECORD_LOGOUT:
                 gdm_session_record_logout (pid,
                                            username,
                                            hostname,
-                                           display_name,
-                                           display_device);
+                                           display_device,
+                                           display_seat_id);
                 break;
             case SESSION_RECORD_FAILED:
                 gdm_session_record_failed (pid,
                                            username,
                                            hostname,
-                                           display_name,
-                                           display_device);
+                                           display_device,
+                                           display_seat_id);
                 break;
         }
 
-        recorded = TRUE;
-out:
-        g_free (display_name);
-        g_free (hostname);
-        g_free (display_device);
-        g_free (display_seat_id);
-
-        return recorded;
+        return FALSE;
 }
 
 static GdmSession *
@@ -1867,7 +1845,6 @@ on_user_session_started (GdmSession      *session,
                          GdmManager      *manager)
 {
         g_debug ("GdmManager: session started %d", pid);
-        add_session_record (manager, session, pid, SESSION_RECORD_LOGIN);
 }
 
 static void

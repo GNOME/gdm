@@ -111,77 +111,51 @@ record_set_pid (UTMP *u,
 
 static void
 record_set_host (UTMP       *u,
-                 const char *x11_display_name,
-                 const char *host_name)
+                 const char *remote_host)
 {
-        g_autofree char *hostname = NULL;
-
+        const char *hostname;
 #if defined(HAVE_UT_UT_HOST)
-        /*
-         * Set ut_host to hostname:$DISPLAY if remote, otherwise set
-         * to $DISPLAY
-         */
-        if (host_name != NULL
-            && x11_display_name != NULL
-            && g_str_has_prefix (x11_display_name, ":")) {
-                hostname = g_strdup_printf ("%s%s", host_name, x11_display_name);
-        } else {
-                hostname = g_strdup (x11_display_name);
-        }
-
-        if (hostname != NULL) {
-                memccpy (u->ut_host, hostname, '\0', sizeof (u->ut_host));
-                g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
+        if (remote_host != NULL)
+                hostname = remote_host;
+        else
+                hostname = "local";
+        memccpy (u->ut_host, hostname, '\0', sizeof (u->ut_host));
+        g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
 #ifdef HAVE_UT_UT_SYSLEN
-                u->ut_syslen = MIN (strlen (hostname), sizeof (u->ut_host));
+        u->ut_syslen = MIN (strlen (hostname), sizeof (u->ut_host));
 #endif
-        }
 #endif
 }
 
 static void
 record_set_line (UTMP       *u,
-                 const char *display_device,
-                 const char *x11_display_name)
+                 const char *tty,
+                 const char *seat_id)
 {
-        /*
-         * Set ut_line to the device name associated with this display
-         * but remove the "/dev/" prefix if there is one. Otherwise, if it
-         * seems like the display device is a seat id, just use it wholesale.
-         * If there's no device at all, but $DISPLAY is set, just fall back to
-         * using that.
-         */
-        if (display_device != NULL && g_str_has_prefix (display_device, "/dev/")) {
-                memccpy (u->ut_line,
-                         display_device + strlen ("/dev/"),
-                         '\0',
-                         sizeof (u->ut_line));
-        } else if (display_device != NULL && g_str_has_prefix (display_device, "seat")) {
-                memccpy (u->ut_line,
-                         display_device,
-                         '\0',
-                         sizeof (u->ut_line));
-        } else if (x11_display_name != NULL) {
-                memccpy (u->ut_line,
-                         x11_display_name,
-                         '\0',
-                         sizeof (u->ut_line));
-        }
+        const char *line;
 
+        if (tty != NULL) {
+                if (g_str_has_prefix (tty, "/dev/"))
+                        line = tty + strlen("/dev/");
+                else
+                        line = tty;
+        } else if (seat_id != NULL)
+                line = seat_id;
+        else
+                line = "headless";
+
+        memccpy (u->ut_line, line, '\0', sizeof (u->ut_line));
         g_debug ("using ut_line %.*s", (int) sizeof (u->ut_line), u->ut_line);
 }
 
 void
-gdm_session_record_login (GPid                  session_pid,
-                          const char           *user_name,
-                          const char           *host_name,
-                          const char           *x11_display_name,
-                          const char           *display_device)
+gdm_session_record_login (GPid        session_pid,
+                          const char *user_name,
+                          const char *host_name,
+                          const char *tty,
+                          const char *seat_id)
 {
         UTMP        session_record = { 0 };
-
-        if (x11_display_name == NULL)
-                x11_display_name = display_device;
 
         record_set_username (&session_record, user_name);
 
@@ -194,8 +168,8 @@ gdm_session_record_login (GPid                  session_pid,
 
         record_set_timestamp (&session_record);
         record_set_pid (&session_record, session_pid);
-        record_set_host (&session_record, x11_display_name, host_name);
-        record_set_line (&session_record, display_device, x11_display_name);
+        record_set_host (&session_record, host_name);
+        record_set_line (&session_record, tty, seat_id);
 
         /* Handle wtmp */
         g_debug ("Writing wtmp session record to " GDM_NEW_SESSION_RECORDS_FILE);
@@ -223,16 +197,15 @@ gdm_session_record_login (GPid                  session_pid,
 }
 
 void
-gdm_session_record_logout (GPid                  session_pid,
-                           const char           *user_name,
-                           const char           *host_name,
-                           const char           *x11_display_name,
-                           const char           *display_device)
+gdm_session_record_logout (GPid        session_pid,
+                           const char *user_name,
+                           const char *host_name,
+                           const char *tty,
+                           const char *seat_id)
 {
         UTMP        session_record = { 0 };
 
-        if (x11_display_name == NULL)
-                x11_display_name = display_device;
+        record_set_username (&session_record, user_name);
 
         g_debug ("Writing logout record");
 
@@ -243,8 +216,8 @@ gdm_session_record_logout (GPid                  session_pid,
 
         record_set_timestamp (&session_record);
         record_set_pid (&session_record, session_pid);
-        record_set_host (&session_record, x11_display_name, host_name);
-        record_set_line (&session_record, display_device, x11_display_name);
+        record_set_host (&session_record, host_name);
+        record_set_line (&session_record, tty, seat_id);
 
         /* Handle wtmp */
         g_debug ("Writing wtmp logout record to " GDM_NEW_SESSION_RECORDS_FILE);
@@ -268,16 +241,13 @@ gdm_session_record_logout (GPid                  session_pid,
 }
 
 void
-gdm_session_record_failed (GPid                  session_pid,
-                           const char           *user_name,
-                           const char           *host_name,
-                           const char           *x11_display_name,
-                           const char           *display_device)
+gdm_session_record_failed (GPid        session_pid,
+                           const char *user_name,
+                           const char *host_name,
+                           const char *tty,
+                           const char *seat_id)
 {
         UTMP        session_record = { 0 };
-
-        if (x11_display_name == NULL)
-                x11_display_name = display_device;
 
         record_set_username (&session_record, user_name);
 
@@ -290,8 +260,8 @@ gdm_session_record_failed (GPid                  session_pid,
 
         record_set_timestamp (&session_record);
         record_set_pid (&session_record, session_pid);
-        record_set_host (&session_record, x11_display_name, host_name);
-        record_set_line (&session_record, display_device, x11_display_name);
+        record_set_host (&session_record, host_name);
+        record_set_line (&session_record, tty, seat_id);
 
 #if defined(HAVE_UPDWTMPX) || defined(HAVE_UPDWTMP)
         /* Handle btmp */
