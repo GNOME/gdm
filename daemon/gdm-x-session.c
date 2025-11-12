@@ -246,7 +246,7 @@ spawn_x_server (State        *state,
 
         display_fd_string = g_strdup_printf ("%d", DISPLAY_FILENO);
 
-        g_ptr_array_add (arguments, X_SERVER);
+        g_ptr_array_add (arguments, (gpointer) gdm_find_x_server ());
 
         if (vt_string != NULL) {
                 g_ptr_array_add (arguments, vt_string);
