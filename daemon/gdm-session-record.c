@@ -60,6 +60,25 @@
 #endif
 
 static void
+record_set_type (UTMP                  *u,
+                 GdmSessionRecordEvent  event)
+{
+#ifdef HAVE_UT_UT_TYPE
+        switch (event) {
+        case GDM_SESSION_RECORD_LOGIN:
+        case GDM_SESSION_RECORD_FAILED:
+                u->ut_type = USER_PROCESS;
+                g_debug ("using ut_type USER_PROCESS");
+                break;
+        case GDM_SESSION_RECORD_LOGOUT:
+                u->ut_type = DEAD_PROCESS;
+                g_debug ("using ut_type DEAD_PROCESS");
+                break;
+        }
+#endif
+}
+
+static void
 record_set_username (UTMP       *u,
                      const char *username)
 {
@@ -148,40 +167,20 @@ record_set_line (UTMP       *u,
         g_debug ("using ut_line %.*s", (int) sizeof (u->ut_line), u->ut_line);
 }
 
-void
-gdm_session_record_login (GPid        session_pid,
-                          const char *user_name,
-                          const char *host_name,
-                          const char *tty,
-                          const char *seat_id)
+static void
+write_login_record (UTMP *record)
 {
-        UTMP        session_record = { 0 };
-
-        record_set_username (&session_record, user_name);
-
-        g_debug ("Writing login record");
-
-#if defined(HAVE_UT_UT_TYPE)
-        session_record.ut_type = USER_PROCESS;
-        g_debug ("using ut_type USER_PROCESS");
-#endif
-
-        record_set_timestamp (&session_record);
-        record_set_pid (&session_record, session_pid);
-        record_set_host (&session_record, host_name);
-        record_set_line (&session_record, tty, seat_id);
-
         /* Handle wtmp */
         g_debug ("Writing wtmp session record to " GDM_NEW_SESSION_RECORDS_FILE);
 #if defined(HAVE_UPDWTMPX)
-        updwtmpx (GDM_NEW_SESSION_RECORDS_FILE, &session_record);
+        updwtmpx (GDM_NEW_SESSION_RECORDS_FILE, record);
 #elif defined(HAVE_UPDWTMP)
-        updwtmp (GDM_NEW_SESSION_RECORDS_FILE, &session_record);
+        updwtmp (GDM_NEW_SESSION_RECORDS_FILE, record);
 #elif defined(HAVE_LOGWTMP) && defined(HAVE_UT_UT_HOST)
 #if defined(HAVE_UT_UT_USER)
-        logwtmp (session_record.ut_line, session_record.ut_user, session_record.ut_host);
+        logwtmp (record->ut_line, record->ut_user, record->ut_host);
 #elif defined(HAVE_UT_UT_NAME)
-        logwtmp (session_record.ut_line, session_record.ut_name, session_record.ut_host);
+        logwtmp (record->ut_line, record->ut_name, record->ut_host);
 #endif
 #endif
 
@@ -189,80 +188,40 @@ gdm_session_record_login (GPid        session_pid,
 #if defined(HAVE_GETUTXENT)
         g_debug ("Adding or updating utmp record for login");
         setutxent();
-        pututxline (&session_record);
+        pututxline (record);
         endutxent();
 #elif defined(HAVE_LOGIN)
-	login (&session_record);
+	login (record);
 #endif
 }
 
-void
-gdm_session_record_logout (GPid        session_pid,
-                           const char *user_name,
-                           const char *host_name,
-                           const char *tty,
-                           const char *seat_id)
+static void
+write_logout_record (UTMP *record)
 {
-        UTMP        session_record = { 0 };
-
-        record_set_username (&session_record, user_name);
-
-        g_debug ("Writing logout record");
-
-#if defined(HAVE_UT_UT_TYPE)
-        session_record.ut_type = DEAD_PROCESS;
-        g_debug ("using ut_type DEAD_PROCESS");
-#endif
-
-        record_set_timestamp (&session_record);
-        record_set_pid (&session_record, session_pid);
-        record_set_host (&session_record, host_name);
-        record_set_line (&session_record, tty, seat_id);
-
         /* Handle wtmp */
         g_debug ("Writing wtmp logout record to " GDM_NEW_SESSION_RECORDS_FILE);
 #if defined(HAVE_UPDWTMPX)
-        updwtmpx (GDM_NEW_SESSION_RECORDS_FILE, &session_record);
+        updwtmpx (GDM_NEW_SESSION_RECORDS_FILE, record);
 #elif defined (HAVE_UPDWTMP)
-        updwtmp (GDM_NEW_SESSION_RECORDS_FILE, &session_record);
+        updwtmp (GDM_NEW_SESSION_RECORDS_FILE, record);
 #elif defined(HAVE_LOGWTMP)
-        logwtmp (session_record.ut_line, "", "");
+        logwtmp (record->ut_line, "", "");
 #endif
 
         /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
         g_debug ("Adding or updating utmp record for logout");
         setutxent();
-        pututxline (&session_record);
+        pututxline (record);
         endutxent();
 #elif defined(HAVE_LOGOUT)
-        logout (session_record.ut_line);
+        logout (record->ut_line);
 #endif
 }
 
-void
-gdm_session_record_failed (GPid        session_pid,
-                           const char *user_name,
-                           const char *host_name,
-                           const char *tty,
-                           const char *seat_id)
+static void
+write_failed_record (UTMP *record)
 {
-        UTMP        session_record = { 0 };
-
-        record_set_username (&session_record, user_name);
-
-        g_debug ("Writing failed session attempt record");
-
-#if defined(HAVE_UT_UT_TYPE)
-        session_record.ut_type = USER_PROCESS;
-        g_debug ("using ut_type USER_PROCESS");
-#endif
-
-        record_set_timestamp (&session_record);
-        record_set_pid (&session_record, session_pid);
-        record_set_host (&session_record, host_name);
-        record_set_line (&session_record, tty, seat_id);
-
 #if defined(HAVE_UPDWTMPX) || defined(HAVE_UPDWTMP)
         /* Handle btmp */
         g_debug ("Writing btmp failed session attempt record to "
@@ -270,9 +229,60 @@ gdm_session_record_failed (GPid        session_pid,
 #endif
 
 #if defined(HAVE_UPDWTMPX)
-        updwtmpx (GDM_BAD_SESSION_RECORDS_FILE, &session_record);
+        updwtmpx (GDM_BAD_SESSION_RECORDS_FILE, record);
 #elif defined(HAVE_UPDWTMP)
-        updwtmp(GDM_BAD_SESSION_RECORDS_FILE, &session_record);
+        updwtmp(GDM_BAD_SESSION_RECORDS_FILE, record);
 #endif
+}
 
+void
+gdm_session_record (GdmSessionRecordEvent  event,
+                    GdmSession            *session,
+                    GPid                   pid)
+{
+        UTMP record = { 0 };
+        const char *username = NULL;
+        g_autofree char *hostname = NULL;
+        g_autofree char *tty = NULL;
+        g_autofree char *seat_id = NULL;
+        void (*write_record)(UTMP *);
+
+        username = gdm_session_get_username (session);
+        if (username == NULL)
+                return;
+
+        if (pid < 0)
+                pid = gdm_session_get_pid (session);
+        if (pid < 0)
+                return;
+
+        switch (event) {
+        case GDM_SESSION_RECORD_LOGIN:
+                g_debug ("Writing login record");
+                write_record = write_login_record;
+                break;
+        case GDM_SESSION_RECORD_LOGOUT:
+                g_debug ("Writing logout record");
+                write_record = write_logout_record;
+                break;
+        case GDM_SESSION_RECORD_FAILED:
+                g_debug ("Writing failed session attempt record");
+                write_record = write_failed_record;
+                break;
+        }
+
+        g_object_get (G_OBJECT (session),
+                      "display-hostname", &hostname,
+                      "display-device", &tty,
+                      "display-seat-id", &seat_id,
+                      NULL);
+
+        record_set_type (&record, event);
+        record_set_username (&record, username);
+        record_set_timestamp (&record);
+        record_set_pid (&record, pid);
+        record_set_host (&record, hostname);
+        record_set_line (&record, tty, seat_id);
+
+        write_record (&record);
 }
