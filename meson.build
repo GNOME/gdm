@@ -75,45 +75,21 @@ if udev_dir == ''
 endif
 
 # X11
-# defaults
-x_path = '/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin'
-x_bin = '/usr/bin/X'
 if have_x11_support
   xau_dep = dependency('xau')
   # Xserver 1.17 & later default to -nolisten and require -listen for remote access
   xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
   xserver_has_listen = xserver_deps.found()
-  find_x_server_script = find_program('build-aux/find-x-server.sh', native: true)
-  find_x_server_out = run_command(find_x_server_script).stdout().strip()
-  if find_x_server_out != ''
-    x_bin = find_x_server_out
-    x_bin_path_split = x_bin.split('/')
-    i = 0
-    x_path = '/'
-    foreach dir : x_bin_path_split
-      if i < x_bin_path_split.length() - 1
-        x_path = x_path / dir
-      endif
-      i = i + 1
-    endforeach
-  endif
 else
   xserver_has_listen = false
 endif
+
 # systemd
 logind_provider = get_option('logind-provider')
 systemd_dep = dependency('systemd', required: false)
 if logind_provider == 'systemd'
   libsystemd_dep = dependency('libsystemd')
   logind_dep = libsystemd_dep
-  systemd_multiseat_x = find_program('systemd-multi-seat-x',
-    required: false,
-    dirs: [
-      systemd_dep.get_variable(pkgconfig: 'systemdutildir'),
-      '/lib/systemd',
-      '/usr/lib/systemd',
-    ])
-  systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
 
   have_userdb = libsystemd_dep.version().version_compare('>= 257')
 
@@ -123,7 +99,6 @@ if logind_provider == 'systemd'
 else
   elogind_dep = dependency('libelogind')
   logind_dep = elogind_dep
-  systemd_x_server = 'disabled'
   have_userdb = false
   greeter_uid_min = 0
   greeter_uid_max = 0
@@ -275,15 +250,12 @@ conf.set_quoted('GDM_CUSTOM_CONF', gdm_custom_conf)
 conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
 conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
-conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('HAVE_USERDB', have_userdb)
 conf.set('GREETER_UID_MIN', greeter_uid_min)
 conf.set('GREETER_UID_MAX', greeter_uid_max)
 conf.set_quoted('GDM_DYN_HOME_DIR', gdm_dyn_home_dir)
 conf.set_quoted('NOLOGIN_PATH', nologin_path)
 conf.set('WITH_PLYMOUTH', plymouth_dep.found())
-conf.set_quoted('X_SERVER', x_bin)
-conf.set_quoted('X_PATH', x_path)
 conf.set('HAVE_UDEV', gudev_dep.found())
 conf.set('HAVE_UT_UT_HOST', utmp_has_host_field)
 conf.set('HAVE_UT_UT_PID', utmp_has_pid_field)
@@ -341,9 +313,6 @@ summary({
     'Lang config file': lang_config_file,
     'Pam MOD': pam_mod_dir,
     'Udev rules': udev_dir,
-    'XServer': x_bin,
-    'XPath': x_path,
-    'Systemd XServer': systemd_x_server,
   },
   section: 'Paths',
 )

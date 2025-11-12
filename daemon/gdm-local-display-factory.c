@@ -153,7 +153,7 @@ gdm_local_display_factory_get_session_types (GdmLocalDisplayFactory *factory)
 #ifdef ENABLE_X11_SUPPORT
         gboolean x11_enabled = FALSE;
         gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &x11_enabled);
-        if (x11_enabled && g_file_test ("/usr/bin/Xorg", G_FILE_TEST_IS_EXECUTABLE))
+        if (x11_enabled && gdm_find_x_server () != NULL)
                 g_strv_builder_add (builder, "x11");
 #endif
 
