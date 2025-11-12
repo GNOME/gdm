@@ -995,3 +995,30 @@ gdm_load_env_d (GdmLoadEnvVarFunc load_env_func,
         gdm_load_env_dir (dir, load_env_func, expand_func, user_data);
         g_object_unref (dir);
 }
+
+const char * const
+gdm_find_x_server (void)
+{
+        const char * const x_servers[] = {
+                "/usr/bin/X",
+                "/usr/X11/bin/Xserver",
+                "/usr/X11R6/bin/X",
+                "/usr/X11/bin/X",
+                "/usr/bin/Xorg",
+                "/usr/openwin/bin/Xsun",
+                "/opt/X11R6/bin/X",
+        };
+        const char *override = NULL;
+
+        override = g_getenv ("GDM_X_SERVER_PATH");
+        if (override != NULL)
+                return override;
+
+        for (size_t i = 0; i < G_N_ELEMENTS (x_servers); i++) {
+                const char * const candidate = x_servers[i];
+                if (g_file_test (candidate, G_FILE_TEST_IS_EXECUTABLE))
+                        return candidate;
+        }
+
+        return NULL;
+}

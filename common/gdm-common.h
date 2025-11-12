@@ -105,6 +105,7 @@ void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
                                            GdmExpandVarFunc  expand_func,
                                            gpointer          user_data);
 
+const char * const gdm_find_x_server      (void);
 G_END_DECLS
 
 #endif /* _GDM_COMMON_H */
