@@ -124,24 +124,6 @@ gdm_get_grent_for_name (const char    *name,
         return (grent != NULL);
 }
 
-static gboolean
-gdm_get_grent_for_gid (gint           gid,
-                       struct group **grentp)
-{
-        struct group *grent;
-
-        do {
-                errno = 0;
-                grent = getgrgid (gid);
-        } while (grent == NULL && errno == EINTR);
-
-        if (grentp != NULL) {
-                *grentp = grent;
-        }
-
-        return (grent != NULL);
-}
-
 int
 gdm_wait_on_and_disown_pid (int pid,
                             int timeout)
