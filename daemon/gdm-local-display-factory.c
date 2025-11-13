@@ -192,11 +192,12 @@ gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
 
         store_display (factory, display);
 
-        if (!gdm_display_manage (display)) {
+        if (!gdm_display_prepare (display)) {
                 g_set_error_literal (error,
                                      GDM_DISPLAY_ERROR,
                                      GDM_DISPLAY_ERROR_GENERAL,
-                                     "Failed managing display");
+                                     "Failed preparing display");
+                gdm_display_unmanage (display);
                 return FALSE;
         }
 
@@ -205,6 +206,7 @@ gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
                                      GDM_DISPLAY_ERROR,
                                      GDM_DISPLAY_ERROR_GENERAL,
                                      "Failed getting display id");
+                gdm_display_unmanage (display);
                 return FALSE;
         }
 
@@ -567,7 +569,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         store_display (factory, display);
 
-        if (!gdm_display_manage (display))
+        if (!gdm_display_prepare (display))
                 gdm_display_unmanage (display);
 }
 
