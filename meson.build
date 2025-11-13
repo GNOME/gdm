@@ -77,11 +77,6 @@ endif
 # X11
 if have_x11_support
   xau_dep = dependency('xau')
-  # Xserver 1.17 & later default to -nolisten and require -listen for remote access
-  xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
-  xserver_has_listen = xserver_deps.found()
-else
-  xserver_has_listen = false
 endif
 
 # systemd
@@ -240,7 +235,6 @@ conf.set('HAVE_PAM_SYSLOG', have_pam_syslog)
 conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
-conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
 conf.set('ENABLE_X11_SUPPORT', get_option('x11-support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
