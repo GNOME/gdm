@@ -52,12 +52,10 @@
 #define GDM_GREETER_SESSION "gnome-greeter"
 #define GDM_GREETER_USERNAME "gdm-greeter"
 #define GDM_GREETER_DISP_NAME "GDM Greeter"
-#define GDM_SESSION_MODE "gdm"
 
 #define INITIAL_SETUP_SESSION "gnome-initial-setup"
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 #define INITIAL_SETUP_DISP_NAME "GNOME Initial Setup"
-#define INITIAL_SETUP_SESSION_MODE "initial-setup"
 #define INITIAL_SETUP_GROUPNAME "gnome-initial-setup"
 #define INITIAL_SETUP_DCONF_PROFILE "gnome-initial-setup"
 
@@ -81,7 +79,6 @@ struct _GdmLaunchEnvironment
         char           *dconf_profile;
         char           *session_id;
         char           *session_type;
-        char           *session_mode;
         char           *display_seat_id;
         char           *display_hostname;
         gboolean        display_is_local;
@@ -90,7 +87,6 @@ struct _GdmLaunchEnvironment
 enum {
         PROP_0,
         PROP_SESSION_TYPE,
-        PROP_SESSION_MODE,
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -302,11 +298,10 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                                      g_strdup (g_getenv (optional_environment[i])));
         }
 
-        if (launch_environment->session_mode != NULL) {
-                g_hash_table_insert (hash, g_strdup ("GNOME_SHELL_SESSION_MODE"), g_strdup (launch_environment->session_mode));
+        if (launch_environment->dconf_profile != NULL) {
                 g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->dconf_profile));
 
-                is_initial_setup = strcmp (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) == 0;
+                is_initial_setup = strcmp (launch_environment->dconf_profile, INITIAL_SETUP_DCONF_PROFILE) == 0;
 
                 if (!is_initial_setup) {
 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
@@ -352,7 +347,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         /* Now populate XDG_DATA_DIRS from env.d if we're running initial setup; this allows
          * e.g. Flatpak apps to be recognized by gnome-shell.
          */
-        if (g_strcmp0 (launch_environment->session_mode, INITIAL_SETUP_SESSION_MODE) == 0)
+        if (is_initial_setup)
                 gdm_load_env_d (load_env_func, get_var_cb, hash);
 
         /* Prepend our own XDG_DATA_DIRS value */
@@ -628,14 +623,6 @@ _gdm_launch_environment_set_session_type (GdmLaunchEnvironment *launch_environme
 }
 
 static void
-_gdm_launch_environment_set_session_mode (GdmLaunchEnvironment *launch_environment,
-                                          const char           *session_mode)
-{
-        g_free (launch_environment->session_mode);
-        launch_environment->session_mode = g_strdup (session_mode);
-}
-
-static void
 _gdm_launch_environment_set_display_seat_id (GdmLaunchEnvironment *launch_environment,
                                              const char           *sid)
 {
@@ -711,9 +698,6 @@ gdm_launch_environment_set_property (GObject      *object,
         case PROP_SESSION_TYPE:
                 _gdm_launch_environment_set_session_type (self, g_value_get_string (value));
                 break;
-        case PROP_SESSION_MODE:
-                _gdm_launch_environment_set_session_mode (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_SEAT_ID:
                 _gdm_launch_environment_set_display_seat_id (self, g_value_get_string (value));
                 break;
@@ -758,9 +742,6 @@ gdm_launch_environment_get_property (GObject    *object,
         case PROP_SESSION_TYPE:
                 g_value_set_string (value, self->session_type);
                 break;
-        case PROP_SESSION_MODE:
-                g_value_set_string (value, self->session_mode);
-                break;
         case PROP_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->display_seat_id);
                 break;
@@ -803,13 +784,6 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_SESSION_TYPE,
                                          g_param_spec_string ("session-type",
-                                                              NULL,
-                                                              NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_SESSION_MODE,
-                                         g_param_spec_string ("session-mode",
                                                               NULL,
                                                               NULL,
                                                               NULL,
@@ -978,7 +952,6 @@ gdm_create_greeter_launch_environment (const char *seat_id,
                              "dconf-profile", GDM_DCONF_PROFILE,
                              "display-seat-id", seat_id,
                              "session-type", session_type,
-                             "session-mode", GDM_SESSION_MODE,
                              "display-hostname", display_hostname,
                              "display-is-local", display_is_local,
                              NULL);
@@ -998,7 +971,6 @@ gdm_create_initial_setup_launch_environment (const char *seat_id,
                              "dconf-profile", INITIAL_SETUP_DCONF_PROFILE,
                              "display-seat-id", seat_id,
                              "session-type", session_type,
-                             "session-mode", INITIAL_SETUP_SESSION_MODE,
                              "display-hostname", display_hostname,
                              "display-is-local", display_is_local,
                              NULL);
