@@ -111,12 +111,6 @@ enum {
         LAST_SIGNAL
 };
 
-typedef enum {
-        SESSION_RECORD_LOGIN,
-        SESSION_RECORD_LOGOUT,
-        SESSION_RECORD_FAILED,
-} SessionRecord;
-
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
@@ -635,77 +629,6 @@ get_user_session_for_display (GdmDisplay *display)
         return g_object_get_data (G_OBJECT (display), "gdm-user-session");
 }
 
-static gboolean
-add_session_record (GdmManager    *manager,
-                    GdmSession    *session,
-                    GPid           pid,
-                    SessionRecord  record)
-{
-        const char *username;
-        char *display_name, *hostname, *display_device, *display_seat_id;
-        gboolean recorded = FALSE;
-
-        display_name = NULL;
-        username = NULL;
-        hostname = NULL;
-        display_device = NULL;
-        display_seat_id = NULL;
-
-        username = gdm_session_get_username (session);
-
-        if (username == NULL) {
-                goto out;
-        }
-
-        g_object_get (G_OBJECT (session),
-                      "display-name", &display_name,
-                      "display-hostname", &hostname,
-                      "display-device", &display_device,
-                      "display-seat-id", &display_seat_id,
-                      NULL);
-
-        if (display_name == NULL && display_device == NULL) {
-                if (display_seat_id == NULL)
-                        goto out;
-
-                display_name = g_strdup ("login screen");
-                display_device = g_strdup (display_seat_id);
-        }
-
-        switch (record) {
-            case SESSION_RECORD_LOGIN:
-                gdm_session_record_login (pid,
-                                          username,
-                                          hostname,
-                                          display_name,
-                                          display_device);
-                break;
-            case SESSION_RECORD_LOGOUT:
-                gdm_session_record_logout (pid,
-                                           username,
-                                           hostname,
-                                           display_name,
-                                           display_device);
-                break;
-            case SESSION_RECORD_FAILED:
-                gdm_session_record_failed (pid,
-                                           username,
-                                           hostname,
-                                           display_name,
-                                           display_device);
-                break;
-        }
-
-        recorded = TRUE;
-out:
-        g_free (display_name);
-        g_free (hostname);
-        g_free (display_device);
-        g_free (display_seat_id);
-
-        return recorded;
-}
-
 static GdmSession *
 find_user_session_for_display (GdmManager *self,
                                GdmDisplay *display)
@@ -771,8 +694,6 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
         session = find_user_session_for_display (self, display);
 
         if (session != NULL) {
-                GPid pid;
-
                 if (x11_display_name != NULL) {
                         g_object_set (G_OBJECT (session), "display-name", x11_display_name, NULL);
                         g_object_set (G_OBJECT (display), "x11-display-name", x11_display_name, NULL);
@@ -783,11 +704,7 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
                 if (tty != NULL)
                         g_object_set (G_OBJECT (session), "display-device", tty, NULL);
 
-                pid = gdm_session_get_pid (session);
-
-                if (pid > 0) {
-                        add_session_record (self, session, pid, SESSION_RECORD_LOGIN);
-                }
+                gdm_session_record (GDM_SESSION_RECORD_LOGIN, session, -1);
         }
 
         g_object_set (G_OBJECT (display),
@@ -1815,7 +1732,7 @@ on_session_authentication_failed (GdmSession *session,
                                   GPid        conversation_pid,
                                   GdmManager *manager)
 {
-        add_session_record (manager, session, conversation_pid, SESSION_RECORD_FAILED);
+        gdm_session_record (GDM_SESSION_RECORD_FAILED, session, conversation_pid);
 }
 
 static void
@@ -1867,7 +1784,6 @@ on_user_session_started (GdmSession      *session,
                          GdmManager      *manager)
 {
         g_debug ("GdmManager: session started %d", pid);
-        add_session_record (manager, session, pid, SESSION_RECORD_LOGIN);
 }
 
 static void
@@ -1909,15 +1825,8 @@ on_user_session_exited (GdmSession *session,
                         int         code,
                         GdmManager *manager)
 {
-        GPid pid;
-
         g_debug ("GdmManager: session exited with status %d", code);
-        pid = gdm_session_get_pid (session);
-
-        if (pid > 0) {
-                add_session_record (manager, session, pid, SESSION_RECORD_LOGOUT);
-        }
-
+        gdm_session_record (GDM_SESSION_RECORD_LOGOUT, session, -1);
         remove_user_session (manager, session);
 }
 
