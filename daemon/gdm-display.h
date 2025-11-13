@@ -47,7 +47,6 @@ struct _GdmDisplayClass
 
         /* methods */
         gboolean (*prepare) (GdmDisplay *display);
-        void     (*manage)  (GdmDisplay *self);
 };
 
 typedef enum
@@ -65,7 +64,6 @@ int                 gdm_display_get_status                     (GdmDisplay *disp
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
 const char *        gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
-gboolean            gdm_display_manage                         (GdmDisplay *display);
 gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);
 
