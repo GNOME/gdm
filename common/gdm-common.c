@@ -1000,13 +1000,8 @@ const char * const
 gdm_find_x_server (void)
 {
         const char * const x_servers[] = {
-                "/usr/bin/X",
-                "/usr/X11/bin/Xserver",
-                "/usr/X11R6/bin/X",
-                "/usr/X11/bin/X",
                 "/usr/bin/Xorg",
-                "/usr/openwin/bin/Xsun",
-                "/opt/X11R6/bin/X",
+                "/usr/bin/X",
         };
         const char *override = NULL;
 
