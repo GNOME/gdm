@@ -1000,6 +1000,7 @@ const char * const
 gdm_find_x_server (void)
 {
         const char * const x_servers[] = {
+                "/usr/bin/Xwayback",
                 "/usr/bin/Xorg",
                 "/usr/bin/X",
         };
