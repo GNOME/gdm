@@ -287,7 +287,6 @@ spawn_session (State        *state,
                                                     "XAUTHORITY",
                                                     "WAYLAND_DISPLAY",
                                                     "WAYLAND_SOCKET",
-                                                    "GNOME_SHELL_SESSION_MODE",
                                                     NULL };
         /* The environment variables listed below are those we have set (or
          * received from our own execution environment) only as a fallback to
