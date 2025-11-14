@@ -1327,7 +1327,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "remote-hostname",
                                                               "remote-hostname",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_NUMBER,
                                          g_param_spec_int ("x11-display-number",
