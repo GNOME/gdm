@@ -78,9 +78,20 @@ gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
 static gboolean
 handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
                               GDBusMethodInvocation       *invocation,
-                              const char                  *remote_id,
+                              GVariant                    *properties,
                               GdmRemoteDisplayFactory     *factory)
 {
+        g_autofree char *remote_id = NULL;
+
+        g_variant_lookup (properties, "remote-id", "o", &remote_id);
+        if (!remote_id) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_INVALID_ARGS,
+                                                               "Missing remote-id in properties");
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
         if (!gdm_remote_display_factory_create_display (factory, NULL, remote_id))
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
