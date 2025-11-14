@@ -1459,12 +1459,14 @@ create_display_for_user_session (GdmManager *self,
 
         if (!display_is_local) {
                 g_autofree char *remote_id = NULL;
+                g_autofree char *remote_hostname = NULL;
 
                 g_object_get (G_OBJECT (session),
                               "remote-id", &remote_id,
+                              "display-hostname", &remote_hostname,
                               NULL);
 
-                display = gdm_remote_display_new (remote_id);
+                display = gdm_remote_display_new (remote_id, remote_hostname);
         }
 
         if (display == NULL)
