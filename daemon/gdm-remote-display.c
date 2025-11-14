@@ -149,7 +149,8 @@ gdm_remote_display_init (GdmRemoteDisplay *remote_display)
 }
 
 GdmDisplay *
-gdm_remote_display_new (const char *remote_id)
+gdm_remote_display_new (const char *remote_id,
+                        const char *remote_hostname)
 {
         GObject *object;
         GdmRemoteDisplay *self;
@@ -160,6 +161,7 @@ gdm_remote_display_new (const char *remote_id)
                                "is-local", FALSE,
                                "session-type", session_types[0],
                                "supported-session-types", session_types,
+                               "remote-hostname", remote_hostname,
                                NULL);
 
         self = GDM_REMOTE_DISPLAY (object);
