@@ -1332,12 +1332,10 @@ on_display_status_changed (GdmDisplay *display,
                            GdmManager *manager)
 {
         int         status;
-        g_autofree char *session_type = NULL;
         g_autofree char *session_class = NULL;
         gboolean    display_is_local = FALSE;
 
         g_object_get (display,
-                      "session-type", &session_type,
                       "session-class", &session_class,
                       "is-local", &display_is_local,
                       NULL);

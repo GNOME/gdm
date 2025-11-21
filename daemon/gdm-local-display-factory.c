@@ -182,7 +182,6 @@ gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
 
         display = gdm_local_display_new ();
         g_object_set (G_OBJECT (display),
-                      "session-type", session_types[0],
                       "supported-session-types", session_types,
                       "seat-id", "seat0",
                       "allow-timed-login", FALSE,
@@ -561,7 +560,6 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         display = gdm_local_display_new ();
         g_object_set (G_OBJECT (display),
-                      "session-type", session_types[0],
                       "supported-session-types", session_types,
                       "seat-id", seat_id,
                       "is-initial", is_seat0,

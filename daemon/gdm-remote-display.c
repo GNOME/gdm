@@ -151,7 +151,6 @@ gdm_remote_display_new (const char *remote_id)
 
         object = g_object_new (GDM_TYPE_REMOTE_DISPLAY,
                                "is-local", FALSE,
-                               "session-type", session_types[0],
                                "supported-session-types", session_types,
                                NULL);
 

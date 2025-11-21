@@ -56,7 +56,6 @@ typedef struct _GdmDisplayPrivate
         char                 *seat_id;
         char                 *session_id;
         char                 *session_class;
-        char                 *session_type;
 
         char                 *remote_hostname;
         int                   status;
@@ -93,7 +92,6 @@ enum {
         PROP_SEAT_ID,
         PROP_SESSION_ID,
         PROP_SESSION_CLASS,
-        PROP_SESSION_TYPE,
         PROP_REMOTE_HOSTNAME,
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
@@ -447,18 +445,6 @@ _gdm_display_set_session_class (GdmDisplay *self,
 }
 
 static void
-_gdm_display_set_session_type (GdmDisplay *self,
-                               const char *session_type)
-{
-        GdmDisplayPrivate *priv;
-
-        priv = gdm_display_get_instance_private (self);
-        g_debug ("GdmDisplay: session type: %s", session_type);
-        g_free (priv->session_type);
-        priv->session_type = g_strdup (session_type);
-}
-
-static void
 _gdm_display_set_remote_hostname (GdmDisplay     *self,
                                   const char     *hostname)
 {
@@ -580,9 +566,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_SESSION_CLASS:
                 _gdm_display_set_session_class (self, g_value_get_string (value));
                 break;
-        case PROP_SESSION_TYPE:
-                _gdm_display_set_session_type (self, g_value_get_string (value));
-                break;
         case PROP_REMOTE_HOSTNAME:
                 _gdm_display_set_remote_hostname (self, g_value_get_string (value));
                 break;
@@ -640,9 +623,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SESSION_CLASS:
                 g_value_set_string (value, priv->session_class);
-                break;
-        case PROP_SESSION_TYPE:
-                g_value_set_string (value, priv->session_type);
                 break;
         case PROP_REMOTE_HOSTNAME:
                 g_value_set_string (value, priv->remote_hostname);
@@ -906,13 +886,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               "greeter",
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_SESSION_TYPE,
-                                         g_param_spec_string ("session-type",
-                                                              NULL,
-                                                              NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_IS_INITIAL,
                                          g_param_spec_boolean ("is-initial",
