@@ -2995,12 +2995,8 @@ gdm_session_start_session (GdmSession *self,
                            const char *service_name)
 {
         GdmSessionConversation *conversation;
-        gboolean                is_x11 = TRUE;
-        gboolean                run_xsession_script;
-        gboolean                allow_remote_connections = FALSE;
         g_autofree char        *command = NULL;
         g_autofree char        *program = NULL;
-        gboolean               register_session;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (service_name != NULL);
@@ -3016,32 +3012,15 @@ gdm_session_start_session (GdmSession *self,
 
         stop_all_other_conversations (self, conversation, FALSE);
 
-        is_x11 = g_strcmp0 (self->session_type, "wayland") != 0;
-
-        register_session = !gdm_session_session_registers (self);
-
         command = get_session_command (self);
 
-        run_xsession_script = !gdm_session_bypasses_xsession (self);
-
-        if (self->display_is_local) {
-                gboolean disallow_tcp = TRUE;
-                gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disallow_tcp);
-                allow_remote_connections = !disallow_tcp;
-        } else {
-                allow_remote_connections = TRUE;
-        }
-
-        if (is_x11) {
-                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
-                                           register_session ? "--register-session " : "",
-                                           run_xsession_script? "--run-script " : "",
-                                           allow_remote_connections? "--allow-remote-connections " : "",
-                                           command);
-        } else {
+        if (g_strcmp0 (self->session_type, "wayland") == 0) {
+                gboolean register_session = !gdm_session_session_registers (self);
                 program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
                                            register_session ? "--register-session " : "",
                                            command);
+        } else {
+                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session \"%s\"", command);
         }
 
         set_up_session_environment (self);
@@ -3422,47 +3401,6 @@ gdm_session_session_registers (GdmSession *self)
                  session_registers ? "registers" : "does not register");
 
         return session_registers;
-}
-
-gboolean
-gdm_session_bypasses_xsession (GdmSession *self)
-{
-        GError     *error;
-        GKeyFile   *key_file;
-        gboolean    res;
-        gboolean    bypasses_xsession = FALSE;
-        char       *filename = NULL;
-
-        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
-
-        if (gdm_session_is_wayland_session (self)) {
-                bypasses_xsession = TRUE;
-                goto out;
-        }
-
-        filename = get_session_filename (self);
-
-        key_file = load_key_file_for_file (self, filename, "x11",  NULL);
-
-        error = NULL;
-        res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", NULL);
-        if (!res) {
-                goto out;
-        } else {
-                bypasses_xsession = g_key_file_get_boolean (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", &error);
-                if (error) {
-                        bypasses_xsession = FALSE;
-                        g_error_free (error);
-                        goto out;
-                }
-        }
-
-out:
-        if (bypasses_xsession) {
-                g_debug ("GdmSession: Session %s bypasses Xsession wrapper script", filename);
-        }
-        g_free (filename);
-        return bypasses_xsession;
 }
 
 GdmSessionDisplayMode
