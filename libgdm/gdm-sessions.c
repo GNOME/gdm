@@ -342,7 +342,6 @@ collect_sessions (void)
         names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
         dirs_search_array = g_ptr_array_new_with_free_func (g_free);
 
-#ifdef ENABLE_X11_SUPPORT
         const char *xorg_search_dirs[] = {
                 "/etc/X11/sessions/",
                 DMCONFDIR "/Sessions/",
@@ -359,7 +358,6 @@ collect_sessions (void)
                         g_ptr_array_add (dirs_search_array, session_dir);
                 }
         }
-#endif
 
         if (!supported_session_types  || g_strv_contains ((const char * const *) supported_session_types, "wayland")) {
                 for (i = 0; system_data_dirs[i]; i++) {
