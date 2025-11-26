@@ -1242,6 +1242,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 }
         }
 
+        /* Grant extra access to GPUs and NPUs (i.e. for remote sessions without a seat) */
+        gdm_session_worker_set_environment_variable (worker, "XDG_SESSION_EXTRA_DEVICE_ACCESS", "render:accel");
+
         /* set seat ID */
         if (seat_id != NULL && seat_id[0] != '\0') {
                 gdm_session_worker_set_environment_variable (worker, "XDG_SEAT", seat_id);
