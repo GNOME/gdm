@@ -245,82 +245,27 @@ remove_duplicate_sessions (gpointer key,
 static void
 collect_sessions_from_directory (const char *dirname)
 {
-        GDir       *dir;
+        g_autoptr (GDir) dir = NULL;
         const char *filename;
-
-        gboolean is_x11 = g_getenv ("WAYLAND_DISPLAY") == NULL &&
-                          g_getenv ("RUNNING_UNDER_GDM") != NULL;
-        gboolean is_wayland = g_getenv ("WAYLAND_DISPLAY") != NULL &&
-                              g_getenv ("RUNNING_UNDER_GDM") != NULL;
 
         /* FIXME: add file monitor to directory */
 
         dir = g_dir_open (dirname, 0, NULL);
-        if (dir == NULL) {
+        if (dir == NULL)
                 return;
-        }
 
         while ((filename = g_dir_read_name (dir))) {
-                char *id;
-                char *full_path;
+                g_autofree char *id = NULL;
+                g_autofree char *full_path = NULL;
 
-                if (! g_str_has_suffix (filename, ".desktop")) {
+                if (!g_str_has_suffix (filename, ".desktop"))
                         continue;
-                }
-
-                if (is_wayland) {
-                        if (g_str_has_suffix (filename, "-wayland.desktop")) {
-                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen ("-wayland.desktop"));
-                                g_autofree char *other_name = g_strconcat (base_name, ".desktop", NULL);
-                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
-
-                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
-                                        g_debug ("Running under Wayland, ignoring %s", filename);
-                                        continue;
-                                }
-                        } else {
-                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen (".desktop"));
-                                g_autofree char *other_name = g_strdup_printf ("%s-xorg.desktop", base_name);
-                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
-
-                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
-                                        g_debug ("Running under Wayland, ignoring %s", filename);
-                                        continue;
-                                }
-                        }
-                } else if (is_x11) {
-                        if (g_str_has_suffix (filename, "-xorg.desktop")) {
-                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen ("-xorg.desktop"));
-                                g_autofree char *other_name = g_strconcat (base_name, ".desktop", NULL);
-                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
-
-                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
-                                        g_debug ("Running under X11, ignoring %s", filename);
-                                        continue;
-                                }
-                        } else {
-                                g_autofree char *base_name = g_strndup (filename, strlen (filename) - strlen (".desktop"));
-                                g_autofree char *other_name = g_strdup_printf ("%s-wayland.desktop", base_name);
-                                g_autofree char *other_path = g_build_filename (dirname, other_name, NULL);
-
-                                if (g_file_test (other_path, G_FILE_TEST_EXISTS)) {
-                                        g_debug ("Running under X11, ignoring %s", filename);
-                                        continue;
-                                }
-                        }
-                }
 
                 id = g_strndup (filename, strlen (filename) - strlen (".desktop"));
-
                 full_path = g_build_filename (dirname, filename, NULL);
 
                 load_session_file (id, full_path);
-
-                g_free (id);
-                g_free (full_path);
         }
-
-        g_dir_close (dir);
 }
 
 static void
