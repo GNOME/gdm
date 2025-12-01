@@ -2399,7 +2399,13 @@ void
 gdm_session_set_supported_session_types (GdmSession         *self,
                                          const char * const *supported_session_types)
 {
-        const char * const session_types[] = { "wayland", "x11", NULL };
+        const char * const session_types[] = {
+                "wayland",
+#ifdef ENABLE_X11_SUPPORT
+                "x11",
+#endif
+                NULL
+        };
         g_strfreev (self->supported_session_types);
 
         if (supported_session_types == NULL)
@@ -2861,7 +2867,7 @@ static void
 send_session_type (GdmSession *self,
                    GdmSessionConversation *conversation)
 {
-        const char *session_type = "x11";
+        const char *session_type = "wayland";
 
         if (self->session_type != NULL) {
                 session_type = self->session_type;
