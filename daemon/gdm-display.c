@@ -1864,7 +1864,8 @@ gdm_display_set_windowpath (GdmDisplay *self)
 
         get_property_reply = xcb_get_property_reply (priv->xcb_connection, get_property_cookie, NULL);
 
-        if (get_property_reply == NULL) {
+        if ((get_property_reply == NULL) ||
+            (get_property_reply->type == XCB_NONE)) {
                 g_debug ("no XFree86_VT property\n");
                 goto out;
         }
