@@ -1,27 +1,6 @@
 subdir('applications')
 subdir('dconf')
 
-# XPath configs
-foreach file : [ 'Init', 'PreSession', 'PostSession' ]
-  generated_file = configure_file(
-    input: '@0@.in'.format(file),
-    output: file,
-    configuration: { 'X_PATH':  x_path },
-  )
-
-  install_data(generated_file,
-    install_dir: gdmconfdir / file,
-    install_mode: 'rwxr-xr-x',
-    rename: 'Default'
-  )
-endforeach
-
-install_data('PostLogin',
-  rename: 'Default.sample',
-  install_mode: 'rwxr-xr-x',
-  install_dir: gdmconfdir / 'PostLogin',
-)
-
 # gdm.conf
 configure_file(
   input: 'gdm.conf.in',
@@ -45,15 +24,7 @@ install_data('org.gnome.login-screen.gschema.xml',
 )
 compiled_gschema = gnome.compile_schemas()
 
-# gdm.schema
-gdm_schema = configure_file(
-  input: 'gdm.schemas.in',
-  output: '@BASENAME@',
-  configuration: {
-    'GDM_USERNAME': get_option('user'),
-    'GDM_GROUPNAME': get_option('group'),
-    'gdmconfdir': gdmconfdir,
-  },
+install_data('gdm.schemas',
   install_dir: gdm_datadir,
 )
 
@@ -67,24 +38,20 @@ install_data(
 )
 
 desktop_files = [
-  'gdm-simple-chooser.desktop.in',
   'gnome-greeter.desktop.in',
   'gnome-initial-setup.desktop.in'
 ]
 
-session_dirs = ['wayland-sessions'] + (have_x11_support ? ['xsessions'] : [])
 foreach desktop_file : desktop_files
-  foreach sessions_dir : session_dirs
-    configure_file(
-      input: desktop_file,
-      output: '@BASENAME@',
-      configuration: {
-        'gdmdatadir': gdm_prefix / get_option('datadir') / 'gdm',
-        'libexecdir': gdm_prefix / get_option('libexecdir'),
-      },
-      install_dir: get_option('datadir') / 'gdm' / 'greeter' / sessions_dir,
-    )
-  endforeach
+  configure_file(
+    input: desktop_file,
+    output: '@BASENAME@',
+    configuration: {
+      'gdmdatadir': gdm_prefix / get_option('datadir') / 'gdm',
+      'libexecdir': gdm_prefix / get_option('libexecdir'),
+    },
+    install_dir: get_option('datadir') / 'gdm' / 'greeter' / 'wayland-sessions',
+  )
 endforeach
 
 # PAM

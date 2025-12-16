@@ -114,15 +114,8 @@ gdm_remote_display_prepare (GdmDisplay *display)
 {
         GdmRemoteDisplay *self = GDM_REMOTE_DISPLAY (display);
         g_autoptr (GdmLaunchEnvironment) launch_environment = NULL;
-        g_autofree char *session_type = NULL;
-
-        g_object_get (self,
-                      "session-type", &session_type,
-                      NULL);
 
         launch_environment = gdm_create_greeter_launch_environment (NULL,
-                                                                    NULL,
-                                                                    session_type,
                                                                     NULL,
                                                                     FALSE);
 
@@ -158,7 +151,6 @@ gdm_remote_display_new (const char *remote_id)
 
         object = g_object_new (GDM_TYPE_REMOTE_DISPLAY,
                                "is-local", FALSE,
-                               "session-type", session_types[0],
                                "supported-session-types", session_types,
                                NULL);
 

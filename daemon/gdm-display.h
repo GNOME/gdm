@@ -47,7 +47,6 @@ struct _GdmDisplayClass
 
         /* methods */
         gboolean (*prepare) (GdmDisplay *display);
-        void     (*manage)  (GdmDisplay *self);
 };
 
 typedef enum
@@ -64,9 +63,7 @@ GQuark              gdm_display_error_quark                    (void);
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
 const char *        gdm_display_get_session_id                 (GdmDisplay *display);
-gboolean            gdm_display_create_authority               (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
-gboolean            gdm_display_manage                         (GdmDisplay *display);
 gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);
 
@@ -79,12 +76,6 @@ gboolean            gdm_display_get_id                         (GdmDisplay *disp
 gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
                                                                 char      **hostname,
                                                                 GError    **error);
-gboolean            gdm_display_get_x11_display_number         (GdmDisplay *display,
-                                                                int        *number,
-                                                                GError    **error);
-gboolean            gdm_display_get_x11_display_name           (GdmDisplay *display,
-                                                                char      **x11_display,
-                                                                GError    **error);
 gboolean            gdm_display_get_seat_id                    (GdmDisplay *display,
                                                                 char      **seat_id,
                                                                 GError    **error);
@@ -95,27 +86,11 @@ gboolean            gdm_display_is_initial                     (GdmDisplay  *dis
                                                                 gboolean    *initial,
                                                                 GError     **error);
 
-gboolean            gdm_display_get_x11_cookie                 (GdmDisplay  *display,
-                                                                const char **x11_cookie,
-                                                                gsize       *x11_cookie_size,
-                                                                GError     **error);
-gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
-                                                                char      **filename,
-                                                                GError    **error);
-gboolean            gdm_display_add_user_authorization         (GdmDisplay *display,
-                                                                const char *username,
-                                                                char      **filename,
-                                                                GError    **error);
-gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
-                                                                const char *username,
-                                                                GError    **error);
 gboolean            gdm_display_prepare_greeter_session        (GdmDisplay          *display,
                                                                 GdmDynamicUserStore *dyn_user_store,
                                                                 uid_t               *ret_uid);
 void                gdm_display_start_greeter_session          (GdmDisplay  *display);
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
-
-gboolean            gdm_display_connect                        (GdmDisplay *self);
 
 G_END_DECLS
 

@@ -94,7 +94,6 @@ struct _GdmSession
         char                *saved_session_type;
         char                *saved_language;
         char                *selected_user;
-        char                *user_x11_authority_file;
 
         char                *timed_login_username;
         int                  timed_login_delay;
@@ -109,8 +108,6 @@ struct _GdmSession
         GdmDBusUserVerifier   *user_verifier_interface;
         GHashTable            *user_verifier_extensions;
         GdmDBusGreeter        *greeter_interface;
-        GdmDBusRemoteGreeter  *remote_greeter_interface;
-        GdmDBusChooser        *chooser_interface;
 
         GList               *pending_worker_connections;
         GList               *outside_connections;
@@ -119,11 +116,9 @@ struct _GdmSession
 
         /* object lifetime scope */
         char                *session_type;
-        char                *display_name;
         char                *display_hostname;
         char                *display_device;
         char                *display_seat_id;
-        char                *display_x11_authority_file;
         gboolean             display_is_local;
 
         GdmSessionVerificationMode verification_mode;
@@ -149,15 +144,12 @@ enum {
         PROP_0,
         PROP_VERIFICATION_MODE,
         PROP_ALLOWED_USER,
-        PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_IS_INITIAL,
         PROP_SESSION_TYPE,
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_SEAT_ID,
-        PROP_DISPLAY_X11_AUTHORITY_FILE,
-        PROP_USER_X11_AUTHORITY_FILE,
         PROP_CONVERSATION_ENVIRONMENT,
         PROP_SUPPORTED_SESSION_TYPES,
         PROP_REMOTE_ID,
@@ -168,12 +160,10 @@ enum {
         CONVERSATION_STOPPED,
         SETUP_COMPLETE,
         CANCELLED,
-        HOSTNAME_SELECTED,
         CLIENT_REJECTED,
         CLIENT_CONNECTED,
         CLIENT_DISCONNECTED,
         CLIENT_READY_FOR_SESSION_TO_START,
-        DISCONNECTED,
         AUTHENTICATION_FAILED,
         CREDENTIALS_ESTABLISHED,
         VERIFICATION_COMPLETE,
@@ -189,9 +179,7 @@ enum {
         LAST_SIGNAL
 };
 
-#ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
-#endif
 static void update_session_type (GdmSession *self);
 static void set_session_type (GdmSession *self,
                               const char *session_type);
@@ -338,7 +326,6 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
 
                 switch (self->verification_mode) {
                 case GDM_SESSION_VERIFICATION_MODE_LOGIN:
-                case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
                         gdm_session_open_session (self, service_name);
                         break;
                 case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
@@ -386,7 +373,6 @@ get_system_session_dirs (GdmSession *self,
                 DATADIR "/xsessions/",
         };
 
-        static const char *gdm_x_search_dir = DATADIR "/gdm/greeter/xsessions/";
         static const char *gdm_wayland_search_dir = DATADIR "/gdm/greeter/wayland-sessions/";
         static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
 
@@ -397,8 +383,6 @@ get_system_session_dirs (GdmSession *self,
 
                 if (g_str_equal (supported_type, "x11") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
-                        g_array_append_val(search_array, gdm_x_search_dir);
-
                         for (i = 0; system_data_dirs[i]; i++) {
                                 gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
                                 g_array_append_val (search_array, dir);
@@ -407,8 +391,6 @@ get_system_session_dirs (GdmSession *self,
                         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
                 }
 
-
-#ifdef ENABLE_WAYLAND_SUPPORT
                 if (g_str_equal (supported_type, "wayland") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         g_array_append_val (search_array, gdm_wayland_search_dir);
@@ -420,7 +402,6 @@ get_system_session_dirs (GdmSession *self,
 
                         g_array_append_val (search_array, wayland_search_dir);
                 }
-#endif
         }
 
         search_dirs = g_strdupv ((char **) search_array->data);
@@ -1921,72 +1902,6 @@ export_greeter_interface (GdmSession      *self,
         g_set_object (&self->greeter_interface, greeter_interface);
 }
 
-static gboolean
-gdm_session_handle_client_disconnect (GdmDBusChooser        *chooser_interface,
-                                      GDBusMethodInvocation *invocation,
-                                      GdmSession            *self)
-{
-        gdm_dbus_chooser_complete_disconnect (chooser_interface,
-                                              invocation);
-        g_signal_emit (self, signals[DISCONNECTED], 0);
-        return TRUE;
-}
-
-static void
-export_remote_greeter_interface (GdmSession      *self,
-                                 GDBusConnection *connection)
-{
-        g_autoptr (GdmDBusRemoteGreeter) remote_greeter_interface = NULL;
-
-        remote_greeter_interface = GDM_DBUS_REMOTE_GREETER (gdm_dbus_remote_greeter_skeleton_new ());
-
-        g_signal_connect (remote_greeter_interface,
-                          "handle-disconnect",
-                          G_CALLBACK (gdm_session_handle_client_disconnect),
-                          self);
-
-        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (remote_greeter_interface),
-                                          connection,
-                                          GDM_SESSION_DBUS_OBJECT_PATH,
-                                          NULL);
-
-        g_set_object (&self->remote_greeter_interface, remote_greeter_interface);
-}
-
-static gboolean
-gdm_session_handle_client_select_hostname (GdmDBusChooser        *chooser_interface,
-                                           GDBusMethodInvocation *invocation,
-                                           const char            *hostname,
-                                           GdmSession            *self)
-{
-
-        gdm_dbus_chooser_complete_select_hostname (chooser_interface,
-                                                   invocation);
-        g_signal_emit (self, signals[HOSTNAME_SELECTED], 0, hostname);
-        return TRUE;
-}
-
-static void
-export_chooser_interface (GdmSession      *self,
-                          GDBusConnection *connection)
-{
-        g_autoptr (GdmDBusChooser) chooser_interface = NULL;
-
-        chooser_interface = GDM_DBUS_CHOOSER (gdm_dbus_chooser_skeleton_new ());
-
-        g_signal_connect (chooser_interface,
-                          "handle-select-hostname",
-                          G_CALLBACK (gdm_session_handle_client_select_hostname),
-                          self);
-
-        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (chooser_interface),
-                                          connection,
-                                          GDM_SESSION_DBUS_OBJECT_PATH,
-                                          NULL);
-
-        g_set_object (&self->chooser_interface, chooser_interface);
-}
-
 static void
 on_outside_connection_closed (GDBusConnection *connection,
                               gboolean         remote_peer_vanished,
@@ -2035,22 +1950,8 @@ handle_connection_from_outside (GDBusServer      *server,
 
         export_user_verifier_interface (self, connection);
 
-        switch (self->verification_mode) {
-                case GDM_SESSION_VERIFICATION_MODE_LOGIN:
-                        export_greeter_interface (self, connection);
-                break;
-
-                case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
-                        export_chooser_interface (self, connection);
-                break;
-
-                default:
-                break;
-        }
-
-        if (!self->display_is_local) {
-                export_remote_greeter_interface (self, connection);
-        }
+        if (self->verification_mode == GDM_SESSION_VERIFICATION_MODE_LOGIN)
+                export_greeter_interface (self, connection);
 
         credentials = g_dbus_connection_get_peer_credentials (connection);
         pid_of_client = g_credentials_get_unix_pid (credentials, NULL);
@@ -2498,7 +2399,13 @@ void
 gdm_session_set_supported_session_types (GdmSession         *self,
                                          const char * const *supported_session_types)
 {
-        const char * const session_types[] = { "wayland", "x11", NULL };
+        const char * const session_types[] = {
+                "wayland",
+#ifdef ENABLE_X11_SUPPORT
+                "x11",
+#endif
+                NULL
+        };
         g_strfreev (self->supported_session_types);
 
         if (supported_session_types == NULL)
@@ -2629,9 +2536,6 @@ initialize (GdmSession *self,
         if (self->is_program_session)
                 g_variant_builder_add_parsed (&details, "{'is-program-session', <%b>}", self->is_program_session);
 
-        if (self->display_name != NULL)
-                g_variant_builder_add_parsed (&details, "{'x11-display-name', <%s>}", self->display_name);
-
         if (self->display_hostname != NULL)
                 g_variant_builder_add_parsed (&details, "{'hostname', <%s>}", self->display_hostname);
 
@@ -2646,9 +2550,6 @@ initialize (GdmSession *self,
 
         if (self->display_seat_id != NULL)
                 g_variant_builder_add_parsed (&details, "{'seat-id', <%s>}", self->display_seat_id);
-
-        if (self->display_x11_authority_file != NULL)
-                g_variant_builder_add_parsed (&details, "{'x11-authority-file', <%s>}", self->display_x11_authority_file);
 
         g_debug ("GdmSession: Beginning initialization");
 
@@ -2907,7 +2808,6 @@ set_up_session_language (GdmSession *self)
 static void
 set_up_session_environment (GdmSession *self)
 {
-        GdmSessionDisplayMode display_mode;
         gchar *desktop_names;
         char *locale;
 
@@ -2941,19 +2841,6 @@ set_up_session_environment (GdmSession *self)
 
         g_free (locale);
 
-        display_mode = gdm_session_get_display_mode (self);
-        if (display_mode == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                gdm_session_set_environment_variable (self,
-                                                      "DISPLAY",
-                                                      self->display_name);
-
-                if (self->user_x11_authority_file != NULL) {
-                        gdm_session_set_environment_variable (self,
-                                                              "XAUTHORITY",
-                                                              self->user_x11_authority_file);
-                }
-        }
-
         if (g_getenv ("WINDOWPATH") != NULL) {
                 gdm_session_set_environment_variable (self,
                                                       "WINDOWPATH",
@@ -2980,7 +2867,7 @@ static void
 send_session_type (GdmSession *self,
                    GdmSessionConversation *conversation)
 {
-        const char *session_type = "x11";
+        const char *session_type = "wayland";
 
         if (self->session_type != NULL) {
                 session_type = self->session_type;
@@ -3114,14 +3001,8 @@ gdm_session_start_session (GdmSession *self,
                            const char *service_name)
 {
         GdmSessionConversation *conversation;
-        GdmSessionDisplayMode   display_mode;
-        gboolean                is_x11 = TRUE;
-        gboolean                run_launcher = FALSE;
-        gboolean                run_xsession_script;
-        gboolean                allow_remote_connections = FALSE;
         g_autofree char        *command = NULL;
         g_autofree char        *program = NULL;
-        gboolean               register_session;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (service_name != NULL);
@@ -3137,45 +3018,15 @@ gdm_session_start_session (GdmSession *self,
 
         stop_all_other_conversations (self, conversation, FALSE);
 
-        display_mode = gdm_session_get_display_mode (self);
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-        is_x11 = g_strcmp0 (self->session_type, "wayland") != 0;
-#endif
-
-        if (display_mode == GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED ||
-            display_mode == GDM_SESSION_DISPLAY_MODE_NEW_VT) {
-                run_launcher = TRUE;
-        }
-
-        register_session = !gdm_session_session_registers (self);
-
         command = get_session_command (self);
 
-        run_xsession_script = !gdm_session_bypasses_xsession (self);
-
-        if (self->display_is_local) {
-                gboolean disallow_tcp = TRUE;
-                gdm_settings_direct_get_boolean (GDM_KEY_DISALLOW_TCP, &disallow_tcp);
-                allow_remote_connections = !disallow_tcp;
+        if (g_strcmp0 (self->session_type, "wayland") == 0) {
+                gboolean register_session = !gdm_session_session_registers (self);
+                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
+                                           register_session ? "--register-session " : "",
+                                           command);
         } else {
-                allow_remote_connections = TRUE;
-        }
-
-        if (run_launcher) {
-                if (is_x11) {
-                        program = g_strdup_printf (LIBEXECDIR "/gdm-x-session %s%s %s\"%s\"",
-                                                   register_session ? "--register-session " : "",
-                                                   run_xsession_script? "--run-script " : "",
-                                                   allow_remote_connections? "--allow-remote-connections " : "",
-                                                   command);
-                } else {
-                        program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
-                                                   register_session ? "--register-session " : "",
-                                                   command);
-                }
-        } else if (run_xsession_script) {
-                program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+                program = g_strdup_printf (LIBEXECDIR "/gdm-x-session \"%s\"", command);
         }
 
         set_up_session_environment (self);
@@ -3244,9 +3095,6 @@ do_reset (GdmSession *self)
 
         g_free (self->saved_language);
         self->saved_language = NULL;
-
-        g_free (self->user_x11_authority_file);
-        self->user_x11_authority_file = NULL;
 
         g_hash_table_remove_all (self->environment);
 
@@ -3485,7 +3333,6 @@ get_session_filename (GdmSession *self)
         return g_strdup_printf ("%s.desktop", get_session_name (self));
 }
 
-#ifdef ENABLE_WAYLAND_SUPPORT
 static gboolean
 gdm_session_is_wayland_session (GdmSession *self)
 {
@@ -3515,12 +3362,10 @@ out:
         g_free (filename);
         return is_wayland_session;
 }
-#endif
 
 static void
 update_session_type (GdmSession *self)
 {
-#ifdef ENABLE_WAYLAND_SUPPORT
         gboolean is_wayland_session = FALSE;
 
         if (supports_session_type (self, "wayland"))
@@ -3531,7 +3376,6 @@ update_session_type (GdmSession *self)
         } else {
                 set_session_type (self, NULL);
         }
-#endif
 }
 
 gboolean
@@ -3565,49 +3409,6 @@ gdm_session_session_registers (GdmSession *self)
         return session_registers;
 }
 
-gboolean
-gdm_session_bypasses_xsession (GdmSession *self)
-{
-        GError     *error;
-        GKeyFile   *key_file;
-        gboolean    res;
-        gboolean    bypasses_xsession = FALSE;
-        char       *filename = NULL;
-
-        g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-        if (gdm_session_is_wayland_session (self)) {
-                bypasses_xsession = TRUE;
-                goto out;
-        }
-#endif
-
-        filename = get_session_filename (self);
-
-        key_file = load_key_file_for_file (self, filename, "x11",  NULL);
-
-        error = NULL;
-        res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", NULL);
-        if (!res) {
-                goto out;
-        } else {
-                bypasses_xsession = g_key_file_get_boolean (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", &error);
-                if (error) {
-                        bypasses_xsession = FALSE;
-                        g_error_free (error);
-                        goto out;
-                }
-        }
-
-out:
-        if (bypasses_xsession) {
-                g_debug ("GdmSession: Session %s bypasses Xsession wrapper script", filename);
-        }
-        g_free (filename);
-        return bypasses_xsession;
-}
-
 GdmSessionDisplayMode
 gdm_session_get_display_mode (GdmSession *self)
 {
@@ -3617,11 +3418,6 @@ gdm_session_get_display_mode (GdmSession *self)
                  self->session_type,
                  self->is_program_session? "yes" : "no",
                  self->display_seat_id);
-
-        if (self->display_seat_id == NULL &&
-            g_strcmp0 (self->session_type, "wayland") != 0) {
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
-        }
 
         if (g_strcmp0 (self->display_seat_id, "seat0") != 0) {
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
@@ -3684,14 +3480,6 @@ gdm_session_select_session (GdmSession *self,
 }
 
 static void
-set_display_name (GdmSession *self,
-                  const char *name)
-{
-        g_free (self->display_name);
-        self->display_name = g_strdup (name);
-}
-
-static void
 set_display_hostname (GdmSession *self,
                       const char *name)
 {
@@ -3714,22 +3502,6 @@ set_display_seat_id (GdmSession *self,
 {
         g_free (self->display_seat_id);
         self->display_seat_id = g_strdup (name);
-}
-
-static void
-set_user_x11_authority_file (GdmSession *self,
-                             const char *name)
-{
-        g_free (self->user_x11_authority_file);
-        self->user_x11_authority_file = g_strdup (name);
-}
-
-static void
-set_display_x11_authority_file (GdmSession *self,
-                                const char *name)
-{
-        g_free (self->display_x11_authority_file);
-        self->display_x11_authority_file = g_strdup (name);
 }
 
 static void
@@ -3802,9 +3574,6 @@ gdm_session_set_property (GObject      *object,
         case PROP_SESSION_TYPE:
                 set_session_type (self, g_value_get_string (value));
                 break;
-        case PROP_DISPLAY_NAME:
-                set_display_name (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_HOSTNAME:
                 set_display_hostname (self, g_value_get_string (value));
                 break;
@@ -3813,12 +3582,6 @@ gdm_session_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 set_display_seat_id (self, g_value_get_string (value));
-                break;
-        case PROP_USER_X11_AUTHORITY_FILE:
-                set_user_x11_authority_file (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_X11_AUTHORITY_FILE:
-                set_display_x11_authority_file (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 set_display_is_local (self, g_value_get_boolean (value));
@@ -3861,9 +3624,6 @@ gdm_session_get_property (GObject    *object,
         case PROP_SESSION_TYPE:
                 g_value_set_string (value, self->session_type);
                 break;
-        case PROP_DISPLAY_NAME:
-                g_value_set_string (value, self->display_name);
-                break;
         case PROP_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->display_hostname);
                 break;
@@ -3872,12 +3632,6 @@ gdm_session_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->display_seat_id);
-                break;
-        case PROP_USER_X11_AUTHORITY_FILE:
-                g_value_set_string (value, self->user_x11_authority_file);
-                break;
-        case PROP_DISPLAY_X11_AUTHORITY_FILE:
-                g_value_set_string (value, self->display_x11_authority_file);
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->display_is_local);
@@ -3926,11 +3680,6 @@ gdm_session_dispose (GObject *object)
         g_clear_pointer (&self->user_verifier_extensions,
                          g_hash_table_unref);
         g_clear_object (&self->greeter_interface);
-        g_clear_object (&self->remote_greeter_interface);
-        g_clear_object (&self->chooser_interface);
-
-        g_free (self->display_name);
-        self->display_name = NULL;
 
         g_free (self->display_hostname);
         self->display_hostname = NULL;
@@ -3940,9 +3689,6 @@ gdm_session_dispose (GObject *object)
 
         g_free (self->display_seat_id);
         self->display_seat_id = NULL;
-
-        g_free (self->display_x11_authority_file);
-        self->display_x11_authority_file = NULL;
 
         g_strfreev (self->conversation_environment);
         self->conversation_environment = NULL;
@@ -4233,27 +3979,6 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_STRING,
                               G_TYPE_BOOLEAN);
 
-        signals [HOSTNAME_SELECTED] =
-                g_signal_new ("hostname-selected",
-                              GDM_TYPE_SESSION,
-                              G_SIGNAL_RUN_FIRST,
-                              0,
-                              NULL,
-                              NULL,
-                              NULL,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
-        signals [DISCONNECTED] =
-                g_signal_new ("disconnected",
-                              GDM_TYPE_SESSION,
-                              G_SIGNAL_RUN_FIRST,
-                              0,
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
         signals [STOP_CONFLICTING_SESSION] =
                 g_signal_new ("stop-conflicting-session",
                               GDM_TYPE_SESSION,
@@ -4298,13 +4023,6 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_NAME,
-                                         g_param_spec_string ("display-name",
-                                                              "display name",
-                                                              "display name",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
@@ -4325,21 +4043,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                                "display is initial",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_X11_AUTHORITY_FILE,
-                                         g_param_spec_string ("display-x11-authority-file",
-                                                              "display x11 authority file",
-                                                              "display x11 authority file",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         /* not construct only */
-        g_object_class_install_property (object_class,
-                                         PROP_USER_X11_AUTHORITY_FILE,
-                                         g_param_spec_string ("user-x11-authority-file",
-                                                              "",
-                                                              "",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_DEVICE,
                                          g_param_spec_string ("display-device",
@@ -4379,11 +4083,9 @@ gdm_session_class_init (GdmSessionClass *session_class)
 GdmSession *
 gdm_session_new (GdmSessionVerificationMode  verification_mode,
                  uid_t                       allowed_user,
-                 const char                 *display_name,
                  const char                 *display_hostname,
                  const char                 *display_device,
                  const char                 *display_seat_id,
-                 const char                 *display_x11_authority_file,
                  gboolean                    display_is_local,
                  const char * const         *environment)
 {
@@ -4392,11 +4094,9 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
         self = g_object_new (GDM_TYPE_SESSION,
                              "verification-mode", verification_mode,
                              "allowed-user", (guint) allowed_user,
-                             "display-name", display_name,
                              "display-hostname", display_hostname,
                              "display-device", display_device,
                              "display-seat-id", display_seat_id,
-                             "display-x11-authority-file", display_x11_authority_file,
                              "display-is-local", display_is_local,
                              "conversation-environment", environment,
                              NULL);
@@ -4407,8 +4107,6 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
 GdmSessionDisplayMode
 gdm_session_display_mode_from_string (const char *str)
 {
-        if (strcmp (str, "reuse-vt") == 0)
-                return GDM_SESSION_DISPLAY_MODE_REUSE_VT;
         if (strcmp (str, "new-vt") == 0)
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
         if (strcmp (str, "logind-managed") == 0)
@@ -4422,8 +4120,6 @@ const char *
 gdm_session_display_mode_to_string (GdmSessionDisplayMode mode)
 {
         switch (mode) {
-        case GDM_SESSION_DISPLAY_MODE_REUSE_VT:
-                return "reuse-vt";
         case GDM_SESSION_DISPLAY_MODE_NEW_VT:
                 return "new-vt";
         case GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED:

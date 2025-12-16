@@ -32,7 +32,6 @@ gdm_run_dir = (get_option('run-dir') != '')? get_option('run-dir') : '/run/gdm'
 gdm_runtime_conf = (get_option('runtime-conf') != '')? get_option('runtime-conf') : gdm_run_dir / 'custom.conf'
 gdm_pid_file = (get_option('pid-file') != '')? get_option('pid-file') : gdm_run_dir / 'gdm.pid'
 working_dir = (get_option('working-dir') != '')? get_option('working-dir') : gdm_prefix / get_option('localstatedir') / 'lib' / 'gdm'
-gdm_xauth_dir = (get_option('xauth-dir') != '')? get_option('xauth-dir') : gdm_run_dir / 'xauth'
 gdm_private_dbus_dir = (get_option('private-dbus-dir') != '')? get_option('private-dbus-dir') : gdm_run_dir / 'dbus'
 gdm_dyn_home_dir = (get_option('dyn-home-dir') != '')? get_option('dyn-home-dir') : gdm_run_dir / 'home'
 pam_prefix = (get_option('pam-prefix') != '')? get_option('pam-prefix') : get_option('sysconfdir')
@@ -40,10 +39,6 @@ pam_profiles_dir = pam_prefix / 'pam.d'
 have_x11_support = get_option('x11-support')
 # Common variables
 config_h_dir = include_directories('.')
-
-if not get_option('wayland-support') and not have_x11_support
-  error('GDM requires either Wayland or X11 support')
-endif
 
 # Dependencies
 udev_dep = dependency('udev')
@@ -80,51 +75,16 @@ if udev_dir == ''
 endif
 
 # X11
-# defaults
-x_path = '/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin'
-x_bin = '/usr/bin/X'
 if have_x11_support
-  xcb_dep = dependency('xcb')
-  x_deps = declare_dependency(
-    dependencies: [
-      dependency('x11'),
-      dependency('xau'),
-    ],
-  )
-  # Xserver 1.17 & later default to -nolisten and require -listen for remote access
-  xserver_deps = dependency('xorg-server', version : '>=1.17', required : false)
-  xserver_has_listen = xserver_deps.found()
-  find_x_server_script = find_program('build-aux/find-x-server.sh', native: true)
-  find_x_server_out = run_command(find_x_server_script).stdout().strip()
-  if find_x_server_out != ''
-    x_bin = find_x_server_out
-    x_bin_path_split = x_bin.split('/')
-    i = 0
-    x_path = '/'
-    foreach dir : x_bin_path_split
-      if i < x_bin_path_split.length() - 1
-        x_path = x_path / dir
-      endif
-      i = i + 1
-    endforeach
-  endif
-else
-  xserver_has_listen = false
+  xau_dep = dependency('xau')
 endif
+
 # systemd
 logind_provider = get_option('logind-provider')
 systemd_dep = dependency('systemd', required: false)
 if logind_provider == 'systemd'
   libsystemd_dep = dependency('libsystemd')
   logind_dep = libsystemd_dep
-  systemd_multiseat_x = find_program('systemd-multi-seat-x',
-    required: false,
-    dirs: [
-      systemd_dep.get_variable(pkgconfig: 'systemdutildir'),
-      '/lib/systemd',
-      '/usr/lib/systemd',
-    ])
-  systemd_x_server = systemd_multiseat_x.found()? systemd_multiseat_x.path() : '/lib/systemd/systemd-multi-seat-x'
 
   have_userdb = libsystemd_dep.version().version_compare('>= 257')
 
@@ -134,7 +94,6 @@ if logind_provider == 'systemd'
 else
   elogind_dep = dependency('libelogind')
   logind_dep = elogind_dep
-  systemd_x_server = 'disabled'
   have_userdb = false
   greeter_uid_min = 0
   greeter_uid_max = 0
@@ -251,7 +210,6 @@ conf.set_quoted('DCONF_SYSCONFIG', dconf_sysconfig)
 conf.set_quoted('DCONF_PROFILES_PATH', dconf_profiles_path)
 conf.set_quoted('GDMCONFDIR', gdmconfdir)
 conf.set_quoted('GDM_DATADIR', gdm_prefix / gdm_datadir)
-conf.set_quoted('GDM_XAUTH_DIR', gdm_xauth_dir)
 conf.set_quoted('GDM_PRIVATE_DBUS_DIR', gdm_private_dbus_dir)
 conf.set_quoted('GDM_RUN_DIR', gdm_run_dir)
 conf.set_quoted('GDM_DCONF_PROFILE', 'gdm')
@@ -277,9 +235,7 @@ conf.set('HAVE_PAM_SYSLOG', have_pam_syslog)
 conf.set('HAVE_KEYUTILS', keyutils_dep.found())
 conf.set('SUPPORTS_PAM_EXTENSIONS', pam_extensions_supported)
 conf.set('HAVE_SELINUX', libselinux_dep.found())
-conf.set('HAVE_XSERVER_WITH_LISTEN', xserver_has_listen)
 conf.set('ENABLE_SYSTEMD_JOURNAL', get_option('systemd-journal'))
-conf.set('ENABLE_WAYLAND_SUPPORT', get_option('wayland-support'))
 conf.set('ENABLE_X11_SUPPORT', get_option('x11-support'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('GDM_INITIAL_VT', get_option('initial-vt'))
@@ -287,17 +243,13 @@ conf.set_quoted('GDM_DEFAULTS_CONF', gdm_defaults_conf)
 conf.set_quoted('GDM_CUSTOM_CONF', gdm_custom_conf)
 conf.set_quoted('GDM_RUNTIME_CONF', gdm_runtime_conf)
 conf.set_quoted('GDM_SESSION_DEFAULT_PATH', get_option('default-path'))
-conf.set_quoted('GDM_USERNAME', get_option('user'))
 conf.set_quoted('GDM_GROUPNAME', get_option('group'))
-conf.set_quoted('SYSTEMD_X_SERVER', systemd_x_server)
 conf.set('HAVE_USERDB', have_userdb)
 conf.set('GREETER_UID_MIN', greeter_uid_min)
 conf.set('GREETER_UID_MAX', greeter_uid_max)
 conf.set_quoted('GDM_DYN_HOME_DIR', gdm_dyn_home_dir)
 conf.set_quoted('NOLOGIN_PATH', nologin_path)
 conf.set('WITH_PLYMOUTH', plymouth_dep.found())
-conf.set_quoted('X_SERVER', x_bin)
-conf.set_quoted('X_PATH', x_path)
 conf.set('HAVE_UDEV', gudev_dep.found())
 conf.set('HAVE_UT_UT_HOST', utmp_has_host_field)
 conf.set('HAVE_UT_UT_PID', utmp_has_pid_field)
@@ -309,7 +261,6 @@ conf.set('HAVE_UT_UT_USER', utmp_has_user_field)
 conf.set('HAVE_UT_UT_TIME', utmp_has_time_field)
 conf.set('HAVE_UT_UT_TV', utmp_has_tv_field)
 conf.set('HAVE_UT_UT_SYSLEN', utmp_has_syslen_field)
-conf.set('ENABLE_IPV6', get_option('ipv6'))
 conf.set('HAVE_SYS_SOCKIO_H', cc.has_header('sys/sockio.h'))
 configure_file(output: 'config.h', configuration: conf)
 
@@ -343,7 +294,6 @@ summary({
     'System DBus': dbus_sys_dir,
     'DM conf': dmconfdir,
     'GDM conf': gdmconfdir,
-    'GDM Xauth': gdm_xauth_dir,
     'GDM Run': gdm_run_dir,
     'GDM Dynamic Homes': gdm_dyn_home_dir,
     'GDM PID file': gdm_pid_file,
@@ -357,9 +307,6 @@ summary({
     'Lang config file': lang_config_file,
     'Pam MOD': pam_mod_dir,
     'Udev rules': udev_dir,
-    'XServer': x_bin,
-    'XPath': x_path,
-    'Systemd XServer': systemd_x_server,
   },
   section: 'Paths',
 )
@@ -372,14 +319,11 @@ summary({
     'Logind Provider': get_option('logind-provider'),
     'Use GDM Xsession': get_option('gdm-xsession'),
     'Use SystemdJournal': get_option('systemd-journal'),
-    'Use WaylandSupport': get_option('wayland-support'),
     'Use X11Support': have_x11_support,
     'Use Profiling': get_option('profiling'),
     'Initial VT': get_option('initial-vt'),
-    'Username': get_option('user'),
     'Groupname': get_option('group'),
     'Plymouth': plymouth_dep.found(),
-    'Use ipv6': get_option('ipv6'),
   },
   section: 'Features',
   bool_yn: true,

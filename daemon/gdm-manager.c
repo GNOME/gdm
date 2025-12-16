@@ -83,11 +83,9 @@ struct _GdmManager
         GList                  *user_sessions;
         GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
-        gboolean                xdmcp_enabled;
         gboolean                remote_login_enabled;
 
         gboolean                started;
-        gboolean                show_local_greeter;
 
         GDBusConnection          *connection;
         GDBusObjectManagerServer *object_manager;
@@ -100,8 +98,6 @@ struct _GdmManager
 
 enum {
         PROP_0,
-        PROP_XDMCP_ENABLED,
-        PROP_SHOW_LOCAL_GREETER,
         PROP_REMOTE_LOGIN_ENABLED
 };
 
@@ -662,10 +658,6 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
         GDBusConnection *connection;
         GdmDisplay      *display = NULL;
         GdmSession      *session;
-        GVariantIter     iter;
-        char            *key = NULL;
-        char            *value = NULL;
-        g_autofree char *x11_display_name = NULL;
         g_autofree char *tty = NULL;
 
         sender = g_dbus_method_invocation_get_sender (invocation);
@@ -683,22 +675,9 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        g_variant_iter_init (&iter, details);
-        while (g_variant_iter_loop (&iter, "{&s&s}", &key, &value)) {
-                if (g_strcmp0 (key, "x11-display-name") == 0) {
-                        x11_display_name = g_strdup (value);
-                        break;
-                }
-        }
-
         session = find_user_session_for_display (self, display);
 
         if (session != NULL) {
-                if (x11_display_name != NULL) {
-                        g_object_set (G_OBJECT (session), "display-name", x11_display_name, NULL);
-                        g_object_set (G_OBJECT (display), "x11-display-name", x11_display_name, NULL);
-                }
-
                 /* FIXME: this should happen in gdm-session.c when the session is opened
                  */
                 if (tty != NULL)
@@ -923,23 +902,18 @@ open_temporary_reauthentication_channel (GdmManager            *self,
 {
         GdmSession *session;
         char **environment;
-        const char *display, *auth_file;
         const char *address;
 
         /* Note we're just using a minimal environment here rather than the
          * session's environment because the caller is unprivileged and the
          * associated worker will be privileged */
         environment = g_get_environ ();
-        display = "";
-        auth_file = "/dev/null";
 
         session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
                                    uid,
-                                   display,
                                    NULL,
                                    NULL,
                                    seat_id,
-                                   auth_file,
                                    is_remote == FALSE,
                                    (const char * const *)
                                    environment);
@@ -1358,43 +1332,24 @@ on_display_status_changed (GdmDisplay *display,
                            GdmManager *manager)
 {
         int         status;
-        int         display_number = -1;
-        g_autofree char *session_type = NULL;
-        gboolean    doing_initial_setup = FALSE;
-#ifdef WITH_PLYMOUTH
+        g_autofree char *session_class = NULL;
         gboolean    display_is_local = FALSE;
-        gboolean    quit_plymouth = FALSE;
 
         g_object_get (display,
+                      "session-class", &session_class,
                       "is-local", &display_is_local,
-                      NULL);
-        quit_plymouth = display_is_local && manager->plymouth_is_running;
-#endif
-
-        g_object_get (display,
-                      "x11-display-number", &display_number,
-                      "session-type", &session_type,
-                      "doing-initial-setup", &doing_initial_setup,
                       NULL);
 
         status = gdm_display_get_status (display);
 
         switch (status) {
                 case GDM_DISPLAY_PREPARED:
+                        if (g_strcmp0 (session_class, "greeter") == 0)
+                                set_up_session (manager, display);
+                        break;
                 case GDM_DISPLAY_MANAGED:
-                        if ((display_number == -1 && status == GDM_DISPLAY_PREPARED) ||
-                            (display_number != -1 && status == GDM_DISPLAY_MANAGED)) {
-                                g_autofree char *session_class = NULL;
-
-                                g_object_get (display,
-                                              "session-class", &session_class,
-                                              NULL);
-                                if (g_strcmp0 (session_class, "greeter") == 0)
-                                        set_up_session (manager, display);
-                        }
-
 #ifdef WITH_PLYMOUTH
-                        if (status == GDM_DISPLAY_MANAGED && quit_plymouth) {
+                        if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_with_transition ();
                                 manager->plymouth_is_running = FALSE;
                         }
@@ -1404,7 +1359,7 @@ on_display_status_changed (GdmDisplay *display,
                 case GDM_DISPLAY_UNMANAGED:
                 case GDM_DISPLAY_FINISHED:
 #ifdef WITH_PLYMOUTH
-                        if (quit_plymouth) {
+                        if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_without_transition ();
                                 manager->plymouth_is_running = FALSE;
                         }
@@ -1414,16 +1369,7 @@ on_display_status_changed (GdmDisplay *display,
 
                         if (display == manager->automatic_login_display) {
                                 g_clear_weak_pointer (&manager->automatic_login_display);
-
                                 manager->did_automatic_login = TRUE;
-
-#ifdef ENABLE_WAYLAND_SUPPORT
-                                if (g_strcmp0 (session_type, "wayland") != 0 && status == GDM_DISPLAY_FAILED) {
-                                        /* we're going to fall back to X11, so try to autologin again
-                                         */
-                                        manager->did_automatic_login = FALSE;
-                                }
-#endif
                         }
                         break;
                 default:
@@ -1463,35 +1409,6 @@ static void
 start_user_session (GdmManager *manager,
                     StartUserSessionOperation *operation)
 {
-        GdmDisplay *display;
-
-        display = get_display_for_user_session (operation->session);
-
-        if (display != NULL) {
-                gboolean is_connected = FALSE;
-
-                g_object_get (G_OBJECT (display), "is-connected", &is_connected, NULL);
-
-                if (is_connected) {
-                        char *auth_file = NULL;
-                        const char *username;
-
-                        username = gdm_session_get_username (operation->session);
-                        gdm_display_add_user_authorization (display,
-                                                            username,
-                                                            &auth_file,
-                                                            NULL);
-
-                        g_assert (auth_file != NULL);
-
-                        g_object_set (operation->session,
-                                      "user-x11-authority-file", auth_file,
-                                      NULL);
-
-                        g_free (auth_file);
-                }
-        }
-
         gdm_session_start_session (operation->session,
                                    operation->service_name);
 
@@ -1601,6 +1518,8 @@ on_start_user_session (StartUserSessionOperation *operation)
         gboolean fail_if_already_switched = TRUE;
         GdmDisplay *display;
         const char *session_id;
+        gboolean doing_initial_setup = FALSE;
+        uid_t allowed_uid;
 
         g_debug ("GdmManager: start or jump to session");
 
@@ -1626,68 +1545,54 @@ on_start_user_session (StartUserSessionOperation *operation)
         session_id = gdm_session_get_conversation_session_id (operation->session,
                                                               operation->service_name);
 
-        if (gdm_session_get_display_mode (operation->session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                /* In this case, the greeter's display is morphing into
-                 * the user session display. Kill the greeter on this session
-                 * and let the user session follow the same display. */
-                gdm_display_stop_greeter_session (display);
-                g_object_set (G_OBJECT (display),
-                                "session-class", "user",
-                                "session-id", session_id,
-                                NULL);
+        g_object_get (G_OBJECT (display),
+                      "doing-initial-setup", &doing_initial_setup,
+                      NULL);
+
+        g_object_ref (display);
+        if (doing_initial_setup) {
+                g_autoptr(GError) error = NULL;
+
+                g_debug ("GdmManager: closing down initial setup display in background");
+                g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
+
+                if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                          "1",
+                                          1,
+                                          &error)) {
+                        g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
+                                   ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
+                                   error->message);
+                        g_clear_error (&error);
+                }
         } else {
-                gboolean doing_initial_setup = FALSE;
-                uid_t allowed_uid;
-
-                g_object_get (G_OBJECT (display),
-                              "doing-initial-setup", &doing_initial_setup,
-                              NULL);
-
-                g_object_ref (display);
-                if (doing_initial_setup) {
-                        g_autoptr(GError) error = NULL;
-
-                        g_debug ("GdmManager: closing down initial setup display in background");
-                        g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);
-
-                        if (!g_file_set_contents (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                                  "1",
-                                                  1,
-                                                  &error)) {
-                                g_warning ("GdmDisplay: Could not write initial-setup-done marker to %s: %s",
-                                           ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT,
-                                           error->message);
-                                g_clear_error (&error);
-                        }
-                } else {
-                        g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
-                }
-
-                /* The user session is going to follow the session worker
-                 * into the new display. Untie it from this display and
-                 * create a new session for a future user login. */
-                allowed_uid = gdm_session_get_allowed_user (operation->session);
-                g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
-                g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
-                create_user_session_for_display (operation->manager, display, allowed_uid);
-
-                /* Give the user session a new display object for bookkeeping purposes */
-                create_display_for_user_session (operation->manager,
-                                                 operation->session,
-                                                 session_id);
-
-                if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
-	            !gdm_session_client_is_connected (operation->session)) {
-                        /* remove the unused prepared greeter display since we're not going
-                         * to have a greeter */
-                        gdm_display_store_remove (self->display_store, display);
-
-                        self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
-                        g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
-                }
-
-                g_object_unref (display);
+                g_debug ("GdmManager: session has its display server, reusing our server for another login screen");
         }
+
+        /* The user session is going to follow the session worker
+         * into the new display. Untie it from this display and
+         * create a new session for a future user login. */
+        allowed_uid = gdm_session_get_allowed_user (operation->session);
+        g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
+        g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
+        create_user_session_for_display (operation->manager, display, allowed_uid);
+
+        /* Give the user session a new display object for bookkeeping purposes */
+        create_display_for_user_session (operation->manager,
+                                         operation->session,
+                                         session_id);
+
+        if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
+            !gdm_session_client_is_connected (operation->session)) {
+                /* remove the unused prepared greeter display since we're not going
+                 * to have a greeter */
+                gdm_display_store_remove (self->display_store, display);
+
+                self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
+                g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
+        }
+
+        g_object_unref (display);
 
         start_user_session (operation->manager, operation);
 
@@ -1898,12 +1803,6 @@ on_session_reauthenticated (GdmSession *session,
                         } else {
                                 g_warning ("GdmManager: Couldn't find remote display associated with reauthenticated user session");
                         }
-                }
-
-                if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
-                        gdm_display_stop_greeter_session (login_display);
-                        gdm_display_unmanage (login_display);
-                        gdm_display_finish (login_display);
                 }
         }
 
@@ -2169,20 +2068,16 @@ create_user_session_for_display (GdmManager *manager,
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
-        char       *display_name = NULL;
         char       *display_device = NULL;
         char       *remote_hostname = NULL;
-        char       *display_auth_file = NULL;
         char       *display_seat_id = NULL;
         char       *display_id = NULL;
         g_auto (GStrv) supported_session_types = NULL;
 
         g_object_get (G_OBJECT (display),
                       "id", &display_id,
-                      "x11-display-name", &display_name,
                       "is-local", &display_is_local,
                       "remote-hostname", &remote_hostname,
-                      "x11-authority-file", &display_auth_file,
                       "seat-id", &display_seat_id,
                       "supported-session-types", &supported_session_types,
                       NULL);
@@ -2190,11 +2085,9 @@ create_user_session_for_display (GdmManager *manager,
 
         session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                    allowed_user,
-                                   display_name,
                                    remote_hostname,
                                    display_device,
                                    display_seat_id,
-                                   display_auth_file,
                                    display_is_local,
                                    NULL);
 
@@ -2213,9 +2106,7 @@ create_user_session_for_display (GdmManager *manager,
                  display_id,
                  display_seat_id);
 
-        g_free (display_name);
         g_free (remote_hostname);
-        g_free (display_auth_file);
         g_free (display_seat_id);
 
         g_signal_connect (session,
@@ -2398,26 +2289,15 @@ gdm_manager_start (GdmManager *manager)
                 plymouth_prepare_for_transition ();
         }
 #endif
-        if (!manager->xdmcp_enabled || manager->show_local_greeter) {
-                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
-                g_signal_connect (manager->local_factory,
-                                  "graphics-unsupported",
-                                  G_CALLBACK (on_graphics_unsupported),
-                                  manager);
-        }
+        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
+        g_signal_connect (manager->local_factory,
+                          "graphics-unsupported",
+                          G_CALLBACK (on_graphics_unsupported),
+                          manager);
 
         /* Accept remote connections */
-        if (manager->remote_login_enabled) {
+        if (manager->remote_login_enabled)
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->remote_factory));
-
-#ifdef WITH_PLYMOUTH
-                /* Quit plymouth if remote is the only display */
-                if (!manager->show_local_greeter && manager->plymouth_is_running) {
-                        plymouth_quit_without_transition ();
-                        manager->plymouth_is_running = FALSE;
-                }
-#endif
-        }
 
         manager->started = TRUE;
 }
@@ -2457,27 +2337,6 @@ register_manager (GdmManager *manager)
 }
 
 void
-gdm_manager_set_xdmcp_enabled (GdmManager *manager,
-                               gboolean    enabled)
-{
-        g_return_if_fail (GDM_IS_MANAGER (manager));
-
-        if (manager->xdmcp_enabled != enabled) {
-                manager->xdmcp_enabled = enabled;
-        }
-
-}
-
-void
-gdm_manager_set_show_local_greeter (GdmManager *manager,
-                                    gboolean    show_local_greeter)
-{
-        g_return_if_fail (GDM_IS_MANAGER (manager));
-
-        manager->show_local_greeter = show_local_greeter;
-}
-
-void
 gdm_manager_set_remote_login_enabled (GdmManager *manager,
                                       gboolean    enabled)
 {
@@ -2504,12 +2363,6 @@ gdm_manager_set_property (GObject      *object,
         self = GDM_MANAGER (object);
 
         switch (prop_id) {
-        case PROP_XDMCP_ENABLED:
-                gdm_manager_set_xdmcp_enabled (self, g_value_get_boolean (value));
-                break;
-        case PROP_SHOW_LOCAL_GREETER:
-                gdm_manager_set_show_local_greeter (self, g_value_get_boolean (value));
-                break;
         case PROP_REMOTE_LOGIN_ENABLED:
                 gdm_manager_set_remote_login_enabled (self, g_value_get_boolean (value));
                 break;
@@ -2530,12 +2383,6 @@ gdm_manager_get_property (GObject    *object,
         self = GDM_MANAGER (object);
 
         switch (prop_id) {
-        case PROP_XDMCP_ENABLED:
-                g_value_set_boolean (value, self->xdmcp_enabled);
-                break;
-        case PROP_SHOW_LOCAL_GREETER:
-                g_value_set_boolean (value, self->show_local_greeter);
-                break;
         case PROP_REMOTE_LOGIN_ENABLED:
                 g_value_set_boolean (value, self->remote_login_enabled);
                 break;
@@ -2597,14 +2444,6 @@ gdm_manager_class_init (GdmManagerClass *klass)
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE,
                               1, G_TYPE_OBJECT);
-
-        g_object_class_install_property (object_class,
-                                         PROP_XDMCP_ENABLED,
-                                         g_param_spec_boolean ("xdmcp-enabled",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_REMOTE_LOGIN_ENABLED,
@@ -2743,3 +2582,4 @@ gdm_manager_new (void)
 
         return GDM_MANAGER (manager_object);
 }
+
