@@ -717,16 +717,17 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
 {
         g_autoptr(GDBusConnection) connection = NULL;
         GdmUserVerifier *user_verifier;
+        GHashTable *user_verifier_extensions;
+        gboolean res;
+        size_t i;
 
-        if (client->user_verifier != NULL) {
+        if (client->user_verifier != NULL)
                 return g_object_ref (client->user_verifier);
-        }
 
         connection = gdm_client_get_connection_sync (client, cancellable, error);
 
-        if (connection == NULL) {
+        if (connection == NULL)
                 return NULL;
-        }
 
         user_verifier = gdm_user_verifier_proxy_new_sync (connection,
                                                           G_DBUS_PROXY_FLAGS_NONE,
@@ -737,57 +738,58 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
 
         g_set_weak_pointer (&client->user_verifier, user_verifier);
 
-        if (client->user_verifier != NULL) {
-                if (client->enabled_extensions != NULL) {
-                        GHashTable *user_verifier_extensions;
-                        gboolean res;
+        if (user_verifier == NULL)
+                return NULL;
 
-                        user_verifier_extensions = g_hash_table_new_full (g_str_hash,
-                                                                          g_str_equal,
-                                                                          NULL,
-                                                                          (GDestroyNotify)
-                                                                          free_interface_skeleton);
-                        g_object_set_qdata_full (G_OBJECT (client->user_verifier),
-                                                 gdm_client_user_verifier_extensions_quark (),
-                                                 user_verifier_extensions,
-                                                 (GDestroyNotify) g_hash_table_unref);
+        if (client->enabled_extensions == NULL)
+                return client->user_verifier;
 
-                        res = gdm_user_verifier_call_enable_extensions_sync (client->user_verifier,
-                                                                            (const char * const *)
-                                                                             client->enabled_extensions,
-                                                                             cancellable,
-                                                                             NULL);
+        user_verifier_extensions = g_hash_table_new_full (g_str_hash,
+                                                          g_str_equal,
+                                                          NULL,
+                                                          (GDestroyNotify)
+                                                          free_interface_skeleton);
+        g_object_set_qdata_full (G_OBJECT (client->user_verifier),
+                                 gdm_client_user_verifier_extensions_quark (),
+                                 user_verifier_extensions,
+                                 (GDestroyNotify) g_hash_table_unref);
 
-                        if (res) {
-                                size_t i;
-                                for (i = 0; client->enabled_extensions[i] != NULL; i++) {
-                                            if (strcmp (client->enabled_extensions[i],
-                                                        gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
-                                                        GdmUserVerifierChoiceList *choice_list_interface;
-                                                        choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (connection,
-                                                                                                                              G_DBUS_PROXY_FLAGS_NONE,
-                                                                                                                              NULL,
-                                                                                                                              SESSION_DBUS_PATH,
-                                                                                                                              cancellable,
-                                                                                                                              NULL);
-                                                        if (choice_list_interface != NULL)
-                                                                    g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], choice_list_interface);
-                                            } else if (g_str_equal (client->enabled_extensions[i],
-                                                       gdm_user_verifier_custom_json_interface_info ()->name)) {
-                                                        GdmUserVerifierCustomJSON *custom_json_interface;
-                                                        custom_json_interface = gdm_user_verifier_custom_json_proxy_new_sync (connection,
-                                                                                                                                G_DBUS_PROXY_FLAGS_NONE,
-                                                                                                                                NULL,
-                                                                                                                                SESSION_DBUS_PATH,
-                                                                                                                                cancellable,
-                                                                                                                                NULL);
-                                                        if (custom_json_interface != NULL) {
-                                                                g_hash_table_insert (user_verifier_extensions,
-                                                                                     client->enabled_extensions[i],
-                                                                                     custom_json_interface);
-                                                        }
-                                            }
-                                }
+        res = gdm_user_verifier_call_enable_extensions_sync (client->user_verifier,
+                                                             (const char * const *)
+                                                             client->enabled_extensions,
+                                                             cancellable,
+                                                             NULL);
+        if (!res)
+                return client->user_verifier;
+
+        for (i = 0; client->enabled_extensions[i] != NULL; i++) {
+                if (strcmp (client->enabled_extensions[i],
+                            gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
+                        GdmUserVerifierChoiceList *choice_list_interface;
+                        choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (connection,
+                                                                                              G_DBUS_PROXY_FLAGS_NONE,
+                                                                                              NULL,
+                                                                                              SESSION_DBUS_PATH,
+                                                                                              cancellable,
+                                                                                              NULL);
+                        if (choice_list_interface != NULL) {
+                                g_hash_table_insert (user_verifier_extensions,
+                                                     client->enabled_extensions[i],
+                                                     choice_list_interface);
+                        }
+                } else if (g_str_equal (client->enabled_extensions[i],
+                                        gdm_user_verifier_custom_json_interface_info ()->name)) {
+                        GdmUserVerifierCustomJSON *custom_json_interface;
+                        custom_json_interface = gdm_user_verifier_custom_json_proxy_new_sync (connection,
+                                                                                              G_DBUS_PROXY_FLAGS_NONE,
+                                                                                              NULL,
+                                                                                              SESSION_DBUS_PATH,
+                                                                                              cancellable,
+                                                                                              NULL);
+                        if (custom_json_interface != NULL) {
+                                g_hash_table_insert (user_verifier_extensions,
+                                                     client->enabled_extensions[i],
+                                                     custom_json_interface);
                         }
                 }
         }
