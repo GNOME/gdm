@@ -36,6 +36,7 @@
 #include <sys/prctl.h>
 #endif
 
+#include <gio/gfiledescriptorbased.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -371,20 +372,82 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         return hash;
 }
 
+static GDataOutputStream *
+get_environment_file_output_stream (GdmLaunchEnvironment  *launch_environment,
+                                    GError               **error)
+{
+        g_autofree char *config_dir = NULL;
+        g_autofree char *environment_dir = NULL;
+        g_autofree char *environment_conf = NULL;
+        g_autoptr(GFile) file = NULL;
+        g_autoptr(GFileOutputStream) file_stream = NULL;
+        uid_t uid = launch_environment->dyn_uid;
+        gid_t gid = GID_NOBODY;
+
+        config_dir = g_build_filename (launch_environment->dyn_user_home, ".config", NULL);
+        if (!gdm_ensure_dir (config_dir, uid, gid, 0700, FALSE, error))
+                return NULL;
+
+        environment_dir = g_build_filename (config_dir, "environment.d", NULL);
+        if (!gdm_ensure_dir (environment_dir, uid, gid, 0700, FALSE, error))
+                return NULL;
+
+        environment_conf = g_build_filename (environment_dir, "gdm.conf", NULL);
+        file = g_file_new_for_path (environment_conf);
+        file_stream = g_file_replace (file,
+                                      NULL,
+                                      FALSE,
+                                      G_FILE_CREATE_REPLACE_DESTINATION,
+                                      NULL,
+                                      error);
+        if (!file_stream)
+                return NULL;
+
+        if (!G_IS_FILE_DESCRIPTOR_BASED (file_stream)) {
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                             "Failed to chown stream for %s: file backing type is not fd",
+                             environment_conf);
+                return NULL;
+        }
+
+        int fd = g_file_descriptor_based_get_fd (G_FILE_DESCRIPTOR_BASED (file_stream));
+        if (fchown (fd, uid, gid) != 0) {
+                int errsv = errno;
+                g_set_error (error, G_IO_ERROR, g_io_error_from_errno (errsv),
+                            "Failed to chown stream for %s: %s", environment_conf, g_strerror (errsv));
+                return NULL;
+        }
+
+        return g_data_output_stream_new (G_OUTPUT_STREAM (file_stream));
+}
+
 static void
 on_session_setup_complete (GdmSession        *session,
                            const char        *service_name,
                            GdmLaunchEnvironment *launch_environment)
 {
         g_autoptr(GHashTable) hash = NULL;
+        g_autoptr(GDataOutputStream) env_output_stream = NULL;
+        g_autoptr(GError) error = NULL;
         GHashTableIter    iter;
         gpointer          key, value;
 
         hash = build_launch_environment (launch_environment, TRUE);
+        env_output_stream = get_environment_file_output_stream (launch_environment, &error);
+        if (!env_output_stream) {
+                g_critical ("Failed to set up environment file: %s", error->message);
+                return;
+        }
 
         g_hash_table_iter_init (&iter, hash);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
-                gdm_session_set_environment_variable (launch_environment->session, key, value);
+                g_autofree char *line = NULL;
+
+                line = g_strdup_printf ("%s=%s\n", (const char *)key, (const char *)value);
+                if (!g_data_output_stream_put_string (env_output_stream, line, NULL, &error)) {
+                        g_critical ("Failed to write environment variable to file: %s", error->message);
+                        g_clear_error (&error);
+                }
         }
 }
 
