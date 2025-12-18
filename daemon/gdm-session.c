@@ -2287,6 +2287,9 @@ worker_died (GdmSessionWorkerJob    *job,
 
         g_object_ref (conversation->job);
         if (self->session_conversation == conversation) {
+                if (self->session_pid != -1)
+                        gdm_signal_pid (self->session_pid, SIGTERM);
+
                 g_signal_emit (self, signals[SESSION_DIED], 0, signum);
                 self->session_conversation = NULL;
         }
