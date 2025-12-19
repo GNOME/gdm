@@ -49,6 +49,7 @@ struct _GdmClient
         char              **enabled_extensions;
 };
 
+static void     gdm_client_dispose     (GObject        *object);
 static void     gdm_client_finalize    (GObject        *object);
 
 G_DEFINE_TYPE (GdmClient, gdm_client, G_TYPE_OBJECT);
@@ -559,6 +560,55 @@ gdm_client_get_connection (GdmClient           *client,
         }
 }
 
+static void
+_untrack_proxy (GDBusProxy **proxy)
+{
+        GDBusConnection *connection;
+
+        if (*proxy == NULL)
+                return;
+
+        connection = g_dbus_proxy_get_connection (*proxy);
+        g_signal_handlers_disconnect_by_func (connection,
+                                              G_CALLBACK (_untrack_proxy),
+                                              proxy);
+
+        g_clear_object (proxy);
+}
+
+#define untrack_proxy(proxy) \
+  ( \
+    0 ? (void)(*(proxy)) : \
+    (_untrack_proxy) ((GDBusProxy **) (proxy)) \
+  )
+
+static void
+_track_proxy (GDBusProxy **proxy,
+              GDBusProxy  *new_proxy)
+{
+        GDBusConnection *connection;
+
+        untrack_proxy (proxy);
+
+        if (new_proxy == NULL)
+                return;
+
+        g_set_object (proxy, new_proxy);
+
+        connection = g_dbus_proxy_get_connection (*proxy);
+        g_signal_connect_swapped (connection,
+                                  "closed",
+                                  G_CALLBACK (_untrack_proxy),
+                                  proxy);
+}
+
+#define track_proxy(proxy, new_proxy) \
+  ( \
+    0 ? (void)(*(proxy) = (new_proxy)) : \
+    (_track_proxy) ((GDBusProxy **) (proxy), \
+                 G_DBUS_PROXY ((new_proxy))) \
+  )
+
 /**
  * gdm_client_open_reauthentication_channel_sync:
  * @client: a #GdmClient
@@ -627,7 +677,7 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
-        g_set_object (&client->user_verifier_for_reauth, user_verifier);
+        track_proxy (&client->user_verifier_for_reauth, user_verifier);
 
         if (user_verifier == NULL)
                 return NULL;
@@ -697,7 +747,7 @@ gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
 
         user_verifier = g_task_propagate_pointer (G_TASK (result), error);
 
-        g_set_object (&client->user_verifier_for_reauth, user_verifier);
+        track_proxy (&client->user_verifier_for_reauth, user_verifier);
 
         if (user_verifier == NULL)
                 return NULL;
@@ -742,7 +792,7 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                           cancellable,
                                                           error);
 
-        g_set_object (&client->user_verifier, user_verifier);
+        track_proxy (&client->user_verifier, user_verifier);
 
         if (user_verifier == NULL)
                 return NULL;
@@ -895,7 +945,7 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
         if (user_verifier == NULL)
                 return NULL;
 
-        g_set_object (&client->user_verifier, user_verifier);
+        track_proxy (&client->user_verifier, user_verifier);
 
         return g_object_ref (client->user_verifier);
 }
@@ -1105,7 +1155,7 @@ gdm_client_get_greeter_finish (GdmClient       *client,
         if (greeter == NULL)
                 return NULL;
 
-        g_set_object (&client->greeter, greeter);
+        track_proxy (&client->greeter, greeter);
 
         return g_object_ref (client->greeter);
 }
@@ -1148,7 +1198,7 @@ gdm_client_get_greeter_sync (GdmClient     *client,
                                               cancellable,
                                               error);
 
-        g_set_object (&client->greeter, greeter);
+        track_proxy (&client->greeter, greeter);
 
         if (greeter == NULL)
                 return NULL;
@@ -1163,12 +1213,25 @@ gdm_client_class_init (GdmClientClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
+        object_class->dispose = gdm_client_dispose;
         object_class->finalize = gdm_client_finalize;
 }
 
 static void
 gdm_client_init (GdmClient *client)
 {
+}
+
+static void
+gdm_client_dispose (GObject *object)
+{
+        GdmClient *client = GDM_CLIENT (object);
+
+        untrack_proxy (&client->user_verifier);
+        untrack_proxy (&client->user_verifier_for_reauth);
+        untrack_proxy (&client->greeter);
+
+        G_OBJECT_CLASS (gdm_client_parent_class)->dispose (object);
 }
 
 static void
@@ -1182,10 +1245,6 @@ gdm_client_finalize (GObject *object)
         client = GDM_CLIENT (object);
 
         g_return_if_fail (client != NULL);
-
-        g_clear_object (&client->user_verifier);
-        g_clear_object (&client->user_verifier_for_reauth);
-        g_clear_object (&client->greeter);
 
         g_strfreev (client->enabled_extensions);
 
