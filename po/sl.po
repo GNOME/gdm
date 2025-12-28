@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-01-29 13:26+0000\n"
-"PO-Revision-Date: 2025-01-29 17:48+0100\n"
+"POT-Creation-Date: 2025-12-22 15:46+0000\n"
+"PO-Revision-Date: 2025-12-28 14:17+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -23,137 +23,43 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
 "n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.8\n"
 
-#: chooser/gdm-host-chooser-dialog.c:139
-msgid "_Refresh"
-msgstr "_Osveži"
-
-#: chooser/gdm-host-chooser-dialog.c:140
-msgid "_Cancel"
-msgstr "_Prekliči"
-
-#: chooser/gdm-host-chooser-dialog.c:141
-msgid "C_onnect"
-msgstr "_Poveži"
-
-#: chooser/gdm-host-chooser-dialog.c:146
-msgid "Select System"
-msgstr "Izbrani sistem"
-
-#: chooser/gdm-host-chooser-widget.c:255
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: ni mogoče ustvariti medpomnilnika za XDMCP!"
-
-#: chooser/gdm-host-chooser-widget.c:261
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: ni mogoče prebrati glave XDMCP!"
-
-#: chooser/gdm-host-chooser-widget.c:267
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: nepravilna različica XDMCP!"
-
-#: chooser/gdm-host-chooser-widget.c:273
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: ni mogoče razčleniti naslova"
-
-#: common/gdm-common.c:307
+#: common/gdm-common.c:325
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ni znakovna naprava"
 
-#: common/gdm-common.c:346
+#: common/gdm-common.c:364
 msgid "Unable to create transient display: "
 msgstr "Ni mogoče ustvariti pogovornega okna: "
 
-#: common/gdm-common.c:543
+#: common/gdm-common.c:561
 msgid "Could not identify the current session: "
 msgstr "Ni mogoče določiti trenutne seje: "
 
-#: common/gdm-common.c:552
+#: common/gdm-common.c:570
 msgid "Could not identify the current seat."
 msgstr "Ni mogoče določiti trenutne seje."
 
-#: daemon/gdm-display-access-file.c:280 daemon/gdm-display-access-file.c:301
-#, c-format
-msgid "Could not find user “%s” on system"
-msgstr "V sistemu uporabnika »%s« ni mogoče najti."
-
-#: daemon/gdm-legacy-display.c:226
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Ni mogoče zagnati strežnika X (grafičnega okolja) zaradi notranje napake. "
-"Obrnite se na skrbnika sistema oziroma preverite zapise v sistemskem "
-"dnevniku. V vmesnem času bo ta zaslon izključen. Poskusite s ponovnim "
-"zagonom GDM, ko bo problem odpravljen."
-
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:673
 msgid "No display available"
 msgstr "Na voljo ni nobenega zaslona"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1188
+#: daemon/gdm-manager.c:724 daemon/gdm-manager.c:1029
 msgid "No session available"
 msgstr "Na voljo ni nobene seje"
 
-#: daemon/gdm-manager.c:879
-msgid "Chooser session unavailable"
-msgstr "Seja izbirnika ni na voljo"
-
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:740
 msgid "Can only be called before user is logged in"
 msgstr "Sklic na program je mogoče le pred prijavo uporabnika"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:752
 msgid "Caller not GDM"
 msgstr "Klicalnik ni GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:762
 msgid "Unable to open private communication channel"
 msgstr "Ni mogoče odpreti zasebnega kanala za sporočanje"
-
-#: daemon/gdm-server.c:387
-#, c-format
-msgid "Server was to be spawned by user %s but that user doesn’t exist"
-msgstr ""
-"Strežnik bi se moral zagnati ob prijavi uporabnika %s, vendar ta ne obstaja"
-
-#: daemon/gdm-server.c:398 daemon/gdm-server.c:418 utils/gdm-config.c:505
-#, c-format
-msgid "Couldn’t set groupid to %d"
-msgstr "Ni mogoče nastaviti vrednosti ID skupine na %d"
-
-#: daemon/gdm-server.c:404 utils/gdm-config.c:511
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgrougs() je spodletel za %s"
-
-#: daemon/gdm-server.c:410
-#, c-format
-msgid "Couldn’t set userid to %d"
-msgstr "Ni mogoče nastaviti vrednosti ID uporabnika na %d"
-
-#: daemon/gdm-server.c:482
-#, c-format
-msgid "%s: Could not open log file for display %s!"
-msgstr "%s: ni mogoče odpreti dnevniške datoteke za prikaz %s!"
-
-#: daemon/gdm-server.c:503 daemon/gdm-server.c:509 daemon/gdm-server.c:515
-#, c-format
-msgid "%s: Error setting %s to %s"
-msgstr "%s: napaka med nastavljanjem %s na %s"
-
-#: daemon/gdm-server.c:535
-#, c-format
-msgid "%s: Server priority couldn’t be set to %d: %s"
-msgstr "%s: prednosti strežnika ni mogoče nastaviti na %d: %s"
-
-#: daemon/gdm-server.c:690
-#, c-format
-msgid "%s: Empty server command for display %s"
-msgstr "%s: podan je prazen ukaz strežnika za zaslon %s"
 
 #: daemon/gdm-session-auditor.c:88
 msgid "Username"
@@ -179,11 +85,11 @@ msgstr "Naprava zaslona"
 msgid "The display device"
 msgstr "Naprava za prikazovanje"
 
-#: daemon/gdm-session.c:1444
+#: daemon/gdm-session.c:1430
 msgid "Could not create authentication helper process"
 msgstr "Ni mogoče ustvariti opravila pomočnika overitve prijave"
 
-#: daemon/gdm-session-worker.c:813
+#: daemon/gdm-session-worker.c:807
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -191,7 +97,7 @@ msgstr ""
 "Dosegli ste največje dovoljeno število poskusov overitve z geslom. Poskusite "
 "na drugi način."
 
-#: daemon/gdm-session-worker.c:816
+#: daemon/gdm-session-worker.c:810
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -199,7 +105,7 @@ msgstr ""
 "Dosegli ste največje dovoljeno število poskusov samodejne prijave. Poskusite "
 "na drugi način."
 
-#: daemon/gdm-session-worker.c:819
+#: daemon/gdm-session-worker.c:813
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -207,7 +113,7 @@ msgstr ""
 "Dosegli ste največje dovoljeno število poskusov overitve s prstnim odtisom. "
 "Poskusite na drugi način."
 
-#: daemon/gdm-session-worker.c:822
+#: daemon/gdm-session-worker.c:816
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -215,121 +121,76 @@ msgstr ""
 "Dosegli ste največje dovoljeno število poskusov overitve s pametno kartico. "
 "Poskusite na drugi način."
 
-#: daemon/gdm-session-worker.c:824
+#: daemon/gdm-session-worker.c:818
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Dosegli ste največje dovoljeno število poskusov overitve. Poskusite na drugi "
 "način."
 
-#: daemon/gdm-session-worker.c:831
+#: daemon/gdm-session-worker.c:825
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "Overitev z geslom je spodletela. Poskusite znova."
 
-#: daemon/gdm-session-worker.c:834
+#: daemon/gdm-session-worker.c:828
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "Samodejna prijava je spodletela. Poskusite znova."
 
-#: daemon/gdm-session-worker.c:837
+#: daemon/gdm-session-worker.c:831
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "Overitev s prstnim odtisom je spodletela. Poskusite znova."
 
-#: daemon/gdm-session-worker.c:840
+#: daemon/gdm-session-worker.c:834
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "Overitev s pametno kartico je spodletela. Poskusite znova."
 
-#: daemon/gdm-session-worker.c:842
+#: daemon/gdm-session-worker.c:836
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "Dejanje je spodletelo. Poskusite znova."
 
-#: daemon/gdm-session-worker.c:857
+#: daemon/gdm-session-worker.c:851
 msgid "Your account was given a time limit that’s now passed."
 msgstr "Za račun je odobren omejen čas, ki je sedaj pretekel."
 
-#: daemon/gdm-session-worker.c:1258
+#: daemon/gdm-session-worker.c:1208
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: daemon/gdm-session-worker.c:1675 daemon/gdm-session-worker.c:1692
+#: daemon/gdm-session-worker.c:1625 daemon/gdm-session-worker.c:1642
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: daemon/gdm-session-worker.c:1719
+#: daemon/gdm-session-worker.c:1669
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
-#: daemon/gdm-wayland-session.c:531
+#: daemon/gdm-wayland-session.c:507
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Zaganjalnik seje Wayland za zaslon GNOME"
 
-#: daemon/gdm-xdmcp-display-factory.c:614
-msgid "Could not create socket!"
-msgstr "Ni mogoče ustvariti vtiča!"
-
-#: daemon/gdm-x-session.c:882
-msgid "Run program through /etc/gdm/Xsession wrapper script"
-msgstr "Zaženi program preko skripta zavijalnika /etc/gdm/Xsession"
-
-#: daemon/gdm-x-session.c:883
-msgid "Listen on TCP socket"
-msgstr "Poslušaj vtič TCP"
-
-#: daemon/gdm-x-session.c:895
-msgid "GNOME Display Manager X Session Launcher"
-msgstr "Zaganjalnik seje X za zaslon GNOME"
-
-#: daemon/main.c:125 daemon/main.c:138
+#: daemon/main.c:124 daemon/main.c:137
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Ni mogoče zapisati datoteke PID %s: verjetno na disku ni prostora: %s"
 
-#: daemon/main.c:182
-#, c-format
-msgid "Failed to create ran once marker dir %s: %s"
-msgstr "Ni mogoče ustvariti mape oznake enkratnega zagona %s: %s"
-
-#: daemon/main.c:188
-#, c-format
-msgid "Failed to create LogDir %s: %s"
-msgstr "Napaka med ustvarjanjem dnevniške mape %s: %s"
-
-#: daemon/main.c:223
-#, c-format
-msgid "Can’t find the GDM user “%s”. Aborting!"
-msgstr "Ni mogoče najti uporabnika GDM »%s«. Dejanje je prekinjeno!"
-
-#: daemon/main.c:229
-msgid "The GDM user should not be root. Aborting!"
-msgstr "Uporabnika GDM ni mogoče določiti kot skrbnika. Dejanje je prekinjeno!"
-
-#: daemon/main.c:235
-#, c-format
-msgid "Can’t find the GDM group “%s”. Aborting!"
-msgstr "Ni mogoče najti skupine GDM »%s«. Dejanje je prekinjeno!"
-
-#: daemon/main.c:241
-msgid "The GDM group should not be root. Aborting!"
-msgstr ""
-"Skupine GDM ni mogoče določiti kot skrbniške skupine. Dejanje je prekinjeno!"
-
-#: daemon/main.c:309
+#: daemon/main.c:222
 msgid "Make all warnings fatal"
 msgstr "Izpiši vsa opozorila kot usodna"
 
-#: daemon/main.c:310
+#: daemon/main.c:223
 msgid "Exit after a time (for debugging)"
 msgstr "Končaj po določenem času (za razhroščevanje)"
 
-#: daemon/main.c:311
+#: daemon/main.c:224
 msgid "Print GDM version"
 msgstr "Izpiši različico GDM"
 
-#: daemon/main.c:322
+#: daemon/main.c:235
 msgid "GNOME Display Manager"
 msgstr "Upravljalnik zaslona GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:342
+#: daemon/main.c:255
 msgid "Only the root user can run GDM"
 msgstr "Samo skrbnik ima dovoljenje zagnati GDM"
 
@@ -338,6 +199,31 @@ msgstr "Samo skrbnik ima dovoljenje zagnati GDM"
 #: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "Seja upravljalnika zaslona GNOME."
+
+#: data/gnome-greeter.desktop.in:2
+msgid "GNOME Greeter"
+msgstr "Pozdrav GNOME"
+
+#: data/gnome-greeter.desktop.in:3
+msgid "The default GNOME Greeter session"
+msgstr "Privzeta pozdravna seja GNOME"
+
+#: data/gnome-initial-setup.desktop.in:2
+msgid "GNOME Initial Setup"
+msgstr "Začetna nastavitev GNOME"
+
+#: data/gnome-initial-setup.desktop.in:3
+msgid "The GNOME Initial Setup session"
+msgstr "Seja začetne nastavitve GNOME"
+
+#: data/org.gnome.displaymanager.policy:11
+msgid "Allow managing user sessions"
+msgstr "Dovoli upravljanje sej uporabnikov"
+
+#: data/org.gnome.displaymanager.policy:12
+msgid "Authentication is required to start or stop a user session"
+msgstr ""
+"Preverjanje pristnosti je potrebno za začetek ali zaključek seje uporabnika."
 
 #: data/org.gnome.login-screen.gschema.xml:11
 msgid "Whether or not to allow fingerprint readers for login"
@@ -563,37 +449,27 @@ msgstr "»%s« ne more biti sočasno omogočen in onemogočen"
 msgid "“%s” is not a valid %s “%s” value"
 msgstr "»%s« ni veljavna vrednost %s »%s«"
 
-#: utils/gdm-config.c:496
-#, c-format
-msgid "Failed to switch to %s user"
-msgstr "Preklop na uporabnika %s je spodletel"
-
-#: utils/gdm-config.c:517
-#, c-format
-msgid "Couldn’t set userid to %u"
-msgstr "Ni mogoče nastaviti vrednosti userid na %u"
-
-#: utils/gdm-config.c:680
+#: utils/gdm-config.c:633
 msgid "No distro detected, no hook to run"
 msgstr ""
 "Ni zaznanega podatka distribucije, zato ni mogoče zagnati priključka (hook)"
 
-#: utils/gdm-config.c:698
+#: utils/gdm-config.c:651
 #, c-format
 msgid "No valid args found to run hook “%s”"
 msgstr "Ni najdenih veljavnih argumentov za zagon priključka (hook) »%s«"
 
-#: utils/gdm-config.c:703
+#: utils/gdm-config.c:656
 #, c-format
 msgid "Running distro hook “%s”\n"
 msgstr "Poteka priključevanje na distribucijo (hook) »%s«\n"
 
-#: utils/gdm-config.c:717
+#: utils/gdm-config.c:670
 #, c-format
 msgid "Distro hook “%s” requested stopping"
 msgstr "Priključitev (hook) na distribucijo »%s« zahteva zaustavitev"
 
-#: utils/gdm-config.c:730
+#: utils/gdm-config.c:683
 #, c-format
 msgid ""
 "Distro hook failed with exit status %d and error %s:\n"
@@ -610,53 +486,53 @@ msgstr ""
 "%s"
 
 #. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
-#: utils/gdm-config.c:780
+#: utils/gdm-config.c:733
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
 "Za ukaz »%s« je nastavljanje možnosti ključa »%s« spodletelo za priključitev "
 "na distribucijo: "
 
-#: utils/gdm-config.c:820
+#: utils/gdm-config.c:773
 #, c-format
 msgid "Failed to create directory %s"
 msgstr "Ustvarjanje mape %s je spodletelo"
 
-#: utils/gdm-config.c:891
+#: utils/gdm-config.c:844
 msgid "dconf profile not found"
 msgstr "Profila dconf ni mogoče najti"
 
-#: utils/gdm-config.c:981
+#: utils/gdm-config.c:934
 msgid "dconf has no system-db configured"
 msgstr "Ukaz dconf nima nastavljenega podatka system-db"
 
 #. TRANSLATORS: First value is a file path, second is an error message
-#: utils/gdm-config.c:1130
+#: utils/gdm-config.c:1083
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
 msgstr ""
 "Pridobivanje opombe glave »%s« je spodletelo: %s, je vrednosti spremenjena?"
 
-#: utils/gdm-config.c:1133
+#: utils/gdm-config.c:1086
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
 msgstr "Opomba glave datoteke »%s« ni skladna; je vrednosti spremenjena?"
 
 #. XXX: Fail with an error instead?
-#: utils/gdm-config.c:1261
+#: utils/gdm-config.c:1214
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
 msgstr "Ni zaznane glave v datoteki zaklepa »%s«; je vrednosti spremenjena?"
 
-#: utils/gdm-config.c:1546
+#: utils/gdm-config.c:1499
 msgid "Failed to run a required distro hook: "
 msgstr "Izvajanje zahtevanega priključka (hook) distribucije je spodletelo:"
 
-#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:1515
 msgid "COMMAND"
 msgstr "UKAZ"
 
-#: utils/gdm-config.c:1566
+#: utils/gdm-config.c:1519
 #, c-format
 msgid ""
 "Commands:\n"
@@ -679,46 +555,46 @@ msgstr ""
 "\n"
 "Uporaba »%s UKAZ --help« za pomoč o vsakem ukazu.\n"
 
-#: utils/gdm-config.c:1628
+#: utils/gdm-config.c:1581
 msgid "Command options"
 msgstr "Možnosti ukaza"
 
 #. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
-#: utils/gdm-config.c:1663
+#: utils/gdm-config.c:1616
 #, c-format
 msgid "You need to be root to use %s “%s” command"
 msgstr "Za uporabo ukaza %s »%s« so zahtevana skrbniška dovoljenja"
 
-#: utils/gdm-config.c:1713
+#: utils/gdm-config.c:1666
 #, c-format
 msgid "Failed to set %s setting: "
 msgstr "Prilagajanje nastavitve %s je spodletelo: "
 
-#: utils/gdm-config.c:1805
+#: utils/gdm-config.c:1758
 msgid "Failed to set smartcard setting"
 msgstr "Prilagajanje nastavitve pametne kartice je spodletelo"
 
-#: utils/gdm-config.c:1811
+#: utils/gdm-config.c:1764
 msgid "Failed to set password setting"
 msgstr "Prilagajanje nastavitve gesla je spodletelo"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Enabled"
 msgstr "Omogočeno"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Disabled"
 msgstr "Onemogočeno"
 
-#: utils/gdm-config.c:1834
+#: utils/gdm-config.c:1787
 msgid "Not supported"
 msgstr "Ni podprto"
 
-#: utils/gdm-config.c:1850
+#: utils/gdm-config.c:1803
 msgid "Required"
 msgstr "Zahtevano"
 
-#: utils/gdm-config.c:1911
+#: utils/gdm-config.c:1855
 #, c-format
 msgid ""
 "GDM Authorization configuration\n"
@@ -735,58 +611,36 @@ msgstr ""
 "  Overjanje s pametno kartico: %s\n"
 "  Dejanje odstranjevanja pametne kartice: %s\n"
 
-#: utils/gdm-config.c:1939
+#: utils/gdm-config.c:1883
 msgctxt "Interactive question"
 msgid "Y"
 msgstr "D"
 
-#: utils/gdm-config.c:1940
+#: utils/gdm-config.c:1884
 msgctxt "Interactive question"
 msgid "y"
 msgstr "d"
 
-#: utils/gdm-config.c:1941
+#: utils/gdm-config.c:1885
 msgctxt "Interactive question"
 msgid "N"
 msgstr "N"
 
-#: utils/gdm-config.c:1942
+#: utils/gdm-config.c:1886
 msgctxt "Interactive question"
 msgid "n"
 msgstr "n"
 
-#: utils/gdm-config.c:1946
+#: utils/gdm-config.c:1890
 msgctxt "Interactive question"
 msgid "Do you want to continue? [Y/n]? "
 msgstr "Ali želite nadaljevati [D/n]?"
 
-#: utils/gdm-config.c:1964
+#: utils/gdm-config.c:1908
 msgid "User cancelled the request"
 msgstr "Uporabnik je preklical zahtevo"
 
-#: utils/gdm-config.c:1995
+#: utils/gdm-config.c:1939
 #, c-format
 msgid "Failed to reset %s setting: "
 msgstr "Ponastavljanje nastavitve %s je spodletelo: "
-
-#: utils/gdmflexiserver.c:45
-msgid "Only the VERSION command is supported"
-msgstr "Podprt je le ukaz VERSION"
-
-#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
-#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
-msgid "Ignored — retained for compatibility"
-msgstr "Prezrto – ohranjeno zaradi združljivosti"
-
-#: utils/gdmflexiserver.c:48
-msgid "Debugging output"
-msgstr "Izpis razhroščevanja"
-
-#: utils/gdmflexiserver.c:52
-msgid "Version of this application"
-msgstr "Različica programa"
-
-#. Option parsing
-#: utils/gdmflexiserver.c:137
-msgid "— New GDM login"
-msgstr "– nova prijava GDM"
