@@ -1,6 +1,6 @@
 GDM - GNOME Display Manager
 ===========================
-http://wiki.gnome.org/Projects/GDM/
+https://gitlab.gnome.org/GNOME/gdm
 
 The GNOME Display Manager is a system service that is responsible for
 providing graphical log-ins and managing local and remote displays.
