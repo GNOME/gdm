@@ -1,3 +1,35 @@
+50.alpha
+==========
+
+* Translation updates
+* Fixed bug where we'd lose track of the user session failure counter
+* Added GNOME OS CI
+* Special sessions (like GDM, initial-setup) are now loaded from .desktop files
+  rather than being hard-coded into GDM
+* Entirely removed X11 support, except for the ability to launch other desktops'
+  X11 sessions with a per-user X server. This means that features like XDCMP and
+  system-wide Xserver are gone, and that GDM's own sessions will always run with
+  Wayland.
+* Consequently, we removed the ability to compile GDM without Wayland support
+* Introduced a new `gnome-headless-session@<username>.service`, which makes it
+  easier to start a headless graphical session (i.e. for RDP purposes)
+* Merged display and session registration into one step, because the previous
+  approach didn't work right for Wayland. This allowed us to remove workarounds
+  that caused bugs
+* Reworked wtmp/utmp/btmp fields to contain more useful values, especially on
+  Wayland and with headless RDP sessions
+* Dropped final usages of the `gdm`/`gdm3` user, so distros no longer need
+  to create it for us (GDM now entirely relies on dynamically allocated users)
+* Adapted to changes in gnome-shell's systemd unit files, and dropped hard-coded
+  gnome-shell session modes. It's now easier for custom/kiosk sessions to use
+  custom gnome-shell session modes
+* Added support for Linux 6.18's new `boot_display` sysfs attribute, which
+  replaces the `boot_vga` attribute. These attributes allow GDM to identify
+  the primary GPU, but modern AMD cards cannot use `boot_vga` because they
+  no longer have VGA support!
+* Fixed bug where we failed to propagate some environment variables into
+  the greeter's Pipewire instance
+
 49.1
 ==========
 
