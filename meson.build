@@ -21,7 +21,6 @@ gdm_datadir = get_option('datadir') / meson.project_name()
 
 gdmconfdir = (get_option('sysconfsubdir') == '')? gdm_prefix / get_option('sysconfdir') : gdm_prefix / get_option('sysconfdir') / get_option('sysconfsubdir')
 dmconfdir = (get_option('dmconfdir') != '')? get_option('dmconfdir') : gdm_prefix / get_option('sysconfdir') / 'dm'
-udev_dir = get_option('udev-dir')
 at_spi_registryd_dir = (get_option('at-spi-registryd-dir') != '')? get_option('at-spi-registryd-dir') : gdm_prefix / get_option('libexecdir')
 lang_config_file = (get_option('lang-file') != '')? get_option('lang-file') : gdm_prefix / get_option('sysconfdir') / 'locale.conf'
 pam_mod_dir = (get_option('pam-mod-dir') != '')? get_option('pam-mod-dir') : gdm_prefix / get_option('libdir') / 'security'
@@ -41,7 +40,6 @@ have_x11_support = get_option('x11-support')
 config_h_dir = include_directories('.')
 
 # Dependencies
-udev_dep = dependency('udev')
 gudev_dep = dependency('gudev-1.0', version: '>= 232')
 
 # PAM
@@ -63,16 +61,6 @@ accountsservice_dep = dependency('accountsservice', version: '>= 0.6.35')
 keyutils_dep = dependency('libkeyutils', required: false)
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
 polkit_dep = dependency('polkit-gobject-1')
-
-# udev
-if udev_dir == ''
-  if udev_dep.found()
-    udev_prefix = udev_dep.get_variable(pkgconfig: 'udevdir')
-  else
-    udev_prefix = gdm_prefix / 'lib' / 'udev'
-  endif
-  udev_dir = udev_prefix / 'rules.d'
-endif
 
 # X11
 if have_x11_support
@@ -306,7 +294,6 @@ summary({
     'AT SPI registryd': at_spi_registryd_dir,
     'Lang config file': lang_config_file,
     'Pam MOD': pam_mod_dir,
-    'Udev rules': udev_dir,
   },
   section: 'Paths',
 )

@@ -16,13 +16,12 @@ include:
         --mandir=/usr/share/man
         -Dpam-prefix=/etc
         -Drun-dir=/run/gdm
-        -Dudev-dir=/lib/udev/rules.d
         -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
         -Dprofiling=true
         -Dplymouth=enabled
 
 variables:
-  COMMON_BUILD_OPTIONS: --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Dudev-dir=/lib/udev/rules.d -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+  COMMON_BUILD_OPTIONS: --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
   MESON_BUILD_DIR: build
 
 stages:
