@@ -51,6 +51,7 @@
 
 #define MAX_DISPLAY_FAILURES 5
 #define WAIT_TO_FINISH_TIMEOUT 10 /* seconds */
+#define SEAT0_GRAPHICS_CHECK_TIMEOUT 10 /* seconds */
 
 struct _GdmLocalDisplayFactory
 {
@@ -73,6 +74,9 @@ struct _GdmLocalDisplayFactory
 
         gboolean         seat0_has_platform_graphics;
         gboolean         seat0_has_boot_up_graphics;
+
+        gboolean         seat0_graphics_check_timed_out;
+        guint            seat0_graphics_check_timeout_id;
 
         gulong           uevent_handler_id;
 
@@ -403,6 +407,12 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
                 return TRUE;
         }
 
+        if (factory->seat0_graphics_check_timed_out) {
+                g_debug ("GdmLocalDisplayFactory: udev timed out, proceeding anyway.");
+                g_clear_signal_handler (&factory->uevent_handler_id, factory->gudev_client);
+                return TRUE;
+        }
+
         g_debug ("GdmLocalDisplayFactory: Checking if udev has settled enough to support graphics.");
 
         enumerator = g_udev_enumerator_new (factory->gudev_client);
@@ -487,6 +497,24 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
 }
 #endif
 
+static int
+on_seat0_graphics_check_timeout (gpointer user_data)
+{
+        GdmLocalDisplayFactory *factory = user_data;
+
+        g_warning ("It appears that your system does not have a primary GPU! Proceeding with any GPU");
+
+        factory->seat0_graphics_check_timeout_id = 0;
+
+        /* Simply try to re-add seat0. If it is there already (i.e. CanGraphical
+         * turned TRUE, then we'll find it and it will not be created again).
+         */
+        factory->seat0_graphics_check_timed_out = TRUE;
+        ensure_display_for_seat (factory, "seat0");
+
+        return G_SOURCE_REMOVE;
+}
+
 GdmDisplay *
 get_display_for_seat (GdmLocalDisplayFactory *factory,
                       const char             *seat_id)
@@ -543,9 +571,36 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 #ifdef HAVE_UDEV
         if (!udev_is_settled (factory)) {
                 g_debug ("GdmLocalDisplayFactory: udev is still settling, so not creating display yet");
+
+                /* Once a seat has CanGraphical=true, we are able to start a session
+                 * on it. However, this might not be optimal. Systems can have multiple
+                 * GPUs, and the order that they are probed is unpredictable. Thus,
+                 * it's feasible that CanGraphical is true because a secondary GPU
+                 * is present, but the primary GPU is still busy being initialized.
+                 * If we start a session at this moment, we may end up unintentionally
+                 * using the secondary GPU. To fix this, GDM waits for the primary
+                 * GPU to appear before it continues.
+                 *
+                 * However, there are a number of situations where a platform
+                 * might completely lack a primary GPU, or where GDM is unable
+                 * to detect one. In this situation, we'd be left waiting forever.
+                 * So instead we start a timeout: if a primary GPU doesn't appear
+                 * within SEAT0_GRAPHICS_CHECK_TIMEOUT seconds, we stop waiting
+                 * and start the session using any available GPU.
+                 */
+                if (is_seat0 && factory->seat0_graphics_check_timeout_id == 0) {
+                        g_debug("GdmLocalDisplayFactory: Waiting for up to %d seconds for a primary GPU to appear",
+                                SEAT0_GRAPHICS_CHECK_TIMEOUT);
+                        factory->seat0_graphics_check_timeout_id = g_timeout_add_seconds (SEAT0_GRAPHICS_CHECK_TIMEOUT,
+                                                                                          on_seat0_graphics_check_timeout,
+                                                                                          factory);
+                }
+
                 return;
         }
 #endif
+
+        g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
 
         ret = sd_seat_can_graphical (seat_id);
 
@@ -906,6 +961,8 @@ on_vt_changed (GIOChannel    *source,
         if (factory->active_vt != login_window_vt) {
                 GdmDisplay *display;
 
+                g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
+
                 display = gdm_display_store_find (store,
                                                   lookup_by_tty,
                                                   (gpointer) tty_of_active_vt);
@@ -1143,6 +1200,7 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
         g_signal_handlers_disconnect_by_func (G_OBJECT (store),
                                               G_CALLBACK (on_display_removed),
                                               factory);
+        g_clear_handle_id (&factory->seat0_graphics_check_timeout_id, g_source_remove);
 
         factory->is_started = FALSE;
 
