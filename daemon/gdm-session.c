@@ -605,8 +605,10 @@ get_default_language_name (GdmSession *self)
 static const char *
 get_fallback_session_name (GdmSession *self)
 {
+        gboolean        res;
         char          **search_dirs;
         int             i;
+        g_autofree char *configured_fallback = NULL;
         char           *name;
         GSequence      *sessions;
         GSequenceIter  *session;
@@ -618,7 +620,13 @@ get_fallback_session_name (GdmSession *self)
                 }
         }
 
-        name = g_strdup ("gnome");
+        res = gdm_settings_direct_get_string (GDM_KEY_FALLBACK_SESSION, &configured_fallback);
+        if (res && (configured_fallback != NULL && configured_fallback[0] != '\0')) {
+                name = g_steal_pointer (&configured_fallback);
+        } else {
+                name = g_strdup ("gnome");
+        }
+
         if (get_session_command_for_name (self, name, NULL, NULL)) {
                 g_free (self->fallback_session_name);
                 self->fallback_session_name = name;

@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 #define GDM_KEY_XORG_ENABLE "daemon/XorgEnable"
 #endif
 #define GDM_KEY_REMOTE_LOGIN_ENABLE "daemon/RemoteLoginEnable"
+#define GDM_KEY_FALLBACK_SESSION "daemon/FallbackSession"
 
 #define GDM_KEY_DEBUG "debug/Enable"
 
