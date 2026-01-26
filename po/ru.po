@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-12-22 15:46+0000\n"
-"PO-Revision-Date: 2026-01-12 15:30+0300\n"
+"POT-Creation-Date: 2026-01-14 17:17+0000\n"
+"PO-Revision-Date: 2026-01-16 14:44+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -89,7 +89,7 @@ msgstr "Устройство дисплея"
 msgid "The display device"
 msgstr "Устройство дисплея"
 
-#: daemon/gdm-session.c:1430
+#: daemon/gdm-session.c:1431
 msgid "Could not create authentication helper process"
 msgstr "Не удалось создать вспомогательный процесс аутентификации"
 
@@ -226,12 +226,47 @@ msgid "Authentication is required to start or stop a user session"
 msgstr "Для запуска или остановки сеанса пользователя требуется аутентификация"
 
 #: data/org.gnome.login-screen.gschema.xml:11
+msgid "Whether or not to allow switchable authentication for login"
+msgstr "Разрешить ли переключаемую аутентификацию для входа в систему"
+
+#: data/org.gnome.login-screen.gschema.xml:14
+msgid ""
+"The login screen can optionally allow a single PAM service to provide "
+"multiple authentication mechanisms via a GDM PAM."
+msgstr ""
+"Экран входа в систему может опционально разрешать одной службе PAM "
+"предоставлять несколько механизмов аутентификации через GDM PAM."
+
+#: data/org.gnome.login-screen.gschema.xml:21
+msgid "Whether or not to allow authentication via external web site"
+msgstr "Разрешить ли аутентификацию через внешний веб-сайт"
+
+#: data/org.gnome.login-screen.gschema.xml:24
+msgid ""
+"The login screen can optionally allow users to authenticate via web login."
+msgstr ""
+"Экран входа в систему может опционально позволять пользователям проходить "
+"аутентификацию через веб-вход."
+
+#: data/org.gnome.login-screen.gschema.xml:31
+msgid "Whether or not to allow authentication using a passkey"
+msgstr "Разрешить ли аутентификацию с использованием ключа доступа"
+
+#: data/org.gnome.login-screen.gschema.xml:34
+msgid ""
+"The login screen can optionally allow users who have passkeys to log in "
+"using those passkeys."
+msgstr ""
+"Экран входа в систему может опционально разрешать пользователям, имеющим "
+"ключи доступа, входить в систему с помощью этих ключей доступа."
+
+#: data/org.gnome.login-screen.gschema.xml:41
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr ""
 "Разрешить использование устройств считывания отпечатков пальцев для входа в "
 "систему"
 
-#: data/org.gnome.login-screen.gschema.xml:14
+#: data/org.gnome.login-screen.gschema.xml:44
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -239,12 +274,12 @@ msgstr ""
 "Экран входа в систему может предоставить пользователям возможность входить в "
 "систему с помощью устройства считывания отпечатков пальцев."
 
-#: data/org.gnome.login-screen.gschema.xml:21
+#: data/org.gnome.login-screen.gschema.xml:51
 msgid "Whether or not to allow smartcard readers for login"
 msgstr ""
 "Разрешить использование устройств чтения смарт-карт для входа в систему"
 
-#: data/org.gnome.login-screen.gschema.xml:24
+#: data/org.gnome.login-screen.gschema.xml:54
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -252,11 +287,11 @@ msgstr ""
 "Экран входа в систему может предоставить пользователям возможность входить в "
 "систему с помощью смарт-карт."
 
-#: data/org.gnome.login-screen.gschema.xml:31
+#: data/org.gnome.login-screen.gschema.xml:61
 msgid "Whether or not to allow passwords for login"
 msgstr "Разрешить использование паролей для входа в систему"
 
-#: data/org.gnome.login-screen.gschema.xml:34
+#: data/org.gnome.login-screen.gschema.xml:64
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -265,12 +300,12 @@ msgstr ""
 "помощью пароля, вынуждая пользователя проходить авторизацию с помощью смарт-"
 "карты или отпечатков пальцев."
 
-#: data/org.gnome.login-screen.gschema.xml:41
-#: data/org.gnome.login-screen.gschema.xml:51
+#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:81
 msgid "Path to small image at top of user list"
 msgstr "Путь к небольшому изображению вверху списка пользователей"
 
-#: data/org.gnome.login-screen.gschema.xml:44
+#: data/org.gnome.login-screen.gschema.xml:74
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -279,7 +314,7 @@ msgstr ""
 "дистрибутивам и администраторам возможность отображения фирменного "
 "оформления."
 
-#: data/org.gnome.login-screen.gschema.xml:54
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -288,11 +323,11 @@ msgstr ""
 "изображение, предоставляя дистрибутивам и администраторам возможность "
 "отображения фирменного оформления."
 
-#: data/org.gnome.login-screen.gschema.xml:61
+#: data/org.gnome.login-screen.gschema.xml:91
 msgid "Avoid showing user list"
 msgstr "Не показывать список пользователей"
 
-#: data/org.gnome.login-screen.gschema.xml:64
+#: data/org.gnome.login-screen.gschema.xml:94
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -301,55 +336,55 @@ msgstr ""
 "пользователей. С помощью этого параметра можно отключить отображение списка "
 "пользователей."
 
-#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:101
 msgid "Enable showing the banner message"
 msgstr "Включить отображение текстового баннера"
 
-#: data/org.gnome.login-screen.gschema.xml:74
+#: data/org.gnome.login-screen.gschema.xml:104
 msgid "Set to true to show the banner message text."
 msgstr "Установите, чтобы отображать текстовый баннер."
 
-#: data/org.gnome.login-screen.gschema.xml:80
+#: data/org.gnome.login-screen.gschema.xml:110
 msgid "Banner message source"
 msgstr "Источник сообщения баннера"
 
-#: data/org.gnome.login-screen.gschema.xml:83
+#: data/org.gnome.login-screen.gschema.xml:113
 msgid "The source of the text banner message on the login screen."
 msgstr "Источник текстового баннера на экране входа в систему."
 
-#: data/org.gnome.login-screen.gschema.xml:89
+#: data/org.gnome.login-screen.gschema.xml:119
 msgid "Banner message text"
 msgstr "Текст сообщения баннера"
 
-#: data/org.gnome.login-screen.gschema.xml:92
+#: data/org.gnome.login-screen.gschema.xml:122
 msgid "Text banner message to show in the login window."
 msgstr "Текстовый баннер, показываемый в окне входа в систему."
 
-#: data/org.gnome.login-screen.gschema.xml:98
+#: data/org.gnome.login-screen.gschema.xml:128
 msgid "Banner message path"
 msgstr "Путь к сообщению баннера"
 
-#: data/org.gnome.login-screen.gschema.xml:101
+#: data/org.gnome.login-screen.gschema.xml:131
 msgid "Path to text file with banner message to show in the login window."
 msgstr ""
 "Путь к текстовому файлу с баннером, который будет отображаться в окне входа "
 "в систему."
 
-#: data/org.gnome.login-screen.gschema.xml:107
+#: data/org.gnome.login-screen.gschema.xml:137
 msgid "Disable showing the restart buttons"
 msgstr "Отключить отображение кнопок перезапуска"
 
-#: data/org.gnome.login-screen.gschema.xml:110
+#: data/org.gnome.login-screen.gschema.xml:140
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Установите, чтобы запретить отображение кнопок перезапуска в окне входа в "
 "систему."
 
-#: data/org.gnome.login-screen.gschema.xml:116
+#: data/org.gnome.login-screen.gschema.xml:146
 msgid "Number of allowed authentication failures"
 msgstr "Количество разрешённых ошибок аутентификации"
 
-#: data/org.gnome.login-screen.gschema.xml:119
+#: data/org.gnome.login-screen.gschema.xml:149
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
