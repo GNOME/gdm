@@ -515,7 +515,7 @@ on_seat0_graphics_check_timeout (gpointer user_data)
         return G_SOURCE_REMOVE;
 }
 
-GdmDisplay *
+static GdmDisplay *
 get_display_for_seat (GdmLocalDisplayFactory *factory,
                       const char             *seat_id)
 {
