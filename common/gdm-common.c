@@ -297,9 +297,9 @@ char *
 gdm_generate_random_bytes (gsize    size,
                            GError **error)
 {
-        int fd;
-        char *bytes;
-        GError *read_error;
+        g_autofd int fd = -1;
+        g_autofree char *bytes = NULL;
+        g_autoptr(GError) read_error = NULL;
 
         /* We don't use the g_rand_* glib apis because they don't document
          * how much entropy they are seeded with, and it might be less
@@ -322,21 +322,16 @@ gdm_generate_random_bytes (gsize    size,
                              G_FILE_ERROR,
                              g_file_error_from_errno (ENODEV),
                              _("/dev/urandom is not a character device"));
-                close (fd);
                 return NULL;
         }
 
         bytes = g_malloc (size);
-        read_error = NULL;
         if (!_read_bytes (fd, bytes, size, &read_error)) {
-                g_propagate_error (error, read_error);
-                g_free (bytes);
-                close (fd);
+                g_propagate_error (error, g_steal_pointer (&read_error));
                 return NULL;
         }
 
-        close (fd);
-        return bytes;
+        return g_steal_pointer (&bytes);
 }
 
 static gboolean
