@@ -244,7 +244,7 @@ on_authenticate_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authenticate_finish (proxy, res, &error);
@@ -277,7 +277,7 @@ on_authorize_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authorize_finish (proxy, res, &error);
@@ -305,7 +305,7 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_establish_credentials_finish (proxy, res, &error);
@@ -2966,7 +2966,7 @@ on_start_program_cb (GdmDBusWorker *worker,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
         GPid pid;
 
