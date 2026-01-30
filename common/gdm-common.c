@@ -314,7 +314,6 @@ gdm_generate_random_bytes (gsize    size,
                                      G_FILE_ERROR,
                                      g_file_error_from_errno (errno),
                                      g_strerror (errno));
-                close (fd);
                 return NULL;
         }
 
