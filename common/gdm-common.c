@@ -163,7 +163,7 @@ gdm_wait_on_and_disown_pid (int pid,
                         char *command;
 
                         path = g_strdup_printf ("/proc/%ld/cmdline", (long) pid);
-                        if (g_file_get_contents (path, &command, NULL, NULL)) {;
+                        if (g_file_get_contents (path, &command, NULL, NULL)) {
                                 g_warning ("GdmCommon: process (pid:%d, command '%s') isn't dying after %d seconds, now ignoring it.",
                                          (int) pid, command, timeout);
                                 g_free (command);
