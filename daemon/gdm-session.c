@@ -3217,7 +3217,7 @@ gdm_session_is_frozen (GdmSession *self)
 
         for (gsize i = 0; arr[i] != NULL; i++) {
                 if (g_str_equal (arr[i], "frozen"))
-                        return g_str_equal (arr[i + 1], "1");
+                        return g_strcmp0 (arr[i + 1], "1") == 0;
         }
         return FALSE;
 }
