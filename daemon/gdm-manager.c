@@ -650,8 +650,7 @@ find_user_session_for_display (GdmManager *self,
 
 static gboolean
 gdm_manager_handle_register_session (GdmDBusManager        *manager,
-                                     GDBusMethodInvocation *invocation,
-                                     GVariant              *details)
+                                     GDBusMethodInvocation *invocation)
 {
         GdmManager      *self = GDM_MANAGER (manager);
         const char      *sender;

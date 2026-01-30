@@ -446,7 +446,6 @@ register_session_timeout_cb (gpointer user_data)
         state = (State *) user_data;
 
         gdm_dbus_manager_call_register_session_sync (state->display_manager_proxy,
-                                                     g_variant_new ("a{sv}", NULL),
                                                      state->cancellable,
                                                      &error);
 
