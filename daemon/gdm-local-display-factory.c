@@ -531,7 +531,7 @@ get_display_for_seat (GdmLocalDisplayFactory *factory,
         else
                 display = gdm_display_store_find (store, lookup_managed_display_by_seat_id, (gpointer) seat_id);
 
-        return g_object_ref (display);
+        return display != NULL ? g_object_ref (display) : NULL;
 }
 
 static void
