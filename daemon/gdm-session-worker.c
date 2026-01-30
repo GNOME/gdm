@@ -660,7 +660,7 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 res = gdm_session_worker_process_choice_list_request (worker, list_request, list_response);
 
                 if (! res) {
-                        g_free (list_response);
+                        free (list_response);
                         return FALSE;
                 }
 
