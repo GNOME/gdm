@@ -3182,7 +3182,7 @@ gdm_session_set_timed_login_details (GdmSession *self,
         g_return_if_fail (username != NULL);
 
         g_debug ("GdmSession: timed login details %s %d", username, delay);
-        self->timed_login_username = g_strdup (username);
+        g_set_str (&self->timed_login_username, username);
         self->timed_login_delay = delay;
 }
 
@@ -3724,6 +3724,7 @@ gdm_session_finalize (GObject *object)
         g_free (self->selected_session);
         g_free (self->saved_session);
         g_free (self->saved_language);
+        g_free (self->timed_login_username);
 
         g_free (self->fallback_session_name);
 
