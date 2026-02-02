@@ -1,5 +1,5 @@
 # gdm ja.po.
-# Copyright (C) 1999-2015, 2019, 2021-2022, 2025 Free Software Foundation, Inc.
+# Copyright (C) 1999-2015, 2019, 2021-2022, 2025-2026 Free Software Foundation, Inc.
 # Yukihiro Nakai <nacai@iname.com>, 1999.
 # ITANI Eiichiro <emu@ceres.dti.ne.jp>, 1999.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2000, 2010, 2012.
@@ -17,153 +17,59 @@
 # Hajime Taira <htaira@redhat.com>, 2015.
 # sicklylife <translation@sicklylife.jp>, 2019, 2022.
 # Peniel Vargas <penieru@gmail.com>, 2021.
-# Makoto Sakaguchi <ycco34vx@gmail.com>, 2025.
+# Makoto Sakaguchi <ycco34vx@gmail.com>, 2025-2026.
 # 小山田 純 <oyamadajun@outlook.jp>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-10-11 03:45+0000\n"
-"PO-Revision-Date: 2025-10-12 21:40+0900\n"
-"Last-Translator: 小山田 純 <oyamadajun@outlook.jp>\n"
+"POT-Creation-Date: 2025-12-22 15:46+0000\n"
+"PO-Revision-Date: 2026-01-09 05:30+0900\n"
+"Last-Translator: Makoto Sakaguchi <ycco34vx@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
-#: chooser/gdm-host-chooser-dialog.c:139
-msgid "_Refresh"
-msgstr "更新(_R)"
-
-#: chooser/gdm-host-chooser-dialog.c:140
-msgid "_Cancel"
-msgstr "キャンセル(_C)"
-
-#: chooser/gdm-host-chooser-dialog.c:141
-msgid "C_onnect"
-msgstr "接続(_O)"
-
-#: chooser/gdm-host-chooser-dialog.c:146
-msgid "Select System"
-msgstr "システムの選択"
-
-#: chooser/gdm-host-chooser-widget.c:255
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: XDMCP のバッファーを生成できませんでした!"
-
-#: chooser/gdm-host-chooser-widget.c:261
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP のヘッダーを読み取れませんでした!"
-
-#: chooser/gdm-host-chooser-widget.c:267
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: XDMCP のバージョンが間違っています!"
-
-#: chooser/gdm-host-chooser-widget.c:273
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: アドレスを解析できません"
-
-#: common/gdm-common.c:343
+#: common/gdm-common.c:325
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom はキャラクターデバイスではありません"
 
-#: common/gdm-common.c:382
+#: common/gdm-common.c:364
 msgid "Unable to create transient display: "
 msgstr "一時的なディスプレイを作成できません: "
 
-#: common/gdm-common.c:579
+#: common/gdm-common.c:561
 msgid "Could not identify the current session: "
 msgstr "現在のセッションを取得できませんでした: "
 
-#: common/gdm-common.c:588
+#: common/gdm-common.c:570
 msgid "Could not identify the current seat."
 msgstr "現在のシートを識別できませんでした。"
 
-#: daemon/gdm-display-access-file.c:280 daemon/gdm-display-access-file.c:301
-#, c-format
-msgid "Could not find user “%s” on system"
-msgstr "システムに“%s”というユーザーは見つかりませんでした"
-
-#: daemon/gdm-legacy-display.c:226
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"内部エラーのため、X サーバー (グラフィカル環境) を開始できませんでした。シス"
-"テム管理者に問い合わせるか、syslog を確認して調査してください。この間、この"
-"ディスプレイは無効になります。問題が解決したら、GDM を再起動してください。"
-
-#: daemon/gdm-manager.c:765
+#: daemon/gdm-manager.c:673
 msgid "No display available"
 msgstr "利用できるディスプレイがありません"
 
-#: daemon/gdm-manager.c:863 daemon/gdm-manager.c:1192
+#: daemon/gdm-manager.c:724 daemon/gdm-manager.c:1029
 msgid "No session available"
 msgstr "利用できるセッションがありません"
 
-#: daemon/gdm-manager.c:882
-msgid "Chooser session unavailable"
-msgstr "選択セッションが利用できません"
-
-#: daemon/gdm-manager.c:898
+#: daemon/gdm-manager.c:740
 msgid "Can only be called before user is logged in"
 msgstr "ユーザーがログインする前にのみ呼び出すことができます"
 
-#: daemon/gdm-manager.c:910
+#: daemon/gdm-manager.c:752
 msgid "Caller not GDM"
 msgstr "呼び出し側が GDM ではありません"
 
-#: daemon/gdm-manager.c:920
+#: daemon/gdm-manager.c:762
 msgid "Unable to open private communication channel"
 msgstr "プライベートコミュニケーションチャンネルを開けません"
-
-#: daemon/gdm-server.c:387
-#, c-format
-msgid "Server was to be spawned by user %s but that user doesn’t exist"
-msgstr ""
-"ユーザー %s としてサーバーを起動しようとしましたが、そのようなユーザーは存在"
-"しません"
-
-#: daemon/gdm-server.c:398 daemon/gdm-server.c:418
-#, c-format
-msgid "Couldn’t set groupid to %d"
-msgstr "グループ ID を %d に設定できませんでした"
-
-#: daemon/gdm-server.c:404
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "%s に対する initgroups () の呼び出しに失敗しました"
-
-#: daemon/gdm-server.c:410
-#, c-format
-msgid "Couldn’t set userid to %d"
-msgstr "ユーザー ID を %d に設定できませんでした"
-
-#: daemon/gdm-server.c:482
-#, c-format
-msgid "%s: Could not open log file for display %s!"
-msgstr "%s: ディスプレイ (%s) のログファイルを開けません!"
-
-#: daemon/gdm-server.c:503 daemon/gdm-server.c:509 daemon/gdm-server.c:515
-#, c-format
-msgid "%s: Error setting %s to %s"
-msgstr "%s: %s を %s に設定する際にエラーが発生しました"
-
-#: daemon/gdm-server.c:535
-#, c-format
-msgid "%s: Server priority couldn’t be set to %d: %s"
-msgstr "%s: サーバーの優先度を %d にセットできませんでした: %s"
-
-#: daemon/gdm-server.c:690
-#, c-format
-msgid "%s: Empty server command for display %s"
-msgstr "%s: ディスプレイ (%s) のサーバーコマンドが空です"
 
 #: daemon/gdm-session-auditor.c:88
 msgid "Username"
@@ -189,139 +95,105 @@ msgstr "ディスプレイデバイス"
 msgid "The display device"
 msgstr "ディスプレイデバイス"
 
-#: daemon/gdm-session.c:1444
+#: daemon/gdm-session.c:1430
 msgid "Could not create authentication helper process"
 msgstr "認証ヘルパープロセスを作成できませんでした"
 
-#: daemon/gdm-session-worker.c:813
+#: daemon/gdm-session-worker.c:807
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
 msgstr "パスワード認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:816
+#: daemon/gdm-session-worker.c:810
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
 msgstr "自動ログインの試行回数上限に達しました。別の認証方法をお試しください"
 
-#: daemon/gdm-session-worker.c:819
+#: daemon/gdm-session-worker.c:813
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
 msgstr "指紋認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:822
+#: daemon/gdm-session-worker.c:816
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
 msgstr "スマートカード認証の試行回数上限に達しました。別の方法をお試しください"
 
-#: daemon/gdm-session-worker.c:824
+#: daemon/gdm-session-worker.c:818
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr "認証の試行回数上限に達しました。別の方法をお試しください"
 
 # メッセージが一瞬しか表示されないため、なるべく短い訳にした。Sorry は省略。
-#: daemon/gdm-session-worker.c:831
+#: daemon/gdm-session-worker.c:825
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr "パスワード認証が機能しませんでした。もう一度お試しください。"
 
-#: daemon/gdm-session-worker.c:834
+#: daemon/gdm-session-worker.c:828
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr "自動ログインが機能しませんでした。もう一度お試しください。"
 
-#: daemon/gdm-session-worker.c:837
+#: daemon/gdm-session-worker.c:831
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr "指紋認証が機能しませんでした。もう一度お試しください。"
 
-#: daemon/gdm-session-worker.c:840
+#: daemon/gdm-session-worker.c:834
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr "スマートカード認証が機能しませんでした。もう一度お試しください。"
 
-#: daemon/gdm-session-worker.c:842
+#: daemon/gdm-session-worker.c:836
 msgid "Sorry, that didn’t work. Please try again."
 msgstr "認証が機能しませんでした。もう一度お試しください。"
 
-#: daemon/gdm-session-worker.c:857
+#: daemon/gdm-session-worker.c:851
 msgid "Your account was given a time limit that’s now passed."
 msgstr "アカウントに設定されていた有効期限が切れました。"
 
-#: daemon/gdm-session-worker.c:1258
+#: daemon/gdm-session-worker.c:1208
 msgid "Username:"
 msgstr "ユーザー名:"
 
-#: daemon/gdm-session-worker.c:1675 daemon/gdm-session-worker.c:1692
+#: daemon/gdm-session-worker.c:1625 daemon/gdm-session-worker.c:1642
 msgid "no user account available"
 msgstr "利用可能なユーザーアカウントがありません"
 
-#: daemon/gdm-session-worker.c:1719
+#: daemon/gdm-session-worker.c:1669
 msgid "Unable to change to user"
 msgstr "ユーザーに変更できません"
 
-#: daemon/gdm-wayland-session.c:531
+#: daemon/gdm-wayland-session.c:507
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "GNOME ディスプレイマネージャー Wayland セッションランチャー"
 
-#: daemon/gdm-xdmcp-display-factory.c:614
-msgid "Could not create socket!"
-msgstr "ソケットを生成できませんでした!"
-
-#: daemon/gdm-x-session.c:882
-msgid "Run program through /etc/gdm/Xsession wrapper script"
-msgstr "/etc/gdm/Xsession ラッパースクリプトを介してプログラムを実行する"
-
-#: daemon/gdm-x-session.c:883
-msgid "Listen on TCP socket"
-msgstr "TCP ソケットで待機する"
-
-#: daemon/gdm-x-session.c:895
-msgid "GNOME Display Manager X Session Launcher"
-msgstr "GNOME ディスプレイマネージャー X セッションランチャー"
-
-#: daemon/main.c:126 daemon/main.c:139
+#: daemon/main.c:124 daemon/main.c:137
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "PID ファイル %s を書き込めません: ディスクの空き容量が不足している可能性があ"
 "りますす: %s"
 
-#: daemon/main.c:197
-#, c-format
-msgid "Can’t find the GDM user “%s”. Aborting!"
-msgstr "GDM ユーザー “%s” が見つかりません。処理を中止します!"
-
-#: daemon/main.c:203
-msgid "The GDM user should not be root. Aborting!"
-msgstr "GDM ユーザーは root であってはなりません。処理を中止します!"
-
-#: daemon/main.c:209
-#, c-format
-msgid "Can’t find the GDM group “%s”. Aborting!"
-msgstr "GDM グループ “%s” が見つかりません。処理を中止します!"
-
-#: daemon/main.c:215
-msgid "The GDM group should not be root. Aborting!"
-msgstr "GDM グループは root であってはいけません。処理を中止します!"
-
-#: daemon/main.c:283
+#: daemon/main.c:222
 msgid "Make all warnings fatal"
 msgstr "すべての警告を致命的エラーにする"
 
-#: daemon/main.c:284
+#: daemon/main.c:223
 msgid "Exit after a time (for debugging)"
 msgstr "一定時間経過後に終了する (デバッグ用)"
 
-#: daemon/main.c:285
+#: daemon/main.c:224
 msgid "Print GDM version"
 msgstr "GDM のバージョンを表示する"
 
-#: daemon/main.c:296
+#: daemon/main.c:235
 msgid "GNOME Display Manager"
 msgstr "GNOME ディスプレイマネージャー"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:316
+#: daemon/main.c:255
 msgid "Only the root user can run GDM"
 msgstr "root ユーザーのみが GDM を起動できます"
 
@@ -330,6 +202,30 @@ msgstr "root ユーザーのみが GDM を起動できます"
 #: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager セッションワーカー"
+
+#: data/gnome-greeter.desktop.in:2
+msgid "GNOME Greeter"
+msgstr "GNOME ログイン画面"
+
+#: data/gnome-greeter.desktop.in:3
+msgid "The default GNOME Greeter session"
+msgstr "GNOME ログイン画面のデフォルトセッション"
+
+#: data/gnome-initial-setup.desktop.in:2
+msgid "GNOME Initial Setup"
+msgstr "GNOME 初期設定"
+
+#: data/gnome-initial-setup.desktop.in:3
+msgid "The GNOME Initial Setup session"
+msgstr "GNOME 初期設定のセッション"
+
+#: data/org.gnome.displaymanager.policy:11
+msgid "Allow managing user sessions"
+msgstr "ユーザーセッションの管理を許可する"
+
+#: data/org.gnome.displaymanager.policy:12
+msgid "Authentication is required to start or stop a user session"
+msgstr "ユーザーセッションを開始または停止するには認証が必要です"
 
 #: data/org.gnome.login-screen.gschema.xml:11
 msgid "Whether or not to allow fingerprint readers for login"
@@ -631,7 +527,7 @@ msgstr ""
 msgid "Failed to run a required distro hook: "
 msgstr "必須のディストロフックの実行に失敗しました: "
 
-#: utils/gdm-config.c:1515 utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:1515
 msgid "COMMAND"
 msgstr "COMMAND"
 
@@ -748,27 +644,122 @@ msgstr "ユーザーがリクエストをキャンセルしました"
 msgid "Failed to reset %s setting: "
 msgstr "%s 設定のリセットに失敗しました: "
 
-#: utils/gdmflexiserver.c:45
-msgid "Only the VERSION command is supported"
-msgstr "VERSION コマンドのみがサポートされています"
+#~ msgid "_Refresh"
+#~ msgstr "更新(_R)"
 
-#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
-#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
-msgid "Ignored — retained for compatibility"
-msgstr "無視されます — 下位互換性のために残されている"
+#~ msgid "_Cancel"
+#~ msgstr "キャンセル(_C)"
 
-#: utils/gdmflexiserver.c:48
-msgid "Debugging output"
-msgstr "デバッグ情報を出力する"
+#~ msgid "C_onnect"
+#~ msgstr "接続(_O)"
 
-#: utils/gdmflexiserver.c:52
-msgid "Version of this application"
-msgstr "このアプリケーションのバージョン"
+#~ msgid "Select System"
+#~ msgstr "システムの選択"
 
-#. Option parsing
-#: utils/gdmflexiserver.c:137
-msgid "— New GDM login"
-msgstr "— 新しい GDM ログイン"
+#~ msgid "XDMCP: Could not create XDMCP buffer!"
+#~ msgstr "XDMCP: XDMCP のバッファーを生成できませんでした!"
+
+#~ msgid "XDMCP: Could not read XDMCP header!"
+#~ msgstr "XDMCP: XDMCP のヘッダーを読み取れませんでした!"
+
+#~ msgid "XDMCP: Incorrect XDMCP version!"
+#~ msgstr "XDMCP: XDMCP のバージョンが間違っています!"
+
+#~ msgid "XDMCP: Unable to parse address"
+#~ msgstr "XDMCP: アドレスを解析できません"
+
+#, c-format
+#~ msgid "Could not find user “%s” on system"
+#~ msgstr "システムに“%s”というユーザーは見つかりませんでした"
+
+#~ msgid ""
+#~ "Could not start the X server (your graphical environment) due to an "
+#~ "internal error. Please contact your system administrator or check your "
+#~ "syslog to diagnose. In the meantime this display will be disabled.  "
+#~ "Please restart GDM when the problem is corrected."
+#~ msgstr ""
+#~ "内部エラーのため、X サーバー (グラフィカル環境) を開始できませんでした。シ"
+#~ "ステム管理者に問い合わせるか、syslog を確認して調査してください。この間、"
+#~ "このディスプレイは無効になります。問題が解決したら、GDM を再起動してくださ"
+#~ "い。"
+
+#~ msgid "Chooser session unavailable"
+#~ msgstr "選択セッションが利用できません"
+
+#, c-format
+#~ msgid "Server was to be spawned by user %s but that user doesn’t exist"
+#~ msgstr ""
+#~ "ユーザー %s としてサーバーを起動しようとしましたが、そのようなユーザーは存"
+#~ "在しません"
+
+#, c-format
+#~ msgid "Couldn’t set groupid to %d"
+#~ msgstr "グループ ID を %d に設定できませんでした"
+
+#, c-format
+#~ msgid "initgroups () failed for %s"
+#~ msgstr "%s に対する initgroups () の呼び出しに失敗しました"
+
+#, c-format
+#~ msgid "Couldn’t set userid to %d"
+#~ msgstr "ユーザー ID を %d に設定できませんでした"
+
+#, c-format
+#~ msgid "%s: Could not open log file for display %s!"
+#~ msgstr "%s: ディスプレイ (%s) のログファイルを開けません!"
+
+#, c-format
+#~ msgid "%s: Error setting %s to %s"
+#~ msgstr "%s: %s を %s に設定する際にエラーが発生しました"
+
+#, c-format
+#~ msgid "%s: Server priority couldn’t be set to %d: %s"
+#~ msgstr "%s: サーバーの優先度を %d にセットできませんでした: %s"
+
+#, c-format
+#~ msgid "%s: Empty server command for display %s"
+#~ msgstr "%s: ディスプレイ (%s) のサーバーコマンドが空です"
+
+#~ msgid "Could not create socket!"
+#~ msgstr "ソケットを生成できませんでした!"
+
+#~ msgid "Run program through /etc/gdm/Xsession wrapper script"
+#~ msgstr "/etc/gdm/Xsession ラッパースクリプトを介してプログラムを実行する"
+
+#~ msgid "Listen on TCP socket"
+#~ msgstr "TCP ソケットで待機する"
+
+#~ msgid "GNOME Display Manager X Session Launcher"
+#~ msgstr "GNOME ディスプレイマネージャー X セッションランチャー"
+
+#, c-format
+#~ msgid "Can’t find the GDM user “%s”. Aborting!"
+#~ msgstr "GDM ユーザー “%s” が見つかりません。処理を中止します!"
+
+#~ msgid "The GDM user should not be root. Aborting!"
+#~ msgstr "GDM ユーザーは root であってはなりません。処理を中止します!"
+
+#, c-format
+#~ msgid "Can’t find the GDM group “%s”. Aborting!"
+#~ msgstr "GDM グループ “%s” が見つかりません。処理を中止します!"
+
+#~ msgid "The GDM group should not be root. Aborting!"
+#~ msgstr "GDM グループは root であってはいけません。処理を中止します!"
+
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "VERSION コマンドのみがサポートされています"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "無視されます — 下位互換性のために残されている"
+
+#~ msgid "Debugging output"
+#~ msgstr "デバッグ情報を出力する"
+
+#~ msgid "Version of this application"
+#~ msgstr "このアプリケーションのバージョン"
+
+#~ msgid "— New GDM login"
+#~ msgstr "— 新しい GDM ログイン"
 
 #, c-format
 #~ msgid "Failed to create ran once marker dir %s: %s"
