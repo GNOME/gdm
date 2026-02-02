@@ -84,11 +84,6 @@ GdmGreeter        *gdm_client_get_greeter_sync          (GdmClient *client,
                                                          GCancellable     *cancellable,
                                                          GError          **error);
 
-void               gdm_client_get_remote_greeter        (GdmClient     *client,
-                                                         GCancellable         *cancellable,
-                                                         GAsyncReadyCallback   callback,
-                                                         gpointer              user_data);
-
 G_END_DECLS
 
 #endif /* __GDM_CLIENT_H */
