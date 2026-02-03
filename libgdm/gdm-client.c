@@ -292,8 +292,8 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
                 g_debug ("Enabled extensions[%lu] = %s", i, client->enabled_extensions[i]);
                 g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], NULL);
 
-                if (strcmp (client->enabled_extensions[i],
-                            gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
+                if (g_str_equal (client->enabled_extensions[i],
+                                 gdm_user_verifier_choice_list_interface_info ()->name)) {
                         g_hash_table_insert (user_verifier_extensions, client->enabled_extensions[i], NULL);
                         gdm_user_verifier_choice_list_proxy_new (connection,
                                                                  G_DBUS_PROXY_FLAGS_NONE,
@@ -819,8 +819,8 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                 return g_object_ref (client->user_verifier);
 
         for (i = 0; client->enabled_extensions[i] != NULL; i++) {
-                if (strcmp (client->enabled_extensions[i],
-                            gdm_user_verifier_choice_list_interface_info ()->name) == 0) {
+                if (g_str_equal (client->enabled_extensions[i],
+                                 gdm_user_verifier_choice_list_interface_info ()->name)) {
                         GdmUserVerifierChoiceList *choice_list_interface;
                         choice_list_interface = gdm_user_verifier_choice_list_proxy_new_sync (connection,
                                                                                               G_DBUS_PROXY_FLAGS_NONE,
