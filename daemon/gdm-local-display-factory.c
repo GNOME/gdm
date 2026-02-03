@@ -264,8 +264,6 @@ on_display_status_changed (GdmDisplay             *display,
         char            *session_id = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
-        gboolean         registered = FALSE;
-
 
         if (!factory->is_started)
                 return;
@@ -320,11 +318,7 @@ on_display_status_changed (GdmDisplay             *display,
         case GDM_DISPLAY_PREPARED:
                 break;
         case GDM_DISPLAY_MANAGED:
-                g_object_get (display, "session-registered", &registered, NULL);
-                if (registered) {
-                        g_debug ("GdmLocalDisplayFactory: session registered on display, looking for any background displays to kill");
-                        finish_waiting_displays_on_seat (factory, "seat0");
-                }
+                finish_waiting_displays_on_seat (factory, "seat0");
                 break;
         case GDM_DISPLAY_WAITING_TO_FINISH:
                 break;
