@@ -3033,9 +3033,9 @@ gdm_session_start_session (GdmSession *self,
         command = get_session_command (self);
 
         if (g_strcmp0 (self->session_type, "wayland") == 0) {
-                gboolean register_session = !gdm_session_session_registers (self);
+                gboolean needs_registration = !gdm_session_session_registers (self);
                 program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
-                                           register_session ? "--register-session " : "",
+                                           needs_registration ? "--handle-registration " : "",
                                            command);
         } else {
                 program = g_strdup_printf (LIBEXECDIR "/gdm-x-session \"%s\"", command);
