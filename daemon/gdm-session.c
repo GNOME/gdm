@@ -2286,8 +2286,9 @@ worker_died (GdmSessionWorkerJob    *job,
              GdmSessionConversation *conversation)
 {
         GdmSession *self = conversation->session;
+        int pid = conversation->worker_pid;
 
-        g_debug ("GdmSession: Worker job died: %d", signum);
+        g_warning ("GdmSession: Worker job (pid:%d) died: %d", pid, signum);
 
         g_hash_table_steal (self->conversations, conversation->service_name);
 
