@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-12-22 15:46+0000\n"
+"POT-Creation-Date: 2026-01-20 19:30+0000\n"
 "PO-Revision-Date: 2026-01-09 05:30+0900\n"
 "Last-Translator: Makoto Sakaguchi <ycco34vx@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
@@ -95,7 +95,7 @@ msgstr "ディスプレイデバイス"
 msgid "The display device"
 msgstr "ディスプレイデバイス"
 
-#: daemon/gdm-session.c:1430
+#: daemon/gdm-session.c:1431
 msgid "Could not create authentication helper process"
 msgstr "認証ヘルパープロセスを作成できませんでした"
 
@@ -228,10 +228,63 @@ msgid "Authentication is required to start or stop a user session"
 msgstr "ユーザーセッションを開始または停止するには認証が必要です"
 
 #: data/org.gnome.login-screen.gschema.xml:11
+#, fuzzy
+#| msgid "Whether or not to allow smartcard readers for login"
+msgid "Whether or not to allow switchable authentication for login"
+msgstr "ログイン時にスマートカードリーダーの使用を許可するかどうか"
+
+#: data/org.gnome.login-screen.gschema.xml:14
+#, fuzzy
+#| msgid ""
+#| "The login screen can optionally show a small image to provide site "
+#| "administrators and distributions a way to display branding."
+msgid ""
+"The login screen can optionally allow a single PAM service to provide "
+"multiple authentication mechanisms via a GDM PAM."
+msgstr ""
+"ログイン画面では、サイト管理者やディストリビューションがブランドを表示する手"
+"段として、オプションで小さな画像を表示できます。"
+
+#: data/org.gnome.login-screen.gschema.xml:21
+#, fuzzy
+#| msgid "Whether or not to allow smartcard readers for login"
+msgid "Whether or not to allow authentication via external web site"
+msgstr "ログイン時にスマートカードリーダーの使用を許可するかどうか"
+
+#: data/org.gnome.login-screen.gschema.xml:24
+#, fuzzy
+#| msgid ""
+#| "The login screen can optionally allow users who have smartcards to log in "
+#| "using those smartcards."
+msgid ""
+"The login screen can optionally allow users to authenticate via web login."
+msgstr ""
+"ログイン画面では、スマートカードを登録したユーザーがそのスマートカードを使用"
+"してログインすることをオプションで許可できます。"
+
+#: data/org.gnome.login-screen.gschema.xml:31
+#, fuzzy
+#| msgid "Whether or not to allow smartcard readers for login"
+msgid "Whether or not to allow authentication using a passkey"
+msgstr "ログイン時にスマートカードリーダーの使用を許可するかどうか"
+
+#: data/org.gnome.login-screen.gschema.xml:34
+#, fuzzy
+#| msgid ""
+#| "The login screen can optionally allow users who have smartcards to log in "
+#| "using those smartcards."
+msgid ""
+"The login screen can optionally allow users who have passkeys to log in "
+"using those passkeys."
+msgstr ""
+"ログイン画面では、スマートカードを登録したユーザーがそのスマートカードを使用"
+"してログインすることをオプションで許可できます。"
+
+#: data/org.gnome.login-screen.gschema.xml:41
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "ログイン時に指紋リーダーの使用を許可するかどうか"
 
-#: data/org.gnome.login-screen.gschema.xml:14
+#: data/org.gnome.login-screen.gschema.xml:44
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -239,11 +292,11 @@ msgstr ""
 "ログイン画面では、指紋を登録したユーザーがその指紋を使用してログインすること"
 "をオプションで許可できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:21
+#: data/org.gnome.login-screen.gschema.xml:51
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "ログイン時にスマートカードリーダーの使用を許可するかどうか"
 
-#: data/org.gnome.login-screen.gschema.xml:24
+#: data/org.gnome.login-screen.gschema.xml:54
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -251,11 +304,11 @@ msgstr ""
 "ログイン画面では、スマートカードを登録したユーザーがそのスマートカードを使用"
 "してログインすることをオプションで許可できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:31
+#: data/org.gnome.login-screen.gschema.xml:61
 msgid "Whether or not to allow passwords for login"
 msgstr "ログイン時にパスワードの使用を許可するかどうか"
 
-#: data/org.gnome.login-screen.gschema.xml:34
+#: data/org.gnome.login-screen.gschema.xml:64
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -263,12 +316,12 @@ msgstr ""
 "ログイン画面では、パスワード認証を無効化し、ユーザーにスマートカードまたは指"
 "紋認証の使用を強制できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:41
-#: data/org.gnome.login-screen.gschema.xml:51
+#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:81
 msgid "Path to small image at top of user list"
 msgstr "ユーザーリストの上部に表示する小さな画像へのパス"
 
-#: data/org.gnome.login-screen.gschema.xml:44
+#: data/org.gnome.login-screen.gschema.xml:74
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -276,7 +329,7 @@ msgstr ""
 "ログイン画面では、サイト管理者やディストリビューションがブランドを表示する手"
 "段として、オプションで小さな画像を表示できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:54
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -284,11 +337,11 @@ msgstr ""
 "フォールバックログイン画面では、サイト管理者やディストリビューションがブラン"
 "ドを表示する手段として、オプションで小さな画像を表示できます。"
 
-#: data/org.gnome.login-screen.gschema.xml:61
+#: data/org.gnome.login-screen.gschema.xml:91
 msgid "Avoid showing user list"
 msgstr "ユーザー一覧を表示しない"
 
-#: data/org.gnome.login-screen.gschema.xml:64
+#: data/org.gnome.login-screen.gschema.xml:94
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -296,54 +349,54 @@ msgstr ""
 "ログイン画面では通常、ログイン可能なユーザーの一覧が表示されます。この設定を"
 "切り替えることで、ユーザーリストの表示を無効にできます。"
 
-#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:101
 msgid "Enable showing the banner message"
 msgstr "バナーメッセージの表示を有効にする"
 
-#: data/org.gnome.login-screen.gschema.xml:74
+#: data/org.gnome.login-screen.gschema.xml:104
 msgid "Set to true to show the banner message text."
 msgstr "バナーメッセージテキストを表示するには true に設定します。"
 
-#: data/org.gnome.login-screen.gschema.xml:80
+#: data/org.gnome.login-screen.gschema.xml:110
 msgid "Banner message source"
 msgstr "バナーメッセージソース"
 
-#: data/org.gnome.login-screen.gschema.xml:83
+#: data/org.gnome.login-screen.gschema.xml:113
 msgid "The source of the text banner message on the login screen."
 msgstr "ログイン画面のテキストバナーメッセージの取得元。"
 
-#: data/org.gnome.login-screen.gschema.xml:89
+#: data/org.gnome.login-screen.gschema.xml:119
 msgid "Banner message text"
 msgstr "バナーメッセージテキスト"
 
-#: data/org.gnome.login-screen.gschema.xml:92
+#: data/org.gnome.login-screen.gschema.xml:122
 msgid "Text banner message to show in the login window."
 msgstr "ログインウィンドウに表示するテキストバナーメッセージ。"
 
-#: data/org.gnome.login-screen.gschema.xml:98
+#: data/org.gnome.login-screen.gschema.xml:128
 msgid "Banner message path"
 msgstr "バナーメッセージパス"
 
-#: data/org.gnome.login-screen.gschema.xml:101
+#: data/org.gnome.login-screen.gschema.xml:131
 msgid "Path to text file with banner message to show in the login window."
 msgstr ""
 "ログインウィンドウに表示するバナーメッセージが記載されたテキストファイルのパ"
 "ス。"
 
-#: data/org.gnome.login-screen.gschema.xml:107
+#: data/org.gnome.login-screen.gschema.xml:137
 msgid "Disable showing the restart buttons"
 msgstr "再起動ボタンの表示を無効にする"
 
-#: data/org.gnome.login-screen.gschema.xml:110
+#: data/org.gnome.login-screen.gschema.xml:140
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "ログインウィンドウの再起動ボタンの表示を無効にするには true に設定します。"
 
-#: data/org.gnome.login-screen.gschema.xml:116
+#: data/org.gnome.login-screen.gschema.xml:146
 msgid "Number of allowed authentication failures"
 msgstr "許可される認証失敗回数"
 
-#: data/org.gnome.login-screen.gschema.xml:119
+#: data/org.gnome.login-screen.gschema.xml:149
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -545,12 +598,12 @@ msgid ""
 "Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
 "コマンド:\n"
-"  help               この情報を表示します\n"
-"  password    パスワード認証を構成します\n"
+"  help         この情報を表示します\n"
+"  password     パスワード認証を構成します\n"
 "  fingerprint  指紋認証を構成します\n"
-"  smartcard   スマートカード認証を構成します\n"
-"  reset             既定の構成にリセットします\n"
-"  show            現在の構成を表示します\n"
+"  smartcard    スマートカード認証を構成します\n"
+"  reset        既定の構成にリセットします\n"
+"  show         現在の構成を表示します\n"
 "\n"
 "各コマンドのヘルプを表示するには「%s COMMAND --help」を使用してください。\n"
 
