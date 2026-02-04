@@ -1051,6 +1051,42 @@ out:
 }
 
 static void
+set_up_vt_for_graphics_mode (int vt_number)
+{
+        int fd;
+        int current_mode = -1;
+        char tty_path[32];
+
+        /* Open the target VT and prepare it for graphics mode.
+         * We need to hide the cursor and set KD_GRAPHICS before switching
+         * to prevent the text cursor from briefly appearing during the switch.
+         */
+        g_snprintf (tty_path, sizeof (tty_path), "/dev/tty%d", vt_number);
+        fd = open (tty_path, O_RDWR | O_NOCTTY);
+        if (fd < 0) {
+                g_debug ("GdmSessionWorker: couldn't open VT %d: %m", vt_number);
+                return;
+        }
+
+        ioctl (fd, KDGETMODE, &current_mode);
+
+        /* Hide cursor while still in text mode to prevent it from
+         * briefly appearing during the VT switch.
+         */
+        if (current_mode == KD_TEXT) {
+                static const char *hide_cursor_sequence = "\033[?25l";
+                write (fd, hide_cursor_sequence, strlen (hide_cursor_sequence));
+        }
+
+        if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
+                g_debug ("GdmSessionWorker: couldn't set graphics mode on VT %d: %m",
+                         vt_number);
+        }
+
+        close (fd);
+}
+
+static void
 jump_to_vt (GdmSessionWorker  *worker,
             int                vt_number)
 {
@@ -1062,19 +1098,14 @@ jump_to_vt (GdmSessionWorker  *worker,
         g_debug ("GdmSessionWorker: jumping to VT %d", vt_number);
         active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
 
+        set_up_vt_for_graphics_mode (vt_number);
+
         if (worker->session_tty_fd != -1) {
-                static const char *clear_screen_escape_sequence = "\33[H\33[2J";
-
-                /* let's make sure the new VT is clear */
-                write (worker->session_tty_fd,
-                       clear_screen_escape_sequence,
-                       sizeof (clear_screen_escape_sequence));
-
                 fd = worker->session_tty_fd;
 
                 handle_terminal_vt_switches (worker, fd);
 
-                g_debug ("GdmSessionWorker: first setting graphics mode to prevent flicker");
+                g_debug ("GdmSessionWorker: setting graphics mode to prevent flicker");
                 if (ioctl (fd, KDSETMODE, KD_GRAPHICS) < 0) {
                         g_debug ("GdmSessionWorker: couldn't set graphics mode: %m");
                 }
