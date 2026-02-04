@@ -123,11 +123,12 @@ gdm_settings_direct_get_uint (const char        *key,
         g_return_val_if_fail (value != NULL, FALSE);
 
         ret = gdm_settings_direct_get_int (key, &intvalue);
-   
-        if (intvalue >= 0)
-           *value = intvalue;
-        else
-           ret = FALSE;
+
+        if (ret && intvalue >= 0) {
+                *value = intvalue;
+        } else {
+                ret = FALSE;
+        }
 
         return ret;
 }

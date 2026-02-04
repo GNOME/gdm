@@ -244,7 +244,7 @@ on_authenticate_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authenticate_finish (proxy, res, &error);
@@ -277,7 +277,7 @@ on_authorize_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authorize_finish (proxy, res, &error);
@@ -305,7 +305,7 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_establish_credentials_finish (proxy, res, &error);
@@ -2966,7 +2966,7 @@ on_start_program_cb (GdmDBusWorker *worker,
         GdmSession *self;
         char *service_name;
 
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean worked;
         GPid pid;
 
@@ -3182,7 +3182,7 @@ gdm_session_set_timed_login_details (GdmSession *self,
         g_return_if_fail (username != NULL);
 
         g_debug ("GdmSession: timed login details %s %d", username, delay);
-        self->timed_login_username = g_strdup (username);
+        g_set_str (&self->timed_login_username, username);
         self->timed_login_delay = delay;
 }
 
@@ -3217,7 +3217,7 @@ gdm_session_is_frozen (GdmSession *self)
 
         for (gsize i = 0; arr[i] != NULL; i++) {
                 if (g_str_equal (arr[i], "frozen"))
-                        return g_str_equal (arr[i + 1], "1");
+                        return g_strcmp0 (arr[i + 1], "1") == 0;
         }
         return FALSE;
 }
@@ -3724,6 +3724,7 @@ gdm_session_finalize (GObject *object)
         g_free (self->selected_session);
         g_free (self->saved_session);
         g_free (self->saved_language);
+        g_free (self->timed_login_username);
 
         g_free (self->fallback_session_name);
 

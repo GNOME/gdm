@@ -121,8 +121,6 @@ gdm_ensure_dir (const char  *path,
                 gboolean     recursive_chown,
                 GError     **error)
 {
-        g_autoptr (GFile) gio_dir = NULL;
-
         if (g_mkdir_with_parents (path, 0755) < 0) {
                 int errsv = errno;
                 g_set_error (error,
