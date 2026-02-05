@@ -28,7 +28,7 @@
 #include <pwd.h>
 #include <errno.h>
 
-#define REGISTER_SESSION_TIMEOUT 10
+#define REGISTER_DISPLAY_TIMEOUT 10
 
 #define        VE_IGNORE_EINTR(expr) \
         do {                         \

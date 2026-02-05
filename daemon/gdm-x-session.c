@@ -63,7 +63,7 @@ typedef struct
         char         *session_command;
         int           session_exit_status;
 
-        guint         register_session_id;
+        guint         register_display_id;
 
         GMainLoop    *main_loop;
 
@@ -748,7 +748,7 @@ clear_state (State **out_state)
         g_clear_pointer (&state->auth_file, g_free);
         g_clear_pointer (&state->display_name, g_free);
         g_clear_pointer (&state->main_loop, g_main_loop_unref);
-        g_clear_handle_id (&state->register_session_id, g_source_remove);
+        g_clear_handle_id (&state->register_display_id, g_source_remove);
         *out_state = NULL;
 }
 
@@ -764,25 +764,31 @@ on_sigterm (State *state)
         return G_SOURCE_CONTINUE;
 }
 
-static gboolean
-register_session_timeout_cb (gpointer user_data)
+static void
+register_display_timeout_cb (gpointer user_data)
 {
-        State *state;
-        GError *error = NULL;
+        State *state = (State *) user_data;
+        g_autoptr(GError) error = NULL;
 
-        state = (State *) user_data;
+        if (!gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
+                                                          state->cancellable,
+                                                          &error))
+                g_warning ("Could not register display: %s", error->message);
+}
 
-        gdm_dbus_manager_call_register_session_sync (state->display_manager_proxy,
-                                                     g_variant_new ("a{sv}", NULL),
-                                                     state->cancellable,
-                                                     &error);
+static gboolean
+register_session (State *state)
+{
+        g_autoptr(GError) error = NULL;
 
-        if (error != NULL) {
+        if (!gdm_dbus_manager_call_register_session_sync (state->display_manager_proxy,
+                                                          state->cancellable,
+                                                          &error)) {
                 g_warning ("Could not register session: %s", error->message);
-                g_error_free (error);
+                return FALSE;
         }
 
-        return G_SOURCE_REMOVE;
+        return TRUE;
 }
 
 static gboolean
@@ -890,10 +896,16 @@ main (int    argc,
                 goto out;
         }
 
-        g_debug ("gdm-x-session: Will register session in %d seconds", REGISTER_SESSION_TIMEOUT);
-        state->register_session_id = g_timeout_add_seconds (REGISTER_SESSION_TIMEOUT,
-                                                            register_session_timeout_cb,
-                                                            state);
+        if (!register_session (state)) {
+                g_printerr ("Unable to register session with display manager\n");
+                exit_status = EX_SOFTWARE;
+                goto out;
+        }
+
+        g_debug ("gdm-x-session: Will register display in %d seconds", REGISTER_DISPLAY_TIMEOUT);
+        state->register_display_id = g_timeout_add_seconds_once (REGISTER_DISPLAY_TIMEOUT,
+                                                                 register_display_timeout_cb,
+                                                                 state);
 
         g_main_loop_run (state->main_loop);
 

@@ -649,9 +649,40 @@ find_user_session_for_display (GdmManager *self,
 }
 
 static gboolean
+gdm_manager_handle_register_display (GdmDBusManager        *manager,
+                                     GDBusMethodInvocation *invocation)
+{
+        GdmManager      *self = GDM_MANAGER (manager);
+        const char      *sender;
+        GDBusConnection *connection;
+        GdmDisplay      *display = NULL;
+
+        sender = g_dbus_method_invocation_get_sender (invocation);
+        connection = g_dbus_method_invocation_get_connection (invocation);
+        get_display_and_details_for_bus_sender (self, connection, sender, &display, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+        if (display == NULL) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("No display available"));
+
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        g_object_set (G_OBJECT (display),
+                      "status", GDM_DISPLAY_MANAGED,
+                      NULL);
+
+        gdm_dbus_manager_complete_register_display (GDM_DBUS_MANAGER (manager),
+                                                    invocation);
+
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
 gdm_manager_handle_register_session (GdmDBusManager        *manager,
-                                     GDBusMethodInvocation *invocation,
-                                     GVariant              *details)
+                                     GDBusMethodInvocation *invocation)
 {
         GdmManager      *self = GDM_MANAGER (manager);
         const char      *sender;
@@ -672,7 +703,7 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
                                                                _("No display available"));
 
-                return TRUE;
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
         session = find_user_session_for_display (self, display);
@@ -687,14 +718,13 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
         }
 
         g_object_set (G_OBJECT (display),
-                      "status", GDM_DISPLAY_MANAGED,
                       "session-registered", TRUE,
                       NULL);
 
         gdm_dbus_manager_complete_register_session (GDM_DBUS_MANAGER (manager),
                                                     invocation);
 
-        return TRUE;
+        return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
 
 static gboolean
@@ -1085,6 +1115,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
 static void
 manager_interface_init (GdmDBusManagerIface *interface)
 {
+        interface->handle_register_display = gdm_manager_handle_register_display;
         interface->handle_register_session = gdm_manager_handle_register_session;
         interface->handle_open_session = gdm_manager_handle_open_session;
         interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
