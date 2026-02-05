@@ -1,3 +1,28 @@
+50.beta
+=======
+
+* Add support for "unified" authentication mechanism. Histrionically, each
+  authentication method went through its own PAM conversation. Now, we also
+  support running a single PAM conversation that runs multiple authentication
+  methods at once. This requires support from PAM modules like pam_sss
+* Introduce debugging for JSON PAM messages via $GDM_DEBUG_JSON_REQUESTS env var
+* Re-introduce a timeout while waiting for primary GPU to appear. There are edge
+  cases where there is a GPU (and thus Wayland will work) but none is labeled as
+  primary. Once the timeout expires we stop waiting for the primary GPU and just
+  launch the session on any available GPU.
+* Authentication failures caused by PAM services reporting themselves as
+  unavailable are no longer reported as failed authentication attempts. For
+  instance, fingerprint sensor timeouts are reported as a service unavailable
+  error, and we would previously log that as a failed authentication attempt.
+* "Service Unavailable" errors from PAM modules are no longer treated as failed
+  login attempts. Most notably, such errors are returned by fprintd whenever the
+  fingerprint sensor times out.
+* GDM now tries to shut down the session whenever the PAM worker process crashes
+* Partially un-merged the session and display registration steps that were merged
+  in 50.alpha, due to bugs that the change introduced
+* Misc. other bug fixes
+* Translation updates
+
 50.alpha.1
 ==========
 
