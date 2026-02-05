@@ -277,6 +277,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 "WINDOWPATH",
                 "XCURSOR_PATH",
                 "XDG_CONFIG_DIRS",
+                "XDG_DATA_DIRS",
                 NULL
         };
         g_autofree char *system_data_dirs = NULL;
@@ -358,8 +359,8 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                              g_strdup ("XDG_DATA_DIRS"),
                              g_strdup_printf ("%s:%s:%s",
                                               DATADIR "/gdm/greeter",
-                                              DATADIR,
-                                              system_data_dirs));
+                                              system_data_dirs,
+                                              DATADIR));
 
         g_object_get (launch_environment->session,
                       "supported-session-types",
