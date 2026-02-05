@@ -2286,13 +2286,19 @@ worker_died (GdmSessionWorkerJob    *job,
              GdmSessionConversation *conversation)
 {
         GdmSession *self = conversation->session;
+        int pid = conversation->worker_pid;
 
-        g_debug ("GdmSession: Worker job died: %d", signum);
+        g_warning ("GdmSession: Worker job (pid:%d) died: %d", pid, signum);
 
         g_hash_table_steal (self->conversations, conversation->service_name);
 
         g_object_ref (conversation->job);
         if (self->session_conversation == conversation) {
+                if (self->session_pid != -1) {
+                        g_debug ("GdmSession: Sending SIGTERM to session pid %d", self->session_pid);
+                        gdm_signal_pid (self->session_pid, SIGTERM);
+                }
+
                 g_signal_emit (self, signals[SESSION_DIED], 0, signum);
                 self->session_conversation = NULL;
         }
