@@ -17,154 +17,58 @@
 # Jonatan Zeidler <jonatan_zeidler@gmx.de>, 2015.
 # Tim Sabsch <tim@sabsch.com>, 2019.
 # Philipp Kiemle <l10n@prly.mozmail.com>, 2021, 2024-2025.
-# Jürgen Benvenuti <gastornis@posteo.org>, 2024.
+# Jürgen Benvenuti <gastornis@posteo.org>, 2024, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GDM master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
-"POT-Creation-Date: 2025-01-29 13:26+0000\n"
-"PO-Revision-Date: 2025-02-02 22:26+0100\n"
-"Last-Translator: Philipp Kiemle <l10n@prly.mozmail.com>\n"
+"POT-Creation-Date: 2026-02-05 11:21+0000\n"
+"PO-Revision-Date: 2026-02-05 22:18+0100\n"
+"Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.8\n"
 
-#: chooser/gdm-host-chooser-dialog.c:139
-msgid "_Refresh"
-msgstr "_Aktualisieren"
-
-#: chooser/gdm-host-chooser-dialog.c:140
-msgid "_Cancel"
-msgstr "_Abbrechen"
-
-#: chooser/gdm-host-chooser-dialog.c:141
-msgid "C_onnect"
-msgstr "_Verbinden"
-
-#: chooser/gdm-host-chooser-dialog.c:146
-msgid "Select System"
-msgstr "System auswählen"
-
-#: chooser/gdm-host-chooser-widget.c:255
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: XDMCP-Puffer konnte nicht angelegt werden!"
-
-#: chooser/gdm-host-chooser-widget.c:261
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP-Kopfzeilen konnten nicht gelesen werden!"
-
-#: chooser/gdm-host-chooser-widget.c:267
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Falsche XDMCP-Version!"
-
-#: chooser/gdm-host-chooser-widget.c:273
-msgid "XDMCP: Unable to parse address"
-msgstr "XDMCP: Adresse konnte nicht verarbeitet werden"
-
-#: common/gdm-common.c:307
+#: common/gdm-common.c:324
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ist kein zeichenorientiertes Gerät"
 
-#: common/gdm-common.c:346
+#: common/gdm-common.c:358
 msgid "Unable to create transient display: "
 msgstr "Vorübergehende Anzeige konnte nicht gestartet werden: "
 
-#: common/gdm-common.c:543
+#: common/gdm-common.c:555
 msgid "Could not identify the current session: "
 msgstr "Aktuelle Sitzung konnte nicht identifiziert werden: "
 
-#: common/gdm-common.c:552
+#: common/gdm-common.c:564
 msgid "Could not identify the current seat."
 msgstr "Aktuelle Sitzung kann nicht identifiziert werden."
 
-#: daemon/gdm-display-access-file.c:280 daemon/gdm-display-access-file.c:301
-#, c-format
-msgid "Could not find user “%s” on system"
-msgstr "Benutzer »%s« konnte nicht auf dem System gefunden werden"
-
-#: daemon/gdm-legacy-display.c:226
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Der X-Server (Ihre grafische Umgebung) konnte auf Grund eines internen "
-"Fehlers nicht gestartet werden. Bitte kontaktieren Sie den "
-"Systemadministrator oder überprüfen Sie zur Fehlerdiagnose das "
-"Systemprotokoll. Bis auf Weiteres wird diese Anzeige deaktiviert. Bitte "
-"starten Sie GDM neu, wenn der Fehler behoben ist."
-
-#: daemon/gdm-manager.c:762
+#: daemon/gdm-manager.c:668 daemon/gdm-manager.c:704
 msgid "No display available"
 msgstr "Keine Anzeige verfügbar"
 
-#: daemon/gdm-manager.c:860 daemon/gdm-manager.c:1188
+#: daemon/gdm-manager.c:754 daemon/gdm-manager.c:1059
 msgid "No session available"
 msgstr "Keine Sitzungen verfügbar"
 
-#: daemon/gdm-manager.c:879
-msgid "Chooser session unavailable"
-msgstr "Gewählte Sitzung ist nicht verfügbar"
-
-#: daemon/gdm-manager.c:895
+#: daemon/gdm-manager.c:770
 msgid "Can only be called before user is logged in"
 msgstr "Kann nur vor der Benutzeranmeldung aufgerufen werden"
 
-#: daemon/gdm-manager.c:906
+#: daemon/gdm-manager.c:782
 msgid "Caller not GDM"
 msgstr "Aufruf nicht durch GDM"
 
-#: daemon/gdm-manager.c:916
+#: daemon/gdm-manager.c:792
 msgid "Unable to open private communication channel"
 msgstr "Es kann kein privater Kommunikationskanal geöffnet werden"
-
-#: daemon/gdm-server.c:387
-#, c-format
-msgid "Server was to be spawned by user %s but that user doesn’t exist"
-msgstr ""
-"Server sollte für den Benutzer %s gestartet werden, aber dieser Benutzer "
-"existiert nicht"
-
-#: daemon/gdm-server.c:398 daemon/gdm-server.c:418 utils/gdm-config.c:505
-#, c-format
-msgid "Couldn’t set groupid to %d"
-msgstr "%d konnte nicht als Gruppenkennung festgelegt werden"
-
-#: daemon/gdm-server.c:404 utils/gdm-config.c:511
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () für %s gescheitert"
-
-#: daemon/gdm-server.c:410
-#, c-format
-msgid "Couldn’t set userid to %d"
-msgstr "%d konnte nicht als Benutzerkennung festgelegt werden"
-
-#: daemon/gdm-server.c:482
-#, c-format
-msgid "%s: Could not open log file for display %s!"
-msgstr "%s: Protokolldatei für Anzeige %s konnte nicht geöffnet werden!"
-
-#: daemon/gdm-server.c:503 daemon/gdm-server.c:509 daemon/gdm-server.c:515
-#, c-format
-msgid "%s: Error setting %s to %s"
-msgstr "%s: %s konnte nicht auf %s gesetzt werden"
-
-#: daemon/gdm-server.c:535
-#, c-format
-msgid "%s: Server priority couldn’t be set to %d: %s"
-msgstr "%s: Priorität des Servers konnte nicht auf %d gesetzt werden: %s"
-
-#: daemon/gdm-server.c:690
-#, c-format
-msgid "%s: Empty server command for display %s"
-msgstr "%s: Leerer Server-Befehl für Anzeige %s"
 
 #: daemon/gdm-session-auditor.c:88
 msgid "Username"
@@ -190,11 +94,11 @@ msgstr "Anzeigegerät"
 msgid "The display device"
 msgstr "Das Anzeigegerät"
 
-#: daemon/gdm-session.c:1444
+#: daemon/gdm-session.c:1436
 msgid "Could not create authentication helper process"
 msgstr "Hilfsprozess zur Legitimierung konnte nicht erstellt werden"
 
-#: daemon/gdm-session-worker.c:813
+#: daemon/gdm-session-worker.c:807
 msgid ""
 "You reached the maximum password authentication attempts, please try another "
 "method"
@@ -202,7 +106,7 @@ msgstr ""
 "Sie haben die maximale Anzahl an Passwort-Legitimierungsversuchen erreicht. "
 "Bitte versuchen Sie eine andere Legitimierungsmethode"
 
-#: daemon/gdm-session-worker.c:816
+#: daemon/gdm-session-worker.c:810
 msgid ""
 "You reached the maximum auto login attempts, please try another "
 "authentication method"
@@ -210,7 +114,7 @@ msgstr ""
 "Sie haben die maximale Anzahl an automatischen Legitimierungsversuchen "
 "erreicht. Bitte versuchen Sie eine andere Legitimierungsmethode"
 
-#: daemon/gdm-session-worker.c:819
+#: daemon/gdm-session-worker.c:813
 msgid ""
 "You reached the maximum fingerprint authentication attempts, please try "
 "another method"
@@ -218,7 +122,7 @@ msgstr ""
 "Sie haben die maximale Anzahl an Fingerabdruck-Legitimierungsversuchen "
 "erreicht. Bitte versuchen Sie eine andere Legitimierungsmethode"
 
-#: daemon/gdm-session-worker.c:822
+#: daemon/gdm-session-worker.c:816
 msgid ""
 "You reached the maximum smart card authentication attempts, please try "
 "another method"
@@ -226,134 +130,89 @@ msgstr ""
 "Sie haben die maximale Anzahl an Schlüsselkarten-Legitimierungsversuchen "
 "erreicht. Bitte versuchen Sie eine andere Legitimierungsmethode"
 
-#: daemon/gdm-session-worker.c:824
+#: daemon/gdm-session-worker.c:818
 msgid ""
 "You reached the maximum authentication attempts, please try another method"
 msgstr ""
 "Sie haben die maximale Anzahl an Legitimierungsversuchen erreicht. Bitte "
 "versuchen Sie eine andere Legitimierungsmethode"
 
-#: daemon/gdm-session-worker.c:831
+#: daemon/gdm-session-worker.c:825
 msgid "Sorry, password authentication didn’t work. Please try again."
 msgstr ""
 "Die Passwort-Legitimierung hat leider nicht geklappt. Bitte versuchen Sie es "
 "erneut."
 
-#: daemon/gdm-session-worker.c:834
+#: daemon/gdm-session-worker.c:828
 msgid "Sorry, auto login didn’t work. Please try again."
 msgstr ""
 "Die automatische Anmeldung hat leider nicht geklappt. Bitte versuchen Sie es "
 "erneut."
 
-#: daemon/gdm-session-worker.c:837
+#: daemon/gdm-session-worker.c:831
 msgid "Sorry, fingerprint authentication didn’t work. Please try again."
 msgstr ""
 "Die Fingerabdruck-Legitimierung hat leider nicht geklappt. Bitte versuchen "
 "Sie es erneut."
 
-#: daemon/gdm-session-worker.c:840
+#: daemon/gdm-session-worker.c:834
 msgid "Sorry, smart card authentication didn’t work. Please try again."
 msgstr ""
 "Die Schlüsselkarten-Legitimierung hat leider nicht geklappt. Bitte versuchen "
 "Sie es erneut."
 
-#: daemon/gdm-session-worker.c:842
+#: daemon/gdm-session-worker.c:836
 msgid "Sorry, that didn’t work. Please try again."
 msgstr ""
 "Das hat leider nicht geklappt. Bitte\n"
 "versuchen Sie es erneut."
 
-#: daemon/gdm-session-worker.c:857
+#: daemon/gdm-session-worker.c:851
 msgid "Your account was given a time limit that’s now passed."
 msgstr ""
 "Ihrem Konto wurde eine Zeitbeschränkung auferlegt, die nun abgelaufen ist."
 
-#: daemon/gdm-session-worker.c:1258
+#: daemon/gdm-session-worker.c:1208
 msgid "Username:"
 msgstr "Benutzername:"
 
-#: daemon/gdm-session-worker.c:1675 daemon/gdm-session-worker.c:1692
+#: daemon/gdm-session-worker.c:1625 daemon/gdm-session-worker.c:1642
 msgid "no user account available"
 msgstr "Kein Benutzerkonto verfügbar"
 
-#: daemon/gdm-session-worker.c:1719
+#: daemon/gdm-session-worker.c:1669
 msgid "Unable to change to user"
 msgstr "Zum Benutzer konnte nicht gewechselt werden"
 
-#: daemon/gdm-wayland-session.c:531
+#: daemon/gdm-wayland-session.c:513
 msgid "GNOME Display Manager Wayland Session Launcher"
 msgstr "Wayland-Sitzungsstarter für GNOME Display-Manager"
 
-#: daemon/gdm-xdmcp-display-factory.c:614
-msgid "Could not create socket!"
-msgstr "Socket konnte nicht angelegt werden!"
-
-#: daemon/gdm-x-session.c:882
-msgid "Run program through /etc/gdm/Xsession wrapper script"
-msgstr "Programm über das Wrapper-Skript /etc/gdm/Xsession ausführen"
-
-#: daemon/gdm-x-session.c:883
-msgid "Listen on TCP socket"
-msgstr "Auf TCP-Socket lauschen"
-
-#: daemon/gdm-x-session.c:895
-msgid "GNOME Display Manager X Session Launcher"
-msgstr "X-Sitzungsstarter für GNOME Display-Manager"
-
-#: daemon/main.c:125 daemon/main.c:138
+#: daemon/main.c:124 daemon/main.c:137
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "PID-Datei %s konnte nicht geschrieben werden, möglicherweise geht der "
 "Plattenplatz zur Neige: %s"
 
-#: daemon/main.c:182
-#, c-format
-msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
-"Markierungsordner %s für »einmal gelaufen« konnte nicht erstellt werden: %s"
-
-#: daemon/main.c:188
-#, c-format
-msgid "Failed to create LogDir %s: %s"
-msgstr "Protokollordner %s konnte nicht erstellt werden: %s"
-
-#: daemon/main.c:223
-#, c-format
-msgid "Can’t find the GDM user “%s”. Aborting!"
-msgstr "Der GDM-Benutzer »%s« konnte nicht gefunden werden. Abbruch!"
-
-#: daemon/main.c:229
-msgid "The GDM user should not be root. Aborting!"
-msgstr "Der GDM-Benutzer sollte nicht »root« sein. Abbruch!"
-
-#: daemon/main.c:235
-#, c-format
-msgid "Can’t find the GDM group “%s”. Aborting!"
-msgstr "Die GDM-Gruppe »%s« konnte nicht gefunden werden. Abbruch!"
-
-#: daemon/main.c:241
-msgid "The GDM group should not be root. Aborting!"
-msgstr "Die GDM-Gruppe sollte nicht »root« sein. Abbruch!"
-
-#: daemon/main.c:309
+#: daemon/main.c:222
 msgid "Make all warnings fatal"
 msgstr "Alle Warnungen als fatal behandeln"
 
-#: daemon/main.c:310
+#: daemon/main.c:223
 msgid "Exit after a time (for debugging)"
 msgstr "Nach einer Weile beenden - dient der Fehleranalyse"
 
-#: daemon/main.c:311
+#: daemon/main.c:224
 msgid "Print GDM version"
 msgstr "GDM-Version ausgeben"
 
-#: daemon/main.c:322
+#: daemon/main.c:235
 msgid "GNOME Display Manager"
 msgstr "GNOME Display-Manager"
 
 #. make sure the pid file doesn't get wiped
-#: daemon/main.c:342
+#: daemon/main.c:255
 msgid "Only the root user can run GDM"
 msgstr "Nur der Benutzer »root« darf GDM starten"
 
@@ -363,11 +222,72 @@ msgstr "Nur der Benutzer »root« darf GDM starten"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display-Manager Arbeitsprozess"
 
+#: data/gnome-greeter.desktop.in:2
+msgid "GNOME Greeter"
+msgstr "GNOME-Begrüßer"
+
+#: data/gnome-greeter.desktop.in:3
+msgid "The default GNOME Greeter session"
+msgstr "Die voreingestellte GNOME Begrüßer-Sitzung"
+
+#: data/gnome-initial-setup.desktop.in:2
+msgid "GNOME Initial Setup"
+msgstr "GNOME-Ersteinrichtung"
+
+#: data/gnome-initial-setup.desktop.in:3
+msgid "The GNOME Initial Setup session"
+msgstr "Die Sitzung mit GNOME-Ersteinrichtung"
+
+#: data/org.gnome.displaymanager.policy:11
+msgid "Allow managing user sessions"
+msgstr "Das Verwalten von Benutzersitzungen erlauben"
+
+#: data/org.gnome.displaymanager.policy:12
+msgid "Authentication is required to start or stop a user session"
+msgstr ""
+"Zum Starten und Stoppen einer Benutzersitzung ist eine Legitimierung "
+"erforderlich"
+
 #: data/org.gnome.login-screen.gschema.xml:11
+msgid "Whether or not to allow switchable authentication for login"
+msgstr "Wechselbare Legitimierung für die Anmeldung zulassen"
+
+#: data/org.gnome.login-screen.gschema.xml:14
+msgid ""
+"The login screen can optionally allow a single PAM service to provide "
+"multiple authentication mechanisms via a GDM PAM."
+msgstr ""
+"Der Anmeldebildschirm kann optional einen einzelnen PAM-Dienst zulassen, um "
+"mehrere Legitimierungsmöglichkeiten mittels eines GDM PAM anzubieten."
+
+#: data/org.gnome.login-screen.gschema.xml:21
+msgid "Whether or not to allow authentication via external web site"
+msgstr "Legitimierung mittels externer Internetseite erlauben"
+
+#: data/org.gnome.login-screen.gschema.xml:24
+msgid ""
+"The login screen can optionally allow users to authenticate via web login."
+msgstr ""
+"Der Anmeldebildschirm kann optional Benutzern erlauben, sich mittels einer "
+"Webseiten-Anmeldung anzumelden."
+
+#: data/org.gnome.login-screen.gschema.xml:31
+msgid "Whether or not to allow authentication using a passkey"
+msgstr "Passkey für die Anmeldung erlauben"
+
+#: data/org.gnome.login-screen.gschema.xml:34
+msgid ""
+"The login screen can optionally allow users who have passkeys to log in "
+"using those passkeys."
+msgstr ""
+"Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich mittels "
+"Passkeys anzumelden."
+
+#: data/org.gnome.login-screen.gschema.xml:41
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Fingerabdruckleser für die Anmeldung erlauben"
 
-#: data/org.gnome.login-screen.gschema.xml:14
+#: data/org.gnome.login-screen.gschema.xml:44
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -375,11 +295,11 @@ msgstr ""
 "Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich durch zuvor "
 "registrierte Fingerabdrücke anzumelden."
 
-#: data/org.gnome.login-screen.gschema.xml:21
+#: data/org.gnome.login-screen.gschema.xml:51
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Schlüsselkartenleser für die Anmeldung erlauben"
 
-#: data/org.gnome.login-screen.gschema.xml:24
+#: data/org.gnome.login-screen.gschema.xml:54
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -387,11 +307,11 @@ msgstr ""
 "Der Anmeldebildschirm kann optional Benutzern ermöglichen, sich mittels "
 "Schlüsselkarte anzumelden."
 
-#: data/org.gnome.login-screen.gschema.xml:31
+#: data/org.gnome.login-screen.gschema.xml:61
 msgid "Whether or not to allow passwords for login"
 msgstr "Legt fest, ob Passwörter für die Anmeldung erlaubt sind"
 
-#: data/org.gnome.login-screen.gschema.xml:34
+#: data/org.gnome.login-screen.gschema.xml:64
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
@@ -400,12 +320,12 @@ msgstr ""
 "Passwörtern nicht erlaubt ist. Damit wird der Benutzer gezwungen, sich mit "
 "Schlüsselkarte oder Fingerabdruck anzumelden."
 
-#: data/org.gnome.login-screen.gschema.xml:41
-#: data/org.gnome.login-screen.gschema.xml:51
+#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:81
 msgid "Path to small image at top of user list"
 msgstr "Pfad zu einem kleinen Bild oben in der Benutzerliste"
 
-#: data/org.gnome.login-screen.gschema.xml:44
+#: data/org.gnome.login-screen.gschema.xml:74
 msgid ""
 "The login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -414,7 +334,7 @@ msgstr ""
 "Benutzerliste anzeigen, um Systemverwaltern und Distributoren eine "
 "Möglichkeit zu geben, ein Logo anzubringen."
 
-#: data/org.gnome.login-screen.gschema.xml:54
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid ""
 "The fallback login screen can optionally show a small image to provide site "
 "administrators and distributions a way to display branding."
@@ -423,11 +343,11 @@ msgstr ""
 "Benutzerliste anzeigen, um Systemverwaltern und Distributoren eine "
 "Möglichkeit zu geben, ein Logo anzubringen."
 
-#: data/org.gnome.login-screen.gschema.xml:61
+#: data/org.gnome.login-screen.gschema.xml:91
 msgid "Avoid showing user list"
 msgstr "Benutzerliste nicht anzeigen"
 
-#: data/org.gnome.login-screen.gschema.xml:64
+#: data/org.gnome.login-screen.gschema.xml:94
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -436,53 +356,53 @@ msgstr ""
 "zur Anmeldung verfügbar sind. Diese Einstellung kann verwendet werden, um "
 "die Benutzerliste ein- und auszuschalten."
 
-#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:101
 msgid "Enable showing the banner message"
 msgstr "Anzeige des Bannertextes aktivieren"
 
-#: data/org.gnome.login-screen.gschema.xml:74
+#: data/org.gnome.login-screen.gschema.xml:104
 msgid "Set to true to show the banner message text."
 msgstr "Den Schlüssel auf »wahr« setzen, um den Bannertext anzuzeigen."
 
-#: data/org.gnome.login-screen.gschema.xml:80
+#: data/org.gnome.login-screen.gschema.xml:110
 msgid "Banner message source"
 msgstr "Quelle des Bannertexts"
 
-#: data/org.gnome.login-screen.gschema.xml:83
+#: data/org.gnome.login-screen.gschema.xml:113
 msgid "The source of the text banner message on the login screen."
 msgstr "Die Quelle des im Anmeldefenster anzuzeigenden Bannertexts."
 
-#: data/org.gnome.login-screen.gschema.xml:89
+#: data/org.gnome.login-screen.gschema.xml:119
 msgid "Banner message text"
 msgstr "Bannertext"
 
-#: data/org.gnome.login-screen.gschema.xml:92
+#: data/org.gnome.login-screen.gschema.xml:122
 msgid "Text banner message to show in the login window."
 msgstr "Der im Anmeldefenster anzuzeigende Bannertext."
 
-#: data/org.gnome.login-screen.gschema.xml:98
+#: data/org.gnome.login-screen.gschema.xml:128
 msgid "Banner message path"
 msgstr "Pfad des Bannertexts"
 
-#: data/org.gnome.login-screen.gschema.xml:101
+#: data/org.gnome.login-screen.gschema.xml:131
 msgid "Path to text file with banner message to show in the login window."
 msgstr "Pfad zur Textdatei mit dem im Anmeldefenster anzuzeigenden Bannertext."
 
-#: data/org.gnome.login-screen.gschema.xml:107
+#: data/org.gnome.login-screen.gschema.xml:137
 msgid "Disable showing the restart buttons"
 msgstr "Anzeige des Knopfes »Neustart« deaktivieren"
 
-#: data/org.gnome.login-screen.gschema.xml:110
+#: data/org.gnome.login-screen.gschema.xml:140
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Den Schlüssel auf »wahr« setzen, um die Anzeige des Knopfes »Neustart« im "
 "Anmeldefenster zu deaktivieren."
 
-#: data/org.gnome.login-screen.gschema.xml:116
+#: data/org.gnome.login-screen.gschema.xml:146
 msgid "Number of allowed authentication failures"
 msgstr "Anzahl der Fehlversuche der Legitimierung"
 
-#: data/org.gnome.login-screen.gschema.xml:119
+#: data/org.gnome.login-screen.gschema.xml:149
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
@@ -592,36 +512,26 @@ msgstr "»%s« kann nicht gleichzeitig ein- und ausgeschaltet sein"
 msgid "“%s” is not a valid %s “%s” value"
 msgstr "»%s« ist ein ungültiger%s »%s« Wert"
 
-#: utils/gdm-config.c:496
-#, c-format
-msgid "Failed to switch to %s user"
-msgstr "Wechsel zum %s Benutzer fehlgeschlagen"
-
-#: utils/gdm-config.c:517
-#, c-format
-msgid "Couldn’t set userid to %u"
-msgstr "Benutzerkennung (userid) konnte nicht auf %u gesetzt werden"
-
-#: utils/gdm-config.c:680
+#: utils/gdm-config.c:633
 msgid "No distro detected, no hook to run"
 msgstr "Keine Distribution erkannt, kein Hook auszuführen"
 
-#: utils/gdm-config.c:698
+#: utils/gdm-config.c:651
 #, c-format
 msgid "No valid args found to run hook “%s”"
 msgstr "Keine gültigen Argumente gefunden, um das Hook »%s« auszuführen"
 
-#: utils/gdm-config.c:703
+#: utils/gdm-config.c:656
 #, c-format
 msgid "Running distro hook “%s”\n"
 msgstr "Distro-Hook »%s« wird ausgeführt.\n"
 
-#: utils/gdm-config.c:717
+#: utils/gdm-config.c:670
 #, c-format
 msgid "Distro hook “%s” requested stopping"
 msgstr "Distro-Hook »%s« forderte einen Stopp an"
 
-#: utils/gdm-config.c:730
+#: utils/gdm-config.c:683
 #, c-format
 msgid ""
 "Distro hook failed with exit status %d and error %s:\n"
@@ -637,55 +547,55 @@ msgstr ""
 "%s"
 
 #. TRANSLATORS: Failed to set command “command” option key “option-key” via distro hook
-#: utils/gdm-config.c:780
+#: utils/gdm-config.c:733
 #, c-format
 msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
 "Festlegen des Befehls »%s« mit Optionsschlüssel »%s« ist fehlgeschlagen "
 "mittels Distro-Hook: "
 
-#: utils/gdm-config.c:820
+#: utils/gdm-config.c:773
 #, c-format
 msgid "Failed to create directory %s"
 msgstr "Ordner »%s« konnte nicht erstellt werden"
 
-#: utils/gdm-config.c:891
+#: utils/gdm-config.c:844
 msgid "dconf profile not found"
 msgstr "dconf-Profil nicht gefunden"
 
-#: utils/gdm-config.c:981
+#: utils/gdm-config.c:934
 msgid "dconf has no system-db configured"
 msgstr "dconf hat keine system-db eingerichtet"
 
 #. TRANSLATORS: First value is a file path, second is an error message
-#: utils/gdm-config.c:1130
+#: utils/gdm-config.c:1083
 #, c-format
 msgid "Failed to get the “%s” header comment: %s, was it modified?"
 msgstr ""
 "Ermitteln des Kopfkommentars »%s« ist fehlgeschlagen: %s . Wurde er geändert?"
 
-#: utils/gdm-config.c:1133
+#: utils/gdm-config.c:1086
 #, c-format
 msgid "File “%s” header comment does not match, was it modified?"
 msgstr "Kopfkommentars »%s« der Datei stimmt nicht überein. Wurde er geändert?"
 
 #. XXX: Fail with an error instead?
-#: utils/gdm-config.c:1261
+#: utils/gdm-config.c:1214
 #, c-format
 msgid "No expected header found on lock file “%s”, was it modified?"
 msgstr ""
 "Es wurde kein erwarteter Kopfteil der Sperrdatei »%s« gefunden. Wurde er "
 "geändert?"
 
-#: utils/gdm-config.c:1546
+#: utils/gdm-config.c:1499
 msgid "Failed to run a required distro hook: "
 msgstr "Ausführen eines notwendigen Distro-Hook ist fehlgeschlagen: "
 
-#: utils/gdm-config.c:1562 utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:1515
 msgid "COMMAND"
 msgstr "BEFEHL"
 
-#: utils/gdm-config.c:1566
+#: utils/gdm-config.c:1519
 #, c-format
 msgid ""
 "Commands:\n"
@@ -709,48 +619,48 @@ msgstr ""
 "Verwenden Sie “%s BEFEHL --help”, um eine Hilfe für jeden Befehl zu "
 "erhalten.\n"
 
-#: utils/gdm-config.c:1628
+#: utils/gdm-config.c:1581
 msgid "Command options"
 msgstr "Befehlsoptionen"
 
 #. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
-#: utils/gdm-config.c:1663
+#: utils/gdm-config.c:1616
 #, c-format
 msgid "You need to be root to use %s “%s” command"
 msgstr ""
 "Sie müssen »root« (Systemadministrator) sein, um den Befehl %s »%s« zu "
 "verwenden"
 
-#: utils/gdm-config.c:1713
+#: utils/gdm-config.c:1666
 #, c-format
 msgid "Failed to set %s setting: "
 msgstr "%s-Einstellung konnte nicht gesetzt werden: "
 
-#: utils/gdm-config.c:1805
+#: utils/gdm-config.c:1758
 msgid "Failed to set smartcard setting"
 msgstr "Festlegen der Smartcard-Einstellung ist fehlgeschlagen"
 
-#: utils/gdm-config.c:1811
+#: utils/gdm-config.c:1764
 msgid "Failed to set password setting"
 msgstr "Festlegen der Passwort-Einstellung ist fehlgeschlagen"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: utils/gdm-config.c:1825
+#: utils/gdm-config.c:1778
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: utils/gdm-config.c:1834
+#: utils/gdm-config.c:1787
 msgid "Not supported"
 msgstr "Nicht unterstützt"
 
-#: utils/gdm-config.c:1850
+#: utils/gdm-config.c:1803
 msgid "Required"
 msgstr "Erforderlich"
 
-#: utils/gdm-config.c:1911
+#: utils/gdm-config.c:1855
 #, c-format
 msgid ""
 "GDM Authorization configuration\n"
@@ -767,61 +677,175 @@ msgstr ""
 "  Anmeldung mit Smartcard : %s\n"
 "  Aktion bei Entfernen der Smartcard: %s\n"
 
-#: utils/gdm-config.c:1939
+#: utils/gdm-config.c:1883
 msgctxt "Interactive question"
 msgid "Y"
 msgstr "J"
 
-#: utils/gdm-config.c:1940
+#: utils/gdm-config.c:1884
 msgctxt "Interactive question"
 msgid "y"
 msgstr "j"
 
-#: utils/gdm-config.c:1941
+#: utils/gdm-config.c:1885
 msgctxt "Interactive question"
 msgid "N"
 msgstr "N"
 
-#: utils/gdm-config.c:1942
+#: utils/gdm-config.c:1886
 msgctxt "Interactive question"
 msgid "n"
 msgstr "n"
 
-#: utils/gdm-config.c:1946
+#: utils/gdm-config.c:1890
 msgctxt "Interactive question"
 msgid "Do you want to continue? [Y/n]? "
 msgstr "Möchten Sie fortfahren? [J/n]? "
 
-#: utils/gdm-config.c:1964
+#: utils/gdm-config.c:1908
 msgid "User cancelled the request"
 msgstr "Benutzer hat die Anfrage abgebrochen"
 
-#: utils/gdm-config.c:1995
+#: utils/gdm-config.c:1939
 #, c-format
 msgid "Failed to reset %s setting: "
 msgstr "%s-Einstellung konnte nicht zurückgesetzt werden: "
 
-#: utils/gdmflexiserver.c:45
-msgid "Only the VERSION command is supported"
-msgstr "Es wird nur der Befehl »VERSION« unterstützt"
+#~ msgid "_Refresh"
+#~ msgstr "_Aktualisieren"
 
-#: utils/gdmflexiserver.c:46 utils/gdmflexiserver.c:47
-#: utils/gdmflexiserver.c:49 utils/gdmflexiserver.c:50
-msgid "Ignored — retained for compatibility"
-msgstr "Ignoriert — aus Kompatibilitätsgründen erhalten"
+#~ msgid "_Cancel"
+#~ msgstr "_Abbrechen"
 
-#: utils/gdmflexiserver.c:48
-msgid "Debugging output"
-msgstr "Diagnose-Ausgabe aktivieren"
+#~ msgid "C_onnect"
+#~ msgstr "_Verbinden"
 
-#: utils/gdmflexiserver.c:52
-msgid "Version of this application"
-msgstr "Version dieser Anwendung"
+#~ msgid "Select System"
+#~ msgstr "System auswählen"
 
-#. Option parsing
-#: utils/gdmflexiserver.c:137
-msgid "— New GDM login"
-msgstr "— Neue GDM-Anmeldung"
+#~ msgid "XDMCP: Could not create XDMCP buffer!"
+#~ msgstr "XDMCP: XDMCP-Puffer konnte nicht angelegt werden!"
+
+#~ msgid "XDMCP: Could not read XDMCP header!"
+#~ msgstr "XDMCP: XDMCP-Kopfzeilen konnten nicht gelesen werden!"
+
+#~ msgid "XDMCP: Incorrect XDMCP version!"
+#~ msgstr "XDMCP: Falsche XDMCP-Version!"
+
+#~ msgid "XDMCP: Unable to parse address"
+#~ msgstr "XDMCP: Adresse konnte nicht verarbeitet werden"
+
+#, c-format
+#~ msgid "Could not find user “%s” on system"
+#~ msgstr "Benutzer »%s« konnte nicht auf dem System gefunden werden"
+
+#~ msgid ""
+#~ "Could not start the X server (your graphical environment) due to an "
+#~ "internal error. Please contact your system administrator or check your "
+#~ "syslog to diagnose. In the meantime this display will be disabled.  "
+#~ "Please restart GDM when the problem is corrected."
+#~ msgstr ""
+#~ "Der X-Server (Ihre grafische Umgebung) konnte auf Grund eines internen "
+#~ "Fehlers nicht gestartet werden. Bitte kontaktieren Sie den "
+#~ "Systemadministrator oder überprüfen Sie zur Fehlerdiagnose das "
+#~ "Systemprotokoll. Bis auf Weiteres wird diese Anzeige deaktiviert. Bitte "
+#~ "starten Sie GDM neu, wenn der Fehler behoben ist."
+
+#~ msgid "Chooser session unavailable"
+#~ msgstr "Gewählte Sitzung ist nicht verfügbar"
+
+#, c-format
+#~ msgid "Server was to be spawned by user %s but that user doesn’t exist"
+#~ msgstr ""
+#~ "Server sollte für den Benutzer %s gestartet werden, aber dieser Benutzer "
+#~ "existiert nicht"
+
+#, c-format
+#~ msgid "Couldn’t set groupid to %d"
+#~ msgstr "%d konnte nicht als Gruppenkennung festgelegt werden"
+
+#, c-format
+#~ msgid "initgroups () failed for %s"
+#~ msgstr "initgroups () für %s gescheitert"
+
+#, c-format
+#~ msgid "Couldn’t set userid to %d"
+#~ msgstr "%d konnte nicht als Benutzerkennung festgelegt werden"
+
+#, c-format
+#~ msgid "%s: Could not open log file for display %s!"
+#~ msgstr "%s: Protokolldatei für Anzeige %s konnte nicht geöffnet werden!"
+
+#, c-format
+#~ msgid "%s: Error setting %s to %s"
+#~ msgstr "%s: %s konnte nicht auf %s gesetzt werden"
+
+#, c-format
+#~ msgid "%s: Server priority couldn’t be set to %d: %s"
+#~ msgstr "%s: Priorität des Servers konnte nicht auf %d gesetzt werden: %s"
+
+#, c-format
+#~ msgid "%s: Empty server command for display %s"
+#~ msgstr "%s: Leerer Server-Befehl für Anzeige %s"
+
+#~ msgid "Could not create socket!"
+#~ msgstr "Socket konnte nicht angelegt werden!"
+
+#~ msgid "Run program through /etc/gdm/Xsession wrapper script"
+#~ msgstr "Programm über das Wrapper-Skript /etc/gdm/Xsession ausführen"
+
+#~ msgid "Listen on TCP socket"
+#~ msgstr "Auf TCP-Socket lauschen"
+
+#~ msgid "GNOME Display Manager X Session Launcher"
+#~ msgstr "X-Sitzungsstarter für GNOME Display-Manager"
+
+#, c-format
+#~ msgid "Failed to create ran once marker dir %s: %s"
+#~ msgstr ""
+#~ "Markierungsordner %s für »einmal gelaufen« konnte nicht erstellt werden: "
+#~ "%s"
+
+#, c-format
+#~ msgid "Failed to create LogDir %s: %s"
+#~ msgstr "Protokollordner %s konnte nicht erstellt werden: %s"
+
+#, c-format
+#~ msgid "Can’t find the GDM user “%s”. Aborting!"
+#~ msgstr "Der GDM-Benutzer »%s« konnte nicht gefunden werden. Abbruch!"
+
+#~ msgid "The GDM user should not be root. Aborting!"
+#~ msgstr "Der GDM-Benutzer sollte nicht »root« sein. Abbruch!"
+
+#, c-format
+#~ msgid "Can’t find the GDM group “%s”. Aborting!"
+#~ msgstr "Die GDM-Gruppe »%s« konnte nicht gefunden werden. Abbruch!"
+
+#~ msgid "The GDM group should not be root. Aborting!"
+#~ msgstr "Die GDM-Gruppe sollte nicht »root« sein. Abbruch!"
+
+#, c-format
+#~ msgid "Failed to switch to %s user"
+#~ msgstr "Wechsel zum %s Benutzer fehlgeschlagen"
+
+#, c-format
+#~ msgid "Couldn’t set userid to %u"
+#~ msgstr "Benutzerkennung (userid) konnte nicht auf %u gesetzt werden"
+
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "Es wird nur der Befehl »VERSION« unterstützt"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "Ignoriert — aus Kompatibilitätsgründen erhalten"
+
+#~ msgid "Debugging output"
+#~ msgstr "Diagnose-Ausgabe aktivieren"
+
+#~ msgid "Version of this application"
+#~ msgstr "Version dieser Anwendung"
+
+#~ msgid "— New GDM login"
+#~ msgstr "— Neue GDM-Anmeldung"
 
 #~ msgid "Screenshot taken"
 #~ msgstr "Bildschirmfoto wurde aufgenommen"
