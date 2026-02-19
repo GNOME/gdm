@@ -51,14 +51,16 @@ G_DEFINE_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM_TYPE_DIS
 static gboolean
 gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
                                            const char              *autologin_user,
-                                           const char              *remote_id)
+                                           const char              *remote_id,
+                                           const char              *remote_hostname)
 {
         g_autoptr (GdmDisplay) display = NULL;
         GdmDisplayStore *store;
 
         g_debug ("GdmRemoteDisplayFactory: Creating remote display");
 
-        display = gdm_remote_display_new (remote_id);
+        display = gdm_remote_display_new (remote_id,
+                                          remote_hostname);
 
         g_object_set (display,
                       "autologin-user", autologin_user,
@@ -78,10 +80,24 @@ gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
 static gboolean
 handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
                               GDBusMethodInvocation       *invocation,
-                              const char                  *remote_id,
+                              GVariant                    *properties,
                               GdmRemoteDisplayFactory     *factory)
 {
-        if (!gdm_remote_display_factory_create_display (factory, NULL, remote_id))
+        g_autofree char *remote_id = NULL;
+        g_autofree char *remote_hostname = NULL;
+
+        g_variant_lookup (properties, "remote-id", "o", &remote_id);
+        if (!remote_id) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_INVALID_ARGS,
+                                                               "Missing remote-id in properties");
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
+
+        g_variant_lookup (properties, "hostname", "s", &remote_hostname);
+
+        if (!gdm_remote_display_factory_create_display (factory, NULL, remote_id, remote_hostname))
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_FAILED,
@@ -109,7 +125,7 @@ handle_create_user_display (GdmDBusRemoteDisplayFactory *skeleton,
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        if (!gdm_remote_display_factory_create_display (factory, user, NULL)) {
+        if (!gdm_remote_display_factory_create_display (factory, user, NULL, NULL)) {
                 g_dbus_method_invocation_return_error (invocation,
                                                        G_DBUS_ERROR,
                                                        G_DBUS_ERROR_FAILED,
