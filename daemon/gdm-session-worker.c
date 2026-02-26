@@ -1063,12 +1063,12 @@ jump_to_vt (GdmSessionWorker  *worker,
         active_vt_tty_fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
 
         if (worker->session_tty_fd != -1) {
-                static const char *clear_screen_escape_sequence = "\33[H\33[2J";
+                static const char *clear_screen_escape_sequence = "\33[H\33[2J\33[?25l";
 
                 /* let's make sure the new VT is clear */
                 write (worker->session_tty_fd,
                        clear_screen_escape_sequence,
-                       sizeof (clear_screen_escape_sequence));
+                       strlen (clear_screen_escape_sequence));
 
                 fd = worker->session_tty_fd;
 
