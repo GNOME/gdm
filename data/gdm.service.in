@@ -1,9 +1,9 @@
 [Unit]
 Description=GNOME Display Manager
 
-# replaces the getty
-Conflicts=getty@tty${GDM_INITIAL_VT}.service
-After=getty@tty${GDM_INITIAL_VT}.service
+# replaces the getty/kmsconvt
+Conflicts=getty@tty${GDM_INITIAL_VT}.service kmsconvt@tty${GDM_INITIAL_VT}.service
+After=getty@tty${GDM_INITIAL_VT}.service kmsconvt@tty${GDM_INITIAL_VT}.service
 
 # replaces plymouth-quit since it quits plymouth on its own
 Conflicts=${PLYMOUTH_QUIT_SERVICE}
