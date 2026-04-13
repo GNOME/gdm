@@ -26,6 +26,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#ifdef HAVE_SYS_FSUID_H
+#include <sys/fsuid.h>
+#endif
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/ioctl.h>
@@ -2236,6 +2239,9 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 
         g_assert (worker->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
+#ifdef HAVE_SYS_FSUID_H
+        g_assert (setfsuid ((uid_t) -1) == 0);
+#endif
 
         if (g_strcmp0 (worker->display_seat_id, "seat0") == 0 && worker->seat0_has_vts) {
                 if (!set_up_for_new_vt (worker)) {
