@@ -92,6 +92,7 @@ struct _GdmManager
 
 #ifdef  WITH_PLYMOUTH
         guint                     plymouth_is_running : 1;
+        guint                     plymouth_quit_timeout_id;
 #endif
         guint                     did_automatic_login : 1;
 };
@@ -190,6 +191,19 @@ plymouth_quit_without_transition (void)
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
+        }
+}
+
+static void
+plymouth_quit_timeout_cb (gpointer user_data)
+{
+        GdmManager *manager = user_data;
+
+        manager->plymouth_quit_timeout_id = 0;
+
+        if (manager->plymouth_is_running) {
+                plymouth_quit_without_transition ();
+                manager->plymouth_is_running = FALSE;
         }
 }
 #endif
@@ -720,6 +734,23 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
         g_object_set (G_OBJECT (display),
                       "session-registered", TRUE,
                       NULL);
+
+#ifdef WITH_PLYMOUTH
+        if (self->plymouth_is_running) {
+                gboolean display_is_local = FALSE;
+
+                g_object_get (G_OBJECT (display),
+                              "is-local", &display_is_local,
+                              NULL);
+
+                if (display_is_local && self->plymouth_quit_timeout_id == 0) {
+                        self->plymouth_quit_timeout_id =
+                                g_timeout_add_seconds_once (REGISTER_DISPLAY_TIMEOUT,
+                                                            plymouth_quit_timeout_cb,
+                                                            self);
+                }
+        }
+#endif
 
         gdm_dbus_manager_complete_register_session (GDM_DBUS_MANAGER (manager),
                                                     invocation);
@@ -1383,6 +1414,7 @@ on_display_status_changed (GdmDisplay *display,
                         if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_with_transition ();
                                 manager->plymouth_is_running = FALSE;
+                                g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
                         }
 #endif
                         break;
@@ -1393,6 +1425,7 @@ on_display_status_changed (GdmDisplay *display,
                         if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_without_transition ();
                                 manager->plymouth_is_running = FALSE;
+                                g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
                         }
 #endif
 
@@ -2304,6 +2337,10 @@ gdm_manager_stop (GdmManager *manager)
                                                       G_CALLBACK (on_graphics_unsupported),
                                                       manager);
         }
+
+#ifdef WITH_PLYMOUTH
+        g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
+#endif
 
         manager->started = FALSE;
 }
