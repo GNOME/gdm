@@ -1849,11 +1849,19 @@ on_session_reauthenticated (GdmSession *session,
 
 static void
 on_stop_conflicting_session (GdmSession *login_session,
-                             const char *username,
+                             const char *opened_session_id,
                              GdmManager *manager)
 {
         const char *session_id;
         GdmSession *user_session;
+        g_autofree char *username = NULL;
+        int res;
+
+        res = sd_session_get_username (opened_session_id, &username);
+        if (res < 0) {
+                g_warning ("Failed to get username of opened session: %s", strerror (-res));
+                return;
+        }
 
         user_session = find_session_for_user (manager,
                                               username,
