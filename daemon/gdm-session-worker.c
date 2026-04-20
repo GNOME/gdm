@@ -186,7 +186,10 @@ enum {
         PROP_SERVER_ADDRESS,
         PROP_IS_REAUTH_SESSION,
         PROP_STATE,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
 static void     gdm_session_worker_init         (GdmSessionWorker      *session_worker);
@@ -3188,27 +3191,23 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
         object_class->constructor = gdm_session_worker_constructor;
         object_class->finalize = gdm_session_worker_finalize;
 
-        g_object_class_install_property (object_class,
-                                         PROP_SERVER_ADDRESS,
-                                         g_param_spec_string ("server-address",
+        props[PROP_SERVER_ADDRESS] = g_param_spec_string ("server-address",
+                                                          NULL, NULL,
+                                                          NULL,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+
+        props[PROP_IS_REAUTH_SESSION] = g_param_spec_boolean ("is-reauth-session",
                                                               NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-
-        g_object_class_install_property (object_class,
-                                         PROP_IS_REAUTH_SESSION,
-                                         g_param_spec_boolean ("is-reauth-session",
-                                                               NULL, NULL,
                                                               FALSE,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_property (object_class,
-                                         PROP_STATE,
-                                         g_param_spec_enum ("state",
-                                                            NULL, NULL,
-                                                            GDM_TYPE_SESSION_WORKER_STATE,
-                                                            GDM_SESSION_WORKER_STATE_NONE,
-                                                            G_PARAM_READABLE | G_PARAM_STATIC_NAME));
+        props[PROP_STATE] = g_param_spec_enum ("state",
+                                               NULL, NULL,
+                                               GDM_TYPE_SESSION_WORKER_STATE,
+                                               GDM_SESSION_WORKER_STATE_NONE,
+                                               G_PARAM_READABLE | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void

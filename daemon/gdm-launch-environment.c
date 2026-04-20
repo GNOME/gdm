@@ -94,7 +94,10 @@ enum {
         PROP_USER_MEMBER_OF,
         PROP_DCONF_PROFILE,
         PROP_SESSION_NAME,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 enum {
         OPENED,
@@ -819,54 +822,40 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
         object_class->set_property = gdm_launch_environment_set_property;
         object_class->finalize = gdm_launch_environment_finalize;
 
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_SEAT_ID,
-                                         g_param_spec_string ("display-seat-id",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_HOSTNAME,
-                                         g_param_spec_string ("display-hostname",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_IS_LOCAL,
-                                         g_param_spec_boolean ("display-is-local",
+        props[PROP_DISPLAY_SEAT_ID] = g_param_spec_string ("display-seat-id",
+                                                           NULL, NULL,
+                                                           NULL,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+        props[PROP_DISPLAY_HOSTNAME] = g_param_spec_string ("display-hostname",
+                                                            NULL, NULL,
+                                                            NULL,
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+        props[PROP_DISPLAY_IS_LOCAL] = g_param_spec_boolean ("display-is-local",
+                                                             NULL, NULL,
+                                                             FALSE,
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+        props[PROP_PREFERRED_USER_NAME] = g_param_spec_string ("preferred-user-name",
                                                                NULL, NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_PREFERRED_USER_NAME,
-                                         g_param_spec_string ("preferred-user-name",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_USER_DISP_NAME,
-                                         g_param_spec_string ("user-display-name",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_USER_MEMBER_OF,
-                                         g_param_spec_string ("user-member-of",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_DCONF_PROFILE,
-                                         g_param_spec_string ("dconf-profile",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_SESSION_NAME,
-                                         g_param_spec_string ("session-name",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
+                                                               NULL,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_USER_DISP_NAME] = g_param_spec_string ("user-display-name",
+                                                          NULL, NULL,
+                                                          NULL,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_USER_MEMBER_OF] = g_param_spec_string ("user-member-of",
+                                                          NULL, NULL,
+                                                          NULL,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_DCONF_PROFILE] = g_param_spec_string ("dconf-profile",
+                                                         NULL, NULL,
+                                                         NULL,
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_SESSION_NAME] = g_param_spec_string ("session-name",
+                                                        NULL, NULL,
+                                                        NULL,
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
         signals [OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),

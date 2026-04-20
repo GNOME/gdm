@@ -48,7 +48,10 @@ typedef struct _GdmDisplayFactoryPrivate
 enum {
         PROP_0,
         PROP_DISPLAY_STORE,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_display_factory_class_init  (GdmDisplayFactoryClass *klass);
 static void     gdm_display_factory_init        (GdmDisplayFactory      *factory);
@@ -375,12 +378,12 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
         object_class->set_property = gdm_display_factory_set_property;
         object_class->finalize = gdm_display_factory_finalize;
 
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_STORE,
-                                         g_param_spec_object ("display-store",
-                                                              NULL, NULL,
-                                                              GDM_TYPE_DISPLAY_STORE,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
+        props[PROP_DISPLAY_STORE] = g_param_spec_object ("display-store",
+                                                         NULL, NULL,
+                                                         GDM_TYPE_DISPLAY_STORE,
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void
