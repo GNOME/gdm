@@ -965,8 +965,7 @@ gdm_session_worker_start_auditor (GdmSessionWorker *worker)
 static void
 gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
 {
-        g_object_unref (worker->auditor);
-        worker->auditor = NULL;
+        g_clear_object (&worker->auditor);
 }
 
 static void
