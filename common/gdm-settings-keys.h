@@ -18,8 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _GDM_SETTINGS_KEYS_H
-#define _GDM_SETTINGS_KEYS_H
+#pragma once
 
 #include <glib.h>
 
@@ -42,5 +41,3 @@ G_BEGIN_DECLS
 #define GDM_KEY_ALLOW_REMOTE_AUTOLOGIN "security/AllowRemoteAutoLogin"
 
 G_END_DECLS
-
-#endif /* _GDM_SETTINGS_KEYS_H */

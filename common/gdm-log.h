@@ -20,8 +20,7 @@
  *
  */
 
-#ifndef __GDM_LOG_H
-#define __GDM_LOG_H
+#pragma once
 
 #include <stdarg.h>
 #include <glib.h>
@@ -34,5 +33,3 @@ void      gdm_log_init            (void);
 void      gdm_log_shutdown        (void);
 
 G_END_DECLS
-
-#endif /* __GDM_LOG_H */

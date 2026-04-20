@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_SETTINGS_H
-#define __GDM_SETTINGS_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -54,5 +53,3 @@ gboolean            gdm_settings_set_value                      (GdmSettings *se
                                                                  GError     **error);
 
 G_END_DECLS
-
-#endif /* __GDM_SETTINGS_H */

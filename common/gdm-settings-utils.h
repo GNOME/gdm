@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_SETTINGS_UTILS_H
-#define __GDM_SETTINGS_UTILS_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -56,5 +55,3 @@ char *                    gdm_settings_parse_double_as_value   (gdouble     doub
 
 
 G_END_DECLS
-
-#endif /* __GDM_SETTINGS_UTILS_H */

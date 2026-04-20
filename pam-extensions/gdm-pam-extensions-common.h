@@ -17,8 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef GDM_PAM_EXTENSIONS_COMMON_H
-#define GDM_PAM_EXTENSIONS_COMMON_H
+#pragma once
 
 #include <alloca.h>
 #include <endian.h>
@@ -130,5 +129,3 @@ typedef struct {
 })
 
 #define GDM_PAM_EXTENSION_SUPPORTED(name) GDM_PAM_EXTENSION_LOOK_UP_TYPE(name, (unsigned char *) NULL)
-
-#endif

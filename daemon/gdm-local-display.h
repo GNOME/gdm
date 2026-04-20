@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_LOCAL_DISPLAY_H
-#define __GDM_LOCAL_DISPLAY_H
+#pragma once
 
 #include <glib-object.h>
 #include "gdm-display.h"
@@ -34,5 +33,3 @@ GdmDisplay *        gdm_local_display_new                     (void);
 
 
 G_END_DECLS
-
-#endif /* __GDM_LOCAL_DISPLAY_H */

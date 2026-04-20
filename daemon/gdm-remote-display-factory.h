@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_REMOTE_DISPLAY_FACTORY_H
-#define __GDM_REMOTE_DISPLAY_FACTORY_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -35,5 +34,3 @@ G_DECLARE_FINAL_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM, 
 GdmRemoteDisplayFactory *    gdm_remote_display_factory_new                      (GdmDisplayStore         *display_store);
 
 G_END_DECLS
-
-#endif /* __GDM_REMOTE_DISPLAY_FACTORY_H */

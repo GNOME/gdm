@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_DISPLAY_H
-#define __GDM_DISPLAY_H
+#pragma once
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -93,5 +92,3 @@ void                gdm_display_start_greeter_session          (GdmDisplay  *dis
 void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
 
 G_END_DECLS
-
-#endif /* __GDM_DISPLAY_H */

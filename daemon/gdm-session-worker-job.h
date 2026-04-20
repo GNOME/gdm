@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_SESSION_WORKER_JOB_H
-#define __GDM_SESSION_WORKER_JOB_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -44,5 +43,3 @@ void                    gdm_session_worker_job_stop_now           (GdmSessionWor
 GPid                    gdm_session_worker_job_get_pid            (GdmSessionWorkerJob *session_worker_job);
 
 G_END_DECLS
-
-#endif /* __GDM_SESSION_WORKER_JOB_H */

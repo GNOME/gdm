@@ -19,8 +19,7 @@
  *
  * Written by: Ray Strode <rstrode@redhat.com>
  */
-#ifndef GDM_SESSION_SETTINGS_H
-#define GDM_SESSION_SETTINGS_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -48,4 +47,3 @@ void                gdm_session_settings_set_session_type   (GdmSessionSettings 
                                                              const char         *session_type);
 
 G_END_DECLS
-#endif /* GDM_SESSION_SETTINGS_H */

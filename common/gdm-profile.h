@@ -20,8 +20,7 @@
  *
  */
 
-#ifndef __GDM_PROFILE_H
-#define __GDM_PROFILE_H
+#pragma once
 
 #include <glib.h>
 
@@ -49,5 +48,3 @@ void            _gdm_profile_log    (const char *func,
                                      ...) G_GNUC_PRINTF (3, 4);
 
 G_END_DECLS
-
-#endif /* __GDM_PROFILE_H */

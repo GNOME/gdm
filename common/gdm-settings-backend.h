@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_SETTINGS_BACKEND_H
-#define __GDM_SETTINGS_BACKEND_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -75,5 +74,3 @@ void                gdm_settings_backend_value_changed          (GdmSettingsBack
                                                                  const char  *new_value);
 
 G_END_DECLS
-
-#endif /* __GDM_SETTINGS_BACKEND_H */

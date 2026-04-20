@@ -21,8 +21,7 @@
  *             William Jon McCann
  */
 
-#ifndef __GDM_GREETER_SESSIONS_H
-#define __GDM_GREETER_SESSIONS_H
+#pragma once
 
 #include <glib.h>
 
@@ -33,5 +32,3 @@ char *                 gdm_get_session_name_and_description (const char  *id,
                                                              char       **description);
 
 G_END_DECLS
-
-#endif /* __GDM_SESSION_H */

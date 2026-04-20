@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_SETTINGS_DIRECT_H
-#define __GDM_SETTINGS_DIRECT_H
+#pragma once
 
 #include <glib-object.h>
 #include "gdm-settings.h"
@@ -44,5 +43,3 @@ gboolean              gdm_settings_direct_get_string                 (const char
                                                                       char             **value);
 
 G_END_DECLS
-
-#endif /* __GDM_SETTINGS_DIRECT_H */

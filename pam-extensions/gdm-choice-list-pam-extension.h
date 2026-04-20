@@ -17,8 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef GDM_CHOICE_LIST_PAM_EXTENSION_H
-#define GDM_CHOICE_LIST_PAM_EXTENSION_H
+#pragma once
 
 #include "gdm-pam-extensions-common.h"
 
@@ -66,5 +65,3 @@ typedef struct {
         response->key = NULL; \
 }
 #define GDM_PAM_EXTENSION_REPLY_TO_CHOICE_LIST_RESPONSE(reply) ((GdmPamExtensionChoiceListResponse *) (void *) reply->resp)
-
-#endif

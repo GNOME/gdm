@@ -18,10 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef GDM_PAM_EXTENSIONS_H
-#define GDM_PAM_EXTENSIONS_H
+#pragma once
 
 #include "gdm-choice-list-pam-extension.h"
 #include "gdm-custom-json-pam-extension.h"
-
-#endif

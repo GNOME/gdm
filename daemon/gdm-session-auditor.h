@@ -23,8 +23,7 @@
  *             Ray Strode <rstrode@redhat.com>
  *             Steve Grubb <sgrubb@redhat.com>
  */
-#ifndef GDM_SESSION_AUDITOR_H
-#define GDM_SESSION_AUDITOR_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -62,4 +61,3 @@ void                      gdm_session_auditor_report_login_failure (GdmSessionAu
 void                      gdm_session_auditor_report_logout (GdmSessionAuditor *auditor);
 
 G_END_DECLS
-#endif /* GDM_SESSION_AUDITOR_H */

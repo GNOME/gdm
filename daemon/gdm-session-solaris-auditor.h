@@ -23,8 +23,7 @@
  *             Ray Strode <rstrode@redhat.com>
  *             Steve Grubb <sgrubb@redhat.com>
  */
-#ifndef GDM_SESSION_SOLARIS_AUDITOR_H
-#define GDM_SESSION_SOLARIS_AUDITOR_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -39,4 +38,3 @@ G_DECLARE_FINAL_TYPE (GdmSessionSolarisAuditor, gdm_session_solaris_auditor, GDM
 GdmSessionAuditor *gdm_session_solaris_auditor_new                            (const char *hostname,
                                                                                const char *display_device);
 G_END_DECLS
-#endif /* GDM_SESSION_SOLARIS_AUDITOR_H */

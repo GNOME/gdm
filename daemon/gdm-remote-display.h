@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_REMOTE_DISPLAY_H
-#define __GDM_REMOTE_DISPLAY_H
+#pragma once
 
 #include <glib-object.h>
 #include <stdint.h>
@@ -41,6 +40,4 @@ void                gdm_remote_display_set_remote_id           (GdmRemoteDisplay
                                                                 const char       *remote_id);
 
 G_END_DECLS
-
-#endif /* __GDM_REMOTE_DISPLAY_H */
 
