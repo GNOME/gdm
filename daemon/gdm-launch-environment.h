@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_LAUNCH_ENVIRONMENT_H
-#define __GDM_LAUNCH_ENVIRONMENT_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -50,5 +49,3 @@ GdmLaunchEnvironment *gdm_create_initial_setup_launch_environment (const char *s
                                                                    gboolean    display_is_local);
 
 G_END_DECLS
-
-#endif /* __GDM_LAUNCH_ENVIRONMENT_H */

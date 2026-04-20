@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef __GDM_CLIENT_H
-#define __GDM_CLIENT_H
+#pragma once
 
 #include <glib-object.h>
 #include "gdm-client-glue.h"
@@ -85,5 +84,3 @@ GdmGreeter        *gdm_client_get_greeter_sync          (GdmClient *client,
                                                          GError          **error);
 
 G_END_DECLS
-
-#endif /* __GDM_CLIENT_H */

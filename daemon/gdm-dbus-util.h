@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef __GDM_DBUS_UTIL_H
-#define __GDM_DBUS_UTIL_H
+#pragma once
 
 #include <gio/gio.h>
 #include <unistd.h>
@@ -37,4 +36,3 @@ gboolean gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                                     GError     **error);
 
 void gdm_dbus_error_ensure (GQuark domain);
-#endif

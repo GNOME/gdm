@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_SETTINGS_DESKTOP_BACKEND_H
-#define __GDM_SETTINGS_DESKTOP_BACKEND_H
+#pragma once
 
 #include <glib-object.h>
 #include "gdm-settings-backend.h"
@@ -33,5 +32,3 @@ G_DECLARE_FINAL_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, G
 GdmSettingsBackend        *gdm_settings_desktop_backend_new             (const char* filename);
 
 G_END_DECLS
-
-#endif /* __GDM_SETTINGS_DESKTOP_BACKEND_H */

@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_DISPLAY_FACTORY_H
-#define __GDM_DISPLAY_FACTORY_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -64,5 +63,3 @@ gboolean                   gdm_display_factory_on_user_display_destruction (GdmD
                                                                             GError            **error);
 
 G_END_DECLS
-
-#endif /* __GDM_DISPLAY_FACTORY_H */

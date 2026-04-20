@@ -18,8 +18,7 @@
  * 02110-1301, USA.
  */
 
-#ifndef __GDM_SESSION_RECORD_H
-#define __GDM_SESSION_RECORD_H
+#pragma once
 
 #include <glib.h>
 #include "gdm-session.h"
@@ -38,5 +37,3 @@ gdm_session_record (GdmSessionRecordEvent  event,
                     GPid                   pid);
 
 G_END_DECLS
-
-#endif /* GDM_SESSION_RECORD_H */

@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_DISPLAY_STORE_H
-#define __GDM_DISPLAY_STORE_H
+#pragma once
 
 #include <glib-object.h>
 #include "gdm-display.h"
@@ -65,5 +64,3 @@ GdmDisplay *        gdm_display_store_find                     (GdmDisplayStore 
 
 
 G_END_DECLS
-
-#endif /* __GDM_DISPLAY_STORE_H */

@@ -19,8 +19,7 @@
  */
 
 
-#ifndef __GDM_MANAGER_H
-#define __GDM_MANAGER_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -53,5 +52,3 @@ gboolean            gdm_manager_get_displays                   (GdmManager *mana
 
 
 G_END_DECLS
-
-#endif /* __GDM_MANAGER_H */

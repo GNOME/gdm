@@ -18,8 +18,7 @@
  * 02110-1301, USA.
  */
 
-#ifndef __GDM_SESSION_H
-#define __GDM_SESSION_H
+#pragma once
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -125,5 +124,3 @@ gboolean          gdm_session_is_frozen                   (GdmSession *session);
 GPid              gdm_session_get_pid                     (GdmSession *session);
 
 G_END_DECLS
-
-#endif /* GDM_SESSION_H */

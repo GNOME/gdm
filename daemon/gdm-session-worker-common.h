@@ -19,8 +19,7 @@
  * 02110-1301, USA.
  */
 
-#ifndef __GDM_SESSION_WORKER_COMMON_H
-#define __GDM_SESSION_WORKER_COMMON_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -46,5 +45,3 @@ typedef enum _GdmSessionWorkerError {
         GDM_SESSION_WORKER_ERROR_OUTSTANDING_REQUEST,
         GDM_SESSION_WORKER_ERROR_IN_REAUTH_SESSION,
 } GdmSessionWorkerError;
-
-#endif /* GDM_SESSION_WORKER_COMMON_H */

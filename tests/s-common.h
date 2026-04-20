@@ -18,11 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __S_COMMON_H
-#define __S_COMMON_H
+#pragma once
 
 #include <check.h>
 
 Suite   *suite_common                 (void);
-
-#endif /* __S_COMMON_H */

@@ -18,8 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _GDM_COMMON_H
-#define _GDM_COMMON_H
+#pragma once
 
 #include <glib-unix.h>
 #include <gio/gio.h>
@@ -107,5 +106,3 @@ void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
 
 const char * const gdm_find_x_server      (void);
 G_END_DECLS
-
-#endif /* _GDM_COMMON_H */
