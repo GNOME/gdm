@@ -354,10 +354,9 @@ gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_FILENAME,
                                          g_param_spec_string ("filename",
-                                                              "File Name",
-                                                              "The name of the configuration file",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
 }
 
 static void

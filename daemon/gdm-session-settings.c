@@ -89,20 +89,17 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
         object_class->set_property = gdm_session_settings_set_property;
         object_class->get_property = gdm_session_settings_get_property;
 
-        param_spec = g_param_spec_string ("session-name", "Session Name",
-                                          "The name of the session",
-                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+        param_spec = g_param_spec_string ("session-name", NULL, NULL,
+                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
         g_object_class_install_property (object_class, PROP_SESSION_NAME, param_spec);
 
-        param_spec = g_param_spec_string ("session-type", "Session Type",
-                                          "The type of the session",
-                                          NULL, G_PARAM_READWRITE);
+        param_spec = g_param_spec_string ("session-type", NULL, NULL,
+                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
         g_object_class_install_property (object_class, PROP_SESSION_TYPE, param_spec);
 
-        param_spec = g_param_spec_string ("language-name", "Language Name",
-                                          "The name of the language",
+        param_spec = g_param_spec_string ("language-name", NULL, NULL,
                                           NULL,
-                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
         g_object_class_install_property (object_class, PROP_LANGUAGE_NAME, param_spec);
 
         param_spec = g_param_spec_boolean ("is-loaded", NULL, NULL,

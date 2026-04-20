@@ -85,21 +85,18 @@ gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_cl
         object_class->set_property = gdm_session_auditor_set_property;
         object_class->get_property = gdm_session_auditor_get_property;
 
-        param_spec = g_param_spec_string ("username", _("Username"),
-                                        _("The username"),
-                                        NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+        param_spec = g_param_spec_string ("username", NULL, NULL,
+                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
         g_object_class_install_property (object_class, PROP_USERNAME, param_spec);
 
-        param_spec = g_param_spec_string ("hostname", _("Hostname"),
-                                        _("The hostname"),
-                                        NULL,
-                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+        param_spec = g_param_spec_string ("hostname", NULL, NULL,
+                                          NULL,
+                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
         g_object_class_install_property (object_class, PROP_HOSTNAME, param_spec);
 
-        param_spec = g_param_spec_string ("display-device", _("Display Device"),
-                                        _("The display device"),
-                                        NULL,
-                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+        param_spec = g_param_spec_string ("display-device", NULL, NULL,
+                                          NULL,
+                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
         g_object_class_install_property (object_class, PROP_DISPLAY_DEVICE, param_spec);
 }
 
