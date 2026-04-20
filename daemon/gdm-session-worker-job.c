@@ -380,8 +380,7 @@ gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_j
 {
         g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
 
-        g_free (session_worker_job->server_address);
-        session_worker_job->server_address = g_strdup (address);
+        g_set_str (&session_worker_job->server_address, address);
 }
 
 void

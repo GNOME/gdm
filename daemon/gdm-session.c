@@ -672,8 +672,7 @@ get_fallback_session_name (GdmSession *self)
                session = g_sequence_iter_next (session);
         } while (!g_sequence_iter_is_end (session));
 
-        g_free (self->fallback_session_name);
-        self->fallback_session_name = g_strdup (name);
+        g_set_str (&self->fallback_session_name, name);
 
         g_sequence_free (sessions);
 
@@ -717,8 +716,7 @@ gdm_session_select_user (GdmSession *self,
                  gdm_session_get_session_id (self),
                  self);
 
-        g_free (self->selected_user);
-        self->selected_user = g_strdup (text);
+        g_set_str (&self->selected_user, text);
 
         g_free (self->saved_session);
         self->saved_session = NULL;
@@ -1083,8 +1081,7 @@ worker_on_saved_language_name_read (GdmDBusWorker          *worker,
         GdmSession *self = conversation->session;
 
         if (strlen (language_name) > 0) {
-                g_free (self->saved_language);
-                self->saved_language = g_strdup (language_name);
+                g_set_str (&self->saved_language, language_name);
 
                 if (self->greeter_interface != NULL) {
                         gdm_dbus_greeter_emit_default_language_name_changed (self->greeter_interface,
@@ -1109,8 +1106,7 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
         } else {
                 if (strcmp (session_name,
                             get_default_session_name (self)) != 0) {
-                        g_free (self->saved_session);
-                        self->saved_session = g_strdup (session_name);
+                        g_set_str (&self->saved_session, session_name);
 
                         if (self->greeter_interface != NULL) {
                                 gdm_dbus_greeter_emit_default_session_name_changed (self->greeter_interface,
@@ -1132,8 +1128,7 @@ worker_on_saved_session_type_read (GdmDBusWorker          *worker,
 {
         GdmSession *self = conversation->session;
 
-        g_free (self->saved_session_type);
-        self->saved_session_type = g_strdup (session_type);
+        g_set_str (&self->saved_session_type, session_type);
 }
 
 static GdmSessionConversation *
@@ -3477,8 +3472,7 @@ gdm_session_select_session (GdmSession *self,
 
         g_debug ("GdmSession: selecting session '%s'", text);
 
-        g_free (self->selected_session);
-        self->selected_session = g_strdup (text);
+        g_set_str (&self->selected_session, text);
 
         update_session_type (self);
 
@@ -3501,8 +3495,7 @@ static void
 set_display_hostname (GdmSession *self,
                       const char *name)
 {
-        g_free (self->display_hostname);
-        self->display_hostname = g_strdup (name);
+        g_set_str (&self->display_hostname, name);
 }
 
 static void
@@ -3510,16 +3503,14 @@ set_display_device (GdmSession *self,
                     const char *name)
 {
         g_debug ("GdmSession: Setting display device: %s", name);
-        g_free (self->display_device);
-        self->display_device = g_strdup (name);
+        g_set_str (&self->display_device, name);
 }
 
 static void
 set_display_seat_id (GdmSession *self,
                      const char *name)
 {
-        g_free (self->display_seat_id);
-        self->display_seat_id = g_strdup (name);
+        g_set_str (&self->display_seat_id, name);
 }
 
 static void
@@ -3565,8 +3556,7 @@ set_session_type (GdmSession *self,
 
         if (g_strcmp0 (self->session_type, session_type) != 0) {
                 g_debug ("GdmSession: setting session to type '%s'", session_type? session_type : "");
-                g_free (self->session_type);
-                self->session_type = g_strdup (session_type);
+                g_set_str (&self->session_type, session_type);
         }
 }
 
@@ -3574,8 +3564,7 @@ static void
 set_remote_id (GdmSession *self,
                const char *remote_id)
 {
-        g_free (self->remote_id);
-        self->remote_id = g_strdup (remote_id);
+        g_set_str (&self->remote_id, remote_id);
 }
 
 static void

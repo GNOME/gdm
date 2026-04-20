@@ -65,8 +65,7 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
         g_autoptr(GError) error = NULL;
         g_autofree char *contents = NULL;
 
-        g_free (backend->filename);
-        backend->filename = g_strdup (filename);
+        g_set_str (&backend->filename, filename);
 
         backend->key_file = g_key_file_new ();
 
