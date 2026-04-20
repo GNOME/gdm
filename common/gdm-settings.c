@@ -196,8 +196,7 @@ gdm_settings_reload (GdmSettings *settings)
         g_return_if_fail (GDM_IS_SETTINGS (settings));
 
         g_list_foreach (settings->backends, (GFunc) g_object_unref, NULL);
-        g_list_free (settings->backends);
-        settings->backends = NULL;
+        g_clear_list (&settings->backends, NULL);
 
         backend = gdm_settings_desktop_backend_new (GDM_CUSTOM_CONF);
         if (backend)
@@ -236,8 +235,7 @@ gdm_settings_finalize (GObject *object)
         g_return_if_fail (settings != NULL);
 
         g_list_foreach (settings->backends, (GFunc) g_object_unref, NULL);
-        g_list_free (settings->backends);
-        settings->backends = NULL;
+        g_clear_list (&settings->backends, NULL);
 
         settings_object = NULL;
 

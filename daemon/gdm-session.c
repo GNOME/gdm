@@ -3086,8 +3086,7 @@ free_pending_worker_connections (GdmSession *self)
 
                 free_pending_worker_connection (self, connection);
         }
-        g_list_free (self->pending_worker_connections);
-        self->pending_worker_connections = NULL;
+        g_clear_list (&self->pending_worker_connections, NULL);
 }
 
 static void
