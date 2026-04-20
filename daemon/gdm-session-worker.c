@@ -2296,8 +2296,7 @@ static void
 gdm_session_worker_set_server_address (GdmSessionWorker *worker,
                                        const char       *address)
 {
-        g_free (worker->server_address);
-        worker->server_address = g_strdup (address);
+        g_set_str (&worker->server_address, address);
 }
 
 static void

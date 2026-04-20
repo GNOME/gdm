@@ -404,8 +404,7 @@ _gdm_display_set_id (GdmDisplay     *self,
 
         priv = gdm_display_get_instance_private (self);
         g_debug ("GdmDisplay: id: %s", id);
-        g_free (priv->id);
-        priv->id = g_strdup (id);
+        g_set_str (&priv->id, id);
 }
 
 static void
@@ -416,8 +415,7 @@ _gdm_display_set_seat_id (GdmDisplay     *self,
 
         priv = gdm_display_get_instance_private (self);
         g_debug ("GdmDisplay: seat id: %s", seat_id);
-        g_free (priv->seat_id);
-        priv->seat_id = g_strdup (seat_id);
+        g_set_str (&priv->seat_id, seat_id);
 }
 
 static void
@@ -428,8 +426,7 @@ _gdm_display_set_session_id (GdmDisplay     *self,
 
         priv = gdm_display_get_instance_private (self);
         g_debug ("GdmDisplay: session id: %s", session_id);
-        g_free (priv->session_id);
-        priv->session_id = g_strdup (session_id);
+        g_set_str (&priv->session_id, session_id);
 }
 
 static void
@@ -440,8 +437,7 @@ _gdm_display_set_session_class (GdmDisplay *self,
 
         priv = gdm_display_get_instance_private (self);
         g_debug ("GdmDisplay: session class: %s", session_class);
-        g_free (priv->session_class);
-        priv->session_class = g_strdup (session_class);
+        g_set_str (&priv->session_class, session_class);
 }
 
 static void
@@ -451,8 +447,7 @@ _gdm_display_set_remote_hostname (GdmDisplay     *self,
         GdmDisplayPrivate *priv;
 
         priv = gdm_display_get_instance_private (self);
-        g_free (priv->remote_hostname);
-        priv->remote_hostname = g_strdup (hostname);
+        g_set_str (&priv->remote_hostname, hostname);
 }
 
 static void

@@ -97,8 +97,7 @@ gdm_settings_entry_set_value (GdmSettingsEntry *entry,
 {
         g_return_if_fail (entry != NULL);
 
-        g_free (entry->value);
-        entry->value = g_strdup (value);
+        g_set_str (&entry->value, value);
 }
 
 void

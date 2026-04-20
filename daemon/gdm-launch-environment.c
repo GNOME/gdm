@@ -676,16 +676,14 @@ static void
 _gdm_launch_environment_set_display_seat_id (GdmLaunchEnvironment *launch_environment,
                                              const char           *sid)
 {
-        g_free (launch_environment->display_seat_id);
-        launch_environment->display_seat_id = g_strdup (sid);
+        g_set_str (&launch_environment->display_seat_id, sid);
 }
 
 static void
 _gdm_launch_environment_set_display_hostname (GdmLaunchEnvironment *launch_environment,
                                               const char           *name)
 {
-        g_free (launch_environment->display_hostname);
-        launch_environment->display_hostname = g_strdup (name);
+        g_set_str (&launch_environment->display_hostname, name);
 }
 
 static void
@@ -699,32 +697,28 @@ static void
 _gdm_launch_environment_set_preferred_user_name (GdmLaunchEnvironment *launch_environment,
                                                  const char           *name)
 {
-        g_free (launch_environment->preferred_user_name);
-        launch_environment->preferred_user_name = g_strdup (name);
+        g_set_str (&launch_environment->preferred_user_name, name);
 }
 
 static void
 _gdm_launch_environment_set_user_disp_name (GdmLaunchEnvironment *launch_environment,
                                             const char           *disp_name)
 {
-        g_free (launch_environment->user_disp_name);
-        launch_environment->user_disp_name = g_strdup (disp_name);
+        g_set_str (&launch_environment->user_disp_name, disp_name);
 }
 
 static void
 _gdm_launch_environment_set_user_member_of (GdmLaunchEnvironment *launch_environment,
                                             const char           *member_of)
 {
-        g_free (launch_environment->user_member_of);
-        launch_environment->user_member_of = g_strdup (member_of);
+        g_set_str (&launch_environment->user_member_of, member_of);
 }
 
 static void
 _gdm_launch_environment_set_dconf_profile (GdmLaunchEnvironment *launch_environment,
                                             const char           *profile)
 {
-        g_free (launch_environment->dconf_profile);
-        launch_environment->dconf_profile = g_strdup (profile);
+        g_set_str (&launch_environment->dconf_profile, profile);
 }
 
 static void
