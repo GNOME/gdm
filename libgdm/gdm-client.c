@@ -139,6 +139,7 @@ get_manager (GdmClient           *client,
                            cancellable,
                            callback,
                            user_data);
+        g_task_set_source_tag (task, get_manager);
 
         gdm_manager_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                                        G_DBUS_PROXY_FLAGS_NONE,
@@ -547,6 +548,7 @@ gdm_client_get_connection (GdmClient           *client,
                            cancellable,
                            callback,
                            user_data);
+        g_task_set_source_tag (task, gdm_client_get_connection);
 
         connection = gdm_client_get_connection_sync (client,
                                                      cancellable,
@@ -711,6 +713,7 @@ gdm_client_open_reauthentication_channel (GdmClient           *client,
                            cancellable,
                            callback,
                            user_data);
+        g_task_set_source_tag (task, gdm_client_open_reauthentication_channel);
 
         g_object_set_data_full (G_OBJECT (task),
                                 "username",
@@ -903,6 +906,7 @@ gdm_client_get_user_verifier (GdmClient           *client,
                            cancellable,
                            callback,
                            user_data);
+        g_task_set_source_tag (task, gdm_client_get_user_verifier);
 
         if (client->user_verifier != NULL) {
                 g_task_return_pointer (task,
@@ -1113,6 +1117,7 @@ gdm_client_get_greeter (GdmClient           *client,
                            cancellable,
                            callback,
                            user_data);
+        g_task_set_source_tag (task, gdm_client_get_greeter);
 
         if (client->greeter != NULL) {
                 g_task_return_pointer (task,
