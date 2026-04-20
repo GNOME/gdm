@@ -19,9 +19,10 @@
  */
 
 #include <stdlib.h>
-#include <glib/gi18n.h>
-#include <glib.h>
+
 #include <glib-object.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include "s-common.h"
 

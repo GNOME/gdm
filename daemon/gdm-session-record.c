@@ -21,9 +21,15 @@
 
 #include "config.h"
 
+#include "gdm-session-record.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
 
 #if defined(HAVE_UTMPX_H)
 #include <utmpx.h>
@@ -32,12 +38,6 @@
 #if defined(HAVE_UTMP_H)
 #include <utmp.h>
 #endif
-
-#include <glib.h>
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
-
-#include "gdm-session-record.h"
 
 #ifndef GDM_BAD_SESSION_RECORDS_FILE
 #define GDM_BAD_SESSION_RECORDS_FILE "/var/log/btmp"

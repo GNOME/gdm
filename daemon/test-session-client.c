@@ -19,14 +19,14 @@
 
 #include "config.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
 #include <termios.h>
+#include <unistd.h>
 
 #include <glib.h>
+#include <sys/ioctl.h>
 
 #include "gdm-manager-glue.h"
 #include "gdm-session-glue.h"

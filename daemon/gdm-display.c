@@ -20,31 +20,30 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
+#include "gdm-display.h"
+
 #include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
 #include <signal.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
 
 #include "gdm-common.h"
-#include "gdm-display.h"
+#include "gdm-dbus-util.h"
 #include "gdm-display-glue.h"
 #include "gdm-launch-environment.h"
+#include "gdm-launch-environment.h"
 #include "gdm-remote-display.h"
-
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
-
-#include "gdm-launch-environment.h"
-#include "gdm-dbus-util.h"
 
 #define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
 

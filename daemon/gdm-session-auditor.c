@@ -24,14 +24,15 @@
  *             Steve Grubb <sgrubb@redhat.com>
  */
 #include "config.h"
+
 #include "gdm-session-auditor.h"
 
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 #include <glib/gi18n.h>
 
 typedef struct _GdmSessionAuditorPrivate

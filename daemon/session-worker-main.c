@@ -20,29 +20,28 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <signal.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <locale.h>
+#include <signal.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
 
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
-
-#include "gdm-settings.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
+#include "gdm-settings.h"
 
 static GdmSettings *settings = NULL;
 

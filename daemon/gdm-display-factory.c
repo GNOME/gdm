@@ -20,15 +20,16 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "gdm-display-factory.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
 #include <polkit/polkit.h>
 
-#include "gdm-display-factory.h"
 #include "gdm-common.h"
 #include "gdm-display-store.h"
 

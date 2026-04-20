@@ -20,14 +20,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "s-common.h"
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <glib.h>
+
 #include <check.h>
+#include <glib.h>
 
 #include "gdm-common.h"
-#include "s-common.h"
 
 static void
 setup (void)

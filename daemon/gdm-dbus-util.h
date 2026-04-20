@@ -20,9 +20,10 @@
 
 #pragma once
 
-#include <gio/gio.h>
-#include <unistd.h>
 #include <sys/types.h>
+#include <unistd.h>
+
+#include <gio/gio.h>
 
 GDBusServer *gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                                             GError            **error);

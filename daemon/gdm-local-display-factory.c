@@ -20,30 +20,29 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "gdm-local-display-factory.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <gio/gio.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
-#include <gio/gio.h>
+#include <systemd/sd-login.h>
+
+#include "gdm-common.h"
+#include "gdm-display-factory.h"
+#include "gdm-display-store.h"
+#include "gdm-local-display-factory-glue.h"
+#include "gdm-local-display.h"
+#include "gdm-manager.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #ifdef HAVE_UDEV
 #include <gudev/gudev.h>
 #endif
-
-#include <systemd/sd-login.h>
-
-#include "gdm-common.h"
-#include "gdm-manager.h"
-#include "gdm-display-factory.h"
-#include "gdm-local-display-factory.h"
-#include "gdm-local-display-factory-glue.h"
-
-#include "gdm-settings-keys.h"
-#include "gdm-settings-direct.h"
-#include "gdm-display-store.h"
-#include "gdm-local-display.h"
 
 #define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"

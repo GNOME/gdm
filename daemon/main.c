@@ -20,34 +20,33 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <pwd.h>
 #include <grp.h>
-#include <sys/wait.h>
 #include <locale.h>
+#include <pwd.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
+#include <gio/gio.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
-#include <gio/gio.h>
 
-#include "gdm-manager.h"
-#include "gdm-log.h"
 #include "gdm-common.h"
 #include "gdm-file-utils.h"
-
-#include "gdm-settings.h"
+#include "gdm-log.h"
+#include "gdm-manager.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
+#include "gdm-settings.h"
 
 #define GDM_DBUS_NAME "org.gnome.DisplayManager"
 

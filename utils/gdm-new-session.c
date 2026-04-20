@@ -5,9 +5,10 @@
 
 #include "config.h"
 
+#include <sysexits.h>
+
 #include <gio/gio.h>
 #include <glib-unix.h>
-#include <sysexits.h>
 #include <systemd/sd-login.h>
 
 #define GDM_DBUS_NAME                        "org.gnome.DisplayManager"

@@ -22,17 +22,17 @@
 
 #include "config.h"
 
+#include "gdm-profile.h"
+
+#include <signal.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
-#include <signal.h>
 #include <time.h>
 #include <unistd.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
-
-#include "gdm-profile.h"
 
 void
 _gdm_profile_log (const char *func,

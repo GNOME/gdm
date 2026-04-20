@@ -20,35 +20,35 @@
 
 #include "config.h"
 
-#include <gio/gio.h>
+#include "gdm-launch-environment.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <errno.h>
-#include <ctype.h>
-#include <signal.h>
-#ifdef HAVE_SYS_PRCTL_H
-#include <sys/prctl.h>
-#endif
+#include <unistd.h>
 
 #include <gio/gfiledescriptorbased.h>
+#include <gio/gio.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
 
 #include "gdm-common.h"
 #include "gdm-file-utils.h"
-
 #include "gdm-session-enum-types.h"
-#include "gdm-launch-environment.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
+
+#ifdef HAVE_SYS_PRCTL_H
+#include <sys/prctl.h>
+#endif
 
 #define GDM_GREETER_SESSION "gnome-greeter"
 #define GDM_GREETER_USERNAME "gdm-greeter"

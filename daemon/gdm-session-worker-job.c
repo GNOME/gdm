@@ -20,35 +20,35 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "gdm-session-worker-job.h"
+
+#include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <grp.h>
+#include <pwd.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <errno.h>
-#include <ctype.h>
-#include <pwd.h>
-#include <grp.h>
-#include <signal.h>
+#include <unistd.h>
+
+#include <glib-object.h>
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <systemd/sd-daemon.h>
+
+#include "gdm-common.h"
+
 #ifdef HAVE_SYS_PRCTL_H
 #include <sys/prctl.h>
 #endif
 
-#include <systemd/sd-daemon.h>
-
 #ifdef ENABLE_SYSTEMD_JOURNAL
 #include <systemd/sd-journal.h>
 #endif
-
-#include <glib.h>
-#include <glib/gi18n.h>
-#include <glib-object.h>
-
-#include "gdm-common.h"
-
-#include "gdm-session-worker-job.h"
 
 extern char **environ;
 

@@ -21,8 +21,9 @@
 
 #pragma once
 
-#include <glib-object.h>
 #include <stdint.h>
+
+#include <glib-object.h>
 
 #include "gdm-display.h"
 

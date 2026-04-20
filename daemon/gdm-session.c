@@ -21,10 +21,15 @@
 
 #include "config.h"
 
+#include "gdm-session.h"
+#include "gdm-session.h"
+
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
-
+#include <grp.h>
+#include <locale.h>
+#include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
@@ -32,32 +37,22 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <pwd.h>
-#include <grp.h>
 
-#include <locale.h>
-
+#include <gio/gio.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
-#include <gio/gio.h>
-
 #include <json-glib/json-glib.h>
-
 #include <systemd/sd-login.h>
 
-#include "gdm-session.h"
-#include "gdm-session-glue.h"
-#include "gdm-dbus-util.h"
-
-#include "gdm-session.h"
-#include "gdm-session-enum-types.h"
-#include "gdm-session-worker-common.h"
-#include "gdm-session-worker-job.h"
-#include "gdm-session-worker-glue.h"
 #include "gdm-common.h"
-
+#include "gdm-dbus-util.h"
+#include "gdm-session-enum-types.h"
+#include "gdm-session-glue.h"
+#include "gdm-session-worker-common.h"
+#include "gdm-session-worker-glue.h"
+#include "gdm-session-worker-job.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 

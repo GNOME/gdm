@@ -18,9 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <sys/stat.h>
-
 #include "gdm-file-utils.h"
+
+#include <sys/stat.h>
 
 gboolean
 gdm_walk_dir_recursively (GFile                     *dir,

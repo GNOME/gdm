@@ -20,20 +20,20 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "gdm-settings-backend.h"
+
 #include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
-
-#include "gdm-settings-backend.h"
 
 enum {
         VALUE_CHANGED,

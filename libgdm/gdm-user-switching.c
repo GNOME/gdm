@@ -19,8 +19,9 @@
  *
  */
 
-#include "common/gdm-common.h"
 #include "gdm-user-switching.h"
+
+#include "common/gdm-common.h"
 
 gboolean
 gdm_goto_login_session_sync (GCancellable  *cancellable,

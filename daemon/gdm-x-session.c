@@ -22,19 +22,18 @@
 #include <locale.h>
 #include <sysexits.h>
 
-#include "gdm-common.h"
-#include "gdm-settings-direct.h"
-#include "gdm-settings-keys.h"
-#include "gdm-log.h"
-
-#include "gdm-manager-glue.h"
-
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
-#include <glib-unix.h>
-#include <glib.h>
 #include <gio/gunixinputstream.h>
 #include <glib-unix.h>
+#include <glib-unix.h>
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+
+#include "gdm-common.h"
+#include "gdm-log.h"
+#include "gdm-manager-glue.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #ifdef ENABLE_X11_SUPPORT
 #include <X11/Xauth.h>

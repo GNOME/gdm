@@ -28,9 +28,9 @@
 #include <stdlib.h>
 #include <sysexits.h>
 
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gio/gio.h>
 
 #include "gdm-common.h"
 

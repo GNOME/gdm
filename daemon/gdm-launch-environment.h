@@ -23,8 +23,8 @@
 
 #include <glib-object.h>
 
-#include "gdm-session.h"
 #include "gdm-dynamic-user-store.h"
+#include "gdm-session.h"
 
 G_BEGIN_DECLS
 
