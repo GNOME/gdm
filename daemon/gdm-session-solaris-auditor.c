@@ -336,8 +336,7 @@ on_username_set (GdmSessionSolarisAuditor *auditor)
                 auditor->gid = passwd_entry->pw_gid;
                 auditor->username = g_strdup (passwd_entry->pw_name);
         } else {
-                g_free (auditor->username);
-                auditor->username = NULL;
+                g_clear_pointer (&auditor->username, g_free);
                 auditor->uid = (uid_t) -1;
                 auditor->gid = (gid_t) -1;
         }
@@ -363,8 +362,7 @@ gdm_session_solaris_auditor_finalize (GObject *object)
 
         solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (object);
 
-        g_free (solaris_auditor->username);
-        solaris_auditor->username = NULL;
+        g_clear_pointer (&solaris_auditor->username, g_free);
 
         parent_class = G_OBJECT_CLASS (gdm_session_solaris_auditor_parent_class);
 

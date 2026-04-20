@@ -531,8 +531,7 @@ get_session_command_for_file (GdmSession  *self,
                                       NULL);
         if (exec != NULL) {
                 res = is_prog_in_path (exec);
-                g_free (exec);
-                exec = NULL;
+                g_clear_pointer (&exec, g_free);
 
                 if (! res) {
                         g_debug ("GdmSession: Command not found: %s",
@@ -718,14 +717,11 @@ gdm_session_select_user (GdmSession *self,
 
         g_set_str (&self->selected_user, text);
 
-        g_free (self->saved_session);
-        self->saved_session = NULL;
+        g_clear_pointer (&self->saved_session, g_free);
 
-        g_free (self->saved_session_type);
-        self->saved_session_type = NULL;
+        g_clear_pointer (&self->saved_session_type, g_free);
 
-        g_free (self->saved_language);
-        self->saved_language = NULL;
+        g_clear_pointer (&self->saved_language, g_free);
 }
 
 static void
@@ -1100,8 +1096,7 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
         if (! get_session_command_for_name (self, session_name, self->saved_session_type, NULL)) {
                 /* ignore sessions that don't exist */
                 g_debug ("GdmSession: not using invalid .dmrc session: %s", session_name);
-                g_free (self->saved_session);
-                self->saved_session = NULL;
+                g_clear_pointer (&self->saved_session, g_free);
                 update_session_type (self);
         } else {
                 if (strcmp (session_name,
@@ -2274,8 +2269,7 @@ worker_exited (GdmSessionWorkerJob    *job,
         g_object_unref (conversation->job);
 
         if (conversation->is_stopping) {
-                g_object_unref (conversation->job);
-                conversation->job = NULL;
+                g_clear_object (&conversation->job);
         }
 
         free_conversation (conversation);
@@ -2313,8 +2307,7 @@ worker_died (GdmSessionWorkerJob    *job,
         g_object_unref (conversation->job);
 
         if (conversation->is_stopping) {
-                g_object_unref (conversation->job);
-                conversation->job = NULL;
+                g_clear_object (&conversation->job);
         }
 
         free_conversation (conversation);
@@ -2446,8 +2439,7 @@ gdm_session_start_conversation (GdmSession *self,
                 }
                 g_debug ("GdmSession: stopping old conversation %s", service_name);
                 gdm_session_worker_job_stop_now (conversation->job);
-                g_object_unref (conversation->job);
-                conversation->job = NULL;
+                g_clear_object (&conversation->job);
         }
 
         g_debug ("GdmSession: starting conversation %s for session (%p)", service_name, self);
@@ -3096,17 +3088,13 @@ do_reset (GdmSession *self)
 
         free_pending_worker_connections (self);
 
-        g_free (self->selected_user);
-        self->selected_user = NULL;
+        g_clear_pointer (&self->selected_user, g_free);
 
-        g_free (self->selected_session);
-        self->selected_session = NULL;
+        g_clear_pointer (&self->selected_session, g_free);
 
-        g_free (self->saved_session);
-        self->saved_session = NULL;
+        g_clear_pointer (&self->saved_session, g_free);
 
-        g_free (self->saved_language);
-        self->saved_language = NULL;
+        g_clear_pointer (&self->saved_language, g_free);
 
         g_hash_table_remove_all (self->environment);
 
@@ -3687,14 +3675,11 @@ gdm_session_dispose (GObject *object)
                          g_hash_table_unref);
         g_clear_object (&self->greeter_interface);
 
-        g_free (self->display_hostname);
-        self->display_hostname = NULL;
+        g_clear_pointer (&self->display_hostname, g_free);
 
-        g_free (self->display_device);
-        self->display_device = NULL;
+        g_clear_pointer (&self->display_device, g_free);
 
-        g_free (self->display_seat_id);
-        self->display_seat_id = NULL;
+        g_clear_pointer (&self->display_seat_id, g_free);
 
         g_strfreev (self->conversation_environment);
         self->conversation_environment = NULL;
@@ -3709,10 +3694,7 @@ gdm_session_dispose (GObject *object)
                 g_clear_object (&self->outside_server);
         }
 
-        if (self->environment != NULL) {
-                g_hash_table_destroy (self->environment);
-                self->environment = NULL;
-        }
+        g_clear_pointer (&self->environment, g_hash_table_destroy);
 
         G_OBJECT_CLASS (gdm_session_parent_class)->dispose (object);
 }
