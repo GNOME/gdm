@@ -854,31 +854,27 @@ gdm_display_class_init (GdmDisplayClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_ID,
                                          g_param_spec_string ("id",
-                                                              "id",
-                                                              "id",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_REMOTE_HOSTNAME,
                                          g_param_spec_string ("remote-hostname",
-                                                              "remote-hostname",
-                                                              "remote-hostname",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_SEAT_ID,
                                          g_param_spec_string ("seat-id",
-                                                              "seat id",
-                                                              "seat id",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_SESSION_ID,
                                          g_param_spec_string ("session-id",
-                                                              "session id",
-                                                              "session id",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_SESSION_CLASS,
                                          g_param_spec_string ("session-class",
@@ -946,20 +942,18 @@ gdm_display_class_init (GdmDisplayClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_STATUS,
                                          g_param_spec_int ("status",
-                                                           "status",
-                                                           "status",
+                                                           NULL, NULL,
                                                            -1,
                                                            G_MAXINT,
                                                            GDM_DISPLAY_UNMANAGED,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
 
         g_object_class_install_property (object_class,
                                          PROP_SUPPORTED_SESSION_TYPES,
                                          g_param_spec_boxed ("supported-session-types",
-                                                             "supported session types",
-                                                             "supported session types",
+                                                             NULL, NULL,
                                                              G_TYPE_STRV,
-                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
 }
 
 static void

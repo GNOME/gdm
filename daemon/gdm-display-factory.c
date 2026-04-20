@@ -377,10 +377,9 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_STORE,
                                          g_param_spec_object ("display-store",
-                                                              "display store",
-                                                              "display store",
+                                                              NULL, NULL,
                                                               GDM_TYPE_DISPLAY_STORE,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
 }
 
 static void

@@ -492,23 +492,20 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,
                                          g_param_spec_string ("server-address",
-                                                              "server address",
-                                                              "server address",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_FOR_REAUTH,
                                          g_param_spec_boolean ("for-reauth",
-                                                               "for reauth",
-                                                               "for reauth",
+                                                               NULL, NULL,
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_ENVIRONMENT,
                                          g_param_spec_pointer ("environment",
-                                                               "environment",
-                                                               "environment",
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                               NULL, NULL,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         signals [STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),

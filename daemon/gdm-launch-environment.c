@@ -828,59 +828,51 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("display-seat-id",
-                                                              "seat id",
-                                                              "seat id",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
-                                                              "hostname",
-                                                              "hostname",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("display-is-local",
-                                                               "is local",
-                                                               "is local",
+                                                               NULL, NULL,
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_PREFERRED_USER_NAME,
                                          g_param_spec_string ("preferred-user-name",
-                                                              "preferred user name",
-                                                              "preferred user name",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_USER_DISP_NAME,
                                          g_param_spec_string ("user-display-name",
-                                                              "user display name",
-                                                              "user display name",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_USER_MEMBER_OF,
                                          g_param_spec_string ("user-member-of",
-                                                              "user member of",
-                                                              "user member of",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_DCONF_PROFILE,
                                          g_param_spec_string ("dconf-profile",
-                                                              "dconf profile",
-                                                              "dconf profile",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
         g_object_class_install_property (object_class,
                                          PROP_SESSION_NAME,
                                          g_param_spec_string ("session-name",
-                                                              "session name",
-                                                              "session name",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
         signals [OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),

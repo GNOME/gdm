@@ -3197,27 +3197,24 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,
                                          g_param_spec_string ("server-address",
-                                                              "server address",
-                                                              "server address",
+                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
 
         g_object_class_install_property (object_class,
                                          PROP_IS_REAUTH_SESSION,
                                          g_param_spec_boolean ("is-reauth-session",
-                                                               "is reauth session",
-                                                               "is reauth session",
+                                                               NULL, NULL,
                                                               FALSE,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
 
         g_object_class_install_property (object_class,
                                          PROP_STATE,
                                          g_param_spec_enum ("state",
-                                                            "state",
-                                                            "state",
+                                                            NULL, NULL,
                                                             GDM_TYPE_SESSION_WORKER_STATE,
                                                             GDM_SESSION_WORKER_STATE_NONE,
-                                                            G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+                                                            G_PARAM_READABLE | G_PARAM_STATIC_NAME));
 }
 
 static void
