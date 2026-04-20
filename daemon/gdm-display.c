@@ -101,7 +101,10 @@ enum {
         PROP_DOING_INITIAL_SETUP,
         PROP_SESSION_REGISTERED,
         PROP_SUPPORTED_SESSION_TYPES,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
 static void     gdm_display_init        (GdmDisplay      *self);
@@ -844,109 +847,81 @@ gdm_display_class_init (GdmDisplayClass *klass)
 
         klass->prepare = gdm_display_real_prepare;
 
-        g_object_class_install_property (object_class,
-                                         PROP_ID,
-                                         g_param_spec_string ("id",
-                                                              NULL, NULL,
+        props[PROP_ID] = g_param_spec_string ("id",
+                                              NULL, NULL,
+                                              NULL,
+                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+        props[PROP_REMOTE_HOSTNAME] = g_param_spec_string ("remote-hostname",
+                                                           NULL, NULL,
+                                                           NULL,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+        props[PROP_SEAT_ID] = g_param_spec_string ("seat-id",
+                                                   NULL, NULL,
+                                                   NULL,
+                                                   G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_SESSION_ID] = g_param_spec_string ("session-id",
+                                                      NULL, NULL,
+                                                      NULL,
+                                                      G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
+        props[PROP_SESSION_CLASS] = g_param_spec_string ("session-class",
+                                                         NULL,
+                                                         NULL,
+                                                         "greeter",
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        props[PROP_IS_INITIAL] = g_param_spec_boolean ("is-initial",
+                                                       NULL,
+                                                       NULL,
+                                                       FALSE,
+                                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        props[PROP_AUTOLOGIN_USER] = g_param_spec_string ("autologin-user",
+                                                          NULL,
+                                                          NULL,
+                                                          NULL,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        props[PROP_ALLOW_TIMED_LOGIN] = g_param_spec_boolean ("allow-timed-login",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_REMOTE_HOSTNAME,
-                                         g_param_spec_string ("remote-hostname",
-                                                              NULL, NULL,
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_SEAT_ID,
-                                         g_param_spec_string ("seat-id",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_SESSION_ID,
-                                         g_param_spec_string ("session-id",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_SESSION_CLASS,
-                                         g_param_spec_string ("session-class",
-                                                              NULL,
-                                                              NULL,
-                                                              "greeter",
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_IS_INITIAL,
-                                         g_param_spec_boolean ("is-initial",
+                                                              TRUE,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        props[PROP_IS_LOCAL] = g_param_spec_boolean ("is-local",
+                                                     NULL,
+                                                     NULL,
+                                                     TRUE,
+                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        props[PROP_HAVE_EXISTING_USER_ACCOUNTS] = g_param_spec_boolean ("have-existing-user-accounts",
+                                                                        NULL,
+                                                                        NULL,
+                                                                        FALSE,
+                                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+        props[PROP_DOING_INITIAL_SETUP] = g_param_spec_boolean ("doing-initial-setup",
+                                                                NULL,
+                                                                NULL,
+                                                                FALSE,
+                                                                G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+        props[PROP_SESSION_REGISTERED] = g_param_spec_boolean ("session-registered",
                                                                NULL,
                                                                NULL,
                                                                FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_AUTOLOGIN_USER,
-                                         g_param_spec_string ("autologin-user",
-                                                              NULL,
-                                                              NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_ALLOW_TIMED_LOGIN,
-                                         g_param_spec_boolean ("allow-timed-login",
-                                                               NULL,
-                                                               NULL,
-                                                               TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_IS_LOCAL,
-                                         g_param_spec_boolean ("is-local",
-                                                               NULL,
-                                                               NULL,
-                                                               TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_HAVE_EXISTING_USER_ACCOUNTS,
-                                         g_param_spec_boolean ("have-existing-user-accounts",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_DOING_INITIAL_SETUP,
-                                         g_param_spec_boolean ("doing-initial-setup",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_SESSION_REGISTERED,
-                                         g_param_spec_boolean ("session-registered",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-        g_object_class_install_property (object_class,
-                                         PROP_LAUNCH_ENVIRONMENT,
-                                         g_param_spec_object ("launch-environment",
+        props[PROP_LAUNCH_ENVIRONMENT] = g_param_spec_object ("launch-environment",
                                                               NULL,
                                                               NULL,
                                                               GDM_TYPE_LAUNCH_ENVIRONMENT,
-                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-        g_object_class_install_property (object_class,
-                                         PROP_STATUS,
-                                         g_param_spec_int ("status",
-                                                           NULL, NULL,
-                                                           -1,
-                                                           G_MAXINT,
-                                                           GDM_DISPLAY_UNMANAGED,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
+                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+        props[PROP_STATUS] = g_param_spec_int ("status",
+                                               NULL, NULL,
+                                               -1,
+                                               G_MAXINT,
+                                               GDM_DISPLAY_UNMANAGED,
+                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_property (object_class,
-                                         PROP_SUPPORTED_SESSION_TYPES,
-                                         g_param_spec_boxed ("supported-session-types",
-                                                             NULL, NULL,
-                                                             G_TYPE_STRV,
-                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
+        props[PROP_SUPPORTED_SESSION_TYPES] = g_param_spec_boxed ("supported-session-types",
+                                                                  NULL, NULL,
+                                                                  G_TYPE_STRV,
+                                                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void

@@ -71,7 +71,10 @@ enum {
         PROP_SERVER_ADDRESS,
         PROP_ENVIRONMENT,
         PROP_FOR_REAUTH,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 enum {
         STARTED,
@@ -488,23 +491,19 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
         object_class->set_property = gdm_session_worker_job_set_property;
         object_class->finalize = gdm_session_worker_job_finalize;
 
-        g_object_class_install_property (object_class,
-                                         PROP_SERVER_ADDRESS,
-                                         g_param_spec_string ("server-address",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_FOR_REAUTH,
-                                         g_param_spec_boolean ("for-reauth",
-                                                               NULL, NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
-        g_object_class_install_property (object_class,
-                                         PROP_ENVIRONMENT,
-                                         g_param_spec_pointer ("environment",
-                                                               NULL, NULL,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME));
+        props[PROP_SERVER_ADDRESS] = g_param_spec_string ("server-address",
+                                                          NULL, NULL,
+                                                          NULL,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_FOR_REAUTH] = g_param_spec_boolean ("for-reauth",
+                                                       NULL, NULL,
+                                                       FALSE,
+                                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+        props[PROP_ENVIRONMENT] = g_param_spec_pointer ("environment",
+                                                        NULL, NULL,
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
         signals [STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),

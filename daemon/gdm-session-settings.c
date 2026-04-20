@@ -62,8 +62,11 @@ enum {
         PROP_SESSION_NAME,
         PROP_SESSION_TYPE,
         PROP_LANGUAGE_NAME,
-        PROP_IS_LOADED
+        PROP_IS_LOADED,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
 
@@ -83,28 +86,25 @@ static void
 gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings_class)
 {
         GObjectClass *object_class;
-        GParamSpec   *param_spec;
 
         object_class = G_OBJECT_CLASS (settings_class);
         object_class->set_property = gdm_session_settings_set_property;
         object_class->get_property = gdm_session_settings_get_property;
 
-        param_spec = g_param_spec_string ("session-name", NULL, NULL,
-                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
-        g_object_class_install_property (object_class, PROP_SESSION_NAME, param_spec);
+        props[PROP_SESSION_NAME] = g_param_spec_string ("session-name", NULL, NULL,
+                                                        NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
-        param_spec = g_param_spec_string ("session-type", NULL, NULL,
-                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
-        g_object_class_install_property (object_class, PROP_SESSION_TYPE, param_spec);
+        props[PROP_SESSION_TYPE] = g_param_spec_string ("session-type", NULL, NULL,
+                                                        NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
-        param_spec = g_param_spec_string ("language-name", NULL, NULL,
-                                          NULL,
-                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
-        g_object_class_install_property (object_class, PROP_LANGUAGE_NAME, param_spec);
+        props[PROP_LANGUAGE_NAME] = g_param_spec_string ("language-name", NULL, NULL,
+                                                         NULL,
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
-        param_spec = g_param_spec_boolean ("is-loaded", NULL, NULL,
-                                           FALSE, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-        g_object_class_install_property (object_class, PROP_IS_LOADED, param_spec);
+        props[PROP_IS_LOADED] = g_param_spec_boolean ("is-loaded", NULL, NULL,
+                                                      FALSE, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void

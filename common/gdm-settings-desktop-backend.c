@@ -49,7 +49,10 @@ struct _GdmSettingsDesktopBackend
 enum {
         PROP_0,
         PROP_FILENAME,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass);
 static void     gdm_settings_desktop_backend_init       (GdmSettingsDesktopBackend      *settings_desktop_backend);
@@ -350,12 +353,12 @@ gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
         backend_class->get_value = gdm_settings_desktop_backend_get_value;
         backend_class->set_value = gdm_settings_desktop_backend_set_value;
 
-        g_object_class_install_property (object_class,
-                                         PROP_FILENAME,
-                                         g_param_spec_string ("filename",
-                                                              NULL, NULL,
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME));
+        props[PROP_FILENAME] = g_param_spec_string ("filename",
+                                                    NULL, NULL,
+                                                    NULL,
+                                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void

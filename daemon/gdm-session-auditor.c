@@ -59,8 +59,11 @@ enum {
         PROP_0 = 0,
         PROP_USERNAME,
         PROP_HOSTNAME,
-        PROP_DISPLAY_DEVICE
+        PROP_DISPLAY_DEVICE,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (GdmSessionAuditor, gdm_session_auditor, G_TYPE_OBJECT)
 
@@ -80,25 +83,23 @@ static void
 gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_class)
 {
         GObjectClass *object_class;
-        GParamSpec   *param_spec;
 
         object_class = G_OBJECT_CLASS (auditor_class);
         object_class->set_property = gdm_session_auditor_set_property;
         object_class->get_property = gdm_session_auditor_get_property;
 
-        param_spec = g_param_spec_string ("username", NULL, NULL,
-                                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
-        g_object_class_install_property (object_class, PROP_USERNAME, param_spec);
+        props[PROP_USERNAME] = g_param_spec_string ("username", NULL, NULL,
+                                                    NULL, G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
-        param_spec = g_param_spec_string ("hostname", NULL, NULL,
-                                          NULL,
-                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
-        g_object_class_install_property (object_class, PROP_HOSTNAME, param_spec);
+        props[PROP_HOSTNAME] = g_param_spec_string ("hostname", NULL, NULL,
+                                                    NULL,
+                                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
-        param_spec = g_param_spec_string ("display-device", NULL, NULL,
-                                          NULL,
-                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
-        g_object_class_install_property (object_class, PROP_DISPLAY_DEVICE, param_spec);
+        props[PROP_DISPLAY_DEVICE] = g_param_spec_string ("display-device", NULL, NULL,
+                                                          NULL,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void
