@@ -57,16 +57,14 @@ static void gdm_session_settings_get_property (GObject      *object,
                                               GValue       *value,
                                               GParamSpec   *pspec);
 
-enum {
-        PROP_0 = 0,
-        PROP_SESSION_NAME,
+typedef enum {
+        PROP_SESSION_NAME = 1,
         PROP_SESSION_TYPE,
         PROP_LANGUAGE_NAME,
         PROP_IS_LOADED,
-        N_PROPS
-};
+} GdmSessionSettingsProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_IS_LOADED + 1] = { NULL, };
 
 G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
 
@@ -104,7 +102,7 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
         props[PROP_IS_LOADED] = g_param_spec_boolean ("is-loaded", NULL, NULL,
                                                       FALSE, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 }
 
 static void
@@ -205,7 +203,7 @@ gdm_session_settings_set_property (GObject      *object,
 
         settings = GDM_SESSION_SETTINGS (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionSettingsProps) prop_id) {
                 case PROP_LANGUAGE_NAME:
                         gdm_session_settings_set_language_name (settings, g_value_get_string (value));
                 break;
@@ -233,7 +231,7 @@ gdm_session_settings_get_property (GObject    *object,
 
         settings = GDM_SESSION_SETTINGS (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionSettingsProps) prop_id) {
                 case PROP_SESSION_NAME:
                         g_value_set_string (value, settings->session_name);
                 break;

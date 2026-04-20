@@ -45,13 +45,11 @@ typedef struct _GdmDisplayFactoryPrivate
        PolkitAuthority  *authority;
 } GdmDisplayFactoryPrivate;
 
-enum {
-        PROP_0,
-        PROP_DISPLAY_STORE,
-        N_PROPS
-};
+typedef enum {
+        PROP_DISPLAY_STORE = 1,
+} GdmDisplayFactoryProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_DISPLAY_STORE + 1] = { NULL, };
 
 static void     gdm_display_factory_class_init  (GdmDisplayFactoryClass *klass);
 static void     gdm_display_factory_init        (GdmDisplayFactory      *factory);
@@ -337,7 +335,7 @@ gdm_display_factory_set_property (GObject      *object,
 
         self = GDM_DISPLAY_FACTORY (object);
 
-        switch (prop_id) {
+        switch ((GdmDisplayFactoryProps) prop_id) {
         case PROP_DISPLAY_STORE:
                 gdm_display_factory_set_display_store (self, g_value_get_object (value));
                 break;
@@ -359,7 +357,7 @@ gdm_display_factory_get_property (GObject    *object,
         self = GDM_DISPLAY_FACTORY (object);
         priv = gdm_display_factory_get_instance_private (self);
 
-        switch (prop_id) {
+        switch ((GdmDisplayFactoryProps) prop_id) {
         case PROP_DISPLAY_STORE:
                 g_value_set_object (value, priv->display_store);
                 break;
@@ -383,7 +381,7 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
                                                          GDM_TYPE_DISPLAY_STORE,
                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 }
 
 static void

@@ -181,15 +181,13 @@ gdm_supported_pam_extensions[] = {
 };
 #endif
 
-enum {
-        PROP_0,
-        PROP_SERVER_ADDRESS,
+typedef enum {
+        PROP_SERVER_ADDRESS = 1,
         PROP_IS_REAUTH_SESSION,
         PROP_STATE,
-        N_PROPS
-};
+} GdmSessionWorkerProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_STATE + 1] = { NULL, };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
 static void     gdm_session_worker_init         (GdmSessionWorker      *session_worker);
@@ -2314,7 +2312,7 @@ gdm_session_worker_set_property (GObject      *object,
 
         self = GDM_SESSION_WORKER (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionWorkerProps) prop_id) {
         case PROP_SERVER_ADDRESS:
                 gdm_session_worker_set_server_address (self, g_value_get_string (value));
                 break;
@@ -2337,7 +2335,7 @@ gdm_session_worker_get_property (GObject    *object,
 
         self = GDM_SESSION_WORKER (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionWorkerProps) prop_id) {
         case PROP_SERVER_ADDRESS:
                 g_value_set_string (value, self->server_address);
                 break;
@@ -3207,7 +3205,7 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
                                                GDM_SESSION_WORKER_STATE_NONE,
                                                G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 }
 
 static void

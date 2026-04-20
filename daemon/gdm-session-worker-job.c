@@ -66,15 +66,13 @@ struct _GdmSessionWorkerJob
         char          **environment;
 };
 
-enum {
-        PROP_0,
-        PROP_SERVER_ADDRESS,
+typedef enum {
+        PROP_SERVER_ADDRESS = 1,
         PROP_ENVIRONMENT,
         PROP_FOR_REAUTH,
-        N_PROPS
-};
+} GdmSessionWorkerJobProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_FOR_REAUTH + 1] = { NULL, };
 
 enum {
         STARTED,
@@ -432,7 +430,7 @@ gdm_session_worker_job_set_property (GObject      *object,
 
         self = GDM_SESSION_WORKER_JOB (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionWorkerJobProps) prop_id) {
         case PROP_SERVER_ADDRESS:
                 gdm_session_worker_job_set_server_address (self, g_value_get_string (value));
                 break;
@@ -458,7 +456,7 @@ gdm_session_worker_job_get_property (GObject    *object,
 
         self = GDM_SESSION_WORKER_JOB (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionWorkerJobProps) prop_id) {
         case PROP_SERVER_ADDRESS:
                 g_value_set_string (value, self->server_address);
                 break;
@@ -503,7 +501,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                                                         NULL, NULL,
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
         signals [STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),

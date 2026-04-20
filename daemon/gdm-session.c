@@ -135,9 +135,8 @@ struct _GdmSession
         guint32              is_opened : 1;
 };
 
-enum {
-        PROP_0,
-        PROP_VERIFICATION_MODE,
+typedef enum {
+        PROP_VERIFICATION_MODE = 1,
         PROP_ALLOWED_USER,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -148,10 +147,9 @@ enum {
         PROP_CONVERSATION_ENVIRONMENT,
         PROP_SUPPORTED_SESSION_TYPES,
         PROP_REMOTE_ID,
-        N_PROPS
-};
+} GdmSessionProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_REMOTE_ID + 1] = { NULL, };
 
 enum {
         CONVERSATION_STARTED = 0,
@@ -3562,7 +3560,7 @@ gdm_session_set_property (GObject      *object,
 
         self = GDM_SESSION (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionProps) prop_id) {
         case PROP_SESSION_TYPE:
                 set_session_type (self, g_value_get_string (value));
                 break;
@@ -3612,7 +3610,7 @@ gdm_session_get_property (GObject    *object,
 
         self = GDM_SESSION (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionProps) prop_id) {
         case PROP_SESSION_TYPE:
                 g_value_set_string (value, self->session_type);
                 break;
@@ -4031,7 +4029,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                      NULL,
                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 
         /* Ensure we can resolve errors */
         gdm_dbus_error_ensure (GDM_SESSION_WORKER_ERROR);
