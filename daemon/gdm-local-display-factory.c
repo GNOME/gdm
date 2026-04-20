@@ -1074,10 +1074,7 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
 static void
 gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
 {
-        if (factory->uevent_handler_id) {
-                g_signal_handler_disconnect (factory->gudev_client, factory->uevent_handler_id);
-                factory->uevent_handler_id = 0;
-        }
+        g_clear_signal_handler (&factory->uevent_handler_id, factory->gudev_client);
         g_clear_object (&factory->gudev_client);
 
         if (factory->seat_new_id) {
