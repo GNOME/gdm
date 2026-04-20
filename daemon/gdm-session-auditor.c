@@ -55,15 +55,13 @@ static void gdm_session_auditor_get_property (GObject      *object,
                                               GValue       *value,
                                               GParamSpec   *pspec);
 
-enum {
-        PROP_0 = 0,
-        PROP_USERNAME,
+typedef enum {
+        PROP_USERNAME = 1,
         PROP_HOSTNAME,
         PROP_DISPLAY_DEVICE,
-        N_PROPS
-};
+} GdmSessionAuditorProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_DISPLAY_DEVICE + 1] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (GdmSessionAuditor, gdm_session_auditor, G_TYPE_OBJECT)
 
@@ -99,7 +97,7 @@ gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_cl
                                                           NULL,
                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 }
 
 static void
@@ -210,7 +208,7 @@ gdm_session_auditor_set_property (GObject      *object,
 
         auditor = GDM_SESSION_AUDITOR (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionAuditorProps) prop_id) {
                 case PROP_USERNAME:
                         gdm_session_auditor_set_username (auditor, g_value_get_string (value));
                 break;
@@ -238,7 +236,7 @@ gdm_session_auditor_get_property (GObject    *object,
 
         auditor = GDM_SESSION_AUDITOR (object);
 
-        switch (prop_id) {
+        switch ((GdmSessionAuditorProps) prop_id) {
                 case PROP_USERNAME:
                         g_value_take_string (value, gdm_session_auditor_get_username (auditor));
                 break;

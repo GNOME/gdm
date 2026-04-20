@@ -94,13 +94,11 @@ struct _GdmManager
         guint                     did_automatic_login : 1;
 };
 
-enum {
-        PROP_0,
-        PROP_REMOTE_LOGIN_ENABLED,
-        N_PROPS
-};
+typedef enum {
+        PROP_REMOTE_LOGIN_ENABLED = 1,
+} GdmManagerProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_REMOTE_LOGIN_ENABLED + 1] = { NULL, };
 
 enum {
         DISPLAY_ADDED,
@@ -2396,7 +2394,7 @@ gdm_manager_set_property (GObject      *object,
 
         self = GDM_MANAGER (object);
 
-        switch (prop_id) {
+        switch ((GdmManagerProps) prop_id) {
         case PROP_REMOTE_LOGIN_ENABLED:
                 gdm_manager_set_remote_login_enabled (self, g_value_get_boolean (value));
                 break;
@@ -2416,7 +2414,7 @@ gdm_manager_get_property (GObject    *object,
 
         self = GDM_MANAGER (object);
 
-        switch (prop_id) {
+        switch ((GdmManagerProps) prop_id) {
         case PROP_REMOTE_LOGIN_ENABLED:
                 g_value_set_boolean (value, self->remote_login_enabled);
                 break;
@@ -2485,7 +2483,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
                                                                  FALSE,
                                                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 }
 
 static void

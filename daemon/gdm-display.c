@@ -84,9 +84,8 @@ typedef struct _GdmDisplayPrivate
         GStrv                 supported_session_types;
 } GdmDisplayPrivate;
 
-enum {
-        PROP_0,
-        PROP_ID,
+typedef enum {
+        PROP_ID = 1,
         PROP_STATUS,
         PROP_SEAT_ID,
         PROP_SESSION_ID,
@@ -101,10 +100,9 @@ enum {
         PROP_DOING_INITIAL_SETUP,
         PROP_SESSION_REGISTERED,
         PROP_SUPPORTED_SESSION_TYPES,
-        N_PROPS
-};
+} GdmDisplayProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_SUPPORTED_SESSION_TYPES + 1] = { NULL, };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
 static void     gdm_display_init        (GdmDisplay      *self);
@@ -546,7 +544,7 @@ gdm_display_set_property (GObject        *object,
 
         self = GDM_DISPLAY (object);
 
-        switch (prop_id) {
+        switch ((GdmDisplayProps) prop_id) {
         case PROP_ID:
                 _gdm_display_set_id (self, g_value_get_string (value));
                 break;
@@ -604,7 +602,7 @@ gdm_display_get_property (GObject        *object,
         self = GDM_DISPLAY (object);
         priv = gdm_display_get_instance_private (self);
 
-        switch (prop_id) {
+        switch ((GdmDisplayProps) prop_id) {
         case PROP_ID:
                 g_value_set_string (value, priv->id);
                 break;
@@ -921,7 +919,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                   G_TYPE_STRV,
                                                                   G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
 }
 
 static void

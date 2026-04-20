@@ -84,9 +84,8 @@ struct _GdmLaunchEnvironment
         gboolean        display_is_local;
 };
 
-enum {
-        PROP_0,
-        PROP_DISPLAY_SEAT_ID,
+typedef enum {
+        PROP_DISPLAY_SEAT_ID = 1,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_PREFERRED_USER_NAME,
@@ -94,10 +93,9 @@ enum {
         PROP_USER_MEMBER_OF,
         PROP_DCONF_PROFILE,
         PROP_SESSION_NAME,
-        N_PROPS
-};
+} GdmLaunchEnvironmentProps;
 
-static GParamSpec *props[N_PROPS] = { NULL, };
+static GParamSpec *props[PROP_SESSION_NAME + 1] = { NULL, };
 
 enum {
         OPENED,
@@ -741,7 +739,7 @@ gdm_launch_environment_set_property (GObject      *object,
 
         self = GDM_LAUNCH_ENVIRONMENT (object);
 
-        switch (prop_id) {
+        switch ((GdmLaunchEnvironmentProps) prop_id) {
         case PROP_DISPLAY_SEAT_ID:
                 _gdm_launch_environment_set_display_seat_id (self, g_value_get_string (value));
                 break;
@@ -782,7 +780,7 @@ gdm_launch_environment_get_property (GObject    *object,
 
         self = GDM_LAUNCH_ENVIRONMENT (object);
 
-        switch (prop_id) {
+        switch ((GdmLaunchEnvironmentProps) prop_id) {
         case PROP_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->display_seat_id);
                 break;
@@ -855,7 +853,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                         NULL,
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
-        g_object_class_install_properties (object_class, N_PROPS, props);
+        g_object_class_install_properties (object_class, G_N_ELEMENTS (props), props);
         signals [OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
