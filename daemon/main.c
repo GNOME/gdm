@@ -59,11 +59,10 @@ static GdmManager      *manager       = NULL;
 static int              name_id       = -1;
 static GdmSettings     *settings      = NULL;
 
-static gboolean
+static void
 timed_exit_cb (GMainLoop *loop)
 {
         g_main_loop_quit (loop);
-        return FALSE;
 }
 
 static void
@@ -291,7 +290,7 @@ main (int    argc,
         g_unix_signal_add (SIGHUP, on_sighup_cb, NULL);
 
         if (do_timed_exit) {
-                g_timeout_add_seconds (30, (GSourceFunc) timed_exit_cb, main_loop);
+                g_timeout_add_seconds_once (30, (GSourceOnceFunc) timed_exit_cb, main_loop);
         }
 
         g_main_loop_run (main_loop);
