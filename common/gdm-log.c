@@ -22,20 +22,19 @@
 
 #include "config.h"
 
+#include "gdm-log.h"
+
+#include <signal.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
-#include <signal.h>
+#include <syslog.h>
 #include <time.h>
 #include <unistd.h>
 
-#include <syslog.h>
-#include <systemd/sd-daemon.h>
-
 #include <glib.h>
 #include <glib/gstdio.h>
-
-#include "gdm-log.h"
+#include <systemd/sd-daemon.h>
 
 static gboolean initialized = FALSE;
 static gboolean is_sd_booted = FALSE;

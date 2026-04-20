@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <glib-object.h>
 #include <gio/gio.h>
+#include <glib-object.h>
 
 #include "gdm-dynamic-user-store.h"
 

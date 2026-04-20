@@ -20,26 +20,27 @@
 
 #include "config.h"
 
+#include "gdm-local-display.h"
+
 #include <errno.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <fcntl.h>
 #include <pwd.h>
-#include <unistd.h>
-#include <string.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/socket.h>
+#include <unistd.h>
 
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
 
 #include "gdm-common.h"
 #include "gdm-display.h"
 #include "gdm-launch-environment.h"
-#include "gdm-local-display.h"
 #include "gdm-local-display-glue.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"

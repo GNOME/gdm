@@ -19,16 +19,19 @@
 
 #include "config.h"
 
+#include "gdm-dynamic-user-store.h"
+
 #include <grp.h>
-#include <shadow.h>
 #include <sys/types.h>
-#ifdef HAVE_USERDB
-#include <systemd/sd-varlink.h>
-#endif
+
+#include <shadow.h>
 
 #include "gdm-common.h"
 #include "gdm-file-utils.h"
-#include "gdm-dynamic-user-store.h"
+
+#ifdef HAVE_USERDB
+#include <systemd/sd-varlink.h>
+#endif
 
 G_STATIC_ASSERT (sizeof(uid_t) == sizeof(guint));
 

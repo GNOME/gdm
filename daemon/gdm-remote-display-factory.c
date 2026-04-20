@@ -20,10 +20,11 @@
 
 #include "config.h"
 
-#include "gdm-common.h"
-#include "gdm-remote-display.h"
 #include "gdm-remote-display-factory.h"
+
+#include "gdm-common.h"
 #include "gdm-remote-display-factory-glue.h"
+#include "gdm-remote-display.h"
 
 #define GDM_REMOTE_DISPLAY_FACTORY_DBUS_PATH "/org/gnome/DisplayManager/RemoteDisplayFactory"
 

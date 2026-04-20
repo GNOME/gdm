@@ -24,20 +24,21 @@
  *             Steve Grubb <sgrubb@redhat.com>
  */
 #include "config.h"
-#include "gdm-session-solaris-auditor.h"
-#include "gdm-common.h"
 
-#include <syslog.h>
-#include <security/pam_appl.h>
-#include <pwd.h>
+#include "gdm-session-solaris-auditor.h"
 
 #include <fcntl.h>
+#include <pwd.h>
+#include <syslog.h>
+
 #include <bsm/adt.h>
 #include <bsm/adt_event.h>
-
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 #include <glib/gi18n.h>
+#include <security/pam_appl.h>
+
+#include "gdm-common.h"
 
 struct _GdmSessionSolarisAuditor
 {

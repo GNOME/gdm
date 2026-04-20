@@ -21,10 +21,11 @@
 #include "config.h"
 
 #include "gdm-dbus-util.h"
+
 #include <string.h>
 
-#include <glib/gstdio.h>
 #include <gio/gunixsocketaddress.h>
+#include <glib/gstdio.h>
 
 /* a subset of org.freedesktop.DBus interface, to be used by internal servers */
 static const char *dbus_introspection =

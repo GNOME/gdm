@@ -20,17 +20,18 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
+#include "gdm-display-store.h"
 
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
 
-#include "gdm-display-store.h"
 #include "gdm-display.h"
 
 struct _GdmDisplayStore

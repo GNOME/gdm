@@ -21,8 +21,8 @@
 
 #include <sys/types.h>
 
-#include <glib-object.h>
 #include <gio/gio.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 

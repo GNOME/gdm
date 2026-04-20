@@ -25,8 +25,8 @@
  */
 #pragma once
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 
 #include "gdm-session-auditor.h"
 

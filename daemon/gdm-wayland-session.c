@@ -22,19 +22,17 @@
 #include <locale.h>
 #include <sysexits.h>
 
-#include "gdm-common.h"
-#include "gdm-settings-direct.h"
-#include "gdm-settings-keys.h"
-#include "gdm-log.h"
-
-#include "gdm-manager-glue.h"
-
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
+#include <gio/gunixinputstream.h>
 #include <glib-unix.h>
 #include <glib.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
 
-#include <gio/gunixinputstream.h>
+#include "gdm-common.h"
+#include "gdm-log.h"
+#include "gdm-manager-glue.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #define BUS_ADDRESS_FILENO (STDERR_FILENO + 1)
 

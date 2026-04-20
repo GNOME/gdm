@@ -24,6 +24,7 @@
  *             Steve Grubb <sgrubb@redhat.com>
  */
 #include "config.h"
+
 #include "gdm-session-linux-auditor.h"
 
 #include <fcntl.h>
@@ -31,9 +32,8 @@
 #include <syslog.h>
 #include <unistd.h>
 
-#include <libaudit.h>
-
 #include <glib.h>
+#include <libaudit.h>
 
 #include "gdm-common.h"
 

@@ -21,9 +21,9 @@
 
 #include "config.h"
 
-#include <gio/gio.h>
-
 #include "gdm-session-worker-common.h"
+
+#include <gio/gio.h>
 
 static const GDBusErrorEntry gdm_session_worker_error_entries[] = {
         { GDM_SESSION_WORKER_ERROR_GENERIC              , "org.gnome.DisplayManager.SessionWorker.Error.Generic", },

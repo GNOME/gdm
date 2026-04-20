@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <glib-object.h>
 #include <gio/gio.h>
+#include <glib-object.h>
 
 gboolean gdm_goto_login_session_sync (GCancellable  *cancellable,
 				      GError       **error);

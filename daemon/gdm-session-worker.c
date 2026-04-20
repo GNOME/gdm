@@ -21,39 +21,45 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#ifdef HAVE_SYS_FSUID_H
-#include <sys/fsuid.h>
-#endif
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/ioctl.h>
-#include <sys/vt.h>
-#include <sys/kd.h>
+#include "gdm-session-worker.h"
+
 #include <errno.h>
+#include <fcntl.h>
 #include <grp.h>
 #include <pwd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
-#include <security/pam_appl.h>
-
-#ifdef HAVE_LOGINCAP
-#include <login_cap.h>
-#endif
-
+#include <gio/gio.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
-#include <gio/gio.h>
-
 #include <json-glib/json-glib.h>
-
+#include <security/pam_appl.h>
+#include <sys/ioctl.h>
+#include <sys/kd.h>
+#include <sys/vt.h>
 #include <systemd/sd-daemon.h>
 #include <systemd/sd-login.h>
+
+#include "gdm-common.h"
+#include "gdm-dbus-glue.h"
+#include "gdm-log.h"
+#include "gdm-session-glue.h"
+#include "gdm-session-settings.h"
+#include "gdm-session.h"
+
+#ifdef HAVE_SYS_FSUID_H
+#include <sys/fsuid.h>
+#endif
+#ifdef HAVE_LOGINCAP
+#include <login_cap.h>
+#endif
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
 #include <systemd/sd-journal.h>
@@ -63,17 +69,9 @@
 #include <selinux/selinux.h>
 #endif /* HAVE_SELINUX */
 
-#include "gdm-common.h"
-#include "gdm-log.h"
-
 #ifdef SUPPORTS_PAM_EXTENSIONS
 #include "gdm-pam-extensions.h"
 #endif
-
-#include "gdm-dbus-glue.h"
-#include "gdm-session-worker.h"
-#include "gdm-session-glue.h"
-#include "gdm-session.h"
 
 #if defined (HAVE_ADT)
 #include "gdm-session-solaris-auditor.h"
@@ -82,8 +80,6 @@
 #else
 #include "gdm-session-auditor.h"
 #endif
-
-#include "gdm-session-settings.h"
 
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
 #define GDM_SESSION_DBUS_NAME         "org.gnome.DisplayManager.Session"

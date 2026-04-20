@@ -20,22 +20,22 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "gdm-settings.h"
+
 #include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
+#include <gio/gio.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
-#include <gio/gio.h>
-
-#include "gdm-settings.h"
 
 #include "gdm-settings-desktop-backend.h"
 

@@ -22,9 +22,9 @@
 
 #include <glib-object.h>
 
-#include "gdm-session-worker-glue.h"
 #include "gdm-session-worker-common.h"
 #include "gdm-session-worker-enum-types.h"
+#include "gdm-session-worker-glue.h"
 
 G_BEGIN_DECLS
 

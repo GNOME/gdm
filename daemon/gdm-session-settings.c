@@ -20,6 +20,7 @@
  * Written by: Ray Strode <rstrode@redhat.com>
  */
 #include "config.h"
+
 #include "gdm-session-settings.h"
 
 #include <errno.h>
@@ -28,11 +29,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <glib.h>
-#include <glib-object.h>
-#include <glib/gi18n.h>
-
 #include <act/act-user-manager.h>
+#include <glib-object.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
 struct _GdmSessionSettings
 {

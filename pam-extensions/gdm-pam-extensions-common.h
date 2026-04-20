@@ -19,14 +19,14 @@
  */
 #pragma once
 
-#include <alloca.h>
-#include <endian.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <limits.h>
 
+#include <alloca.h>
+#include <endian.h>
 #include <security/pam_appl.h>
 
 typedef struct {

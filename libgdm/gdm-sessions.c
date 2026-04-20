@@ -23,21 +23,20 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
+#include "gdm-sessions.h"
+
 #include <dirent.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-
 #include <systemd/sd-login.h>
-
-#include "gdm-sessions.h"
 
 typedef struct _GdmSessionFile {
         char    *id;

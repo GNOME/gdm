@@ -20,11 +20,12 @@
 
 #include "config.h"
 
+#include "gdm-remote-display.h"
+
 #include <glib-object.h>
 
 #include "gdm-display.h"
 #include "gdm-launch-environment.h"
-#include "gdm-remote-display.h"
 #include "gdm-remote-display-glue.h"
 
 struct _GdmRemoteDisplay

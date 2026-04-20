@@ -20,12 +20,12 @@
 
 #pragma once
 
-#include <glib-unix.h>
-#include <gio/gio.h>
-
+#include <errno.h>
 #include <grp.h>
 #include <pwd.h>
-#include <errno.h>
+
+#include <gio/gio.h>
+#include <glib-unix.h>
 
 #define REGISTER_DISPLAY_TIMEOUT 10
 

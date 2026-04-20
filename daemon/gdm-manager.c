@@ -20,40 +20,38 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "gdm-manager.h"
+
 #include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
+#include <act/act-user-manager.h>
+#include <glib-object.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
-
-#include <act/act-user-manager.h>
-
 #include <systemd/sd-login.h>
 
 #include "gdm-common.h"
-#include "gdm-file-utils.h"
-
 #include "gdm-dbus-util.h"
-#include "gdm-manager.h"
-#include "gdm-manager-glue.h"
-#include "gdm-display-store.h"
 #include "gdm-display-factory.h"
+#include "gdm-display-store.h"
 #include "gdm-dynamic-user-store.h"
+#include "gdm-file-utils.h"
 #include "gdm-launch-environment.h"
-#include "gdm-local-display.h"
 #include "gdm-local-display-factory.h"
-#include "gdm-remote-display.h"
+#include "gdm-local-display.h"
+#include "gdm-manager-glue.h"
 #include "gdm-remote-display-factory.h"
-#include "gdm-session.h"
+#include "gdm-remote-display.h"
 #include "gdm-session-record.h"
+#include "gdm-session.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
