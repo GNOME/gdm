@@ -479,7 +479,7 @@ get_session_command_for_file (GdmSession  *self,
                               char       **command)
 {
         GKeyFile   *key_file;
-        GError     *error;
+        GError     *error = NULL;
         char       *exec;
         gboolean    ret;
         gboolean    res;
@@ -2128,7 +2128,7 @@ load_lang_config_file (GdmSession *self)
         gchar         *key;
         gchar         *value;
         gsize          length;
-        GError        *error;
+        GError        *error = NULL;
         GString       *line;
         GRegex        *re;
 

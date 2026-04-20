@@ -109,7 +109,7 @@ get_systemd_seat (void)
 static gboolean
 key_file_is_relevant (GKeyFile     *key_file)
 {
-        GError    *error;
+        GError    *error = NULL;
         g_autofree char *seat = NULL;
         gboolean   no_display;
         gboolean   hidden;
@@ -175,7 +175,7 @@ load_session_file (const char              *id,
                    const char              *path)
 {
         GKeyFile          *key_file;
-        GError            *error;
+        GError            *error = NULL;
         gboolean           res;
         GdmSessionFile    *session;
 
