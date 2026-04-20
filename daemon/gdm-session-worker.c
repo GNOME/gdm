@@ -1116,7 +1116,7 @@ gdm_session_worker_set_state (GdmSessionWorker      *worker,
                 return;
 
         worker->state = state;
-        g_object_notify (G_OBJECT (worker), "state");
+        g_object_notify_by_pspec (G_OBJECT (worker), props[PROP_STATE]);
 }
 
 static void

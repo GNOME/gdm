@@ -142,7 +142,7 @@ gdm_session_settings_set_language_name (GdmSessionSettings *settings,
         if (settings->language_name == NULL ||
             strcmp (settings->language_name, language_name) != 0) {
                 settings->language_name = g_strdup (language_name);
-                g_object_notify (G_OBJECT (settings), "language-name");
+                g_object_notify_by_pspec (G_OBJECT (settings), props[PROP_LANGUAGE_NAME]);
         }
 }
 
@@ -155,7 +155,7 @@ gdm_session_settings_set_session_name (GdmSessionSettings *settings,
         if (settings->session_name == NULL ||
             strcmp (settings->session_name, session_name) != 0) {
                 settings->session_name = g_strdup (session_name);
-                g_object_notify (G_OBJECT (settings), "session-name");
+                g_object_notify_by_pspec (G_OBJECT (settings), props[PROP_SESSION_NAME]);
         }
 }
 
@@ -168,7 +168,7 @@ gdm_session_settings_set_session_type (GdmSessionSettings *settings,
         if (settings->session_type == NULL ||
             g_strcmp0 (settings->session_type, session_type) != 0) {
                 settings->session_type = g_strdup (session_type);
-                g_object_notify (G_OBJECT (settings), "session-type");
+                g_object_notify_by_pspec (G_OBJECT (settings), props[PROP_SESSION_TYPE]);
         }
 }
 
@@ -310,7 +310,7 @@ load_settings_from_user (GdmSessionSettings *settings)
                 gdm_session_settings_set_language_name (settings, language_name);
         }
 
-        g_object_notify (G_OBJECT (settings), "is-loaded");
+        g_object_notify_by_pspec (G_OBJECT (settings), props[PROP_IS_LOADED]);
 }
 
 static void
