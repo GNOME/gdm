@@ -85,7 +85,7 @@ bus_connection_closed (void)
 static GDBusConnection *
 get_system_bus (void)
 {
-        GError          *error;
+        GError          *error = NULL;
         GDBusConnection *bus;
 
         error = NULL;

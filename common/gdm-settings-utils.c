@@ -226,7 +226,7 @@ gdm_settings_parse_schemas (const char  *file,
         ParserInfo          *info;
         char                *contents;
         gsize                len;
-        GError              *error;
+        GError              *error = NULL;
         gboolean             res;
 
         g_return_val_if_fail (file != NULL, FALSE);

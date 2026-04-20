@@ -78,7 +78,7 @@ gdm_settings_get_value (GdmSettings *settings,
                         char       **value,
                         GError     **error)
 {
-        GError  *local_error;
+        GError  *local_error = NULL;
         gboolean res;
         GList   *l;
 
@@ -116,7 +116,7 @@ gdm_settings_set_value (GdmSettings *settings,
                         const char  *value,
                         GError     **error)
 {
-        GError  *local_error;
+        GError  *local_error = NULL;
         gboolean res;
         GList   *l;
 

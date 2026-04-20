@@ -136,7 +136,7 @@ plymouth_is_running (void)
 {
         int      status;
         gboolean res;
-        GError  *error;
+        GError  *error = NULL;
 
         error = NULL;
         res = g_spawn_command_line_sync ("plymouth --ping",
@@ -154,7 +154,7 @@ static void
 plymouth_prepare_for_transition (void)
 {
         gboolean res;
-        GError  *error;
+        GError  *error = NULL;
 
         error = NULL;
         res = g_spawn_command_line_sync ("plymouth deactivate",
@@ -169,7 +169,7 @@ static void
 plymouth_quit_with_transition (void)
 {
         gboolean res;
-        GError  *error;
+        GError  *error = NULL;
 
         error = NULL;
         res = g_spawn_command_line_async ("plymouth quit --retain-splash", &error);
@@ -183,7 +183,7 @@ static void
 plymouth_quit_without_transition (void)
 {
         gboolean res;
-        GError  *error;
+        GError  *error = NULL;
 
         error = NULL;
         res = g_spawn_command_line_async ("plymouth quit", &error);

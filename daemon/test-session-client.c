@@ -150,7 +150,7 @@ int
 main (int   argc,
       char *argv[])
 {
-        GError *error;
+        GError *error = NULL;
         GdmDBusManager *manager;
         GdmDBusUserVerifier *user_verifier;
         GDBusConnection *system_bus;
