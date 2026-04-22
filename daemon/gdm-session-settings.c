@@ -45,8 +45,6 @@ struct _GdmSessionSettings
 };
 
 static void gdm_session_settings_finalize (GObject *object);
-static void gdm_session_settings_class_install_properties (GdmSessionSettingsClass *
-                                              settings_class);
 
 static void gdm_session_settings_set_property (GObject      *object,
                                               guint         prop_id,
@@ -76,16 +74,6 @@ gdm_session_settings_class_init (GdmSessionSettingsClass *settings_class)
         object_class = G_OBJECT_CLASS (settings_class);
 
         object_class->finalize = gdm_session_settings_finalize;
-
-        gdm_session_settings_class_install_properties (settings_class);
-}
-
-static void
-gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings_class)
-{
-        GObjectClass *object_class;
-
-        object_class = G_OBJECT_CLASS (settings_class);
         object_class->set_property = gdm_session_settings_set_property;
         object_class->get_property = gdm_session_settings_get_property;
 

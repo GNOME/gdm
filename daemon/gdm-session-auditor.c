@@ -43,8 +43,6 @@ typedef struct _GdmSessionAuditorPrivate
 } GdmSessionAuditorPrivate;
 
 static void gdm_session_auditor_finalize (GObject *object);
-static void gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *
-                                              auditor_class);
 
 static void gdm_session_auditor_set_property (GObject      *object,
                                               guint         prop_id,
@@ -73,16 +71,6 @@ gdm_session_auditor_class_init (GdmSessionAuditorClass *auditor_class)
         object_class = G_OBJECT_CLASS (auditor_class);
 
         object_class->finalize = gdm_session_auditor_finalize;
-
-        gdm_session_auditor_class_install_properties (auditor_class);
-}
-
-static void
-gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_class)
-{
-        GObjectClass *object_class;
-
-        object_class = G_OBJECT_CLASS (auditor_class);
         object_class->set_property = gdm_session_auditor_set_property;
         object_class->get_property = gdm_session_auditor_get_property;
 
