@@ -180,6 +180,16 @@ endif
 
 dconf_profiles_path = dconf_datadir / 'dconf' / 'profile'
 
+buildtype = get_option('buildtype')
+if buildtype != 'plain'
+  c_args = [
+    '-Wswitch-enum',
+  ]
+
+  supported_c_args = cc.get_supported_arguments(c_args)
+  add_project_arguments(supported_c_args, language: 'c')
+endif
+
 # Configuration
 conf = configuration_data()
 conf.set_quoted('G_LOG_DOMAIN', 'Gdm')

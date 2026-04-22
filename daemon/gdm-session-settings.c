@@ -216,8 +216,9 @@ gdm_session_settings_set_property (GObject      *object,
                         gdm_session_settings_set_session_type (settings, g_value_get_string (value));
                 break;
 
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                case PROP_IS_LOADED:
+                        g_assert_not_reached ();
+                break;
         }
 }
 
@@ -247,9 +248,6 @@ gdm_session_settings_get_property (GObject    *object,
                 case PROP_IS_LOADED:
                         g_value_set_boolean (value, gdm_session_settings_is_loaded (settings));
                 break;
-
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
 }
 

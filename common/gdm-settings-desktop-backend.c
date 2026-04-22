@@ -100,9 +100,6 @@ gdm_settings_desktop_backend_set_property (GObject      *object,
                 case PROP_FILENAME:
                         _gdm_settings_desktop_backend_set_file_name (self, g_value_get_string (value));
                         break;
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                        break;
         }
 }
 
@@ -119,9 +116,6 @@ gdm_settings_desktop_backend_get_property (GObject      *object,
         switch ((GdmSettingsDesktopBackendProps) prop_id) {
                 case PROP_FILENAME:
                         g_value_set_string (value, self->filename);
-                        break;
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                         break;
         }
 }

@@ -220,9 +220,6 @@ gdm_session_auditor_set_property (GObject      *object,
                 case PROP_DISPLAY_DEVICE:
                         gdm_session_auditor_set_display_device (auditor, g_value_get_string (value));
                 break;
-
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         }
 }
 
@@ -248,9 +245,6 @@ gdm_session_auditor_get_property (GObject    *object,
                 case PROP_DISPLAY_DEVICE:
                         g_value_take_string (value, gdm_session_auditor_get_display_device (auditor));
                 break;
-
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
 }
 

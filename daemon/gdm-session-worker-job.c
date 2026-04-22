@@ -440,9 +440,6 @@ gdm_session_worker_job_set_property (GObject      *object,
         case PROP_ENVIRONMENT:
                 gdm_session_worker_job_set_environment (self, g_value_get_pointer (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
         }
 }
 
@@ -465,9 +462,6 @@ gdm_session_worker_job_get_property (GObject    *object,
                 break;
         case PROP_ENVIRONMENT:
                 g_value_set_pointer (value, self->environment);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }

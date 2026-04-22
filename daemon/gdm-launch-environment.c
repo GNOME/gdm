@@ -764,9 +764,6 @@ gdm_launch_environment_set_property (GObject      *object,
         case PROP_SESSION_NAME:
                 _gdm_launch_environment_set_session_name (self, g_value_get_string (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
         }
 }
 
@@ -804,9 +801,6 @@ gdm_launch_environment_get_property (GObject    *object,
                 break;
         case PROP_SESSION_NAME:
                 g_value_set_string (value, self->session_name);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }

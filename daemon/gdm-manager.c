@@ -2398,9 +2398,6 @@ gdm_manager_set_property (GObject      *object,
         case PROP_REMOTE_LOGIN_ENABLED:
                 gdm_manager_set_remote_login_enabled (self, g_value_get_boolean (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
         }
 }
 
@@ -2417,9 +2414,6 @@ gdm_manager_get_property (GObject    *object,
         switch ((GdmManagerProps) prop_id) {
         case PROP_REMOTE_LOGIN_ENABLED:
                 g_value_set_boolean (value, self->remote_login_enabled);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }
