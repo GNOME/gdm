@@ -3594,9 +3594,6 @@ gdm_session_set_property (GObject      *object,
         case PROP_REMOTE_ID:
                 set_remote_id (self, g_value_get_string (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
         }
 }
 
@@ -3643,9 +3640,6 @@ gdm_session_get_property (GObject    *object,
                 break;
         case PROP_REMOTE_ID:
                 g_value_set_string (value, self->remote_id);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }

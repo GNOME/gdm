@@ -18,6 +18,9 @@
  * 02110-1301, USA.
  */
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+
 #include "config.h"
 
 #include <ctype.h>
@@ -2046,3 +2049,5 @@ main (int argc, char *argv[])
 
         return EXIT_SUCCESS;
 }
+
+#pragma GCC diagnostic pop

@@ -339,9 +339,6 @@ gdm_display_factory_set_property (GObject      *object,
         case PROP_DISPLAY_STORE:
                 gdm_display_factory_set_display_store (self, g_value_get_object (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
         }
 }
 
@@ -360,9 +357,6 @@ gdm_display_factory_get_property (GObject    *object,
         switch ((GdmDisplayFactoryProps) prop_id) {
         case PROP_DISPLAY_STORE:
                 g_value_set_object (value, priv->display_store);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }

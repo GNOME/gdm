@@ -2319,8 +2319,8 @@ gdm_session_worker_set_property (GObject      *object,
         case PROP_IS_REAUTH_SESSION:
                 gdm_session_worker_set_is_reauth_session (self, g_value_get_boolean (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        case PROP_STATE:
+                g_assert_not_reached ();
                 break;
         }
 }
@@ -2344,9 +2344,6 @@ gdm_session_worker_get_property (GObject    *object,
                 break;
         case PROP_STATE:
                 g_value_set_enum (value, self->state);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }

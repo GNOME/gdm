@@ -584,8 +584,11 @@ gdm_display_set_property (GObject        *object,
         case PROP_SUPPORTED_SESSION_TYPES:
                 _gdm_display_set_supported_session_types (self, g_value_get_boxed (value));
                 break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        case PROP_HAVE_EXISTING_USER_ACCOUNTS:
+                g_assert_not_reached ();
+                break;
+        case PROP_DOING_INITIAL_SETUP:
+                g_assert_not_reached ();
                 break;
         }
 }
@@ -647,9 +650,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SUPPORTED_SESSION_TYPES:
                 g_value_set_boxed (value, priv->supported_session_types);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
 }
