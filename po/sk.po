@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
 "POT-Creation-Date: 2026-03-13 22:31+0000\n"
-"PO-Revision-Date: 2026-04-16 16:14+0200\n"
+"PO-Revision-Date: 2026-04-23 21:33+0200\n"
 "Last-Translator: Peter Mráz <etkinator@gmail.com>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "Language: sk\n"
@@ -169,7 +169,7 @@ msgstr "Používateľské meno:"
 
 #: daemon/gdm-session-worker.c:1628 daemon/gdm-session-worker.c:1645
 msgid "no user account available"
-msgstr "nie je k dispozícií žiaden používateľský účet"
+msgstr "nie je k dispozícii žiaden používateľský účet"
 
 #: daemon/gdm-session-worker.c:1672
 msgid "Unable to change to user"
@@ -275,7 +275,7 @@ msgid ""
 "using those passkeys."
 msgstr ""
 "Prihlasovacia obrazovka môže voliteľne povoliť prihlásenie používateľov "
-"pomocou čipových kariet."
+"pomocou prístupového kľúča (ak ním disponujú)."
 
 #: data/org.gnome.login-screen.gschema.xml:41
 msgid "Whether or not to allow fingerprint readers for login"
@@ -422,15 +422,15 @@ msgstr "Zobraziť výstup pre ladenie"
 
 #: utils/gdm-config.c:134
 msgid "Enable the authentication method"
-msgstr "Povolí metódu autentifikácie"
+msgstr "Povolí metódu overenia totožnosti"
 
 #: utils/gdm-config.c:138
 msgid "Disable the authentication method"
-msgstr "Zakáže metódu autentifikácie"
+msgstr "Zakáže metódu overenia totožnosti"
 
 #: utils/gdm-config.c:147
 msgid "Require the authentication method"
-msgstr "Vyžaduje metódu autentifikácie"
+msgstr "Vyžaduje metódu overenia totožnosti"
 
 #: utils/gdm-config.c:151
 msgid "Action to perform on smartcard removal"
@@ -442,23 +442,23 @@ msgstr "Predpokladá áno na akúkoľvek otázku"
 
 #: utils/gdm-config.c:262
 msgid "Configure Password Authentication."
-msgstr "Konfiguruje autentifikáciu heslom."
+msgstr "Konfiguruje overenie totožnosti heslom."
 
 #: utils/gdm-config.c:264
 msgid "Configure Fingerprint Authentication."
-msgstr "Konfiguruje autentifikáciu odtlačkom prsta."
+msgstr "Konfiguruje overenie totožnosti odtlačkom prsta."
 
 #: utils/gdm-config.c:266
 msgid "Configure Smart Card Authentication."
-msgstr "Konfiguruje autentifikáciu čipovou kartou."
+msgstr "Konfiguruje overenie totožnosti čipovou kartou."
 
 #: utils/gdm-config.c:268
 msgid "Reset the GDM Authentication configuration."
-msgstr "Obnoví konfiguráciu autentifikácie GDM."
+msgstr "Obnoví konfiguráciu overenia totožnosti GDM."
 
 #: utils/gdm-config.c:270
 msgid "Show GDM Authentication configuration."
-msgstr "Zobrazí konfiguráciu autentifikácie GDM."
+msgstr "Zobrazí konfiguráciu overenia totožnosti GDM."
 
 #: utils/gdm-config.c:281
 msgid "Password options"
@@ -482,15 +482,15 @@ msgstr "Voľby zobrazenia"
 
 #: utils/gdm-config.c:319
 msgid "No PAM module available for Password authentication"
-msgstr "Pre autentifikáciu heslom nie je dostupný žiadny modul PAM"
+msgstr "Pre overenie totožnosti heslom nie je dostupný žiadny modul PAM"
 
 #: utils/gdm-config.c:321
 msgid "No PAM module available for Smart Card authentication"
-msgstr "Pre autentifikáciu čipovou kartou nie je dostupný žiadny modul PAM"
+msgstr "Pre overenie totožnosti čipovou kartou nie je dostupný žiadny modul PAM"
 
 #: utils/gdm-config.c:323
 msgid "No PAM module available for Fingerprint authentication"
-msgstr "Pre autentifikáciu odtlačkom prsta nie je dostupný žiadny modul PAM"
+msgstr "Pre overenie totožnosti odtlačkom prsta nie je dostupný žiadny modul PAM"
 
 #: utils/gdm-config.c:354
 #, c-format
@@ -603,9 +603,9 @@ msgid ""
 msgstr ""
 "Príkazy:\n"
 "help         Zobrazí tieto informácie\n"
-"password     Konfiguruje autentifikáciu heslom\n"
-"fingerprint  Konfiguruje autentifikáciu odtlačkom prsta\n"
-"smartcard    Konfiguruje autentifikáciu čipovou kartou\n"
+"password     Konfiguruje overenie totožnosti heslom\n"
+"fingerprint  Konfiguruje overenie totožnosti odtlačkom prsta\n"
+"smartcard    Konfiguruje overenie totožnosti čipovou kartou\n"
 "reset        Obnoví predvolenú konfiguráciu\n"
 "show         Zobrazí aktuálnu konfiguráciu\n"
 "\n"
@@ -619,12 +619,12 @@ msgstr "Voľby príkazu"
 #: utils/gdm-config.c:1616
 #, c-format
 msgid "You need to be root to use %s “%s” command"
-msgstr "Na použitie príkazu „%s“ s voľbou „%s“ musíte byť root"
+msgstr "Na použitie príkazu %s „%s“ musíte byť root"
 
 #: utils/gdm-config.c:1666
 #, c-format
 msgid "Failed to set %s setting: "
-msgstr "Zlyhalo nastavenie nastavenia %s: "
+msgstr "Nepodarilo sa nastaviť %s: "
 
 #: utils/gdm-config.c:1758
 msgid "Failed to set smartcard setting"
@@ -662,9 +662,9 @@ msgid ""
 msgstr ""
 "Konfigurácia autorizácie GDM:\n"
 "\n"
-"Autentifikácia heslom: %s\n"
-"Autentifikácia odtlačkom prsta: %s\n"
-"Autentifikácia čipovou kartou: %s\n"
+"Overenie totožnosti heslom: %s\n"
+"Overenie totožnosti odtlačkom prsta: %s\n"
+"Overenie totožnosti čipovou kartou: %s\n"
 "Akcia po odpojení čipovej karty: %s\n"
 
 #: utils/gdm-config.c:1883
