@@ -70,7 +70,7 @@ typedef struct {
 #define GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_FREE(response) \
 { \
         if ((response)->key != NULL) { \
-                memset ((response)->key, 0, strlen ((response)->key)); \
+                gdm_pam_extension_zero_buffer ((response)->key, strlen ((response)->key)); \
                 free ((response)->key); \
         } \
         free (response); \
