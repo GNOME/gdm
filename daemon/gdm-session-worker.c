@@ -590,7 +590,6 @@ gdm_session_worker_process_custom_json_protocol (GdmSessionWorker            *wo
 {
         g_autoptr(GError) error = NULL;
         g_autoptr(JsonParser) parser = NULL;
-        g_autofree char *json_reply = NULL;
 
         g_debug ("GdmSessionWorker: sending custom JSON protocol request: %s v%d",
                  request->protocol_name, request->version);
