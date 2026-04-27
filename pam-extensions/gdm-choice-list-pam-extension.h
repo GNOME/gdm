@@ -67,4 +67,13 @@ typedef struct {
 }
 #define GDM_PAM_EXTENSION_REPLY_TO_CHOICE_LIST_RESPONSE(reply) ((GdmPamExtensionChoiceListResponse *) (void *) reply->resp)
 
+#define GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_FREE(response) \
+{ \
+        if ((response)->key != NULL) { \
+                memset ((response)->key, 0, strlen ((response)->key)); \
+                free ((response)->key); \
+        } \
+        free (response); \
+}
+
 #endif

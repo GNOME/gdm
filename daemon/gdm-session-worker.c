@@ -662,7 +662,7 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 res = gdm_session_worker_process_choice_list_request (worker, list_request, list_response);
 
                 if (! res) {
-                        free (list_response);
+                        GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_FREE (list_response);
                         return FALSE;
                 }
 
@@ -670,7 +670,7 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 return TRUE;
         } else if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CUSTOM_JSON)) {
                 GdmPamExtensionJSONProtocol *json_request = (GdmPamExtensionJSONProtocol *) extended_message;
-                g_autofree GdmPamExtensionJSONProtocol *json_response = malloc (GDM_PAM_EXTENSION_CUSTOM_JSON_SIZE);
+                GdmPamExtensionJSONProtocol *json_response = malloc (GDM_PAM_EXTENSION_CUSTOM_JSON_SIZE);
 
                 g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CUSTOM_JSON);
 
@@ -679,10 +679,11 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                                                               json_request->version);
 
                 if (!gdm_session_worker_process_custom_json_protocol (worker, json_request, json_response)) {
+                        GDM_PAM_EXTENSION_CUSTOM_JSON_RESPONSE_FREE (json_response);
                         return FALSE;
                 }
 
-                *response = GDM_PAM_EXTENSION_MESSAGE_TO_PAM_REPLY (g_steal_pointer (&json_response));
+                *response = GDM_PAM_EXTENSION_MESSAGE_TO_PAM_REPLY (json_response);
                 return TRUE;
         } else {
                 g_debug ("GdmSessionWorker: received extended pam message of unknown type %u", (unsigned int) extended_message->type);
@@ -863,6 +864,38 @@ get_friendly_error_message (GdmSessionWorker *worker,
         return get_generic_error_message (worker);
 }
 
+static void
+gdm_session_worker_clear_pam_response (GdmSessionWorker         *worker,
+                                       const struct pam_message  *message,
+                                       struct pam_response       *reply)
+{
+        if (reply->resp == NULL)
+                return;
+
+#ifdef SUPPORTS_PAM_EXTENSIONS
+        if (message->msg_style == PAM_BINARY_PROMPT) {
+                GdmPamExtensionMessage *extended_message;
+                extended_message = GDM_PAM_EXTENSION_MESSAGE_FROM_PAM_MESSAGE (message);
+
+                if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CHOICE_LIST)) {
+                        GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_FREE (
+                                GDM_PAM_EXTENSION_REPLY_TO_CHOICE_LIST_RESPONSE (reply));
+                } else if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CUSTOM_JSON)) {
+                        GDM_PAM_EXTENSION_CUSTOM_JSON_RESPONSE_FREE (
+                                GDM_PAM_EXTENSION_REPLY_TO_CUSTOM_JSON_RESPONSE (reply));
+                } else {
+                        free (reply->resp);
+                }
+        } else {
+                memset (reply->resp, 0, strlen (reply->resp));
+                free (reply->resp);
+        }
+#else
+        memset (reply->resp, 0, strlen (reply->resp));
+        free (reply->resp);
+#endif
+}
+
 static int
 gdm_session_worker_pam_new_messages_handler (int                        number_of_messages,
                                              const struct pam_message **messages,
@@ -914,10 +947,9 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
  out:
         if (return_value != PAM_SUCCESS || responses == NULL) {
                 for (i = 0; i < number_of_messages; i++) {
-                        if (replies[i].resp != NULL) {
-                                memset (replies[i].resp, 0, strlen (replies[i].resp));
-                                free (replies[i].resp);
-                        }
+                        gdm_session_worker_clear_pam_response (worker,
+                                                               messages[i],
+                                                               &replies[i]);
                         memset (&replies[i], 0, sizeof (replies[i]));
                 }
                 free (replies);

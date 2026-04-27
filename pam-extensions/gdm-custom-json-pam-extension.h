@@ -59,3 +59,12 @@ typedef struct {
 
 #define GDM_PAM_EXTENSION_REPLY_TO_CUSTOM_JSON_RESPONSE(reply) \
         ((GdmPamExtensionJSONProtocol *) (void *) reply->resp)
+
+#define GDM_PAM_EXTENSION_CUSTOM_JSON_RESPONSE_FREE(response) \
+{ \
+        if ((response)->json != NULL) { \
+                memset ((response)->json, 0, strlen ((response)->json)); \
+                free ((response)->json); \
+        } \
+        free (response); \
+}
