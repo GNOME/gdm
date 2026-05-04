@@ -51,7 +51,6 @@ struct _GdmDisplayClass
 typedef enum
 {
          GDM_DISPLAY_ERROR_GENERAL,
-         GDM_DISPLAY_ERROR_GETTING_USER_INFO,
          GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
 } GdmDisplayError;
 
@@ -60,7 +59,6 @@ typedef enum
 GQuark              gdm_display_error_quark                    (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
-time_t              gdm_display_get_creation_time              (GdmDisplay *display);
 const char *        gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
 gboolean            gdm_display_finish                         (GdmDisplay *display);

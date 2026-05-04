@@ -2245,40 +2245,6 @@ gdm_manager_error_quark (void)
 }
 
 static void
-listify_display_ids (const char *id,
-                     GdmDisplay *display,
-                     GPtrArray **array)
-{
-        g_ptr_array_add (*array, g_strdup (id));
-}
-
-/*
-  Example:
-  dbus-send --system --dest=org.gnome.DisplayManager \
-  --type=method_call --print-reply --reply-timeout=2000 \
-  /org/gnome/DisplayManager/Displays \
-  org.freedesktop.ObjectManager.GetAll
-*/
-gboolean
-gdm_manager_get_displays (GdmManager *manager,
-                          GPtrArray **displays,
-                          GError    **error)
-{
-        g_return_val_if_fail (GDM_IS_MANAGER (manager), FALSE);
-
-        if (displays == NULL) {
-                return FALSE;
-        }
-
-        *displays = g_ptr_array_new ();
-        gdm_display_store_foreach (manager->display_store,
-                                   (GdmDisplayStoreFunc)listify_display_ids,
-                                   displays);
-
-        return TRUE;
-}
-
-static void
 on_graphics_unsupported (GdmLocalDisplayFactory *factory,
                          GdmManager             *manager)
 {

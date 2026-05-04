@@ -83,23 +83,6 @@ gdm_settings_entry_get_default_value (GdmSettingsEntry *entry)
         return entry->default_value;
 }
 
-const char *
-gdm_settings_entry_get_value (GdmSettingsEntry *entry)
-{
-        g_return_val_if_fail (entry != NULL, NULL);
-
-        return entry->value;
-}
-
-void
-gdm_settings_entry_set_value (GdmSettingsEntry *entry,
-                              const char       *value)
-{
-        g_return_if_fail (entry != NULL);
-
-        g_set_str (&entry->value, value);
-}
-
 void
 gdm_settings_entry_free (GdmSettingsEntry *entry)
 {
@@ -255,34 +238,6 @@ gdm_settings_parse_schemas (const char  *file,
         return TRUE;
 }
 
-char *
-gdm_settings_parse_double_as_value (gdouble doubleval)
-{
-        char result[G_ASCII_DTOSTR_BUF_SIZE];
-
-        g_ascii_dtostr (result, sizeof (result), doubleval);
-
-        return g_strdup (result);
-}
-
-char *
-gdm_settings_parse_integer_as_value (int intval)
-
-{
-        return g_strdup_printf ("%d", intval);
-}
-
-char *
-gdm_settings_parse_boolean_as_value  (gboolean boolval)
-{
-        if (boolval) {
-                return g_strdup ("true");
-        } else {
-                return g_strdup ("false");
-        }
-}
-
-
 /* adapted from GKeyFile */
 gboolean
 gdm_settings_parse_value_as_boolean (const char *value,
@@ -327,25 +282,5 @@ gdm_settings_parse_value_as_integer (const char *value,
 
         *intval = int_value;
 
-        return TRUE;
-}
-
-gboolean
-gdm_settings_parse_value_as_double  (const char *value,
-                                     gdouble    *doubleval)
-{
-        char   *end_of_valid_d;
-        gdouble double_value = 0;
-
-        g_return_val_if_fail (value != NULL, FALSE);
-        g_return_val_if_fail (doubleval != NULL, FALSE);
-
-        double_value = g_ascii_strtod (value, &end_of_valid_d);
-
-        if (*end_of_valid_d != '\0' || end_of_valid_d == value) {
-                return FALSE;
-        }
-
-        *doubleval = double_value;
         return TRUE;
 }

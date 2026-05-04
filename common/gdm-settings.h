@@ -28,12 +28,6 @@ G_BEGIN_DECLS
 #define GDM_TYPE_SETTINGS (gdm_settings_get_type ())
 G_DECLARE_FINAL_TYPE (GdmSettings, gdm_settings, GDM, SETTINGS, GObject)
 
-typedef enum
-{
-        GDM_SETTINGS_ERROR_GENERAL,
-        GDM_SETTINGS_ERROR_KEY_NOT_FOUND
-} GdmSettingsError;
-
 #define GDM_SETTINGS_ERROR gdm_settings_error_quark ()
 
 GQuark              gdm_settings_error_quark                    (void);
@@ -47,9 +41,4 @@ gboolean            gdm_settings_get_value                      (GdmSettings *se
                                                                  const char  *key,
                                                                  char       **value,
                                                                  GError     **error);
-gboolean            gdm_settings_set_value                      (GdmSettings *settings,
-                                                                 const char  *key,
-                                                                 const char  *value,
-                                                                 GError     **error);
-
 G_END_DECLS

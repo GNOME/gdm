@@ -110,48 +110,6 @@ gdm_settings_get_value (GdmSettings *settings,
         return res;
 }
 
-gboolean
-gdm_settings_set_value (GdmSettings *settings,
-                        const char  *key,
-                        const char  *value,
-                        GError     **error)
-{
-        GError  *local_error = NULL;
-        gboolean res;
-        GList   *l;
-
-        g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
-        g_return_val_if_fail (settings->backends != NULL, FALSE);
-        g_return_val_if_fail (key != NULL, FALSE);
-        g_return_val_if_fail (value != NULL, FALSE);
-
-        g_debug ("Setting value %s", key);
-
-        local_error = NULL;
-
-        for (l = settings->backends; l; l = g_list_next (l)) {
-                GdmSettingsBackend *backend = l->data;
-
-                if (local_error) {
-                        g_error_free (local_error);
-                        local_error = NULL;
-                }
-
-                res = gdm_settings_backend_set_value (backend,
-                                                      key,
-                                                      value,
-                                                      &local_error);
-                if (res)
-                        break;
-        }
-
-        if (! res) {
-                g_propagate_error (error, local_error);
-        }
-
-        return res;
-}
-
 static void
 gdm_settings_class_init (GdmSettingsClass *klass)
 {

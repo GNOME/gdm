@@ -2695,21 +2695,6 @@ send_environment (GdmSession             *self,
                               conversation);
 }
 
-void
-gdm_session_send_environment (GdmSession *self,
-                              const char *service_name)
-{
-        GdmSessionConversation *conversation;
-
-        g_return_if_fail (GDM_IS_SESSION (self));
-        g_return_if_fail (service_name != NULL);
-
-        conversation = find_conversation_by_name (self, service_name);
-        if (conversation != NULL) {
-                send_environment (self, conversation);
-        }
-}
-
 static const char *
 get_session_name (GdmSession *self)
 {
@@ -3271,14 +3256,6 @@ gdm_session_get_username (GdmSession *self)
         g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
 
         return self->selected_user;
-}
-
-const char *
-gdm_session_get_display_device (GdmSession *self)
-{
-        g_return_val_if_fail (GDM_IS_SESSION (self), NULL);
-
-        return self->display_device;
 }
 
 const char *

@@ -58,7 +58,6 @@ typedef struct _GdmDisplayPrivate
 
         char                 *remote_hostname;
         int                   status;
-        time_t                creation_time;
 
         char                 *autologin_user;
 
@@ -122,17 +121,6 @@ gdm_display_error_quark (void)
         }
 
         return ret;
-}
-
-time_t
-gdm_display_get_creation_time (GdmDisplay *self)
-{
-        GdmDisplayPrivate *priv;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (self), 0);
-
-        priv = gdm_display_get_instance_private (self);
-        return priv->creation_time;
 }
 
 int
@@ -925,11 +913,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
 static void
 gdm_display_init (GdmDisplay *self)
 {
-        GdmDisplayPrivate *priv;
-
-        priv = gdm_display_get_instance_private (self);
-
-        priv->creation_time = time (NULL);
 }
 
 static void

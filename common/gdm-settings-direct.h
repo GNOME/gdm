@@ -35,8 +35,6 @@ void                  gdm_settings_direct_shutdown                   (void);
 
 gboolean              gdm_settings_direct_get_int                    (const char        *key,
                                                                       int               *value);
-gboolean              gdm_settings_direct_get_uint                   (const char        *key,
-                                                                      uint              *value);
 gboolean              gdm_settings_direct_get_boolean                (const char        *key,
                                                                       gboolean          *value);
 gboolean              gdm_settings_direct_get_string                 (const char        *key,

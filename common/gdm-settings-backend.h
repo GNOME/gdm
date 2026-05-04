@@ -51,7 +51,6 @@ struct _GdmSettingsBackendClass
 
 typedef enum
 {
-        GDM_SETTINGS_BACKEND_ERROR_GENERAL,
         GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND
 } GdmSettingsBackendError;
 
@@ -62,10 +61,6 @@ GQuark              gdm_settings_backend_error_quark            (void);
 gboolean            gdm_settings_backend_get_value              (GdmSettingsBackend *settings_backend,
                                                                  const char  *key,
                                                                  char       **value,
-                                                                 GError     **error);
-gboolean            gdm_settings_backend_set_value              (GdmSettingsBackend *settings_backend,
-                                                                 const char  *key,
-                                                                 const char  *value,
                                                                  GError     **error);
 
 void                gdm_settings_backend_value_changed          (GdmSettingsBackend *settings_backend,

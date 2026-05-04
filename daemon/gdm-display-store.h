@@ -29,11 +29,6 @@ G_BEGIN_DECLS
 #define GDM_TYPE_DISPLAY_STORE (gdm_display_store_get_type ())
 G_DECLARE_FINAL_TYPE (GdmDisplayStore, gdm_display_store, GDM, DISPLAY_STORE, GObject)
 
-typedef enum
-{
-         GDM_DISPLAY_STORE_ERROR_GENERAL
-} GdmDisplayStoreError;
-
 #define GDM_DISPLAY_STORE_ERROR gdm_display_store_error_quark ()
 
 typedef gboolean (*GdmDisplayStoreFunc) (const char *id,

@@ -31,11 +31,6 @@ G_BEGIN_DECLS
 #define GDM_TYPE_MANAGER (gdm_manager_get_type ())
 G_DECLARE_FINAL_TYPE (GdmManager, gdm_manager, GDM, MANAGER, GdmDBusManagerSkeleton)
 
-typedef enum
-{
-         GDM_MANAGER_ERROR_GENERAL
-} GdmManagerError;
-
 #define GDM_MANAGER_ERROR gdm_manager_error_quark ()
 
 GQuark              gdm_manager_error_quark                    (void);
@@ -46,9 +41,6 @@ void                gdm_manager_stop                           (GdmManager *mana
 
 void                gdm_manager_set_remote_login_enabled       (GdmManager *manager,
                                                                 gboolean    enabled);
-gboolean            gdm_manager_get_displays                   (GdmManager *manager,
-                                                                GPtrArray **displays,
-                                                                GError    **error);
 
 
 G_END_DECLS

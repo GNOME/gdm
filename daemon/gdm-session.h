@@ -66,7 +66,6 @@ void              gdm_session_start_reauthentication (GdmSession *session,
 
 const char       *gdm_session_get_server_address          (GdmSession     *session);
 const char       *gdm_session_get_username                (GdmSession     *session);
-const char       *gdm_session_get_display_device          (GdmSession     *session);
 const char       *gdm_session_get_display_seat_id         (GdmSession     *session);
 const char       *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_session_registers           (GdmSession     *session);
@@ -89,8 +88,6 @@ void              gdm_session_setup_for_program           (GdmSession *session,
 void              gdm_session_set_environment_variable    (GdmSession *session,
                                                            const char *key,
                                                            const char *value);
-void              gdm_session_send_environment            (GdmSession *self,
-                                                           const char *service_name);
 void              gdm_session_reset                       (GdmSession *session);
 void              gdm_session_cancel                      (GdmSession *session);
 void              gdm_session_authenticate                (GdmSession *session,

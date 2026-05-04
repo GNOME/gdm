@@ -114,27 +114,6 @@ gdm_settings_direct_get_int (const char        *key,
 }
 
 gboolean
-gdm_settings_direct_get_uint (const char        *key,
-                              uint              *value)
-{
-        gboolean          ret;
-        int               intvalue;
-
-        g_return_val_if_fail (key != NULL, FALSE);
-        g_return_val_if_fail (value != NULL, FALSE);
-
-        ret = gdm_settings_direct_get_int (key, &intvalue);
-
-        if (ret && intvalue >= 0) {
-                *value = intvalue;
-        } else {
-                ret = FALSE;
-        }
-
-        return ret;
-}
-
-gboolean
 gdm_settings_direct_get_boolean (const char        *key,
                                  gboolean          *value)
 {
