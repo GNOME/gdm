@@ -92,7 +92,6 @@ struct _GdmSession
 
         char                *timed_login_username;
         int                  timed_login_delay;
-        GList               *pending_timed_login_invocations;
 
         GHashTable          *conversations;
 

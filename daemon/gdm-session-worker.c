@@ -123,8 +123,6 @@ struct _GdmSessionWorker
         GdmDBusWorkerSkeleton parent;
         GdmSessionWorkerState state;
 
-        int               exit_code;
-
         pam_handle_t     *pam_handle;
 
         GPid              child_pid;
