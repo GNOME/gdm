@@ -1,61 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <gdmschemafile>
   <schemalist>
     <schema>
       <key>daemon/AutomaticLoginEnable</key>
       <signature>b</signature>
       <default>false</default>
+      <description>
+        Enable automatic login without requiring credentials.
+        When enabled, the user specified in AutomaticLogin will be
+        automatically logged in when GDM starts.
+      </description>
     </schema>
     <schema>
       <key>daemon/AutomaticLogin</key>
       <signature>s</signature>
       <default></default>
+      <description>
+        The username to use for automatic login.
+        Only takes effect when AutomaticLoginEnable is set to true.
+      </description>
     </schema>
     <schema>
       <key>daemon/TimedLoginEnable</key>
       <signature>b</signature>
       <default>false</default>
+      <description>
+        Enable timed automatic login.
+        When enabled, the user specified in TimedLogin will be
+        automatically logged in after the delay specified in TimedLoginDelay.
+      </description>
     </schema>
     <schema>
       <key>daemon/TimedLogin</key>
       <signature>s</signature>
       <default></default>
+      <description>
+        The username to use for timed automatic login.
+        Only takes effect when TimedLoginEnable is set to true.
+      </description>
     </schema>
     <schema>
       <key>daemon/TimedLoginDelay</key>
       <signature>i</signature>
       <default>30</default>
+      <description>
+        The number of seconds to wait before triggering timed login.
+        Only takes effect when TimedLoginEnable is set to true.
+      </description>
     </schema>
     <schema>
       <key>daemon/InitialSetupEnable</key>
       <signature>b</signature>
       <default>true</default>
+      <description>
+        Enable running GNOME Initial Setup on first boot.
+        When enabled, new users will be guided through initial system setup
+        before reaching their desktop session.
+      </description>
     </schema>
     <schema>
       <key>daemon/XorgEnable</key>
       <signature>b</signature>
       <default>true</default>
+      <description>
+        Allow X11 sessions to be started.
+        When disabled, only Wayland sessions will be available.
+        Note: This requires GDM to be built with the x11-support option.
+      </description>
     </schema>
     <schema>
       <key>daemon/RemoteLoginEnable</key>
       <signature>b</signature>
       <default>true</default>
+      <description>
+        Allow creating remote displays for remote login.
+        When enabled, GDM can manage remote login sessions.
+      </description>
     </schema>
     <schema>
       <key>daemon/FallbackSession</key>
       <signature>s</signature>
       <default>gnome</default>
+      <description>
+        The session to use when the user's preferred session is not available.
+        This is typically used as a safety fallback when the user's configured
+        session cannot be started or isn't configured at all.
+      </description>
     </schema>
 
     <schema>
       <key>debug/Enable</key>
       <signature>b</signature>
       <default>false</default>
+      <description>
+        Enable verbose debug logging.
+        When enabled, GDM will write detailed debugging information to the
+        system journal. This can be useful for troubleshooting issues.
+      </description>
     </schema>
 
     <schema>
       <key>security/DisallowTCP</key>
       <signature>b</signature>
       <default>true</default>
+      <description>
+        Block TCP connections to the X server.
+        When enabled, only local connections to the X server are allowed,
+        improving security by preventing network-based X11 access.
+      </description>
     </schema>
   </schemalist>
 </gdmschemafile>

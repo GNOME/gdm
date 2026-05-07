@@ -14,6 +14,31 @@ $ ninja -C _build
 $ sudo ninja -C _build install
 ```
 
+## Configuration
+
+GDM is configured through two main mechanisms:
+
+### Daemon configuration
+
+The daemon is configured via `custom.conf`, an INI-style key file usually
+located at `/etc/gdm/` or `/etc/gdm3/`.
+Settings in `/run/gdm/custom.conf` take priority over the configuration in
+`/etc/gdm/` or `/etc/gdm3/` and can be used for runtime overrides.
+
+For a list of available settings and their descriptions, see
+[`data/gdm.schemas`](data/gdm.schemas).
+
+### Login screen settings
+
+The login screen appearance and behavior is controlled by GSettings keys
+under the `org.gnome.login-screen` schema. These are configured via dconf
+by creating a key file in `/etc/dconf/db/gdm.d/` and running `dconf update`.
+
+For more dconf details, see [dconf(1)](https://man.archlinux.org/man/dconf.1).
+
+For a list of available settings and their descriptions, see
+[`data/org.gnome.login-screen.gschema.xml`](data/org.gnome.login-screen.gschema.xml).
+
 ## Contributing
 You can browse the code, issues and more at GDM's [GitLab repository].
 
