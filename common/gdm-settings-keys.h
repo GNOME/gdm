@@ -39,7 +39,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_DEBUG "debug/Enable"
 
 #define GDM_KEY_DISALLOW_TCP "security/DisallowTCP"
-#define GDM_KEY_ALLOW_REMOTE_AUTOLOGIN "security/AllowRemoteAutoLogin"
 
 G_END_DECLS
 
