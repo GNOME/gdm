@@ -343,6 +343,7 @@ gdm_get_session_ids (void)
 {
         GHashTableIter iter;
         gpointer key, value;
+        /* gobject-linter-ignore-next-line: use_auto_cleanup */
         GPtrArray *array;
 
         if (!gdm_sessions_map_is_initialized) {

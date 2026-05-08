@@ -55,6 +55,7 @@ expand_fn (const char *var, gpointer data)
         return NULL;
 }
 
+/* gobject-linter-ignore-next-line: dead_code */
 static gboolean expands_to (const char *to_expand, const char *expanded)
 {
         g_autofree char *result = gdm_shell_expand (to_expand, expand_fn, NULL);

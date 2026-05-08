@@ -285,6 +285,7 @@ main (int    argc,
         g_unix_signal_add (SIGHUP, on_sighup_cb, NULL);
 
         if (do_timed_exit) {
+                /* gobject-linter-ignore-next-line: g_source_id_not_stored */
                 g_timeout_add_seconds_once (30, (GSourceOnceFunc) timed_exit_cb, main_loop);
         }
 

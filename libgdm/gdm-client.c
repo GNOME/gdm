@@ -584,6 +584,7 @@ _untrack_proxy (GDBusProxy **proxy)
     (_untrack_proxy) ((GDBusProxy **) (proxy)) \
   )
 
+/* gobject-linter-ignore-next-line: dead_code */
 static void
 _track_proxy (GDBusProxy **proxy,
               GDBusProxy  *new_proxy)
