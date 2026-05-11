@@ -1392,6 +1392,7 @@ destroy_start_user_session_operation (StartUserSessionOperation *operation)
                            NULL);
         g_object_unref (operation->session);
         g_free (operation->service_name);
+        g_clear_handle_id (&operation->idle_id, g_source_remove);
         g_slice_free (StartUserSessionOperation, operation);
 }
 
@@ -1502,7 +1503,7 @@ export_initial_setup_home_dir (GdmSession *initial_setup_session)
         return TRUE;
 }
 
-static gboolean
+static void
 on_start_user_session (StartUserSessionOperation *operation)
 {
         GdmManager *self = operation->manager;
@@ -1514,6 +1515,8 @@ on_start_user_session (StartUserSessionOperation *operation)
         uid_t allowed_uid;
 
         g_debug ("GdmManager: start or jump to session");
+
+        operation->idle_id = 0;
 
         /* If there's already a session running, jump to it.
          * If the only session running is the one we just opened,
@@ -1529,7 +1532,7 @@ on_start_user_session (StartUserSessionOperation *operation)
                    user switching. */
                 gdm_session_reset (operation->session);
                 destroy_start_user_session_operation (operation);
-                goto out;
+                return;
         }
 
         display = get_display_for_user_session (operation->session);
@@ -1587,9 +1590,6 @@ on_start_user_session (StartUserSessionOperation *operation)
         g_object_unref (display);
 
         start_user_session (operation->manager, operation);
-
- out:
-        return G_SOURCE_REMOVE;
 }
 
 static void
@@ -1604,7 +1604,7 @@ queue_start_user_session (GdmManager *manager,
         operation->session = g_object_ref (session);
         operation->service_name = g_strdup (service_name);
 
-        operation->idle_id = g_idle_add ((GSourceFunc) on_start_user_session, operation);
+        operation->idle_id = g_idle_add_once ((GSourceOnceFunc) on_start_user_session, operation);
         g_object_set_data (G_OBJECT (session), "start-user-session-operation", operation);
 }
 
@@ -1921,7 +1921,6 @@ on_session_client_disconnected (GdmSession   *session,
 
 typedef struct
 {
-        GdmManager *manager;
         GdmSession *session;
         unsigned int idle_id;
 } ResetSessionOperation;
@@ -1933,17 +1932,18 @@ destroy_reset_session_operation (ResetSessionOperation *operation)
                            "reset-session-operation",
                            NULL);
         g_object_unref (operation->session);
+        g_clear_handle_id (&operation->idle_id, g_source_remove);
         g_slice_free (ResetSessionOperation, operation);
 }
 
-static gboolean
+static void
 on_reset_session (ResetSessionOperation *operation)
 {
+        operation->idle_id = 0;
+
         gdm_session_reset (operation->session);
 
         destroy_reset_session_operation (operation);
-
-        return G_SOURCE_REMOVE;
 }
 
 static void
@@ -1959,9 +1959,8 @@ queue_session_reset (GdmManager *manager,
         }
 
         operation = g_slice_new0 (ResetSessionOperation);
-        operation->manager = manager;
         operation->session = g_object_ref (session);
-        operation->idle_id = g_idle_add ((GSourceFunc) on_reset_session, operation);
+        operation->idle_id = g_idle_add_once ((GSourceOnceFunc) on_reset_session, operation);
 
         g_object_set_data (G_OBJECT (session), "reset-session-operation", operation);
 }
