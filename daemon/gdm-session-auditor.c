@@ -129,7 +129,7 @@ gdm_session_auditor_set_username (GdmSessionAuditor *auditor,
         }
 
         if ((username == NULL || priv->username == NULL) ||
-            strcmp (username, priv->username) != 0) {
+            g_strcmp0 (username, priv->username) != 0) {
                 priv->username = g_strdup (username);
                 g_object_notify_by_pspec (G_OBJECT (auditor), props[PROP_USERNAME]);
         }

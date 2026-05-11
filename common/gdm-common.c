@@ -459,7 +459,7 @@ gdm_get_login_window_session_id (const char  *seat_id,
                         goto out;
                 }
 
-                if (strcmp (service_class, "greeter") != 0) {
+                if (g_strcmp0 (service_class, "greeter") != 0) {
                         free (service_class);
                         continue;
                 }
@@ -492,7 +492,7 @@ gdm_get_login_window_session_id (const char  *seat_id,
                         goto out;
                 }
 
-                if (strcmp (service_id, "gdm-launch-environment") == 0) {
+                if (g_strcmp0 (service_id, "gdm-launch-environment") == 0) {
                         *session_id = g_strdup (sessions[i]);
                         ret = TRUE;
 
@@ -908,7 +908,7 @@ static int
 compare_str (gconstpointer  a,
              gconstpointer  b)
 {
-  return strcmp (*(const char **)a, *(const char **)b);
+  return g_strcmp0 (*(const char **)a, *(const char **)b);
 }
 
 static void

@@ -301,7 +301,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         if (launch_environment->dconf_profile != NULL) {
                 g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->dconf_profile));
 
-                is_initial_setup = strcmp (launch_environment->dconf_profile, INITIAL_SETUP_DCONF_PROFILE) == 0;
+                is_initial_setup = g_strcmp0 (launch_environment->dconf_profile, INITIAL_SETUP_DCONF_PROFILE) == 0;
 
                 if (!is_initial_setup) {
 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */

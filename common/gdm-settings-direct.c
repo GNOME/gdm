@@ -62,7 +62,7 @@ assert_signature (GdmSettingsEntry *entry,
 
         g_assert (sig != NULL);
         g_assert (signature != NULL);
-        g_assert (strcmp (signature, sig) == 0);
+        g_assert (g_strcmp0 (signature, sig) == 0);
 }
 
 static gboolean

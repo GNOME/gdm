@@ -1067,7 +1067,7 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                 g_clear_pointer (&self->saved_session, g_free);
                 update_session_type (self);
         } else {
-                if (strcmp (session_name,
+                if (g_strcmp0 (session_name,
                             get_default_session_name (self)) != 0) {
                         g_set_str (&self->saved_session, session_name);
 
@@ -1529,7 +1529,7 @@ gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifi
                 if (g_hash_table_lookup (self->user_verifier_extensions, extensions[i]) != NULL)
                         continue;
 
-                if (strcmp (extensions[i],
+                if (g_strcmp0 (extensions[i],
                             gdm_dbus_user_verifier_choice_list_interface_info ()->name) == 0)
                         export_user_verifier_choice_list_interface (self, connection);
 
@@ -2724,8 +2724,8 @@ set_up_session_language (GdmSession *self)
 
         environment = g_listenv ();
         for (i = 0; environment[i] != NULL; i++) {
-                if (strcmp (environment[i], "LANG") != 0 &&
-                    strcmp (environment[i], "LANGUAGE") != 0 &&
+                if (g_strcmp0 (environment[i], "LANG") != 0 &&
+                    g_strcmp0 (environment[i], "LANGUAGE") != 0 &&
                     !g_str_has_prefix (environment[i], "LC_")) {
                     continue;
                 }
@@ -3972,9 +3972,9 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
 GdmSessionDisplayMode
 gdm_session_display_mode_from_string (const char *str)
 {
-        if (strcmp (str, "new-vt") == 0)
+        if (g_strcmp0 (str, "new-vt") == 0)
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
-        if (strcmp (str, "logind-managed") == 0)
+        if (g_strcmp0 (str, "logind-managed") == 0)
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
 
         g_warning ("Unknown GdmSessionDisplayMode %s", str);

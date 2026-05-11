@@ -117,13 +117,13 @@ start_element_cb (GMarkupParseContext *ctx,
 
         /*g_debug ("parsing start: '%s'", element_name);*/
 
-        if (strcmp (element_name, "schema") == 0) {
+        if (g_strcmp0 (element_name, "schema") == 0) {
                 info->entry = gdm_settings_entry_new ();
-        } else if (strcmp (element_name, "key") == 0) {
+        } else if (g_strcmp0 (element_name, "key") == 0) {
                 info->in_key = TRUE;
-        } else if (strcmp (element_name, "signature") == 0) {
+        } else if (g_strcmp0 (element_name, "signature") == 0) {
                 info->in_signature = TRUE;
-        } else if (strcmp (element_name, "default") == 0) {
+        } else if (g_strcmp0 (element_name, "default") == 0) {
                 info->in_default = TRUE;
         }
 }
@@ -148,13 +148,13 @@ end_element_cb (GMarkupParseContext *ctx,
 
         /*g_debug ("parsing end: '%s'", element_name);*/
 
-        if (strcmp (element_name, "schema") == 0) {
+        if (g_strcmp0 (element_name, "schema") == 0) {
                 add_schema_entry (info);
-        } else if (strcmp (element_name, "key") == 0) {
+        } else if (g_strcmp0 (element_name, "key") == 0) {
                 info->in_key = FALSE;
-        } else if (strcmp (element_name, "signature") == 0) {
+        } else if (g_strcmp0 (element_name, "signature") == 0) {
                 info->in_signature = FALSE;
-        } else if (strcmp (element_name, "default") == 0) {
+        } else if (g_strcmp0 (element_name, "default") == 0) {
                 info->in_default = FALSE;
         }
 }
@@ -237,10 +237,10 @@ gdm_settings_parse_value_as_boolean (const char *value,
         g_return_val_if_fail (value != NULL, FALSE);
         g_return_val_if_fail (boolval != NULL, FALSE);
 
-        if (g_ascii_strcasecmp (value, "true") == 0 || strcmp (value, "1") == 0) {
+        if (g_ascii_strcasecmp (value, "true") == 0 || g_strcmp0 (value, "1") == 0) {
                 *boolval = TRUE;
                 return TRUE;
-        } else if (g_ascii_strcasecmp (value, "false") == 0 || strcmp (value, "0") == 0) {
+        } else if (g_ascii_strcasecmp (value, "false") == 0 || g_strcmp0 (value, "0") == 0) {
                 *boolval = FALSE;
                 return TRUE;
         } else {

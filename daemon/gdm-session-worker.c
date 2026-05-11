@@ -450,7 +450,7 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 
                 if ((worker->username == username) ||
                     ((worker->username != NULL) && (username != NULL) &&
-                     (strcmp (worker->username, username) == 0)))
+                     (g_strcmp0 (worker->username, username) == 0)))
                         return;
 
                 g_debug ("GdmSessionWorker: setting username to '%s'", username);
@@ -1245,7 +1245,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 gdm_session_worker_set_environment_variable (worker, "XDG_SEAT", seat_id);
         }
 
-        if (strcmp (service, "gdm-launch-environment") == 0) {
+        if (g_strcmp0 (service, "gdm-launch-environment") == 0) {
                 gdm_session_worker_set_environment_variable (worker, "XDG_SESSION_CLASS", "greeter");
         }
 
@@ -1650,7 +1650,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         /* Let's give the user a default PATH if he doesn't already have one
          */
         if (!gdm_session_worker_environment_variable_is_set (worker, "PATH")) {
-                if (strcmp (BINDIR, "/usr/bin") == 0) {
+                if (g_strcmp0 (BINDIR, "/usr/bin") == 0) {
                         gdm_session_worker_set_environment_variable (worker, "PATH",
                                                                      GDM_SESSION_DEFAULT_PATH);
                 } else {

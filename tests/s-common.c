@@ -44,13 +44,13 @@ teardown (void)
 static char *
 expand_fn (const char *var, gpointer data)
 {
-        if (strcmp (var, "FOO") == 0)
+        if (g_strcmp0 (var, "FOO") == 0)
                 return g_strdup ("BAR");
-        if (strcmp (var, "FOO9") == 0)
+        if (g_strcmp0 (var, "FOO9") == 0)
                 return g_strdup ("XXX");
-        if (strcmp (var, "_FOO") == 0)
+        if (g_strcmp0 (var, "_FOO") == 0)
                 return g_strdup ("YYY");
-        if (strcmp (var, "FOO_FOO") == 0)
+        if (g_strcmp0 (var, "FOO_FOO") == 0)
                 return g_strdup ("ZZZ");
         return NULL;
 }
@@ -58,7 +58,7 @@ expand_fn (const char *var, gpointer data)
 static gboolean expands_to (const char *to_expand, const char *expanded)
 {
         g_autofree char *result = gdm_shell_expand (to_expand, expand_fn, NULL);
-        return (strcmp (result, expanded) == 0);
+        return (g_strcmp0 (result, expanded) == 0);
 }
 
 START_TEST (test_gdm_shell_expand)
