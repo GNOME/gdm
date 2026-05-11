@@ -89,12 +89,10 @@ static gboolean
 gdm_local_display_prepare (GdmDisplay *display)
 {
         GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
-        GdmLaunchEnvironment *launch_environment;
-        char          *seat_id;
-        char          *session_class;
+        g_autoptr(GdmLaunchEnvironment) launch_environment = NULL;
+        g_autofree char *seat_id = NULL;
+        g_autofree char *session_class = NULL;
         gboolean       doing_initial_setup = FALSE;
-
-        seat_id = NULL;
 
         g_object_get (self,
                       "seat-id", &seat_id,
@@ -119,12 +117,8 @@ gdm_local_display_prepare (GdmDisplay *display)
         }
 
         g_object_set (self, "launch-environment", launch_environment, NULL);
-        g_object_unref (launch_environment);
 
 out:
-        g_free (seat_id);
-        g_free (session_class);
-
         return GDM_DISPLAY_CLASS (gdm_local_display_parent_class)->prepare (display);
 }
 

@@ -108,33 +108,31 @@ get_systemd_seat (void)
 static gboolean
 key_file_is_relevant (GKeyFile     *key_file)
 {
-        GError    *error = NULL;
+        g_autoptr(GError) error = NULL;
         g_autofree char *seat = NULL;
         gboolean   no_display;
         gboolean   hidden;
         gboolean   tryexec_failed;
         gboolean   can_run_headless;
         gboolean   only_headless_allowed;
-        char      *tryexec;
+        g_autofree char *tryexec = NULL;
 
-        error = NULL;
         no_display = g_key_file_get_boolean (key_file,
                                              G_KEY_FILE_DESKTOP_GROUP,
                                              "NoDisplay",
                                              &error);
         if (error) {
                 no_display = FALSE;
-                g_error_free (error);
+                g_clear_error (&error);
         }
 
-        error = NULL;
         hidden = g_key_file_get_boolean (key_file,
                                          G_KEY_FILE_DESKTOP_GROUP,
                                          "Hidden",
                                          &error);
         if (error) {
                 hidden = FALSE;
-                g_error_free (error);
+                g_clear_error (&error);
         }
 
         seat = get_systemd_seat ();
@@ -152,14 +150,9 @@ key_file_is_relevant (GKeyFile     *key_file)
                                          "TryExec",
                                          NULL);
         if (tryexec) {
-                char *path;
-
-                path = g_find_program_in_path (g_strstrip (tryexec));
+                g_autofree char *path = g_find_program_in_path (g_strstrip (tryexec));
 
                 tryexec_failed = (path == NULL);
-
-                g_free (path);
-                g_free (tryexec);
         }
 
         if (no_display || hidden || tryexec_failed || (only_headless_allowed && !can_run_headless)) {
@@ -173,36 +166,34 @@ static void
 load_session_file (const char              *id,
                    const char              *path)
 {
-        GKeyFile          *key_file;
-        GError            *error = NULL;
+        g_autoptr(GKeyFile) key_file = NULL;
+        g_autoptr(GError)   error = NULL;
         gboolean           res;
         GdmSessionFile    *session;
 
         key_file = g_key_file_new ();
 
-        error = NULL;
         res = g_key_file_load_from_file (key_file, path, 0, &error);
 
         if (!res) {
                 g_debug ("Failed to load \"%s\": %s\n", path, error->message);
-                g_error_free (error);
-                goto out;
+                return;
         }
 
         if (! g_key_file_has_group (key_file, G_KEY_FILE_DESKTOP_GROUP)) {
-                goto out;
+                return;
         }
 
         res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "Name", NULL);
         if (! res) {
                 g_debug ("\"%s\" contains no \"Name\" key\n", path);
-                goto out;
+                return;
         }
 
         if (!key_file_is_relevant (key_file)) {
                 g_debug ("\"%s\" is hidden, contains non-executable TryExec program, or is otherwise not capable of being used\n", path);
                 g_hash_table_remove (gdm_available_sessions_map, id);
-                goto out;
+                return;
         }
 
         session = g_new0 (GdmSessionFile, 1);
@@ -216,8 +207,6 @@ load_session_file (const char              *id,
         g_hash_table_insert (gdm_available_sessions_map,
                              g_strdup (id),
                              session);
- out:
-        g_key_file_free (key_file);
 }
 
 static gboolean

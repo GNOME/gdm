@@ -135,14 +135,12 @@ plymouth_is_running (void)
 {
         int      status;
         gboolean res;
-        GError  *error = NULL;
+        g_autoptr(GError) error = NULL;
 
-        error = NULL;
         res = g_spawn_command_line_sync ("plymouth --ping",
                                          NULL, NULL, &status, &error);
         if (! res) {
                 g_debug ("Could not ping plymouth: %s", error->message);
-                g_error_free (error);
                 return FALSE;
         }
 
@@ -153,14 +151,12 @@ static void
 plymouth_prepare_for_transition (void)
 {
         gboolean res;
-        GError  *error = NULL;
+        g_autoptr(GError) error = NULL;
 
-        error = NULL;
         res = g_spawn_command_line_sync ("plymouth deactivate",
                                          NULL, NULL, NULL, &error);
         if (! res) {
                 g_warning ("Could not deactivate plymouth: %s", error->message);
-                g_error_free (error);
         }
 }
 
@@ -168,13 +164,11 @@ static void
 plymouth_quit_with_transition (void)
 {
         gboolean res;
-        GError  *error = NULL;
+        g_autoptr(GError) error = NULL;
 
-        error = NULL;
         res = g_spawn_command_line_async ("plymouth quit --retain-splash", &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
-                g_error_free (error);
         }
 }
 
@@ -182,13 +176,11 @@ static void
 plymouth_quit_without_transition (void)
 {
         gboolean res;
-        GError  *error = NULL;
+        g_autoptr(GError) error = NULL;
 
-        error = NULL;
         res = g_spawn_command_line_async ("plymouth quit", &error);
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
-                g_error_free (error);
         }
 }
 #endif
@@ -259,7 +251,7 @@ is_login_session (GdmManager  *self,
                   const char  *session_id,
                   GError     **error)
 {
-        char *session_class = NULL;
+        g_autofree char *session_class = NULL;
         int ret;
 
         ret = sd_session_get_class (session_id, &session_class);
@@ -274,21 +266,15 @@ is_login_session (GdmManager  *self,
                 return FALSE;
         }
 
-        if (g_strcmp0 (session_class, "greeter") != 0) {
-                g_free (session_class);
-                return FALSE;
-        }
-
-        g_free (session_class);
-        return TRUE;
+        return g_strcmp0 (session_class, "greeter") == 0;
 }
 
 static gboolean
 session_unlock (GdmManager *manager,
                 const char *ssid)
 {
-        GError *error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) reply = NULL;
 
         g_debug ("Unlocking session %s", ssid);
 
@@ -306,11 +292,8 @@ session_unlock (GdmManager *manager,
         if (reply == NULL) {
                 g_debug ("GdmManager: logind 'UnlockSession' %s raised:\n %s\n\n",
                          g_dbus_error_get_remote_error (error), error->message);
-                g_error_free (error);
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -449,8 +432,8 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                                         gboolean         *out_is_remote)
 {
         GdmDisplay *display = NULL;
-        char       *session_id = NULL;
-        GError     *error = NULL;
+        g_autofree char *session_id = NULL;
+        g_autoptr(GError) error = NULL;
         int         ret;
         GPid        pid;
         uid_t       caller_uid, session_uid;
@@ -460,8 +443,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
         if (!ret) {
                 g_debug ("GdmManager: Error while retrieving pid for sender: %s",
                          error->message);
-                g_error_free (error);
-                goto out;
+                return;
         }
 
         if (out_pid != NULL) {
@@ -473,8 +455,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
         if (!ret) {
                 g_debug ("GdmManager: Error while retrieving uid for sender: %s",
                          error->message);
-                g_error_free (error);
-                goto out;
+                return;
         }
 
         ret = gdm_find_display_session (pid, caller_uid, &session_id, &error);
@@ -483,8 +464,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 g_debug ("GdmManager: Unable to find display session for uid %d: %s",
                          (int) caller_uid,
                          error->message);
-                g_error_free (error);
-                goto out;
+                return;
         }
 
         if (out_session_id != NULL) {
@@ -497,16 +477,14 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                 if (error != NULL) {
                         g_debug ("GdmManager: Error while checking if sender is login screen: %s",
                                  error->message);
-                        g_error_free (error);
-                        goto out;
+                        return;
                 }
         }
 
         if (!get_uid_for_session_id (session_id, &session_uid, &error)) {
                 g_debug ("GdmManager: Error while retrieving uid for session: %s",
                          error->message);
-                g_error_free (error);
-                goto out;
+                return;
         }
 
         if (out_uid != NULL) {
@@ -515,7 +493,7 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
 
         if (caller_uid != session_uid) {
                 g_debug ("GdmManager: uid for sender and uid for session don't match");
-                goto out;
+                return;
         }
 
         if (out_seat_id != NULL) {
@@ -552,12 +530,9 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                                           lookup_by_session_id,
                                           (gpointer) session_id);
 
-out:
         if (out_display != NULL) {
                 *out_display = display;
         }
-
-        g_free (session_id);
 }
 
 static gboolean
@@ -930,7 +905,7 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                          gboolean               is_remote)
 {
         GdmSession *session;
-        char **environment;
+        g_auto(GStrv) environment = NULL;
         const char *address;
 
         /* Note we're just using a minimal environment here rather than the
@@ -946,7 +921,6 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                    is_remote == FALSE,
                                    (const char * const *)
                                    environment);
-        g_strfreev (environment);
 
         g_debug ("GdmSession: Created session for temporary reauthentication channel for user %d (seat %s)",
                  (int) uid,
@@ -1037,13 +1011,13 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         GdmSession       *session;
         GdmSession       *login_session = NULL;
         GDBusConnection  *connection;
-        char             *seat_id = NULL;
-        char             *session_id = NULL;
+        g_autofree char  *seat_id = NULL;
+        g_autofree char  *session_id = NULL;
         GPid              pid = 0;
         uid_t             uid = (uid_t) -1;
         gboolean          is_login_screen = FALSE;
         gboolean          is_remote = FALSE;
-        char             *address = NULL;
+        g_autofree char  *address = NULL;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
@@ -1107,7 +1081,6 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
                                                                  invocation,
                                                                  address);
-        g_free (address);
         return TRUE;
 }
 
@@ -1123,18 +1096,11 @@ manager_interface_init (GdmDBusManagerIface *interface)
 static gboolean
 display_is_on_seat0 (GdmDisplay *display)
 {
-        gboolean is_on_seat0 = TRUE;
-        char *seat_id = NULL;
+        g_autofree char *seat_id = NULL;
 
         g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
 
-        if (g_strcmp0 (seat_id, "seat0") != 0) {
-            is_on_seat0 = FALSE;
-        }
-
-        g_free (seat_id);
-
-        return is_on_seat0;
+        return g_strcmp0 (seat_id, "seat0") == 0;
 }
 
 static gboolean
@@ -1144,12 +1110,10 @@ get_timed_login_details (GdmManager *manager,
 {
         gboolean res;
         gboolean enabled;
-
         int      delay;
-        char    *username = NULL;
+        g_autofree char *username = NULL;
 
         enabled = FALSE;
-        username = NULL;
         delay = 0;
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
@@ -1163,7 +1127,6 @@ get_timed_login_details (GdmManager *manager,
                 goto out;
         }
 
-        delay = 0;
         res = gdm_settings_direct_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
 
         if (res && delay <= 0) {
@@ -1182,9 +1145,7 @@ get_timed_login_details (GdmManager *manager,
         }
 
         if (usernamep != NULL) {
-                *usernamep = username;
-        } else {
-                g_free (username);
+                *usernamep = g_steal_pointer (&username);
         }
         if (delayp != NULL) {
                 *delayp = delay;
@@ -1413,11 +1374,10 @@ on_display_removed (GdmDisplayStore *display_store,
                     GdmDisplay      *display,
                     GdmManager      *manager)
 {
-        char    *id;
+        g_autofree char *id = NULL;
 
         gdm_display_get_id (display, &id, NULL);
         g_dbus_object_manager_server_unexport (manager->object_manager, id);
-        g_free (id);
 
         g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), manager);
 
@@ -1907,7 +1867,7 @@ on_session_client_connected (GdmSession      *session,
                              GdmManager      *manager)
 {
         GdmDisplay *display;
-        char    *username;
+        g_autofree char *username = NULL;
         int      delay;
         gboolean enabled;
         gboolean allow_timed_login = FALSE;
@@ -1948,9 +1908,6 @@ on_session_client_connected (GdmSession      *session,
 
         g_debug ("GdmManager: Starting automatic login conversation (for timed login)");
         gdm_session_start_conversation (session, "gdm-autologin");
-
-        g_free (username);
-
 }
 
 static void
@@ -2100,10 +2057,10 @@ create_user_session_for_display (GdmManager *manager,
 {
         GdmSession *session;
         gboolean    display_is_local = FALSE;
-        char       *display_device = NULL;
-        char       *remote_hostname = NULL;
-        char       *display_seat_id = NULL;
-        char       *display_id = NULL;
+        g_autofree char *display_device = NULL;
+        g_autofree char *remote_hostname = NULL;
+        g_autofree char *display_seat_id = NULL;
+        g_autofree char *display_id = NULL;
         g_auto (GStrv) supported_session_types = NULL;
 
         g_object_get (G_OBJECT (display),
@@ -2137,9 +2094,6 @@ create_user_session_for_display (GdmManager *manager,
                  (int) allowed_user,
                  display_id,
                  display_seat_id);
-
-        g_free (remote_hostname);
-        g_free (display_seat_id);
 
         g_signal_connect (session,
                           "reauthentication-started",
@@ -2303,16 +2257,14 @@ gdm_manager_start (GdmManager *manager)
 static gboolean
 register_manager (GdmManager *manager)
 {
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
         GDBusObjectManagerServer *object_server;
 
-        error = NULL;
         manager->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM,
                                               NULL,
                                               &error);
         if (manager->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 
@@ -2327,7 +2279,6 @@ register_manager (GdmManager *manager)
                 g_critical ("error exporting interface to %s: %s",
                             GDM_MANAGER_PATH,
                             error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 

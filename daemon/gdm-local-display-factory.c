@@ -257,10 +257,10 @@ on_display_status_changed (GdmDisplay             *display,
                            GdmLocalDisplayFactory *factory)
 {
         int              status;
-        char            *seat_id = NULL;
-        char            *seat_active_session = NULL;
-        char            *session_class = NULL;
-        char            *session_id = NULL;
+        g_autofree char *seat_id = NULL;
+        g_autofree char *seat_active_session = NULL;
+        g_autofree char *session_class = NULL;
+        g_autofree char *session_id = NULL;
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
 
@@ -326,10 +326,6 @@ on_display_status_changed (GdmDisplay             *display,
                 break;
         }
 
-        g_free (seat_id);
-        g_free (seat_active_session);
-        g_free (session_class);
-        g_free (session_id);
 }
 
 static gboolean
@@ -338,16 +334,11 @@ lookup_by_seat_id (const char *id,
                    gpointer    user_data)
 {
         const char *looking_for = user_data;
-        char *current;
-        gboolean res;
+        g_autofree char *current = NULL;
 
         g_object_get (G_OBJECT (display), "seat-id", &current, NULL);
 
-        res = g_strcmp0 (current, looking_for) == 0;
-
-        g_free(current);
-
-        return res;
+        return g_strcmp0 (current, looking_for) == 0;
 }
 
 static gboolean
@@ -385,7 +376,7 @@ static gboolean
 udev_is_settled (GdmLocalDisplayFactory *factory)
 {
         g_autoptr (GUdevEnumerator) enumerator = NULL;
-        GList *devices;
+        g_autolist (GUdevDevice) devices = NULL;
         GList *node;
 
         gboolean is_settled = FALSE;
@@ -481,7 +472,6 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
         }
 
         g_debug ("GdmLocalDisplayFactory: udev has %ssettled enough for graphics.", is_settled? "" : "not ");
-        g_list_free_full (devices, g_object_unref);
 
         if (is_settled)
                 g_clear_signal_handler (&factory->uevent_handler_id, factory->gudev_client);
@@ -637,9 +627,9 @@ delete_display (GdmLocalDisplayFactory *factory,
 static gboolean
 gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 {
-        GError *error = NULL;
-        GVariant *result;
-        GVariant *array;
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GVariant) result = NULL;
+        g_autoptr(GVariant) array = NULL;
         GVariantIter iter;
         const char *seat;
 
@@ -657,7 +647,6 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 
         if (!result) {
                 g_warning ("GdmLocalDisplayFactory: Failed to issue method call: %s", error->message);
-                g_clear_error (&error);
                 return FALSE;
         }
 
@@ -668,8 +657,6 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
                 ensure_display_for_seat (factory, seat);
         }
 
-        g_variant_unref (result);
-        g_variant_unref (array);
         return TRUE;
 }
 
@@ -1299,13 +1286,11 @@ on_authorize_method (GdmDBusLocalDisplayFactory *skeleton,
 static gboolean
 register_factory (GdmLocalDisplayFactory *factory)
 {
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
 
-        error = NULL;
         factory->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (factory->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 
@@ -1335,7 +1320,6 @@ register_factory (GdmLocalDisplayFactory *factory)
                                                GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH,
                                                &error)) {
                 g_critical ("error exporting LocalDisplayFactory object: %s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 

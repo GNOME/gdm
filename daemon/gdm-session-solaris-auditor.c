@@ -323,7 +323,7 @@ gdm_session_solaris_auditor_class_init (GdmSessionSolarisAuditorClass *klass)
 static void
 on_username_set (GdmSessionSolarisAuditor *auditor)
 {
-        char          *username;
+        g_autofree char *username = NULL;
         struct passwd *passwd_entry = NULL;
 
         g_object_get (G_OBJECT (auditor), "username", &username, NULL);
@@ -341,8 +341,6 @@ on_username_set (GdmSessionSolarisAuditor *auditor)
                 auditor->uid = (uid_t) -1;
                 auditor->gid = (gid_t) -1;
         }
-
-        g_free (username);
 }
 
 static void

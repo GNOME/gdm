@@ -181,12 +181,11 @@ on_authorize_method (GdmDBusRemoteDisplayFactory *skeleton,
 static gboolean
 register_factory (GdmRemoteDisplayFactory *factory)
 {
-        GError *error = NULL;
+        g_autoptr(GError) error = NULL;
 
         factory->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (factory->connection == NULL) {
                 g_critical ("Error getting system bus: %s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 
@@ -216,7 +215,6 @@ register_factory (GdmRemoteDisplayFactory *factory)
                                                GDM_REMOTE_DISPLAY_FACTORY_DBUS_PATH,
                                                &error)) {
                 g_critical ("Error exporting RemoteDisplayFactory object: %s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 

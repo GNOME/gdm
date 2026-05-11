@@ -158,19 +158,17 @@ gdm_wait_on_and_disown_pid (int pid,
                 if (num_tries > 0) {
                         g_usleep (G_USEC_PER_SEC / 10);
                 } else {
-                        char *path;
-                        char *command;
+                        g_autofree char *path = NULL;
+                        g_autofree char *command = NULL;
 
                         path = g_strdup_printf ("/proc/%ld/cmdline", (long) pid);
                         if (g_file_get_contents (path, &command, NULL, NULL)) {
                                 g_warning ("GdmCommon: process (pid:%d, command '%s') isn't dying after %d seconds, now ignoring it.",
                                          (int) pid, command, timeout);
-                                g_free (command);
                         } else {
                                 g_warning ("GdmCommon: process (pid:%d) isn't dying after %d seconds, now ignoring it.",
                                          (int) pid, timeout);
                         }
-                        g_free (path);
 
                         return 0;
                 }
@@ -338,8 +336,8 @@ create_transient_display (GDBusConnection *connection,
                           GCancellable    *cancellable,
                           GError         **error)
 {
-        GError *local_error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) local_error = NULL;
+        g_autoptr(GVariant) reply = NULL;
         const char     *value;
 
         reply = g_dbus_connection_call_sync (connection,
@@ -354,14 +352,13 @@ create_transient_display (GDBusConnection *connection,
                                              cancellable, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to create transient display: %s", local_error->message);
-                g_propagate_prefixed_error (error, local_error, _("Unable to create transient display: "));
+                g_propagate_prefixed_error (error, g_steal_pointer (&local_error), _("Unable to create transient display: "));
                 return FALSE;
         }
 
         g_variant_get (reply, "(&o)", &value);
         g_debug ("Started %s", value);
 
-        g_variant_unref (reply);
         return TRUE;
 }
 
@@ -371,8 +368,8 @@ gdm_activate_session_by_id (GDBusConnection *connection,
                             const char      *seat_id,
                             const char      *session_id)
 {
-        GError *local_error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) local_error = NULL;
+        g_autoptr(GVariant) reply = NULL;
 
         g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
         g_return_val_if_fail (seat_id != NULL, FALSE);
@@ -390,11 +387,8 @@ gdm_activate_session_by_id (GDBusConnection *connection,
                                              cancellable, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to activate session: %s", local_error->message);
-                g_error_free (local_error);
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -404,8 +398,8 @@ gdm_terminate_session_by_id (GDBusConnection *connection,
                              GCancellable    *cancellable,
                              const char      *session_id)
 {
-        GError *local_error = NULL;
-        GVariant *reply;
+        g_autoptr(GError) local_error = NULL;
+        g_autoptr(GVariant) reply = NULL;
 
         g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
         g_return_val_if_fail (session_id != NULL, FALSE);
@@ -422,11 +416,8 @@ gdm_terminate_session_by_id (GDBusConnection *connection,
                                              cancellable, &local_error);
         if (reply == NULL) {
                 g_warning ("Unable to terminate session: %s", local_error->message);
-                g_error_free (local_error);
                 return FALSE;
         }
-
-        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -537,7 +528,7 @@ goto_login_session (GDBusConnection  *connection,
         char           *our_session;
         char           *session_id;
         char           *seat_id;
-        GError         *local_error = NULL;
+        g_autoptr(GError) local_error = NULL;
 
         ret = FALSE;
         session_id = NULL;
@@ -551,7 +542,7 @@ goto_login_session (GDBusConnection  *connection,
          * does not use GLib's g_malloc (). */
 
         if (!gdm_find_display_session (0, getuid (), &our_session, &local_error)) {
-                g_propagate_prefixed_error (error, local_error, _("Could not identify the current session: "));
+                g_propagate_prefixed_error (error, g_steal_pointer (&local_error), _("Could not identify the current session: "));
 
                 return FALSE;
         }
@@ -675,16 +666,16 @@ gdm_shell_expand (const char *str,
                                         g_string_append_c (s, '{');
                                 g_string_append_len (s, start, p - start);
                         } else {
-                                gchar *expanded;
-                                gchar *var = g_strndup (start, p - start);
+                                g_autofree gchar *expanded = NULL;
+                                g_autofree gchar *var = NULL;
+
+                                var = g_strndup (start, p - start);
                                 if (brackets && *p == '}')
                                         p++;
 
                                 expanded = expand_var_func (var, user_data);
                                 if (expanded)
                                         g_string_append (s, expanded);
-                                g_free (var);
-                                g_free (expanded);
                         }
                 } else {
                         p++;
@@ -872,21 +863,18 @@ load_env_file (GFile *file,
                GdmExpandVarFunc  expand_func,
                gpointer user_data)
 {
-        gchar *contents;
-        gchar **lines;
-        gchar *line, *p;
-        gchar *var, *var_end;
-        gchar *expanded;
-        char *filename;
+        g_autofree char *contents = NULL;
+        g_auto(GStrv) lines = NULL;
+        char *line, *p;
+        char *var, *var_end;
+        g_autofree char *filename = NULL;
         int i;
 
         filename = g_file_get_path (file);
         g_debug ("Loading env vars from %s\n", filename);
-        g_free (filename);
 
         if (g_file_load_contents (file, NULL, &contents, NULL, NULL, NULL)) {
                 lines = g_strsplit (contents, "\n", -1);
-                g_free (contents);
                 for (i = 0; lines[i] != NULL; i++) {
                         line = lines[i];
                         p = line;
@@ -909,12 +897,10 @@ load_env_file (GFile *file,
                         while (g_ascii_isspace (*p))
                                 p++;
 
-                        expanded = gdm_shell_expand (p, expand_func, user_data);
+                        g_autofree char *expanded = gdm_shell_expand (p, expand_func, user_data);
                         expanded = g_strchomp (expanded);
                         load_env_func (var, expanded, user_data);
-                        g_free (expanded);
                 }
-                g_strfreev (lines);
         }
 }
 
@@ -932,9 +918,8 @@ gdm_load_env_dir (GFile *dir,
                   gpointer user_data)
 {
         GFileInfo *info = NULL;
-        GFileEnumerator *enumerator = NULL;
-        GPtrArray *names = NULL;
-        GFile *file;
+        g_autoptr(GFileEnumerator) enumerator = NULL;
+        g_autoptr(GPtrArray) names = NULL;
         const gchar *name;
         int i;
 
@@ -945,9 +930,8 @@ gdm_load_env_dir (GFile *dir,
                                                 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP,
                                                 G_FILE_QUERY_INFO_NONE,
                                                 NULL, NULL);
-        if (!enumerator) {
-                goto out;
-        }
+        if (!enumerator)
+                return;
 
         names = g_ptr_array_new_with_free_func (g_free);
         while ((info = g_file_enumerator_next_file (enumerator, NULL, NULL)) != NULL) {
@@ -962,15 +946,12 @@ gdm_load_env_dir (GFile *dir,
         g_ptr_array_sort (names, compare_str);
 
         for (i = 0; i < names->len; i++) {
+                g_autoptr(GFile) file = NULL;
+
                 name = g_ptr_array_index (names, i);
                 file = g_file_get_child (dir, name);
                 load_env_file (file, load_env_func, expand_func, user_data);
-                g_object_unref (file);
         }
-
- out:
-        g_clear_pointer (&names, g_ptr_array_unref);
-        g_clear_object (&enumerator);
 }
 
 void
@@ -978,15 +959,14 @@ gdm_load_env_d (GdmLoadEnvVarFunc load_env_func,
                 GdmExpandVarFunc  expand_func,
                 gpointer user_data)
 {
-        GFile *dir;
+        g_autoptr(GFile) dir = NULL;
 
         dir = g_file_new_for_path (DATADIR "/gdm/env.d");
         gdm_load_env_dir (dir, load_env_func, expand_func, user_data);
-        g_object_unref (dir);
+        g_clear_object (&dir);
 
         dir = g_file_new_for_path (GDMCONFDIR "/env.d");
         gdm_load_env_dir (dir, load_env_func, expand_func, user_data);
-        g_object_unref (dir);
 }
 
 const char * const

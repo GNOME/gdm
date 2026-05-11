@@ -227,7 +227,7 @@ script_execute (const gchar *file,
 
         /* Construct an argument list for the shell.  */
         {
-                char **new_argv;
+                g_autofree char **new_argv = NULL;
 
                 new_argv = g_new0 (gchar*, argc + 2); /* /bin/sh and NULL */
 
@@ -244,8 +244,6 @@ script_execute (const gchar *file,
                 } else {
                         execv (new_argv[0], new_argv);
                 }
-
-                g_free (new_argv);
         }
 }
 

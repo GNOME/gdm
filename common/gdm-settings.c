@@ -78,15 +78,13 @@ gdm_settings_get_value (GdmSettings *settings,
                         char       **value,
                         GError     **error)
 {
-        GError  *local_error = NULL;
+        g_autoptr(GError) local_error = NULL;
         gboolean res;
         GList   *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
         g_return_val_if_fail (settings->backends != NULL, FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
-
-        local_error = NULL;
 
         for (l = settings->backends; l; l = g_list_next (l)) {
                 GdmSettingsBackend *backend = l->data;
@@ -101,7 +99,7 @@ gdm_settings_get_value (GdmSettings *settings,
                         break;
         }
         if (! res) {
-                g_propagate_error (error, local_error);
+                g_propagate_error (error, g_steal_pointer (&local_error));
         }
 
         return res;

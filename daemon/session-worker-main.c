@@ -105,9 +105,9 @@ int
 main (int    argc,
       char **argv)
 {
-        GMainLoop        *main_loop;
-        GOptionContext   *context;
-        GdmSessionWorker *worker;
+        g_autoptr(GMainLoop) main_loop = NULL;
+        g_autoptr(GOptionContext) context = NULL;
+        g_autoptr(GdmSessionWorker) worker = NULL;
         const char       *address;
         gboolean          is_for_reauth;
         static GOptionEntry entries []   = {
@@ -127,7 +127,6 @@ main (int    argc,
         g_option_context_add_main_entries (context, entries, NULL);
 
         g_option_context_parse (context, &argc, &argv, NULL);
-        g_option_context_free (context);
 
         gdm_log_init ();
 
@@ -169,10 +168,7 @@ main (int    argc,
                 g_signal_handlers_disconnect_by_func (worker,
                                                       G_CALLBACK (on_state_changed),
                                                       main_loop);
-                g_object_unref (worker);
         }
-
-        g_main_loop_unref (main_loop);
 
         g_debug ("Worker finished");
 

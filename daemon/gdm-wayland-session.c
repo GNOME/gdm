@@ -94,18 +94,17 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
-        GDBusConnection     *bus_connection = NULL;
-        GPtrArray           *arguments = NULL;
-        GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GInputStream        *input_stream = NULL;
-        GDataInputStream    *data_stream = NULL;
-        GError              *error = NULL;
-        char                *bus_address_fd_string = NULL;
-        char                *bus_address = NULL;
-        gsize                bus_address_size;
+        GDBusConnection                *bus_connection = NULL;
+        g_autoptr(GPtrArray)            arguments = NULL;
+        g_autoptr(GSubprocessLauncher)  launcher = NULL;
+        g_autoptr(GSubprocess)          subprocess = NULL;
+        g_autoptr(GInputStream)         input_stream = NULL;
+        g_autoptr(GDataInputStream)     data_stream = NULL;
+        g_autoptr(GError)               error = NULL;
+        g_autofree char                *bus_address_fd_string = NULL;
+        g_autofree char                *bus_address = NULL;
+        gsize                           bus_address_size;
 
-        gboolean  is_running = FALSE;
         int       ret;
         int       pipe_fds[2];
 
@@ -125,7 +124,7 @@ spawn_bus (State        *state,
 
         if (!ret) {
                 g_debug ("could not open pipe: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         arguments = g_ptr_array_new ();
@@ -144,18 +143,14 @@ spawn_bus (State        *state,
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) arguments->pdata,
                                                    &error);
-        g_free (bus_address_fd_string);
-        g_clear_object (&launcher);
-        g_ptr_array_free (arguments, TRUE);
 
         if (subprocess == NULL) {
                 g_debug ("could not start dbus-daemon: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         input_stream = g_unix_input_stream_new (pipe_fds[0], TRUE);
         data_stream = g_data_input_stream_new (input_stream);
-        g_clear_object (&input_stream);
 
         bus_address = g_data_input_stream_read_line (data_stream,
                                                      &bus_address_size,
@@ -164,15 +159,15 @@ spawn_bus (State        *state,
 
         if (error != NULL) {
                 g_debug ("could not read address from session message bus: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         if (bus_address == NULL) {
                 g_debug ("session message bus did not write address");
-                goto out;
+                return FALSE;
         }
 
-        state->bus_address = bus_address;
+        state->bus_address = g_steal_pointer (&bus_address);
 
         state->bus_subprocess = g_object_ref (subprocess);
 
@@ -192,18 +187,11 @@ spawn_bus (State        *state,
         if (bus_connection == NULL) {
                 g_debug ("could not open connection to session bus: %s",
                          error->message);
-                goto out;
+                return FALSE;
         }
 
         state->bus_connection = bus_connection;
-        is_running = TRUE;
-out:
-        g_clear_object (&data_stream);
-        g_clear_object (&subprocess);
-        g_clear_object (&launcher);
-        g_clear_error (&error);
-
-        return is_running;
+        return TRUE;
 }
 
 static gboolean
@@ -275,12 +263,11 @@ static gboolean
 spawn_session (State        *state,
                GCancellable *cancellable)
 {
-        GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GError              *error = NULL;
-        gboolean             is_running = FALSE;
-        int                  ret;
-        char               **argv = NULL;
+        g_autoptr(GSubprocessLauncher) launcher = NULL;
+        g_autoptr(GSubprocess)         subprocess = NULL;
+        g_autoptr(GError)              error = NULL;
+        g_auto(GStrv)                  argv = NULL;
+        int                            ret;
         static const char  *session_variables[] = { "DISPLAY",
                                                     "XAUTHORITY",
                                                     "WAYLAND_DISPLAY",
@@ -307,7 +294,7 @@ spawn_session (State        *state,
 
         if (!ret) {
                 g_debug ("could not parse session arguments: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_NONE);
@@ -356,11 +343,10 @@ spawn_session (State        *state,
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) argv,
                                                    &error);
-        g_strfreev (argv);
 
         if (subprocess == NULL) {
                 g_debug ("could not start session: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         state->session_subprocess = g_object_ref (subprocess);
@@ -371,10 +357,7 @@ spawn_session (State        *state,
                                  on_session_finished,
                                  state);
 
-        is_running = TRUE;
-out:
-        g_clear_object (&subprocess);
-        return is_running;
+        return TRUE;
 }
 
 static void
@@ -489,7 +472,7 @@ main (int    argc,
       char **argv)
 {
         State           *state = NULL;
-        GOptionContext  *context = NULL;
+        g_autoptr(GOptionContext) context = NULL;
         static char    **args = NULL;
         gboolean         debug = FALSE;
         gboolean         ret;
@@ -512,7 +495,6 @@ main (int    argc,
         g_option_context_add_main_entries (context, entries, NULL);
 
         g_option_context_parse (context, &argc, &argv, NULL);
-        g_option_context_free (context);
 
         if (args == NULL || args[0] == NULL || args[1] != NULL) {
                 g_warning ("gdm-wayland-session takes one argument (the session)");

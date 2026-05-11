@@ -26,6 +26,8 @@
 
 #include "s-common.h"
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SRunner, srunner_free)
+
 static gboolean no_fork = FALSE;
 static gboolean verbose = FALSE;
 
@@ -38,20 +40,17 @@ static GOptionEntry entries[] = {
 int
 main (int argc, char **argv)
 {
-        GOptionContext *context;
-        SRunner        *r;
+        g_autoptr(GOptionContext) context = NULL;
+        g_autoptr(SRunner) r = NULL;
         int             failed;
-        GError         *error = NULL;
+        g_autoptr(GError) error = NULL;
 
         context = g_option_context_new ("");
         g_option_context_add_main_entries (context, entries, NULL);
-        error = NULL;
         g_option_context_parse (context, &argc, &argv, &error);
-        g_option_context_free (context);
 
         if (error != NULL) {
                 g_warning ("%s", error->message);
-                g_error_free (error);
                 exit (EXIT_FAILURE);
         }
 
@@ -63,7 +62,6 @@ main (int argc, char **argv)
 
         srunner_run_all (r, verbose ? CK_VERBOSE : CK_NORMAL);
         failed = srunner_ntests_failed (r);
-        srunner_free (r);
 
         return failed != 0;
 }

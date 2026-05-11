@@ -167,7 +167,7 @@ text_cb (GMarkupParseContext *ctx,
          GError             **error)
 {
         ParserInfo *info;
-        char       *t;
+        g_autofree char *t = NULL;
 
         info = (ParserInfo *) user_data;
 
@@ -180,8 +180,6 @@ text_cb (GMarkupParseContext *ctx,
         } else if (info->in_default) {
                 info->entry->default_value = g_strdup (t);
         }
-
-        g_free (t);
 
 }
 
@@ -205,23 +203,20 @@ gdm_settings_parse_schemas (const char  *file,
                             const char  *root,
                             GSList     **schemas)
 {
-        GMarkupParseContext *ctx;
-        ParserInfo          *info;
-        char                *contents;
+        g_autoptr(GMarkupParseContext) ctx = NULL;
+        g_autofree ParserInfo *info = NULL;
+        g_autofree char *contents = NULL;
         gsize                len;
-        GError              *error = NULL;
+        g_autoptr(GError) error = NULL;
         gboolean             res;
 
         g_return_val_if_fail (file != NULL, FALSE);
         g_return_val_if_fail (root != NULL, FALSE);
         g_return_val_if_fail (schemas != NULL, FALSE);
 
-        contents = NULL;
-        error = NULL;
         res = g_file_get_contents (file, &contents, &len, &error);
         if (! res) {
                 g_warning ("Unable to read schemas file: %s", error->message);
-                g_error_free (error);
                 return FALSE;
         }
 
@@ -230,10 +225,6 @@ gdm_settings_parse_schemas (const char  *file,
         g_markup_parse_context_parse (ctx, contents, len, NULL);
 
         *schemas = info->list;
-
-        g_markup_parse_context_free (ctx);
-        g_free (info);
-        g_free (contents);
 
         return TRUE;
 }

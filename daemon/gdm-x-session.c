@@ -72,8 +72,8 @@ typedef struct
 static FILE *
 create_auth_file (char **filename)
 {
-        char *auth_dir = NULL;
-        char *auth_file = NULL;
+        g_autofree char *auth_dir = NULL;
+        g_autofree char *auth_file = NULL;
         int fd;
         FILE *fp = NULL;
 
@@ -83,37 +83,33 @@ create_auth_file (char **filename)
 
         g_mkdir_with_parents (auth_dir, 0711);
         auth_file = g_build_filename (auth_dir, "Xauthority", NULL);
-        g_clear_pointer (&auth_dir, g_free);
 
         fd = g_open (auth_file, O_RDWR | O_CREAT | O_TRUNC, 0700);
 
         if (fd < 0) {
                 g_debug ("could not open %s to store auth cookie: %m",
                          auth_file);
-                g_clear_pointer (&auth_file, g_free);
-                goto out;
+                return NULL;
         }
 
         fp = fdopen (fd, "w+");
 
         if (fp == NULL) {
                 g_debug ("could not set up stream for auth cookie file: %m");
-                g_clear_pointer (&auth_file, g_free);
                 close (fd);
-                goto out;
+                return NULL;
         }
 
-        *filename = auth_file;
-out:
+        *filename = g_steal_pointer (&auth_file);
         return fp;
 }
 
 static char *
 prepare_auth_file (void)
 {
-        FILE     *fp = NULL;
-        char     *filename = NULL;
-        GError   *error = NULL;
+        FILE              *fp = NULL;
+        g_autofree char   *filename = NULL;
+        g_autoptr(GError)  error = NULL;
         gboolean  prepared = FALSE;
         Xauth     auth_entry = { 0 };
         char      localhost[_POSIX_HOST_NAME_MAX + 1] = "";
@@ -159,10 +155,10 @@ out:
         g_clear_pointer (&fp, fclose);
 
         if (!prepared) {
-                g_clear_pointer (&filename, g_free);
+                return NULL;
         }
 
-        return filename;
+        return g_steal_pointer (&filename);
 }
 
 static void
@@ -201,21 +197,19 @@ spawn_x_server (State        *state,
                 gboolean      disallow_tcp,
                 GCancellable *cancellable)
 {
-        GPtrArray           *arguments = NULL;
-        GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GInputStream        *input_stream = NULL;
-        GDataInputStream    *data_stream = NULL;
-        GError              *error = NULL;
-
-        char     *auth_file;
-        gboolean  is_running = FALSE;
-        int       ret;
-        int       pipe_fds[2];
-        char     *display_fd_string = NULL;
-        char     *vt_string = NULL;
-        char     *display_number;
-        gsize     display_number_size;
+        g_autoptr(GPtrArray)           arguments = NULL;
+        g_autoptr(GSubprocessLauncher) launcher = NULL;
+        g_autoptr(GSubprocess)         subprocess = NULL;
+        g_autoptr(GInputStream)        input_stream = NULL;
+        g_autoptr(GDataInputStream)    data_stream = NULL;
+        g_autoptr(GError)              error = NULL;
+        g_autofree char               *auth_file = NULL;
+        g_autofree char               *display_fd_string = NULL;
+        g_autofree char               *vt_string = NULL;
+        g_autofree char               *display_number = NULL;
+        gsize                          display_number_size;
+        int                            ret;
+        int                            pipe_fds[2];
 
         auth_file = prepare_auth_file ();
 
@@ -225,7 +219,7 @@ spawn_x_server (State        *state,
 
         if (!ret) {
                 g_debug ("could not open pipe: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         arguments = g_ptr_array_new ();
@@ -284,18 +278,14 @@ spawn_x_server (State        *state,
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) arguments->pdata,
                                                    &error);
-        g_free (display_fd_string);
-        g_clear_object (&launcher);
-        g_ptr_array_free (arguments, TRUE);
 
         if (subprocess == NULL) {
                 g_debug ("could not start X server: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         input_stream = g_unix_input_stream_new (pipe_fds[0], TRUE);
         data_stream = g_data_input_stream_new (input_stream);
-        g_clear_object (&input_stream);
 
         display_number = g_data_input_stream_read_line (data_stream,
                                                         &display_number_size,
@@ -304,16 +294,15 @@ spawn_x_server (State        *state,
 
         if (error != NULL) {
                 g_debug ("could not read display string from X server: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         if (display_number == NULL) {
                 g_debug ("X server did not write display string");
-                goto out;
+                return FALSE;
         }
 
         state->display_name = g_strdup_printf (":%s", display_number);
-        g_clear_pointer (&display_number, g_free);
 
         state->auth_file = g_strdup (auth_file);
         state->x_subprocess = g_object_ref (subprocess);
@@ -324,15 +313,7 @@ spawn_x_server (State        *state,
                                  on_x_server_finished,
                                  state);
 
-        is_running = TRUE;
-out:
-        g_clear_pointer (&auth_file, g_free);
-        g_clear_object (&data_stream);
-        g_clear_object (&subprocess);
-        g_clear_object (&launcher);
-        g_clear_error (&error);
-
-        return is_running;
+        return TRUE;
 }
 
 static void
@@ -370,10 +351,9 @@ static gboolean
 update_bus_environment (State        *state,
                         GCancellable *cancellable)
 {
+        g_autoptr(GVariant)  reply = NULL;
+        g_autoptr(GError)    error = NULL;
         GVariantBuilder      builder;
-        GVariant            *reply = NULL;
-        GError              *error = NULL;
-        gboolean             environment_updated = FALSE;
 
         g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
         g_variant_builder_add (&builder, "{ss}", "DISPLAY", state->display_name);
@@ -392,35 +372,27 @@ update_bus_environment (State        *state,
 
         if (reply == NULL) {
                 g_debug ("could not update activation environment: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
-        g_variant_unref (reply);
-
-        environment_updated = TRUE;
-
-out:
-        g_clear_error (&error);
-
-        return environment_updated;
+        return TRUE;
 }
 
 static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
-        GDBusConnection     *bus_connection = NULL;
-        GPtrArray           *arguments = NULL;
-        GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GInputStream        *input_stream = NULL;
-        GDataInputStream    *data_stream = NULL;
-        GError              *error = NULL;
-        char                *bus_address_fd_string;
-        char                *bus_address = NULL;
-        gsize                bus_address_size;
+        GDBusConnection                *bus_connection = NULL;
+        g_autoptr(GPtrArray)            arguments = NULL;
+        g_autoptr(GSubprocessLauncher)  launcher = NULL;
+        g_autoptr(GSubprocess)          subprocess = NULL;
+        g_autoptr(GInputStream)         input_stream = NULL;
+        g_autoptr(GDataInputStream)     data_stream = NULL;
+        g_autoptr(GError)               error = NULL;
+        g_autofree char                *bus_address_fd_string = NULL;
+        g_autofree char                *bus_address = NULL;
+        gsize                           bus_address_size;
 
-        gboolean  is_running = FALSE;
         int       ret;
         int       pipe_fds[2];
 
@@ -440,7 +412,7 @@ spawn_bus (State        *state,
 
         if (!ret) {
                 g_debug ("could not open pipe: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         arguments = g_ptr_array_new ();
@@ -460,18 +432,14 @@ spawn_bus (State        *state,
         subprocess = g_subprocess_launcher_spawnv (launcher,
                                                    (const char * const *) arguments->pdata,
                                                    &error);
-        g_free (bus_address_fd_string);
-        g_clear_object (&launcher);
-        g_ptr_array_free (arguments, TRUE);
 
         if (subprocess == NULL) {
                 g_debug ("could not start dbus-daemon: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         input_stream = g_unix_input_stream_new (pipe_fds[0], TRUE);
         data_stream = g_data_input_stream_new (input_stream);
-        g_clear_object (&input_stream);
 
         bus_address = g_data_input_stream_read_line (data_stream,
                                                      &bus_address_size,
@@ -480,15 +448,15 @@ spawn_bus (State        *state,
 
         if (error != NULL) {
                 g_debug ("could not read address from session message bus: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         if (bus_address == NULL) {
                 g_debug ("session message bus did not write address");
-                goto out;
+                return FALSE;
         }
 
-        state->bus_address = bus_address;
+        state->bus_address = g_steal_pointer (&bus_address);
 
         state->bus_subprocess = g_object_ref (subprocess);
 
@@ -509,19 +477,12 @@ spawn_bus (State        *state,
         if (bus_connection == NULL) {
                 g_debug ("could not open connection to session bus: %s",
                          error->message);
-                goto out;
+                return FALSE;
         }
 
         state->bus_connection = bus_connection;
 
-        is_running = TRUE;
-out:
-        g_clear_object (&data_stream);
-        g_clear_object (&subprocess);
-        g_clear_object (&launcher);
-        g_clear_error (&error);
-
-        return is_running;
+        return TRUE;
 }
 
 static gboolean
@@ -593,10 +554,9 @@ static gboolean
 spawn_session (State        *state,
                GCancellable *cancellable)
 {
-        GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GError              *error = NULL;
-        gboolean             is_running = FALSE;
+        g_autoptr(GSubprocessLauncher) launcher = NULL;
+        g_autoptr(GSubprocess)         subprocess = NULL;
+        g_autoptr(GError)              error = NULL;
         const char          *vt;
         static const char   *session_variables[] = { "DISPLAY",
                                                      "XAUTHORITY",
@@ -677,7 +637,7 @@ spawn_session (State        *state,
 
         if (subprocess == NULL) {
                 g_debug ("could not start session: %s", error->message);
-                goto out;
+                return FALSE;
         }
 
         state->session_subprocess = g_object_ref (subprocess);
@@ -688,10 +648,7 @@ spawn_session (State        *state,
                                  on_session_finished,
                                  state);
 
-        is_running = TRUE;
-out:
-        g_clear_object (&subprocess);
-        return is_running;
+        return TRUE;
 }
 
 static void
