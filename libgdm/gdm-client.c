@@ -43,7 +43,6 @@ struct _GdmClient
 
         GdmUserVerifier    *user_verifier;
         GdmUserVerifier    *user_verifier_for_reauth;
-        GHashTable         *user_verifier_extensions;
 
         GdmGreeter         *greeter;
 
