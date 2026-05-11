@@ -83,8 +83,6 @@ struct _GdmManager
         GHashTable             *open_reauthentication_requests;
         gboolean                remote_login_enabled;
 
-        gboolean                started;
-
         GDBusConnection          *connection;
         GDBusObjectManagerServer *object_manager;
 
@@ -2223,7 +2221,6 @@ gdm_manager_stop (GdmManager *manager)
                                                       manager);
         }
 
-        manager->started = FALSE;
 }
 
 void
@@ -2250,7 +2247,6 @@ gdm_manager_start (GdmManager *manager)
         if (manager->remote_login_enabled)
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->remote_factory));
 
-        manager->started = TRUE;
 }
 
 static gboolean
