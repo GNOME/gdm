@@ -71,7 +71,7 @@ gboolean       gdm_get_grent_for_name    (const char     *name,
 
 gboolean       gdm_clear_close_on_exec_flag (int fd);
 
-char          *gdm_generate_random_bytes (gsize          size,
+char          *gdm_generate_random_bytes (size_t         size,
                                           GError       **error);
 
 gboolean       gdm_get_login_window_session_id (const char  *seat_id,

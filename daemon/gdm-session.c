@@ -74,7 +74,7 @@ typedef struct
         GdmDBusWorker         *worker_proxy;
         GCancellable          *worker_cancellable;
         char                  *session_id;
-        guint32                is_stopping : 1;
+        uint32_t               is_stopping : 1;
 
         GPid                   reauth_pid_of_caller;
 } GdmSessionConversation;
@@ -129,9 +129,9 @@ struct _GdmSession
 
         char                *remote_id;
 
-        guint32              is_program_session : 1;
-        guint32              display_is_initial : 1;
-        guint32              is_opened : 1;
+        uint32_t             is_program_session : 1;
+        uint32_t             display_is_initial : 1;
+        uint32_t             is_opened : 1;
 };
 
 typedef enum {
@@ -180,7 +180,7 @@ static void set_session_type (GdmSession *self,
                               const char *session_type);
 static void close_conversation (GdmSessionConversation *conversation);
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static unsigned int signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
                gdm_session,
@@ -363,7 +363,7 @@ get_system_session_dirs (GdmSession *self,
         g_autoptr(GArray) search_array = NULL;
         char **search_dirs;
         int i, j;
-        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
+        const char * const *system_data_dirs = g_get_system_data_dirs ();
 
         static const char *x_search_dirs[] = {
                 "/etc/X11/sessions/",
@@ -383,7 +383,7 @@ get_system_session_dirs (GdmSession *self,
                 if (g_str_equal (supported_type, "x11") &&
                     (type == NULL || g_str_equal (type, supported_type))) {
                         for (i = 0; system_data_dirs[i]; i++) {
-                                gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+                                char *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
                                 g_array_append_val (search_array, dir);
                         }
 
@@ -395,7 +395,7 @@ get_system_session_dirs (GdmSession *self,
                         g_array_append_val (search_array, gdm_wayland_search_dir);
 
                         for (i = 0; system_data_dirs[i]; i++) {
-                                gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+                                char *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
                                 g_array_append_val (search_array, dir);
                         }
 
@@ -794,7 +794,7 @@ gdm_session_handle_custom_json_request (GdmDBusWorkerManager  *worker_manager_in
         if (conversation != NULL) {
                 set_pending_query (conversation, invocation);
 
-                static gsize debug_json_requests;
+                static size_t debug_json_requests;
 
                 if (g_once_init_enter (&debug_json_requests))
                         g_once_init_leave (&debug_json_requests,
@@ -1893,7 +1893,7 @@ on_outside_connection_closed (GDBusConnection *connection,
                        signals [CLIENT_DISCONNECTED],
                        0,
                        credentials,
-                       (guint)
+                       (unsigned int)
                        pid_of_client);
 
         g_object_unref (connection);
@@ -1930,7 +1930,7 @@ handle_connection_from_outside (GDBusServer      *server,
                        signals [CLIENT_CONNECTED],
                        0,
                        credentials,
-                       (guint)
+                       (unsigned int)
                        pid_of_client);
 
         return TRUE;
@@ -1994,7 +1994,7 @@ allow_user_function (GDBusAuthObserver *observer,
                        signals [CLIENT_REJECTED],
                        0,
                        credentials,
-                       (guint)
+                       (unsigned int)
                        pid_of_client);
 
 
@@ -2678,12 +2678,12 @@ get_session_command (GdmSession *self)
         return command;
 }
 
-static gchar *
+static char *
 get_session_desktop_names (GdmSession *self)
 {
-        g_autofree gchar *filename = NULL;
+        g_autofree char *filename = NULL;
         g_autoptr(GKeyFile) keyfile = NULL;
-        gchar *desktop_names = NULL;
+        char *desktop_names = NULL;
 
         filename = g_strdup_printf ("%s.desktop", get_session_name (self));
         g_debug ("GdmSession: getting desktop names for file '%s'", filename);
@@ -3138,7 +3138,7 @@ gdm_session_is_frozen (GdmSession *self)
 
         arr = g_strsplit_set (data, " \n", -1);
 
-        for (gsize i = 0; arr[i] != NULL; i++) {
+        for (size_t i = 0; arr[i] != NULL; i++) {
                 if (g_str_equal (arr[i], "frozen"))
                         return g_strcmp0 (arr[i + 1], "1") == 0;
         }
@@ -3469,7 +3469,7 @@ set_remote_id (GdmSession *self,
 
 static void
 gdm_session_set_property (GObject      *object,
-                          guint         prop_id,
+                          unsigned int  prop_id,
                           const GValue *value,
                           GParamSpec   *pspec)
 {
@@ -3516,7 +3516,7 @@ gdm_session_set_property (GObject      *object,
 
 static void
 gdm_session_get_property (GObject    *object,
-                          guint       prop_id,
+                          unsigned int  prop_id,
                           GValue     *value,
                           GParamSpec *pspec)
 {
@@ -3629,7 +3629,7 @@ gdm_session_finalize (GObject *object)
 
 static GObject *
 gdm_session_constructor (GType                  type,
-                         guint                  n_construct_properties,
+                         unsigned int           n_construct_properties,
                          GObjectConstructParam *construct_properties)
 {
         GdmSession *self;
@@ -3958,7 +3958,7 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
 
         self = g_object_new (GDM_TYPE_SESSION,
                              "verification-mode", verification_mode,
-                             "allowed-user", (guint) allowed_user,
+                             "allowed-user", (unsigned int) allowed_user,
                              "display-hostname", display_hostname,
                              "display-device", display_device,
                              "display-seat-id", display_seat_id,

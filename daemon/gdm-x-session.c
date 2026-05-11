@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include <locale.h>
+#include <stdint.h>
 #include <sysexits.h>
 
 #include <gio/gunixinputstream.h>
@@ -62,11 +63,11 @@ typedef struct
         char         *session_command;
         int           session_exit_status;
 
-        guint         register_display_id;
+        unsigned int  register_display_id;
 
         GMainLoop    *main_loop;
 
-        guint32       debug_enabled : 1;
+        uint32_t      debug_enabled : 1;
 } State;
 
 static FILE *
@@ -207,7 +208,7 @@ spawn_x_server (State        *state,
         g_autofree char               *display_fd_string = NULL;
         g_autofree char               *vt_string = NULL;
         g_autofree char               *display_number = NULL;
-        gsize                          display_number_size;
+        size_t                         display_number_size;
         int                            ret;
         int                            pipe_fds[2];
 
@@ -391,7 +392,7 @@ spawn_bus (State        *state,
         g_autoptr(GError)               error = NULL;
         g_autofree char                *bus_address_fd_string = NULL;
         g_autofree char                *bus_address = NULL;
-        gsize                           bus_address_size;
+        size_t                          bus_address_size;
 
         int       ret;
         int       pipe_fds[2];

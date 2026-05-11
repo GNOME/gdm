@@ -47,7 +47,7 @@ gboolean            gdm_display_store_remove                   (GdmDisplayStore 
 void                gdm_display_store_foreach                  (GdmDisplayStore    *store,
                                                                 GdmDisplayStoreFunc func,
                                                                 gpointer            user_data);
-guint               gdm_display_store_foreach_remove           (GdmDisplayStore    *store,
+unsigned int        gdm_display_store_foreach_remove           (GdmDisplayStore    *store,
                                                                 GdmDisplayStoreFunc func,
                                                                 gpointer            user_data);
 GdmDisplay *        gdm_display_store_lookup                   (GdmDisplayStore    *store,

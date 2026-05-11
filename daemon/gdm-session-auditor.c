@@ -45,11 +45,11 @@ typedef struct _GdmSessionAuditorPrivate
 static void gdm_session_auditor_finalize (GObject *object);
 
 static void gdm_session_auditor_set_property (GObject      *object,
-                                              guint         prop_id,
+                                              unsigned int  prop_id,
                                               const GValue *value,
                                               GParamSpec   *pspec);
 static void gdm_session_auditor_get_property (GObject      *object,
-                                              guint         prop_id,
+                                              unsigned int  prop_id,
                                               GValue       *value,
                                               GParamSpec   *pspec);
 
@@ -188,7 +188,7 @@ gdm_session_auditor_get_display_device (GdmSessionAuditor *auditor)
 
 static void
 gdm_session_auditor_set_property (GObject      *object,
-                                  guint         prop_id,
+                                  unsigned int  prop_id,
                                   const GValue *value,
                                   GParamSpec   *pspec)
 {
@@ -212,10 +212,10 @@ gdm_session_auditor_set_property (GObject      *object,
 }
 
 static void
-gdm_session_auditor_get_property (GObject    *object,
-                                  guint       prop_id,
-                                  GValue     *value,
-                                  GParamSpec *pspec)
+gdm_session_auditor_get_property (GObject      *object,
+                                  unsigned int  prop_id,
+                                  GValue       *value,
+                                  GParamSpec   *pspec)
 {
         GdmSessionAuditor *auditor;
 

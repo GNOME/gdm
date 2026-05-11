@@ -31,7 +31,7 @@ main (int argc, char *argv[])
 {
         g_autoptr(GKeyFile) key_file = NULL;
         g_autoptr(GError) error = NULL;
-        gchar *group, *key, *value;
+        char *group, *key, *value;
         gboolean saved_okay;
 
         if (argc < 5 || g_strcmp0(argv[1], "set") != 0) {

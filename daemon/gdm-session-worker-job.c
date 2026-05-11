@@ -60,7 +60,7 @@ struct _GdmSessionWorkerJob
         GPid            pid;
         gboolean        for_reauth;
 
-        guint           child_watch_id;
+        unsigned int    child_watch_id;
 
         char           *server_address;
         char          **environment;
@@ -81,7 +81,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static unsigned int signals [LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, G_TYPE_OBJECT)
 
@@ -174,7 +174,7 @@ copy_environment_to_hash (GdmSessionWorkerJob *job,
                           GHashTable          *hash)
 {
         g_auto(GStrv) environment = NULL;
-        gint   i;
+        int i;
 
         if (job->environment != NULL) {
                 environment = g_strdupv (job->environment);
@@ -422,7 +422,7 @@ gdm_session_worker_job_finalize (GObject *object)
 
 static void
 gdm_session_worker_job_set_property (GObject      *object,
-                                     guint         prop_id,
+                                     unsigned int  prop_id,
                                      const GValue *value,
                                      GParamSpec   *pspec)
 {
@@ -444,10 +444,10 @@ gdm_session_worker_job_set_property (GObject      *object,
 }
 
 static void
-gdm_session_worker_job_get_property (GObject    *object,
-                                     guint       prop_id,
-                                     GValue     *value,
-                                     GParamSpec *pspec)
+gdm_session_worker_job_get_property (GObject      *object,
+                                     unsigned int  prop_id,
+                                     GValue       *value,
+                                     GParamSpec   *pspec)
 {
         GdmSessionWorkerJob *self;
 

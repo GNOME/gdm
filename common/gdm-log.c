@@ -40,7 +40,7 @@ static gboolean initialized = FALSE;
 static gboolean is_sd_booted = FALSE;
 static gboolean debug_enabled = FALSE;
 
-static gint
+static int
 get_syslog_priority_from_log_level (GLogLevelFlags log_level)
 {
         switch (log_level & G_LOG_LEVEL_MASK) {
@@ -64,9 +64,9 @@ get_syslog_priority_from_log_level (GLogLevelFlags log_level)
 }
 
 static void
-gdm_log_default_handler (const gchar    *log_domain,
+gdm_log_default_handler (const char     *log_domain,
                          GLogLevelFlags  log_level,
-                         const gchar    *message,
+                         const char     *message,
                          gpointer        unused_data)
 {
         int priority;

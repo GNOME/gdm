@@ -67,7 +67,7 @@ typedef struct
         GdmManager *manager;
         GdmSession *session;
         char *service_name;
-        guint idle_id;
+        unsigned int idle_id;
 } StartUserSessionOperation;
 
 struct _GdmManager
@@ -89,9 +89,9 @@ struct _GdmManager
         GDBusObjectManagerServer *object_manager;
 
 #ifdef  WITH_PLYMOUTH
-        guint                     plymouth_is_running : 1;
+        unsigned int              plymouth_is_running : 1;
 #endif
-        guint                     did_automatic_login : 1;
+        unsigned int              did_automatic_login : 1;
 };
 
 typedef enum {
@@ -106,7 +106,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static unsigned int signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
 static void     gdm_manager_init        (GdmManager      *manager);
@@ -1923,7 +1923,7 @@ typedef struct
 {
         GdmManager *manager;
         GdmSession *session;
-        guint idle_id;
+        unsigned int idle_id;
 } ResetSessionOperation;
 
 static void
@@ -2303,9 +2303,9 @@ gdm_manager_set_remote_login_enabled (GdmManager *manager,
 
 static void
 gdm_manager_set_property (GObject      *object,
-                          guint         prop_id,
-                          const GValue  *value,
-                          GParamSpec    *pspec)
+                          unsigned int  prop_id,
+                          const GValue *value,
+                          GParamSpec   *pspec)
 {
         GdmManager *self;
 
@@ -2319,10 +2319,10 @@ gdm_manager_set_property (GObject      *object,
 }
 
 static void
-gdm_manager_get_property (GObject    *object,
-                          guint       prop_id,
-                          GValue     *value,
-                          GParamSpec *pspec)
+gdm_manager_get_property (GObject      *object,
+                          unsigned int  prop_id,
+                          GValue       *value,
+                          GParamSpec   *pspec)
 {
         GdmManager *self;
 
@@ -2337,7 +2337,7 @@ gdm_manager_get_property (GObject    *object,
 
 static GObject *
 gdm_manager_constructor (GType                  type,
-                         guint                  n_construct_properties,
+                         unsigned int           n_construct_properties,
                          GObjectConstructParam *construct_properties)
 {
         GdmManager      *manager;

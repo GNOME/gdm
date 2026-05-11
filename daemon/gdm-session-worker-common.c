@@ -46,7 +46,7 @@ static const GDBusErrorEntry gdm_session_worker_error_entries[] = {
 GQuark
 gdm_session_worker_error_quark (void)
 {
-        static volatile gsize error_quark = 0;
+        static volatile size_t error_quark = 0;
 
         g_dbus_error_register_error_domain ("gdm-session-worker-error-quark",
                                             &error_quark,

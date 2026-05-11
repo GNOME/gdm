@@ -33,7 +33,7 @@
 #include <systemd/sd-varlink.h>
 #endif
 
-G_STATIC_ASSERT (sizeof(uid_t) == sizeof(guint));
+G_STATIC_ASSERT (sizeof(uid_t) == sizeof(unsigned int));
 
 #define GDM_SERVICE_ID "org.gnome.DisplayManager"
 #define GREETER_UID_COUNT ((size_t)(GREETER_UID_MAX - GREETER_UID_MIN) + 1)
@@ -73,7 +73,7 @@ typedef struct
 typedef struct
 {
         GWeakRef  store;
-        gint      cancel_fd;
+        int       cancel_fd;
 } WorkerContext;
 
 typedef struct

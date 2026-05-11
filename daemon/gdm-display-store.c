@@ -52,7 +52,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static unsigned int signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_display_store_class_init    (GdmDisplayStoreClass *klass);
 static void     gdm_display_store_init          (GdmDisplayStore      *display_store);
@@ -218,13 +218,13 @@ gdm_display_store_find (GdmDisplayStore    *store,
         return stored_display->display;
 }
 
-guint
+unsigned int
 gdm_display_store_foreach_remove (GdmDisplayStore    *store,
                                   GdmDisplayStoreFunc func,
                                   gpointer            user_data)
 {
-        FindClosure closure;
-        guint       ret;
+        FindClosure  closure;
+        unsigned int ret;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), 0);
         g_return_val_if_fail (func != NULL, 0);

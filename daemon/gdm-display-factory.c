@@ -38,7 +38,7 @@
 typedef struct _GdmDisplayFactoryPrivate
 {
         GdmDisplayStore *display_store;
-        guint            purge_displays_id;
+        unsigned int     purge_displays_id;
 
         GHashTable      *display_creation_users;
 
@@ -327,7 +327,7 @@ gdm_display_factory_set_display_store (GdmDisplayFactory *factory,
 
 static void
 gdm_display_factory_set_property (GObject      *object,
-                                  guint         prop_id,
+                                  unsigned int  prop_id,
                                   const GValue *value,
                                   GParamSpec   *pspec)
 {
@@ -343,10 +343,10 @@ gdm_display_factory_set_property (GObject      *object,
 }
 
 static void
-gdm_display_factory_get_property (GObject    *object,
-                                  guint       prop_id,
-                                  GValue     *value,
-                                  GParamSpec *pspec)
+gdm_display_factory_get_property (GObject      *object,
+                                  unsigned int  prop_id,
+                                  GValue       *value,
+                                  GParamSpec   *pspec)
 {
         GdmDisplayFactory *self;
         GdmDisplayFactoryPrivate *priv;

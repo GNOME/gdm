@@ -469,7 +469,7 @@ static void
 config_command_handler_add_to_group (GdmConfigCommandHandler *command_handler,
                                   GOptionGroup            *group)
 {
-        guint i;
+        unsigned int i;
 
         if (!command_handler || !command_handler->entries)
                 return;
@@ -593,7 +593,7 @@ try_run_distro_hook (GdmConfigCommand   config_command,
         g_autofree char *distro_hook = NULL;
         g_autofree char *local_stdout = NULL;
         g_autofree char *local_stderr = NULL;
-        gint exit_status;
+        int exit_status;
 
         /* Distro hooks need to follow these rules:
          *  - The name of the hook should be "gdm-auth-config-$DISTRO_NAME",
@@ -1292,7 +1292,7 @@ update_dconf (GError **error)
 {
         g_auto(GStrv) environ = NULL;
         const char* command[] = { "dconf", "update", NULL };
-        gint exit_code;
+        int exit_code;
 
         g_debug ("Updating dconf...");
 
@@ -1420,7 +1420,7 @@ write_locked_gdm_settings_to_db (GdmAuthType   auth_type,
 }
 
 static GPtrArray *
-create_cmd_args (int argc, gchar **argv, GdmConfigCommand command)
+create_cmd_args (int argc, char **argv, GdmConfigCommand command)
 {
         GPtrArray *args;
         const char *command_str;
@@ -1963,7 +1963,7 @@ handle_reset (GdmConfigCommand   config_command,
 
                 if (profile_contents) {
                         g_autofree char *full_line = NULL;
-                        guint index;
+                        unsigned int index;
 
                         full_line = g_strconcat (DCONF_SYSTEM_DB_PREFIX, system_db_name, NULL);
                         while (g_ptr_array_find_with_equal_func (profile_contents, full_line,

@@ -40,10 +40,10 @@ struct _GdmSettingsDesktopBackend
 {
         GdmSettingsBackend parent;
 
-        char       *filename;
-        GKeyFile   *key_file;
-        gboolean    dirty;
-        guint       save_id;
+        char         *filename;
+        GKeyFile     *key_file;
+        gboolean      dirty;
+        unsigned int  save_id;
 };
 
 typedef enum {
@@ -88,7 +88,7 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
 
 static void
 gdm_settings_desktop_backend_set_property (GObject      *object,
-                                           guint         prop_id,
+                                           unsigned int  prop_id,
                                            const GValue *value,
                                            GParamSpec   *pspec)
 {
@@ -105,7 +105,7 @@ gdm_settings_desktop_backend_set_property (GObject      *object,
 
 static void
 gdm_settings_desktop_backend_get_property (GObject      *object,
-                                           guint         prop_id,
+                                           unsigned int  prop_id,
                                            GValue       *value,
                                            GParamSpec   *pspec)
 {
@@ -243,7 +243,7 @@ save_settings (GdmSettingsDesktopBackend *backend)
 {
         g_autoptr(GError) local_error = NULL;
         g_autofree char *contents = NULL;
-        gsize     length;
+        size_t length;
 
         if (! backend->dirty) {
                 return;

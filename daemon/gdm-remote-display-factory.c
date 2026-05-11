@@ -244,7 +244,7 @@ gdm_remote_display_factory_finalize (GObject *object)
 
 static GObject *
 gdm_remote_display_factory_constructor (GType                  type,
-                                        guint                  n_construct_properties,
+                                        unsigned int           n_construct_properties,
                                         GObjectConstructParam *construct_properties)
 {
         GdmRemoteDisplayFactory *factory;

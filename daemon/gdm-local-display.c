@@ -58,7 +58,7 @@ G_DEFINE_TYPE (GdmLocalDisplay, gdm_local_display, GDM_TYPE_DISPLAY)
 
 static GObject *
 gdm_local_display_constructor (GType                  type,
-                               guint                  n_construct_properties,
+                               unsigned int           n_construct_properties,
                                GObjectConstructParam *construct_properties)
 {
         GdmLocalDisplay      *display;

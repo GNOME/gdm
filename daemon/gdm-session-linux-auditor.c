@@ -49,8 +49,8 @@ G_DEFINE_TYPE (GdmSessionLinuxAuditor, gdm_session_linux_auditor, GDM_TYPE_SESSI
 
 static void
 log_user_message (GdmSessionAuditor *auditor,
-                  gint               type,
-                  gint               result)
+                  int                type,
+                  int                result)
 {
         GdmSessionLinuxAuditor   *linux_auditor;
         char                      buf[512];

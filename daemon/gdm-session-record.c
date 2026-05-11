@@ -99,7 +99,7 @@ static void
 record_set_timestamp (UTMP *u)
 {
 #if defined(HAVE_UT_UT_TV)
-        gint64 now;
+        int64_t now;
 
         /* Set time in TV format */
         now = g_get_real_time();

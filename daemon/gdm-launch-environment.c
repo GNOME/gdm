@@ -106,7 +106,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static unsigned int signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_launch_environment_class_init    (GdmLaunchEnvironmentClass *klass);
 static void     gdm_launch_environment_init          (GdmLaunchEnvironment      *launch_environment);
@@ -731,7 +731,7 @@ _gdm_launch_environment_set_session_name (GdmLaunchEnvironment *launch_environme
 
 static void
 gdm_launch_environment_set_property (GObject      *object,
-                                     guint         prop_id,
+                                     unsigned int  prop_id,
                                      const GValue *value,
                                      GParamSpec   *pspec)
 {
@@ -768,10 +768,10 @@ gdm_launch_environment_set_property (GObject      *object,
 }
 
 static void
-gdm_launch_environment_get_property (GObject    *object,
-                                     guint       prop_id,
-                                     GValue     *value,
-                                     GParamSpec *pspec)
+gdm_launch_environment_get_property (GObject      *object,
+                                     unsigned int  prop_id,
+                                     GValue       *value,
+                                     GParamSpec   *pspec)
 {
         GdmLaunchEnvironment *self;
 

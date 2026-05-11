@@ -126,7 +126,7 @@ struct _GdmSessionWorker
         pam_handle_t     *pam_handle;
 
         GPid              child_pid;
-        guint             child_watch_id;
+        unsigned int      child_watch_id;
 
         /* from Setup */
         char             *service;
@@ -146,14 +146,14 @@ struct _GdmSessionWorker
         int               session_tty_fd;
 
         char            **arguments;
-        guint32           cancelled : 1;
-        guint32           timed_out : 1;
-        guint32           is_program_session : 1;
-        guint32           is_reauth_session : 1;
-        guint32           display_is_local : 1;
-        guint32           display_is_initial : 1;
-        guint32           seat0_has_vts : 1;
-        guint             state_change_idle_id;
+        uint32_t          cancelled : 1;
+        uint32_t          timed_out : 1;
+        uint32_t          is_program_session : 1;
+        uint32_t          is_reauth_session : 1;
+        uint32_t          display_is_local : 1;
+        uint32_t          display_is_initial : 1;
+        uint32_t          seat0_has_vts : 1;
+        unsigned int      state_change_idle_id;
         GdmSessionDisplayMode display_mode;
 
         char                 *server_address;
@@ -213,7 +213,7 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionWorker,
 
 /* adapted from glib script_execute */
 static void
-script_execute (const gchar *file,
+script_execute (const char  *file,
                 char       **argv,
                 char       **envp,
                 gboolean     search_path)
@@ -229,7 +229,7 @@ script_execute (const gchar *file,
         {
                 g_autofree char **new_argv = NULL;
 
-                new_argv = g_new0 (gchar*, argc + 2); /* /bin/sh and NULL */
+                new_argv = g_new0 (char*, argc + 2); /* /bin/sh and NULL */
 
                 new_argv[0] = (char *) "/bin/sh";
                 new_argv[1] = (char *) file;
@@ -259,7 +259,7 @@ my_strchrnul (const char *str, char c)
 }
 
 /* adapted from glib g_execute */
-static gint
+static int
 gdm_session_execute (const char *file,
                      char      **argv,
                      char      **envp,
@@ -286,8 +286,8 @@ gdm_session_execute (const char *file,
                 gboolean got_eacces = 0;
                 const char *path, *p;
                 char *name, *freeme;
-                gsize len;
-                gsize pathlen;
+                size_t len;
+                size_t pathlen;
 
                 path = g_getenv ("PATH");
                 if (path == NULL) {
@@ -1507,7 +1507,7 @@ _lookup_passwd_info (const char *username,
         struct passwd  passwd_buffer;
         char          *aux_buffer;
         long           required_aux_buffer_size;
-        gsize          aux_buffer_size;
+        size_t         aux_buffer_size;
 
         ret = FALSE;
         aux_buffer = NULL;
@@ -1827,8 +1827,8 @@ _is_loggable_file (const char* filename)
 }
 
 static void
-rotate_logs (const char *path,
-             guint       n_copies)
+rotate_logs (const char   *path,
+             unsigned int  n_copies)
 {
         int i;
 
@@ -2016,7 +2016,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
                 if (setsid () < 0) {
                         g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group: %s",
-                                 (guint) getpid (), g_strerror (errno));
+                                 (unsigned int) getpid (), g_strerror (errno));
                         _exit (EXIT_FAILURE);
                 }
 
@@ -2300,9 +2300,9 @@ gdm_session_worker_set_is_reauth_session (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_set_property (GObject      *object,
-                                guint         prop_id,
-                                const GValue *value,
-                                GParamSpec   *pspec)
+                                 unsigned int  prop_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
 {
         GdmSessionWorker *self;
 
@@ -2322,10 +2322,10 @@ gdm_session_worker_set_property (GObject      *object,
 }
 
 static void
-gdm_session_worker_get_property (GObject    *object,
-                                guint       prop_id,
-                                GValue     *value,
-                                GParamSpec *pspec)
+gdm_session_worker_get_property (GObject      *object,
+                                 unsigned int  prop_id,
+                                 GValue       *value,
+                                 GParamSpec   *pspec)
 {
         GdmSessionWorker *self;
 
@@ -3103,7 +3103,7 @@ gdm_session_worker_handle_start_reauthentication (GdmDBusWorker         *object,
 
 static GObject *
 gdm_session_worker_constructor (GType                  type,
-                                guint                  n_construct_properties,
+                                unsigned int           n_construct_properties,
                                 GObjectConstructParam *construct_properties)
 {
         GdmSessionWorker  *worker;

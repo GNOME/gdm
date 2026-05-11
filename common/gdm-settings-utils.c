@@ -162,7 +162,7 @@ end_element_cb (GMarkupParseContext *ctx,
 static void
 text_cb (GMarkupParseContext *ctx,
          const char          *text,
-         gsize                text_len,
+         size_t               text_len,
          gpointer             user_data,
          GError             **error)
 {
@@ -206,7 +206,7 @@ gdm_settings_parse_schemas (const char  *file,
         g_autoptr(GMarkupParseContext) ctx = NULL;
         g_autofree ParserInfo *info = NULL;
         g_autofree char *contents = NULL;
-        gsize                len;
+        size_t len;
         g_autoptr(GError) error = NULL;
         gboolean             res;
 
@@ -253,8 +253,8 @@ gdm_settings_parse_value_as_integer (const char *value,
                                      int        *intval)
 {
         char *end_of_valid_int;
-        glong long_value;
-        gint  int_value;
+        long  long_value;
+        int   int_value;
 
         g_return_val_if_fail (value != NULL, FALSE);
         g_return_val_if_fail (intval != NULL, FALSE);

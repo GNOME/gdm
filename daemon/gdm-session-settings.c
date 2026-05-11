@@ -47,13 +47,13 @@ struct _GdmSessionSettings
 static void gdm_session_settings_finalize (GObject *object);
 
 static void gdm_session_settings_set_property (GObject      *object,
-                                              guint         prop_id,
-                                              const GValue *value,
-                                              GParamSpec   *pspec);
+                                               unsigned int  prop_id,
+                                               const GValue *value,
+                                               GParamSpec   *pspec);
 static void gdm_session_settings_get_property (GObject      *object,
-                                              guint         prop_id,
-                                              GValue       *value,
-                                              GParamSpec   *pspec);
+                                               unsigned int  prop_id,
+                                               GValue       *value,
+                                               GParamSpec   *pspec);
 
 typedef enum {
         PROP_SESSION_NAME = 1,
@@ -181,9 +181,9 @@ gdm_session_settings_get_session_type (GdmSessionSettings *settings)
 
 static void
 gdm_session_settings_set_property (GObject      *object,
-                                  guint         prop_id,
-                                  const GValue *value,
-                                  GParamSpec   *pspec)
+                                   unsigned int  prop_id,
+                                   const GValue *value,
+                                   GParamSpec   *pspec)
 {
         GdmSessionSettings *settings;
 
@@ -209,10 +209,10 @@ gdm_session_settings_set_property (GObject      *object,
 }
 
 static void
-gdm_session_settings_get_property (GObject    *object,
-                                  guint       prop_id,
-                                  GValue     *value,
-                                  GParamSpec *pspec)
+gdm_session_settings_get_property (GObject      *object,
+                                   unsigned int  prop_id,
+                                   GValue       *value,
+                                   GParamSpec   *pspec)
 {
         GdmSessionSettings *settings;
 

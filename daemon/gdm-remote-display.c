@@ -76,7 +76,7 @@ handle_set_remote_id (GdmDBusRemoteDisplay    *skeleton,
 
 static GObject *
 gdm_remote_display_constructor (GType                  type,
-                                guint                  n_construct_properties,
+                                unsigned int           n_construct_properties,
                                 GObjectConstructParam *construct_properties)
 {
         GdmRemoteDisplay *display;

@@ -63,25 +63,25 @@ struct _GdmLocalDisplayFactory
         GDBusConnection *connection;
 
         /* FIXME: this needs to be per seat? */
-        guint            num_failures;
+        unsigned int     num_failures;
 
-        guint            seat_new_id;
-        guint            seat_removed_id;
-        guint            seat_properties_changed_id;
-        guint            seat_attention_key;
+        unsigned int     seat_new_id;
+        unsigned int     seat_removed_id;
+        unsigned int     seat_properties_changed_id;
+        unsigned int     seat_attention_key;
 
 
         gboolean         seat0_has_platform_graphics;
         gboolean         seat0_has_boot_up_graphics;
 
         gboolean         seat0_graphics_check_timed_out;
-        guint            seat0_graphics_check_timeout_id;
+        unsigned int     seat0_graphics_check_timeout_id;
 
-        gulong           uevent_handler_id;
+        unsigned long    uevent_handler_id;
 
         unsigned int     active_vt;
-        guint            active_vt_watch_id;
-        guint            wait_to_finish_timeout_id;
+        unsigned int     active_vt_watch_id;
+        unsigned int     wait_to_finish_timeout_id;
 
         gboolean         is_started;
 };
@@ -95,7 +95,7 @@ enum {
         LAST_SIGNAL,
 };
 
-static guint signals [LAST_SIGNAL] = { 0 };
+static unsigned int signals [LAST_SIGNAL] = { 0 };
 
 static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryClass *klass);
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
@@ -415,7 +415,7 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
         while (node != NULL) {
                 GUdevDevice *device = node->data;
                 GList *next_node = node->next;
-                const gchar *id_path = g_udev_device_get_property (device, "ID_PATH");
+                const char *id_path = g_udev_device_get_property (device, "ID_PATH");
                 g_autoptr (GUdevDevice) platform_device = NULL;
                 g_autoptr (GUdevDevice) pci_device = NULL;
                 g_autoptr (GUdevDevice) drm_device = NULL;
@@ -662,10 +662,10 @@ gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 
 static void
 on_seat_activate_greeter (GDBusConnection *connection,
-                          const gchar     *sender_name,
-                          const gchar     *object_path,
-                          const gchar     *interface_name,
-                          const gchar     *signal_name,
+                          const char      *sender_name,
+                          const char      *object_path,
+                          const char      *interface_name,
+                          const char      *signal_name,
                           GVariant        *parameters,
                           gpointer         user_data)
 {
@@ -677,10 +677,10 @@ on_seat_activate_greeter (GDBusConnection *connection,
 
 static void
 on_seat_removed (GDBusConnection *connection,
-                 const gchar     *sender_name,
-                 const gchar     *object_path,
-                 const gchar     *interface_name,
-                 const gchar     *signal_name,
+                 const char      *sender_name,
+                 const char      *object_path,
+                 const char      *interface_name,
+                 const char      *signal_name,
                  GVariant        *parameters,
                  gpointer         user_data)
 {
@@ -692,20 +692,20 @@ on_seat_removed (GDBusConnection *connection,
 
 static void
 on_seat_properties_changed (GDBusConnection *connection,
-                            const gchar     *sender_name,
-                            const gchar     *object_path,
-                            const gchar     *interface_name,
-                            const gchar     *signal_name,
+                            const char      *sender_name,
+                            const char      *object_path,
+                            const char      *interface_name,
+                            const char      *signal_name,
                             GVariant        *parameters,
                             gpointer         user_data)
 {
-        const gchar *seat = NULL;
+        const char *seat = NULL;
         g_autoptr(GVariant) changed_props = NULL;
         g_autoptr(GVariant) changed_prop = NULL;
         g_autoptr(GVariant) reply = NULL;
         g_autoptr(GVariant) reply_value = NULL;
         g_autoptr(GError) error = NULL;
-        g_autofree const gchar **invalidated_props = NULL;
+        g_autofree const char **invalidated_props = NULL;
         gboolean changed = FALSE;
         int ret;
 
@@ -1170,7 +1170,7 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
 
 static void
 gdm_local_display_factory_set_property (GObject       *object,
-                                        guint          prop_id,
+                                        unsigned int   prop_id,
                                         const GValue  *value,
                                         GParamSpec    *pspec)
 {
@@ -1182,10 +1182,10 @@ gdm_local_display_factory_set_property (GObject       *object,
 }
 
 static void
-gdm_local_display_factory_get_property (GObject    *object,
-                                        guint       prop_id,
-                                        GValue     *value,
-                                        GParamSpec *pspec)
+gdm_local_display_factory_get_property (GObject      *object,
+                                        unsigned int  prop_id,
+                                        GValue       *value,
+                                        GParamSpec   *pspec)
 {
         switch (prop_id) {
         default:
@@ -1328,7 +1328,7 @@ register_factory (GdmLocalDisplayFactory *factory)
 
 static GObject *
 gdm_local_display_factory_constructor (GType                  type,
-                                       guint                  n_construct_properties,
+                                       unsigned int           n_construct_properties,
                                        GObjectConstructParam *construct_properties)
 {
         GdmLocalDisplayFactory      *factory;

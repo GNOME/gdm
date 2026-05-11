@@ -237,7 +237,7 @@ _fd_is_character_device (int fd)
 static gboolean
 _read_bytes (int      fd,
              char    *bytes,
-             gsize    number_of_bytes,
+             size_t   number_of_bytes,
              GError **error)
 {
         size_t bytes_left_to_read;
@@ -291,7 +291,7 @@ _read_bytes (int      fd,
  */
 
 char *
-gdm_generate_random_bytes (gsize    size,
+gdm_generate_random_bytes (size_t   size,
                            GError **error)
 {
         g_autofd int fd = -1;
@@ -596,7 +596,7 @@ gdm_goto_login_session (GCancellable *cancellable,
 }
 
 gboolean
-gdm_shell_var_is_valid_char (gchar c, gboolean first)
+gdm_shell_var_is_valid_char (char c, gboolean first)
 {
         return (!first && g_ascii_isdigit (c)) ||
                 c == '_' ||
@@ -617,8 +617,8 @@ gdm_shell_expand (const char *str,
                   gpointer user_data)
 {
         GString *s = g_string_new("");
-        const gchar *p, *start;
-        gchar c;
+        const char *p, *start;
+        char c;
         gboolean at_new_word;
 
         p = str;
@@ -666,8 +666,8 @@ gdm_shell_expand (const char *str,
                                         g_string_append_c (s, '{');
                                 g_string_append_len (s, start, p - start);
                         } else {
-                                g_autofree gchar *expanded = NULL;
-                                g_autofree gchar *var = NULL;
+                                g_autofree char *expanded = NULL;
+                                g_autofree char *var = NULL;
 
                                 var = g_strndup (start, p - start);
                                 if (brackets && *p == '}')
@@ -689,9 +689,9 @@ gdm_shell_expand (const char *str,
 static gboolean
 _systemd_session_is_graphical (const char *session_id)
 {
-        const gchar * const graphical_session_types[] = { "wayland", "x11", "mir", NULL };
+        const char * const graphical_session_types[] = { "wayland", "x11", "mir", NULL };
         int saved_errno;
-        g_autofree gchar *type = NULL;
+        g_autofree char *type = NULL;
 
         saved_errno = sd_session_get_type (session_id, &type);
         if (saved_errno < 0) {
@@ -714,9 +714,9 @@ _systemd_session_is_graphical (const char *session_id)
 static gboolean
 _systemd_session_is_active (const char *session_id)
 {
-        const gchar * const active_states[] = { "active", "online", NULL };
+        const char * const active_states[] = { "active", "online", NULL };
         int saved_errno;
-        g_autofree gchar *state = NULL;
+        g_autofree char *state = NULL;
 
         /*
          * display sessions can be 'closing' if they are logged out but some
@@ -904,7 +904,7 @@ load_env_file (GFile *file,
         }
 }
 
-static gint
+static int
 compare_str (gconstpointer  a,
              gconstpointer  b)
 {
@@ -920,7 +920,7 @@ gdm_load_env_dir (GFile *dir,
         GFileInfo *info = NULL;
         g_autoptr(GFileEnumerator) enumerator = NULL;
         g_autoptr(GPtrArray) names = NULL;
-        const gchar *name;
+        const char *name;
         int i;
 
         enumerator = g_file_enumerate_children (dir,

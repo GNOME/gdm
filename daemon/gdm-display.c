@@ -61,7 +61,7 @@ typedef struct _GdmDisplayPrivate
 
         char                 *autologin_user;
 
-        guint                 finish_idle_id;
+        unsigned int          finish_idle_id;
 
         GDBusConnection      *connection;
 
@@ -73,12 +73,12 @@ typedef struct _GdmDisplayPrivate
         /* this spawns and controls the greeter session */
         GdmLaunchEnvironment *launch_environment;
 
-        guint                 is_local : 1;
-        guint                 is_initial : 1;
-        guint                 allow_timed_login : 1;
-        guint                 have_existing_user_accounts : 1;
-        guint                 doing_initial_setup : 1;
-        guint                 session_registered : 1;
+        unsigned int          is_local : 1;
+        unsigned int          is_initial : 1;
+        unsigned int          allow_timed_login : 1;
+        unsigned int          have_existing_user_accounts : 1;
+        unsigned int          doing_initial_setup : 1;
+        unsigned int          session_registered : 1;
 
         GStrv                 supported_session_types;
 } GdmDisplayPrivate;
@@ -524,7 +524,7 @@ _gdm_display_set_supported_session_types (GdmDisplay         *self,
 
 static void
 gdm_display_set_property (GObject        *object,
-                          guint           prop_id,
+                          unsigned int    prop_id,
                           const GValue   *value,
                           GParamSpec     *pspec)
 {
@@ -583,7 +583,7 @@ gdm_display_set_property (GObject        *object,
 
 static void
 gdm_display_get_property (GObject        *object,
-                          guint           prop_id,
+                          unsigned int    prop_id,
                           GValue         *value,
                           GParamSpec     *pspec)
 {
@@ -774,7 +774,7 @@ register_display (GdmDisplay *self)
 
 static GObject *
 gdm_display_constructor (GType                  type,
-                         guint                  n_construct_properties,
+                         unsigned int           n_construct_properties,
                          GObjectConstructParam *construct_properties)
 {
         GdmDisplay        *self;
@@ -1036,13 +1036,13 @@ already_done_initial_setup_on_this_boot (void)
 }
 
 static gboolean
-kernel_cmdline_initial_setup_argument (const gchar  *contents,
-                                       gchar       **initial_setup_argument,
-                                       GError      **error)
+kernel_cmdline_initial_setup_argument (const char  *contents,
+                                       char       **initial_setup_argument,
+                                       GError     **error)
 {
         g_autoptr(GRegex) regex = NULL;
         g_autoptr(GMatchInfo) match_info = NULL;
-        g_autofree gchar *match_group = NULL;
+        g_autofree char *match_group = NULL;
 
         g_return_val_if_fail (initial_setup_argument != NULL, FALSE);
 
@@ -1078,8 +1078,8 @@ static gboolean
 kernel_cmdline_initial_setup_force_state (gboolean *force_state)
 {
         g_autoptr(GError) error = NULL;
-        g_autofree gchar *contents = NULL;
-        g_autofree gchar *setup_argument = NULL;
+        g_autofree char *contents = NULL;
+        g_autofree char *setup_argument = NULL;
 
         g_return_val_if_fail (force_state != NULL, FALSE);
 

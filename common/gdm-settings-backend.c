@@ -40,7 +40,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static unsigned int signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_settings_backend_class_init (GdmSettingsBackendClass *klass);
 static void     gdm_settings_backend_init       (GdmSettingsBackend      *settings_backend);

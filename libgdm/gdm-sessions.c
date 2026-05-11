@@ -261,11 +261,11 @@ collect_sessions (void)
 {
         g_autoptr(GHashTable) names_seen_before = NULL;
         g_autoptr(GPtrArray) dirs_search_array = NULL;
-        gchar      *session_dir = NULL;
-        int         i;
-        const gchar *supported_session_types_env = NULL;
+        char *session_dir = NULL;
+        int i;
+        const char *supported_session_types_env = NULL;
         g_auto (GStrv) supported_session_types = NULL;
-        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
+        const char * const *system_data_dirs = g_get_system_data_dirs ();
 
         supported_session_types_env = g_getenv ("GDM_SUPPORTED_SESSION_TYPES");
         if (supported_session_types_env != NULL) {
@@ -313,7 +313,7 @@ collect_sessions (void)
                                      names_seen_before);
 }
 
-static gint
+static int
 compare_session_ids (gconstpointer  a,
                      gconstpointer  b)
 {
