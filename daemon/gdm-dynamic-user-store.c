@@ -102,7 +102,7 @@ static gpointer gdm_dynamic_user_varlink_worker         (gpointer data);
 static void     gdm_dynamic_user_store_dispose          (GObject *object);
 static void     gdm_dynamic_user_store_finalize         (GObject *object);
 
-G_DEFINE_TYPE (GdmDynamicUserStore, gdm_dynamic_user_store, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (GdmDynamicUserStore, gdm_dynamic_user_store, G_TYPE_OBJECT)
 
 static DynamicUser *
 dynamic_user_new (const char   *username,

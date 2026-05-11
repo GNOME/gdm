@@ -64,7 +64,7 @@ typedef enum {
 
 static GParamSpec *props[PROP_IS_LOADED + 1] = { NULL, };
 
-G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
 
 static void
 gdm_session_settings_class_init (GdmSessionSettingsClass *settings_class)

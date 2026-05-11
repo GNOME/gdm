@@ -205,11 +205,11 @@ typedef int (* GdmSessionWorkerPamNewMessagesFunc) (int,
                                                     struct pam_response **,
                                                     gpointer);
 
-G_DEFINE_TYPE_WITH_CODE (GdmSessionWorker,
-                         gdm_session_worker,
-                         GDM_DBUS_TYPE_WORKER_SKELETON,
-                         G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_WORKER,
-                                                worker_interface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE (GdmSessionWorker,
+                               gdm_session_worker,
+                               GDM_DBUS_TYPE_WORKER_SKELETON,
+                               G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_WORKER,
+                                                      worker_interface_init))
 
 /* adapted from glib script_execute */
 static void

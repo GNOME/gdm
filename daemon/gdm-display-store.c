@@ -58,7 +58,7 @@ static void     gdm_display_store_class_init    (GdmDisplayStoreClass *klass);
 static void     gdm_display_store_init          (GdmDisplayStore      *display_store);
 static void     gdm_display_store_finalize      (GObject              *object);
 
-G_DEFINE_TYPE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
 
 static StoredDisplay *
 stored_display_new (GdmDisplayStore *store,

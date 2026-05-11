@@ -54,7 +54,7 @@ struct _GdmLocalDisplay
 static void     gdm_local_display_class_init   (GdmLocalDisplayClass *klass);
 static void     gdm_local_display_init         (GdmLocalDisplay      *local_display);
 
-G_DEFINE_TYPE (GdmLocalDisplay, gdm_local_display, GDM_TYPE_DISPLAY)
+G_DEFINE_FINAL_TYPE (GdmLocalDisplay, gdm_local_display, GDM_TYPE_DISPLAY)
 
 static GObject *
 gdm_local_display_constructor (GType                  type,

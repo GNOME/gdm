@@ -60,7 +60,7 @@ struct _GdmSessionSolarisAuditor
 
 static void gdm_session_solaris_auditor_finalize (GObject *object);
 
-G_DEFINE_TYPE (GdmSessionSolarisAuditor, gdm_session_solaris_auditor, GDM_TYPE_SESSION_AUDITOR)
+G_DEFINE_FINAL_TYPE (GdmSessionSolarisAuditor, gdm_session_solaris_auditor, GDM_TYPE_SESSION_AUDITOR)
 
 static void
 gdm_session_solaris_auditor_report_password_changed (GdmSessionAuditor *auditor)

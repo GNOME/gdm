@@ -53,7 +53,7 @@ struct _GdmClient
 static void     gdm_client_dispose     (GObject        *object);
 static void     gdm_client_finalize    (GObject        *object);
 
-G_DEFINE_TYPE (GdmClient, gdm_client, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (GdmClient, gdm_client, G_TYPE_OBJECT);
 
 static gpointer client_object = NULL;
 

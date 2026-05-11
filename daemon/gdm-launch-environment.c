@@ -112,7 +112,7 @@ static void     gdm_launch_environment_class_init    (GdmLaunchEnvironmentClass 
 static void     gdm_launch_environment_init          (GdmLaunchEnvironment      *launch_environment);
 static void     gdm_launch_environment_finalize      (GObject                   *object);
 
-G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 
 #define GID_NOBODY ((gid_t) 65534)
 #define MIGRATED_STAMPFILE_PATH (GDM_WORKING_DIR "/.migrated-dyn-users")

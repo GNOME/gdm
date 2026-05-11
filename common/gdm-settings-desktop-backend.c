@@ -56,7 +56,7 @@ static void     gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBacke
 static void     gdm_settings_desktop_backend_init       (GdmSettingsDesktopBackend      *settings_desktop_backend);
 static void     gdm_settings_desktop_backend_finalize   (GObject                        *object);
 
-G_DEFINE_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM_TYPE_SETTINGS_BACKEND)
+G_DEFINE_FINAL_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM_TYPE_SETTINGS_BACKEND)
 
 static void
 _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,

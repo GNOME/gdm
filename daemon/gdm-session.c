@@ -182,9 +182,7 @@ static void close_conversation (GdmSessionConversation *conversation);
 
 static unsigned int signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (GdmSession,
-               gdm_session,
-               G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (GdmSession, gdm_session, G_TYPE_OBJECT);
 
 static GdmSessionConversation *
 find_conversation_by_name (GdmSession *self,

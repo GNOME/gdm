@@ -123,11 +123,11 @@ static gpointer manager_object = NULL;
 
 static void manager_interface_init (GdmDBusManagerIface *interface);
 
-G_DEFINE_TYPE_WITH_CODE (GdmManager,
-                         gdm_manager,
-                         GDM_DBUS_TYPE_MANAGER_SKELETON,
-                         G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_MANAGER,
-                                                manager_interface_init));
+G_DEFINE_FINAL_TYPE_WITH_CODE (GdmManager,
+                               gdm_manager,
+                               GDM_DBUS_TYPE_MANAGER_SKELETON,
+                               G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_MANAGER,
+                                                      manager_interface_init));
 
 #ifdef WITH_PLYMOUTH
 static gboolean

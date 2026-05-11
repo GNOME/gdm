@@ -45,7 +45,7 @@ struct _GdmSessionLinuxAuditor
 
 static void gdm_session_linux_auditor_finalize (GObject *object);
 
-G_DEFINE_TYPE (GdmSessionLinuxAuditor, gdm_session_linux_auditor, GDM_TYPE_SESSION_AUDITOR)
+G_DEFINE_FINAL_TYPE (GdmSessionLinuxAuditor, gdm_session_linux_auditor, GDM_TYPE_SESSION_AUDITOR)
 
 static void
 log_user_message (GdmSessionAuditor *auditor,

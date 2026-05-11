@@ -83,7 +83,7 @@ enum {
 
 static unsigned int signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, G_TYPE_OBJECT)
 
 static void
 session_worker_job_setup_journal_fds (void)

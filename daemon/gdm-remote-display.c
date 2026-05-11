@@ -38,7 +38,7 @@ struct _GdmRemoteDisplay
 static void     gdm_remote_display_class_init   (GdmRemoteDisplayClass *klass);
 static void     gdm_remote_display_init         (GdmRemoteDisplay      *remote_display);
 
-G_DEFINE_TYPE (GdmRemoteDisplay, gdm_remote_display, GDM_TYPE_DISPLAY)
+G_DEFINE_FINAL_TYPE (GdmRemoteDisplay, gdm_remote_display, GDM_TYPE_DISPLAY)
 
 char *
 gdm_remote_display_get_remote_id (GdmRemoteDisplay *display)

@@ -114,7 +114,7 @@ static gboolean lookup_by_session_id (const char *id,
                                       GdmDisplay *display,
                                       gpointer    user_data);
 
-G_DEFINE_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM_TYPE_DISPLAY_FACTORY)
+G_DEFINE_FINAL_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
 GQuark
 gdm_local_display_factory_error_quark (void)

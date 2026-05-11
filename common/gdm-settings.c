@@ -59,7 +59,7 @@ static void     gdm_settings_finalize   (GObject          *object);
 
 static gpointer settings_object = NULL;
 
-G_DEFINE_TYPE (GdmSettings, gdm_settings, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (GdmSettings, gdm_settings, G_TYPE_OBJECT)
 
 GQuark
 gdm_settings_error_quark (void)

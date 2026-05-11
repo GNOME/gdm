@@ -47,7 +47,7 @@ static void     gdm_remote_display_factory_finalize      (GObject               
 
 static gpointer remote_display_factory_object = NULL;
 
-G_DEFINE_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM_TYPE_DISPLAY_FACTORY)
+G_DEFINE_FINAL_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
 static gboolean
 gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
