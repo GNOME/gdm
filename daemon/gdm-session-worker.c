@@ -146,7 +146,6 @@ struct _GdmSessionWorker
         int               session_tty_fd;
 
         char            **arguments;
-        uint32_t          cancelled : 1;
         uint32_t          timed_out : 1;
         uint32_t          is_program_session : 1;
         uint32_t          is_reauth_session : 1;
@@ -742,7 +741,6 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 
         utf8_msg = convert_to_utf8 (query->msg);
 
-        worker->cancelled = FALSE;
         worker->timed_out = FALSE;
 
         switch (query->msg_style) {
