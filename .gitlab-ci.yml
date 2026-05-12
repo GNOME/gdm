@@ -11,17 +11,11 @@ include:
   - component: "gitlab.gnome.org/GNOME/citemplates/gnomeos-basic-ci@master"
     inputs:
       meson-options: >-
-        --sysconfdir=/etc
-        --localstatedir=/var
-        --mandir=/usr/share/man
-        -Dpam-prefix=/etc
-        -Drun-dir=/run/gdm
-        -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
         -Dprofiling=true
         -Dplymouth=enabled
 
 variables:
-  COMMON_BUILD_OPTIONS: --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --libdir=/usr/lib64 -Dpam-prefix=/etc -Drun-dir=/run/gdm -Ddefault-path=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
+  COMMON_BUILD_OPTIONS: --prefix=/usr --libdir=/usr/lib64 -Dprofiling=true -Dplymouth=enabled -Dselinux=enabled
   MESON_BUILD_DIR: build
 
 stages:
@@ -31,8 +25,8 @@ stages:
 
 .gdm.fedora:
   variables:
-    FDO_DISTRIBUTION_VERSION: 42
-    FDO_DISTRIBUTION_TAG: "2025-06-01.0"
+    FDO_DISTRIBUTION_VERSION: 44
+    FDO_DISTRIBUTION_TAG: "2026-05-08.1"
     FDO_DISTRIBUTION_PACKAGES: >-
       accountsservice-devel
       audit-libs-devel
@@ -42,29 +36,18 @@ stages:
       gettext-devel
       git
       gobject-introspection-devel
-      iso-codes-devel
       itstool
       json-glib-devel
       keyutils-libs-devel
-      libattr-devel
       libgudev-devel
-      libdmx-devel
       libselinux-devel
-      libtool
+      libXau-devel
       meson
-      nss-devel
       pam-devel
       plymouth-devel
-      redhat-rpm-config
       systemd
       systemd-devel
-      which
       yelp-devel
-      gtk3-devel
-      libXau-devel
-      libXdmcp-devel
-      xorg-x11-server-Xorg
-      xorg-x11-server-devel
 
 build-fedora-container:
   extends:
