@@ -414,8 +414,8 @@ gdm_session_worker_job_finalize (GObject *object)
 
         gdm_session_worker_job_stop (session_worker_job);
 
-        g_free (session_worker_job->command);
-        g_free (session_worker_job->server_address);
+        g_clear_pointer (&session_worker_job->command, g_free);
+        g_clear_pointer (&session_worker_job->server_address, g_free);
 
         G_OBJECT_CLASS (gdm_session_worker_job_parent_class)->finalize (object);
 }

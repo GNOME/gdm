@@ -369,8 +369,8 @@ gdm_settings_desktop_backend_finalize (GObject *object)
         backend = GDM_SETTINGS_DESKTOP_BACKEND (object);
 
         save_settings (backend);
-        g_key_file_free (backend->key_file);
-        g_free (backend->filename);
+        g_clear_pointer (&backend->key_file, g_key_file_free);
+        g_clear_pointer (&backend->filename, g_free);
 
         G_OBJECT_CLASS (gdm_settings_desktop_backend_parent_class)->finalize (object);
 }

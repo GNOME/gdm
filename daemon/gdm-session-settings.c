@@ -107,12 +107,10 @@ gdm_session_settings_finalize (GObject *object)
 
         settings = GDM_SESSION_SETTINGS (object);
 
-        if (settings->user != NULL) {
-                g_object_unref (settings->user);
-        }
+        g_clear_object (&settings->user);
 
-        g_free (settings->session_name);
-        g_free (settings->language_name);
+        g_clear_pointer (&settings->session_name, g_free);
+        g_clear_pointer (&settings->language_name, g_free);
 
         parent_class = G_OBJECT_CLASS (gdm_session_settings_parent_class);
 

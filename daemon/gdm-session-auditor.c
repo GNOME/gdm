@@ -103,9 +103,9 @@ gdm_session_auditor_finalize (GObject *object)
         auditor = GDM_SESSION_AUDITOR (object);
         priv = gdm_session_auditor_get_instance_private (auditor);
 
-        g_free (priv->username);
-        g_free (priv->hostname);
-        g_free (priv->display_device);
+        g_clear_pointer (&priv->username, g_free);
+        g_clear_pointer (&priv->hostname, g_free);
+        g_clear_pointer (&priv->display_device, g_free);
 
         parent_class = G_OBJECT_CLASS (gdm_session_auditor_parent_class);
 

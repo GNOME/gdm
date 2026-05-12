@@ -3265,16 +3265,16 @@ gdm_session_worker_finalize (GObject *object)
         jump_back_to_initial_vt (worker);
 
         g_clear_object (&worker->user_settings);
-        g_free (worker->service);
-        g_free (worker->display_device);
-        g_free (worker->display_seat_id);
-        g_free (worker->hostname);
-        g_free (worker->username);
-        g_free (worker->server_address);
-        g_strfreev (worker->arguments);
-        g_strfreev (worker->extensions);
+        g_clear_pointer (&worker->service, g_free);
+        g_clear_pointer (&worker->display_device, g_free);
+        g_clear_pointer (&worker->display_seat_id, g_free);
+        g_clear_pointer (&worker->hostname, g_free);
+        g_clear_pointer (&worker->username, g_free);
+        g_clear_pointer (&worker->server_address, g_free);
+        g_clear_pointer (&worker->arguments, g_strfreev);
+        g_clear_pointer (&worker->extensions, g_strfreev);
 
-        g_hash_table_unref (worker->reauthentication_requests);
+        g_clear_pointer (&worker->reauthentication_requests, g_hash_table_unref);
 
         G_OBJECT_CLASS (gdm_session_worker_parent_class)->finalize (object);
 }

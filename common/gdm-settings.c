@@ -91,10 +91,7 @@ gdm_settings_get_value (GdmSettings *settings,
         for (l = settings->backends; l; l = g_list_next (l)) {
                 GdmSettingsBackend *backend = l->data;
 
-                if (local_error) {
-                        g_error_free (local_error);
-                        local_error = NULL;
-                }
+                g_clear_error (&local_error);
 
                 res = gdm_settings_backend_get_value (backend,
                                                       key,

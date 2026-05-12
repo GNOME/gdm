@@ -921,20 +921,18 @@ gdm_launch_environment_finalize (GObject *object)
 
         gdm_launch_environment_stop (launch_environment);
 
-        if (launch_environment->session) {
-                g_object_unref (launch_environment->session);
-        }
+        g_clear_object (&launch_environment->session);
 
-        g_free (launch_environment->session_name);
-        g_free (launch_environment->preferred_user_name);
-        g_free (launch_environment->dyn_user_name);
-        g_free (launch_environment->dyn_user_home);
-        g_free (launch_environment->user_disp_name);
-        g_free (launch_environment->user_member_of);
-        g_free (launch_environment->dconf_profile);
-        g_free (launch_environment->display_seat_id);
-        g_free (launch_environment->display_hostname);
-        g_free (launch_environment->session_id);
+        g_clear_pointer (&launch_environment->session_name, g_free);
+        g_clear_pointer (&launch_environment->preferred_user_name, g_free);
+        g_clear_pointer (&launch_environment->dyn_user_name, g_free);
+        g_clear_pointer (&launch_environment->dyn_user_home, g_free);
+        g_clear_pointer (&launch_environment->user_disp_name, g_free);
+        g_clear_pointer (&launch_environment->user_member_of, g_free);
+        g_clear_pointer (&launch_environment->dconf_profile, g_free);
+        g_clear_pointer (&launch_environment->display_seat_id, g_free);
+        g_clear_pointer (&launch_environment->display_hostname, g_free);
+        g_clear_pointer (&launch_environment->session_id, g_free);
 
         g_clear_object (&launch_environment->dyn_user_store);
 

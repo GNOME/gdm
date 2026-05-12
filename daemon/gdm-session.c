@@ -451,8 +451,7 @@ load_key_file_for_file (GdmSession   *self,
                         g_debug ("GdmSession: %s", error->message);
                         g_error_free (error);
                 }
-                g_key_file_free (key_file);
-                key_file = NULL;
+                g_clear_pointer (&key_file, g_key_file_free);
         }
 
         g_strfreev (search_dirs);
@@ -3647,8 +3646,7 @@ gdm_session_dispose (GObject *object)
 
         g_clear_pointer (&self->display_seat_id, g_free);
 
-        g_strfreev (self->conversation_environment);
-        self->conversation_environment = NULL;
+        g_clear_pointer (&self->conversation_environment, g_strfreev);
 
         if (self->worker_server != NULL) {
                 g_dbus_server_stop (self->worker_server);
@@ -3673,13 +3671,13 @@ gdm_session_finalize (GObject *object)
 
         self = GDM_SESSION (object);
 
-        g_free (self->selected_user);
-        g_free (self->selected_session);
-        g_free (self->saved_session);
-        g_free (self->saved_language);
-        g_free (self->timed_login_username);
+        g_clear_pointer (&self->selected_user, g_free);
+        g_clear_pointer (&self->selected_session, g_free);
+        g_clear_pointer (&self->saved_session, g_free);
+        g_clear_pointer (&self->saved_language, g_free);
+        g_clear_pointer (&self->timed_login_username, g_free);
 
-        g_free (self->fallback_session_name);
+        g_clear_pointer (&self->fallback_session_name, g_free);
 
         parent_class = G_OBJECT_CLASS (gdm_session_parent_class);
 

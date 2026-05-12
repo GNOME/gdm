@@ -930,10 +930,10 @@ gdm_display_finalize (GObject *object)
         g_return_if_fail (priv != NULL);
 
         g_debug ("GdmDisplay: Finalizing display: %s", priv->id);
-        g_free (priv->id);
-        g_free (priv->seat_id);
-        g_free (priv->session_class);
-        g_free (priv->remote_hostname);
+        g_clear_pointer (&priv->id, g_free);
+        g_clear_pointer (&priv->seat_id, g_free);
+        g_clear_pointer (&priv->session_class, g_free);
+        g_clear_pointer (&priv->remote_hostname, g_free);
 
         g_clear_object (&priv->display_skeleton);
         g_clear_object (&priv->object_skeleton);
