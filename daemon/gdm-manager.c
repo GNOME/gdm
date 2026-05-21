@@ -1849,29 +1849,32 @@ on_session_reauthenticated (GdmSession *session,
 
 static void
 on_stop_conflicting_session (GdmSession *login_session,
-                             const char *username,
+                             const char *opened_session_id,
                              GdmManager *manager)
 {
-        const char *session_id;
-        GdmSession *user_session;
+        g_auto (GStrv) session_ids = NULL;
+        g_autofree char *username = NULL;
+        g_autoptr (GError) error = NULL;
+        int res;
+        int i;
 
-        user_session = find_session_for_user (manager,
-                                              username,
-                                              NULL);
-        if (user_session == NULL) {
-                g_warning ("Couldn't find session for user");
+        res = sd_session_get_username (opened_session_id, &username);
+        if (res < 0) {
+                g_warning ("Failed to get username of opened session: %s", strerror (-res));
                 return;
         }
 
-        if (are_sessions_compatible (login_session, user_session)) {
-                g_warning ("Session requested to stop is compatible, it won't be stopped");
+        if (!gdm_find_graphical_sessions_for_username (username, &session_ids, &error)) {
+                g_warning ("Failed to find sessions for username %s: %s", username, error->message);
                 return;
         }
 
-        session_id = gdm_session_get_session_id (user_session);
-        if (!gdm_terminate_session_by_id (manager->connection, NULL, session_id)) {
-                g_warning ("Failed to terminate conflicting session");
-                return;
+        for (i = 0; i < g_strv_length (session_ids); i++) {
+                if (g_strcmp0 (session_ids[i], opened_session_id) == 0)
+                        continue;
+
+                if (!gdm_terminate_session_by_id (manager->connection, NULL, session_ids[i]))
+                        g_warning ("Failed to terminate conflicting session: %s", session_ids[i]);
         }
 }
 
