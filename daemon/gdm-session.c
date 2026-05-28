@@ -3406,7 +3406,7 @@ update_session_type (GdmSession *self)
         if (is_wayland_session) {
                 set_session_type (self, "wayland");
         } else {
-                set_session_type (self, NULL);
+                set_session_type (self, "x11");
         }
 }
 
