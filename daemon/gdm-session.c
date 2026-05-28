@@ -138,6 +138,8 @@ struct _GdmSession
         guint32              is_program_session : 1;
         guint32              display_is_initial : 1;
         guint32              is_opened : 1;
+
+        char                *session_opened;
 };
 
 enum {
@@ -972,6 +974,8 @@ on_opened (GdmDBusWorker *worker,
 
                 conversation->session_id = g_strdup (session_id);
 
+                g_set_str (&self->session_opened, session_id);
+
                 if (self->user_verifier_interface != NULL) {
                         gdm_dbus_user_verifier_emit_verification_complete (self->user_verifier_interface,
                                                                            service_name);
@@ -1787,7 +1791,7 @@ gdm_session_handle_client_stop_conflicting_session (GdmDBusGreeter        *greet
                 return TRUE;
         }
 
-        g_signal_emit (self, signals[STOP_CONFLICTING_SESSION], 0, self->selected_user);
+        g_signal_emit (self, signals[STOP_CONFLICTING_SESSION], 0, self->session_opened);
 
         if (self->greeter_interface != NULL) {
                 gdm_dbus_greeter_complete_stop_conflicting_session (self->greeter_interface,
@@ -3116,6 +3120,8 @@ do_reset (GdmSession *self)
 
         g_hash_table_remove_all (self->environment);
 
+        g_clear_pointer (&self->session_opened, g_free);
+
         self->session_pid = -1;
         self->session_conversation = NULL;
 }
@@ -3392,7 +3398,7 @@ update_session_type (GdmSession *self)
         if (is_wayland_session) {
                 set_session_type (self, "wayland");
         } else {
-                set_session_type (self, NULL);
+                set_session_type (self, "x11");
         }
 }
 

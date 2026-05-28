@@ -1,3 +1,16 @@
+50.1
+====
+
+* Fixed issue where GDM failed to properly terminate conflicting graphical sessions
+  started outside of GDM (e.g. ThinLinc, TigerVNC). GDM now queries logind directly
+  to find and terminate all conflicting sessions
+* Fixed plymouth hanging indefinitely on headless systems or systems without monitors,
+  which prevented the system from reaching graphical.target
+* Fixed XDG_DATA_DIRS construction to prevent gnome-shell from failing to find its
+  files when /usr/share had higher precedence than /usr/local/share
+* Fixed bug where GDM would set XDG_SESSION_TYPE=wayland on X11 sessions
+* Translation updates
+
 50.0
 ====
 

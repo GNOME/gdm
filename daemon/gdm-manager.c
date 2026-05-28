@@ -92,6 +92,7 @@ struct _GdmManager
 
 #ifdef  WITH_PLYMOUTH
         guint                     plymouth_is_running : 1;
+        guint                     plymouth_quit_timeout_id;
 #endif
         guint                     did_automatic_login : 1;
 };
@@ -190,6 +191,19 @@ plymouth_quit_without_transition (void)
         if (! res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
+        }
+}
+
+static void
+plymouth_quit_timeout_cb (gpointer user_data)
+{
+        GdmManager *manager = user_data;
+
+        manager->plymouth_quit_timeout_id = 0;
+
+        if (manager->plymouth_is_running) {
+                plymouth_quit_without_transition ();
+                manager->plymouth_is_running = FALSE;
         }
 }
 #endif
@@ -720,6 +734,23 @@ gdm_manager_handle_register_session (GdmDBusManager        *manager,
         g_object_set (G_OBJECT (display),
                       "session-registered", TRUE,
                       NULL);
+
+#ifdef WITH_PLYMOUTH
+        if (self->plymouth_is_running) {
+                gboolean display_is_local = FALSE;
+
+                g_object_get (G_OBJECT (display),
+                              "is-local", &display_is_local,
+                              NULL);
+
+                if (display_is_local && self->plymouth_quit_timeout_id == 0) {
+                        self->plymouth_quit_timeout_id =
+                                g_timeout_add_seconds_once (REGISTER_DISPLAY_TIMEOUT,
+                                                            plymouth_quit_timeout_cb,
+                                                            self);
+                }
+        }
+#endif
 
         gdm_dbus_manager_complete_register_session (GDM_DBUS_MANAGER (manager),
                                                     invocation);
@@ -1383,6 +1414,7 @@ on_display_status_changed (GdmDisplay *display,
                         if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_with_transition ();
                                 manager->plymouth_is_running = FALSE;
+                                g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
                         }
 #endif
                         break;
@@ -1393,6 +1425,7 @@ on_display_status_changed (GdmDisplay *display,
                         if (display_is_local && manager->plymouth_is_running) {
                                 plymouth_quit_without_transition ();
                                 manager->plymouth_is_running = FALSE;
+                                g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
                         }
 #endif
 
@@ -1849,29 +1882,32 @@ on_session_reauthenticated (GdmSession *session,
 
 static void
 on_stop_conflicting_session (GdmSession *login_session,
-                             const char *username,
+                             const char *opened_session_id,
                              GdmManager *manager)
 {
-        const char *session_id;
-        GdmSession *user_session;
+        g_auto (GStrv) session_ids = NULL;
+        g_autofree char *username = NULL;
+        g_autoptr (GError) error = NULL;
+        int res;
+        int i;
 
-        user_session = find_session_for_user (manager,
-                                              username,
-                                              NULL);
-        if (user_session == NULL) {
-                g_warning ("Couldn't find session for user");
+        res = sd_session_get_username (opened_session_id, &username);
+        if (res < 0) {
+                g_warning ("Failed to get username of opened session: %s", strerror (-res));
                 return;
         }
 
-        if (are_sessions_compatible (login_session, user_session)) {
-                g_warning ("Session requested to stop is compatible, it won't be stopped");
+        if (!gdm_find_graphical_sessions_for_username (username, &session_ids, &error)) {
+                g_warning ("Failed to find sessions for username %s: %s", username, error->message);
                 return;
         }
 
-        session_id = gdm_session_get_session_id (user_session);
-        if (!gdm_terminate_session_by_id (manager->connection, NULL, session_id)) {
-                g_warning ("Failed to terminate conflicting session");
-                return;
+        for (i = 0; i < g_strv_length (session_ids); i++) {
+                if (g_strcmp0 (session_ids[i], opened_session_id) == 0)
+                        continue;
+
+                if (!gdm_terminate_session_by_id (manager->connection, NULL, session_ids[i]))
+                        g_warning ("Failed to terminate conflicting session: %s", session_ids[i]);
         }
 }
 
@@ -2304,6 +2340,10 @@ gdm_manager_stop (GdmManager *manager)
                                                       G_CALLBACK (on_graphics_unsupported),
                                                       manager);
         }
+
+#ifdef WITH_PLYMOUTH
+        g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
+#endif
 
         manager->started = FALSE;
 }

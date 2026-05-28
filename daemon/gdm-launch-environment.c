@@ -349,16 +349,11 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         if (is_initial_setup)
                 gdm_load_env_d (load_env_func, get_var_cb, hash);
 
-        /* Prepend our own XDG_DATA_DIRS value */
-        system_data_dirs = g_strdup (g_hash_table_lookup (hash, "XDG_DATA_DIRS"));
-        if (!system_data_dirs)
-                system_data_dirs = g_strjoinv (":", (char **) g_get_system_data_dirs ());
-
+        system_data_dirs = g_strjoinv (":", (char **) g_get_system_data_dirs ());
         g_hash_table_insert (hash,
                              g_strdup ("XDG_DATA_DIRS"),
-                             g_strdup_printf ("%s:%s:%s",
+                             g_strdup_printf ("%s:%s",
                                               DATADIR "/gdm/greeter",
-                                              DATADIR,
                                               system_data_dirs));
 
         g_object_get (launch_environment->session,
