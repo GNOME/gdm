@@ -2062,8 +2062,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         g_chdir ("/");
                 }
 
-                (void) pam_end (worker->pam_handle, PAM_SUCCESS | PAM_DATA_SILENT);
-
 #ifdef ENABLE_SYSTEMD_JOURNAL
                 if (has_journald) {
                         stdout_fd = sd_journal_stream_fd (worker->arguments[0], LOG_INFO, FALSE);
@@ -2119,6 +2117,8 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                  * SIGPIPE.
                  */
                 signal (SIGPIPE, SIG_DFL);
+
+                (void) pam_end (worker->pam_handle, PAM_SUCCESS | PAM_DATA_SILENT);
 
                 gdm_session_execute (worker->arguments[0],
                                      worker->arguments,
