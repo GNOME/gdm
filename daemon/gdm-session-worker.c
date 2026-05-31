@@ -2118,6 +2118,8 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                  */
                 signal (SIGPIPE, SIG_DFL);
 
+                (void) pam_end (worker->pam_handle, PAM_SUCCESS | PAM_DATA_SILENT);
+
                 gdm_session_execute (worker->arguments[0],
                                      worker->arguments,
                                      (char **)
