@@ -1075,13 +1075,13 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         GdmSession       *session;
         GdmSession       *login_session = NULL;
         GDBusConnection  *connection;
-        char             *seat_id = NULL;
-        char             *session_id = NULL;
+        g_autofree char  *seat_id = NULL;
+        g_autofree char  *session_id = NULL;
         GPid              pid = 0;
         uid_t             uid = (uid_t) -1;
         gboolean          is_login_screen = FALSE;
         gboolean          is_remote = FALSE;
-        char             *address = NULL;
+        g_autofree char  *address = NULL;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
@@ -1145,7 +1145,6 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
         gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
                                                                  invocation,
                                                                  address);
-        g_free (address);
         return TRUE;
 }
 
