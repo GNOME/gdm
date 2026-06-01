@@ -952,6 +952,12 @@ on_reauthentication_verification_complete (GdmSession *session,
         close_transient_session (self, session);
 }
 
+static void
+clear_user_session (GdmSession *user_session)
+{
+        g_clear_object (&user_session);
+}
+
 static char *
 open_temporary_reauthentication_channel (GdmManager            *self,
                                          GdmSession            *user_session,
@@ -993,7 +999,7 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                 "user-session",
                                 user_session? g_object_ref (user_session) : NULL,
                                 (GDestroyNotify)
-                                g_object_unref);
+                                clear_user_session);
         g_object_set_data (G_OBJECT (session),
                            "caller-pid",
                            GUINT_TO_POINTER (pid));
