@@ -87,6 +87,7 @@ gdm_settings_get_value (GdmSettings *settings,
         g_return_val_if_fail (key != NULL, FALSE);
 
         local_error = NULL;
+        res = FALSE;
 
         for (l = settings->backends; l; l = g_list_next (l)) {
                 GdmSettingsBackend *backend = l->data;
@@ -128,6 +129,7 @@ gdm_settings_set_value (GdmSettings *settings,
         g_debug ("Setting value %s", key);
 
         local_error = NULL;
+        res = FALSE;
 
         for (l = settings->backends; l; l = g_list_next (l)) {
                 GdmSettingsBackend *backend = l->data;

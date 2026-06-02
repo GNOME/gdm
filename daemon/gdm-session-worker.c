@@ -655,6 +655,8 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
         if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CHOICE_LIST)) {
                 GdmPamExtensionChoiceListRequest *list_request = (GdmPamExtensionChoiceListRequest *) extended_message;
                 GdmPamExtensionChoiceListResponse *list_response = malloc (GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE);
+                if (list_response == NULL)
+                        return FALSE;
 
                 g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CHOICE_LIST);
 
@@ -672,6 +674,8 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
         } else if (GDM_PAM_EXTENSION_MESSAGE_MATCH (extended_message, worker->extensions, GDM_PAM_EXTENSION_CUSTOM_JSON)) {
                 GdmPamExtensionJSONProtocol *json_request = (GdmPamExtensionJSONProtocol *) extended_message;
                 g_autofree GdmPamExtensionJSONProtocol *json_response = malloc (GDM_PAM_EXTENSION_CUSTOM_JSON_SIZE);
+                if (json_response == NULL)
+                        return FALSE;
 
                 g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CUSTOM_JSON);
 
@@ -714,7 +718,9 @@ convert_to_utf8 (const char *str)
                 utf8 = g_strdup (str);
 
                 p = utf8;
-                while (*p != '\0' && !g_utf8_validate ((const char *)p, -1, (const char **)&q)) {
+                while (p != NULL &&
+                       *p != '\0' &&
+                       !g_utf8_validate ((const char *)p, -1, (const char **)&q)) {
                         *q = '?';
                         p = q + 1;
                 }
@@ -894,6 +900,9 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
          */
         replies = (struct pam_response *) calloc (number_of_messages,
                                                   sizeof (struct pam_response));
+        if (replies == NULL)
+                return PAM_CONV_ERR;
+
         for (i = 0; i < number_of_messages; i++) {
                 gboolean got_response;
                 char    *response;
@@ -1067,11 +1076,14 @@ jump_to_vt (GdmSessionWorker  *worker,
 
         if (worker->session_tty_fd != -1) {
                 static const char *clear_screen_escape_sequence = "\33[H\33[2J";
+                ssize_t bytes_written;
 
                 /* let's make sure the new VT is clear */
-                write (worker->session_tty_fd,
-                       clear_screen_escape_sequence,
-                       sizeof (clear_screen_escape_sequence));
+                bytes_written = write (worker->session_tty_fd,
+                                       clear_screen_escape_sequence,
+                                       sizeof (clear_screen_escape_sequence));
+                if (bytes_written < 0)
+                        g_debug ("GdmSessionWorker: failed to clear VT: %s", g_strerror (errno));
 
                 fd = worker->session_tty_fd;
 
@@ -2010,6 +2022,10 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         needs_controlling_terminal = TRUE;
                 } else {
                         stdin_fd = open ("/dev/null", O_RDWR);
+                        if (stdin_fd < 0) {
+                                g_debug ("GdmSessionWorker: could not open /dev/null for stdin: %s", g_strerror (errno));
+                                _exit (EXIT_FAILURE);
+                        }
                         dup2 (stdin_fd, STDIN_FILENO);
                         close (stdin_fd);
                 }
@@ -2088,14 +2104,17 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
                                 if (g_mkdir_with_parents (log_dir, S_IRWXU) == 0) {
                                         stdout_fd = _open_user_session_log (log_dir);
-                                        stderr_fd = dup (stdout_fd);
+                                        if (stdout_fd >= 0)
+                                                stderr_fd = dup (stdout_fd);
                                 } else {
                                         stdout_fd = open ("/dev/null", O_RDWR);
-                                        stderr_fd = dup (stdout_fd);
+                                        if (stdout_fd >= 0)
+                                                stderr_fd = dup (stdout_fd);
                                 }
                         } else {
                                 stdout_fd = open ("/dev/null", O_RDWR);
-                                stderr_fd = dup (stdout_fd);
+                                if (stdout_fd >= 0)
+                                        stderr_fd = dup (stdout_fd);
                         }
                 }
 

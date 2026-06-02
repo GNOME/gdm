@@ -269,6 +269,9 @@ gdm_session_record (GdmSessionRecordEvent  event,
                 g_debug ("Writing failed session attempt record");
                 write_record = write_failed_record;
                 break;
+        default:
+                g_warning ("Unknown session record event: %d", event);
+                return;
         }
 
         g_object_get (G_OBJECT (session),

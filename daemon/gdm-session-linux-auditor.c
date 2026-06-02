@@ -58,6 +58,7 @@ log_user_message (GdmSessionAuditor *auditor,
         g_autofree char *hostname = NULL;
         g_autofree char *display_device = NULL;
         struct passwd            *pw;
+        int rc;
 
         linux_auditor = GDM_SESSION_LINUX_AUDITOR (auditor);
 
@@ -74,15 +75,18 @@ log_user_message (GdmSessionAuditor *auditor,
 
         if (pw != NULL) {
                 g_snprintf (buf, sizeof (buf), "uid=%d", pw->pw_uid);
-                audit_log_user_message (linux_auditor->audit_fd, type,
-                                        buf, hostname, NULL, display_device,
-                                        result);
+                rc = audit_log_user_message (linux_auditor->audit_fd, type,
+                                             buf, hostname, NULL, display_device,
+                                             result);
         } else {
                 g_snprintf (buf, sizeof (buf), "acct=%s", username);
-                audit_log_user_message (linux_auditor->audit_fd, type,
-                                        buf, hostname, NULL, display_device,
-                                        result);
+                rc = audit_log_user_message (linux_auditor->audit_fd, type,
+                                             buf, hostname, NULL, display_device,
+                                             result);
         }
+
+        if (rc < 0)
+                g_warning ("Failed to write audit message: %s", g_strerror (errno));
 }
 
 static void

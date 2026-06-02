@@ -727,7 +727,7 @@ handle_is_local (GdmDBusDisplay        *skeleton,
                  GDBusMethodInvocation *invocation,
                  GdmDisplay            *self)
 {
-        gboolean is_local;
+        gboolean is_local = FALSE;
 
         gdm_display_is_local (self, &is_local, NULL);
 
