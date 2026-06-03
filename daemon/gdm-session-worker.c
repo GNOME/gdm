@@ -2867,7 +2867,9 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                 if (g_strcmp0 (key, "service") == 0) {
                         worker->service = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "extensions") == 0) {
-                        worker->extensions = filter_extensions (g_variant_get_strv (value, NULL));
+                        g_autofree const char **supported_extensions = g_variant_get_strv (value, NULL);
+
+                        worker->extensions = filter_extensions (supported_extensions);
                 } else if (g_strcmp0 (key, "username") == 0) {
                         worker->username = g_variant_dup_string (value, NULL);
                 } else if (g_strcmp0 (key, "is-program-session") == 0) {
