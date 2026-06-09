@@ -2517,12 +2517,6 @@ gdm_manager_constructor (GType                  type,
 
         gdm_dbus_manager_set_version (GDM_DBUS_MANAGER (manager), PACKAGE_VERSION);
 
-        manager->local_factory = gdm_local_display_factory_new (manager->display_store);
-
-        if (manager->remote_login_enabled) {
-                manager->remote_factory = gdm_remote_display_factory_new (manager->display_store);
-        }
-
         return G_OBJECT (manager);
 }
 
