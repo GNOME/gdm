@@ -84,6 +84,7 @@ struct _GdmManager
         GHashTable             *transient_sessions;
         GHashTable             *open_reauthentication_requests;
         gboolean                remote_login_enabled;
+        gboolean                show_local_greeter;
 
         gboolean                started;
 
@@ -99,7 +100,8 @@ struct _GdmManager
 
 enum {
         PROP_0,
-        PROP_REMOTE_LOGIN_ENABLED
+        PROP_REMOTE_LOGIN_ENABLED,
+        PROP_SHOW_LOCAL_GREETER,
 };
 
 enum {
@@ -2367,15 +2369,25 @@ gdm_manager_start (GdmManager *manager)
                 plymouth_prepare_for_transition ();
         }
 #endif
-        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
-        g_signal_connect (manager->local_factory,
-                          "graphics-unsupported",
-                          G_CALLBACK (on_graphics_unsupported),
-                          manager);
+        if (manager->show_local_greeter) {
+                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->local_factory));
+                g_signal_connect (manager->local_factory,
+                                  "graphics-unsupported",
+                                  G_CALLBACK (on_graphics_unsupported),
+                                  manager);
+        }
 
         /* Accept remote connections */
-        if (manager->remote_login_enabled)
+        if (manager->remote_login_enabled) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->remote_factory));
+
+#ifdef WITH_PLYMOUTH
+                if (!manager->show_local_greeter && manager->plymouth_is_running) {
+                        plymouth_quit_without_transition ();
+                        manager->plymouth_is_running = FALSE;
+                }
+#endif
+        }
 
         manager->started = TRUE;
 }
@@ -2430,6 +2442,22 @@ gdm_manager_set_remote_login_enabled (GdmManager *manager,
         }
 }
 
+void
+gdm_manager_set_show_local_greeter (GdmManager *manager,
+                                    gboolean    show_local_greeter)
+{
+        g_return_if_fail (GDM_IS_MANAGER (manager));
+
+        if (manager->show_local_greeter != show_local_greeter) {
+                manager->show_local_greeter = show_local_greeter;
+                if (manager->show_local_greeter) {
+                        manager->local_factory = gdm_local_display_factory_new (manager->display_store);
+                } else {
+                        g_clear_object (&manager->local_factory);
+                }
+        }
+}
+
 static void
 gdm_manager_set_property (GObject      *object,
                           guint         prop_id,
@@ -2443,6 +2471,9 @@ gdm_manager_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_REMOTE_LOGIN_ENABLED:
                 gdm_manager_set_remote_login_enabled (self, g_value_get_boolean (value));
+                break;
+        case PROP_SHOW_LOCAL_GREETER:
+                gdm_manager_set_show_local_greeter (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2463,6 +2494,9 @@ gdm_manager_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_REMOTE_LOGIN_ENABLED:
                 g_value_set_boolean (value, self->remote_login_enabled);
+                break;
+        case PROP_SHOW_LOCAL_GREETER:
+                g_value_set_boolean (value, self->show_local_greeter);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2529,6 +2563,14 @@ gdm_manager_class_init (GdmManagerClass *klass)
                                                                NULL,
                                                                NULL,
                                                                FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+
+        g_object_class_install_property (object_class,
+                                         PROP_SHOW_LOCAL_GREETER,
+                                         g_param_spec_boolean ("show-local-greeter",
+                                                               NULL,
+                                                               NULL,
+                                                               TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
