@@ -1,11 +1,11 @@
-auth        substack      switchable-auth
+auth        substack      gdm-switchable-auth-substack
 auth        optional      pam_gnome_keyring.so
 auth        include       postlogin
 
 account     required      pam_nologin.so
 account     include       switchable-auth
 
-password    substack       switchable-auth
+password    substack       gdm-switchable-auth-substack
 -password   optional       pam_gnome_keyring.so use_authtok
 
 session     required      pam_selinux.so close

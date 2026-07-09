@@ -100,6 +100,26 @@ foreach _pam_filename : pam_data_files
   )
 endforeach
 
+if default_pam_config == 'redhat'
+  pam_substack_services = [
+    'password-auth',
+    'smartcard-auth',
+    'fingerprint-auth',
+    'switchable-auth',
+  ]
+  foreach service : pam_substack_services
+    pam_conf = configuration_data()
+    pam_conf.set('PAM_SERVICE', service)
+    configure_file(
+      input: 'pam-redhat/gdm-service-auth-substack.pam.in',
+      output: 'gdm-@0@-substack'.format(service),
+      configuration: pam_conf,
+      install: true,
+      install_dir: pam_profiles_dir,
+    )
+  endforeach
+endif
+
 # DBus service files
 service_config = configuration_data()
 service_config.set('sbindir', gdm_prefix / get_option('sbindir'))
