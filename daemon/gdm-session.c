@@ -2744,7 +2744,8 @@ get_session_name (GdmSession *self)
 }
 
 static char *
-get_session_command (GdmSession *self)
+get_session_command (GdmSession  *self,
+                     GError     **error)
 {
         gboolean    res;
         char       *command;
@@ -2755,8 +2756,12 @@ get_session_command (GdmSession *self)
         command = NULL;
         res = get_session_command_for_name (self, session_name, NULL, &command);
         if (! res) {
-                g_critical ("Cannot find a command for specified session: %s", session_name);
-                exit (EXIT_FAILURE);
+                g_set_error (error,
+                             G_IO_ERROR,
+                             G_IO_ERROR_NOT_FOUND,
+                             "Cannot find a command for specified session: %s",
+                             session_name);
+                return NULL;
         }
 
         return command;
@@ -3025,6 +3030,7 @@ gdm_session_start_session (GdmSession *self,
         GdmSessionConversation *conversation;
         g_autofree char        *command = NULL;
         g_autofree char        *program = NULL;
+        g_autoptr(GError)       error = NULL;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (service_name != NULL);
@@ -3040,7 +3046,16 @@ gdm_session_start_session (GdmSession *self,
 
         stop_all_other_conversations (self, conversation, FALSE);
 
-        command = get_session_command (self);
+        command = get_session_command (self, &error);
+
+        if (command == NULL) {
+                gdm_session_stop_conversation (self, service_name);
+
+                g_debug ("GdmSession: Emitting 'session-start-failed' signal");
+                g_signal_emit (self, signals[SESSION_START_FAILED], 0, service_name,
+                               error->message);
+                return;
+        }
 
         if (g_strcmp0 (self->session_type, "wayland") == 0) {
                 gboolean needs_registration = !gdm_session_session_registers (self);
