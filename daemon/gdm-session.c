@@ -1806,6 +1806,8 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                                             GdmSession            *self)
 {
         const char *session_username;
+        g_autofree char *allowed = NULL;
+        gboolean enabled = FALSE;
 
         if (gdm_session_is_running (self)) {
                 session_username = gdm_session_get_username (self);
@@ -1818,6 +1820,19 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                                                        G_DBUS_ERROR_INVALID_ARGS,
                                                        "Session already owned by user %s",
                                                        session_username);
+                return TRUE;
+        }
+
+        gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
+        gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &allowed);
+        if (!enabled || allowed == NULL || g_strcmp0 (allowed, username) != 0) {
+                g_debug ("GdmSession: refusing auto login for user '%s' (enabled=%d, allowed=%s)",
+                         username, enabled, allowed ? allowed : "(null)");
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_ACCESS_DENIED,
+                                                       "Autologin not permitted for user %s",
+                                                       username);
                 return TRUE;
         }
 
