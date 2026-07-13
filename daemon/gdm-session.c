@@ -441,6 +441,13 @@ load_key_file_for_file (GdmSession   *self,
         gboolean    res;
         char      **search_dirs;
 
+        g_return_val_if_fail (file != NULL, NULL);
+
+        if (strchr (file, '/') != NULL) {
+                g_warning ("GdmSession: rejecting session file with path separator: %s", file);
+                return NULL;
+        }
+
         key_file = g_key_file_new ();
 
         search_dirs = get_system_session_dirs (self, type);
