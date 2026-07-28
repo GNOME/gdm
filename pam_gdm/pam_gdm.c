@@ -32,6 +32,18 @@
 #include <keyutils.h>
 #endif
 
+static inline void
+gdm_pam_zero_buffer (void   *s,
+                     size_t  n)
+{
+#ifdef HAVE_EXPLICIT_BZERO
+        explicit_bzero (s, n);
+#else
+        memset (s, 0, n);
+        __asm__ __volatile__ ("" : : "r"(s) : "memory");
+#endif
+}
+
 int
 pam_sm_authenticate (pam_handle_t  *pamh,
                      int            flags,
@@ -64,6 +76,7 @@ pam_sm_authenticate (pam_handle_t  *pamh,
         */
         if (cached_passwords_length == 0 ||
             ((char *) cached_passwords)[cached_passwords_length - 1] != '\0') {
+                gdm_pam_zero_buffer (cached_passwords, cached_passwords_length);
                 free (cached_passwords);
                 return PAM_AUTHINFO_UNAVAIL;
         }
@@ -86,6 +99,8 @@ pam_sm_authenticate (pam_handle_t  *pamh,
 
         r = pam_set_item (pamh, PAM_AUTHTOK, last_cached_password);
 
+        /* pam_set_item copies the string, so the plaintext can now be wiped. */
+        gdm_pam_zero_buffer (cached_passwords, cached_passwords_length);
         free (cached_passwords);
 
         if (r < 0)
