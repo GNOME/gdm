@@ -3119,21 +3119,52 @@ free_pending_worker_connection (GdmSession      *self,
                                    NULL);
         }
 
+        g_signal_handlers_disconnect_by_func (connection,
+                                              G_CALLBACK (on_worker_connection_closed),
+                                              self);
+
         g_object_unref (connection);
 }
 
 static void
 free_pending_worker_connections (GdmSession *self)
 {
+        g_autoptr (GList) connections = NULL;
         GList *node;
 
-        for (node = self->pending_worker_connections; node != NULL; node = node->next) {
+        connections = g_steal_pointer (&self->pending_worker_connections);
+
+        for (node = connections; node != NULL; node = node->next) {
                 GDBusConnection *connection = node->data;
 
                 free_pending_worker_connection (self, connection);
         }
-        g_list_free (self->pending_worker_connections);
-        self->pending_worker_connections = NULL;
+}
+
+static void
+free_outside_connection (GdmSession      *self,
+                         GDBusConnection *connection)
+{
+        g_signal_handlers_disconnect_by_func (connection,
+                                              G_CALLBACK (on_outside_connection_closed),
+                                              self);
+
+        g_object_unref (connection);
+}
+
+static void
+free_outside_connections (GdmSession *self)
+{
+        g_autoptr (GList) connections = NULL;
+        GList *node;
+
+        connections = g_steal_pointer (&self->outside_connections);
+
+        for (node = connections; node != NULL; node = node->next) {
+                GDBusConnection *connection = node->data;
+
+                free_outside_connection (self, connection);
+        }
 }
 
 static void
@@ -3166,14 +3197,12 @@ do_reset (GdmSession *self)
 void
 gdm_session_close (GdmSession *self)
 {
-
         g_return_if_fail (GDM_IS_SESSION (self));
 
         g_debug ("GdmSession: Closing session");
         do_reset (self);
 
-        g_list_free_full (self->outside_connections, g_object_unref);
-        self->outside_connections = NULL;
+        free_outside_connections (self);
 }
 
 void
