@@ -1255,6 +1255,7 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
                                                                "Connection is not from a known conversation");
                 g_dbus_connection_close_sync (connection, NULL, NULL);
+                g_object_unref (connection);
                 return TRUE;
         }
 
