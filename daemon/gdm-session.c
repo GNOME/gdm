@@ -448,6 +448,13 @@ load_key_file_for_file (GdmSession   *self,
         gboolean    res;
         char      **search_dirs;
 
+        g_return_val_if_fail (file != NULL, NULL);
+
+        if (strchr (file, '/') != NULL) {
+                g_warning ("GdmSession: rejecting session file with path separator: %s", file);
+                return NULL;
+        }
+
         key_file = g_key_file_new ();
 
         search_dirs = get_system_session_dirs (self, type);
@@ -1806,6 +1813,8 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                                             GdmSession            *self)
 {
         const char *session_username;
+        g_autofree char *allowed = NULL;
+        gboolean enabled = FALSE;
 
         if (gdm_session_is_running (self)) {
                 session_username = gdm_session_get_username (self);
@@ -1818,6 +1827,19 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                                                        G_DBUS_ERROR_INVALID_ARGS,
                                                        "Session already owned by user %s",
                                                        session_username);
+                return TRUE;
+        }
+
+        gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
+        gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &allowed);
+        if (!enabled || allowed == NULL || g_strcmp0 (allowed, username) != 0) {
+                g_debug ("GdmSession: refusing auto login for user '%s' (enabled=%d, allowed=%s)",
+                         username, enabled, allowed ? allowed : "(null)");
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_ACCESS_DENIED,
+                                                       "Autologin not permitted for user %s",
+                                                       username);
                 return TRUE;
         }
 
@@ -2816,7 +2838,8 @@ get_session_name (GdmSession *self)
 }
 
 static char *
-get_session_command (GdmSession *self)
+get_session_command (GdmSession  *self,
+                     GError     **error)
 {
         gboolean    res;
         char       *command;
@@ -2827,8 +2850,12 @@ get_session_command (GdmSession *self)
         command = NULL;
         res = get_session_command_for_name (self, session_name, NULL, &command);
         if (! res) {
-                g_critical ("Cannot find a command for specified session: %s", session_name);
-                exit (EXIT_FAILURE);
+                g_set_error (error,
+                             G_IO_ERROR,
+                             G_IO_ERROR_NOT_FOUND,
+                             "Cannot find a command for specified session: %s",
+                             session_name);
+                return NULL;
         }
 
         return command;
@@ -3121,6 +3148,7 @@ gdm_session_start_session (GdmSession *self,
         char                   *command;
         char                   *program;
         gboolean               register_session;
+        g_autoptr(GError)       error = NULL;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (service_name != NULL);
@@ -3152,7 +3180,16 @@ gdm_session_start_session (GdmSession *self,
         if (self->selected_program == NULL) {
                 gboolean run_xsession_script;
 
-                command = get_session_command (self);
+                command = get_session_command (self, &error);
+
+                if (command == NULL) {
+                        gdm_session_stop_conversation (self, service_name);
+
+                        g_debug ("GdmSession: Emitting 'session-start-failed' signal");
+                        g_signal_emit (self, signals[SESSION_START_FAILED], 0, service_name,
+                                       error->message);
+                        return;
+                }
 
                 run_xsession_script = !gdm_session_bypasses_xsession (self);
 

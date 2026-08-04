@@ -620,7 +620,7 @@ vl_get_memberships (sd_varlink                *call,
         G_MUTEX_AUTO_LOCK (&store->mutex, locker);
 
         if (params.username) {
-                user = g_hash_table_lookup (store->by_name, &params.username);
+                user = g_hash_table_lookup (store->by_name, params.username);
                 if (test_group_membership (user, params.groupname))
                         return reply_user_group (call, VARLINK_REPLY_FINAL, user);
         } else {
