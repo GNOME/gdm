@@ -1,3 +1,23 @@
+49.4
+==========
+
+* Fixed path traversal vulnerability where a compromised greeter could load
+  arbitrary .desktop files via SelectSession, potentially executing
+  attacker-controlled commands as the authenticated user  [Mario; !377]
+* Fixed autologin bypass where a compromised greeter could request autologin
+  for any local account by sending arbitrary usernames via BeginAutoLogin
+  [Mario; !375]
+* Fixed denial of service where an invalid session name from the greeter would
+  cause the entire daemon to exit, terminating all active sessions  [Mario; !376]
+* Fixed passphrase handling in pam_gdm to wipe cached plaintext passwords
+  before freeing and to bound the keyring buffer walk preventing out-of-bounds
+  reads  [Mario; !384]
+* Fixed crashes, memory leaks and wrong hash key type in reauthentication
+  channel handler, session worker and dynamic user store  [Ignacio; !371]
+
+Contributors:
+  Ignacio Casal Quinteiro, Mario Limonciello
+
 49.3
 ==========
 
