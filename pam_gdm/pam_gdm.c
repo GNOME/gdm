@@ -19,6 +19,7 @@
  */
 #include <config.h>
 
+#include <string.h>
 #include <unistd.h>
 
 #include <security/_pam_macros.h>
@@ -30,6 +31,18 @@
 #ifdef HAVE_KEYUTILS
 #include <keyutils.h>
 #endif
+
+static inline void
+gdm_pam_zero_buffer (void   *s,
+                     size_t  n)
+{
+#ifdef HAVE_EXPLICIT_BZERO
+        explicit_bzero (s, n);
+#else
+        memset (s, 0, n);
+        __asm__ __volatile__ ("" : : "r"(s) : "memory");
+#endif
+}
 
 int
 pam_sm_authenticate (pam_handle_t  *pamh,
@@ -52,8 +65,21 @@ pam_sm_authenticate (pam_handle_t  *pamh,
         r = keyctl_read_alloc (serial, &cached_passwords);
         if (r < 0)
                 return PAM_AUTHINFO_UNAVAIL;
-        
+
         cached_passwords_length = r;
+
+        /*
+            The payload is a NUL-separated list of passwords, but the blob
+            returned by the kernel is not guaranteed to be NUL-terminated.
+            Reject a payload whose final entry is not terminated within the
+            buffer so that walking it below cannot read past the end.
+        */
+        if (cached_passwords_length == 0 ||
+            ((char *) cached_passwords)[cached_passwords_length - 1] != '\0') {
+                gdm_pam_zero_buffer (cached_passwords, cached_passwords_length);
+                free (cached_passwords);
+                return PAM_AUTHINFO_UNAVAIL;
+        }
 
         /*
             Find the last password in the NUL-separated list of passwords.
@@ -66,12 +92,15 @@ pam_sm_authenticate (pam_handle_t  *pamh,
         */
         last_cached_password = cached_passwords;
         for (i = 0; i < cached_passwords_length; i++) {
+                size_t remaining = cached_passwords_length - i;
                 last_cached_password = ((char *) cached_passwords) + i;
-                i += strlen (last_cached_password);
+                i += strnlen (last_cached_password, remaining);
         }
 
         r = pam_set_item (pamh, PAM_AUTHTOK, last_cached_password);
 
+        /* pam_set_item copies the string, so the plaintext can now be wiped. */
+        gdm_pam_zero_buffer (cached_passwords, cached_passwords_length);
         free (cached_passwords);
 
         if (r < 0)
