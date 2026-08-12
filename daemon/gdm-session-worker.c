@@ -1244,11 +1244,12 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 
         service_path = gdm_session_worker_resolve_service_file (service);
         if (!service_path) {
-                g_debug ("GdmSessionWorker: PAM profile %s was not found", service);
+                g_debug ("GdmSessionWorker: PAM service %s was not found in search path: %s:%s",
+                         service, PAM_CONFIG_SERVICES_DIR, PAM_SYS_SERVICES_DIR);
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
-                             "PAM profile %s was not found", service);
+                             "PAM service %s was not found", service);
 
                 /* There is not a specific error for service not found, so we just
                  * error out as the module is missing, although this is not really
@@ -1259,7 +1260,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 goto out;
         }
 
-        g_debug ("GdmSessionWorker: found PAM profile %s at %s. Continuing",
+        g_debug ("GdmSessionWorker: found PAM service %s at %s. Continuing",
                  service, service_path);
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
