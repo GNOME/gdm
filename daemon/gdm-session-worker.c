@@ -1259,7 +1259,8 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 goto out;
         }
 
-        g_debug ("GdmSessionWorker: using PAM profile %s", service_path);
+        g_debug ("GdmSessionWorker: found PAM profile %s at %s. Continuing",
+                 service, service_path);
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
         if (extensions != NULL) {
@@ -1273,7 +1274,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
         pam_conversation.appdata_ptr = worker;
 
         gdm_session_worker_start_auditor (worker);
-        error_code = pam_start (service_path,
+        error_code = pam_start (service,
                                 username,
                                 &pam_conversation,
                                 &worker->pam_handle);
