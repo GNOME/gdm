@@ -67,20 +67,6 @@ pam_sm_authenticate (pam_handle_t  *pamh,
                 return PAM_AUTHINFO_UNAVAIL;
 
         cached_passwords_length = r;
-
-        /*
-            The payload is a NUL-separated list of passwords, but the blob
-            returned by the kernel is not guaranteed to be NUL-terminated.
-            Reject a payload whose final entry is not terminated within the
-            buffer so that walking it below cannot read past the end.
-        */
-        if (cached_passwords_length == 0 ||
-            ((char *) cached_passwords)[cached_passwords_length - 1] != '\0') {
-                gdm_pam_zero_buffer (cached_passwords, cached_passwords_length);
-                free (cached_passwords);
-                return PAM_AUTHINFO_UNAVAIL;
-        }
-
         /*
             Find the last password in the NUL-separated list of passwords.
             Multiple passwords are returned either when the user enters an
