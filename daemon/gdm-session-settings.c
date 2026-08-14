@@ -349,7 +349,8 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         }
 
         settings->user = act_user_manager_get_user (settings->user_manager,
-                                                          username);
+                                                    username);
+        g_object_ref (settings->user);
 
         if (!act_user_is_loaded (settings->user)) {
                 g_signal_connect (settings->user,
