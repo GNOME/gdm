@@ -1,3 +1,20 @@
+50.3
+====
+
+* Fixed pam_gdm regression where a previous security fix caused authentication
+  to fail on systemd, which intentionally leaves the kernel keyring buffer
+  unterminated  [Adrian; !391]
+* Fixed potential use-after-free where gdm-session-settings did not keep a
+  reference to the user, which could be freed by the manager while it was
+  still emitting signals  [Ignacio; !392]
+* Fixed connection reference leaks and a use-after-free crash in session
+  worker connection teardown that could bring down the whole user session
+  during screen lock/unlock  [pozsy; !385]
+* Translation updates
+
+Contributors:
+  Adrian Vovk, Ignacio Casal Quinteiro, Nathan Follens, pozsy
+
 50.2
 ====
 
