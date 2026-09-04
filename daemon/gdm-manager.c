@@ -66,6 +66,7 @@
 
 static GQuark gdm_display_user_session_quark;
 static GQuark gdm_display_reauth_pid_of_caller_quark;
+static GQuark gdm_session_remote_id_quark;
 static GQuark gdm_session_display_quark;
 static GQuark gdm_session_caller_pid_quark;
 static GQuark gdm_session_user_session_quark;
@@ -1505,11 +1506,11 @@ create_display_for_user_session (GdmManager *self,
         g_object_get (G_OBJECT (session), "display-is-local", &display_is_local, NULL);
 
         if (!display_is_local) {
-                g_autofree char *remote_id = NULL;
+                const char *remote_id = g_object_get_qdata (G_OBJECT (session),
+                                                            gdm_session_remote_id_quark);
                 g_autofree char *remote_hostname = NULL;
 
                 g_object_get (G_OBJECT (session),
-                              "remote-id", &remote_id,
                               "display-hostname", &remote_hostname,
                               NULL);
 
@@ -2176,9 +2177,9 @@ create_user_session_for_display (GdmManager *manager,
                                    NULL);
 
         if (GDM_IS_REMOTE_DISPLAY (display)) {
-                g_autofree char *remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (display));
+                char *remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (display));
 
-                g_object_set (G_OBJECT (session), "remote-id", remote_id, NULL);
+                g_object_set_qdata_full (G_OBJECT (session), gdm_session_remote_id_quark, remote_id, g_free);
         }
 
         g_object_set (G_OBJECT (session),
@@ -2537,6 +2538,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
 
         gdm_display_user_session_quark = g_quark_from_static_string ("gdm-display-user-session");
         gdm_display_reauth_pid_of_caller_quark = g_quark_from_static_string ("gdm-display-reauth-pid-of-caller");
+        gdm_session_remote_id_quark = g_quark_from_static_string ("gdm-session-remote-id");
         gdm_session_display_quark = g_quark_from_static_string ("gdm-session-display");
         gdm_session_caller_pid_quark = g_quark_from_static_string ("gdm-session-caller-pid");
         gdm_session_user_session_quark = g_quark_from_static_string ("gdm-session-user-session");

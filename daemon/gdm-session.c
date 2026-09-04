@@ -133,7 +133,6 @@ struct _GdmSession
 
         GStrv                supported_session_types;
 
-        char                *remote_id;
         char                *session_id_of_caller;
 
         guint32              is_program_session : 1;
@@ -155,7 +154,6 @@ enum {
         PROP_DISPLAY_SEAT_ID,
         PROP_CONVERSATION_ENVIRONMENT,
         PROP_SUPPORTED_SESSION_TYPES,
-        PROP_REMOTE_ID,
         PROP_SESSION_ID_OF_CALLER,
 };
 
@@ -3658,14 +3656,6 @@ set_session_type (GdmSession *self,
 }
 
 static void
-set_remote_id (GdmSession *self,
-               const char *remote_id)
-{
-        g_free (self->remote_id);
-        self->remote_id = g_strdup (remote_id);
-}
-
-static void
 set_session_id_of_caller (GdmSession *self,
                           const char *session_id_of_caller)
 {
@@ -3713,9 +3703,6 @@ gdm_session_set_property (GObject      *object,
                 break;
         case PROP_SUPPORTED_SESSION_TYPES:
                 gdm_session_set_supported_session_types (self, g_value_get_boxed (value));
-                break;
-        case PROP_REMOTE_ID:
-                set_remote_id (self, g_value_get_string (value));
                 break;
         case PROP_SESSION_ID_OF_CALLER:
                 set_session_id_of_caller (self, g_value_get_string (value));
@@ -3766,9 +3753,6 @@ gdm_session_get_property (GObject    *object,
                 break;
         case PROP_SUPPORTED_SESSION_TYPES:
                 g_value_set_boxed (value, self->supported_session_types);
-                break;
-        case PROP_REMOTE_ID:
-                g_value_set_string (value, self->remote_id);
                 break;
         case PROP_SESSION_ID_OF_CALLER:
                 g_value_set_string (value, self->session_id_of_caller);
@@ -4190,14 +4174,6 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                              "supported session types",
                                                              G_TYPE_STRV,
                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-
-        g_object_class_install_property (object_class,
-                                         PROP_REMOTE_ID,
-                                         g_param_spec_string ("remote-id",
-                                                              "remote id",
-                                                              "remote id",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_SESSION_ID_OF_CALLER,
