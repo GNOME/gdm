@@ -64,6 +64,16 @@
 #define ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT GDM_RUN_DIR "/gdm.ran-initial-setup"
 #define INITIAL_SETUP_EXPORT_DIR GDM_RUN_DIR "/gnome-initial-setup"
 
+static GQuark gdm_display_user_session_quark;
+static GQuark gdm_display_reauth_pid_of_caller_quark;
+static GQuark gdm_session_display_quark;
+static GQuark gdm_session_caller_pid_quark;
+static GQuark gdm_session_user_session_quark;
+static GQuark gdm_session_start_user_session_operation_quark;
+static GQuark gdm_session_start_when_ready_quark;
+static GQuark gdm_session_waiting_to_start_quark;
+static GQuark gdm_session_reset_session_operation_quark;
+
 typedef struct
 {
         GdmManager *manager;
@@ -628,7 +638,7 @@ switch_to_compatible_user_session (GdmManager *manager,
 static GdmDisplay *
 get_display_for_user_session (GdmSession *session)
 {
-        return g_object_get_data (G_OBJECT (session), "gdm-display");
+        return g_object_get_qdata (G_OBJECT (session), gdm_session_display_quark);
 }
 
 static GdmSession *
@@ -638,7 +648,7 @@ get_user_session_for_display (GdmDisplay *display)
                 return NULL;
         }
 
-        return g_object_get_data (G_OBJECT (display), "gdm-user-session");
+        return g_object_get_qdata (G_OBJECT (display), gdm_display_user_session_quark);
 }
 
 static GdmSession *
@@ -837,7 +847,7 @@ close_transient_session (GdmManager *self,
                          GdmSession *session)
 {
         GPid pid;
-        pid = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), "caller-pid"));
+        pid = GPOINTER_TO_UINT (g_object_get_qdata (G_OBJECT (session), gdm_session_caller_pid_quark));
         gdm_session_close (session);
         g_hash_table_remove (self->transient_sessions,
                              GUINT_TO_POINTER (pid));
@@ -877,7 +887,7 @@ on_reauthentication_client_rejected (GdmSession              *session,
                 return;
         }
 
-        pid = (GPid) GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (session), "caller-pid"));
+        pid = (GPid) GPOINTER_TO_UINT (g_object_get_qdata (G_OBJECT (session), gdm_session_caller_pid_quark));
 
         if (pid != pid_of_client) {
                 g_autofree char *session_id = NULL;
@@ -936,7 +946,7 @@ on_reauthentication_verification_complete (GdmSession *session,
         GdmSession *user_session;
         g_autofree char *session_id_of_caller = NULL;
 
-        user_session = g_object_get_data (G_OBJECT (session), "user-session");
+        user_session = g_object_get_qdata (G_OBJECT (session), gdm_session_user_session_quark);
         g_object_get (session, "session-id-of-caller", &session_id_of_caller, NULL);
 
         if (user_session != NULL) {
@@ -993,14 +1003,14 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                  seat_id);
 
         g_object_set (session, "session-id-of-caller", session_id_of_caller, NULL);
-        g_object_set_data_full (G_OBJECT (session),
-                                "user-session",
-                                user_session? g_object_ref (user_session) : NULL,
-                                (GDestroyNotify)
-                                clear_user_session);
-        g_object_set_data (G_OBJECT (session),
-                           "caller-pid",
-                           GUINT_TO_POINTER (pid));
+        g_object_set_qdata_full (G_OBJECT (session),
+                                 gdm_session_user_session_quark,
+                                 user_session? g_object_ref (user_session) : NULL,
+                                 (GDestroyNotify)
+                                 g_object_unref);
+        g_object_set_qdata (G_OBJECT (session),
+                            gdm_session_caller_pid_quark,
+                            GUINT_TO_POINTER (pid));
         g_hash_table_insert (self->transient_sessions,
                              GINT_TO_POINTER (pid),
                              session);
@@ -1102,7 +1112,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                                  username,
                                                  NULL);
                 login_session = get_user_session_for_display (display);
-                g_object_set_data (G_OBJECT (display), "reauth-pid-of-caller", GINT_TO_POINTER (pid));
+                g_object_set_qdata (G_OBJECT (display), gdm_display_reauth_pid_of_caller_quark, GINT_TO_POINTER (pid));
         } else {
                 g_debug ("GdmManager: looking for user session on display");
                 session = get_user_session_for_display (display);
@@ -1433,7 +1443,7 @@ on_display_status_changed (GdmDisplay *display,
                         }
 #endif
 
-                        g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
+                        g_object_set_qdata (G_OBJECT (display), gdm_display_user_session_quark, NULL);
 
                         if (display == manager->automatic_login_display) {
                                 g_clear_weak_pointer (&manager->automatic_login_display);
@@ -1465,9 +1475,9 @@ on_display_removed (GdmDisplayStore *display_store,
 static void
 destroy_start_user_session_operation (StartUserSessionOperation *operation)
 {
-        g_object_set_data (G_OBJECT (operation->session),
-                           "start-user-session-operation",
-                           NULL);
+        g_object_set_qdata (G_OBJECT (operation->session),
+                            gdm_session_start_user_session_operation_quark,
+                            NULL);
         g_object_unref (operation->session);
         g_free (operation->service_name);
         g_slice_free (StartUserSessionOperation, operation);
@@ -1516,12 +1526,12 @@ create_display_for_user_session (GdmManager *self,
                       NULL);
         gdm_display_store_add (self->display_store,
                                display);
-        g_object_set_data (G_OBJECT (session), "gdm-display", display);
-        g_object_set_data_full (G_OBJECT (display),
-                                "gdm-user-session",
-                                g_object_ref (session),
-                                (GDestroyNotify)
-                                clean_user_session);
+        g_object_set_qdata (G_OBJECT (session), gdm_session_display_quark, display);
+        g_object_set_qdata_full (G_OBJECT (display),
+                                 gdm_display_user_session_quark,
+                                 g_object_ref (session),
+                                 (GDestroyNotify)
+                                 clean_user_session);
 }
 
 static gboolean
@@ -1643,8 +1653,8 @@ on_start_user_session (StartUserSessionOperation *operation)
          * into the new display. Untie it from this display and
          * create a new session for a future user login. */
         allowed_uid = gdm_session_get_allowed_user (operation->session);
-        g_object_set_data (G_OBJECT (display), "gdm-user-session", NULL);
-        g_object_set_data (G_OBJECT (operation->session), "gdm-display", NULL);
+        g_object_set_qdata (G_OBJECT (display), gdm_display_user_session_quark, NULL);
+        g_object_set_qdata (G_OBJECT (operation->session), gdm_session_display_quark, NULL);
         create_user_session_for_display (operation->manager, display, allowed_uid);
 
         /* Give the user session a new display object for bookkeeping purposes */
@@ -1658,7 +1668,7 @@ on_start_user_session (StartUserSessionOperation *operation)
                  * to have a greeter */
                 gdm_display_store_remove (self->display_store, display);
 
-                self->automatic_login_display = g_object_get_data (G_OBJECT (operation->session), "gdm-display");
+                self->automatic_login_display = g_object_get_qdata (G_OBJECT (operation->session), gdm_session_display_quark);
                 g_object_add_weak_pointer (G_OBJECT (self->automatic_login_display), (gpointer *) &self->automatic_login_display);
         }
 
@@ -1683,7 +1693,7 @@ queue_start_user_session (GdmManager *manager,
         operation->service_name = g_strdup (service_name);
 
         operation->idle_id = g_idle_add ((GSourceFunc) on_start_user_session, operation);
-        g_object_set_data (G_OBJECT (session), "start-user-session-operation", operation);
+        g_object_set_qdata (G_OBJECT (session), gdm_session_start_user_session_operation_quark, operation);
 }
 
 static void
@@ -1693,12 +1703,12 @@ start_user_session_if_ready (GdmManager *manager,
 {
         gboolean start_when_ready;
 
-        start_when_ready = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (session), "start-when-ready"));
+        start_when_ready = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (session), gdm_session_start_when_ready_quark));
         if (start_when_ready) {
-                g_object_set_data (G_OBJECT (session), "waiting-to-start", GINT_TO_POINTER (FALSE));
+                g_object_set_qdata (G_OBJECT (session), gdm_session_waiting_to_start_quark, GINT_TO_POINTER (FALSE));
                 queue_start_user_session (manager, session, service_name);
         } else {
-                g_object_set_data (G_OBJECT (session), "waiting-to-start", GINT_TO_POINTER (TRUE));
+                g_object_set_qdata (G_OBJECT (session), gdm_session_waiting_to_start_quark, GINT_TO_POINTER (TRUE));
         }
 }
 
@@ -1747,7 +1757,7 @@ on_user_session_opened (GdmSession       *session,
             !gdm_session_client_is_connected (session)) {
                 /* If we're auto logging in then don't wait for the go-ahead from a greeter,
                  * (since there is no greeter) */
-                g_object_set_data (G_OBJECT (session), "start-when-ready", GINT_TO_POINTER (TRUE));
+                g_object_set_qdata (G_OBJECT (session), gdm_session_start_when_ready_quark, GINT_TO_POINTER (TRUE));
         }
 
         start_user_session_if_ready (manager, session, service_name);
@@ -1832,7 +1842,7 @@ lookup_by_reauth_pid (const char *id,
         GPid current;
 
         looking_for = GPOINTER_TO_INT (user_data);
-        current = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (display), "reauth-pid-of-caller"));
+        current = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (display), gdm_display_reauth_pid_of_caller_quark));
 
         if (looking_for == 0 || current == 0)
                 return FALSE;
@@ -1929,12 +1939,13 @@ on_session_client_ready_for_session_to_start (GdmSession      *session,
                 g_debug ("GdmManager: Will start session when ready and told");
         }
 
-        waiting_to_start_user_session = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (session),
-                                                                       "waiting-to-start"));
+        waiting_to_start_user_session =
+                GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (session),
+                                                     gdm_session_waiting_to_start_quark));
 
-        g_object_set_data (G_OBJECT (session),
-                           "start-when-ready",
-                           GINT_TO_POINTER (client_is_ready));
+        g_object_set_qdata (G_OBJECT (session),
+                            gdm_session_start_when_ready_quark,
+                            GINT_TO_POINTER (client_is_ready));
 
         if (client_is_ready && waiting_to_start_user_session) {
                 start_user_session_if_ready (manager, session, service_name);
@@ -2013,9 +2024,9 @@ typedef struct
 static void
 destroy_reset_session_operation (ResetSessionOperation *operation)
 {
-        g_object_set_data (G_OBJECT (operation->session),
-                           "reset-session-operation",
-                           NULL);
+        g_object_set_qdata (G_OBJECT (operation->session),
+                            gdm_session_reset_session_operation_quark,
+                            NULL);
         g_object_unref (operation->session);
         g_slice_free (ResetSessionOperation, operation);
 }
@@ -2036,7 +2047,7 @@ queue_session_reset (GdmManager *manager,
 {
         ResetSessionOperation *operation;
 
-        operation = g_object_get_data (G_OBJECT (session), "reset-session-operation");
+        operation = g_object_get_qdata (G_OBJECT (session), gdm_session_reset_session_operation_quark);
 
         if (operation != NULL) {
                 return;
@@ -2047,7 +2058,7 @@ queue_session_reset (GdmManager *manager,
         operation->session = g_object_ref (session);
         operation->idle_id = g_idle_add ((GSourceFunc) on_reset_session, operation);
 
-        g_object_set_data (G_OBJECT (session), "reset-session-operation", operation);
+        g_object_set_qdata (G_OBJECT (session), gdm_session_reset_session_operation_quark, operation);
 }
 
 static void
@@ -2130,7 +2141,7 @@ on_session_reauthentication_started (GdmSession *session,
 static void
 clean_user_session (GdmSession *session)
 {
-        g_object_set_data (G_OBJECT (session), "gdm-display", NULL);
+        g_object_set_qdata (G_OBJECT (session), gdm_session_display_quark, NULL);
         g_object_unref (session);
 }
 
@@ -2248,12 +2259,12 @@ create_user_session_for_display (GdmManager *manager,
                           "session-died",
                           G_CALLBACK (on_user_session_died),
                           manager);
-        g_object_set_data (G_OBJECT (session), "gdm-display", display);
-        g_object_set_data_full (G_OBJECT (display),
-                                "gdm-user-session",
-                                session,
-                                (GDestroyNotify)
-                                clean_user_session);
+        g_object_set_qdata (G_OBJECT (session), gdm_session_display_quark, display);
+        g_object_set_qdata_full (G_OBJECT (display),
+                                 gdm_display_user_session_quark,
+                                 session,
+                                 (GDestroyNotify)
+                                 clean_user_session);
 }
 
 static void
@@ -2523,6 +2534,16 @@ static void
 gdm_manager_class_init (GdmManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+
+        gdm_display_user_session_quark = g_quark_from_static_string ("gdm-display-user-session");
+        gdm_display_reauth_pid_of_caller_quark = g_quark_from_static_string ("gdm-display-reauth-pid-of-caller");
+        gdm_session_display_quark = g_quark_from_static_string ("gdm-session-display");
+        gdm_session_caller_pid_quark = g_quark_from_static_string ("gdm-session-caller-pid");
+        gdm_session_user_session_quark = g_quark_from_static_string ("gdm-session-user-session");
+        gdm_session_start_user_session_operation_quark = g_quark_from_static_string ("gdm-session-start-user-session-operation");
+        gdm_session_start_when_ready_quark = g_quark_from_static_string ("gdm-session-start-when-ready");
+        gdm_session_waiting_to_start_quark = g_quark_from_static_string ("gdm-session-waiting-to-start");
+        gdm_session_reset_session_operation_quark = g_quark_from_static_string ("gdm-session-reset-session-operation");
 
         object_class->get_property = gdm_manager_get_property;
         object_class->set_property = gdm_manager_set_property;
