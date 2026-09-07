@@ -1451,11 +1451,7 @@ on_display_removed (GdmDisplayStore *display_store,
                     GdmDisplay      *display,
                     GdmManager      *manager)
 {
-        char    *id;
-
-        gdm_display_get_id (display, &id, NULL);
-        g_dbus_object_manager_server_unexport (manager->object_manager, id);
-        g_free (id);
+        gdm_display_unexport (display, manager->object_manager);
 
         g_signal_handlers_disconnect_by_func (display, G_CALLBACK (on_display_status_changed), manager);
 
@@ -2262,16 +2258,15 @@ on_display_added (GdmDisplayStore *display_store,
         GdmDisplay *display;
 
         display = gdm_display_store_lookup (display_store, id);
+        if (display == NULL)
+                return;
 
-        if (display != NULL) {
-                g_dbus_object_manager_server_export (manager->object_manager,
-                                                     gdm_display_get_object_skeleton (display));
+        gdm_display_export (display, manager->object_manager);
 
-                g_signal_connect (display, "notify::status",
-                                  G_CALLBACK (on_display_status_changed),
-                                  manager);
-                g_signal_emit (manager, signals[DISPLAY_ADDED], 0, id);
-        }
+        g_signal_connect (display, "notify::status",
+                          G_CALLBACK (on_display_status_changed),
+                          manager);
+        g_signal_emit (manager, signals[DISPLAY_ADDED], 0, id);
 }
 
 GQuark
@@ -2600,7 +2595,7 @@ unexport_display (const char *id,
                   GdmManager *manager)
 {
         if (!g_dbus_connection_is_closed (manager->connection))
-                g_dbus_object_manager_server_unexport (manager->object_manager, id);
+                gdm_display_unexport (display, manager->object_manager);
 }
 
 static void

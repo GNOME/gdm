@@ -47,6 +47,8 @@ struct _GdmDisplayClass
 
         /* methods */
         gboolean (*prepare) (GdmDisplay *display);
+        void     (*export)  (GdmDisplay               *display,
+                             GDBusObjectManagerServer *object_manager);
 };
 
 typedef enum
@@ -68,6 +70,12 @@ gboolean            gdm_display_finish                         (GdmDisplay *disp
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);
 
 GDBusObjectSkeleton *gdm_display_get_object_skeleton           (GdmDisplay *display);
+
+void                gdm_display_export                         (GdmDisplay               *display,
+                                                                GDBusObjectManagerServer *object_manager);
+void                gdm_display_unexport                       (GdmDisplay               *display,
+                                                                GDBusObjectManagerServer *object_manager);
+gboolean            gdm_display_is_exported                    (GdmDisplay *display);
 
 /* exported to bus */
 gboolean            gdm_display_get_id                         (GdmDisplay *display,

@@ -81,6 +81,7 @@ typedef struct _GdmDisplayPrivate
         guint                 have_existing_user_accounts : 1;
         guint                 doing_initial_setup : 1;
         guint                 session_registered : 1;
+        guint                 is_exported : 1;
 
         GStrv                 supported_session_types;
 } GdmDisplayPrivate;
@@ -102,6 +103,7 @@ enum {
         PROP_DOING_INITIAL_SETUP,
         PROP_SESSION_REGISTERED,
         PROP_SUPPORTED_SESSION_TYPES,
+        PROP_IS_EXPORTED,
 };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
@@ -254,6 +256,20 @@ gdm_display_real_prepare (GdmDisplay *self)
         _gdm_display_set_status (self, GDM_DISPLAY_PREPARED);
 
         return TRUE;
+}
+
+static void
+gdm_display_real_export (GdmDisplay               *self,
+                         GDBusObjectManagerServer *object_manager)
+{
+        GdmDisplayPrivate *priv;
+
+        priv = gdm_display_get_instance_private (self);
+
+        g_dbus_object_manager_server_export (object_manager, priv->object_skeleton);
+
+        priv->is_exported = TRUE;
+        g_object_notify (G_OBJECT (self), "is-exported");
 }
 
 static gboolean
@@ -654,6 +670,9 @@ gdm_display_get_property (GObject        *object,
         case PROP_SUPPORTED_SESSION_TYPES:
                 g_value_set_boxed (value, priv->supported_session_types);
                 break;
+        case PROP_IS_EXPORTED:
+                g_value_set_boolean (value, priv->is_exported);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -851,6 +870,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
         object_class->finalize = gdm_display_finalize;
 
         klass->prepare = gdm_display_real_prepare;
+        klass->export = gdm_display_real_export;
 
         g_object_class_install_property (object_class,
                                          PROP_ID,
@@ -961,6 +981,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                              "supported session types",
                                                              G_TYPE_STRV,
                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+        g_object_class_install_property (object_class,
+                                         PROP_IS_EXPORTED,
+                                         g_param_spec_boolean ("is-exported",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -1010,6 +1037,42 @@ gdm_display_get_object_skeleton (GdmDisplay *self)
 
         priv = gdm_display_get_instance_private (self);
         return priv->object_skeleton;
+}
+
+void
+gdm_display_export (GdmDisplay               *self,
+                    GDBusObjectManagerServer *object_manager)
+{
+        g_return_if_fail (GDM_IS_DISPLAY (self));
+
+        GDM_DISPLAY_GET_CLASS (self)->export (self, object_manager);
+}
+
+void
+gdm_display_unexport (GdmDisplay               *self,
+                      GDBusObjectManagerServer *object_manager)
+{
+        GdmDisplayPrivate *priv;
+
+        g_return_if_fail (GDM_IS_DISPLAY (self));
+
+        priv = gdm_display_get_instance_private (self);
+
+        g_dbus_object_manager_server_unexport (object_manager, priv->id);
+
+        priv->is_exported = FALSE;
+        g_object_notify (G_OBJECT (self), "is-exported");
+}
+
+gboolean
+gdm_display_is_exported (GdmDisplay *self)
+{
+        GdmDisplayPrivate *priv;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
+
+        priv = gdm_display_get_instance_private (self);
+        return priv->is_exported;
 }
 
 static void
