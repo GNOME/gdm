@@ -114,7 +114,10 @@ enum {
         PROP_0,
         PROP_REMOTE_LOGIN_ENABLED,
         PROP_SHOW_LOCAL_GREETER,
+        N_PROPS
 };
+
+static GParamSpec *props[N_PROPS] = { NULL, };
 
 enum {
         DISPLAY_ADDED,
@@ -2586,21 +2589,19 @@ gdm_manager_class_init (GdmManagerClass *klass)
                               G_TYPE_NONE,
                               1, G_TYPE_OBJECT);
 
-        g_object_class_install_property (object_class,
-                                         PROP_REMOTE_LOGIN_ENABLED,
-                                         g_param_spec_boolean ("remote-login-enabled",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+        props[PROP_REMOTE_LOGIN_ENABLED] = g_param_spec_boolean ("remote-login-enabled",
+                                                                 NULL,
+                                                                 NULL,
+                                                                 FALSE,
+                                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
-        g_object_class_install_property (object_class,
-                                         PROP_SHOW_LOCAL_GREETER,
-                                         g_param_spec_boolean ("show-local-greeter",
+        props[PROP_SHOW_LOCAL_GREETER] = g_param_spec_boolean ("show-local-greeter",
                                                                NULL,
                                                                NULL,
                                                                TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+
+        g_object_class_install_properties (object_class, N_PROPS, props);
 }
 
 static void
