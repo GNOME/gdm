@@ -492,22 +492,19 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,
                                          g_param_spec_string ("server-address",
-                                                              "server address",
-                                                              "server address",
+                                                              NULL, NULL,
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_FOR_REAUTH,
                                          g_param_spec_boolean ("for-reauth",
-                                                               "for reauth",
-                                                               "for reauth",
+                                                               NULL, NULL,
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_ENVIRONMENT,
                                          g_param_spec_pointer ("environment",
-                                                               "environment",
-                                                               "environment",
+                                                               NULL, NULL,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         signals [STARTED] =
                 g_signal_new ("started",

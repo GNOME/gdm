@@ -4101,16 +4101,14 @@ gdm_session_class_init (GdmSessionClass *session_class)
         g_object_class_install_property (object_class,
                                          PROP_VERIFICATION_MODE,
                                          g_param_spec_enum ("verification-mode",
-                                                            "verification mode",
-                                                            "verification mode",
+                                                            NULL, NULL,
                                                             GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                             GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_ALLOWED_USER,
                                          g_param_spec_uint ("allowed-user",
-                                                            "allowed user",
-                                                            "allowed user ",
+                                                            NULL, NULL,
                                                             0,
                                                             G_MAXUINT,
                                                             0,
@@ -4118,8 +4116,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
         g_object_class_install_property (object_class,
                                          PROP_CONVERSATION_ENVIRONMENT,
                                          g_param_spec_pointer ("conversation-environment",
-                                                               "conversation environment",
-                                                               "conversation environment",
+                                                               NULL, NULL,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
@@ -4132,54 +4129,47 @@ gdm_session_class_init (GdmSessionClass *session_class)
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
-                                                              "display hostname",
-                                                              "display hostname",
+                                                              NULL, NULL,
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("display-is-local",
-                                                               "display is local",
-                                                               "display is local",
+                                                               NULL, NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_INITIAL,
                                          g_param_spec_boolean ("display-is-initial",
-                                                               "display is initial",
-                                                               "display is initial",
+                                                               NULL, NULL,
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
         /* not construct only */
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_DEVICE,
                                          g_param_spec_string ("display-device",
-                                                              "display device",
-                                                              "display device",
+                                                              NULL, NULL,
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("display-seat-id",
-                                                              "display seat id",
-                                                              "display seat id",
+                                                              NULL, NULL,
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_SUPPORTED_SESSION_TYPES,
                                          g_param_spec_boxed ("supported-session-types",
-                                                             "supported session types",
-                                                             "supported session types",
+                                                             NULL, NULL,
                                                              G_TYPE_STRV,
                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property (object_class,
                                          PROP_SESSION_ID_OF_CALLER,
                                          g_param_spec_string ("session-id-of-caller",
-                                                              "session id of caller",
-                                                              "session id of caller",
+                                                              NULL, NULL,
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
