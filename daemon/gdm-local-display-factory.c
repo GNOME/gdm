@@ -431,7 +431,7 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
                 const gchar *id_path = g_udev_device_get_property (device, "ID_PATH");
                 g_autoptr (GUdevDevice) platform_device = NULL;
                 g_autoptr (GUdevDevice) pci_device = NULL;
-                g_autoptr (GUdevDevice) drm_device = NULL;
+                gboolean boot_display;
 
                 if (g_strrstr (id_path, "platform-simple-framebuffer") != NULL) {
                         node = next_node;
@@ -462,22 +462,16 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
                         }
                 }
 
-                drm_device = g_udev_device_get_parent_with_subsystem (device, "drm", NULL);
+                boot_display = g_udev_device_get_sysfs_attr_as_int (device, "boot_display");
 
-                if (drm_device != NULL) {
-                        gboolean boot_display;
-
-                        boot_display = g_udev_device_get_sysfs_attr_as_int (drm_device, "boot_display");
-
-                        if (boot_display == 1) {
-                                 g_debug ("GdmLocalDisplayFactory: Found primary PCI graphics adapter, proceeding.");
-                                 factory->seat0_has_boot_up_graphics = TRUE;
-                                 is_settled = TRUE;
-                                 break;
-                        }
+                if (boot_display == 1) {
+                        g_debug ("GdmLocalDisplayFactory: Found primary graphics adapter, proceeding.");
+                        factory->seat0_has_boot_up_graphics = TRUE;
+                        is_settled = TRUE;
+                        break;
                 }
 
-                if (pci_device != NULL || drm_device != NULL) {
+                if (pci_device != NULL) {
                         g_debug ("GdmLocalDisplayFactory: Found secondary PCI graphics adapter, not proceeding yet.");
                 }
 
