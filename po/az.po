@@ -1,1123 +1,786 @@
-# translation of gdm2.HEAD.az.po to Azerbaijani
-# translation of gdm2.HEAD.az.po to Azerbaijani Turkish
-# Copyright (C) 1999-2000,2003, 2004 Free Software Foundation, Inc.
-# Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2001.
-# Mətin Əmirov <metin@karegen.com>, 2003, 2004.
-# Metin Amiroff <metin@karegen.com>, 2004.
+# Azerbaijani translation for gdm.
+# Copyright (C) 2026 gdm's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gdm package.
+# Ramal Rəhimov <jhoaluman@gmail.com>, 2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2.HEAD.az\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-27 15:41-0400\n"
-"PO-Revision-Date: 2004-08-17 22:06+0300\n"
-"Last-Translator: Metin Amiroff <metin@karegen.com>\n"
-"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
+"Project-Id-Version: gdm main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gdm/issues/\n"
+"POT-Creation-Date: 2026-09-02 18:34+0000\n"
+"PO-Revision-Date: 2026-09-20 23:30+0400\n"
+"Last-Translator: Ramal Rəhimov <jhoaluman@gmail.com>\n"
+"Language-Team: Azerbaijani <contact@azelinux.com>\n"
 "Language: az\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"net>\n"
-"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Google Antigravity / Gtranslator\n"
 
-#: ../common/gdm-common.c:298
-#, c-format
+#: common/gdm-common.c:324
 msgid "/dev/urandom is not a character device"
-msgstr ""
+msgstr "/dev/urandom simvol qurğusu deyil"
 
-#: ../common/gdm-common.c:468 ../libgdm/gdm-user-switching.c:209
-#, c-format
-msgid "Could not identify the current session."
-msgstr ""
+#: common/gdm-common.c:358
+msgid "Unable to create transient display: "
+msgstr "Keçici ekran yaratmaq mümkün olmadı: "
 
-#: ../common/gdm-common.c:477 ../libgdm/gdm-user-switching.c:218
-#, c-format
+#: common/gdm-common.c:555
+msgid "Could not identify the current session: "
+msgstr "Cari sessiyanı müəyyən etmək mümkün olmadı: "
+
+#: common/gdm-common.c:564
 msgid "Could not identify the current seat."
-msgstr ""
+msgstr "Cari oturacaq (seat) yerini müəyyən etmək mümkün olmadı."
 
-#: ../common/gdm-common.c:487 ../libgdm/gdm-user-switching.c:228
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-
-#: ../common/gdm-common.c:495 ../libgdm/gdm-user-switching.c:236
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr ""
-
-#: ../daemon/gdm-display-access-file.c:300
-#, c-format
-msgid "could not find user \"%s\" on system"
-msgstr ""
-
-#: ../daemon/gdm-legacy-display.c:235
-#, fuzzy
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"I could not start the X\n"
-"server (your graphical environment)\n"
-"due to some internal error.\n"
-"Please contact your system administrator\n"
-"or check your syslog to diagnose.\n"
-"In the meantime this display will be\n"
-"disabled.  Please restart gdm when\n"
-"the problem is corrected."
-
-#: ../daemon/gdm-manager.c:766
-#, fuzzy
+#: daemon/gdm-manager.c:682 daemon/gdm-manager.c:718
 msgid "No display available"
-msgstr "Ekran Nümayişi Yoxdur"
+msgstr "Əlçatan ekran yoxdur"
 
-#: ../daemon/gdm-manager.c:833 ../daemon/gdm-manager.c:1088
-#, fuzzy
+#: daemon/gdm-manager.c:785 daemon/gdm-manager.c:1096
 msgid "No session available"
-msgstr "Ekran Nümayişi Yoxdur"
+msgstr "Əlçatan sessiya yoxdur"
 
-#: ../daemon/gdm-manager.c:844
+#: daemon/gdm-manager.c:801
 msgid "Can only be called before user is logged in"
-msgstr ""
+msgstr "Yalnız istifadəçi daxil olmamışdan əvvəl çağırıla bilər"
 
-#: ../daemon/gdm-manager.c:854
+#: daemon/gdm-manager.c:813
 msgid "Caller not GDM"
-msgstr ""
+msgstr "Çağırışçı GDM deyil"
 
-#: ../daemon/gdm-manager.c:864
+#: daemon/gdm-manager.c:823
 msgid "Unable to open private communication channel"
-msgstr ""
+msgstr "Məxfi əlaqə kanalını açmaq mümkün olmadı"
 
-#: ../daemon/gdm-server.c:378
-#, fuzzy, c-format
-msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "%s: Server was to be spawned by uid %d but that user doesn't exist"
-
-#: ../daemon/gdm-server.c:389 ../daemon/gdm-server.c:409
-#, fuzzy, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "%s: qrup nömrəsini %d edə bilmədim"
-
-#: ../daemon/gdm-server.c:395
-#, fuzzy, c-format
-msgid "initgroups () failed for %s"
-msgstr "%s: %s üçün initgroups() bacarılmadı."
-
-#: ../daemon/gdm-server.c:401
-#, fuzzy, c-format
-msgid "Couldn't set userid to %d"
-msgstr "%s: istifadəçi nömrəsini %d edə bilmədim"
-
-#: ../daemon/gdm-server.c:479
-#, fuzzy, c-format
-msgid "%s: Could not open log file for display %s!"
-msgstr "%s: %s ekranı üçün qeyd faylını aça bilmədim!"
-
-#: ../daemon/gdm-server.c:500 ../daemon/gdm-server.c:506
-#: ../daemon/gdm-server.c:512
-#, c-format
-msgid "%s: Error setting %s to %s"
-msgstr "%s: %s qiymətini %s-ə çevirərkən xəta meydana gəldi"
-
-#: ../daemon/gdm-server.c:532
-#, fuzzy, c-format
-msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s: Xvericisi tapıla bilmədi: %s"
-
-#: ../daemon/gdm-server.c:684
-#, c-format
-msgid "%s: Empty server command for display %s"
-msgstr "%s: %s ekranı nümayişi üçün boş verici əmri"
-
-#: ../daemon/gdm-session-auditor.c:90
+#: daemon/gdm-session-auditor.c:88
 msgid "Username"
 msgstr "İstifadəçi adı"
 
-#: ../daemon/gdm-session-auditor.c:91
-#, fuzzy
+#: daemon/gdm-session-auditor.c:89
 msgid "The username"
 msgstr "İstifadəçi adı"
 
-#: ../daemon/gdm-session-auditor.c:95
-#, fuzzy
+#: daemon/gdm-session-auditor.c:93
 msgid "Hostname"
-msgstr "İstifadəçi adı"
+msgstr "Qovşaq adı"
 
-#: ../daemon/gdm-session-auditor.c:96
+#: daemon/gdm-session-auditor.c:94
 msgid "The hostname"
-msgstr ""
+msgstr "Qovşaq adı"
 
-#: ../daemon/gdm-session-auditor.c:101
-#, fuzzy
+#: daemon/gdm-session-auditor.c:99
 msgid "Display Device"
-msgstr "Displey"
+msgstr "Ekran Qurğusu"
 
-#: ../daemon/gdm-session-auditor.c:102
+#: daemon/gdm-session-auditor.c:100
 msgid "The display device"
-msgstr ""
+msgstr "Ekran qurğusu"
 
-#: ../daemon/gdm-session.c:1193
-#, fuzzy
+#: daemon/gdm-session.c:1454
 msgid "Could not create authentication helper process"
-msgstr "%s: Səlahiyyət adları oxuna bilmədi"
+msgstr "Kimlik doğrulaması köməkçi prosesini yaratmaq mümkün olmadı"
 
-#: ../daemon/gdm-session-worker.c:642
-msgid "Your account was given a time limit that's now passed."
+#: daemon/gdm-session-worker.c:807
+msgid ""
+"You reached the maximum password authentication attempts, please try another"
+" method"
 msgstr ""
+"Maksimum şifrə ilə kimlik doğrulaması cəhdlərinə çatdınız, lütfən başqa bir "
+"üsul sınayın"
 
-#: ../daemon/gdm-session-worker.c:649
-msgid "Sorry, that didn't work. Please try again."
+#: daemon/gdm-session-worker.c:810
+msgid ""
+"You reached the maximum auto login attempts, please try another "
+"authentication method"
 msgstr ""
+"Maksimum avtomatik giriş cəhdlərinə çatdınız, lütfən başqa bir kimlik "
+"doğrulaması üsulunu sınayın"
 
-#: ../daemon/gdm-session-worker.c:1010
+#: daemon/gdm-session-worker.c:813
+msgid ""
+"You reached the maximum fingerprint authentication attempts, please try "
+"another method"
+msgstr ""
+"Maksimum barmaq izi ilə kimlik doğrulaması cəhdlərinə çatdınız, lütfən başqa"
+" bir üsul sınayın"
+
+#: daemon/gdm-session-worker.c:816
+msgid ""
+"You reached the maximum smart card authentication attempts, please try "
+"another method"
+msgstr ""
+"Maksimum smart-kart ilə kimlik doğrulaması cəhdlərinə çatdınız, lütfən başqa"
+" bir üsul sınayın"
+
+#: daemon/gdm-session-worker.c:818
+msgid ""
+"You reached the maximum authentication attempts, please try another method"
+msgstr ""
+"Maksimum kimlik doğrulaması cəhdlərinə çatdınız, lütfən başqa bir üsul "
+"sınayın"
+
+#: daemon/gdm-session-worker.c:825
+msgid "Sorry, password authentication didn’t work. Please try again."
+msgstr ""
+"Bağışlayın, şifrə ilə kimlik doğrulaması baş tutmadı. Zəhmət olmasa yenidən "
+"cəhd edin."
+
+#: daemon/gdm-session-worker.c:828
+msgid "Sorry, auto login didn’t work. Please try again."
+msgstr ""
+"Bağışlayın, avtomatik giriş baş tutmadı. Zəhmət olmasa yenidən cəhd edin."
+
+#: daemon/gdm-session-worker.c:831
+msgid "Sorry, fingerprint authentication didn’t work. Please try again."
+msgstr ""
+"Bağışlayın, barmaq izi ilə kimlik doğrulaması baş tutmadı. Zəhmət olmasa "
+"yenidən cəhd edin."
+
+#: daemon/gdm-session-worker.c:834
+msgid "Sorry, smart card authentication didn’t work. Please try again."
+msgstr ""
+"Bağışlayın, smart-kart ilə kimlik doğrulaması baş tutmadı. Zəhmət olmasa "
+"yenidən cəhd edin."
+
+#: daemon/gdm-session-worker.c:836
+msgid "Sorry, that didn’t work. Please try again."
+msgstr "Bağışlayın, bu baş tutmadı. Zəhmət olmasa yenidən cəhd edin."
+
+#: daemon/gdm-session-worker.c:851
+msgid "Your account was given a time limit that’s now passed."
+msgstr "Hesabınıza vaxt limiti qoyulmuşdu və bu müddət artıq bitib."
+
+#: daemon/gdm-session-worker.c:1208
 msgid "Username:"
-msgstr "İstifadəçi Adı:"
+msgstr "İstifadəçi adı:"
 
-#: ../daemon/gdm-session-worker.c:1142
-#, fuzzy
-msgid "Your password has expired, please change it now."
-msgstr ""
-"Şifrənizin vaxtı dolub.\n"
-"Təkcə sistem idarəçisi onu dəyişsirə bilər"
-
-#: ../daemon/gdm-session-worker.c:1505 ../daemon/gdm-session-worker.c:1522
-#, fuzzy, c-format
+#: daemon/gdm-session-worker.c:1628 daemon/gdm-session-worker.c:1645
 msgid "no user account available"
-msgstr "Ekran Nümayişi Yoxdur"
+msgstr "əlçatan istifadəçi hesabı yoxdur"
 
-#: ../daemon/gdm-session-worker.c:1549
+#: daemon/gdm-session-worker.c:1672
 msgid "Unable to change to user"
-msgstr ""
+msgstr "İstifadəçiyə keçid etmək mümkün olmadı"
 
-#: ../daemon/gdm-wayland-session.c:385
+#: daemon/gdm-wayland-session.c:513
 msgid "GNOME Display Manager Wayland Session Launcher"
-msgstr ""
+msgstr "GNOME Ekran İdarəçisi Wayland Sessiyası Başladıcısı"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:609
-#, fuzzy
-msgid "Could not create socket!"
-msgstr "%s: Soket yaradıla bilmədi!"
-
-#: ../daemon/gdm-x-session.c:686
-msgid "Run program through /etc/gdm/Xsession wrapper script"
-msgstr ""
-
-#: ../daemon/gdm-x-session.c:687
-#, fuzzy
-msgid "Listen on TCP socket"
-msgstr "_UDP qapısına qulaq as: "
-
-#: ../daemon/gdm-x-session.c:698
-#, fuzzy
-msgid "GNOME Display Manager X Session Launcher"
-msgstr "GDM (GNOME Ekran İdarəçisi) fəaliyyətdə deyil."
-
-#: ../daemon/main.c:125 ../daemon/main.c:138
-#, fuzzy, c-format
-msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr "%s PID faylına yazıla bilmədi, deyəsən yer çatışmır.  Xəta: %s"
-
-#: ../daemon/main.c:182
+#: daemon/main.c:124 daemon/main.c:137
 #, c-format
-msgid "Failed to create ran once marker dir %s: %s"
-msgstr ""
+msgid "Cannot write PID file %s: possibly out of disk space: %s"
+msgstr "%s PID faylına yazmaq mümkün olmadı: ehtimal ki, diskdə yer bitib: %s"
 
-#: ../daemon/main.c:188
-#, fuzzy, c-format
-msgid "Failed to create LogDir %s: %s"
-msgstr "Öz özünü yenidən başlada bilmədi"
-
-#: ../daemon/main.c:223
-#, fuzzy, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "%s: gdm istifadəçisi (%s) tapılaa bilmədi. Çıxıram!"
-
-#: ../daemon/main.c:229
-#, fuzzy
-msgid "The GDM user should not be root. Aborting!"
-msgstr "%s: gdm istifadəçisi 'root' olmamalıdır. Çıxıram!"
-
-#: ../daemon/main.c:235
-#, fuzzy, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "%s: (%s) gdm qrupunu tapa bilmədim. Çıxıram!"
-
-#: ../daemon/main.c:241
-#, fuzzy
-msgid "The GDM group should not be root. Aborting!"
-msgstr "%s: gdm grupu 'root' olmamalıdır . Çıxıram!"
-
-#: ../daemon/main.c:318
+#: daemon/main.c:222
 msgid "Make all warnings fatal"
-msgstr ""
+msgstr "Bütün xəbərdarlıqları kritik et"
 
-#: ../daemon/main.c:319
+#: daemon/main.c:223
 msgid "Exit after a time (for debugging)"
-msgstr ""
+msgstr "Müəyyən vaxtdan sonra çıx (sazlama üçün)"
 
-#: ../daemon/main.c:320
+#: daemon/main.c:224
 msgid "Print GDM version"
-msgstr "GDM buraxılışını göstər"
+msgstr "GDM versiyasını göstər"
 
-#: ../daemon/main.c:333
-#, fuzzy
+#: daemon/main.c:235
 msgid "GNOME Display Manager"
-msgstr "GNOME Masa Üstü İdarəçisi"
+msgstr "GNOME Ekran İdarəçisi"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:381
+#: daemon/main.c:255
 msgid "Only the root user can run GDM"
-msgstr ""
+msgstr "GDM-i yalnız root istifadəçisi işə sala bilər"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:95
-#, fuzzy
+#: daemon/session-worker-main.c:127
 msgid "GNOME Display Manager Session Worker"
-msgstr "GDM (GNOME Ekran İdarəçisi) fəaliyyətdə deyil."
+msgstr "GNOME Ekran İdarəçisi Sessiya İşçisi"
 
-#: ../data/applications/gnome-shell.desktop.in.h:1
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:1
-#, fuzzy
-msgid "GNOME Shell"
-msgstr "GNOME"
+#: data/gnome-greeter.desktop.in:2
+msgid "GNOME Greeter"
+msgstr "GNOME Qarşılayıcısı"
 
-#: ../data/applications/gnome-shell.desktop.in.h:2
-#: ../data/applications/gnome-shell-wayland.desktop.in.h:2
-msgid "Window management and compositing"
+#: data/gnome-greeter.desktop.in:3
+msgid "The default GNOME Greeter session"
+msgstr "Standart GNOME Qarşılayıcı sessiyası"
+
+#: data/gnome-initial-setup.desktop.in:2
+msgid "GNOME Initial Setup"
+msgstr "GNOME İlkin Quraşdırması"
+
+#: data/gnome-initial-setup.desktop.in:3
+msgid "The GNOME Initial Setup session"
+msgstr "GNOME İlkin Quraşdırma sessiyası"
+
+#: data/org.gnome.displaymanager.policy:11
+msgid "Allow managing user sessions"
+msgstr "İstifadəçi sessiyalarının idarə edilməsinə icazə ver"
+
+#: data/org.gnome.displaymanager.policy:12
+msgid "Authentication is required to start or stop a user session"
 msgstr ""
+"İstifadəçi sessiyasını başlatmaq və ya dayandırmaq üçün kimlik doğrulaması "
+"tələb olunur"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+#: data/org.gnome.login-screen.gschema.xml:11
+msgid "Whether or not to allow switchable authentication for login"
+msgstr ""
+"Giriş üçün dəyişdirilə bilən kimlik doğrulamasına icazə verilib-verilməməsi"
+
+#: data/org.gnome.login-screen.gschema.xml:14
+msgid ""
+"The login screen can optionally allow a single PAM service to provide "
+"multiple authentication mechanisms via a GDM PAM."
+msgstr ""
+"Giriş ekranı istəyə bağlı olaraq tək bir PAM xidmətinin GDM PAM vasitəsilə "
+"bir neçə kimlik doğrulaması mexanizmini təmin etməsinə icazə verə bilər."
+
+#: data/org.gnome.login-screen.gschema.xml:21
+msgid "Whether or not to allow authentication via external web site"
+msgstr ""
+"Xarici veb-sayt vasitəsilə kimlik doğrulamasına icazə verilib-verilməməsi"
+
+#: data/org.gnome.login-screen.gschema.xml:24
+msgid ""
+"The login screen can optionally allow users to authenticate via web login."
+msgstr ""
+"Giriş ekranı istəyə bağlı olaraq istifadəçilərin veb girişi vasitəsilə "
+"kimlik doğrulaması keçməsinə icazə verə bilər."
+
+#: data/org.gnome.login-screen.gschema.xml:31
+msgid "Whether or not to allow authentication using a passkey"
+msgstr ""
+"Giriş açarından (passkey) istifadə edərək kimlik doğrulamasına icazə "
+"verilib-verilməməsi"
+
+#: data/org.gnome.login-screen.gschema.xml:34
+msgid ""
+"The login screen can optionally allow users who have passkeys to log in "
+"using those passkeys."
+msgstr ""
+"Giriş ekranı istəyə bağlı olaraq giriş açarlarına malik istifadəçilərə həmin"
+" açarlarla daxil olmağa icazə verə bilər."
+
+#: data/org.gnome.login-screen.gschema.xml:41
 msgid "Whether or not to allow fingerprint readers for login"
-msgstr ""
+msgstr "Giriş üçün barmaq izi oxuyucularına icazə verilib-verilməməsi"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+#: data/org.gnome.login-screen.gschema.xml:44
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
+"Giriş ekranı istəyə bağlı olaraq barmaq izlərini qeydiyyatdan keçirmiş "
+"istifadəçilərə bu izlərlə daxil olmağa icazə verə bilər."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#: data/org.gnome.login-screen.gschema.xml:51
 msgid "Whether or not to allow smartcard readers for login"
-msgstr ""
+msgstr "Giriş üçün smart-kart oxuyucularına icazə verilib-verilməməsi"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+#: data/org.gnome.login-screen.gschema.xml:54
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
+"Giriş ekranı istəyə bağlı olaraq smart-kartlara malik istifadəçilərə həmin "
+"smart-kartlarla daxil olmağa icazə verə bilər."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-#, fuzzy
+#: data/org.gnome.login-screen.gschema.xml:61
 msgid "Whether or not to allow passwords for login"
-msgstr "%s istifadəçisinə sistemə giriş qadağandır"
+msgstr "Giriş üçün şifrələrə icazə verilib-verilməməsi"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: data/org.gnome.login-screen.gschema.xml:64
 msgid ""
 "The login screen can be configured to disallow password authentication, "
 "forcing the user to use smartcard or fingerprint authentication."
 msgstr ""
+"Giriş ekranı şifrə ilə kimlik doğrulamasını qadağan edəcək və istifadəçini "
+"smart-kart və ya barmaq izi ilə kimlik doğrulamasına məcbur edəcək şəkildə "
+"konfiqurasiya edilə bilər."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: data/org.gnome.login-screen.gschema.xml:71
+#: data/org.gnome.login-screen.gschema.xml:81
 msgid "Path to small image at top of user list"
-msgstr ""
+msgstr "İstifadəçi siyahısının yuxarısındakı kiçik şəkilə olan yol"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: data/org.gnome.login-screen.gschema.xml:74
 msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+"The login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
+"Giriş ekranı istəyə bağlı olaraq sistem inzibatçılarına və distribütorlara "
+"brendinqi göstərmək üçün kiçik bir şəkil göstərə bilər."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: data/org.gnome.login-screen.gschema.xml:84
 msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+"The fallback login screen can optionally show a small image to provide site "
+"administrators and distributions a way to display branding."
 msgstr ""
+"Ehtiyat giriş ekranı istəyə bağlı olaraq sistem inzibatçılarına və "
+"distribütorlara brendinqi göstərmək üçün kiçik bir şəkil göstərə bilər."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: data/org.gnome.login-screen.gschema.xml:91
 msgid "Avoid showing user list"
-msgstr ""
+msgstr "İstifadəçi siyahısının göstərilməsindən çəkin"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: data/org.gnome.login-screen.gschema.xml:94
 msgid ""
-"The login screen normally shows a list of available users to log in as. This "
-"setting can be toggled to disable showing the user list."
+"The login screen normally shows a list of available users to log in as. This"
+" setting can be toggled to disable showing the user list."
 msgstr ""
+"Giriş ekranı adətən daxil olmaq üçün mövcud istifadəçilərin siyahısını "
+"göstərir. Bu parametr istifadəçi siyahısının göstərilməsini deaktiv etmək "
+"üçün dəyişdirilə bilər."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: data/org.gnome.login-screen.gschema.xml:101
 msgid "Enable showing the banner message"
-msgstr ""
+msgstr "Banner mesajının göstərilməsini aktivləşdir"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: data/org.gnome.login-screen.gschema.xml:104
 msgid "Set to true to show the banner message text."
-msgstr ""
+msgstr "Banner mesajı mətnini göstərmək üçün doğru (true) olaraq təyin edin."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: data/org.gnome.login-screen.gschema.xml:110
+msgid "Banner message source"
+msgstr "Banner mesajı mənbəyi"
+
+#: data/org.gnome.login-screen.gschema.xml:113
+msgid "The source of the text banner message on the login screen."
+msgstr "Giriş ekranındakı mətn banner mesajının mənbəyi."
+
+#: data/org.gnome.login-screen.gschema.xml:119
 msgid "Banner message text"
-msgstr ""
+msgstr "Banner mesajı mətni"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: data/org.gnome.login-screen.gschema.xml:122
 msgid "Text banner message to show in the login window."
-msgstr ""
+msgstr "Giriş pəncərəsində göstəriləcək mətn banner mesajı."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+#: data/org.gnome.login-screen.gschema.xml:128
+msgid "Banner message path"
+msgstr "Banner mesajı yolu"
+
+#: data/org.gnome.login-screen.gschema.xml:131
+msgid "Path to text file with banner message to show in the login window."
+msgstr ""
+"Giriş pəncərəsində göstəriləcək banner mesajı olan mətn faylının yolu."
+
+#: data/org.gnome.login-screen.gschema.xml:137
 msgid "Disable showing the restart buttons"
-msgstr ""
+msgstr "Yenidən başlatma düymələrinin göstərilməsini deaktiv et"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
-msgid "Set to true to disable showing the restart buttons in the login window."
+#: data/org.gnome.login-screen.gschema.xml:140
+msgid ""
+"Set to true to disable showing the restart buttons in the login window."
 msgstr ""
+"Giriş pəncərəsində yenidən başlatma düymələrinin göstərilməsini deaktiv "
+"etmək üçün doğru (true) olaraq təyin edin."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:18
-#, fuzzy
+#: data/org.gnome.login-screen.gschema.xml:146
 msgid "Number of allowed authentication failures"
-msgstr "Təsdiqləmə bacarılmadı!\n"
+msgstr "İcazə verilən uğursuz kimlik doğrulaması cəhdlərinin sayı"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:19
+#: data/org.gnome.login-screen.gschema.xml:149
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
 msgstr ""
+"İstifadəçidən imtina edib istifadəçi seçiminə qayıtmazdan əvvəl kimlik "
+"doğrulamasına cəhd etməsinə icazə verilən say."
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
-msgid "Select System"
+#: utils/gdm-config.c:117
+msgid "Show command help"
+msgstr "Əmr köməyini göstər"
+
+#: utils/gdm-config.c:121
+msgid "Show verbose output"
+msgstr "Ətraflı çıxışı göstər"
+
+#: utils/gdm-config.c:125
+#| msgid "Debugging output"
+msgid "Show debug output"
+msgstr "Sazlama çıxışını göstər"
+
+#: utils/gdm-config.c:134
+msgid "Enable the authentication method"
+msgstr "Kimlik doğrulaması üsulunu aktivləşdir"
+
+#: utils/gdm-config.c:138
+msgid "Disable the authentication method"
+msgstr "Kimlik doğrulaması üsulunu deaktiv et"
+
+#: utils/gdm-config.c:147
+msgid "Require the authentication method"
+msgstr "Kimlik doğrulaması üsulunu tələb et"
+
+#: utils/gdm-config.c:151
+msgid "Action to perform on smartcard removal"
+msgstr "Smart-kart çıxarıldıqda yerinə yetiriləcək əməliyyat"
+
+#: utils/gdm-config.c:160
+msgid "Assume yes to any answer"
+msgstr "İstənilən cavab üçün hə (bəli) fərz et"
+
+#: utils/gdm-config.c:262
+msgid "Configure Password Authentication."
+msgstr "Şifrə ilə Kimlik Doğrulamasını konfiqurasiya edin."
+
+#: utils/gdm-config.c:264
+msgid "Configure Fingerprint Authentication."
+msgstr "Barmaq İzi ilə Kimlik Doğrulamasını konfiqurasiya edin."
+
+#: utils/gdm-config.c:266
+msgid "Configure Smart Card Authentication."
+msgstr "Smart-kart ilə Kimlik Doğrulamasını konfiqurasiya edin."
+
+#: utils/gdm-config.c:268
+msgid "Reset the GDM Authentication configuration."
+msgstr "GDM Kimlik Doğrulaması konfiqurasiyasını sıfırlayın."
+
+#: utils/gdm-config.c:270
+msgid "Show GDM Authentication configuration."
+msgstr "GDM Kimlik Doğrulaması konfiqurasiyasını göstərin."
+
+#: utils/gdm-config.c:281
+msgid "Password options"
+msgstr "Şifrə seçimləri"
+
+#: utils/gdm-config.c:283
+msgid "Fingerprint options"
+msgstr "Barmaq izi seçimləri"
+
+#: utils/gdm-config.c:285
+msgid "Smart Card options"
+msgstr "Smart-kart seçimləri"
+
+#: utils/gdm-config.c:287
+msgid "Reset options"
+msgstr "Sıfırlama seçimləri"
+
+#: utils/gdm-config.c:289
+msgid "Show options"
+msgstr "Göstərmə seçimləri"
+
+#: utils/gdm-config.c:319
+msgid "No PAM module available for Password authentication"
+msgstr "Şifrə ilə kimlik doğrulaması üçün heç bir PAM modulu mövcud deyil"
+
+#: utils/gdm-config.c:321
+msgid "No PAM module available for Smart Card authentication"
 msgstr ""
+"Smart-kart ilə kimlik doğrulaması üçün heç bir PAM modulu mövcud deyil"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-#, fuzzy
-msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "%s: XDMCP ara yaddaşı yaradıla bilmədi!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
-#, fuzzy
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "%s: XDMCP başlığı oxuna bilmədi!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-#, fuzzy
-msgid "XDMCP: Incorrect XDMCP version!"
-msgstr "%s: Səhv XDMCP buraxılışı!"
-
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XDMCP: Unable to parse address"
+#: utils/gdm-config.c:323
+msgid "No PAM module available for Fingerprint authentication"
 msgstr ""
+"Barmaq izi ilə kimlik doğrulaması üçün heç bir PAM modulu mövcud deyil"
 
-#: ../libgdm/gdm-user-switching.c:59
-msgid "Unable to create transient display: "
+#: utils/gdm-config.c:354
+#, c-format
+msgid "“%s” needs at least one parameter"
+msgstr "“%s” ən azı bir parametr tələb edir"
+
+#. TRANSLATORS: “command” can't be enabled...
+#: utils/gdm-config.c:363
+#, c-format
+msgid "“%s” can't be enabled and disabled at the same time"
+msgstr "“%s” eyni vaxtda həm aktiv, həm də deaktiv edilə bilməz"
+
+#. TRANSLATORS: option is not a valid command “option-key” value
+#: utils/gdm-config.c:386
+#, c-format
+msgid "“%s” is not a valid %s “%s” value"
+msgstr "“%s” etibarlı %s “%s” dəyəri deyil"
+
+#: utils/gdm-config.c:633
+msgid "No distro detected, no hook to run"
+msgstr "Heç bir distro aşkar edilmədi, icra ediləcək qarmaq (hook) yoxdur"
+
+#: utils/gdm-config.c:651
+#, c-format
+msgid "No valid args found to run hook “%s”"
+msgstr "“%s” qarmağını icra etmək üçün etibarlı arqumentlər tapılmadı"
+
+#: utils/gdm-config.c:656
+#, c-format
+msgid "Running distro hook “%s”\n"
+msgstr "Distro qarmağı “%s” icra olunur\n"
+
+#: utils/gdm-config.c:670
+#, c-format
+msgid "Distro hook “%s” requested stopping"
+msgstr "Distro qarmağı “%s” dayandırma tələb etdi"
+
+#: utils/gdm-config.c:683
+#, c-format
+msgid ""
+"Distro hook failed with exit status %d and error %s:\n"
+"Standard output:\n"
+"%s\n"
+"Error output:\n"
+"%s"
 msgstr ""
+"Distro qarmağı çıxış statusu %d və xətası %s ilə uğursuz oldu:\n"
+"Standart çıxış:\n"
+"%s\n"
+"Xəta çıxışı:\n"
+"%s"
 
-#: ../libgdm/gdm-user-switching.c:90
-msgid "Unable to activate session: "
+#. TRANSLATORS: Failed to set command “command” option key “option-key” via
+#. distro hook
+#: utils/gdm-config.c:733
+#, c-format
+msgid "Failed to set command “%s” option key “%s” via distro hook: "
 msgstr ""
+"Distro qarmağı vasitəsilə “%s” əmr seçim açarı “%s” təyin edilə bilmədi: "
 
-#: ../utils/gdmflexiserver.c:45
-msgid "Only the VERSION command is supported"
-msgstr ""
+#: utils/gdm-config.c:773
+#, c-format
+msgid "Failed to create directory %s"
+msgstr "%s qovluğunu yaratmaq mümkün olmadı"
 
-#: ../utils/gdmflexiserver.c:45
+#: utils/gdm-config.c:844
+msgid "dconf profile not found"
+msgstr "dconf profili tapılmadı"
+
+#: utils/gdm-config.c:934
+msgid "dconf has no system-db configured"
+msgstr "dconf üçün heç bir system-db konfiqurasiya edilməyib"
+
+#. TRANSLATORS: First value is a file path, second is an error message
+#: utils/gdm-config.c:1083
+#, c-format
+msgid "Failed to get the “%s” header comment: %s, was it modified?"
+msgstr "“%s” başlıq şərhi alına bilmədi: %s, o dəyişdirilib?"
+
+#: utils/gdm-config.c:1086
+#, c-format
+msgid "File “%s” header comment does not match, was it modified?"
+msgstr "“%s” faylının başlıq şərhi uyğun gəlmir, o dəyişdirilib?"
+
+#. XXX: Fail with an error instead?
+#: utils/gdm-config.c:1214
+#, c-format
+msgid "No expected header found on lock file “%s”, was it modified?"
+msgstr "“%s” kilid faylında gözlənilən başlıq tapılmadı, o dəyişdirilib?"
+
+#: utils/gdm-config.c:1499
+msgid "Failed to run a required distro hook: "
+msgstr "Tələb olunan distro qarmağını icra etmək mümkün olmadı: "
+
+#: utils/gdm-config.c:1515
 msgid "COMMAND"
 msgstr "ƏMR"
 
-#: ../utils/gdmflexiserver.c:46 ../utils/gdmflexiserver.c:47
-#: ../utils/gdmflexiserver.c:49 ../utils/gdmflexiserver.c:50
-msgid "Ignored — retained for compatibility"
+#: utils/gdm-config.c:1519
+#, c-format
+msgid ""
+"Commands:\n"
+"  help         Shows this information\n"
+"  password     Configure the password authentication\n"
+"  fingerprint  Configure the fingerprint authentication\n"
+"  smartcard    Configure the smartcard authentication\n"
+"  reset        Resets the default configuration\n"
+"  show         Shows the current configuration\n"
+"\n"
+"Use “%s COMMAND --help” to get help on each command.\n"
 msgstr ""
+"Əmrlər:\n"
+"  help         Bu məlumatı göstərir\n"
+"  password     Şifrə ilə kimlik doğrulamasını konfiqurasiya edir\n"
+"  fingerprint  Barmaq izi ilə kimlik doğrulamasını konfiqurasiya edir\n"
+"  smartcard    Smart-kart ilə kimlik doğrulamasını konfiqurasiya edir\n"
+"  reset        Standart konfiqurasiyanı sıfırlayır\n"
+"  show         Cari konfiqurasiyanı göstərir\n"
+"\n"
+"Hər bir əmr üzrə kömək almaq üçün “%s ƏMR --help” əmrindən istifadə edin.\n"
 
-#: ../utils/gdmflexiserver.c:48 ../utils/gdm-screenshot.c:43
-msgid "Debugging output"
-msgstr "Xəta ayıglaması yekunu"
+#: utils/gdm-config.c:1581
+msgid "Command options"
+msgstr "Əmr seçimləri"
 
-#: ../utils/gdmflexiserver.c:52
-#, fuzzy
-msgid "Version of this application"
-msgstr "Bu proqramın necə işlədiləcəyi barədə"
+#. TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command
+#: utils/gdm-config.c:1616
+#, c-format
+msgid "You need to be root to use %s “%s” command"
+msgstr "%s “%s” əmrindən istifadə etmək üçün root olmalısınız"
 
-#. Option parsing
-#: ../utils/gdmflexiserver.c:137
-#, fuzzy
-msgid "- New GDM login"
-msgstr "Yeni Giriş"
+#: utils/gdm-config.c:1666
+#, c-format
+msgid "Failed to set %s setting: "
+msgstr "%s tənzimləməsini təyin etmək mümkün olmadı: "
 
-#: ../utils/gdm-screenshot.c:212
-#, fuzzy
-msgid "Screenshot taken"
-msgstr "Ekran Nümayişi Yoxdur"
+#: utils/gdm-config.c:1758
+msgid "Failed to set smartcard setting"
+msgstr "Smart-kart tənzimləməsini təyin etmək mümkün olmadı"
 
-#. Option parsing
-#: ../utils/gdm-screenshot.c:279
-msgid "Take a picture of the screen"
+#: utils/gdm-config.c:1764
+msgid "Failed to set password setting"
+msgstr "Şifrə tənzimləməsini təyin etmək mümkün olmadı"
+
+#: utils/gdm-config.c:1778
+msgid "Enabled"
+msgstr "Aktivdir"
+
+#: utils/gdm-config.c:1778
+msgid "Disabled"
+msgstr "Deaktivdir"
+
+#: utils/gdm-config.c:1787
+msgid "Not supported"
+msgstr "Dəstəklənmir"
+
+#: utils/gdm-config.c:1803
+msgid "Required"
+msgstr "Tələb olunur"
+
+#: utils/gdm-config.c:1855
+#, c-format
+msgid ""
+"GDM Authorization configuration\n"
+"\n"
+"  Password authentication: %s\n"
+"  Fingerprint authentication: %s\n"
+"  Smart Card authentication: %s\n"
+"  Smart Card removal action: %s\n"
 msgstr ""
+"GDM Avtorizasiya konfiqurasiyası\n"
+"\n"
+"  Şifrə ilə kimlik doğrulaması: %s\n"
+"  Barmaq izi ilə kimlik doğrulaması: %s\n"
+"  Smart-kart ilə kimlik doğrulaması: %s\n"
+"  Smart-kart çıxarılma əməliyyatı: %s\n"
+
+#: utils/gdm-config.c:1883
+msgctxt "Interactive question"
+msgid "Y"
+msgstr "B"
+
+#: utils/gdm-config.c:1884
+msgctxt "Interactive question"
+msgid "y"
+msgstr "b"
+
+#: utils/gdm-config.c:1885
+msgctxt "Interactive question"
+msgid "N"
+msgstr "X"
+
+#: utils/gdm-config.c:1886
+msgctxt "Interactive question"
+msgid "n"
+msgstr "x"
+
+#: utils/gdm-config.c:1890
+msgctxt "Interactive question"
+msgid "Do you want to continue? [Y/n]? "
+msgstr "Davam etmək istəyirsiniz? [B/x]? "
+
+#: utils/gdm-config.c:1908
+msgid "User cancelled the request"
+msgstr "İstifadəçi sorğunu ləğv etdi"
+
+#: utils/gdm-config.c:1939
+#, c-format
+msgid "Failed to reset %s setting: "
+msgstr "%s tənzimləməsini sıfırlamaq mümkün olmadı: "
+
+#~ msgid ""
+#~ "Could not start the X server (your graphical environment) due to an internal"
+#~ " error. Please contact your system administrator or check your syslog to "
+#~ "diagnose. In the meantime this display will be disabled.  Please restart GDM"
+#~ " when the problem is corrected."
+#~ msgstr ""
+#~ "I could not start the X\n"
+#~ "server (your graphical environment)\n"
+#~ "due to some internal error.\n"
+#~ "Please contact your system administrator\n"
+#~ "or check your syslog to diagnose.\n"
+#~ "In the meantime this display will be\n"
+#~ "disabled.  Please restart gdm when\n"
+#~ "the problem is corrected."
+
+#, c-format
+#~ msgid "Server was to be spawned by user %s but that user doesn't exist"
+#~ msgstr "%s: Server was to be spawned by uid %d but that user doesn't exist"
+
+#, c-format
+#~ msgid "Couldn't set groupid to %d"
+#~ msgstr "%s: qrup nömrəsini %d edə bilmədim"
+
+#, c-format
+#~ msgid "initgroups () failed for %s"
+#~ msgstr "%s: %s üçün initgroups() bacarılmadı."
+
+#, c-format
+#~ msgid "Couldn't set userid to %d"
+#~ msgstr "%s: istifadəçi nömrəsini %d edə bilmədim"
+
+#, c-format
+#~ msgid "%s: Could not open log file for display %s!"
+#~ msgstr "%s: %s ekranı üçün qeyd faylını aça bilmədim!"
+
+#, c-format
+#~ msgid "%s: Error setting %s to %s"
+#~ msgstr "%s: %s qiymətini %s-ə çevirərkən xəta meydana gəldi"
+
+#, c-format
+#~ msgid "%s: Server priority couldn't be set to %d: %s"
+#~ msgstr "%s: Xvericisi tapıla bilmədi: %s"
+
+#, c-format
+#~ msgid "%s: Empty server command for display %s"
+#~ msgstr "%s: %s ekranı nümayişi üçün boş verici əmri"
+
+#~ msgid "Your password has expired, please change it now."
+#~ msgstr ""
+#~ "Şifrənizin vaxtı dolub.\n"
+#~ "Təkcə sistem idarəçisi onu dəyişsirə bilər"
+
+#~ msgid "Could not create socket!"
+#~ msgstr "%s: Soket yaradıla bilmədi!"
+
+#~ msgid "Listen on TCP socket"
+#~ msgstr "_UDP qapısına qulaq as: "
+
+#~ msgid "GNOME Display Manager X Session Launcher"
+#~ msgstr "GDM (GNOME Ekran İdarəçisi) fəaliyyətdə deyil."
 
+#, c-format
+#~ msgid "Can't find the GDM user '%s'. Aborting!"
+#~ msgstr "%s: gdm istifadəçisi (%s) tapılaa bilmədi. Çıxıram!"
 
+#~ msgid "The GDM user should not be root. Aborting!"
+#~ msgstr "%s: gdm istifadəçisi 'root' olmamalıdır. Çıxıram!"
 
+#, c-format
+#~ msgid "Can't find the GDM group '%s'. Aborting!"
+#~ msgstr "%s: (%s) gdm qrupunu tapa bilmədim. Çıxıram!"
 
+#~ msgid "The GDM group should not be root. Aborting!"
+#~ msgstr "%s: gdm grupu 'root' olmamalıdır . Çıxıram!"
 
+#~ msgid "GNOME Shell"
+#~ msgstr "GNOME"
 
+#~ msgid "XDMCP: Could not create XDMCP buffer!"
+#~ msgstr "%s: XDMCP ara yaddaşı yaradıla bilmədi!"
 
+#~ msgid "XDMCP: Could not read XDMCP header!"
+#~ msgstr "%s: XDMCP başlığı oxuna bilmədi!"
 
+#~ msgid "XDMCP: Incorrect XDMCP version!"
+#~ msgstr "%s: Səhv XDMCP buraxılışı!"
 
+#~ msgid "Version of this application"
+#~ msgstr "Bu proqramın necə işlədiləcəyi barədə"
 
+#~ msgid "- New GDM login"
+#~ msgstr "Yeni Giriş"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#  default is nicely translated
-#  Translators: default GNOME session
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~ msgid "Screenshot taken"
+#~ msgstr "Ekran Nümayişi Yoxdur"
