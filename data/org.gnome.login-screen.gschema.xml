@@ -5,6 +5,12 @@
     <value value="2" nick="file"/>
   </enum>
 
+  <enum id="org.gnome.login-screen.BannerMode">
+    <value value="1" nick="auto"/>
+    <value value="2" nick="inline"/>
+    <value value="3" nick="acknowledgement"/>
+  </enum>
+
   <schema id="org.gnome.login-screen" path="/org/gnome/login-screen/">
     <key name="enable-switchable-authentication" type="b">
       <default>true</default>
@@ -75,6 +81,20 @@
         Set to true to show the banner message text.
       </description>
     </key>
+    <key name="banner-message-mode" enum="org.gnome.login-screen.BannerMode">
+      <default>"auto"</default>
+      <summary>
+        Banner message presentation mode
+      </summary>
+      <description>
+        How the banner message is presented on the login screen. "inline"
+        shows it as a small message above the login prompt. "acknowledgement"
+        shows it after the user authenticates and requires the user to
+        acknowledge it before the session starts. "auto" automatically
+        determines "inline" or "acknowledgement" based on length of the
+        banner's content.
+      </description>
+    </key>
     <key name="banner-message-source" enum="org.gnome.login-screen.BannerSource">
       <default>"settings"</default>
       <summary>
@@ -82,6 +102,15 @@
       </summary>
       <description>
         The source of the text banner message on the login screen.
+      </description>
+    </key>
+    <key name="banner-message-title" type="s">
+      <default>''</default>
+      <summary>
+        Banner message title
+      </summary>
+      <description>
+        Title of the banner message to show in the login window.
       </description>
     </key>
     <key name="banner-message-text" type="s">
@@ -100,6 +129,17 @@
       </summary>
       <description>
         Path to text file with banner message to show in the login window.
+      </description>
+    </key>
+    <key name="banner-message-button" type="s">
+      <default>''</default>
+      <summary>
+        Banner message acknowledgement button label
+      </summary>
+      <description>
+        Label for the acknowledgement button shown with the banner message
+        when banner-message-mode presents it as something the user must
+        acknowledge. If empty, a default label is used.
       </description>
     </key>
     <key name="disable-restart-buttons" type="b">
