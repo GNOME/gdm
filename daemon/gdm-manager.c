@@ -1761,6 +1761,8 @@ on_session_credentials_established (GdmSession *session,
                                     GdmManager *manager)
 {
         GdmDisplay *display;
+        GdmSession *existing_session;
+        const char *username;
         gboolean    doing_initial_setup = FALSE;
 
         display = get_display_for_user_session (session);
@@ -1777,6 +1779,31 @@ on_session_credentials_established (GdmSession *session,
                       NULL);
         if (doing_initial_setup)
                 export_initial_setup_home_dir (session);
+
+        /* The username may only have become known partway through this
+         * conversation, e.g. when it's auto-selected by a PAM service like
+         * gdm-smartcard. If it turns out a compatible session for that user
+         * is already running, switch this conversation over to
+         * reauthentication mode so on_establish_credentials_cb() jumps to
+         * that session below instead of opening a redundant new one.
+         */
+        username = gdm_session_get_username (session);
+        if (username == NULL)
+                return;
+
+        existing_session = find_session_for_user (manager, username, session);
+        if (existing_session != NULL &&
+            are_sessions_compatible (existing_session, session)) {
+                g_debug ("GdmManager: user %s already has a compatible session %s running, "
+                         "treating this conversation as a reauthentication",
+                         username,
+                         gdm_session_get_session_id (existing_session));
+
+                gdm_session_set_verification_mode (session,
+                                                   GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE);
+                update_remote_id_for_existing_session (display, existing_session);
+                switch_to_compatible_user_session (manager, session, FALSE);
+        }
 }
 
 static void

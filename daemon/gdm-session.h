@@ -63,6 +63,8 @@ uid_t             gdm_session_get_allowed_user       (GdmSession     *session);
 void              gdm_session_start_reauthentication (GdmSession *session,
                                                       GPid        pid_of_caller,
                                                       uid_t       uid_of_caller);
+void              gdm_session_set_verification_mode  (GdmSession                 *session,
+                                                      GdmSessionVerificationMode  verification_mode);
 
 const char       *gdm_session_get_server_address          (GdmSession     *session);
 const char       *gdm_session_get_username                (GdmSession     *session);

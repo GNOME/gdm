@@ -3624,10 +3624,12 @@ set_display_is_initial (GdmSession *self,
         self->display_is_initial = is_initial;
 }
 
-static void
-set_verification_mode (GdmSession                 *self,
-                       GdmSessionVerificationMode  verification_mode)
+void
+gdm_session_set_verification_mode (GdmSession                 *self,
+                                   GdmSessionVerificationMode  verification_mode)
 {
+        g_return_if_fail (GDM_IS_SESSION (self));
+
         self->verification_mode = verification_mode;
 }
 
@@ -3696,7 +3698,7 @@ gdm_session_set_property (GObject      *object,
                 set_display_is_initial (self, g_value_get_boolean (value));
                 break;
         case PROP_VERIFICATION_MODE:
-                set_verification_mode (self, g_value_get_enum (value));
+                gdm_session_set_verification_mode (self, g_value_get_enum (value));
                 break;
         case PROP_ALLOWED_USER:
                 set_allowed_user (self, g_value_get_uint (value));
@@ -4105,7 +4107,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                            NULL, NULL,
                                                            GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                            GDM_SESSION_VERIFICATION_MODE_LOGIN,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         props[PROP_ALLOWED_USER] = g_param_spec_uint ("allowed-user",
                                                       NULL, NULL,
                                                       0,
