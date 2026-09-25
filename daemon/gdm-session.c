@@ -4105,7 +4105,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                            NULL, NULL,
                                                            GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                            GDM_SESSION_VERIFICATION_MODE_LOGIN,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         props[PROP_ALLOWED_USER] = g_param_spec_uint ("allowed-user",
                                                       NULL, NULL,
                                                       0,
