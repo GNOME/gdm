@@ -646,6 +646,32 @@ get_display_for_user_session (GdmSession *session)
         return g_object_get_qdata (G_OBJECT (session), gdm_session_display_quark);
 }
 
+static void
+update_remote_id_for_existing_session (GdmDisplay *login_display,
+                                       GdmSession *existing_session)
+{
+        GdmDisplay *existing_display;
+
+        if (!GDM_IS_REMOTE_DISPLAY (login_display))
+                return;
+
+        existing_display = get_display_for_user_session (existing_session);
+
+        if (existing_display == NULL || !GDM_IS_REMOTE_DISPLAY (existing_display)) {
+                g_warning ("GdmManager: Couldn't find remote display associated with existing user session");
+                return;
+        }
+
+        /* Transferring the remote id from the new login screen display to the
+         * preexisting user session display, notifies the remoting software to redirect
+         * the connection. That same software will also ensure after the redirection has
+         * happened that the login screen session is closed, so we don't have to manage that
+         * ourselves.
+         */
+        g_autofree char *remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (login_display));
+        gdm_remote_display_set_remote_id (GDM_REMOTE_DISPLAY (existing_display), remote_id);
+}
+
 static GdmSession *
 get_user_session_for_display (GdmDisplay *display)
 {
@@ -1864,42 +1890,18 @@ on_session_reauthenticated (GdmSession *session,
                             int         pid_of_caller,
                             GdmManager *manager)
 {
-        gboolean fail_if_already_switched = FALSE;
         GdmDisplay *login_display = gdm_display_store_find (manager->display_store,
                                                             lookup_by_reauth_pid,
                                                             GINT_TO_POINTER (pid_of_caller));
 
-        if (login_display != NULL) {
-                if (GDM_IS_REMOTE_DISPLAY (login_display)) {
-                        const char *session_id;
-                        GdmDisplay *user_display;
-
-                        session_id = gdm_session_get_session_id (session);
-                        user_display = gdm_display_store_find (manager->display_store,
-                                                               lookup_by_session_id,
-                                                               (gpointer) session_id);
-
-                        if (user_display != NULL && GDM_IS_REMOTE_DISPLAY (user_display)) {
-                                /* Transferring the remote id from the new login screen display to the
-                                 * preexisting user session display, notifies the remoting software to redirect
-                                 * the connection. That same software will also ensure after the redirection has
-                                 * happened that the login screen session is closed, so we don't have to manage that
-                                 * ourselves.
-                                 */
-                                g_autofree char *remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (login_display));
-                                gdm_remote_display_set_remote_id (GDM_REMOTE_DISPLAY (user_display), remote_id);
-                        } else {
-                                g_warning ("GdmManager: Couldn't find remote display associated with reauthenticated user session");
-                        }
-                }
-        }
+        update_remote_id_for_existing_session (login_display, session);
 
         /* There should already be a session running, so jump to its
          * VT. In the event we're already on the right VT, (i.e. user
          * used an unlock screen instead of a user switched login screen),
          * then silently succeed and unlock the session.
          */
-        switch_to_compatible_user_session (manager, session, fail_if_already_switched);
+        switch_to_compatible_user_session (manager, session, FALSE);
 }
 
 static void
