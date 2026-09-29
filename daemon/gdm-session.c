@@ -1031,6 +1031,11 @@ worker_on_username_changed (GdmDBusWorker          *worker,
 
         gdm_session_select_user (self, (strlen (username) > 0) ? g_strdup (username) : NULL);
         gdm_session_defaults_changed (self);
+
+        if (self->greeter_interface != NULL) {
+                gdm_dbus_greeter_emit_selected_user_changed (self->greeter_interface,
+                                                             username);
+        }
 }
 
 static void
