@@ -1284,6 +1284,28 @@ out:
         return TRUE;
 }
 
+static gboolean
+is_automatic_login_service (const char *service_name)
+{
+        return g_strcmp0 (service_name, GDM_SESSION_AUTOLOGIN_SERVICE) == 0 ||
+               g_strcmp0 (service_name, GDM_SESSION_DIRECT_LOGIN_SERVICE) == 0;
+}
+
+static const char *
+get_automatic_login_service (GdmDisplay *display)
+{
+        g_autofree char *autologin_user = NULL;
+
+        g_object_get (G_OBJECT (display),
+                      "autologin-user", &autologin_user,
+                      NULL);
+
+        if (autologin_user != NULL)
+                return GDM_SESSION_DIRECT_LOGIN_SERVICE;
+
+        return GDM_SESSION_AUTOLOGIN_SERVICE;
+}
+
 static void
 set_up_automatic_login_session (GdmManager *manager,
                                 GdmDisplay *display)
@@ -1307,7 +1329,8 @@ set_up_automatic_login_session (GdmManager *manager,
                       NULL);
 
         g_debug ("GdmManager: Starting automatic login conversation");
-        gdm_session_start_conversation (session, "gdm-autologin");
+        gdm_session_start_conversation (session,
+                                        get_automatic_login_service (display));
 }
 
 
@@ -1666,7 +1689,7 @@ on_start_user_session (StartUserSessionOperation *operation)
                                          operation->session,
                                          session_id);
 
-        if (g_strcmp0 (operation->service_name, "gdm-autologin") == 0 &&
+        if (is_automatic_login_service (operation->service_name) &&
             !gdm_session_client_is_connected (operation->session)) {
                 /* remove the unused prepared greeter display since we're not going
                  * to have a greeter */
@@ -1757,7 +1780,7 @@ on_user_session_opened (GdmSession       *session,
 {
         manager->user_sessions = g_list_append (manager->user_sessions,
                                                       g_object_ref (session));
-        if (g_strcmp0 (service_name, "gdm-autologin") == 0 &&
+        if (is_automatic_login_service (service_name) &&
             !gdm_session_client_is_connected (session)) {
                 /* If we're auto logging in then don't wait for the go-ahead from a greeter,
                  * (since there is no greeter) */
@@ -2003,7 +2026,7 @@ on_session_client_connected (GdmSession      *session,
         gdm_session_set_timed_login_details (session, username, delay);
 
         g_debug ("GdmManager: Starting automatic login conversation (for timed login)");
-        gdm_session_start_conversation (session, "gdm-autologin");
+        gdm_session_start_conversation (session, GDM_SESSION_AUTOLOGIN_SERVICE);
 
         g_free (username);
 
@@ -2092,7 +2115,7 @@ on_session_conversation_started (GdmSession *session,
 
         g_object_set (session, "session-id-of-caller", gdm_display_get_session_id (display), NULL);
 
-        if (g_strcmp0 (service_name, "gdm-autologin") != 0) {
+        if (!is_automatic_login_service (service_name)) {
                 g_debug ("GdmManager: ignoring session conversation since its not automatic login conversation");
                 return;
         }
@@ -2104,7 +2127,7 @@ on_session_conversation_started (GdmSession *session,
 
         g_debug ("GdmManager: begin auto login for user '%s'", username);
 
-        /* service_name will be "gdm-autologin"
+        /* service_name will be "gdm-autologin" or "gdm-direct-login"
          */
         gdm_session_setup_for_user (session, service_name, username);
 }

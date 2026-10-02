@@ -1451,6 +1451,7 @@ handle_connection_from_worker (GDBusServer      *server,
 
 static const char * const daemon_only_services[] = {
         GDM_SESSION_AUTOLOGIN_SERVICE,
+        GDM_SESSION_DIRECT_LOGIN_SERVICE,
         GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE,
         NULL
 };

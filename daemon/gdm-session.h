@@ -28,6 +28,7 @@
 G_BEGIN_DECLS
 
 #define GDM_SESSION_AUTOLOGIN_SERVICE "gdm-autologin"
+#define GDM_SESSION_DIRECT_LOGIN_SERVICE "gdm-direct-login"
 #define GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE "gdm-launch-environment"
 
 #define GDM_TYPE_SESSION (gdm_session_get_type ())

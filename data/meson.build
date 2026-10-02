@@ -100,6 +100,13 @@ foreach _pam_filename : pam_data_files
   )
 endforeach
 
+if 'gdm-autologin' in pam_data_files
+  install_data('pam-@0@/gdm-autologin.pam'.format(default_pam_config),
+    rename: 'gdm-direct-login',
+    install_dir: pam_sys_services_dir,
+  )
+endif
+
 if default_pam_config == 'redhat'
   pam_substack_services = [
     'password-auth',
