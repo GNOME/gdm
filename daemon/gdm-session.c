@@ -1444,6 +1444,31 @@ handle_connection_from_worker (GDBusServer      *server,
         return TRUE;
 }
 
+static const char * const daemon_only_services[] = {
+        GDM_SESSION_AUTOLOGIN_SERVICE,
+        GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE,
+        NULL
+};
+
+static gboolean
+is_client_allowed_service (const char *service_name)
+{
+        int i;
+
+        if (strchr (service_name, '/') != NULL)
+                return FALSE;
+
+        if (g_ascii_strncasecmp (service_name, "gdm-", strlen ("gdm-")) != 0)
+                return FALSE;
+
+        for (i = 0; daemon_only_services[i] != NULL; i++) {
+                if (g_ascii_strcasecmp (service_name, daemon_only_services[i]) == 0)
+                        return FALSE;
+        }
+
+        return TRUE;
+}
+
 static GdmSessionConversation *
 begin_verification_conversation (GdmSession            *self,
                                  GDBusMethodInvocation *invocation,
@@ -1451,6 +1476,17 @@ begin_verification_conversation (GdmSession            *self,
 {
         GdmSessionConversation *conversation = NULL;
         gboolean conversation_started;
+
+        if (!is_client_allowed_service (service_name)) {
+                g_debug ("GdmSession: refusing client request to start service '%s'",
+                         service_name);
+                g_dbus_method_invocation_return_error (invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_ACCESS_DENIED,
+                                                       "Clients may not start service '%s'",
+                                                       service_name);
+                return NULL;
+        }
 
         conversation_started = gdm_session_start_conversation (self, service_name);
 
@@ -1867,7 +1903,7 @@ gdm_session_handle_client_begin_auto_login (GdmDBusGreeter        *greeter_inter
                  gdm_session_get_session_id (self),
                  self);
 
-        gdm_session_setup_for_user (self, "gdm-autologin", username);
+        gdm_session_setup_for_user (self, GDM_SESSION_AUTOLOGIN_SERVICE, username);
 
         return TRUE;
 }

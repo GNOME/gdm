@@ -27,6 +27,9 @@
 
 G_BEGIN_DECLS
 
+#define GDM_SESSION_AUTOLOGIN_SERVICE "gdm-autologin"
+#define GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE "gdm-launch-environment"
+
 #define GDM_TYPE_SESSION (gdm_session_get_type ())
 G_DECLARE_FINAL_TYPE (GdmSession, gdm_session, GDM, SESSION, GObject)
 

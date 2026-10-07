@@ -476,7 +476,7 @@ on_session_exited (GdmSession           *session,
                    int                   exit_code,
                    GdmLaunchEnvironment *launch_environment)
 {
-        gdm_session_stop_conversation (launch_environment->session, "gdm-launch-environment");
+        gdm_session_stop_conversation (launch_environment->session, GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE);
 
         g_signal_emit (G_OBJECT (launch_environment), signals [EXITED], 0, exit_code);
 }
@@ -486,7 +486,7 @@ on_session_died (GdmSession           *session,
                  int                   signal_number,
                  GdmLaunchEnvironment *launch_environment)
 {
-        gdm_session_stop_conversation (launch_environment->session, "gdm-launch-environment");
+        gdm_session_stop_conversation (launch_environment->session, GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE);
 
         g_signal_emit (G_OBJECT (launch_environment), signals [DIED], 0, signal_number);
 }
@@ -504,7 +504,7 @@ on_conversation_started (GdmSession           *session,
         log_path = g_build_filename (LOGDIR, log_file, NULL);
 
         gdm_session_setup_for_program (launch_environment->session,
-                                       "gdm-launch-environment",
+                                       GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE,
                                        launch_environment->dyn_user_name,
                                        log_path);
 }
@@ -618,7 +618,7 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                                  launch_environment,
                                  0);
 
-        gdm_session_start_conversation (launch_environment->session, "gdm-launch-environment");
+        gdm_session_start_conversation (launch_environment->session, GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE);
         gdm_session_select_session (launch_environment->session, launch_environment->session_name);
 
         g_object_set (G_OBJECT (launch_environment->session),
