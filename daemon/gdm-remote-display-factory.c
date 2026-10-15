@@ -184,6 +184,7 @@ handle_destroy_user_display (GdmDBusRemoteDisplayFactory *skeleton,
 
         if (!gdm_display_factory_on_user_display_destruction (GDM_DISPLAY_FACTORY (factory),
                                                               user,
+                                                              GDM_TYPE_REMOTE_DISPLAY,
                                                               &error)) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
                 return G_DBUS_METHOD_INVOCATION_HANDLED;

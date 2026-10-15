@@ -39,8 +39,6 @@ typedef struct _GdmDisplayFactoryPrivate
         GdmDisplayStore *display_store;
         guint            purge_displays_id;
 
-        GHashTable      *display_creation_users;
-
        PolkitAuthority  *authority;
 } GdmDisplayFactoryPrivate;
 
@@ -237,17 +235,8 @@ gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
                                               GError            **error)
 {
         g_auto (GStrv) sessions = NULL;
-        GdmDisplayFactoryPrivate *priv;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
-
-        priv = gdm_display_factory_get_instance_private (factory);
-
-        if (g_hash_table_lookup (priv->display_creation_users, user) != NULL) {
-                g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
-                             "A display for user %s has already been created", user);
-                return FALSE;
-        }
 
         if (!gdm_find_graphical_sessions_for_username (user, &sessions, error))
                 return FALSE;
@@ -258,31 +247,58 @@ gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
                 return FALSE;
         }
 
-        g_hash_table_insert (priv->display_creation_users, g_strdup (user), NULL);
-
         return TRUE;
+}
+
+typedef struct
+{
+        const char      *user;
+        GType            display_type;
+        GDBusConnection *connection;
+} FinishUserDisplayClosure;
+
+static void
+finish_display_if_owned_by_user (const char *id,
+                                 GdmDisplay *display,
+                                 gpointer    user_data)
+{
+        FinishUserDisplayClosure *closure = user_data;
+        g_autofree char *autologin_user = NULL;
+        const char *session_id;
+
+        if (!G_TYPE_CHECK_INSTANCE_TYPE (display, closure->display_type))
+                return;
+
+        g_object_get (display, "autologin-user", &autologin_user, NULL);
+
+        if (g_strcmp0 (autologin_user, closure->user) != 0)
+                return;
+
+        session_id = gdm_display_get_session_id (display);
+        if (session_id == NULL)
+                return;
+
+        g_debug ("GdmDisplayFactory: finishing session %s for user %s", session_id, autologin_user);
+
+        if (!gdm_terminate_session_by_id (closure->connection, NULL, session_id))
+                g_warning ("GdmDisplayFactory: Failed to terminate session %s", session_id);
 }
 
 gboolean
 gdm_display_factory_on_user_display_destruction (GdmDisplayFactory  *factory,
                                                  const char         *user,
+                                                 GType               display_type,
                                                  GError            **error)
 {
         g_auto (GStrv) session_ids = NULL;
         g_autoptr (GError) local_error = NULL;
         g_autoptr (GDBusConnection) connection = NULL;
         GdmDisplayFactoryPrivate *priv;
-        int i;
+        FinishUserDisplayClosure closure;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
 
         priv = gdm_display_factory_get_instance_private (factory);
-
-        if (!g_hash_table_remove (priv->display_creation_users, user)) {
-                g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
-                             "A display for user %s wasn't created", user);
-                return FALSE;
-        }
 
         if (!gdm_find_graphical_sessions_for_username (user, &session_ids, error))
                 return FALSE;
@@ -300,14 +316,13 @@ gdm_display_factory_on_user_display_destruction (GdmDisplayFactory  *factory,
                 return FALSE;
         }
 
-        for (i = 0; session_ids[i] != NULL; i++) {
-                if (!gdm_terminate_session_by_id (connection, NULL, session_ids[i])) {
-                        g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
-                                     "Failed to terminate session %s",
-                                     session_ids[i]);
-                        return FALSE;
-                }
-        }
+        closure.user = user;
+        closure.display_type = display_type;
+        closure.connection = connection;
+
+        gdm_display_store_foreach (priv->display_store,
+                                   (GdmDisplayStoreFunc) finish_display_if_owned_by_user,
+                                   &closure);
 
         return TRUE;
 }
@@ -388,14 +403,6 @@ gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
 static void
 gdm_display_factory_init (GdmDisplayFactory *factory)
 {
-        GdmDisplayFactoryPrivate *priv;
-
-        priv = gdm_display_factory_get_instance_private (factory);
-
-        priv->display_creation_users = g_hash_table_new_full (g_str_hash,
-                                                              g_str_equal,
-                                                              (GDestroyNotify) g_free,
-                                                              NULL);
 }
 
 static void
@@ -411,8 +418,6 @@ gdm_display_factory_finalize (GObject *object)
         priv = gdm_display_factory_get_instance_private (factory);
 
         g_return_if_fail (priv != NULL);
-
-        g_clear_pointer (&priv->display_creation_users, g_hash_table_destroy);
 
         g_clear_handle_id (&priv->purge_displays_id, g_source_remove);
 
