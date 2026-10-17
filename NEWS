@@ -1,3 +1,18 @@
+51.1
+====
+
+* Improve the reliability of our GPU-is-ready detection (corrected the code that
+  checks for the boot_display sysfs attribute)
+* Restricted which PAM stacks GDM will run, to defend against malicious greeters
+* oo7 enablement for Arch Linux's PAM stacks
+* Fixed bug where gnome-headless-session@<user>.service would stop working if
+  the user logs out from within the headless session
+* Changed behavior of RemoteDisplayFactory API to wait for the new headless
+  display to have a `session-id` set before returning/exporting it. This is a
+  backwards-compatible change that makes it easier to use this API
+* Code cleanups
+* Translation updates
+
 51.0
 ====
 
