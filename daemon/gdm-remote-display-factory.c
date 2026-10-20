@@ -215,7 +215,8 @@ handle_create_user_display (GdmDBusRemoteDisplayFactory *skeleton,
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        complete_invocation_when_exported (display, invocation);
+        gdm_dbus_remote_display_factory_complete_create_user_display (factory->skeleton,
+                                                                      invocation);
 
         return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
