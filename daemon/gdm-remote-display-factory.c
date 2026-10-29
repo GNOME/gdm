@@ -65,21 +65,21 @@ lookup_by_remote_id (const char *id,
 }
 
 static gboolean
-lookup_by_autologin_user (const char *id,
-                          GdmDisplay *display,
-                          gpointer    user_data)
+lookup_by_preauthenticated_user (const char *id,
+                                 GdmDisplay *display,
+                                 gpointer    user_data)
 {
-        const char *autologin_user = user_data;
-        g_autofree char *display_autologin_user = NULL;
+        const char *preauthenticated_user = user_data;
+        g_autofree char *display_preauthenticated_user = NULL;
 
-        g_object_get (display, "autologin-user", &display_autologin_user, NULL);
+        g_object_get (display, "preauthenticated-user", &display_preauthenticated_user, NULL);
 
-        return g_strcmp0 (autologin_user, display_autologin_user) == 0;
+        return g_strcmp0 (preauthenticated_user, display_preauthenticated_user) == 0;
 }
 
 static GdmDisplay *
 gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory  *factory,
-                                           const char               *autologin_user,
+                                           const char               *preauthenticated_user,
                                            const char               *remote_id,
                                            const char               *remote_hostname,
                                            GError                  **error)
@@ -96,16 +96,16 @@ gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory  *factory,
                 return NULL;
         }
 
-        if (autologin_user != NULL && remote_id != NULL) {
+        if (preauthenticated_user != NULL && remote_id != NULL) {
                 GdmDisplay *existing_display;
 
                 existing_display = gdm_display_store_find (store,
-                                                           lookup_by_autologin_user,
-                                                           (gpointer) autologin_user);
+                                                           lookup_by_preauthenticated_user,
+                                                           (gpointer) preauthenticated_user);
 
                 if (existing_display != NULL && GDM_IS_REMOTE_DISPLAY (existing_display)) {
                         g_debug ("GdmRemoteDisplayFactory: Found existing remote display for "
-                                 "autologin user '%s', reusing it", autologin_user);
+                                 "preauthenticated user '%s', reusing it", preauthenticated_user);
 
                         gdm_remote_display_set_remote_id (GDM_REMOTE_DISPLAY (existing_display), remote_id);
                         return existing_display;
@@ -118,7 +118,7 @@ gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory  *factory,
                                           remote_hostname);
 
         g_object_set (display,
-                      "autologin-user", autologin_user,
+                      "preauthenticated-user", preauthenticated_user,
                       NULL);
 
         gdm_display_store_add (store, display);
