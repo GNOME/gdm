@@ -12,14 +12,16 @@
 
       * A remote display that represents a headless login greeter session is
         created via
-        :ref:`org.gnome.DisplayManager.RemoteDisplayFactory.CreateRemoteDisplay`.
+        :ref:`org.gnome.DisplayManager.RemoteDisplayFactory.CreateDisplay`
+        with a ``remote-id``.
 
       * A remote display that represents a headless user session is created
         after a user has logged in from a remote greeter session display, if
         there is no existing user session.
 
       * A remote display that represents a headless user session is created via
-        :ref:`org.gnome.DisplayManager.RemoteDisplayFactory.CreateUserDisplay.
+        :ref:`org.gnome.DisplayManager.RemoteDisplayFactory.CreateDisplay`
+        without a ``remote-id``.
   -->
   <interface name="org.gnome.DisplayManager.RemoteDisplay">
     <!--
@@ -28,8 +30,9 @@
         A globally unique identifier associated with this remote display.
 
         For remote displays created from
-        :ref:`org.gnome.DisplayManager.RemoteDisplayFactory.CreateRemoteDisplay`.
-        it is directly set from the remote ID set during that call.
+        :ref:`org.gnome.DisplayManager.RemoteDisplayFactory.CreateDisplay`
+        with a ``remote-id``, it is directly set from the remote ID set
+        during that call.
 
         For remote displays created from logging in using a greeter remote
         display, the remote ID is inherited from that greeter remote display.

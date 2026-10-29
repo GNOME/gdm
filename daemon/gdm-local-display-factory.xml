@@ -1,11 +1,35 @@
 <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node name="/org/gnome/DisplayManager/LocalDisplayFactory">
   <interface name="org.gnome.DisplayManager.LocalDisplayFactory">
+    <!--
+        CreateTransientDisplay:
+
+        Create a plain login screen display, not tied to any particular
+        user (e.g. to switch to the login screen without ending the
+        caller's own session).
+    -->
     <method name="CreateTransientDisplay">
       <arg name="id" direction="out" type="o"/>
     </method>
-    <method name="CreateUserDisplay">
-      <arg name="user" direction="in" type="s"/>
+
+    <!--
+        CreateDisplay:
+        @properties: Options
+
+        Create a local display.
+
+        Available options:
+
+        * ``user`` (``s``)
+
+          Optional. The username of an already authorized user. A user
+          session will be created for this display and the login screen
+          will be bypassed. If omitted, this creates a plain login screen
+          display, same as CreateTransientDisplay.
+    -->
+    <method name="CreateDisplay">
+      <arg name="properties" direction="in" type="a{sv}"/>
+      <arg name="id" direction="out" type="o"/>
     </method>
     <method name="DestroyUserDisplay">
       <arg name="user" direction="in" type="s"/>

@@ -175,6 +175,8 @@ call_gdm_display_factory_method (State       *state,
         GDBusConnection *connection = state->connection;
         gboolean headless = state->headless;
         g_autoptr (GVariant) reply = NULL;
+        GVariantBuilder builder;
+        GVariant *params;
         const char *dbus_path;
         const char *dbus_iface;
 
@@ -186,12 +188,22 @@ call_gdm_display_factory_method (State       *state,
                 dbus_iface = GDM_LOCAL_DISPLAY_FACTORY_INTERFACE;
         }
 
+        if (g_strcmp0(method, "CreateDisplay")) {
+                g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
+                g_variant_builder_add (&builder, "{sv}", "user", g_variant_new_string (state->username));
+                params = g_variant_new ("(a{sv})", &builder);
+        } else if (g_strcmp0(method, "DestroyUserDisplay")) {
+                params = g_variant_new ("(s)", state->username);
+        } else {
+                g_assert_not_reached ();
+        }
+
         reply = g_dbus_connection_call_sync (connection,
                                              GDM_DBUS_NAME,
                                              dbus_path,
                                              dbus_iface,
                                              method,
-                                             g_variant_new ("(s)", state->username),
+                                             params,
                                              NULL,
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1, NULL, error);
@@ -208,7 +220,7 @@ create_session (State   *state,
                 GError **error)
 {
         return call_gdm_display_factory_method (state,
-                                                "CreateUserDisplay",
+                                                "CreateDisplay",
                                                 error);
 }
 

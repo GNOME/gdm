@@ -188,10 +188,10 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
 
         method = g_dbus_method_invocation_get_method_name (invocation);
-        if (!g_str_equal (method, "CreateUserDisplay") &&
-            !g_str_equal (method, "DestroyUserDisplay") &&
-            !g_str_equal (method, "CreateRemoteDisplay"))
+        if (!g_str_equal (method, "CreateDisplay") &&
+            !g_str_equal (method, "DestroyUserDisplay")) {
                 return TRUE;
+        }
 
         if (!ensure_polkit_authority (factory, &local_error)) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
@@ -205,10 +205,10 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         parameters = g_dbus_method_invocation_get_parameters (invocation);
         details = polkit_details_new ();
 
-        if (g_str_equal (method, "CreateRemoteDisplay")) {
+        if (g_str_equal (method, "CreateDisplay")) {
                 g_variant_get (parameters, "(@a{sv})", &properties);
-                g_variant_lookup (properties, "preauthenticated-user", "&s", &user);
-        } else {
+                g_variant_lookup (properties, "user", "&s", &user);
+        } else if (g_str_equal (method, "DestroyUserDisplay")) {
                 g_variant_get (parameters, "(&s)", &user);
         }
 
