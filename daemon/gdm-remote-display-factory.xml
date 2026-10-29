@@ -9,10 +9,10 @@
   -->
   <interface name="org.gnome.DisplayManager.RemoteDisplayFactory">
     <!--
-        CreateRemoteDisplay:
+        CreateDisplay:
         @properties: Options
 
-        Create a headless greeter session.
+        Create a headless session.
 
         Available options:
 
@@ -23,34 +23,25 @@
           the created :ref:`org.gnome.DisplayManager.RemoteDisplay`.
           Note that while the ID is formatted as a D-Bus object path, no actual
           D-Bus object is exposed at this path.
+          If omitted, ``user`` must be given instead: this then creates a
+          headless session for an already authorized user, bypassing the
+          login screen. If there is currently an active graphical session for
+          that user (remote or local), the call fails.
 
         * ``hostname`` (``s``)
 
           An optional hostname of the remote connection associated with the 
           to-be-created remote display.
 
-        * ``preauthenticated-user`` (``s``)
+        * ``user`` (``s``)
 
           The username of an already authenticated user. A user session will be
           created together with a remote display with the ``RemoteId`` property
           set on the :ref:`org.gnome.DisplayManager.RemoteDisplay` object.
     -->
-    <method name="CreateRemoteDisplay">
+    <method name="CreateDisplay">
       <arg name="properties" direction="in" type="a{sv}"/>
-    </method>
-
-    <!--
-        CreateUserDisplay:
-        @user: A username
-
-        Creates a headles graphical session for the username specified by @user.
-
-        If there is currently an active graphical session (remote or local),
-        this method will fail. On success, a new
-        :ref:`org.gnome.DisplayManager.RemoteDisplay` will be created.
-    -->
-    <method name="CreateUserDisplay">
-      <arg name="user" direction="in" type="s"/>
+      <arg name="id" direction="out" type="o"/>
     </method>
 
     <!--
