@@ -195,8 +195,9 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
                 g_variant_lookup (properties, "user", "s", &user);
                 if (user == NULL)
                         return TRUE;
-        } else if (g_strcmp0 (method, "DestroyUserDisplay") == 0) {
-                g_variant_get (parameters, "(s)", &user);
+        } else if (g_strcmp0 (method, "DestroyDisplay") == 0) {
+                g_variant_get (parameters, "(@a{sv})", &properties);
+                g_variant_lookup (properties, "user", "s", &user);
         } else {
                 return TRUE;
         }

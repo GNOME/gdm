@@ -45,13 +45,19 @@
     </method>
 
     <!--
-        DestroyUserDisplay:
-        @user: A username
+        DestroyDisplay:
+        @properties: Options
 
-        Destroys a headless graphical session of the username specified by @user.
+        Destroy a headless display created via CreateDisplay.
+
+        Available options:
+
+        * ``user`` (``s``)
+
+          Required. The username whose display should be destroyed.
     -->
-    <method name="DestroyUserDisplay">
-      <arg name="user" direction="in" type="s"/>
+    <method name="DestroyDisplay">
+      <arg name="properties" direction="in" type="a{sv}"/>
     </method>
   </interface>
 </node>
