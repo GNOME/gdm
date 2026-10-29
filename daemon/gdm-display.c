@@ -46,8 +46,6 @@
 #include "gdm-launch-environment.h"
 #include "gdm-dbus-util.h"
 
-#define GNOME_SESSION_SESSIONS_PATH DATADIR "/gnome-session/sessions"
-
 typedef struct _GdmDisplayPrivate
 {
         GObject               parent;
@@ -1108,13 +1106,25 @@ on_launch_environment_session_died (GdmLaunchEnvironment *launch_environment,
 static gboolean
 can_create_environment (const char *session_id)
 {
-        g_autofree char *path = NULL;
-        gboolean session_exists;
+        const char * const *system_data_dirs = NULL;
+        g_autofree char *session_filename = NULL;
+        int i;
 
-        path = g_strdup_printf (GNOME_SESSION_SESSIONS_PATH "/%s.session", session_id);
-        session_exists = g_file_test (path, G_FILE_TEST_EXISTS);
+        session_filename = g_strdup_printf ("%s.session", session_id);
+        system_data_dirs = g_get_system_data_dirs ();
+        for (i = 0; system_data_dirs[i]; i++) {
+                g_autofree char *candidate_path = NULL;
 
-        return session_exists;
+                candidate_path = g_build_filename (system_data_dirs[i],
+                                                   "gnome-session",
+                                                   "sessions",
+                                                   session_filename,
+                                                   NULL);
+                if (g_file_test (candidate_path, G_FILE_TEST_EXISTS))
+                        return TRUE;
+        }
+
+        return FALSE;
 }
 
 #define ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT GDM_RUN_DIR "/gdm.ran-initial-setup"
