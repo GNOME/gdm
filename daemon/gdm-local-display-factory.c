@@ -173,7 +173,7 @@ gdm_local_display_factory_get_session_types (GdmLocalDisplayFactory *factory)
 */
 static gboolean
 gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
-                                          const char              *autologin_user,
+                                          const char              *preauthenticated_user,
                                           char                   **id,
                                           GError                 **error)
 {
@@ -190,7 +190,7 @@ gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
                       "seat-id", "seat0",
                       "allow-timed-login", FALSE,
                       "is-initial", TRUE,
-                      "autologin-user", autologin_user,
+                      "preauthenticated-user", preauthenticated_user,
                       NULL);
 
         store_display (factory, display);

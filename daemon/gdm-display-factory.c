@@ -263,22 +263,22 @@ finish_display_if_owned_by_user (const char *id,
                                  gpointer    user_data)
 {
         FinishUserDisplayClosure *closure = user_data;
-        g_autofree char *autologin_user = NULL;
+        g_autofree char *preauthenticated_user = NULL;
         const char *session_id;
 
         if (!G_TYPE_CHECK_INSTANCE_TYPE (display, closure->display_type))
                 return;
 
-        g_object_get (display, "autologin-user", &autologin_user, NULL);
+        g_object_get (display, "preauthenticated-user", &preauthenticated_user, NULL);
 
-        if (g_strcmp0 (autologin_user, closure->user) != 0)
+        if (g_strcmp0 (preauthenticated_user, closure->user) != 0)
                 return;
 
         session_id = gdm_display_get_session_id (display);
         if (session_id == NULL)
                 return;
 
-        g_debug ("GdmDisplayFactory: finishing session %s for user %s", session_id, autologin_user);
+        g_debug ("GdmDisplayFactory: finishing session %s for user %s", session_id, preauthenticated_user);
 
         if (!gdm_terminate_session_by_id (closure->connection, NULL, session_id))
                 g_warning ("GdmDisplayFactory: Failed to terminate session %s", session_id);

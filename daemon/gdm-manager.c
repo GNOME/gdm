@@ -67,7 +67,7 @@
 static GQuark gdm_display_user_session_quark;
 static GQuark gdm_display_reauth_pid_of_caller_quark;
 static GQuark gdm_session_remote_id_quark;
-static GQuark gdm_session_autologin_user_quark;
+static GQuark gdm_session_preauthenticated_user_quark;
 static GQuark gdm_session_display_quark;
 static GQuark gdm_session_caller_pid_quark;
 static GQuark gdm_session_user_session_quark;
@@ -1255,7 +1255,7 @@ get_automatic_login_details (GdmManager  *manager,
 
         g_object_get (G_OBJECT (display),
                       "seat-id", &seat_id,
-                      "autologin-user", &username,
+                      "preauthenticated-user", &username,
                       NULL);
 
         if (username != NULL)
@@ -1294,13 +1294,13 @@ is_automatic_login_service (const char *service_name)
 static const char *
 get_automatic_login_service (GdmDisplay *display)
 {
-        g_autofree char *autologin_user = NULL;
+        g_autofree char *preauthenticated_user = NULL;
 
         g_object_get (G_OBJECT (display),
-                      "autologin-user", &autologin_user,
+                      "preauthenticated-user", &preauthenticated_user,
                       NULL);
 
-        if (autologin_user != NULL)
+        if (preauthenticated_user != NULL)
                 return GDM_SESSION_DIRECT_LOGIN_SERVICE;
 
         return GDM_SESSION_AUTOLOGIN_SERVICE;
@@ -1524,8 +1524,8 @@ create_display_for_user_session (GdmManager *self,
 {
         GdmDisplay *display = NULL;
         const char *seat_id = gdm_session_get_display_seat_id (session);
-        const char *autologin_user = g_object_get_qdata (G_OBJECT (session),
-                                                         gdm_session_autologin_user_quark);
+        const char *preauthenticated_user = g_object_get_qdata (G_OBJECT (session),
+                                                                gdm_session_preauthenticated_user_quark);
         gboolean display_is_local;
 
         g_object_get (G_OBJECT (session), "display-is-local", &display_is_local, NULL);
@@ -1549,7 +1549,7 @@ create_display_for_user_session (GdmManager *self,
                       "session-class", "user",
                       "seat-id", seat_id,
                       "session-id", session_id,
-                      "autologin-user", autologin_user,
+                      "preauthenticated-user", preauthenticated_user,
                       NULL);
         gdm_display_store_add (self->display_store,
                                display);
@@ -2183,7 +2183,7 @@ create_user_session_for_display (GdmManager *manager,
         char       *remote_hostname = NULL;
         char       *display_seat_id = NULL;
         char       *display_id = NULL;
-        char       *autologin_user = NULL;
+        char       *preauthenticated_user = NULL;
         g_auto (GStrv) supported_session_types = NULL;
 
         g_object_get (G_OBJECT (display),
@@ -2192,7 +2192,7 @@ create_user_session_for_display (GdmManager *manager,
                       "remote-hostname", &remote_hostname,
                       "seat-id", &display_seat_id,
                       "supported-session-types", &supported_session_types,
-                      "autologin-user", &autologin_user,
+                      "preauthenticated-user", &preauthenticated_user,
                       NULL);
         display_device = get_display_device (manager, display);
 
@@ -2211,8 +2211,8 @@ create_user_session_for_display (GdmManager *manager,
         }
 
         g_object_set_qdata_full (G_OBJECT (session),
-                                 gdm_session_autologin_user_quark,
-                                 g_steal_pointer (&autologin_user),
+                                 gdm_session_preauthenticated_user_quark,
+                                 g_steal_pointer (&preauthenticated_user),
                                  g_free);
 
         g_object_set (G_OBJECT (session),
@@ -2228,7 +2228,7 @@ create_user_session_for_display (GdmManager *manager,
         g_free (display_seat_id);
         g_free (display_id);
         g_free (display_device);
-        g_free (autologin_user);
+        g_free (preauthenticated_user);
 
         g_signal_connect (session,
                           "reauthentication-started",
@@ -2572,7 +2572,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
         gdm_display_user_session_quark = g_quark_from_static_string ("gdm-display-user-session");
         gdm_display_reauth_pid_of_caller_quark = g_quark_from_static_string ("gdm-display-reauth-pid-of-caller");
         gdm_session_remote_id_quark = g_quark_from_static_string ("gdm-session-remote-id");
-        gdm_session_autologin_user_quark = g_quark_from_static_string ("gdm-session-autologin-user");
+        gdm_session_preauthenticated_user_quark = g_quark_from_static_string ("gdm-session-preauthenticated-user");
         gdm_session_display_quark = g_quark_from_static_string ("gdm-session-display");
         gdm_session_caller_pid_quark = g_quark_from_static_string ("gdm-session-caller-pid");
         gdm_session_user_session_quark = g_quark_from_static_string ("gdm-session-user-session");

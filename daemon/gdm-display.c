@@ -61,7 +61,7 @@ typedef struct _GdmDisplayPrivate
         int                   status;
         time_t                creation_time;
 
-        char                 *autologin_user;
+        char                 *preauthenticated_user;
 
         guint                 finish_idle_id;
 
@@ -97,7 +97,7 @@ enum {
         PROP_IS_LOCAL,
         PROP_LAUNCH_ENVIRONMENT,
         PROP_IS_INITIAL,
-        PROP_AUTOLOGIN_USER,
+        PROP_PREAUTHENTICATED_USER,
         PROP_ALLOW_TIMED_LOGIN,
         PROP_HAVE_EXISTING_USER_ACCOUNTS,
         PROP_DOING_INITIAL_SETUP,
@@ -486,14 +486,14 @@ _gdm_display_set_is_local (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_autologin_user (GdmDisplay *self,
-                                 const char *user)
+_gdm_display_set_preauthenticated_user (GdmDisplay *self,
+                                        const char *user)
 {
         GdmDisplayPrivate *priv;
 
         priv = gdm_display_get_instance_private (self);
-        g_debug ("GdmDisplay: autologin user: %s", user);
-        g_set_str (&priv->autologin_user, user);
+        g_debug ("GdmDisplay: preauthenticated user: %s", user);
+        g_set_str (&priv->preauthenticated_user, user);
 }
 
 static void
@@ -591,8 +591,8 @@ gdm_display_set_property (GObject        *object,
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
                 break;
-        case PROP_AUTOLOGIN_USER:
-                _gdm_display_set_autologin_user (self, g_value_get_string (value));
+        case PROP_PREAUTHENTICATED_USER:
+                _gdm_display_set_preauthenticated_user (self, g_value_get_string (value));
                 break;
         case PROP_ALLOW_TIMED_LOGIN:
                 _gdm_display_set_allow_timed_login (self, g_value_get_boolean (value));
@@ -649,8 +649,8 @@ gdm_display_get_property (GObject        *object,
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, priv->is_local);
                 break;
-        case PROP_AUTOLOGIN_USER:
-                g_value_set_string (value, priv->autologin_user);
+        case PROP_PREAUTHENTICATED_USER:
+                g_value_set_string (value, priv->preauthenticated_user);
                 break;
         case PROP_LAUNCH_ENVIRONMENT:
                 g_value_set_object (value, priv->launch_environment);
@@ -854,7 +854,7 @@ gdm_display_dispose (GObject *object)
         g_clear_handle_id (&priv->finish_idle_id, g_source_remove);
         g_clear_object (&priv->launch_environment);
         g_clear_pointer (&priv->supported_session_types, g_strfreev);
-        g_clear_pointer (&priv->autologin_user, g_free);
+        g_clear_pointer (&priv->preauthenticated_user, g_free);
 
         g_warn_if_fail (priv->status != GDM_DISPLAY_MANAGED);
 
@@ -901,11 +901,11 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                        NULL,
                                                        FALSE,
                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-        props[PROP_AUTOLOGIN_USER] = g_param_spec_string ("autologin-user",
-                                                          NULL,
-                                                          NULL,
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        props[PROP_PREAUTHENTICATED_USER] = g_param_spec_string ("preauthenticated-user",
+                                                                 NULL,
+                                                                 NULL,
+                                                                 NULL,
+                                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
         props[PROP_ALLOW_TIMED_LOGIN] = g_param_spec_boolean ("allow-timed-login",
                                                               NULL,
                                                               NULL,
