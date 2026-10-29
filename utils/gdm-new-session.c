@@ -167,6 +167,24 @@ setup (State   *state,
         return TRUE;
 }
 
+static GVariant *
+build_user_variant (State      *state,
+                    const char *method)
+{
+        GVariantBuilder builder;
+
+        if (g_strcmp0(method, "CreateDisplay")) {
+                g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
+                g_variant_builder_add (&builder, "{sv}", "user", g_variant_new_string (state->username));
+
+                return g_variant_new ("(a{sv})", &builder);
+        } else if (g_strcmp0(method, "DestroyUserDisplay")) {
+                return g_variant_new ("(s)", state->username);
+        } else {
+                g_assert_not_reached ();
+        }
+}
+
 static gboolean
 call_gdm_display_factory_method (State       *state,
                                  const char  *method,
@@ -191,7 +209,7 @@ call_gdm_display_factory_method (State       *state,
                                              dbus_path,
                                              dbus_iface,
                                              method,
-                                             g_variant_new ("(s)", state->username),
+                                             build_user_variant (state, method),
                                              NULL,
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1, NULL, error);
@@ -208,7 +226,7 @@ create_session (State   *state,
                 GError **error)
 {
         return call_gdm_display_factory_method (state,
-                                                "CreateUserDisplay",
+                                                "CreateDisplay",
                                                 error);
 }
 

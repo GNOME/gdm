@@ -1215,30 +1215,34 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
 {
         g_autoptr(GError) error = NULL;
         g_autofree char *id = NULL;
-        gboolean created;
 
-        created = gdm_local_display_factory_create_display (factory,
-                                                            NULL,
-                                                            &id,
-                                                            &error);
-        if (!created) {
+        if (!gdm_local_display_factory_create_display (factory,
+                                                       NULL,
+                                                       &id,
+                                                       &error)) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
-        } else {
-                gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
+
+        gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
 
         return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
 
 static gboolean
-handle_create_user_display (GdmDBusLocalDisplayFactory *skeleton,
-                            GDBusMethodInvocation      *invocation,
-                            const char                 *user,
-                            GdmLocalDisplayFactory     *factory)
+handle_create_display (GdmDBusLocalDisplayFactory *skeleton,
+                       GDBusMethodInvocation      *invocation,
+                       GVariant                   *properties,
+                       GdmLocalDisplayFactory     *factory)
 {
-        g_autoptr (GError) error = NULL;
+        g_autoptr(GError) error = NULL;
+        g_autofree char *id = NULL;
+        g_autofree char *user = NULL;
 
-        if (!gdm_display_factory_on_user_display_creation (GDM_DISPLAY_FACTORY (factory),
+        g_variant_lookup (properties, "user", "s", &user);
+
+        if (user != NULL &&
+            !gdm_display_factory_on_user_display_creation (GDM_DISPLAY_FACTORY (factory),
                                                            user,
                                                            &error)) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
@@ -1247,14 +1251,13 @@ handle_create_user_display (GdmDBusLocalDisplayFactory *skeleton,
 
         if (!gdm_local_display_factory_create_display (factory,
                                                        user,
-                                                       NULL,
+                                                       &id,
                                                        &error)) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        gdm_dbus_local_display_factory_complete_create_user_display (skeleton,
-                                                                     invocation);
+        gdm_dbus_local_display_factory_complete_create_display (skeleton, invocation, id);
 
         return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
@@ -1319,8 +1322,8 @@ register_factory (GdmLocalDisplayFactory *factory)
                           factory);
 
         g_signal_connect (factory->skeleton,
-                          "handle-create-user-display",
-                          G_CALLBACK (handle_create_user_display),
+                          "handle-create-display",
+                          G_CALLBACK (handle_create_display),
                           factory);
 
         g_signal_connect (factory->skeleton,

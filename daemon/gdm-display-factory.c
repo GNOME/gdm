@@ -172,11 +172,12 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
                                                     GDBusMethodInvocation  *invocation,
                                                     GError                **error)
 {
-        g_autoptr (PolkitAuthorizationResult) result = NULL;
-        g_autoptr (PolkitSubject) subject = NULL;
-        g_autoptr (PolkitDetails) details = NULL;
-        g_autoptr (GError) local_error = NULL;
-        const char *user = NULL;
+        g_autoptr(PolkitAuthorizationResult) result = NULL;
+        g_autoptr(PolkitSubject) subject = NULL;
+        g_autoptr(PolkitDetails) details = NULL;
+        g_autoptr(GError) local_error = NULL;
+        g_autoptr(GVariant) properties = NULL;
+        g_autofree char *user = NULL;
         const char *action;
         const char *method;
         const char *sender;
@@ -187,9 +188,18 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
 
         method = g_dbus_method_invocation_get_method_name (invocation);
-        if (g_strcmp0 (method, "CreateUserDisplay") != 0 &&
-            g_strcmp0 (method, "DestroyUserDisplay") != 0)
+        parameters = g_dbus_method_invocation_get_parameters (invocation);
+
+        if (g_strcmp0 (method, "CreateDisplay") == 0) {
+                g_variant_get (parameters, "(@a{sv})", &properties);
+                g_variant_lookup (properties, "user", "s", &user);
+                if (user == NULL)
+                        return TRUE;
+        } else if (g_strcmp0 (method, "DestroyUserDisplay") == 0) {
+                g_variant_get (parameters, "(s)", &user);
+        } else {
                 return TRUE;
+        }
 
         if (!ensure_polkit_authority (factory, &local_error)) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
@@ -200,8 +210,6 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
 
         priv = gdm_display_factory_get_instance_private (factory);
 
-        parameters = g_dbus_method_invocation_get_parameters (invocation);
-        g_variant_get (parameters, "(s)", &user);
         details = polkit_details_new ();
         polkit_details_insert (details, "user", user);
 
