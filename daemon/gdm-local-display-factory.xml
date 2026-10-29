@@ -31,8 +31,20 @@
       <arg name="properties" direction="in" type="a{sv}"/>
       <arg name="id" direction="out" type="o"/>
     </method>
-    <method name="DestroyUserDisplay">
-      <arg name="user" direction="in" type="s"/>
+    <!--
+        DestroyDisplay:
+        @properties: Options
+
+        Destroy a display created via CreateDisplay.
+
+        Available options:
+
+        * ``user`` (``s``)
+
+          Required. The username whose display should be destroyed.
+    -->
+    <method name="DestroyDisplay">
+      <arg name="properties" direction="in" type="a{sv}"/>
     </method>
   </interface>
 </node>

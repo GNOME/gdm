@@ -189,7 +189,7 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
 
         method = g_dbus_method_invocation_get_method_name (invocation);
         if (!g_str_equal (method, "CreateDisplay") &&
-            !g_str_equal (method, "DestroyUserDisplay")) {
+            !g_str_equal (method, "DestroyDisplay")) {
                 return TRUE;
         }
 
@@ -205,13 +205,8 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         parameters = g_dbus_method_invocation_get_parameters (invocation);
         details = polkit_details_new ();
 
-        if (g_str_equal (method, "CreateDisplay")) {
-                g_variant_get (parameters, "(@a{sv})", &properties);
-                g_variant_lookup (properties, "user", "&s", &user);
-        } else if (g_str_equal (method, "DestroyUserDisplay")) {
-                g_variant_get (parameters, "(&s)", &user);
-        }
-
+        g_variant_get (parameters, "(@a{sv})", &properties);
+        g_variant_lookup (properties, "user", "&s", &user);
         if (user != NULL && !g_str_equal (user, ""))
                 polkit_details_insert (details, "user", user);
 
@@ -260,81 +255,83 @@ gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
         return TRUE;
 }
 
-typedef struct
+gboolean
+gdm_display_factory_destroy_display (GdmDisplay  *display,
+                                     GError     **error)
 {
-        const char      *user;
-        GType            display_type;
-        GDBusConnection *connection;
-} FinishUserDisplayClosure;
-
-static void
-finish_display_if_owned_by_user (const char *id,
-                                 GdmDisplay *display,
-                                 gpointer    user_data)
-{
-        FinishUserDisplayClosure *closure = user_data;
-        g_autofree char *preauthenticated_user = NULL;
+        g_autoptr (GdmDisplay) owned_display = NULL;
+        g_autoptr (GDBusConnection) connection = NULL;
         const char *session_id;
 
-        if (!G_TYPE_CHECK_INSTANCE_TYPE (display, closure->display_type))
-                return;
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        owned_display = g_object_ref (display);
+        session_id = gdm_display_get_session_id (display);
+        if (session_id == NULL) {
+                g_autofree char *id = NULL;
+
+                gdm_display_get_id (display, &id, NULL);
+                g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
+                             "Display %s has no session to terminate", id);
+                return FALSE;
+        }
+
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, error);
+        if (connection == NULL)
+                return FALSE;
+
+        if (!gdm_terminate_session_by_id (connection, NULL, session_id)) {
+                g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
+                             "Failed to terminate session %s", session_id);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+typedef struct
+{
+        const char *user;
+        GType       display_type;
+} UserDisplayLookup;
+
+static gboolean
+lookup_by_user (const char *id,
+                GdmDisplay *display,
+                gpointer    user_data)
+{
+        UserDisplayLookup *lookup = user_data;
+        g_autofree char *preauthenticated_user = NULL;
+
+        if (!G_TYPE_CHECK_INSTANCE_TYPE (display, lookup->display_type))
+                return FALSE;
 
         g_object_get (display, "preauthenticated-user", &preauthenticated_user, NULL);
 
-        if (g_strcmp0 (preauthenticated_user, closure->user) != 0)
-                return;
-
-        session_id = gdm_display_get_session_id (display);
-        if (session_id == NULL)
-                return;
-
-        g_debug ("GdmDisplayFactory: finishing session %s for user %s", session_id, preauthenticated_user);
-
-        if (!gdm_terminate_session_by_id (closure->connection, NULL, session_id))
-                g_warning ("GdmDisplayFactory: Failed to terminate session %s", session_id);
+        return g_strcmp0 (preauthenticated_user, lookup->user) == 0;
 }
 
 gboolean
-gdm_display_factory_on_user_display_destruction (GdmDisplayFactory  *factory,
-                                                 const char         *user,
-                                                 GType               display_type,
-                                                 GError            **error)
+gdm_display_factory_destroy_display_by_user (GdmDisplayFactory  *factory,
+                                             const char         *user,
+                                             GType               display_type,
+                                             GError            **error)
 {
-        g_auto (GStrv) session_ids = NULL;
-        g_autoptr (GError) local_error = NULL;
-        g_autoptr (GDBusConnection) connection = NULL;
-        GdmDisplayFactoryPrivate *priv;
-        FinishUserDisplayClosure closure;
+        GdmDisplayStore *store;
+        GdmDisplay *display;
+        UserDisplayLookup lookup = { .user = user, .display_type = display_type };
 
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
 
-        priv = gdm_display_factory_get_instance_private (factory);
-
-        if (!gdm_find_graphical_sessions_for_username (user, &session_ids, error))
-                return FALSE;
-
-        if (g_strv_length (session_ids) == 0) {
+        store = gdm_display_factory_get_display_store (factory);
+        display = gdm_display_store_find (store, lookup_by_user, &lookup);
+        if (display == NULL) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
                              "There's no display for user %s", user);
                 return FALSE;
         }
 
-        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
-        if (connection == NULL) {
-                g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
-                             "Failed getting system bus %s", local_error->message);
-                return FALSE;
-        }
-
-        closure.user = user;
-        closure.display_type = display_type;
-        closure.connection = connection;
-
-        gdm_display_store_foreach (priv->display_store,
-                                   (GdmDisplayStoreFunc) finish_display_if_owned_by_user,
-                                   &closure);
-
-        return TRUE;
+        return gdm_display_factory_destroy_display (display, error);
 }
 
 static void

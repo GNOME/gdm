@@ -59,10 +59,12 @@ gboolean                   gdm_display_factory_authorize_manage_user_displays (G
 gboolean                   gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
                                                                          const char         *user,
                                                                          GError            **error);
-gboolean                   gdm_display_factory_on_user_display_destruction (GdmDisplayFactory  *factory,
-                                                                            const char         *user,
-                                                                            GType               display_type,
-                                                                            GError            **error);
+gboolean                   gdm_display_factory_destroy_display (GdmDisplay  *display,
+                                                                 GError     **error);
+gboolean                   gdm_display_factory_destroy_display_by_user (GdmDisplayFactory  *factory,
+                                                                         const char         *user,
+                                                                         GType               display_type,
+                                                                         GError            **error);
 
 G_END_DECLS
 
