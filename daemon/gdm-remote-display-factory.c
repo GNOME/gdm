@@ -212,12 +212,23 @@ handle_create_display (GdmDBusRemoteDisplayFactory *skeleton,
 }
 
 static gboolean
-handle_destroy_user_display (GdmDBusRemoteDisplayFactory *skeleton,
-                             GDBusMethodInvocation       *invocation,
-                             const char                  *user,
-                             GdmRemoteDisplayFactory     *factory)
+handle_destroy_display (GdmDBusRemoteDisplayFactory *skeleton,
+                        GDBusMethodInvocation       *invocation,
+                        GVariant                    *properties,
+                        GdmRemoteDisplayFactory     *factory)
 {
         g_autoptr (GError) error = NULL;
+        g_autofree char *user = NULL;
+
+        g_variant_lookup (properties, "user", "s", &user);
+
+        if (user == NULL) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_INVALID_ARGS,
+                                                               "Missing user in properties");
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
+        }
 
         if (!gdm_display_factory_on_user_display_destruction (GDM_DISPLAY_FACTORY (factory),
                                                               user,
@@ -227,7 +238,7 @@ handle_destroy_user_display (GdmDBusRemoteDisplayFactory *skeleton,
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        gdm_dbus_remote_display_factory_complete_destroy_user_display (skeleton,
+        gdm_dbus_remote_display_factory_complete_destroy_display (skeleton,
                                                                        invocation);
 
         return G_DBUS_METHOD_INVOCATION_HANDLED;
@@ -270,8 +281,8 @@ register_factory (GdmRemoteDisplayFactory *factory)
                           factory);
 
         g_signal_connect (factory->skeleton,
-                          "handle-destroy-user-display",
-                          G_CALLBACK (handle_destroy_user_display),
+                          "handle-destroy-display",
+                          G_CALLBACK (handle_destroy_display),
                           factory);
 
         g_signal_connect (factory->skeleton, "g-authorize-method",
