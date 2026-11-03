@@ -2404,6 +2404,9 @@ gdm_manager_start (GdmManager *manager)
 {
         g_return_if_fail (GDM_IS_MANAGER (manager));
 
+        if (manager->started)
+                return;
+
         g_debug ("GdmManager: GDM starting to manage displays");
 
 #ifdef WITH_PLYMOUTH
