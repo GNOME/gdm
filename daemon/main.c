@@ -315,26 +315,7 @@ on_name_acquired (GDBusConnection *bus,
                   const char      *name,
                   gpointer         user_data)
 {
-        gboolean remote_login_enabled;
-        gboolean show_local_greeter;
-
-        manager = gdm_manager_new ();
-        if (manager == NULL) {
-                g_warning ("Could not construct manager object");
-                exit (EXIT_FAILURE);
-        }
-
         g_debug ("Successfully connected to D-Bus");
-
-        show_local_greeter = TRUE;
-        gdm_settings_direct_get_boolean (GDM_KEY_SHOW_LOCAL_GREETER, &show_local_greeter);
-        gdm_manager_set_show_local_greeter (manager, show_local_greeter);
-
-        remote_login_enabled = FALSE;
-        gdm_settings_direct_get_boolean (GDM_KEY_REMOTE_LOGIN_ENABLE, &remote_login_enabled);
-        gdm_manager_set_remote_login_enabled (manager, remote_login_enabled);
-
-        gdm_manager_start (manager);
 }
 
 static void
@@ -352,6 +333,8 @@ bus_reconnect ()
 {
         GDBusConnection *bus;
         gboolean         ret;
+        gboolean         remote_login_enabled;
+        gboolean         show_local_greeter;
 
         ret = TRUE;
 
@@ -359,6 +342,22 @@ bus_reconnect ()
         if (bus == NULL) {
                 goto out;
         }
+
+        manager = gdm_manager_new ();
+        if (manager == NULL) {
+                g_warning ("Could not construct manager object");
+                exit (EXIT_FAILURE);
+        }
+
+        show_local_greeter = TRUE;
+        gdm_settings_direct_get_boolean (GDM_KEY_SHOW_LOCAL_GREETER, &show_local_greeter);
+        gdm_manager_set_show_local_greeter (manager, show_local_greeter);
+
+        remote_login_enabled = FALSE;
+        gdm_settings_direct_get_boolean (GDM_KEY_REMOTE_LOGIN_ENABLE, &remote_login_enabled);
+        gdm_manager_set_remote_login_enabled (manager, remote_login_enabled);
+
+        gdm_manager_start (manager);
 
         name_id = g_bus_own_name_on_connection (bus,
                                                 GDM_DBUS_NAME,
