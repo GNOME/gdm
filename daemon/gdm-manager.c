@@ -1012,7 +1012,7 @@ open_temporary_reauthentication_channel (GdmManager            *self,
                                  gdm_session_user_session_quark,
                                  user_session? g_object_ref (user_session) : NULL,
                                  (GDestroyNotify)
-                                 g_object_unref);
+                                 clear_user_session);
         g_object_set_qdata (G_OBJECT (session),
                             gdm_session_caller_pid_quark,
                             GUINT_TO_POINTER (pid));
