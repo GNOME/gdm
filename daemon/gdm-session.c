@@ -1026,9 +1026,9 @@ worker_on_username_changed (GdmDBusWorker          *worker,
 
         g_debug ("GdmSession: changing username from '%s' to '%s'",
                  self->selected_user != NULL ? self->selected_user : "<unset>",
-                 (strlen (username)) ? username : "<unset>");
+                 *username != '\0' ? username : "<unset>");
 
-        gdm_session_select_user (self, (strlen (username) > 0) ? username : NULL);
+        gdm_session_select_user (self, *username != '\0' ? username : NULL);
         gdm_session_defaults_changed (self);
 
         if (self->greeter_interface != NULL) {
