@@ -730,10 +730,9 @@ gdm_session_select_user (GdmSession *self,
                          const char *text)
 {
         g_return_if_fail (GDM_IS_SESSION (self));
-        g_return_if_fail (text != NULL);
 
         g_debug ("GdmSession: selecting user '%s' for session '%s' (%p)",
-                 text,
+                 text != NULL ? text : "<unset>",
                  gdm_session_get_session_id (self),
                  self);
 
@@ -1029,7 +1028,7 @@ worker_on_username_changed (GdmDBusWorker          *worker,
                  self->selected_user != NULL ? self->selected_user : "<unset>",
                  (strlen (username)) ? username : "<unset>");
 
-        gdm_session_select_user (self, (strlen (username) > 0) ? g_strdup (username) : NULL);
+        gdm_session_select_user (self, (strlen (username) > 0) ? username : NULL);
         gdm_session_defaults_changed (self);
 
         if (self->greeter_interface != NULL) {
