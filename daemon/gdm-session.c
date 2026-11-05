@@ -334,19 +334,21 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
                                service_name,
                                conversation->worker_pid);
 
-                switch (self->verification_mode) {
-                case GDM_SESSION_VERIFICATION_MODE_LOGIN:
-                        gdm_session_open_session (self, service_name);
-                        break;
-                case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
-                        if (self->user_verifier_interface != NULL) {
-                                gdm_dbus_user_verifier_emit_verification_complete (self->user_verifier_interface,
-                                                                                   service_name);
-                                g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
+                if (g_hash_table_lookup (self->conversations, service_name) == conversation) {
+                        switch (self->verification_mode) {
+                        case GDM_SESSION_VERIFICATION_MODE_LOGIN:
+                                gdm_session_open_session (self, service_name);
+                                break;
+                        case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
+                                if (self->user_verifier_interface != NULL) {
+                                        gdm_dbus_user_verifier_emit_verification_complete (self->user_verifier_interface,
+                                                                                           service_name);
+                                        g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
+                                }
+                                break;
+                        default:
+                                break;
                         }
-                        break;
-                default:
-                        break;
                 }
         } else {
                 report_and_stop_conversation (self, service_name, error);

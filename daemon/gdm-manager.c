@@ -1642,31 +1642,12 @@ static gboolean
 on_start_user_session (StartUserSessionOperation *operation)
 {
         GdmManager *self = operation->manager;
-        gboolean migrated;
-        gboolean fail_if_already_switched = TRUE;
         GdmDisplay *display;
         const char *session_id;
         gboolean doing_initial_setup = FALSE;
         uid_t allowed_uid;
 
-        g_debug ("GdmManager: start or jump to session");
-
-        /* If there's already a session running, jump to it.
-         * If the only session running is the one we just opened,
-         * start a session on it.
-         */
-        migrated = switch_to_compatible_user_session (operation->manager, operation->session, fail_if_already_switched);
-
-        g_debug ("GdmManager: migrated: %d", migrated);
-        if (migrated) {
-                /* We don't stop the manager here because
-                   when Xorg exits it switches to the VT it was
-                   started from.  That interferes with fast
-                   user switching. */
-                gdm_session_reset (operation->session);
-                destroy_start_user_session_operation (operation);
-                goto out;
-        }
+        g_debug ("GdmManager: start session");
 
         display = get_display_for_user_session (operation->session);
 
@@ -1724,7 +1705,6 @@ on_start_user_session (StartUserSessionOperation *operation)
 
         start_user_session (operation->manager, operation);
 
- out:
         return G_SOURCE_REMOVE;
 }
 
@@ -1775,7 +1755,9 @@ on_session_credentials_established (GdmSession *session,
                                     GdmManager *manager)
 {
         GdmDisplay *display;
+        const char *username;
         gboolean    doing_initial_setup = FALSE;
+        gboolean    switched;
 
         display = get_display_for_user_session (session);
         if (display == NULL) {
@@ -1791,6 +1773,27 @@ on_session_credentials_established (GdmSession *session,
                       NULL);
         if (doing_initial_setup)
                 export_initial_setup_home_dir (session);
+
+        /* The username may only have become known partway through this
+         * conversation, e.g. when it's auto-selected by a PAM service like
+         * gdm-smartcard. If it turns out a compatible session for that user
+         * is already running, this login attempt is redundant: jump to the
+         * existing session instead and discard this conversation.
+         */
+        username = gdm_session_get_username (session);
+        if (username == NULL)
+                return;
+
+        switched = switch_to_compatible_user_session (manager, session, TRUE);
+        if (switched) {
+                g_debug ("GdmManager: user %s already has a compatible session running, "
+                         "switching to it instead of completing this login attempt",
+                         username);
+                gdm_session_reset (session);
+        } else {
+                g_debug ("GdmManager: unable to switch to session, "
+                         "letting this conversation finish normally");
+        }
 }
 
 static void
