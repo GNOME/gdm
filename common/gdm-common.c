@@ -777,7 +777,7 @@ find_graphical_sessions (const uid_t    uid,
                 if (!_systemd_session_is_active (sessions[i]))
                         continue;
 
-                g_strv_builder_add (builder, g_strdup (sessions[i]));
+                g_strv_builder_add (builder, sessions[i]);
         }
 
         *out_sessions = g_strv_builder_end (builder);
