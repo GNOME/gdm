@@ -137,6 +137,7 @@ static void     create_user_session_for_display (GdmManager *manager,
 static void     start_user_session (GdmManager                *manager,
                                     StartUserSessionOperation *operation);
 static void     clean_user_session (GdmSession *session);
+static void     register_manager (GdmManager *manager);
 
 static gpointer manager_object = NULL;
 
@@ -2404,6 +2405,8 @@ gdm_manager_start (GdmManager *manager)
 {
         g_return_if_fail (GDM_IS_MANAGER (manager));
 
+        register_manager (manager);
+
         if (manager->started)
                 return;
 
@@ -2439,13 +2442,18 @@ gdm_manager_start (GdmManager *manager)
         manager->started = TRUE;
 }
 
-static gboolean
+static void
 register_manager (GdmManager *manager)
 {
         GError *error = NULL;
-        GDBusObjectManagerServer *object_server;
 
-        error = NULL;
+        if (manager->connection != NULL) {
+                if (!g_dbus_connection_is_closed (manager->connection))
+                        return;
+
+                g_clear_object (&manager->connection);
+        }
+
         manager->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM,
                                               NULL,
                                               &error);
@@ -2455,9 +2463,10 @@ register_manager (GdmManager *manager)
                 exit (EXIT_FAILURE);
         }
 
-        object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DISPLAYS_PATH);
-        g_dbus_object_manager_server_set_connection (object_server, manager->connection);
-        manager->object_manager = object_server;
+        if (manager->object_manager == NULL)
+                manager->object_manager = g_dbus_object_manager_server_new (GDM_MANAGER_DISPLAYS_PATH);
+
+        g_dbus_object_manager_server_set_connection (manager->object_manager, manager->connection);
 
         if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (manager),
                                                manager->connection,
@@ -2469,8 +2478,6 @@ register_manager (GdmManager *manager)
                 g_error_free (error);
                 exit (EXIT_FAILURE);
         }
-
-        return TRUE;
 }
 
 void
@@ -2739,16 +2746,9 @@ gdm_manager_new (void)
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                gboolean res;
-
                 manager_object = g_object_new (GDM_TYPE_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
-                res = register_manager (manager_object);
-                if (! res) {
-                        g_object_unref (manager_object);
-                        return NULL;
-                }
         }
 
         return GDM_MANAGER (manager_object);
