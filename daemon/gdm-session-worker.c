@@ -1813,6 +1813,56 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
         return pam_getenvlist (worker->pam_handle);
 }
 
+static gboolean
+is_reauth_environment_variable_allowed (const char *name,
+                                        const char *value,
+                                        uid_t       uid)
+{
+        g_autofree char *runtime_dir = NULL;
+
+        if (g_str_equal (name, "LANG") ||
+            g_str_equal (name, "LANGUAGE") ||
+            g_str_equal (name, "KRB5CCNAME") ||
+            g_str_equal (name, "PKCS11_LOGIN_TOKEN_NAME") ||
+            g_str_has_prefix (name, "LC_"))
+                return TRUE;
+
+        if (!g_str_equal (name, "XDG_RUNTIME_DIR"))
+                return FALSE;
+
+        runtime_dir = g_strdup_printf ("/run/user/%u", (guint) uid);
+        return g_str_equal (value, runtime_dir);
+}
+
+static GStrv
+gdm_session_worker_get_reauth_environment (GdmSessionWorker *worker,
+                                           uid_t             uid)
+{
+        g_autoptr(GStrvBuilder) builder = g_strv_builder_new ();
+        g_auto(GStrv) pam_environment = NULL;
+        gsize i;
+
+        pam_environment = gdm_session_worker_get_environment (worker);
+
+        for (i = 0; pam_environment != NULL && pam_environment[i] != NULL; i++) {
+                char *entry = pam_environment[i];
+                char *equals = strchr (entry, '=');
+
+                if (equals == NULL)
+                        continue;
+
+                *equals = '\0';
+
+                if (!is_reauth_environment_variable_allowed (entry, equals + 1, uid))
+                        continue;
+
+                *equals = '=';
+                g_strv_builder_add (builder, entry);
+        }
+
+        return g_strv_builder_end (builder);
+}
+
 static void
 wait_until_dbus_signal_emission_to_manager_finishes (GdmSessionWorker *worker)
 {
@@ -3149,7 +3199,9 @@ reauthentication_request_new (GdmSessionWorker      *worker,
         g_auto(GStrv) environment = NULL;
         const char *address;
 
-        environment = gdm_session_worker_get_environment (worker);
+        /* The reauth worker runs as root, so only forward what it actually needs
+         * from the user session's PAM environment. */
+        environment = gdm_session_worker_get_reauth_environment (worker, uid_of_caller);
 
         request = g_slice_new (ReauthenticationRequest);
 
