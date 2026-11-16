@@ -176,6 +176,7 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         g_autoptr (PolkitSubject) subject = NULL;
         g_autoptr (PolkitDetails) details = NULL;
         g_autoptr (GError) local_error = NULL;
+        g_autoptr (GVariant) properties = NULL;
         const char *user = NULL;
         const char *action;
         const char *method;
@@ -188,7 +189,8 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
 
         method = g_dbus_method_invocation_get_method_name (invocation);
         if (!g_str_equal (method, "CreateUserDisplay") &&
-            !g_str_equal (method, "DestroyUserDisplay"))
+            !g_str_equal (method, "DestroyUserDisplay") &&
+            !g_str_equal (method, "CreateRemoteDisplay"))
                 return TRUE;
 
         if (!ensure_polkit_authority (factory, &local_error)) {
@@ -201,9 +203,17 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         priv = gdm_display_factory_get_instance_private (factory);
 
         parameters = g_dbus_method_invocation_get_parameters (invocation);
-        g_variant_get (parameters, "(&s)", &user);
         details = polkit_details_new ();
-        polkit_details_insert (details, "user", user);
+
+        if (g_str_equal (method, "CreateRemoteDisplay")) {
+                g_variant_get (parameters, "(@a{sv})", &properties);
+                g_variant_lookup (properties, "preauthenticated-user", "&s", &user);
+        } else {
+                g_variant_get (parameters, "(&s)", &user);
+        }
+
+        if (user != NULL && !g_str_equal (user, ""))
+                polkit_details_insert (details, "user", user);
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         subject = polkit_system_bus_name_new (sender);
