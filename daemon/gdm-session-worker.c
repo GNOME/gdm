@@ -1756,10 +1756,10 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         return ret;
 }
 
-static const char * const *
+static GStrv
 gdm_session_worker_get_environment (GdmSessionWorker *worker)
 {
-        return (const char * const *) pam_getenvlist (worker->pam_handle);
+        return pam_getenvlist (worker->pam_handle);
 }
 
 static gboolean
@@ -2079,7 +2079,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         if (session_pid == 0) {
                 g_autofree char  *home_dir = NULL;
-                const char * const * environment;
+                g_auto(GStrv) environment = NULL;
                 int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
                 gboolean has_journald = FALSE, needs_controlling_terminal = FALSE;
                 /* Leak the TTY into the session as stdin so that it stays open
@@ -2201,9 +2201,10 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
                 gdm_session_execute (worker->arguments[0],
                                      worker->arguments,
-                                     (char **)
                                      environment,
                                      TRUE);
+
+                g_clear_pointer (&environment, g_strfreev);
 
                 gdm_log_init ();
                 g_debug ("GdmSessionWorker: child '%s' could not be started: %s",
@@ -3377,7 +3378,7 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                               GDBusMethodInvocation *invocation)
 {
         ReauthenticationRequest *request;
-        const char * const * environment;
+        g_auto(GStrv) environment = NULL;
         const char *address;
 
         environment = gdm_session_worker_get_environment (worker);
@@ -3395,7 +3396,7 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                                             worker->display_seat_id,
                                             worker->x11_authority_file,
                                             worker->display_is_local,
-                                            environment);
+                                            (const char * const *) environment);
 
         g_signal_connect (request->session,
                           "client-connected",
