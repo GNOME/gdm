@@ -20,13 +20,14 @@ variables:
 
 stages:
   - prepare
+  - review
   - build
   - release
 
 .gdm.fedora:
   variables:
     FDO_DISTRIBUTION_VERSION: 44
-    FDO_DISTRIBUTION_TAG: "2026-05-08.1"
+    FDO_DISTRIBUTION_TAG: "2026-11-23.1"
     FDO_DISTRIBUTION_PACKAGES: >-
       accountsservice-devel
       audit-libs-devel
@@ -45,8 +46,10 @@ stages:
       meson
       pam-devel
       plymouth-devel
+      python3
       systemd
       systemd-devel
+      uncrustify
 
 build-fedora-container:
   extends:
@@ -55,6 +58,14 @@ build-fedora-container:
   stage: prepare
   rules:
     - when: always
+
+check-style:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gdm.fedora
+  stage: review
+  script:
+    - python3 .gitlab-ci/check_style.py
 
 build-fedora:
   extends:
