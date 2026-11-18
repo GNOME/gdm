@@ -150,8 +150,9 @@ migrate_working_dir (GError **error)
                 }
         }
 
-        if (g_file_test (MIGRATED_STAMPFILE_PATH, G_FILE_TEST_EXISTS))
+        if (g_file_test (MIGRATED_STAMPFILE_PATH, G_FILE_TEST_EXISTS)) {
                 return TRUE;
+        }
 
         if (g_mkdir_with_parents (GDM_WORKING_DIR "/seat0", 0755) < 0) {
                 int errsv = errno;
@@ -167,8 +168,9 @@ migrate_working_dir (GError **error)
         if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.local/state",
                                        GDM_WORKING_DIR "/seat0/state",
                                        error)) {
-               if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+               if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
                        return FALSE;
+               }
 
                 /* The directory not existing isn't an error */
                 g_clear_error (error);
@@ -177,14 +179,16 @@ migrate_working_dir (GError **error)
         if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.config",
                                        GDM_WORKING_DIR "/seat0/config",
                                        error)) {
-                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
                        return FALSE;
+                }
 
                 g_clear_error (error);
         }
 
-        if (!g_file_set_contents (MIGRATED_STAMPFILE_PATH, "1", -1, error))
+        if (!g_file_set_contents (MIGRATED_STAMPFILE_PATH, "1", -1, error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -314,8 +318,9 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         }
 
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
-        if (debug)
+        if (debug) {
                 g_hash_table_insert (hash, g_strdup ("GNOME_SESSION_DEBUG"), g_strdup ("1"));
+        }
 
         g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->dyn_user_name));
         g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->dyn_user_name));
@@ -349,8 +354,9 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         /* Now populate XDG_DATA_DIRS from env.d if we're running initial setup; this allows
          * e.g. Flatpak apps to be recognized by gnome-shell.
          */
-        if (is_initial_setup)
+        if (is_initial_setup) {
                 gdm_load_env_d (load_env_func, get_var_cb, hash);
+        }
 
         system_data_dirs = g_strjoinv (":", (char **) g_get_system_data_dirs ());
         g_hash_table_insert (hash,
@@ -383,12 +389,14 @@ get_environment_file_output_stream (GdmLaunchEnvironment  *launch_environment,
         gid_t gid = GID_NOBODY;
 
         config_dir = g_build_filename (launch_environment->dyn_user_home, ".config", NULL);
-        if (!gdm_ensure_dir (config_dir, uid, gid, 0700, FALSE, error))
+        if (!gdm_ensure_dir (config_dir, uid, gid, 0700, FALSE, error)) {
                 return NULL;
+        }
 
         environment_dir = g_build_filename (config_dir, "environment.d", NULL);
-        if (!gdm_ensure_dir (environment_dir, uid, gid, 0700, FALSE, error))
+        if (!gdm_ensure_dir (environment_dir, uid, gid, 0700, FALSE, error)) {
                 return NULL;
+        }
 
         environment_conf = g_build_filename (environment_dir, "gdm.conf", NULL);
         file = g_file_new_for_path (environment_conf);
@@ -398,8 +406,9 @@ get_environment_file_output_stream (GdmLaunchEnvironment  *launch_environment,
                                       G_FILE_CREATE_REPLACE_DESTINATION,
                                       NULL,
                                       error);
-        if (!file_stream)
+        if (!file_stream) {
                 return NULL;
+        }
 
         if (!G_IS_FILE_DESCRIPTOR_BASED (file_stream)) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
@@ -548,8 +557,9 @@ gdm_launch_environment_ensure_uid (GdmLaunchEnvironment  *launch_environment,
                                             &launch_environment->dyn_user_name,
                                             &launch_environment->dyn_uid,
                                             &launch_environment->dyn_user_home,
-                                            error))
+                                            error)) {
                 return FALSE;
+        }
 
         /* We've allocated the UID, so let's make sure we can deallocate later */
         g_set_object (&launch_environment->dyn_user_store, dyn_user_store);

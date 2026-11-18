@@ -150,8 +150,9 @@ gdm_daemon_ensure_dirs (void)
         struct group *grent;
 
         grent = getgrnam (GDM_GROUPNAME);
-        if (G_UNLIKELY (grent == NULL))
+        if (G_UNLIKELY (grent == NULL)) {
                 g_warning ("Failed to find the GDM group, things will probably be very broken!");
+        }
 
         /* Set up /run/gdm */
         if (!gdm_ensure_dir (GDM_RUN_DIR, 0, 0, 0755, FALSE, &error)) {

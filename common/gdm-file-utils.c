@@ -37,21 +37,26 @@ gdm_walk_dir_recursively (GFile                     *dir,
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                                 NULL, error);
-        if (enumerator == NULL)
+        if (enumerator == NULL) {
                 return FALSE;
+        }
 
         while (TRUE) {
-                if (!g_file_enumerator_iterate (enumerator, &info, &child, NULL, error))
+                if (!g_file_enumerator_iterate (enumerator, &info, &child, NULL, error)) {
                         return FALSE;
+                }
 
-                if (info == NULL)
+                if (info == NULL) {
                         break;
+                }
 
                 if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-                        if (!gdm_walk_dir_recursively (child, cb, userdata, error))
+                        if (!gdm_walk_dir_recursively (child, cb, userdata, error)) {
                                 return FALSE;
-                } else if (!cb (child, userdata, error))
+                        }
+                } else if (!cb (child, userdata, error)) {
                           return FALSE;
+                }
         }
 
         return cb (dir, userdata, error);
@@ -72,14 +77,16 @@ chown_file (GFile   *file,
         if (!g_file_set_attribute_uint32 (file,
                                           G_FILE_ATTRIBUTE_UNIX_UID, data->uid,
                                           G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                          NULL, error))
+                                          NULL, error)) {
                 return FALSE;
+        }
 
         if (!g_file_set_attribute_uint32 (file,
                                           G_FILE_ATTRIBUTE_UNIX_GID, data->gid,
                                           G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                          NULL, error))
+                                          NULL, error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -134,8 +141,9 @@ gdm_ensure_dir (const char  *path,
 
         if (recursive_chown) {
                 g_autoptr (GFile) gio_dir = g_file_new_for_path (path);
-                if (!gdm_chown_recursively (gio_dir, uid, gid, error))
+                if (!gdm_chown_recursively (gio_dir, uid, gid, error)) {
                         return FALSE;
+                }
         } else {
                 if (chown (path, uid, gid) < 0) {
                         int errsv = errno;
@@ -173,8 +181,9 @@ recursive_copy_dir (GFile   *source,
         GFile *source_child;
 
         if (!g_file_make_directory (dest, NULL, error)) {
-                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
                         return FALSE;
+                }
 
                 /* It's not an error if the directory exists */
                 g_clear_error (error);
@@ -185,29 +194,34 @@ recursive_copy_dir (GFile   *source,
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                                 NULL, error);
-        if (enumerator == NULL)
+        if (enumerator == NULL) {
                 return FALSE;
+        }
 
         while (TRUE) {
                 g_autoptr (GFile) dest_child = NULL;
 
-                if (!g_file_enumerator_iterate (enumerator, &info, &source_child, NULL, error))
+                if (!g_file_enumerator_iterate (enumerator, &info, &source_child, NULL, error)) {
                         return FALSE;
+                }
 
-                if (info == NULL)
+                if (info == NULL) {
                         break;
+                }
 
                 dest_child = g_file_get_child (dest, g_file_info_get_name (info));
 
                 if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-                        if (!recursive_copy_dir (source_child, dest_child, error))
+                        if (!recursive_copy_dir (source_child, dest_child, error)) {
                                 return FALSE;
+                        }
                 } else if (!g_file_copy (source_child, dest_child,
                                          G_FILE_COPY_NOFOLLOW_SYMLINKS |
                                          G_FILE_COPY_ALL_METADATA |
                                          G_FILE_COPY_OVERWRITE,
-                                         NULL, NULL, NULL, error))
+                                         NULL, NULL, NULL, error)) {
                         return FALSE;
+                }
         }
 
         return TRUE;

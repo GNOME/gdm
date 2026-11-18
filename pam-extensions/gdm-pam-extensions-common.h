@@ -86,14 +86,16 @@ gdm_pam_extension_message_invalid_type (const GdmPamExtensionMessage *msg)
         int count = 0;
 
         env = getenv ("GDM_SUPPORTED_PAM_EXTENSIONS");
-        if (env == NULL)
+        if (env == NULL) {
                 return true;
+        }
 
         p = env;
         while (*p != '\0' && count <= UCHAR_MAX) {
                 size_t len = strcspn (p, " ");
-                if (len > 0)
+                if (len > 0) {
                         count++;
+                }
                 p += len;
                 p += strspn (p, " ");
         }
@@ -117,30 +119,35 @@ gdm_pam_extension_look_up_type (const char    *name,
         const char *p;
         size_t index = 0;
 
-        if (extension_type)
+        if (extension_type) {
                 *extension_type = 0;
+        }
 
         env = getenv ("GDM_SUPPORTED_PAM_EXTENSIONS");
-        if (env == NULL)
+        if (env == NULL) {
                 return false;
+        }
 
         p = env;
         while (*p != '\0') {
                 size_t len = strcspn (p, " ");
 
                 if (len > 0 && strncmp (p, name, len) == 0 && name[len] == '\0') {
-                        if (extension_type != NULL)
+                        if (extension_type != NULL) {
                                 *extension_type = index;
+                        }
                         return true;
                 }
 
                 p += len;
                 p += strspn (p, " ");
 
-                if (index >= UCHAR_MAX)
+                if (index >= UCHAR_MAX) {
                         break;
-                if (len > 0)
+                }
+                if (len > 0) {
                         index++;
+                }
         }
 
         return false;
@@ -165,8 +172,9 @@ gdm_pam_extension_advertise_supported_extensions (char               *environmen
         size_t offset;
         size_t index;
 
-        if (environment_block == NULL || block_size < key_len + 2)
+        if (environment_block == NULL || block_size < key_len + 2) {
                 return;
+        }
 
         memcpy (environment_block, key, key_len);
         environment_block[key_len] = '=';
@@ -182,11 +190,13 @@ gdm_pam_extension_advertise_supported_extensions (char               *environmen
                 size_t ext_len = strlen (supported_extensions[index]);
                 size_t needed = ext_len + (index > 0 ? 1 : 0);
 
-                if (offset + needed + 1 > block_size)
+                if (offset + needed + 1 > block_size) {
                         break;
+                }
 
-                if (index > 0)
+                if (index > 0) {
                         environment_block[offset++] = ' ';
+                }
 
                 memcpy (environment_block + offset, supported_extensions[index], ext_len);
                 offset += ext_len;

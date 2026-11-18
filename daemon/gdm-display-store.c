@@ -114,6 +114,7 @@ remove_display (char              *id,
         if (display == display_to_remove) {
                 return TRUE;
         }
+
         return FALSE;
 }
 

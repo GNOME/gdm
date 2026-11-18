@@ -81,8 +81,9 @@ on_pending_export_session_id_set (GdmDisplay *display,
                                   GParamSpec *pspec,
                                   gpointer    user_data)
 {
-        if (gdm_display_get_session_id (display) == NULL)
+        if (gdm_display_get_session_id (display) == NULL) {
                 return;
+        }
 
         finish_pending_export (GDM_REMOTE_DISPLAY (display));
 }

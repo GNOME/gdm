@@ -280,6 +280,7 @@ spawn_x_server (State        *state,
         if (state->debug_enabled) {
                 g_ptr_array_add (arguments, "-core");
         }
+
         g_ptr_array_add (arguments, NULL);
 
         subprocess = g_subprocess_launcher_spawnv (launcher,
@@ -772,8 +773,9 @@ register_display_timeout_cb (gpointer user_data)
 
         if (!gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
                                                           state->cancellable,
-                                                          &error))
+                                                          &error)) {
                 g_warning ("Could not register display: %s", error->message);
+        }
 }
 
 static gboolean
@@ -885,8 +887,9 @@ main (int    argc,
                 goto out;
         }
 
-        if (!connect_to_display_manager (state))
+        if (!connect_to_display_manager (state)) {
                 goto out;
+        }
 
         ret = spawn_session (state, state->cancellable);
 

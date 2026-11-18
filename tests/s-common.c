@@ -42,14 +42,18 @@ teardown (void)
 static char *
 expand_fn (const char *var, gpointer data)
 {
-        if (strcmp (var, "FOO") == 0)
+        if (strcmp (var, "FOO") == 0) {
                 return g_strdup ("BAR");
-        if (strcmp (var, "FOO9") == 0)
+        }
+        if (strcmp (var, "FOO9") == 0) {
                 return g_strdup ("XXX");
-        if (strcmp (var, "_FOO") == 0)
+        }
+        if (strcmp (var, "_FOO") == 0) {
                 return g_strdup ("YYY");
-        if (strcmp (var, "FOO_FOO") == 0)
+        }
+        if (strcmp (var, "FOO_FOO") == 0) {
                 return g_strdup ("ZZZ");
+        }
         return NULL;
 }
 

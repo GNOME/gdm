@@ -83,8 +83,9 @@ on_state_changed (GdmSessionWorker *worker,
 
         g_object_get (G_OBJECT (worker), "state", &state, NULL);
 
-        if (state != GDM_SESSION_WORKER_STATE_SESSION_STARTED)
+        if (state != GDM_SESSION_WORKER_STATE_SESSION_STARTED) {
                 return;
+        }
 
         g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
         g_unix_signal_add (SIGHUP, on_shutdown_signal_cb, main_loop);

@@ -134,10 +134,11 @@ record_set_host (UTMP       *u,
 {
         const char *hostname;
 #if defined(HAVE_UT_UT_HOST)
-        if (remote_host != NULL)
+        if (remote_host != NULL) {
                 hostname = remote_host;
-        else
+        } else {
                 hostname = "local";
+        }
         memccpy (u->ut_host, hostname, '\0', sizeof (u->ut_host));
         g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
 #ifdef HAVE_UT_UT_SYSLEN
@@ -154,14 +155,16 @@ record_set_line (UTMP       *u,
         const char *line;
 
         if (tty != NULL) {
-                if (g_str_has_prefix (tty, "/dev/"))
+                if (g_str_has_prefix (tty, "/dev/")) {
                         line = tty + strlen ("/dev/");
-                else
+                } else {
                         line = tty;
-        } else if (seat_id != NULL)
+                }
+        } else if (seat_id != NULL) {
                 line = seat_id;
-        else
+        } else {
                 line = "headless";
+        }
 
         memccpy (u->ut_line, line, '\0', sizeof (u->ut_line));
         g_debug ("using ut_line %.*s", (int) sizeof (u->ut_line), u->ut_line);
@@ -248,13 +251,16 @@ gdm_session_record (GdmSessionRecordEvent  event,
         void (*write_record)(UTMP *);
 
         username = gdm_session_get_username (session);
-        if (username == NULL)
+        if (username == NULL) {
                 return;
+        }
 
-        if (pid < 0)
+        if (pid < 0) {
                 pid = gdm_session_get_pid (session);
-        if (pid < 0)
+        }
+        if (pid < 0) {
                 return;
+        }
 
         switch (event) {
         case GDM_SESSION_RECORD_LOGIN:

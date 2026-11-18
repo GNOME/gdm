@@ -91,8 +91,9 @@ gdm_pam_extension_reply_to_choice_list_response (const struct pam_response *repl
 static inline void
 gdm_pam_extension_choice_list_response_free (GdmPamExtensionChoiceListResponse *response)
 {
-        if (response == NULL)
+        if (response == NULL) {
                 return;
+        }
 
         if (response->key != NULL) {
                gdm_pam_extension_zero_buffer (response->key, strlen (response->key));

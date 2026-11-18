@@ -460,8 +460,9 @@ register_display_timeout_cb (gpointer user_data)
 
         if (!gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
                                                           state->cancellable,
-                                                          &error))
+                                                          &error)) {
                 g_warning ("Could not display session: %s", error->message);
+        }
 }
 
 static gboolean
@@ -563,8 +564,9 @@ main (int    argc,
                 goto out;
         }
 
-        if (!connect_to_display_manager (state))
+        if (!connect_to_display_manager (state)) {
                 goto out;
+        }
 
         if (handle_registration) {
                 if (!register_session (state)) {

@@ -186,14 +186,17 @@ get_requested_action (void)
                 return ACTION_INVALID;
         }
 
-        if (opt_required == TRUE)
+        if (opt_required == TRUE) {
                 return ACTION_REQUIRED;
+        }
 
-        if (opt_enable == TRUE)
+        if (opt_enable == TRUE) {
                 return ACTION_ENABLED;
+        }
 
-        if (opt_disable == TRUE)
+        if (opt_disable == TRUE) {
                 return ACTION_DISABLED;
+        }
 
         return ACTION_UNSET;
 }
@@ -202,8 +205,9 @@ static gboolean
 smartcard_option_is_valid (const char *option_key,
                            const char *option_value)
 {
-        if (!option_key || !option_value)
+        if (!option_key || !option_value) {
                 return FALSE;
+        }
 
         if (g_str_equal (GSD_SC_REMOVAL_ACTION_KEY, option_key)) {
                 return g_strv_contains (SC_REMOVAL_ACTIONS, option_value);
@@ -377,8 +381,9 @@ smartcard_option_check (GOptionContext *context,
 {
         OptionData *data = user_data;
 
-        if (!toggle_option_check (context, group, user_data, error))
+        if (!toggle_option_check (context, group, user_data, error)) {
                 return FALSE;
+        }
 
         if (opt_removal_action &&
             !smartcard_option_is_valid (GSD_SC_REMOVAL_ACTION_KEY, opt_removal_action)) {
@@ -397,8 +402,9 @@ smartcard_option_check (GOptionContext *context,
 static void
 gdm_config_command_handler_free (GdmConfigCommandHandler *command_handler)
 {
-        if (command_handler->data_destroy)
+        if (command_handler->data_destroy) {
                 command_handler->data_destroy (command_handler->data);
+        }
 
         g_clear_pointer (&command_handler->entries, g_ptr_array_unref);
         g_free (command_handler);
@@ -444,8 +450,9 @@ config_command_get_handler (GdmConfigCommand config_command)
 
                 removal_args = g_strjoinv ("|", (GStrv) SC_REMOVAL_ACTIONS);
                 for (i = 0; smartcard_entries[i].long_name; ++i) {
-                        if (!g_str_equal (smartcard_entries[i].long_name, "removal-action"))
+                        if (!g_str_equal (smartcard_entries[i].long_name, "removal-action")) {
                                 continue;
+                        }
 
                         smartcard_entries[i].arg_description = removal_args;
 
@@ -469,8 +476,9 @@ config_command_handler_add_to_group (GdmConfigCommandHandler *command_handler,
 {
         guint i;
 
-        if (!command_handler || !command_handler->entries)
+        if (!command_handler || !command_handler->entries) {
                 return;
+        }
 
         for (i = 0; i < command_handler->entries->len; ++i) {
                 const GOptionEntry *entries;
@@ -509,8 +517,9 @@ read_file_contents_to_array (const char  *file_path,
                 for (i = array->len - 1; i >= 0; i--) {
                         char *line = g_ptr_array_index (array, i);
 
-                        if (line && (g_ascii_isgraph (line[0]) || strlen (line) > 1))
+                        if (line && (g_ascii_isgraph (line[0]) || strlen (line) > 1)) {
                                 break;
+                        }
 
                         g_ptr_array_remove_index (array, i);
                 }
@@ -532,8 +541,9 @@ write_array_to_file (GPtrArray  *array,
 
         if (array->len) {
                 /* Ensure final new line */
-                if (!g_str_equal (g_ptr_array_index (array_copy, array->len - 1), ""))
+                if (!g_str_equal (g_ptr_array_index (array_copy, array->len - 1), "")) {
                         g_ptr_array_add (array_copy, "");
+                }
         }
 
         g_ptr_array_add (array_copy, NULL);
@@ -557,16 +567,17 @@ build_distro_hook_arguments (const char       *distro_hook,
         g_ptr_array_add (call_args, (char *) distro_hook);
         g_ptr_array_add (call_args, (char *) config_command_to_string (config_command));
 
-        if (command_args)
+        if (command_args) {
                 g_ptr_array_extend (call_args, command_args, NULL, NULL);
-        else if (action == ACTION_REQUIRED)
+        } else if (action == ACTION_REQUIRED) {
                 g_ptr_array_add (call_args, "require");
-        else if (action == ACTION_ENABLED)
+        } else if (action == ACTION_ENABLED) {
                 g_ptr_array_add (call_args, "enable");
-        else if (action == ACTION_DISABLED)
+        } else if (action == ACTION_DISABLED) {
                 g_ptr_array_add (call_args, "disable");
-        else if (config_command != COMMAND_RESET)
+        } else if (config_command != COMMAND_RESET) {
                 return NULL;
+        }
 
         g_ptr_array_add (call_args, NULL);
 
@@ -653,16 +664,19 @@ try_run_distro_hook (GdmConfigCommand   config_command,
                 return FALSE;
         }
 
-        if (opt_verbose)
+        if (opt_verbose) {
                 g_print (_("Running distro hook “%s”\n"), distro_hook);
+        }
 
         g_spawn_sync (NULL, (GStrv) call_args->pdata, NULL, G_SPAWN_DEFAULT,
                       NULL, NULL, &local_stdout, &local_stderr, &exit_status, &local_error);
 
-        if (local_stdout)
+        if (local_stdout) {
                 local_stdout = g_strstrip (local_stdout);
-        if (local_stderr)
+        }
+        if (local_stderr) {
                 local_stderr = g_strstrip (local_stderr);
+        }
 
         if (!local_error) {
                 if (WEXITSTATUS (exit_status) == SIGSTOP) {
@@ -695,8 +709,9 @@ try_run_distro_hook (GdmConfigCommand   config_command,
                  "Error output:\n%s",
                 local_stdout, local_stderr);
 
-        if (stdout_out)
+        if (stdout_out) {
                 *stdout_out = g_steal_pointer (&local_stdout);
+        }
 
         return TRUE;
 }
@@ -804,8 +819,9 @@ get_dconf_system_profile (void)
         const char *profile;
 
         profile = g_getenv ("DCONF_PROFILE");
-        if (profile)
+        if (profile) {
                 return profile;
+        }
 
         return "user";
 }
@@ -860,16 +876,18 @@ ensure_dconf_configurable_system_profile (GError **error)
                                          get_dconf_system_profile (), NULL);
 
         if (!g_file_test (profile_file, G_FILE_TEST_IS_REGULAR)) {
-                if (!make_directory_with_parents (DCONF_SYSCONFIG_PROFILES_PATH, error))
+                if (!make_directory_with_parents (DCONF_SYSCONFIG_PROFILES_PATH, error)) {
                         return FALSE;
+                }
 
                 profile_lines = g_ptr_array_new_with_free_func (g_free);
                 g_ptr_array_add (profile_lines, g_strdup ("user-db:user"));
                 g_ptr_array_add (profile_lines, g_strdup (gdm_sys_db));
         } else {
                 profile_lines = read_file_contents_to_array (profile_file, error);
-                if (!profile_lines)
+                if (!profile_lines) {
                         return FALSE;
+                }
 
                 if (!g_ptr_array_find_with_equal_func (profile_lines, gdm_sys_db,
                                                        g_str_equal, NULL)) {
@@ -880,8 +898,9 @@ ensure_dconf_configurable_system_profile (GError **error)
         }
 
         if (profile_lines) {
-                if (!write_array_to_file (profile_lines, profile_file, error))
+                if (!write_array_to_file (profile_lines, profile_file, error)) {
                         return FALSE;
+                }
         }
 
         db_path = get_dconf_db_path (DCONF_SYSTEM_DB_DEFAULT_NAME);
@@ -898,8 +917,9 @@ get_system_dconf_profile_contents (GError **error)
         g_autofree char *profile_file = NULL;
 
         profile_file = get_dconf_system_profile_file (error);
-        if (!profile_file)
+        if (!profile_file) {
                 return NULL;
+        }
 
         return read_file_contents_to_array (profile_file, error);
 }
@@ -913,8 +933,9 @@ get_system_dconf_profile_db_name (const char  *preferred,
         int i;
 
         profile_contents = get_system_dconf_profile_contents (error);
-        if (!profile_contents)
+        if (!profile_contents) {
                 return NULL;
+        }
 
         for (i = 0; i < profile_contents->len; i++) {
                 const char *profile_line = g_ptr_array_index (profile_contents, i);
@@ -923,13 +944,15 @@ get_system_dconf_profile_db_name (const char  *preferred,
                     strlen (profile_line) > sizeof (DCONF_SYSTEM_DB_PREFIX) - 1) {
                         db_name = profile_line + sizeof (DCONF_SYSTEM_DB_PREFIX) - 1;
 
-                        if (!preferred || g_str_equal (preferred, db_name))
+                        if (!preferred || g_str_equal (preferred, db_name)) {
                                 return g_strdup (db_name);
+                        }
                 }
         }
 
-        if (db_name)
+        if (db_name) {
                 return g_strdup (db_name);
+        }
 
         g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
                      _("dconf has no system-db configured"));
@@ -949,14 +972,16 @@ ensure_system_user_dconf_profile (GError **error)
                 g_autofree char *profile_file = NULL;
 
                 profile_file = ensure_dconf_configurable_system_profile (error);
-                if (!profile_file)
+                if (!profile_file) {
                         return FALSE;
+                }
 
                 g_debug ("Initialized dconf profile at %s", profile_file);
                 db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME,
                                                             error);
-                if (!db_name)
+                if (!db_name) {
                         return FALSE;
+                }
         } else if (local_error) {
                 g_propagate_error (error, g_steal_pointer (&local_error));
                 return FALSE;
@@ -996,8 +1021,9 @@ ensure_gdm_config_dconf_profile (GError **error)
                 g_autofree char* profile_content = NULL;
 
                 if (!g_file_get_contents (GDM_DEFAULT_DCONF_PROFILE, &default_content,
-                                          NULL, error))
+                                          NULL, error)) {
                         return FALSE;
+                }
 
                 profile_content = g_strdup_printf ("# This profile is managed by %s\n"
                                                    "%s\n"
@@ -1012,12 +1038,14 @@ ensure_gdm_config_dconf_profile (GError **error)
                          GDM_DEFAULT_DCONF_PROFILE " and "
                          GDM_CONFIG_DCONF_DB);
 
-                if (!make_directory_with_parents (DCONF_SYSCONFIG_PROFILES_PATH, error))
+                if (!make_directory_with_parents (DCONF_SYSCONFIG_PROFILES_PATH, error)) {
                         return FALSE;
+                }
 
                 if (!g_file_set_contents (GDM_CONFIG_DCONF_PROFILE, profile_content,
-                                          -1, error))
+                                          -1, error)) {
                         return FALSE;
+                }
         }
 
         return TRUE;
@@ -1096,11 +1124,12 @@ write_dconf_setting_to_key_file (const char  *db_name,
                 value_ref = g_variant_ref_sink (value);
                 value_str = g_variant_print (value_ref, FALSE);
 
-                if (g_variant_is_of_type (value, G_VARIANT_TYPE_BOOLEAN))
+                if (g_variant_is_of_type (value, G_VARIANT_TYPE_BOOLEAN)) {
                         g_key_file_set_boolean (key_file, setting_path, key,
                                                 g_variant_get_boolean (value));
-                else
+                } else {
                         g_key_file_set_string (key_file, setting_path, key, value_str);
+                }
         } else {
                 g_clear_error (&local_error);
                 g_key_file_remove_key (key_file, setting_path, key, &local_error);
@@ -1119,8 +1148,9 @@ write_dconf_setting_to_key_file (const char  *db_name,
                  setting_path, key, value_str,
                  file_path);
 
-        if (create_new && !make_directory_with_parents (db_dir, error))
+        if (create_new && !make_directory_with_parents (db_dir, error)) {
                 return FALSE;
+        }
 
         return g_key_file_save_to_file (key_file, file_path, error);
 }
@@ -1188,8 +1218,9 @@ set_dconf_setting_lock_full (const char *db_name,
 
                 if (!add) {
                         if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) ||
-                            g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
+                            g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
                                 return TRUE;
+                        }
 
                         g_propagate_error (error, g_steal_pointer (&local_error));
                         return FALSE;
@@ -1208,8 +1239,9 @@ set_dconf_setting_lock_full (const char *db_name,
                 g_ptr_array_add (locks_list, g_strdup ("# Do no edit!"));
 
                 db_locks_dir = g_path_get_dirname (lock_file);
-                if (!make_directory_with_parents (db_locks_dir, error))
+                if (!make_directory_with_parents (db_locks_dir, error)) {
                         return FALSE;
+                }
         } else {
                 if (locks_list->len && !g_str_equal (g_ptr_array_index (locks_list, 0), file_header)) {
                         /* XXX: Fail with an error instead? */
@@ -1299,8 +1331,9 @@ update_dconf (GError **error)
         environ = g_environ_setenv (environ, "G_DEBUG", "fatal-warnings", FALSE);
 
         if (!g_spawn_sync (NULL, (GStrv) command, environ, G_SPAWN_SEARCH_PATH,
-                           NULL, NULL, NULL, NULL, &exit_code, error))
+                           NULL, NULL, NULL, NULL, &exit_code, error)) {
                 return FALSE;
+        }
 
 #if GLIB_CHECK_VERSION (2, 70, 0)
         return g_spawn_check_wait_status (exit_code, error);
@@ -1340,8 +1373,9 @@ write_locked_setting_to_db (const char   *db_name,
                 return FALSE;
         }
 
-        if (!update_dconf (error))
+        if (!update_dconf (error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -1356,8 +1390,9 @@ write_locked_system_settings_to_db (const char   *schema,
 
         if (value) {
                 db_name = ensure_system_user_dconf_profile (error);
-                if (!db_name)
+                if (!db_name) {
                         return FALSE;
+                }
         } else {
                 g_autoptr (GError) local_error = NULL;
 
@@ -1380,8 +1415,9 @@ write_gdm_auth_setting_to_db (GdmAuthType   auth_type,
                               gboolean      value,
                               GError      **error)
 {
-        if (!ensure_gdm_config_dconf_profile (error))
+        if (!ensure_gdm_config_dconf_profile (error)) {
                 return FALSE;
+        }
 
         return write_system_setting_to_db (GDM_CONFIG_DCONF_DB_NAME,
                                            LOGIN_SCHEMA,
@@ -1406,14 +1442,17 @@ write_locked_gdm_settings_to_db (GdmAuthType   auth_type,
                                  gboolean      value,
                                  GError      **error)
 {
-        if (!write_gdm_auth_setting_to_db (auth_type, value, error))
+        if (!write_gdm_auth_setting_to_db (auth_type, value, error)) {
                 return FALSE;
+        }
 
-        if (!set_gdm_auth_setting_lock (auth_type, error))
+        if (!set_gdm_auth_setting_lock (auth_type, error)) {
                 return FALSE;
+        }
 
-        if (!update_dconf (error))
+        if (!update_dconf (error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -1464,8 +1503,9 @@ handle_config_command_options (GdmConfigCommand          config_command,
                                GdmConfigCommandHandler  *command_handler,
                                GError                  **error)
 {
-        if (!command_handler->options_handler_func)
+        if (!command_handler->options_handler_func) {
                 return TRUE;
+        }
 
         return command_handler->options_handler_func (config_command, error);
 }
@@ -1497,8 +1537,9 @@ handle_config_command (GdmConfigCommand          config_command,
                 g_debug ("Hook completed, stopping execution: %s",
                          local_error->message);
 
-                if (!handle_config_command_options (config_command, command_handler, error))
+                if (!handle_config_command_options (config_command, command_handler, error)) {
                         return FALSE;
+                }
 
                 /* If the option handle didn't fail, we still need to propagate
                  * the cancellation, or we will continue with default handler */
@@ -1637,8 +1678,9 @@ handle_command (int   argc,
         auth_type = config_command_to_auth_type (config_command);
         if (auth_type != AUTH_NONE &&
             !handle_config_command (config_command, command_handler, &error)) {
-                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                         return TRUE;
+                }
 
                 g_critical ("Failed to handle “%s” command: %s",
                             config_command_to_string (config_command),
@@ -1647,8 +1689,9 @@ handle_command (int   argc,
         }
 
         if (!command_handler->handler_func (config_command, &error)) {
-                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                         return FALSE;
+                }
 
                 g_critical ("Failed to run “%s” command: %s",
                             config_command_to_string (config_command),
@@ -1729,13 +1772,15 @@ handle_smartcard_options (GdmConfigCommand   config_command,
         g_autoptr (GError) local_error = NULL;
         GVariant *value;
 
-        if (!opt_removal_action)
+        if (!opt_removal_action) {
                 return TRUE;
+        }
 
         if (!set_distro_hook_config (config_command, GSD_SC_REMOVAL_ACTION_KEY,
                                      opt_removal_action, &local_error)) {
-                if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                         return TRUE;
+                }
 
                 if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
                         g_propagate_error (error, g_steal_pointer (&local_error));
@@ -1778,8 +1823,9 @@ handle_smartcard (GdmConfigCommand   config_command,
                 }
         }
 
-        if (!handle_smartcard_options (config_command, error))
+        if (!handle_smartcard_options (config_command, error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -1796,8 +1842,9 @@ get_gdm_setting_state (GdmAuthType auth_type)
         g_autoptr (GSettings) login_settings = NULL;
         gboolean enabled;
 
-        if (!have_pam_module (auth_type))
+        if (!have_pam_module (auth_type)) {
                 return N_("Not supported");
+        }
 
         login_settings = g_settings_new (LOGIN_SCHEMA);
         enabled = g_settings_get_boolean (login_settings,
@@ -1878,8 +1925,9 @@ handle_show (GdmConfigCommand   config_command,
                   removal_setting
                 );
 
-        if (default_dconf_profile)
+        if (default_dconf_profile) {
                 g_setenv ("DCONF_PROFILE", default_dconf_profile, TRUE);
+        }
 
         return TRUE;
 }
@@ -1902,19 +1950,24 @@ handle_reset (GdmConfigCommand   config_command,
 
                 while (TRUE) {
                         g_print (C_("Interactive question", "Do you want to continue? [Y/n]? "));
-                        if (!fgets (buffer, sizeof (buffer), stdin))
+                        if (!fgets (buffer, sizeof (buffer), stdin)) {
                                 continue;
+                        }
 
                         g_strstrip (buffer);
 
-                        if (g_str_equal (buffer, reply_Y))
+                        if (g_str_equal (buffer, reply_Y)) {
                                 break;
-                        if (g_str_equal (buffer, reply_y))
+                        }
+                        if (g_str_equal (buffer, reply_y)) {
                                 break;
-                        if (g_str_equal (buffer, reply_N))
+                        }
+                        if (g_str_equal (buffer, reply_N)) {
                                 break;
-                        if (g_str_equal (buffer, reply_n))
+                        }
+                        if (g_str_equal (buffer, reply_n)) {
                                 break;
+                        }
                 }
 
                 if (!g_str_equal (buffer, reply_y) && !g_str_equal (buffer, reply_Y)) {
@@ -1925,8 +1978,9 @@ handle_reset (GdmConfigCommand   config_command,
         }
 
         if (!try_run_distro_hook (COMMAND_RESET, NULL, NULL, &local_error)) {
-                if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                         return TRUE;
+                }
 
                 if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
                         g_debug ("Ignored reset distro hook: %s", local_error->message);
@@ -1940,8 +1994,9 @@ handle_reset (GdmConfigCommand   config_command,
         for (i = 0; i < AUTH_NONE; i++) {
                 const char *option_key;
 
-                if (config_command_to_auth_type (i) == AUTH_NONE)
+                if (config_command_to_auth_type (i) == AUTH_NONE) {
                         continue;
+                }
 
                 option_key = auth_type_to_option_key (i);
                 if (!write_system_setting_to_db (GDM_CONFIG_DCONF_DB_NAME,
@@ -1957,12 +2012,14 @@ handle_reset (GdmConfigCommand   config_command,
 
                 if (!unset_dconf_setting_lock (GDM_CONFIG_DCONF_DB_NAME,
                                                GDM_CONFIG_DCONF_LOCKS_NAME,
-                                               LOGIN_SCHEMA, option_key, error))
+                                               LOGIN_SCHEMA, option_key, error)) {
                         return FALSE;
+                }
         }
 
-        if (!toggle_smartcard_settings (GSD_SC_REMOVAL_ACTION_KEY, NULL, error))
+        if (!toggle_smartcard_settings (GSD_SC_REMOVAL_ACTION_KEY, NULL, error)) {
                 return FALSE;
+        }
 
         system_db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME, NULL);
         if (g_strcmp0 (system_db_name, DCONF_SYSTEM_DB_DEFAULT_NAME) == 0) {
@@ -2033,8 +2090,9 @@ handle_reset (GdmConfigCommand   config_command,
                 g_clear_error (&local_error);
         }
 
-        if (!update_dconf (error))
+        if (!update_dconf (error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -2055,8 +2113,9 @@ main (int argc, char *argv[])
                 return EXIT_FAILURE;
         }
 
-        if (!handle_command (argc, argv))
+        if (!handle_command (argc, argv)) {
                 return EXIT_FAILURE;
+        }
 
         return EXIT_SUCCESS;
 }

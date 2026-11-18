@@ -79,8 +79,9 @@ on_display_added (GDBusObjectManager *displays,
 
         g_variant_get (reply, "(s)", &session_id);
 
-        if (sd_session_get_username (session_id, &username) < 0)
+        if (sd_session_get_username (session_id, &username) < 0) {
                 return;
+        }
 
         if (g_strcmp0 (state->username, username) == 0) {
                 g_print ("Session started\n");
@@ -92,8 +93,9 @@ on_display_added (GDBusObjectManager *displays,
                                                       state);
 
                 if (state->terminate_requested) {
-                        if (!terminate_session (state, &error))
+                        if (!terminate_session (state, &error)) {
                                 g_warning ("Terminating session failed: %s", error->message);
+                        }
                 }
         }
 }
@@ -161,8 +163,9 @@ setup (State   *state,
 
         state->connection = g_steal_pointer (&connection);
 
-        if (!watch_displays (state, error))
+        if (!watch_displays (state, error)) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -233,8 +236,9 @@ on_sigterm (State *state)
                 return G_SOURCE_REMOVE;
         }
 
-        if (!terminate_session (state, &error))
+        if (!terminate_session (state, &error)) {
                 g_warning ("Terminating session failed: %s", error->message);
+        }
 
         return G_SOURCE_REMOVE;
 }

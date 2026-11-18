@@ -101,8 +101,9 @@ gdm_settings_get_value (GdmSettings *settings,
                                                       key,
                                                       value,
                                                       &local_error);
-                if (res)
+                if (res) {
                         break;
+                }
         }
         if (! res) {
                 g_propagate_error (error, local_error);
@@ -143,8 +144,9 @@ gdm_settings_set_value (GdmSettings *settings,
                                                       key,
                                                       value,
                                                       &local_error);
-                if (res)
+                if (res) {
                         break;
+                }
         }
 
         if (! res) {
@@ -202,12 +204,14 @@ gdm_settings_reload (GdmSettings *settings)
         settings->backends = NULL;
 
         backend = gdm_settings_desktop_backend_new (GDM_CUSTOM_CONF);
-        if (backend)
+        if (backend) {
                 settings->backends = g_list_prepend (NULL, backend);
+        }
 
         backend = gdm_settings_desktop_backend_new (GDM_RUNTIME_CONF);
-        if (backend)
+        if (backend) {
                 settings->backends = g_list_prepend (settings->backends, backend);
+        }
 
         for (l = settings->backends; l; l = g_list_next (l)) {
                 backend = l->data;

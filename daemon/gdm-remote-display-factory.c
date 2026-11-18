@@ -56,8 +56,9 @@ lookup_by_remote_id (const char *id,
         const char *remote_id = user_data;
         g_autofree char *display_remote_id = NULL;
 
-        if (!GDM_IS_REMOTE_DISPLAY (display))
+        if (!GDM_IS_REMOTE_DISPLAY (display)) {
                 return FALSE;
+        }
 
         display_remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (display));
 
@@ -182,8 +183,9 @@ on_display_exported (GdmDisplay            *display,
 {
         g_autofree char *id = NULL;
 
-        if (!gdm_display_is_exported (display))
+        if (!gdm_display_is_exported (display)) {
                 return;
+        }
 
         g_signal_handlers_disconnect_by_func (display, on_display_exported, pending);
         g_object_weak_unref (G_OBJECT (display), on_display_disposed, pending);
@@ -387,8 +389,9 @@ gdm_remote_display_factory_finalize (GObject *object)
         g_clear_object (&factory->connection);
         g_clear_object (&factory->skeleton);
 
-        if (factory->inhibit_suspend_fd != -1)
+        if (factory->inhibit_suspend_fd != -1) {
                 close (factory->inhibit_suspend_fd);
+        }
 
         G_OBJECT_CLASS (gdm_remote_display_factory_parent_class)->finalize (object);
 }
@@ -449,8 +452,9 @@ inhibit_suspend (GdmRemoteDisplayFactory *factory)
         g_autoptr (GDBusProxy) proxy = NULL;
         g_autoptr (GError) error = NULL;
 
-        if (factory->suspend_inhibited)
+        if (factory->suspend_inhibited) {
                 return;
+        }
 
         proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
                                                G_DBUS_PROXY_FLAGS_NONE,
@@ -489,20 +493,23 @@ on_display_added (GdmDisplayStore         *store,
 {
         GdmDisplay *display = gdm_display_store_lookup (store, id);
 
-        if (!GDM_IS_REMOTE_DISPLAY (display))
+        if (!GDM_IS_REMOTE_DISPLAY (display)) {
                 return;
+        }
 
         factory->remote_displays_count++;
 
-        if (factory->remote_displays_count > 0)
+        if (factory->remote_displays_count > 0) {
                 inhibit_suspend (factory);
+        }
 }
 
 static void
 uninhibit_suspend (GdmRemoteDisplayFactory *factory)
 {
-        if (factory->inhibit_suspend_fd == -1)
+        if (factory->inhibit_suspend_fd == -1) {
                 return;
+        }
 
         close (factory->inhibit_suspend_fd);
         factory->inhibit_suspend_fd = -1;
@@ -516,13 +523,15 @@ on_display_removed (GdmDisplayStore         *display_store,
 {
         g_assert (factory->remote_displays_count >= 0);
 
-        if (!GDM_IS_REMOTE_DISPLAY (display))
+        if (!GDM_IS_REMOTE_DISPLAY (display)) {
                 return;
+        }
 
         factory->remote_displays_count--;
 
-        if (factory->remote_displays_count == 0)
+        if (factory->remote_displays_count == 0) {
                 uninhibit_suspend (factory);
+        }
 }
 
 static gboolean

@@ -255,8 +255,9 @@ on_authenticate_cb (GdmDBusWorker *proxy,
         worked = gdm_dbus_worker_call_authenticate_finish (proxy, res, &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = conversation->session;
         service_name = conversation->service_name;
@@ -293,8 +294,9 @@ on_authorize_cb (GdmDBusWorker *proxy,
         worked = gdm_dbus_worker_call_authorize_finish (proxy, res, &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = conversation->session;
         service_name = conversation->service_name;
@@ -321,8 +323,9 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         worked = gdm_dbus_worker_call_establish_credentials_finish (proxy, res, &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = g_object_ref (conversation->session);
         service_name = g_strdup (conversation->service_name);
@@ -362,8 +365,9 @@ static gboolean
 supports_session_type (GdmSession *self,
                        const char *session_type)
 {
-        if (session_type == NULL)
+        if (session_type == NULL) {
                 return TRUE;
+        }
 
         return g_strv_contains ((const char * const *) self->supported_session_types,
                                 session_type);
@@ -571,6 +575,7 @@ get_session_command_for_file (GdmSession  *self,
         if (command != NULL) {
                 *command = g_strdup (exec);
         }
+
         ret = TRUE;
 
 out:
@@ -683,14 +688,16 @@ get_fallback_session_name (GdmSession *self)
         name = NULL;
         session = g_sequence_get_begin_iter (sessions);
 
-        if (g_sequence_iter_is_end (session))
+        if (g_sequence_iter_is_end (session)) {
                 g_error ("GdmSession: no session desktop files installed, aborting...");
+        }
 
         do {
                name = g_sequence_get (session);
                if (name) {
                        break;
                }
+
                session = g_sequence_iter_next (session);
         } while (!g_sequence_iter_is_end (session));
 
@@ -798,9 +805,10 @@ gdm_session_handle_choice_list_query (GdmDBusWorkerManager  *worker_manager_inte
 
         g_debug ("GdmSession: choice query for service '%s'", service_name);
 
-        if (self->user_verifier_extensions != NULL)
+        if (self->user_verifier_extensions != NULL) {
                 choice_list_interface = g_hash_table_lookup (self->user_verifier_extensions,
                                                              gdm_dbus_user_verifier_choice_list_interface_info ()->name);
+        }
 
         if (choice_list_interface == NULL) {
                 g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
@@ -856,13 +864,15 @@ gdm_session_handle_custom_json_request (GdmDBusWorkerManager  *worker_manager_in
 
                 static gsize debug_json_requests;
 
-                if (g_once_init_enter (&debug_json_requests))
+                if (g_once_init_enter (&debug_json_requests)) {
                         g_once_init_leave (&debug_json_requests,
                                            g_getenv ("GDM_DEBUG_JSON_REQUESTS") != NULL ? 1 : 2);
+                }
 
-                if (debug_json_requests == 1)
+                if (debug_json_requests == 1) {
                         g_message ("GdmSession: emitting custom JSON request '%s' v%u: %s",
                                    protocol, version, request);
+                }
                 gdm_dbus_user_verifier_custom_json_emit_request (custom_json_interface,
                                                                  service_name,
                                                                  protocol,
@@ -982,8 +992,9 @@ on_opened (GdmDBusWorker *worker,
                                                    &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = conversation->session;
         service_name = conversation->service_name;
@@ -1079,8 +1090,9 @@ on_reauthentication_started_cb (GdmDBusWorker *worker,
                                                                      &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = conversation->session;
 
@@ -1146,10 +1158,11 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
                                                                                     session_name);
                         }
                 }
-                if (self->saved_session_type != NULL)
+                if (self->saved_session_type != NULL) {
                         set_session_type (self, self->saved_session_type);
-                else
+                } else {
                         update_session_type (self);
+                }
         }
 
 }
@@ -1463,15 +1476,18 @@ is_client_allowed_service (const char *service_name)
 {
         int i;
 
-        if (strchr (service_name, '/') != NULL)
+        if (strchr (service_name, '/') != NULL) {
                 return FALSE;
+        }
 
-        if (g_ascii_strncasecmp (service_name, "gdm-", strlen ("gdm-")) != 0)
+        if (g_ascii_strncasecmp (service_name, "gdm-", strlen ("gdm-")) != 0) {
                 return FALSE;
+        }
 
         for (i = 0; daemon_only_services[i] != NULL; i++) {
-                if (g_ascii_strcasecmp (service_name, daemon_only_services[i]) == 0)
+                if (g_ascii_strcasecmp (service_name, daemon_only_services[i]) == 0) {
                         return FALSE;
+                }
         }
 
         return TRUE;
@@ -1635,16 +1651,19 @@ gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifi
         g_hash_table_remove_all (self->user_verifier_extensions);
 
         for (i = 0; extensions[i] != NULL; i++) {
-                if (g_hash_table_lookup (self->user_verifier_extensions, extensions[i]) != NULL)
+                if (g_hash_table_lookup (self->user_verifier_extensions, extensions[i]) != NULL) {
                         continue;
+                }
 
                 if (strcmp (extensions[i],
-                            gdm_dbus_user_verifier_choice_list_interface_info ()->name) == 0)
+                            gdm_dbus_user_verifier_choice_list_interface_info ()->name) == 0) {
                         export_user_verifier_choice_list_interface (self, connection);
+                }
 
                 if (g_str_equal (extensions[i],
-                                 gdm_dbus_user_verifier_custom_json_interface_info ()->name))
+                                 gdm_dbus_user_verifier_custom_json_interface_info ()->name)) {
                         export_user_verifier_custom_json_interface (self, connection);
+                }
 
         }
 
@@ -2044,8 +2063,9 @@ handle_connection_from_outside (GDBusServer      *server,
 
         export_user_verifier_interface (self, connection);
 
-        if (self->verification_mode == GDM_SESSION_VERIFICATION_MODE_LOGIN)
+        if (self->verification_mode == GDM_SESSION_VERIFICATION_MODE_LOGIN) {
                 export_greeter_interface (self, connection);
+        }
 
         credentials = g_dbus_connection_get_peer_credentials (connection);
         pid_of_client = g_credentials_get_unix_pid (credentials, NULL);
@@ -2508,10 +2528,11 @@ gdm_session_set_supported_session_types (GdmSession         *self,
         };
         g_strfreev (self->supported_session_types);
 
-        if (supported_session_types == NULL)
+        if (supported_session_types == NULL) {
                 self->supported_session_types = g_strdupv ((GStrv) session_types);
-        else
+        } else {
                 self->supported_session_types = g_strdupv ((GStrv) supported_session_types);
+        }
 }
 
 gboolean
@@ -2579,8 +2600,9 @@ on_initialization_complete_cb (GdmDBusWorker *proxy,
         ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = conversation->session;
         service_name = conversation->service_name;
@@ -2627,32 +2649,41 @@ initialize (GdmSession *self,
 
         g_variant_builder_add_parsed (&details, "{'extensions', <%^as>}", extensions);
 
-        if (username != NULL)
+        if (username != NULL) {
                 g_variant_builder_add_parsed (&details, "{'username', <%s>}", username);
+        }
 
-        if (log_file != NULL)
+        if (log_file != NULL) {
                 g_variant_builder_add_parsed (&details, "{'log-file', <%s>}", log_file);
+        }
 
-        if (self->is_program_session)
+        if (self->is_program_session) {
                 g_variant_builder_add_parsed (&details, "{'is-program-session', <%b>}", self->is_program_session);
+        }
 
-        if (self->display_hostname != NULL)
+        if (self->display_hostname != NULL) {
                 g_variant_builder_add_parsed (&details, "{'hostname', <%s>}", self->display_hostname);
+        }
 
-        if (self->display_is_local)
+        if (self->display_is_local) {
                 g_variant_builder_add_parsed (&details, "{'display-is-local', <%b>}", self->display_is_local);
+        }
 
-        if (self->display_is_initial)
+        if (self->display_is_initial) {
                 g_variant_builder_add_parsed (&details, "{'display-is-initial', <%b>}", self->display_is_initial);
+        }
 
-        if (self->display_device != NULL)
+        if (self->display_device != NULL) {
                 g_variant_builder_add_parsed (&details, "{'console', <%s>}", self->display_device);
+        }
 
-        if (self->display_seat_id != NULL)
+        if (self->display_seat_id != NULL) {
                 g_variant_builder_add_parsed (&details, "{'seat-id', <%s>}", self->display_seat_id);
+        }
 
-        if (self->session_id_of_caller != NULL)
+        if (self->session_id_of_caller != NULL) {
                 g_variant_builder_add_parsed (&details, "{'session-id-of-caller', <%s>}", self->session_id_of_caller);
+        }
 
         g_debug ("GdmSession: Beginning initialization");
 
@@ -3083,8 +3114,9 @@ on_start_program_cb (GdmDBusWorker *worker,
                                                             &error);
 
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
-            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
                 return;
+        }
 
         self = conversation->session;
         service_name = conversation->service_name;
@@ -3294,8 +3326,9 @@ gdm_session_report_error (GdmSession *self,
         g_return_if_fail (service_name != NULL);
 
         conversation = find_conversation_by_name (self, service_name);
-        if (conversation == NULL)
+        if (conversation == NULL) {
                 return;
+        }
 
         g_dbus_method_invocation_return_error_literal (g_steal_pointer (&conversation->pending_invocation),
                                                        G_DBUS_ERROR, code, message);
@@ -3350,22 +3383,26 @@ gdm_session_is_frozen (GdmSession *self)
 
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
-        if (self->session_pid <= 0)
+        if (self->session_pid <= 0) {
                 return FALSE;
+        }
 
-        if (sd_pid_get_cgroup (self->session_pid, &cgroup) < 0)
+        if (sd_pid_get_cgroup (self->session_pid, &cgroup) < 0) {
                 return FALSE;
+        }
 
         path = g_build_filename ("/sys/fs/cgroup", cgroup, "cgroup.events", NULL);
 
-        if (!g_file_get_contents (path, &data, NULL, NULL))
+        if (!g_file_get_contents (path, &data, NULL, NULL)) {
                 return FALSE;
+        }
 
         arr = g_strsplit_set (data, " \n", -1);
 
         for (gsize i = 0; arr[i] != NULL; i++) {
-                if (g_str_equal (arr[i], "frozen"))
+                if (g_str_equal (arr[i], "frozen")) {
                         return g_strcmp0 (arr[i + 1], "1") == 0;
+                }
         }
         return FALSE;
 }
@@ -3505,6 +3542,7 @@ gdm_session_is_wayland_session (GdmSession *self)
         if (full_path != NULL && strstr (full_path, "/wayland-sessions/") != NULL) {
                 is_wayland_session = TRUE;
         }
+
         g_debug ("GdmSession: checking if file '%s' is wayland session: %s", filename, is_wayland_session? "yes" : "no");
 
 out:
@@ -3518,8 +3556,9 @@ update_session_type (GdmSession *self)
 {
         gboolean is_wayland_session = FALSE;
 
-        if (supports_session_type (self, "wayland"))
+        if (supports_session_type (self, "wayland")) {
                 is_wayland_session = gdm_session_is_wayland_session (self);
+        }
 
         if (is_wayland_session) {
                 set_session_type (self, "wayland");
@@ -3882,8 +3921,9 @@ gdm_session_finalize (GObject *object)
 
         parent_class = G_OBJECT_CLASS (gdm_session_parent_class);
 
-        if (parent_class->finalize != NULL)
+        if (parent_class->finalize != NULL) {
                 parent_class->finalize (object);
+        }
 }
 
 static GObject *
@@ -4231,10 +4271,12 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
 GdmSessionDisplayMode
 gdm_session_display_mode_from_string (const char *str)
 {
-        if (strcmp (str, "new-vt") == 0)
+        if (strcmp (str, "new-vt") == 0) {
                 return GDM_SESSION_DISPLAY_MODE_NEW_VT;
-        if (strcmp (str, "logind-managed") == 0)
+        }
+        if (strcmp (str, "logind-managed") == 0) {
                 return GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED;
+        }
 
         g_warning ("Unknown GdmSessionDisplayMode %s", str);
         return -1;

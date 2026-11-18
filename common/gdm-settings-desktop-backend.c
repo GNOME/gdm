@@ -391,8 +391,9 @@ gdm_settings_desktop_backend_new (const char* filename)
 
         g_return_val_if_fail (filename != NULL, NULL);
 
-        if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
+        if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
                 return NULL;
+        }
 
         object = g_object_new (GDM_TYPE_SETTINGS_DESKTOP_BACKEND,
                                "filename", filename,

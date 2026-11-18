@@ -74,13 +74,15 @@ get_systemd_session (void)
 
         ret = sd_pid_get_user_unit (pid, &systemd_unit);
 
-        if (ret == 0)
+        if (ret == 0) {
                 ret = sd_uid_get_display (uid, &session_id);
-        else
+        } else {
                 ret = sd_pid_get_session (pid, &session_id);
+        }
 
-        if (ret < 0)
+        if (ret < 0) {
                 return NULL;
+        }
 
         return g_steal_pointer (&session_id);
 }
@@ -94,13 +96,15 @@ get_systemd_seat (void)
 
         session_id = get_systemd_session ();
 
-        if (session_id == NULL)
+        if (session_id == NULL) {
                 return NULL;
+        }
 
         ret = sd_session_get_seat (session_id, &seat);
 
-        if (ret != 0)
+        if (ret != 0) {
                 return NULL;
+        }
 
         return g_steal_pointer (&seat);
 }
@@ -234,10 +238,11 @@ remove_duplicate_sessions (gpointer key,
         session = (GdmSessionFile *) value;
         already_known = !g_hash_table_add (names_seen_before, session->translated_name);
 
-        if (already_known)
+        if (already_known) {
                 g_debug ("GdmSession: Removing %s (%s) as we already have a session by this name",
                          session->id,
                          session->path);
+        }
 
         return already_known;
 }
@@ -251,15 +256,17 @@ collect_sessions_from_directory (const char *dirname)
         /* FIXME: add file monitor to directory */
 
         dir = g_dir_open (dirname, 0, NULL);
-        if (dir == NULL)
+        if (dir == NULL) {
                 return;
+        }
 
         while ((filename = g_dir_read_name (dir))) {
                 g_autofree char *id = NULL;
                 g_autofree char *full_path = NULL;
 
-                if (!g_str_has_suffix (filename, ".desktop"))
+                if (!g_str_has_suffix (filename, ".desktop")) {
                         continue;
+                }
 
                 id = g_strndup (filename, strlen (filename) - strlen (".desktop"));
                 full_path = g_build_filename (dirname, filename, NULL);
@@ -333,11 +340,13 @@ compare_session_ids (gconstpointer  a,
         session_a = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, a);
         session_b = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, b);
 
-        if (session_a == NULL)
+        if (session_a == NULL) {
                 return -1;
+        }
 
-        if (session_b == NULL)
+        if (session_b == NULL) {
                 return 1;
+        }
 
         return g_strcmp0 (session_a->translated_name, session_b->translated_name);
 }

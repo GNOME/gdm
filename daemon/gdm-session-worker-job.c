@@ -96,8 +96,9 @@ session_worker_job_setup_journal_fds (void)
                 int out, err;
 
                 out = sd_journal_stream_fd (identifier, LOG_INFO, FALSE);
-                if (out < 0)
+                if (out < 0) {
                         return;
+                }
 
                 err = sd_journal_stream_fd (identifier, LOG_WARNING, FALSE);
                 if (err < 0) {
@@ -164,8 +165,9 @@ listify_hash (const char *key,
 {
         char *str;
 
-        if (value == NULL)
+        if (value == NULL) {
                 value = "";
+        }
 
         str = g_strdup_printf ("%s=%s", key, value);
         g_ptr_array_add (env, str);
@@ -264,6 +266,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
         if (args == NULL) {
                 return FALSE;
         }
+
         env = get_job_environment (session_worker_job);
 
         ret = g_spawn_async_with_pipes (NULL,

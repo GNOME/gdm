@@ -157,8 +157,9 @@ gdm_local_display_factory_get_session_types (GdmLocalDisplayFactory *factory)
 #ifdef ENABLE_X11_SUPPORT
         gboolean x11_enabled = FALSE;
         gdm_settings_direct_get_boolean (GDM_KEY_XORG_ENABLE, &x11_enabled);
-        if (x11_enabled && gdm_find_x_server () != NULL)
+        if (x11_enabled && gdm_find_x_server () != NULL) {
                 g_strv_builder_add (builder, "x11");
+        }
 #endif
 
         return g_strv_builder_end (builder);
@@ -221,8 +222,9 @@ finish_display_on_seat_if_waiting (GdmDisplayStore *display_store,
                                    GdmDisplay      *display,
                                    const char      *seat_id)
 {
-        if (gdm_display_get_status (display) != GDM_DISPLAY_WAITING_TO_FINISH)
+        if (gdm_display_get_status (display) != GDM_DISPLAY_WAITING_TO_FINISH) {
                 return;
+        }
 
         g_debug ("GdmLocalDisplayFactory: finish background display\n");
         gdm_display_stop_greeter_session (display);
@@ -268,8 +270,9 @@ on_display_status_changed (GdmDisplay             *display,
         gboolean         is_initial = TRUE;
         gboolean         is_local = TRUE;
 
-        if (!factory->is_started)
+        if (!factory->is_started) {
                 return;
+        }
 
         g_object_get (display,
                       "seat-id", &seat_id,
@@ -310,10 +313,11 @@ on_display_status_changed (GdmDisplay             *display,
                         factory->num_failures++;
 
                         /* oh shit */
-                        if (factory->num_failures > MAX_DISPLAY_FAILURES)
+                        if (factory->num_failures > MAX_DISPLAY_FAILURES) {
                                 g_warning ("GdmLocalDisplayFactory: maximum number of display failures reached. Giving up.");
-                        else
+                        } else {
                                 ensure_display_for_seat (factory, seat_id);
+                        }
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
@@ -363,8 +367,9 @@ lookup_prepared_display_by_seat_id (const char *id,
 
         status = gdm_display_get_status (display);
 
-        if (status != GDM_DISPLAY_PREPARED)
+        if (status != GDM_DISPLAY_PREPARED) {
                 return FALSE;
+        }
 
         return lookup_by_seat_id (id, display, user_data);
 }
@@ -378,8 +383,9 @@ lookup_managed_display_by_seat_id (const char *id,
 
         status = gdm_display_get_status (display);
 
-        if (status != GDM_DISPLAY_MANAGED)
+        if (status != GDM_DISPLAY_MANAGED) {
                 return FALSE;
+        }
 
         return lookup_by_seat_id (id, display, user_data);
 }
@@ -481,8 +487,9 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
         g_debug ("GdmLocalDisplayFactory: udev has %ssettled enough for graphics.", is_settled? "" : "not ");
         g_list_free_full (devices, g_object_unref);
 
-        if (is_settled)
+        if (is_settled) {
                 g_clear_signal_handler (&factory->uevent_handler_id, factory->gudev_client);
+        }
 
         return is_settled;
 }
@@ -517,10 +524,11 @@ get_display_for_seat (GdmLocalDisplayFactory *factory,
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         is_seat0 = g_strcmp0 (seat_id, "seat0") == 0;
-        if (is_seat0)
+        if (is_seat0) {
                 display = gdm_display_store_find (store, lookup_prepared_display_by_seat_id, (gpointer) seat_id);
-        else
+        } else {
                 display = gdm_display_store_find (store, lookup_managed_display_by_seat_id, (gpointer) seat_id);
+        }
 
         return display != NULL ? g_object_ref (display) : NULL;
 }
@@ -586,8 +594,9 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         if (ret == 0) {
                 g_debug ("GdmLocalDisplayFactory: System doesn't currently support graphics");
-                if (is_seat0)
+                if (is_seat0) {
                         g_signal_emit (factory, signals[GRAPHICS_UNSUPPORTED], 0);
+                }
                 return;
         }
 
@@ -616,8 +625,9 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
         store_display (factory, display);
 
-        if (!gdm_display_prepare (display))
+        if (!gdm_display_prepare (display)) {
                 gdm_display_unmanage (display);
+        }
 }
 
 static void
@@ -751,17 +761,21 @@ on_seat_properties_changed (GDBusConnection *connection,
         g_variant_get (parameters, "(s@a{sv}^a&s)", NULL, &changed_props, &invalidated_props);
 
         changed_prop = g_variant_lookup_value (changed_props, "CanGraphical", NULL);
-        if (changed_prop)
+        if (changed_prop) {
                 changed = TRUE;
-        if (!changed && g_strv_contains (invalidated_props, "CanGraphical"))
+        }
+        if (!changed && g_strv_contains (invalidated_props, "CanGraphical")) {
                 changed = TRUE;
+        }
 
-        if (!changed)
+        if (!changed) {
                 return;
+        }
 
         ret = sd_seat_can_graphical (seat);
-        if (ret < 0)
+        if (ret < 0) {
                 return;
+        }
 
         if (ret != 0) {
                 gdm_settings_direct_reload ();
@@ -795,13 +809,15 @@ lookup_by_tty (const char *id,
 
         session_id = gdm_display_get_session_id (display);
 
-        if (!session_id)
+        if (!session_id) {
                 return FALSE;
+        }
 
         ret = sd_session_get_tty (session_id, &tty_to_check);
 
-        if (ret != 0)
+        if (ret != 0) {
                 return FALSE;
+        }
 
         return g_strcmp0 (tty_to_check, tty_to_find) == 0;
 }
@@ -855,6 +871,7 @@ on_vt_changed (GIOChannel    *source,
                 if (error != NULL) {
                         g_warning ("could not read active VT from kernel: %s", error->message);
                 }
+
                 switch (status) {
                         case G_IO_STATUS_ERROR:
                             return G_SOURCE_REMOVE;
@@ -923,8 +940,9 @@ on_vt_changed (GIOChannel    *source,
                                 display = gdm_display_store_find (store,
                                                                   lookup_by_session_id,
                                                                   (gpointer) login_session_id);
-                                if (display != NULL)
+                                if (display != NULL) {
                                         maybe_stop_greeter_in_background (factory, display);
+                                }
                         } else {
                                 g_debug ("GdmLocalDisplayFactory: VT not switched from login window");
                         }
@@ -987,15 +1005,18 @@ on_uevent (GUdevClient *client,
            GUdevDevice *device,
            GdmLocalDisplayFactory *factory)
 {
-        if (!g_udev_device_get_device_file (device))
+        if (!g_udev_device_get_device_file (device)) {
                 return;
+        }
 
         if (g_strcmp0 (action, "add") != 0 &&
-            g_strcmp0 (action, "change") != 0)
+            g_strcmp0 (action, "change") != 0) {
                 return;
+        }
 
-        if (!udev_is_settled (factory))
+        if (!udev_is_settled (factory)) {
                 return;
+        }
 
         gdm_settings_direct_reload ();
         ensure_display_for_seat (factory, "seat0");

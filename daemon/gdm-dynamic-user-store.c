@@ -137,9 +137,10 @@ dynamic_user_free (DynamicUser *user)
         }
 
         home = g_file_new_for_path (user->home);
-        if (!gdm_rm_recursively (home, &error))
+        if (!gdm_rm_recursively (home, &error)) {
                 g_warning ("Failed to delete '%s', continuing: %s",
                            user->home, error->message);
+        }
 
         g_free (user->username);
         g_free (user->display_name);
@@ -166,19 +167,22 @@ static PwdLock
 lock_pwd_db ()
 {
         PwdLock lock = lckpwdf () >= 0;
-        if (!lock)
+        if (!lock) {
                 g_warning ("Failed to lock passwd database, ignoring: %m");
+        }
         return lock;
 }
 
 static void
 unlock_pwd_db (PwdLock lock)
 {
-        if (!lock)
+        if (!lock) {
                 return;
+        }
 
-        if (ulckpwdf () < 0)
+        if (ulckpwdf () < 0) {
                 g_warning ("Failed to unlock passwd database, ignoring: %m");
+        }
 }
 
 G_DEFINE_AUTO_CLEANUP_FREE_FUNC (PwdLock, unlock_pwd_db, FALSE)
@@ -193,9 +197,11 @@ GQuark
 gdm_dynamic_user_store_error_quark (void)
 {
         static GQuark ret = 0;
+
         if (ret == 0) {
                 ret = g_quark_from_static_string ("gdm_dynamic_user_store_error");
         }
+
         return ret;
 }
 
@@ -216,16 +222,19 @@ pick_uid (GdmDynamicUserStore  *store,
                 already_used = g_hash_table_contains (store->by_uid, &store->next_alloc) ||
                                gdm_get_pwent_for_uid (store->next_alloc, NULL);
 
-                if (!already_used)
+                if (!already_used) {
                         *ret_uid = store->next_alloc;
+                }
 
-                if (store->next_alloc < GREETER_UID_MAX)
+                if (store->next_alloc < GREETER_UID_MAX) {
                         store->next_alloc += 1;
-                else
+                } else {
                         store->next_alloc = GREETER_UID_MIN;
+                }
 
-                if (!already_used)
+                if (!already_used) {
                         return TRUE;
+                }
 
         } while (store->next_alloc != start);
 
@@ -266,16 +275,18 @@ static char *
 pick_username (GdmDynamicUserStore *store,
                const char          *preferred)
 {
-        if (!g_hash_table_contains (store->by_name, preferred))
+        if (!g_hash_table_contains (store->by_name, preferred)) {
                 return g_strdup (preferred);
+        }
 
         for (size_t i = 2; i <= GREETER_UID_COUNT; i++) {
                 g_autofree char *username = NULL;
 
                 username = g_strdup_printf ("%s-%lu", preferred, i);
 
-                if (!g_hash_table_contains (store->by_name, username))
+                if (!g_hash_table_contains (store->by_name, username)) {
                         return g_steal_pointer (&username);
+                }
         }
 
         /* Reaching this should be impossible, because it means that we've
@@ -312,8 +323,9 @@ gdm_dynamic_user_store_create (GdmDynamicUserStore  *store,
          * to advertise it over userdb. */
         pwd_lock = lock_pwd_db ();
 
-        if (!pick_uid (store, username, &uid, error))
+        if (!pick_uid (store, username, &uid, error)) {
                 return FALSE;
+        }
 
         if (!gdm_get_grent_for_name (member_of, &grp)) {
                 g_set_error (error,
@@ -325,8 +337,9 @@ gdm_dynamic_user_store_create (GdmDynamicUserStore  *store,
         }
 
         home = g_build_filename (GDM_DYN_HOME_DIR, username, NULL);
-        if (!gdm_ensure_dir (home, uid, GID_NOBODY, 0700, FALSE, error))
+        if (!gdm_ensure_dir (home, uid, GID_NOBODY, 0700, FALSE, error)) {
                 return FALSE;
+        }
 
         user = dynamic_user_new (username, display_name, home, uid, grp);
 
@@ -351,8 +364,9 @@ gdm_dynamic_user_store_remove (GdmDynamicUserStore *store,
         DynamicUser *user;
 
         user = g_hash_table_lookup (store->by_uid, &uid);
-        if (user == NULL)
+        if (user == NULL) {
                 return;
+        }
 
         g_mutex_lock (&store->mutex);
         g_hash_table_remove (store->by_uid, &uid);
@@ -399,8 +413,9 @@ gdm_dynamic_user_store_dispose (GObject *object)
         store = GDM_DYNAMIC_USER_STORE (object);
 
         g_cancellable_cancel (store->worker_cancellable);
-        if (store->worker != NULL)
+        if (store->worker != NULL) {
                 g_clear_pointer (&store->worker, g_thread_join);
+        }
         g_clear_object (&store->worker_cancellable);
 
         G_OBJECT_CLASS (gdm_dynamic_user_store_parent_class)->dispose (object);
@@ -472,25 +487,28 @@ vl_get_user_record (sd_varlink                *call,
         int r;
 
         r = sd_varlink_dispatch (call, json, dispatch, &params);
-        if (r < 0)
+        if (r < 0) {
                 return r;
+        }
 
-        if (g_strcmp0 (params.service, GDM_SERVICE_ID) != 0)
+        if (g_strcmp0 (params.service, GDM_SERVICE_ID) != 0) {
                 return sd_varlink_error (call,
                                          "io.systemd.UserDatabase.BadService",
                                          NULL);
+        }
 
         store = GDM_DYNAMIC_USER_STORE (g_weak_ref_get (weak_store));
-        if (store == NULL)
+        if (store == NULL) {
                 return -ECANCELED;
+        }
 
         G_MUTEX_AUTO_LOCK (&store->mutex, locker);
 
-        if (params.uid != UID_INVALID)
+        if (params.uid != UID_INVALID) {
                 found = g_hash_table_lookup (store->by_uid, &params.uid);
-        else if (params.username != NULL)
+        } else if (params.username != NULL) {
                 found = g_hash_table_lookup (store->by_name, params.username);
-        else {
+        } else {
                 GHashTableIter iter;
                 gpointer value;
 
@@ -501,34 +519,39 @@ vl_get_user_record (sd_varlink                *call,
                                 g_autoptr (sd_json_variant) notify = NULL;
 
                                 r = dynamic_user_build_record (found, &notify);
-                                if (r < 0)
+                                if (r < 0) {
                                         return r;
+                                }
 
                                 /* When listing out our dynamic users, we stream
                                  * all but the last with more=true */
                                 r = sd_varlink_notify (call, notify);
-                                if (r < 0)
+                                if (r < 0) {
                                         return r;
+                                }
                         }
 
                         found = value;
                 }
         }
 
-        if (found == NULL)
+        if (found == NULL) {
                 return sd_varlink_error (call,
                                          "io.systemd.UserDatabase.NoRecordFound",
                                          NULL);
+        }
 
         if ((params.uid != UID_INVALID && params.uid != found->uid) ||
-            (params.username != NULL && g_strcmp0 (params.username, found->username) != 0))
+            (params.username != NULL && g_strcmp0 (params.username, found->username) != 0)) {
                 return sd_varlink_error (call,
                                          "io.systemd.UserDatabase.ConflictingRecordFound",
                                          NULL);
+        }
 
         r = dynamic_user_build_record (found, &ret);
-        if (r < 0)
+        if (r < 0) {
                 return r;
+        }
 
         return sd_varlink_reply (call, ret);
 }
@@ -542,10 +565,11 @@ vl_get_group_record (sd_varlink                *call,
         const char *service = NULL;
         service = sd_json_variant_string (sd_json_variant_by_key (json, "service"));
 
-        if (g_strcmp0 (service, GDM_SERVICE_ID) != 0)
+        if (g_strcmp0 (service, GDM_SERVICE_ID) != 0) {
                 return sd_varlink_error (call,
                                          "io.systemd.UserDatabase.BadService",
                                          NULL);
+        }
 
         return sd_varlink_error (call,
                                  "io.systemd.UserDatabase.NoRecordFound",
@@ -563,24 +587,28 @@ reply_user_group (sd_varlink       *call,
         r = sd_json_buildo (&ret,
                             SD_JSON_BUILD_PAIR_STRING ("userName", user->username),
                             SD_JSON_BUILD_PAIR_STRING ("groupName", user->group));
-        if (r < 0)
+        if (r < 0) {
                 return r;
+        }
 
-        if (reply_mode == VARLINK_REPLY_MORE_FOLLOW)
+        if (reply_mode == VARLINK_REPLY_MORE_FOLLOW) {
                 return sd_varlink_notify (call, ret);
-        else
+        } else {
                 return sd_varlink_reply (call, ret);
+        }
 }
 
 static gboolean
 test_group_membership (DynamicUser *user,
                        const char  *group)
 {
-        if (user == NULL)
+        if (user == NULL) {
                 return FALSE;
+        }
 
-        if (group != NULL && g_strcmp0 (user->group, group) != 0)
+        if (group != NULL && g_strcmp0 (user->group, group) != 0) {
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -605,24 +633,28 @@ vl_get_memberships (sd_varlink                *call,
         int r;
 
         r = sd_varlink_dispatch (call, json, dispatch, &params);
-        if (r < 0)
+        if (r < 0) {
                 return r;
+        }
 
-        if (g_strcmp0 (params.service, GDM_SERVICE_ID) != 0)
+        if (g_strcmp0 (params.service, GDM_SERVICE_ID) != 0) {
                 return sd_varlink_error (call,
                                          "io.systemd.UserDatabase.BadService",
                                          NULL);
+        }
 
         store = GDM_DYNAMIC_USER_STORE (g_weak_ref_get (weak_store));
-        if (store == NULL)
+        if (store == NULL) {
                 return -ECANCELED;
+        }
 
         G_MUTEX_AUTO_LOCK (&store->mutex, locker);
 
         if (params.username) {
                 user = g_hash_table_lookup (store->by_name, params.username);
-                if (test_group_membership (user, params.groupname))
+                if (test_group_membership (user, params.groupname)) {
                         return reply_user_group (call, VARLINK_REPLY_FINAL, user);
+                }
         } else {
                 GHashTableIter iter;
                 gpointer value;
@@ -635,16 +667,18 @@ vl_get_memberships (sd_varlink                *call,
                         if (test_group_membership (next, params.groupname)) {
                                 if (user != NULL) {
                                         r = reply_user_group (call, VARLINK_REPLY_MORE_FOLLOW, user);
-                                        if (r < 0)
+                                        if (r < 0) {
                                                 return r;
+                                        }
                                 }
 
                                 user = next;
                         }
                 }
 
-                if (user != NULL)
+                if (user != NULL) {
                         return reply_user_group (call, VARLINK_REPLY_FINAL, user);
+                }
         }
 
         return sd_varlink_error (call,
@@ -719,9 +753,10 @@ gdm_dynamic_user_varlink_worker (gpointer data)
         }
 
         r = sd_event_loop (event);
-        if (r < 0)
+        if (r < 0) {
                 g_warning ("Failed to run varlink: %s",
                            g_strerror (-r));
+        }
         return NULL;
 }
 

@@ -86,8 +86,9 @@ log_user_message (GdmSessionAuditor *auditor,
                                              result);
         }
 
-        if (rc < 0)
+        if (rc < 0) {
                 g_warning ("Failed to write audit message: %s", g_strerror (errno));
+        }
 }
 
 static void

@@ -435,11 +435,13 @@ static void
 attempt_to_load_user_settings (GdmSessionWorker *worker,
                                const char       *username)
 {
-        if (worker->user_settings == NULL)
+        if (worker->user_settings == NULL) {
                 return;
+        }
 
-        if (gdm_session_settings_is_loaded (worker->user_settings))
+        if (gdm_session_settings_is_loaded (worker->user_settings)) {
                 return;
+        }
 
         g_debug ("GdmSessionWorker: attempting to load user settings");
         gdm_session_settings_load (worker->user_settings,
@@ -463,8 +465,9 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 
                 if ((worker->username == username) ||
                     ((worker->username != NULL) && (username != NULL) &&
-                     (strcmp (worker->username, username) == 0)))
+                     (strcmp (worker->username, username) == 0))) {
                         return;
+                }
 
                 g_debug ("GdmSessionWorker: setting username to '%s'", username);
 
@@ -662,8 +665,9 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 GdmPamExtensionChoiceListRequest *list_request = (GdmPamExtensionChoiceListRequest *) extended_message;
 
                 list_response = malloc (GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE);
-                if (list_response == NULL)
+                if (list_response == NULL) {
                         return FALSE;
+                }
 
                 g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CHOICE_LIST);
 
@@ -671,8 +675,9 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
 
                 res = gdm_session_worker_process_choice_list_request (worker, list_request, list_response);
 
-                if (!res)
+                if (!res) {
                         return FALSE;
+                }
 
                 *response = gdm_pam_extension_message_to_pam_reply (g_steal_pointer (&list_response));
                 return TRUE;
@@ -681,8 +686,9 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 GdmPamExtensionJSONProtocol *json_request = (GdmPamExtensionJSONProtocol *) extended_message;
 
                 json_response = malloc (GDM_PAM_EXTENSION_CUSTOM_JSON_SIZE);
-                if (json_response == NULL)
+                if (json_response == NULL) {
                         return FALSE;
+                }
 
                 g_debug ("GdmSessionWorker: received extended pam message '%s'", GDM_PAM_EXTENSION_CUSTOM_JSON);
 
@@ -690,8 +696,9 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                                                              json_request->protocol_name,
                                                              json_request->version);
 
-                if (!gdm_session_worker_process_custom_json_protocol (worker, json_request, json_response))
+                if (!gdm_session_worker_process_custom_json_protocol (worker, json_request, json_response)) {
                         return FALSE;
+                }
 
                 *response = gdm_pam_extension_message_to_pam_reply (g_steal_pointer (&json_response));
                 return TRUE;
@@ -752,8 +759,9 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         gdm_session_worker_update_username (worker);
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
-        if (query->msg_style == PAM_BINARY_PROMPT)
+        if (query->msg_style == PAM_BINARY_PROMPT) {
                 return gdm_session_worker_process_extended_pam_message (worker, query, response);
+        }
 #endif
 
         g_debug ("GdmSessionWorker: received pam message of type %u with payload '%s'",
@@ -818,17 +826,21 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 static const char *
 get_max_retries_error_message (GdmSessionWorker *worker)
 {
-        if (g_strcmp0 (worker->service, "gdm-password") == 0)
+        if (g_strcmp0 (worker->service, "gdm-password") == 0) {
                 return _("You reached the maximum password authentication attempts, please try another method");
+        }
 
-        if (g_strcmp0 (worker->service, "gdm-autologin") == 0)
+        if (g_strcmp0 (worker->service, "gdm-autologin") == 0) {
                 return _("You reached the maximum auto login attempts, please try another authentication method");
+        }
 
-        if (g_strcmp0 (worker->service, "gdm-fingerprint") == 0)
+        if (g_strcmp0 (worker->service, "gdm-fingerprint") == 0) {
                 return _("You reached the maximum fingerprint authentication attempts, please try another method");
+        }
 
-        if (g_strcmp0 (worker->service, "gdm-smartcard") == 0)
+        if (g_strcmp0 (worker->service, "gdm-smartcard") == 0) {
                 return _("You reached the maximum smart card authentication attempts, please try another method");
+        }
 
         return _("You reached the maximum authentication attempts, please try another method");
 }
@@ -836,17 +848,21 @@ get_max_retries_error_message (GdmSessionWorker *worker)
 static const char *
 get_generic_error_message (GdmSessionWorker *worker)
 {
-        if (g_strcmp0 (worker->service, "gdm-password") == 0)
+        if (g_strcmp0 (worker->service, "gdm-password") == 0) {
                 return _("Sorry, password authentication didn’t work. Please try again.");
+        }
 
-        if (g_strcmp0 (worker->service, "gdm-autologin") == 0)
+        if (g_strcmp0 (worker->service, "gdm-autologin") == 0) {
                 return _("Sorry, auto login didn’t work. Please try again.");
+        }
 
-        if (g_strcmp0 (worker->service, "gdm-fingerprint") == 0)
+        if (g_strcmp0 (worker->service, "gdm-fingerprint") == 0) {
                 return _("Sorry, fingerprint authentication didn’t work. Please try again.");
+        }
 
-        if (g_strcmp0 (worker->service, "gdm-smartcard") == 0)
+        if (g_strcmp0 (worker->service, "gdm-smartcard") == 0) {
                 return _("Sorry, smart card authentication didn’t work. Please try again.");
+        }
 
         return _("Sorry, that didn’t work. Please try again.");
 }
@@ -881,8 +897,9 @@ gdm_session_worker_clear_pam_response (GdmSessionWorker         *worker,
                                        const struct pam_message *message,
                                        struct pam_response      *reply)
 {
-        if (reply->resp == NULL)
+        if (reply->resp == NULL) {
                 return;
+        }
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
         if (message->msg_style == PAM_BINARY_PROMPT) {
@@ -936,8 +953,9 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
          */
         replies = (struct pam_response *) calloc (number_of_messages,
                                                   sizeof (struct pam_response));
-        if (replies == NULL)
+        if (replies == NULL) {
                 return PAM_CONV_ERR;
+        }
 
         for (i = 0; i < number_of_messages; i++) {
                 gboolean got_response;
@@ -1117,8 +1135,9 @@ jump_to_vt (GdmSessionWorker  *worker,
                 bytes_written = write (worker->session_tty_fd,
                                        clear_screen_escape_sequence,
                                        strlen (clear_screen_escape_sequence));
-                if (bytes_written < 0)
+                if (bytes_written < 0) {
                         g_debug ("GdmSessionWorker: failed to clear VT: %s", g_strerror (errno));
+                }
 
                 fd = worker->session_tty_fd;
 
@@ -1163,8 +1182,9 @@ static void
 gdm_session_worker_set_state (GdmSessionWorker      *worker,
                               GdmSessionWorkerState  state)
 {
-        if (worker->state == state)
+        if (worker->state == state) {
                 return;
+        }
 
         worker->state = state;
         g_object_notify_by_pspec (G_OBJECT (worker), props[PROP_STATE]);
@@ -1176,8 +1196,9 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 {
         g_debug ("GdmSessionWorker: uninitializing PAM");
 
-        if (worker->pam_handle == NULL)
+        if (worker->pam_handle == NULL) {
                 return;
+        }
 
         gdm_session_worker_get_username (worker, NULL);
 
@@ -1360,8 +1381,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
                 pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
         }
 
-        if (!display_is_local)
+        if (!display_is_local) {
                 worker->password_is_required = TRUE;
+        }
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1660,9 +1682,11 @@ _lookup_passwd_info (const char *username,
         if (uidp != NULL) {
                 *uidp = passwd_entry->pw_uid;
         }
+
         if (gidp != NULL) {
                 *gidp = passwd_entry->pw_gid;
         }
+
         if (homep != NULL) {
                 if (passwd_entry->pw_dir != NULL && passwd_entry->pw_dir[0] != '\0') {
                         *homep = g_strdup (passwd_entry->pw_dir);
@@ -1670,6 +1694,7 @@ _lookup_passwd_info (const char *username,
                         *homep = g_strdup ("/");
                 }
         }
+
         if (shellp != NULL) {
                 if (passwd_entry->pw_shell != NULL && passwd_entry->pw_shell[0] != '\0') {
                         *shellp = g_strdup (passwd_entry->pw_shell);
@@ -1677,6 +1702,7 @@ _lookup_passwd_info (const char *username,
                         *shellp = g_strdup ("/bin/bash");
                 }
         }
+
         ret = TRUE;
  out:
         if (aux_buffer != NULL) {
@@ -1824,11 +1850,13 @@ is_reauth_environment_variable_allowed (const char *name,
             g_str_equal (name, "LANGUAGE") ||
             g_str_equal (name, "KRB5CCNAME") ||
             g_str_equal (name, "PKCS11_LOGIN_TOKEN_NAME") ||
-            g_str_has_prefix (name, "LC_"))
+            g_str_has_prefix (name, "LC_")) {
                 return TRUE;
+        }
 
-        if (!g_str_equal (name, "XDG_RUNTIME_DIR"))
+        if (!g_str_equal (name, "XDG_RUNTIME_DIR")) {
                 return FALSE;
+        }
 
         runtime_dir = g_strdup_printf ("/run/user/%u", (guint) uid);
         return g_str_equal (value, runtime_dir);
@@ -1848,13 +1876,15 @@ gdm_session_worker_get_reauth_environment (GdmSessionWorker *worker,
                 char *entry = pam_environment[i];
                 char *equals = strchr (entry, '=');
 
-                if (equals == NULL)
+                if (equals == NULL) {
                         continue;
+                }
 
                 *equals = '\0';
 
-                if (!is_reauth_environment_variable_allowed (entry, equals + 1, uid))
+                if (!is_reauth_environment_variable_allowed (entry, equals + 1, uid)) {
                         continue;
+                }
 
                 *equals = '=';
                 g_strv_builder_add (builder, entry);
@@ -1895,14 +1925,17 @@ wait_until_dbus_signal_emission_to_manager_finishes (GdmSessionWorker *worker)
 static void
 jump_back_to_initial_vt (GdmSessionWorker *worker)
 {
-        if (worker->session_vt == 0)
+        if (worker->session_vt == 0) {
                 return;
+        }
 
-        if (worker->session_vt == GDM_INITIAL_VT)
+        if (worker->session_vt == GDM_INITIAL_VT) {
                 return;
+        }
 
-        if (g_strcmp0 (worker->display_seat_id, "seat0") != 0 || !worker->seat0_has_vts)
+        if (g_strcmp0 (worker->display_seat_id, "seat0") != 0 || !worker->seat0_has_vts) {
                 return;
+        }
 
         jump_to_vt (worker, GDM_INITIAL_VT);
         worker->session_vt = 0;
@@ -2237,17 +2270,20 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
                                 if (g_mkdir_with_parents (log_dir, S_IRWXU) == 0) {
                                         stdout_fd = _open_user_session_log (log_dir);
-                                        if (stdout_fd >= 0)
+                                        if (stdout_fd >= 0) {
                                                 stderr_fd = dup (stdout_fd);
+                                        }
                                 } else {
                                         stdout_fd = open ("/dev/null", O_RDWR);
-                                        if (stdout_fd >= 0)
+                                        if (stdout_fd >= 0) {
                                                 stderr_fd = dup (stdout_fd);
+                                        }
                                 }
                         } else {
                                 stdout_fd = open ("/dev/null", O_RDWR);
-                                if (stdout_fd >= 0)
+                                if (stdout_fd >= 0) {
                                         stderr_fd = dup (stdout_fd);
+                                }
                         }
                 }
 
@@ -2530,9 +2566,10 @@ gdm_session_worker_handle_set_session_name (GdmDBusWorker         *object,
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         g_debug ("GdmSessionWorker: session name set to %s", session_name);
-        if (worker->user_settings != NULL)
+        if (worker->user_settings != NULL) {
                 gdm_session_settings_set_session_name (worker->user_settings,
                                                        session_name);
+        }
         gdm_dbus_worker_complete_set_session_name (object, invocation);
         return TRUE;
 }
@@ -2556,9 +2593,10 @@ gdm_session_worker_handle_set_language_name (GdmDBusWorker         *object,
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         g_debug ("GdmSessionWorker: language name set to %s", language_name);
-        if (worker->user_settings != NULL)
+        if (worker->user_settings != NULL) {
                 gdm_session_settings_set_language_name (worker->user_settings,
                                                         language_name);
+        }
         gdm_dbus_worker_complete_set_language_name (object, invocation);
         return TRUE;
 }
@@ -3012,8 +3050,9 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
         GVariant         *value;
         gboolean          wait_for_settings = FALSE;
 
-        if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE))
+        if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE)) {
                 return TRUE;
+        }
 
         g_variant_iter_init (&iter, details);
         while (g_variant_iter_loop (&iter, "{sv}", &key, &value)) {
@@ -3094,8 +3133,9 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
         g_autoptr (GError) parse_error = NULL;
 
-        if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SESSION_STARTED))
+        if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SESSION_STARTED)) {
                 return TRUE;
+        }
 
         if (worker->is_reauth_session) {
                 g_dbus_method_invocation_return_error (invocation,
@@ -3216,8 +3256,9 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                                             worker->display_is_local,
                                             (const char * const *) environment);
 
-        if (session_id_of_caller != NULL && session_id_of_caller[0] != '\0')
+        if (session_id_of_caller != NULL && session_id_of_caller[0] != '\0') {
                 g_object_set (request->session, "session-id-of-caller", session_id_of_caller, NULL);
+        }
 
         g_signal_connect (request->session,
                           "client-connected",

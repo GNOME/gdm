@@ -85,8 +85,9 @@ gdm_pam_extension_reply_to_custom_json_response (const struct pam_response *repl
 static inline void
 gdm_pam_extension_custom_json_response_free (GdmPamExtensionJSONProtocol *response)
 {
-        if (response == NULL)
+        if (response == NULL) {
                 return;
+        }
 
         if (response->json != NULL) {
                 gdm_pam_extension_zero_buffer (response->json, strlen (response->json));

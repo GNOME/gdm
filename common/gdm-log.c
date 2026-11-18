@@ -125,8 +125,9 @@ gdm_log_set_debug (gboolean debug)
 void
 gdm_log_init (void)
 {
-        if (initialized)
+        if (initialized) {
                 return;
+        }
 
         initialized = TRUE;
 
@@ -136,10 +137,12 @@ gdm_log_init (void)
 void
 gdm_log_shutdown (void)
 {
-        if (!initialized)
+        if (!initialized) {
                 return;
-        if (!is_sd_booted)
+        }
+        if (!is_sd_booted) {
                 closelog ();
+        }
         initialized = FALSE;
 }
 

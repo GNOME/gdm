@@ -461,8 +461,9 @@ gdm_get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_class (sessions[i], &service_class);
                 if (res < 0) {
-                        if (res == -ENXIO)
+                        if (res == -ENXIO) {
                                 continue;
+                        }
 
                         g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
@@ -478,8 +479,9 @@ gdm_get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_state (sessions[i], &state);
                 if (res < 0) {
-                        if (res == -ENXIO)
+                        if (res == -ENXIO) {
                                 continue;
+                        }
 
                         g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
@@ -494,8 +496,9 @@ gdm_get_login_window_session_id (const char  *seat_id,
 
                 res = sd_session_get_service (sessions[i], &service_id);
                 if (res < 0) {
-                        if (res == -ENXIO)
+                        if (res == -ENXIO) {
                                 continue;
+                        }
 
                         g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
                         ret = FALSE;
@@ -667,23 +670,27 @@ gdm_shell_expand (const char *str,
                         }
                         start = p;
                         while (*p != '\0' &&
-                               gdm_shell_var_is_valid_char (*p, p == start))
+                               gdm_shell_var_is_valid_char (*p, p == start)) {
                                 p++;
+                        }
                         if (p == start || (brackets && *p != '}')) {
                                 /* Invalid variable, use as-is */
                                 g_string_append_c (s, '$');
-                                if (brackets)
+                                if (brackets) {
                                         g_string_append_c (s, '{');
+                                }
                                 g_string_append_len (s, start, p - start);
                         } else {
                                 gchar *expanded;
                                 gchar *var = g_strndup (start, p - start);
-                                if (brackets && *p == '}')
+                                if (brackets && *p == '}') {
                                         p++;
+                                }
 
                                 expanded = expand_var_func (var, user_data);
-                                if (expanded)
+                                if (expanded) {
                                         g_string_append (s, expanded);
+                                }
                                 g_free (var);
                                 g_free (expanded);
                         }
@@ -763,19 +770,22 @@ find_graphical_sessions (const uid_t    uid,
         n_sessions = sd_uid_get_sessions (uid,
                                           GDM_SYSTEMD_SESSION_REQUIRE_ONLINE,
                                           &sessions);
-        if (n_sessions < 0)
+        if (n_sessions < 0) {
                 return FALSE;
+        }
 
         builder = g_strv_builder_new ();
 
         for (int i = 0; i < n_sessions; ++i) {
                 g_debug ("Considering session '%s'", sessions[i]);
 
-                if (!_systemd_session_is_graphical (sessions[i]))
+                if (!_systemd_session_is_graphical (sessions[i])) {
                         continue;
+                }
 
-                if (!_systemd_session_is_active (sessions[i]))
+                if (!_systemd_session_is_active (sessions[i])) {
                         continue;
+                }
 
                 g_strv_builder_add (builder, g_strdup (sessions[i]));
         }
@@ -835,9 +845,10 @@ gdm_find_display_session (GPid        pid,
 
                 return TRUE;
         } else {
-                if (res != -ENODATA)
+                if (res != -ENODATA) {
                         g_warning ("GdmCommon: Failed to retrieve session information for pid %d: %s",
                                    pid, strerror (-res));
+                }
         }
 
         if (!find_graphical_sessions (uid, &sessions)) {
@@ -891,24 +902,29 @@ load_env_file (GFile *file,
                 for (i = 0; lines[i] != NULL; i++) {
                         line = lines[i];
                         p = line;
-                        while (g_ascii_isspace (*p))
+                        while (g_ascii_isspace (*p)) {
                                 p++;
-                        if (*p == '#' || *p == '\0')
+                        }
+                        if (*p == '#' || *p == '\0') {
                                 continue;
+                        }
                         var = p;
-                        while (gdm_shell_var_is_valid_char (*p, p == var))
+                        while (gdm_shell_var_is_valid_char (*p, p == var)) {
                                 p++;
+                        }
                         var_end = p;
-                        while (g_ascii_isspace (*p))
+                        while (g_ascii_isspace (*p)) {
                                 p++;
+                        }
                         if (var == var_end || *p != '=') {
                                 g_warning ("Invalid env.d line '%s'\n", line);
                                 continue;
                         }
                         *var_end = 0;
                         p++; /* Skip = */
-                        while (g_ascii_isspace (*p))
+                        while (g_ascii_isspace (*p)) {
                                 p++;
+                        }
 
                         expanded = gdm_shell_expand (p, expand_func, user_data);
                         expanded = g_strchomp (expanded);
@@ -954,8 +970,9 @@ gdm_load_env_dir (GFile *dir,
         while ((info = g_file_enumerator_next_file (enumerator, NULL, NULL)) != NULL) {
                 if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR &&
                     !g_file_info_get_is_hidden (info) &&
-                    g_str_has_suffix (g_file_info_get_name (info), ".env"))
+                    g_str_has_suffix (g_file_info_get_name (info), ".env")) {
                   g_ptr_array_add (names, g_strdup (g_file_info_get_name (info)));
+                }
 
                 g_clear_object (&info);
         }
@@ -1000,13 +1017,15 @@ gdm_find_x_server (void)
         const char *override = NULL;
 
         override = g_getenv ("GDM_X_SERVER_PATH");
-        if (override != NULL)
+        if (override != NULL) {
                 return override;
+        }
 
         for (size_t i = 0; i < G_N_ELEMENTS (x_servers); i++) {
                 const char * const candidate = x_servers[i];
-                if (g_file_test (candidate, G_FILE_TEST_IS_EXECUTABLE))
+                if (g_file_test (candidate, G_FILE_TEST_IS_EXECUTABLE)) {
                         return candidate;
+                }
         }
 
         return NULL;

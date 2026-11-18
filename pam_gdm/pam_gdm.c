@@ -59,12 +59,14 @@ pam_sm_authenticate (pam_handle_t  *pamh,
         size_t i;
 
         serial = find_key_by_type_and_desc ("user", "cryptsetup", 0);
-        if (serial == 0)
+        if (serial == 0) {
                 return PAM_AUTHINFO_UNAVAIL;
+        }
 
         r = keyctl_read_alloc (serial, &cached_passwords);
-        if (r < 0)
+        if (r < 0) {
                 return PAM_AUTHINFO_UNAVAIL;
+        }
 
         cached_passwords_length = r;
         /*
@@ -89,10 +91,11 @@ pam_sm_authenticate (pam_handle_t  *pamh,
         gdm_pam_zero_buffer (cached_passwords, cached_passwords_length);
         free (cached_passwords);
 
-        if (r < 0)
+        if (r < 0) {
                 return PAM_AUTH_ERR;
-        else
+        } else {
                 return PAM_SUCCESS;
+        }
 #endif
 
         return PAM_AUTHINFO_UNAVAIL;

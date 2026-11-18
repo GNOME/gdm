@@ -159,8 +159,9 @@ ensure_polkit_authority (GdmDisplayFactory  *factory,
 
         priv = gdm_display_factory_get_instance_private (factory);
 
-        if (priv->authority)
+        if (priv->authority) {
                 return TRUE;
+        }
 
         priv->authority = polkit_authority_get_sync (NULL, error);
 
@@ -190,8 +191,9 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         method = g_dbus_method_invocation_get_method_name (invocation);
         if (!g_str_equal (method, "CreateUserDisplay") &&
             !g_str_equal (method, "DestroyUserDisplay") &&
-            !g_str_equal (method, "CreateRemoteDisplay"))
+            !g_str_equal (method, "CreateRemoteDisplay")) {
                 return TRUE;
+        }
 
         if (!ensure_polkit_authority (factory, &local_error)) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
@@ -212,8 +214,9 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
                 g_variant_get (parameters, "(&s)", &user);
         }
 
-        if (user != NULL && !g_str_equal (user, ""))
+        if (user != NULL && !g_str_equal (user, "")) {
                 polkit_details_insert (details, "user", user);
+        }
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         subject = polkit_system_bus_name_new (sender);
@@ -248,8 +251,9 @@ gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
 
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
 
-        if (!gdm_find_graphical_sessions_for_username (user, &sessions, error))
+        if (!gdm_find_graphical_sessions_for_username (user, &sessions, error)) {
                 return FALSE;
+        }
 
         if (g_strv_length (sessions) > 0) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,
@@ -276,22 +280,26 @@ finish_display_if_owned_by_user (const char *id,
         g_autofree char *autologin_user = NULL;
         const char *session_id;
 
-        if (!G_TYPE_CHECK_INSTANCE_TYPE (display, closure->display_type))
+        if (!G_TYPE_CHECK_INSTANCE_TYPE (display, closure->display_type)) {
                 return;
+        }
 
         g_object_get (display, "autologin-user", &autologin_user, NULL);
 
-        if (g_strcmp0 (autologin_user, closure->user) != 0)
+        if (g_strcmp0 (autologin_user, closure->user) != 0) {
                 return;
+        }
 
         session_id = gdm_display_get_session_id (display);
-        if (session_id == NULL)
+        if (session_id == NULL) {
                 return;
+        }
 
         g_debug ("GdmDisplayFactory: finishing session %s for user %s", session_id, autologin_user);
 
-        if (!gdm_terminate_session_by_id (closure->connection, NULL, session_id))
+        if (!gdm_terminate_session_by_id (closure->connection, NULL, session_id)) {
                 g_warning ("GdmDisplayFactory: Failed to terminate session %s", session_id);
+        }
 }
 
 gboolean
@@ -310,8 +318,9 @@ gdm_display_factory_on_user_display_destruction (GdmDisplayFactory  *factory,
 
         priv = gdm_display_factory_get_instance_private (factory);
 
-        if (!gdm_find_graphical_sessions_for_username (user, &session_ids, error))
+        if (!gdm_find_graphical_sessions_for_username (user, &session_ids, error)) {
                 return FALSE;
+        }
 
         if (g_strv_length (session_ids) == 0) {
                 g_set_error (error, GDM_DISPLAY_ERROR, GDM_DISPLAY_ERROR_GENERAL,

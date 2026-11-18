@@ -61,8 +61,9 @@ gdm_client_error_quark (void)
 {
         static GQuark error_quark = 0;
 
-        if (error_quark == 0)
+        if (error_quark == 0) {
                 error_quark = g_quark_from_static_string ("gdm-client");
+        }
 
         return error_quark;
 }
@@ -197,8 +198,9 @@ maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
         if (user_verifier_extensions != NULL) {
                 g_hash_table_iter_init (&iter, user_verifier_extensions);
                 while (g_hash_table_iter_next (&iter, &key, &value)) {
-                        if (value == NULL)
+                        if (value == NULL) {
                                 return;
+                        }
                 }
         }
 
@@ -331,8 +333,9 @@ on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
 static void
 free_interface_skeleton (GDBusInterfaceSkeleton *interface)
 {
-        if (interface == NULL)
+        if (interface == NULL) {
                 return;
+        }
 
         g_object_unref (interface);
 }
@@ -565,8 +568,9 @@ _untrack_proxy (GDBusProxy **proxy)
 {
         GDBusConnection *connection;
 
-        if (*proxy == NULL)
+        if (*proxy == NULL) {
                 return;
+        }
 
         connection = g_dbus_proxy_get_connection (*proxy);
         g_signal_handlers_disconnect_by_func (connection,
@@ -590,8 +594,9 @@ _track_proxy (GDBusProxy **proxy,
 
         untrack_proxy (proxy);
 
-        if (new_proxy == NULL)
+        if (new_proxy == NULL) {
                 return;
+        }
 
         g_set_object (proxy, new_proxy);
 
@@ -679,8 +684,9 @@ gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
 
         track_proxy (&client->user_verifier_for_reauth, user_verifier);
 
-        if (user_verifier == NULL)
+        if (user_verifier == NULL) {
                 return NULL;
+        }
 
         return g_object_ref (client->user_verifier_for_reauth);
 }
@@ -749,8 +755,9 @@ gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
 
         track_proxy (&client->user_verifier_for_reauth, user_verifier);
 
-        if (user_verifier == NULL)
+        if (user_verifier == NULL) {
                 return NULL;
+        }
 
         return g_object_ref (client->user_verifier_for_reauth);
 }
@@ -777,13 +784,15 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
         gboolean res;
         size_t i;
 
-        if (client->user_verifier != NULL)
+        if (client->user_verifier != NULL) {
                 return g_object_ref (client->user_verifier);
+        }
 
         connection = gdm_client_get_connection_sync (client, cancellable, error);
 
-        if (connection == NULL)
+        if (connection == NULL) {
                 return NULL;
+        }
 
         user_verifier = gdm_user_verifier_proxy_new_sync (connection,
                                                           G_DBUS_PROXY_FLAGS_NONE,
@@ -794,11 +803,13 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
 
         track_proxy (&client->user_verifier, user_verifier);
 
-        if (user_verifier == NULL)
+        if (user_verifier == NULL) {
                 return NULL;
+        }
 
-        if (client->enabled_extensions == NULL)
+        if (client->enabled_extensions == NULL) {
                 return g_object_ref (client->user_verifier);
+        }
 
         user_verifier_extensions = g_hash_table_new_full (g_str_hash,
                                                           g_str_equal,
@@ -815,8 +826,9 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
                                                              client->enabled_extensions,
                                                              cancellable,
                                                              NULL);
-        if (!res)
+        if (!res) {
                 return g_object_ref (client->user_verifier);
+        }
 
         for (i = 0; client->enabled_extensions[i] != NULL; i++) {
                 if (g_str_equal (client->enabled_extensions[i],
@@ -938,12 +950,14 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        if (client->user_verifier != NULL)
+        if (client->user_verifier != NULL) {
                 return g_object_ref (client->user_verifier);
+        }
 
         user_verifier = g_task_propagate_pointer (G_TASK (result), error);
-        if (user_verifier == NULL)
+        if (user_verifier == NULL) {
                 return NULL;
+        }
 
         track_proxy (&client->user_verifier, user_verifier);
 
@@ -1013,8 +1027,9 @@ gdm_client_get_user_verifier_custom_json (GdmClient *client)
 {
         GHashTable *user_verifier_extensions = get_user_verifier_extensions (client);
 
-        if (user_verifier_extensions == NULL)
+        if (user_verifier_extensions == NULL) {
                 return NULL;
+        }
 
         return g_hash_table_lookup (user_verifier_extensions,
                                     gdm_user_verifier_custom_json_interface_info ()->name);
@@ -1148,12 +1163,14 @@ gdm_client_get_greeter_finish (GdmClient       *client,
 
         g_return_val_if_fail (GDM_IS_CLIENT (client), NULL);
 
-        if (client->greeter != NULL)
+        if (client->greeter != NULL) {
                 return g_object_ref (client->greeter);
+        }
 
         greeter = g_task_propagate_pointer (G_TASK (result), error);
-        if (greeter == NULL)
+        if (greeter == NULL) {
                 return NULL;
+        }
 
         track_proxy (&client->greeter, greeter);
 
@@ -1200,8 +1217,9 @@ gdm_client_get_greeter_sync (GdmClient     *client,
 
         track_proxy (&client->greeter, greeter);
 
-        if (greeter == NULL)
+        if (greeter == NULL) {
                 return NULL;
+        }
 
         query_for_timed_login_requested_signal (greeter);
 

@@ -548,8 +548,9 @@ _gdm_display_set_supported_session_types (GdmDisplay         *self,
         GdmDisplayPrivate *priv;
         g_autofree char *supported_session_types_string = NULL;
 
-	if (supported_session_types != NULL)
+	if (supported_session_types != NULL) {
           supported_session_types_string = g_strjoinv (":", (GStrv) supported_session_types);
+	}
 
         priv = gdm_display_get_instance_private (self);
         g_debug ("GdmDisplay: supported session types: %s", supported_session_types_string);
@@ -722,6 +723,7 @@ handle_get_seat_id (GdmDBusDisplay        *skeleton,
         if (seat_id == NULL) {
                 seat_id = g_strdup ("");
         }
+
         gdm_dbus_display_complete_get_seat_id (skeleton, invocation, seat_id);
 
         return TRUE;
@@ -1025,8 +1027,9 @@ gdm_display_unexport (GdmDisplay               *self,
 
         priv = gdm_display_get_instance_private (self);
 
-        if (!priv->is_exported)
+        if (!priv->is_exported) {
                 return;
+        }
 
         g_dbus_object_manager_server_unexport (object_manager, priv->id);
 
@@ -1074,6 +1077,7 @@ self_destruct (GdmDisplay *self)
         if (gdm_display_get_status (self) != GDM_DISPLAY_FINISHED) {
                 queue_finish (self);
         }
+
         g_object_unref (self);
 }
 
@@ -1120,8 +1124,9 @@ can_create_environment (const char *session_id)
                                                    "sessions",
                                                    session_filename,
                                                    NULL);
-                if (g_file_test (candidate_path, G_FILE_TEST_EXISTS))
+                if (g_file_test (candidate_path, G_FILE_TEST_EXISTS)) {
                         return TRUE;
+                }
         }
 
         return FALSE;
@@ -1132,8 +1137,9 @@ can_create_environment (const char *session_id)
 static gboolean
 already_done_initial_setup_on_this_boot (void)
 {
-        if (g_file_test (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT, G_FILE_TEST_EXISTS))
+        if (g_file_test (ALREADY_RAN_INITIAL_SETUP_ON_THIS_BOOT, G_FILE_TEST_EXISTS)) {
                 return TRUE;
+        }
 
         return FALSE;
 }
@@ -1151,8 +1157,9 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
 
         regex = g_regex_new ("\\bgnome.initial-setup=([^\\s]*)\\b", 0, 0, error);
 
-        if (!regex)
+        if (!regex) {
             return FALSE;
+        }
 
         if (!g_regex_match (regex, contents, 0, &match_info)) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
@@ -1271,8 +1278,9 @@ gdm_display_prepare_greeter_session (GdmDisplay          *self,
                 return FALSE;
         }
 
-        if (ret_uid != NULL)
+        if (ret_uid != NULL) {
                 *ret_uid = uid;
+        }
 
         return TRUE;
 }
