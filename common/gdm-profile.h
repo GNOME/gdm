@@ -43,10 +43,10 @@ G_BEGIN_DECLS
 #define gdm_profile_msg(...)
 #endif
 
-void            _gdm_profile_log    (const char *func,
-                                     const char *note,
-                                     const char *format,
-                                     ...) G_GNUC_PRINTF (3, 4);
+void            _gdm_profile_log (const char *func,
+                                  const char *note,
+                                  const char *format,
+                                  ...) G_GNUC_PRINTF (3, 4);
 
 G_END_DECLS
 

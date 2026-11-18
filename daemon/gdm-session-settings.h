@@ -30,21 +30,21 @@ G_BEGIN_DECLS
 #define GDM_TYPE_SESSION_SETTINGS (gdm_session_settings_get_type ())
 G_DECLARE_FINAL_TYPE (GdmSessionSettings, gdm_session_settings, GDM, SESSION_SETTINGS, GObject)
 
-GdmSessionSettings *gdm_session_settings_new                (void);
+GdmSessionSettings * gdm_session_settings_new                (void);
 
-gboolean            gdm_session_settings_load               (GdmSessionSettings *settings,
+gboolean             gdm_session_settings_load              (GdmSessionSettings *settings,
                                                              const char         *username);
-gboolean            gdm_session_settings_save               (GdmSessionSettings *settings,
+gboolean             gdm_session_settings_save              (GdmSessionSettings *settings,
                                                              const char         *username);
-gboolean            gdm_session_settings_is_loaded          (GdmSessionSettings *settings);
-char               *gdm_session_settings_get_language_name  (GdmSessionSettings *settings);
-char               *gdm_session_settings_get_session_name   (GdmSessionSettings *settings);
-char               *gdm_session_settings_get_session_type   (GdmSessionSettings *settings);
-void                gdm_session_settings_set_language_name  (GdmSessionSettings *settings,
+gboolean             gdm_session_settings_is_loaded         (GdmSessionSettings *settings);
+char *               gdm_session_settings_get_language_name (GdmSessionSettings *settings);
+char *               gdm_session_settings_get_session_name  (GdmSessionSettings *settings);
+char *               gdm_session_settings_get_session_type  (GdmSessionSettings *settings);
+void                 gdm_session_settings_set_language_name (GdmSessionSettings *settings,
                                                              const char         *language_name);
-void                gdm_session_settings_set_session_name   (GdmSessionSettings *settings,
+void                 gdm_session_settings_set_session_name  (GdmSessionSettings *settings,
                                                              const char         *session_name);
-void                gdm_session_settings_set_session_type   (GdmSessionSettings *settings,
+void                 gdm_session_settings_set_session_type  (GdmSessionSettings *settings,
                                                              const char         *session_type);
 
 G_END_DECLS

@@ -32,22 +32,22 @@ G_BEGIN_DECLS
 #define GDM_TYPE_LAUNCH_ENVIRONMENT (gdm_launch_environment_get_type ())
 G_DECLARE_FINAL_TYPE (GdmLaunchEnvironment, gdm_launch_environment, GDM, LAUNCH_ENVIRONMENT, GObject)
 
-gboolean              gdm_launch_environment_ensure_uid         (GdmLaunchEnvironment  *launch_environment,
-                                                                 GdmDynamicUserStore   *dyn_user_store,
-                                                                 uid_t                 *uid,
-                                                                 GError               **error);
-gboolean              gdm_launch_environment_start              (GdmLaunchEnvironment *launch_environment);
-gboolean              gdm_launch_environment_stop               (GdmLaunchEnvironment *launch_environment);
-GdmSession *          gdm_launch_environment_get_session        (GdmLaunchEnvironment *launch_environment);
-char *                gdm_launch_environment_get_session_id     (GdmLaunchEnvironment *launch_environment);
+gboolean               gdm_launch_environment_ensure_uid           (GdmLaunchEnvironment  *launch_environment,
+                                                                    GdmDynamicUserStore   *dyn_user_store,
+                                                                    uid_t                 *uid,
+                                                                    GError               **error);
+gboolean               gdm_launch_environment_start                (GdmLaunchEnvironment *launch_environment);
+gboolean               gdm_launch_environment_stop                 (GdmLaunchEnvironment *launch_environment);
+GdmSession *           gdm_launch_environment_get_session          (GdmLaunchEnvironment *launch_environment);
+char *                 gdm_launch_environment_get_session_id       (GdmLaunchEnvironment *launch_environment);
 
-GdmLaunchEnvironment *gdm_create_greeter_launch_environment (const char *seat_id,
-                                                             const char *display_hostname,
-                                                             gboolean    display_is_local);
+GdmLaunchEnvironment * gdm_create_greeter_launch_environment       (const char *seat_id,
+                                                                    const char *display_hostname,
+                                                                    gboolean    display_is_local);
 
-GdmLaunchEnvironment *gdm_create_initial_setup_launch_environment (const char *seat_id,
-                                                                   const char *display_hostname,
-                                                                   gboolean    display_is_local);
+GdmLaunchEnvironment * gdm_create_initial_setup_launch_environment (const char *seat_id,
+                                                                    const char *display_hostname,
+                                                                    gboolean    display_is_local);
 
 G_END_DECLS
 

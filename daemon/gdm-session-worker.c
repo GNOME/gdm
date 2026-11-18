@@ -198,23 +198,23 @@ enum {
 
 static GParamSpec *props[N_PROPS] = { NULL, };
 
-static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
-static void     gdm_session_worker_init         (GdmSessionWorker *session_worker);
-static void     gdm_session_worker_finalize     (GObject *object);
+static void     gdm_session_worker_class_init               (GdmSessionWorkerClass *klass);
+static void     gdm_session_worker_init                     (GdmSessionWorker *session_worker);
+static void     gdm_session_worker_finalize                 (GObject *object);
 
 static void     gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
                                                              const char       *key,
                                                              const char       *value);
 
-static void     queue_state_change              (GdmSessionWorker *worker);
+static void     queue_state_change                          (GdmSessionWorker *worker);
 
-static void     worker_interface_init           (GdmDBusWorkerIface *iface);
+static void     worker_interface_init                       (GdmDBusWorkerIface *iface);
 
 
-typedef int (* GdmSessionWorkerPamNewMessagesFunc) (int,
-                                                    const struct pam_message **,
-                                                    struct pam_response **,
-                                                    gpointer);
+typedef int (*GdmSessionWorkerPamNewMessagesFunc) (int,
+                                                   const struct pam_message **,
+                                                   struct pam_response **,
+                                                   gpointer);
 
 G_DEFINE_TYPE_WITH_CODE (GdmSessionWorker,
                          gdm_session_worker,

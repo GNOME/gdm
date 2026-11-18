@@ -41,27 +41,27 @@ typedef gboolean (*GdmDisplayStoreFunc) (const char *id,
                                          GdmDisplay *display,
                                          gpointer    user_data);
 
-GQuark              gdm_display_store_error_quark              (void);
+GQuark              gdm_display_store_error_quark    (void);
 
-GdmDisplayStore *   gdm_display_store_new                      (void);
+GdmDisplayStore *   gdm_display_store_new            (void);
 
-void                gdm_display_store_add                      (GdmDisplayStore *store,
-                                                                GdmDisplay      *display);
-void                gdm_display_store_clear                    (GdmDisplayStore *store);
-gboolean            gdm_display_store_remove                   (GdmDisplayStore *store,
-                                                                GdmDisplay      *display);
-void                gdm_display_store_foreach                  (GdmDisplayStore     *store,
-                                                                GdmDisplayStoreFunc  func,
-                                                                gpointer             user_data);
-guint               gdm_display_store_foreach_remove           (GdmDisplayStore     *store,
-                                                                GdmDisplayStoreFunc  func,
-                                                                gpointer             user_data);
-GdmDisplay *        gdm_display_store_lookup                   (GdmDisplayStore *store,
-                                                                const char      *id);
+void                gdm_display_store_add            (GdmDisplayStore *store,
+                                                      GdmDisplay      *display);
+void                gdm_display_store_clear          (GdmDisplayStore *store);
+gboolean            gdm_display_store_remove         (GdmDisplayStore *store,
+                                                      GdmDisplay      *display);
+void                gdm_display_store_foreach        (GdmDisplayStore     *store,
+                                                      GdmDisplayStoreFunc  func,
+                                                      gpointer             user_data);
+guint               gdm_display_store_foreach_remove (GdmDisplayStore     *store,
+                                                      GdmDisplayStoreFunc  func,
+                                                      gpointer             user_data);
+GdmDisplay *        gdm_display_store_lookup         (GdmDisplayStore *store,
+                                                      const char      *id);
 
-GdmDisplay *        gdm_display_store_find                     (GdmDisplayStore     *store,
-                                                                GdmDisplayStoreFunc  predicate,
-                                                                gpointer             user_data);
+GdmDisplay *        gdm_display_store_find           (GdmDisplayStore     *store,
+                                                      GdmDisplayStoreFunc  predicate,
+                                                      gpointer             user_data);
 
 
 G_END_DECLS

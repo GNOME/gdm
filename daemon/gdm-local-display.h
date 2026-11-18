@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 #define GDM_TYPE_LOCAL_DISPLAY         (gdm_local_display_get_type ())
 G_DECLARE_FINAL_TYPE (GdmLocalDisplay, gdm_local_display, GDM, LOCAL_DISPLAY, GdmDisplay)
 
-GdmDisplay *        gdm_local_display_new                     (void);
+GdmDisplay * gdm_local_display_new (void);
 
 
 G_END_DECLS

@@ -53,9 +53,9 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void     gdm_display_store_class_init    (GdmDisplayStoreClass *klass);
-static void     gdm_display_store_init          (GdmDisplayStore *display_store);
-static void     gdm_display_store_finalize      (GObject *object);
+static void     gdm_display_store_class_init (GdmDisplayStoreClass *klass);
+static void     gdm_display_store_init       (GdmDisplayStore *display_store);
+static void     gdm_display_store_finalize   (GObject *object);
 
 G_DEFINE_TYPE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
 

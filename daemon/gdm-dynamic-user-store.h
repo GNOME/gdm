@@ -37,20 +37,20 @@ typedef enum
 
 #define GDM_DYNAMIC_USER_STORE_ERROR (gdm_dynamic_user_store_error_quark ())
 
-GQuark               gdm_dynamic_user_store_error_quark (void);
+GQuark                gdm_dynamic_user_store_error_quark (void);
 
-GdmDynamicUserStore *gdm_dynamic_user_store_new         (void);
+GdmDynamicUserStore * gdm_dynamic_user_store_new         (void);
 
-gboolean             gdm_dynamic_user_store_create      (GdmDynamicUserStore  *store,
-                                                         const char           *preferred_username,
-                                                         const char           *display_name,
-                                                         const char           *member_of,
-                                                         char                **ret_username,
-                                                         uid_t                *ret_uid,
-                                                         char                **ret_home,
-                                                         GError              **error);
+gboolean              gdm_dynamic_user_store_create      (GdmDynamicUserStore  *store,
+                                                          const char           *preferred_username,
+                                                          const char           *display_name,
+                                                          const char           *member_of,
+                                                          char                **ret_username,
+                                                          uid_t                *ret_uid,
+                                                          char                **ret_home,
+                                                          GError              **error);
 
-void                 gdm_dynamic_user_store_remove      (GdmDynamicUserStore *store,
-                                                         uid_t                uid);
+void                  gdm_dynamic_user_store_remove      (GdmDynamicUserStore *store,
+                                                          uid_t                uid);
 
 G_END_DECLS

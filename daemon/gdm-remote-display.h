@@ -32,13 +32,13 @@ G_BEGIN_DECLS
 #define GDM_TYPE_REMOTE_DISPLAY         (gdm_remote_display_get_type ())
 G_DECLARE_FINAL_TYPE (GdmRemoteDisplay, gdm_remote_display, GDM, REMOTE_DISPLAY, GdmDisplay)
 
-GdmDisplay *        gdm_remote_display_new                     (const char *remote_id,
-                                                                const char *remote_hostname);
+GdmDisplay *        gdm_remote_display_new           (const char *remote_id,
+                                                      const char *remote_hostname);
 
-char *              gdm_remote_display_get_remote_id           (GdmRemoteDisplay *self);
+char *              gdm_remote_display_get_remote_id (GdmRemoteDisplay *self);
 
-void                gdm_remote_display_set_remote_id           (GdmRemoteDisplay *self,
-                                                                const char       *remote_id);
+void                gdm_remote_display_set_remote_id (GdmRemoteDisplay *self,
+                                                      const char       *remote_id);
 
 G_END_DECLS
 

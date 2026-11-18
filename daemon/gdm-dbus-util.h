@@ -25,16 +25,16 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-GDBusServer *gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
-                                            GError            **error);
+GDBusServer * gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
+                                             GError            **error);
 
-gboolean gdm_dbus_get_pid_for_name (const char  *system_bus_name,
-                                    pid_t       *out_pid,
-                                    GError     **error);
+gboolean      gdm_dbus_get_pid_for_name     (const char  *system_bus_name,
+                                             pid_t       *out_pid,
+                                             GError     **error);
 
-gboolean gdm_dbus_get_uid_for_name (const char  *system_bus_name,
-                                    uid_t       *out_uid,
-                                    GError     **error);
+gboolean      gdm_dbus_get_uid_for_name     (const char  *system_bus_name,
+                                             uid_t       *out_uid,
+                                             GError     **error);
 
-void gdm_dbus_error_ensure (GQuark domain);
+void          gdm_dbus_error_ensure         (GQuark domain);
 #endif

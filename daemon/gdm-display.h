@@ -60,45 +60,45 @@ typedef enum
 
 #define GDM_DISPLAY_ERROR gdm_display_error_quark ()
 
-GQuark              gdm_display_error_quark                    (void);
+GQuark                gdm_display_error_quark             (void);
 
-int                 gdm_display_get_status                     (GdmDisplay *display);
-time_t              gdm_display_get_creation_time              (GdmDisplay *display);
-const char *        gdm_display_get_session_id                 (GdmDisplay *display);
-gboolean            gdm_display_prepare                        (GdmDisplay *display);
-gboolean            gdm_display_finish                         (GdmDisplay *display);
-gboolean            gdm_display_unmanage                       (GdmDisplay *display);
+int                   gdm_display_get_status              (GdmDisplay *display);
+time_t                gdm_display_get_creation_time       (GdmDisplay *display);
+const char *          gdm_display_get_session_id          (GdmDisplay *display);
+gboolean              gdm_display_prepare                 (GdmDisplay *display);
+gboolean              gdm_display_finish                  (GdmDisplay *display);
+gboolean              gdm_display_unmanage                (GdmDisplay *display);
 
-GDBusObjectSkeleton *gdm_display_get_object_skeleton           (GdmDisplay *display);
+GDBusObjectSkeleton * gdm_display_get_object_skeleton     (GdmDisplay *display);
 
-void                gdm_display_export                         (GdmDisplay               *display,
-                                                                GDBusObjectManagerServer *object_manager);
-void                gdm_display_unexport                       (GdmDisplay               *display,
-                                                                GDBusObjectManagerServer *object_manager);
-gboolean            gdm_display_is_exported                    (GdmDisplay *display);
+void                  gdm_display_export                  (GdmDisplay               *display,
+                                                           GDBusObjectManagerServer *object_manager);
+void                  gdm_display_unexport                (GdmDisplay               *display,
+                                                           GDBusObjectManagerServer *object_manager);
+gboolean              gdm_display_is_exported             (GdmDisplay *display);
 
 /* exported to bus */
-gboolean            gdm_display_get_id                         (GdmDisplay  *display,
-                                                                char       **id,
-                                                                GError     **error);
-gboolean            gdm_display_get_remote_hostname            (GdmDisplay  *display,
-                                                                char       **hostname,
-                                                                GError     **error);
-gboolean            gdm_display_get_seat_id                    (GdmDisplay  *display,
-                                                                char       **seat_id,
-                                                                GError     **error);
-gboolean            gdm_display_is_local                       (GdmDisplay  *display,
-                                                                gboolean    *local,
-                                                                GError     **error);
-gboolean            gdm_display_is_initial                     (GdmDisplay  *display,
-                                                                gboolean    *initial,
-                                                                GError     **error);
+gboolean              gdm_display_get_id                  (GdmDisplay  *display,
+                                                           char       **id,
+                                                           GError     **error);
+gboolean              gdm_display_get_remote_hostname     (GdmDisplay  *display,
+                                                           char       **hostname,
+                                                           GError     **error);
+gboolean              gdm_display_get_seat_id             (GdmDisplay  *display,
+                                                           char       **seat_id,
+                                                           GError     **error);
+gboolean              gdm_display_is_local                (GdmDisplay  *display,
+                                                           gboolean    *local,
+                                                           GError     **error);
+gboolean              gdm_display_is_initial              (GdmDisplay  *display,
+                                                           gboolean    *initial,
+                                                           GError     **error);
 
-gboolean            gdm_display_prepare_greeter_session        (GdmDisplay          *display,
-                                                                GdmDynamicUserStore *dyn_user_store,
-                                                                uid_t               *ret_uid);
-void                gdm_display_start_greeter_session          (GdmDisplay *display);
-void                gdm_display_stop_greeter_session           (GdmDisplay *display);
+gboolean              gdm_display_prepare_greeter_session (GdmDisplay          *display,
+                                                           GdmDynamicUserStore *dyn_user_store,
+                                                           uid_t               *ret_uid);
+void                  gdm_display_start_greeter_session   (GdmDisplay *display);
+void                  gdm_display_stop_greeter_session    (GdmDisplay *display);
 
 G_END_DECLS
 

@@ -23,6 +23,6 @@
 
 #include <check.h>
 
-Suite   *suite_common                 (void);
+Suite *  suite_common (void);
 
 #endif /* __S_COMMON_H */

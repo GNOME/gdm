@@ -58,21 +58,21 @@ typedef enum
 
 #define GDM_SETTINGS_BACKEND_ERROR gdm_settings_backend_error_quark ()
 
-GQuark              gdm_settings_backend_error_quark            (void);
+GQuark              gdm_settings_backend_error_quark   (void);
 
-gboolean            gdm_settings_backend_get_value              (GdmSettingsBackend  *settings_backend,
-                                                                 const char          *key,
-                                                                 char               **value,
-                                                                 GError             **error);
-gboolean            gdm_settings_backend_set_value              (GdmSettingsBackend  *settings_backend,
-                                                                 const char          *key,
-                                                                 const char          *value,
-                                                                 GError             **error);
+gboolean            gdm_settings_backend_get_value     (GdmSettingsBackend  *settings_backend,
+                                                        const char          *key,
+                                                        char               **value,
+                                                        GError             **error);
+gboolean            gdm_settings_backend_set_value     (GdmSettingsBackend  *settings_backend,
+                                                        const char          *key,
+                                                        const char          *value,
+                                                        GError             **error);
 
-void                gdm_settings_backend_value_changed          (GdmSettingsBackend *settings_backend,
-                                                                 const char         *key,
-                                                                 const char         *old_value,
-                                                                 const char         *new_value);
+void                gdm_settings_backend_value_changed (GdmSettingsBackend *settings_backend,
+                                                        const char         *key,
+                                                        const char         *old_value,
+                                                        const char         *new_value);
 
 G_END_DECLS
 

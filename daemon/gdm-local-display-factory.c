@@ -98,18 +98,18 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0 };
 
-static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryClass *klass);
-static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory *factory);
-static void     gdm_local_display_factory_finalize      (GObject *object);
+static void     gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass);
+static void     gdm_local_display_factory_init       (GdmLocalDisplayFactory *factory);
+static void     gdm_local_display_factory_finalize   (GObject *object);
 
-static void     ensure_display_for_seat                 (GdmLocalDisplayFactory *factory,
-                                                         const char             *seat_id);
+static void     ensure_display_for_seat              (GdmLocalDisplayFactory *factory,
+                                                      const char             *seat_id);
 
-static void     on_display_status_changed               (GdmDisplay             *display,
-                                                         GParamSpec             *arg1,
-                                                         GdmLocalDisplayFactory *factory);
+static void     on_display_status_changed            (GdmDisplay             *display,
+                                                      GParamSpec             *arg1,
+                                                      GdmLocalDisplayFactory *factory);
 
-static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
+static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory);
 static gpointer local_display_factory_object = NULL;
 static gboolean lookup_by_session_id (const char *id,
                                       GdmDisplay *display,

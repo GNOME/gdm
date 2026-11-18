@@ -53,80 +53,80 @@ typedef enum {
         GDM_SESSION_DISPLAY_MODE_LOGIND_MANAGED,
 } GdmSessionDisplayMode;
 
-GdmSessionDisplayMode gdm_session_display_mode_from_string (const char *str);
-const char * gdm_session_display_mode_to_string (GdmSessionDisplayMode mode);
+GdmSessionDisplayMode gdm_session_display_mode_from_string    (const char *str);
+const char *          gdm_session_display_mode_to_string      (GdmSessionDisplayMode mode);
 
-GdmSession      *gdm_session_new                      (GdmSessionVerificationMode  verification_mode,
-                                                       uid_t                       allowed_user,
-                                                       const char                 *display_hostname,
-                                                       const char                 *display_device,
-                                                       const char                 *display_seat_id,
-                                                       gboolean                    display_is_local,
-                                                       const char * const         *environment);
-uid_t             gdm_session_get_allowed_user       (GdmSession *session);
-void              gdm_session_start_reauthentication (GdmSession *session,
-                                                      GPid        pid_of_caller,
-                                                      uid_t       uid_of_caller);
+GdmSession *          gdm_session_new                         (GdmSessionVerificationMode  verification_mode,
+                                                               uid_t                       allowed_user,
+                                                               const char                 *display_hostname,
+                                                               const char                 *display_device,
+                                                               const char                 *display_seat_id,
+                                                               gboolean                    display_is_local,
+                                                               const char * const         *environment);
+uid_t                 gdm_session_get_allowed_user            (GdmSession *session);
+void                  gdm_session_start_reauthentication      (GdmSession *session,
+                                                               GPid        pid_of_caller,
+                                                               uid_t       uid_of_caller);
 
-const char       *gdm_session_get_server_address          (GdmSession *session);
-const char       *gdm_session_get_username                (GdmSession *session);
-const char       *gdm_session_get_display_device          (GdmSession *session);
-const char       *gdm_session_get_display_seat_id         (GdmSession *session);
-const char       *gdm_session_get_session_id              (GdmSession *session);
-gboolean          gdm_session_session_registers           (GdmSession *session);
-GdmSessionDisplayMode gdm_session_get_display_mode  (GdmSession *session);
-gboolean          gdm_session_start_conversation          (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_stop_conversation           (GdmSession *session,
-                                                           const char *service_name);
-const char       *gdm_session_get_conversation_session_id (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_setup                       (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_setup_for_user              (GdmSession *session,
-                                                           const char *service_name,
-                                                           const char *username);
-void              gdm_session_setup_for_program           (GdmSession *session,
-                                                           const char *service_name,
-                                                           const char *username,
-                                                           const char *log_file);
-void              gdm_session_set_environment_variable    (GdmSession *session,
-                                                           const char *key,
-                                                           const char *value);
-void              gdm_session_send_environment            (GdmSession *self,
-                                                           const char *service_name);
-void              gdm_session_reset                       (GdmSession *session);
-void              gdm_session_cancel                      (GdmSession *session);
-void              gdm_session_authenticate                (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_authorize                   (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_accredit                    (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_open_session                (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_start_session               (GdmSession *session,
-                                                           const char *service_name);
-void              gdm_session_close                       (GdmSession *session);
+const char *          gdm_session_get_server_address          (GdmSession *session);
+const char *          gdm_session_get_username                (GdmSession *session);
+const char *          gdm_session_get_display_device          (GdmSession *session);
+const char *          gdm_session_get_display_seat_id         (GdmSession *session);
+const char *          gdm_session_get_session_id              (GdmSession *session);
+gboolean              gdm_session_session_registers           (GdmSession *session);
+GdmSessionDisplayMode gdm_session_get_display_mode            (GdmSession *session);
+gboolean              gdm_session_start_conversation          (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_stop_conversation           (GdmSession *session,
+                                                               const char *service_name);
+const char *          gdm_session_get_conversation_session_id (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_setup                       (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_setup_for_user              (GdmSession *session,
+                                                               const char *service_name,
+                                                               const char *username);
+void                  gdm_session_setup_for_program           (GdmSession *session,
+                                                               const char *service_name,
+                                                               const char *username,
+                                                               const char *log_file);
+void                  gdm_session_set_environment_variable    (GdmSession *session,
+                                                               const char *key,
+                                                               const char *value);
+void                  gdm_session_send_environment            (GdmSession *self,
+                                                               const char *service_name);
+void                  gdm_session_reset                       (GdmSession *session);
+void                  gdm_session_cancel                      (GdmSession *session);
+void                  gdm_session_authenticate                (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_authorize                   (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_accredit                    (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_open_session                (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_start_session               (GdmSession *session,
+                                                               const char *service_name);
+void                  gdm_session_close                       (GdmSession *session);
 
-void              gdm_session_answer_query                (GdmSession *session,
-                                                           const char *service_name,
-                                                           const char *text);
-void              gdm_session_report_error                (GdmSession *session,
-                                                           const char *service_name,
-                                                           GDBusError  code,
-                                                           const char *message);
-void              gdm_session_select_session              (GdmSession *session,
-                                                           const char *session_name);
-void              gdm_session_select_user                 (GdmSession *session,
-                                                           const char *username);
-void              gdm_session_set_timed_login_details     (GdmSession *session,
-                                                           const char *username,
-                                                           int         delay);
-gboolean          gdm_session_client_is_connected         (GdmSession *session);
-gboolean          gdm_session_is_running                  (GdmSession *session);
-gboolean          gdm_session_is_frozen                   (GdmSession *session);
-GPid              gdm_session_get_pid                     (GdmSession *session);
+void                  gdm_session_answer_query                (GdmSession *session,
+                                                               const char *service_name,
+                                                               const char *text);
+void                  gdm_session_report_error                (GdmSession *session,
+                                                               const char *service_name,
+                                                               GDBusError  code,
+                                                               const char *message);
+void                  gdm_session_select_session              (GdmSession *session,
+                                                               const char *session_name);
+void                  gdm_session_select_user                 (GdmSession *session,
+                                                               const char *username);
+void                  gdm_session_set_timed_login_details     (GdmSession *session,
+                                                               const char *username,
+                                                               int         delay);
+gboolean              gdm_session_client_is_connected         (GdmSession *session);
+gboolean              gdm_session_is_running                  (GdmSession *session);
+gboolean              gdm_session_is_frozen                   (GdmSession *session);
+GPid                  gdm_session_get_pid                     (GdmSession *session);
 
 G_END_DECLS
 

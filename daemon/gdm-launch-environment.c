@@ -110,9 +110,9 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void     gdm_launch_environment_class_init    (GdmLaunchEnvironmentClass *klass);
-static void     gdm_launch_environment_init          (GdmLaunchEnvironment *launch_environment);
-static void     gdm_launch_environment_finalize      (GObject *object);
+static void     gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass);
+static void     gdm_launch_environment_init       (GdmLaunchEnvironment *launch_environment);
+static void     gdm_launch_environment_finalize   (GObject *object);
 
 G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 

@@ -50,9 +50,9 @@ enum {
 
 static GParamSpec *props[N_PROPS] = { NULL, };
 
-static void     gdm_display_factory_class_init  (GdmDisplayFactoryClass *klass);
-static void     gdm_display_factory_init        (GdmDisplayFactory *factory);
-static void     gdm_display_factory_finalize    (GObject *object);
+static void     gdm_display_factory_class_init (GdmDisplayFactoryClass *klass);
+static void     gdm_display_factory_init       (GdmDisplayFactory *factory);
+static void     gdm_display_factory_finalize   (GObject *object);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GdmDisplayFactory, gdm_display_factory, G_TYPE_OBJECT)
 

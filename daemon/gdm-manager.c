@@ -127,17 +127,17 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void     gdm_manager_class_init  (GdmManagerClass *klass);
-static void     gdm_manager_init        (GdmManager *manager);
-static void     gdm_manager_dispose     (GObject *object);
+static void     gdm_manager_class_init          (GdmManagerClass *klass);
+static void     gdm_manager_init                (GdmManager *manager);
+static void     gdm_manager_dispose             (GObject *object);
 
 static void     create_user_session_for_display (GdmManager *manager,
                                                  GdmDisplay *display,
                                                  uid_t       allowed_user);
-static void     start_user_session (GdmManager                *manager,
-                                    StartUserSessionOperation *operation);
-static void     clean_user_session (GdmSession *session);
-static void     register_manager (GdmManager *manager);
+static void     start_user_session              (GdmManager                *manager,
+                                                 StartUserSessionOperation *operation);
+static void     clean_user_session              (GdmSession *session);
+static void     register_manager                (GdmManager *manager);
 
 static gpointer manager_object = NULL;
 
@@ -593,9 +593,9 @@ out:
         g_free (session_id);
 }
 
-static gboolean        are_sessions_compatible               (GdmSession *session_a,
-                                                              GdmSession *session_b);
-static GdmDisplay      *get_display_for_user_session          (GdmSession *session);
+static gboolean         are_sessions_compatible               (GdmSession *session_a,
+                                                               GdmSession *session_b);
+static GdmDisplay *     get_display_for_user_session          (GdmSession *session);
 static void             update_remote_id_for_existing_session (GdmDisplay *login_display,
                                                                GdmSession *existing_session);
 

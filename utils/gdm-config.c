@@ -171,18 +171,18 @@ static const char *SC_REMOVAL_ACTIONS[] = {
         NULL,
 };
 
-static gboolean handle_password (GdmConfigCommand,
-                                 GError **);
-static gboolean handle_fingerprint (GdmConfigCommand,
-                                    GError **);
-static gboolean handle_smartcard (GdmConfigCommand,
-                                  GError **);
+static gboolean handle_password          (GdmConfigCommand,
+                                          GError **);
+static gboolean handle_fingerprint       (GdmConfigCommand,
+                                          GError **);
+static gboolean handle_smartcard         (GdmConfigCommand,
+                                          GError **);
 static gboolean handle_smartcard_options (GdmConfigCommand,
                                           GError **);
-static gboolean handle_show (GdmConfigCommand,
-                             GError **);
-static gboolean handle_reset (GdmConfigCommand,
-                              GError **);
+static gboolean handle_show              (GdmConfigCommand,
+                                          GError **);
+static gboolean handle_reset             (GdmConfigCommand,
+                                          GError **);
 
 static GdmAuthAction
 get_requested_action (void)

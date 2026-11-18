@@ -93,11 +93,11 @@ typedef enum
   VARLINK_REPLY_MORE_FOLLOW,
 } VarlinkReplyMode;
 
-static void     gdm_dynamic_user_store_class_init       (GdmDynamicUserStoreClass *klass);
-static void     gdm_dynamic_user_store_init             (GdmDynamicUserStore *store);
-static gpointer gdm_dynamic_user_varlink_worker         (gpointer data);
-static void     gdm_dynamic_user_store_dispose          (GObject *object);
-static void     gdm_dynamic_user_store_finalize         (GObject *object);
+static void     gdm_dynamic_user_store_class_init (GdmDynamicUserStoreClass *klass);
+static void     gdm_dynamic_user_store_init       (GdmDynamicUserStore *store);
+static gpointer gdm_dynamic_user_varlink_worker   (gpointer data);
+static void     gdm_dynamic_user_store_dispose    (GObject *object);
+static void     gdm_dynamic_user_store_finalize   (GObject *object);
 
 G_DEFINE_TYPE (GdmDynamicUserStore, gdm_dynamic_user_store, G_TYPE_OBJECT)
 

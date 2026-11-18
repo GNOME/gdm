@@ -185,10 +185,10 @@ enum {
 };
 
 static gboolean gdm_session_is_wayland_session (GdmSession *self);
-static void update_session_type (GdmSession *self);
-static void set_session_type (GdmSession *self,
-                              const char *session_type);
-static void close_conversation (GdmSessionConversation *conversation);
+static void     update_session_type            (GdmSession *self);
+static void     set_session_type               (GdmSession *self,
+                                                const char *session_type);
+static void     close_conversation             (GdmSessionConversation *conversation);
 
 static guint signals [LAST_SIGNAL] = { 0, };
 

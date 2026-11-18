@@ -48,18 +48,18 @@ struct _GdmSessionAuditorClass
         void               (*report_logout)                   (GdmSessionAuditor *auditor);
 };
 
-GdmSessionAuditor        *gdm_session_auditor_new                (const char *hostname,
-                                                                  const char *display_device);
-void                      gdm_session_auditor_set_username (GdmSessionAuditor *auditor,
-                                                            const char        *username);
-void                      gdm_session_auditor_report_password_changed (GdmSessionAuditor *auditor);
+GdmSessionAuditor *       gdm_session_auditor_new                            (const char *hostname,
+                                                                              const char *display_device);
+void                      gdm_session_auditor_set_username                   (GdmSessionAuditor *auditor,
+                                                                              const char        *username);
+void                      gdm_session_auditor_report_password_changed        (GdmSessionAuditor *auditor);
 void                      gdm_session_auditor_report_password_change_failure (GdmSessionAuditor *auditor);
-void                      gdm_session_auditor_report_user_accredited (GdmSessionAuditor *auditor);
-void                      gdm_session_auditor_report_login (GdmSessionAuditor *auditor);
-void                      gdm_session_auditor_report_login_failure (GdmSessionAuditor *auditor,
-                                                                    int                error_code,
-                                                                    const char        *error_message);
-void                      gdm_session_auditor_report_logout (GdmSessionAuditor *auditor);
+void                      gdm_session_auditor_report_user_accredited         (GdmSessionAuditor *auditor);
+void                      gdm_session_auditor_report_login                   (GdmSessionAuditor *auditor);
+void                      gdm_session_auditor_report_login_failure           (GdmSessionAuditor *auditor,
+                                                                              int                error_code,
+                                                                              const char        *error_message);
+void                      gdm_session_auditor_report_logout                  (GdmSessionAuditor *auditor);
 
 G_END_DECLS
 #endif /* GDM_SESSION_AUDITOR_H */

@@ -44,68 +44,68 @@ GQuark gdm_common_error_quark (void);
 typedef char * (*GdmExpandVarFunc) (const char *var,
                                     gpointer    user_data);
 
-typedef void   (*GdmLoadEnvVarFunc) (const char *var,
-                                     const char *value,
-                                     gpointer    user_data);
+typedef void (*GdmLoadEnvVarFunc) (const char *var,
+                                   const char *value,
+                                   gpointer    user_data);
 
 G_BEGIN_DECLS
 
-int            gdm_wait_on_pid           (int pid);
-int            gdm_wait_on_and_disown_pid (int pid,
-                                           int timeout);
-int            gdm_signal_pid            (int pid,
-                                          int signal);
+int                gdm_wait_on_pid                          (int pid);
+int                gdm_wait_on_and_disown_pid               (int pid,
+                                                             int timeout);
+int                gdm_signal_pid                           (int pid,
+                                                             int signal);
 
-gboolean       gdm_find_display_session (GPid          pid,
-                                         const uid_t   uid,
-                                         char        **out_session_id,
-                                         GError      **error);
+gboolean           gdm_find_display_session                 (GPid          pid,
+                                                             const uid_t   uid,
+                                                             char        **out_session_id,
+                                                             GError      **error);
 
-gboolean       gdm_get_pwent_for_name    (const char     *name,
-                                          struct passwd **pwentp);
+gboolean           gdm_get_pwent_for_name                   (const char     *name,
+                                                             struct passwd **pwentp);
 
-gboolean       gdm_get_pwent_for_uid     (uid_t           uid,
-                                          struct passwd **pwentp);
+gboolean           gdm_get_pwent_for_uid                    (uid_t           uid,
+                                                             struct passwd **pwentp);
 
-gboolean       gdm_get_grent_for_name    (const char    *name,
-                                          struct group **grentp);
+gboolean           gdm_get_grent_for_name                   (const char    *name,
+                                                             struct group **grentp);
 
-gboolean       gdm_clear_close_on_exec_flag (int fd);
+gboolean           gdm_clear_close_on_exec_flag             (int fd);
 
-char          *gdm_generate_random_bytes (gsize    size,
-                                          GError **error);
+char *             gdm_generate_random_bytes                (gsize    size,
+                                                             GError **error);
 
-gboolean       gdm_get_login_window_session_id (const char  *seat_id,
-                                                char       **session_id);
+gboolean           gdm_get_login_window_session_id          (const char  *seat_id,
+                                                             char       **session_id);
 
-gboolean       gdm_goto_login_session     (GCancellable  *cancellable,
-                                           GError       **error);
+gboolean           gdm_goto_login_session                   (GCancellable  *cancellable,
+                                                             GError       **error);
 
-gboolean       gdm_find_graphical_sessions_for_username (const char   *username,
-                                                         char       ***sessions,
-                                                         GError      **error);
+gboolean           gdm_find_graphical_sessions_for_username (const char   *username,
+                                                             char       ***sessions,
+                                                             GError      **error);
 
-gboolean      gdm_shell_var_is_valid_char (char     c,
-                                           gboolean first);
+gboolean           gdm_shell_var_is_valid_char              (char     c,
+                                                             gboolean first);
 
-char *        gdm_shell_expand            (const char       *str,
-                                           GdmExpandVarFunc  expand_func,
-                                           gpointer          user_data);
+char *             gdm_shell_expand                         (const char       *str,
+                                                             GdmExpandVarFunc  expand_func,
+                                                             gpointer          user_data);
 
-gboolean      gdm_activate_session_by_id  (GDBusConnection *connection,
-                                           GCancellable    *cancellable,
-                                           const char      *seat_id,
-                                           const char      *session_id);
+gboolean           gdm_activate_session_by_id               (GDBusConnection *connection,
+                                                             GCancellable    *cancellable,
+                                                             const char      *seat_id,
+                                                             const char      *session_id);
 
-gboolean gdm_terminate_session_by_id      (GDBusConnection *connection,
-                                           GCancellable    *cancellable,
-                                           const char      *session_id);
+gboolean           gdm_terminate_session_by_id              (GDBusConnection *connection,
+                                                             GCancellable    *cancellable,
+                                                             const char      *session_id);
 
-void          gdm_load_env_d              (GdmLoadEnvVarFunc load_env_func,
-                                           GdmExpandVarFunc  expand_func,
-                                           gpointer          user_data);
+void               gdm_load_env_d                           (GdmLoadEnvVarFunc load_env_func,
+                                                             GdmExpandVarFunc  expand_func,
+                                                             gpointer          user_data);
 
-const char * const gdm_find_x_server      (void);
+const char * const gdm_find_x_server                        (void);
 G_END_DECLS
 
 #endif /* _GDM_COMMON_H */

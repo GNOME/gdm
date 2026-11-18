@@ -32,8 +32,8 @@ G_DECLARE_FINAL_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, GDM, SESSION_
 GdmSessionWorkerJob *   gdm_session_worker_job_new                (void);
 void                    gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_job,
                                                                    const char          *server_address);
-void                    gdm_session_worker_job_set_for_reauth (GdmSessionWorkerJob *session_worker_job,
-                                                               gboolean             for_reauth);
+void                    gdm_session_worker_job_set_for_reauth     (GdmSessionWorkerJob *session_worker_job,
+                                                                   gboolean             for_reauth);
 void                    gdm_session_worker_job_set_environment    (GdmSessionWorkerJob *session_worker_job,
                                                                    const char * const  *environment);
 gboolean                gdm_session_worker_job_start              (GdmSessionWorkerJob *session_worker_job,

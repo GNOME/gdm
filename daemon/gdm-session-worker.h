@@ -43,7 +43,7 @@ typedef enum {
         GDM_SESSION_WORKER_STATE_SESSION_STARTED
 } GdmSessionWorkerState;
 
-GdmSessionWorker * gdm_session_worker_new                      (const char *server_address,
-                                                                gboolean    is_for_reauth) G_GNUC_MALLOC;
+GdmSessionWorker * gdm_session_worker_new (const char *server_address,
+                                           gboolean    is_for_reauth) G_GNUC_MALLOC;
 G_END_DECLS
 #endif /* GDM_SESSION_WORKER_H */

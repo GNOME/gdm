@@ -44,17 +44,17 @@ struct _GdmSessionSettings
         char *language_name;
 };
 
-static void gdm_session_settings_finalize (GObject *object);
+static void gdm_session_settings_finalize                 (GObject *object);
 static void gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings_class);
 
-static void gdm_session_settings_set_property (GObject      *object,
-                                               guint         prop_id,
-                                               const GValue *value,
-                                               GParamSpec   *pspec);
-static void gdm_session_settings_get_property (GObject    *object,
-                                               guint       prop_id,
-                                               GValue     *value,
-                                               GParamSpec *pspec);
+static void gdm_session_settings_set_property             (GObject      *object,
+                                                           guint         prop_id,
+                                                           const GValue *value,
+                                                           GParamSpec   *pspec);
+static void gdm_session_settings_get_property             (GObject    *object,
+                                                           guint       prop_id,
+                                                           GValue     *value,
+                                                           GParamSpec *pspec);
 
 enum {
         PROP_0 = 0,

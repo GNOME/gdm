@@ -32,10 +32,9 @@ typedef enum {
         GDM_SESSION_RECORD_FAILED,
 } GdmSessionRecordEvent;
 
-void
-gdm_session_record (GdmSessionRecordEvent  event,
-                    GdmSession            *session,
-                    GPid                   pid);
+void gdm_session_record (GdmSessionRecordEvent  event,
+                         GdmSession            *session,
+                         GPid                   pid);
 
 G_END_DECLS
 

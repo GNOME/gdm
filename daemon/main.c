@@ -51,8 +51,8 @@
 
 #define GDM_DBUS_NAME "org.gnome.DisplayManager"
 
-static GDBusConnection *get_system_bus (void);
-static gboolean         bus_reconnect (void);
+static GDBusConnection * get_system_bus (void);
+static gboolean          bus_reconnect  (void);
 
 extern char **environ;
 

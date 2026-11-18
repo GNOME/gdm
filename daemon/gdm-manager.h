@@ -39,19 +39,19 @@ typedef enum
 
 #define GDM_MANAGER_ERROR gdm_manager_error_quark ()
 
-GQuark              gdm_manager_error_quark                    (void);
+GQuark              gdm_manager_error_quark              (void);
 
-GdmManager *        gdm_manager_new                            (void);
-void                gdm_manager_start                          (GdmManager *manager);
-void                gdm_manager_stop                           (GdmManager *manager);
+GdmManager *        gdm_manager_new                      (void);
+void                gdm_manager_start                    (GdmManager *manager);
+void                gdm_manager_stop                     (GdmManager *manager);
 
-void                gdm_manager_set_remote_login_enabled       (GdmManager *manager,
-                                                                gboolean    enabled);
-void                gdm_manager_set_show_local_greeter         (GdmManager *manager,
-                                                                gboolean    show_local_greeter);
-gboolean            gdm_manager_get_displays                   (GdmManager  *manager,
-                                                                GPtrArray  **displays,
-                                                                GError     **error);
+void                gdm_manager_set_remote_login_enabled (GdmManager *manager,
+                                                          gboolean    enabled);
+void                gdm_manager_set_show_local_greeter   (GdmManager *manager,
+                                                          gboolean    show_local_greeter);
+gboolean            gdm_manager_get_displays             (GdmManager  *manager,
+                                                          GPtrArray  **displays,
+                                                          GError     **error);
 
 
 G_END_DECLS

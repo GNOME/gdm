@@ -28,10 +28,10 @@
 
 G_BEGIN_DECLS
 
-void      gdm_log_set_debug       (gboolean debug);
-void      gdm_log_toggle_debug    (void);
-void      gdm_log_init            (void);
-void      gdm_log_shutdown        (void);
+void      gdm_log_set_debug    (gboolean debug);
+void      gdm_log_toggle_debug (void);
+void      gdm_log_init         (void);
+void      gdm_log_shutdown     (void);
 
 G_END_DECLS
 

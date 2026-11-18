@@ -34,19 +34,19 @@ gboolean gdm_walk_dir_recursively (GFile                     *dir,
                                    gpointer                   userdata,
                                    GError                   **error);
 
-gboolean gdm_chown_recursively (GFile   *dir,
-                                uid_t    uid,
-                                gid_t    gid,
-                                GError **error);
-gboolean gdm_rm_recursively (GFile   *dir,
-                             GError **error);
+gboolean gdm_chown_recursively    (GFile   *dir,
+                                   uid_t    uid,
+                                   gid_t    gid,
+                                   GError **error);
+gboolean gdm_rm_recursively       (GFile   *dir,
+                                   GError **error);
 
-gboolean gdm_ensure_dir (const char  *path,
-                         uid_t        uid,
-                         gid_t        gid,
-                         mode_t       mode,
-                         gboolean     recursive_chown,
-                         GError     **error);
+gboolean gdm_ensure_dir           (const char  *path,
+                                   uid_t        uid,
+                                   gid_t        gid,
+                                   mode_t       mode,
+                                   gboolean     recursive_chown,
+                                   GError     **error);
 
 gboolean gdm_copy_dir_recursively (const char  *source,
                                    const char  *dest,

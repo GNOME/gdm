@@ -113,7 +113,7 @@ static void     gdm_display_finalize    (GObject *object);
 static void     queue_finish            (GdmDisplay *self);
 static void     _gdm_display_set_status (GdmDisplay *self,
                                          int         status);
-static gboolean wants_initial_setup (GdmDisplay *self);
+static gboolean wants_initial_setup     (GdmDisplay *self);
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GdmDisplay, gdm_display, G_TYPE_OBJECT)
 
 GQuark

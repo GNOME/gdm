@@ -40,9 +40,9 @@ struct _GdmRemoteDisplayFactory
        int                           inhibit_suspend_fd;
 };
 
-static void     gdm_remote_display_factory_class_init    (GdmRemoteDisplayFactoryClass *klass);
-static void     gdm_remote_display_factory_init          (GdmRemoteDisplayFactory *factory);
-static void     gdm_remote_display_factory_finalize      (GObject *object);
+static void     gdm_remote_display_factory_class_init (GdmRemoteDisplayFactoryClass *klass);
+static void     gdm_remote_display_factory_init       (GdmRemoteDisplayFactory *factory);
+static void     gdm_remote_display_factory_finalize   (GObject *object);
 
 static gpointer remote_display_factory_object = NULL;
 

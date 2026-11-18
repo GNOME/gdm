@@ -37,21 +37,21 @@ typedef enum
 
 #define GDM_SETTINGS_ERROR gdm_settings_error_quark ()
 
-GQuark              gdm_settings_error_quark                    (void);
+GQuark              gdm_settings_error_quark (void);
 
-GdmSettings *       gdm_settings_new                            (void);
-void                gdm_settings_reload                         (GdmSettings *settings);
+GdmSettings *       gdm_settings_new         (void);
+void                gdm_settings_reload      (GdmSettings *settings);
 
 /* exported */
 
-gboolean            gdm_settings_get_value                      (GdmSettings  *settings,
-                                                                 const char   *key,
-                                                                 char        **value,
-                                                                 GError      **error);
-gboolean            gdm_settings_set_value                      (GdmSettings  *settings,
-                                                                 const char   *key,
-                                                                 const char   *value,
-                                                                 GError      **error);
+gboolean            gdm_settings_get_value   (GdmSettings  *settings,
+                                              const char   *key,
+                                              char        **value,
+                                              GError      **error);
+gboolean            gdm_settings_set_value   (GdmSettings  *settings,
+                                              const char   *key,
+                                              const char   *value,
+                                              GError      **error);
 
 G_END_DECLS
 
