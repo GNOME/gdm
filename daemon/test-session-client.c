@@ -64,7 +64,7 @@ on_info_query (GdmDBusUserVerifier *user_verifier,
                const char          *service_name,
                const char          *query_text)
 {
-        char  answer[1024];
+        char answer[1024];
         char *res;
 
         g_print ("%s ", query_text);
@@ -112,8 +112,8 @@ on_secret_info_query (GdmDBusUserVerifier *user_verifier,
                       const char          *service_name,
                       const char          *query_text)
 {
-        char           answer[1024];
-        char          *res;
+        char answer[1024];
+        char *res;
         struct termios ts0;
         struct termios ts1;
 

@@ -107,12 +107,12 @@ int
 main (int    argc,
       char **argv)
 {
-        GMainLoop        *main_loop;
-        GOptionContext   *context;
+        GMainLoop *main_loop;
+        GOptionContext *context;
         GdmSessionWorker *worker;
-        const char       *address;
-        gboolean          is_for_reauth;
-        static GOptionEntry entries []   = {
+        const char *address;
+        gboolean is_for_reauth;
+        static GOptionEntry entries [] = {
                 { NULL }
         };
 

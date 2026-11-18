@@ -96,20 +96,20 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
-        GDBusConnection     *bus_connection = NULL;
-        GPtrArray           *arguments = NULL;
+        GDBusConnection *bus_connection = NULL;
+        GPtrArray *arguments = NULL;
         GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GInputStream        *input_stream = NULL;
-        GDataInputStream    *data_stream = NULL;
-        GError              *error = NULL;
-        char                *bus_address_fd_string = NULL;
-        char                *bus_address = NULL;
-        gsize                bus_address_size;
+        GSubprocess *subprocess = NULL;
+        GInputStream *input_stream = NULL;
+        GDataInputStream *data_stream = NULL;
+        GError *error = NULL;
+        char *bus_address_fd_string = NULL;
+        char *bus_address = NULL;
+        gsize bus_address_size;
 
-        gboolean  is_running = FALSE;
-        int       ret;
-        int       pipe_fds[2];
+        gboolean is_running = FALSE;
+        int ret;
+        int pipe_fds[2];
 
         g_debug ("Running session message bus");
 
@@ -214,7 +214,7 @@ import_environment (State        *state,
 {
         g_autoptr (GVariant) reply = NULL;
         g_autoptr (GVariant) environment_variant = NULL;
-        g_autoptr (GError)   error = NULL;
+        g_autoptr (GError) error = NULL;
 
         reply = g_dbus_connection_call_sync (state->bus_connection,
                                              "org.freedesktop.systemd1",
@@ -278,16 +278,16 @@ spawn_session (State        *state,
                GCancellable *cancellable)
 {
         GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GError              *error = NULL;
-        gboolean             is_running = FALSE;
-        int                  ret;
-        char               **argv = NULL;
-        static const char  *session_variables[] = { "DISPLAY",
-                                                    "XAUTHORITY",
-                                                    "WAYLAND_DISPLAY",
-                                                    "WAYLAND_SOCKET",
-                                                    NULL };
+        GSubprocess *subprocess = NULL;
+        GError *error = NULL;
+        gboolean is_running = FALSE;
+        int ret;
+        char **argv = NULL;
+        static const char *session_variables[] = { "DISPLAY",
+                                                   "XAUTHORITY",
+                                                   "WAYLAND_DISPLAY",
+                                                   "WAYLAND_SOCKET",
+                                                   NULL };
         /* The environment variables listed below are those we have set (or
          * received from our own execution environment) only as a fallback to
          * make things work, as opposed to a information directly pertaining to
@@ -298,7 +298,7 @@ spawn_session (State        *state,
          * to work, but if the user (or the distributor) has customized the PATH
          * via one of systemds user-environment-generators, that version should
          * be preferred. */
-        static const char  *fallback_variables[] = { "PATH", NULL };
+        static const char *fallback_variables[] = { "PATH", NULL };
 
         g_debug ("Running wayland session");
 
@@ -491,15 +491,15 @@ int
 main (int    argc,
       char **argv)
 {
-        State           *state = NULL;
-        GOptionContext  *context = NULL;
-        static char    **args = NULL;
-        gboolean         debug = FALSE;
-        gboolean         ret;
-        int              exit_status = EX_OK;
-        static gboolean  handle_registration = FALSE;
+        State *state = NULL;
+        GOptionContext *context = NULL;
+        static char **args = NULL;
+        gboolean debug = FALSE;
+        gboolean ret;
+        int exit_status = EX_OK;
+        static gboolean handle_registration = FALSE;
 
-        static GOptionEntry entries []   = {
+        static GOptionEntry entries [] = {
                 { "handle-registration", 0, 0, G_OPTION_ARG_NONE, &handle_registration, "Handle session and display registration (fallback for non-GNOME sessions)", NULL },
                 { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", "" },
                 { NULL }

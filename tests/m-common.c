@@ -39,9 +39,9 @@ main (int    argc,
       char **argv)
 {
         GOptionContext *context;
-        SRunner        *r;
-        int             failed;
-        GError         *error;
+        SRunner *r;
+        int failed;
+        GError *error;
 
         context = g_option_context_new ("");
         g_option_context_add_main_entries (context, entries, NULL);

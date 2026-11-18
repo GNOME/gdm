@@ -402,7 +402,7 @@ gdm_remote_display_factory_constructor (GType                  type,
                                         GObjectConstructParam *construct_properties)
 {
         GdmRemoteDisplayFactory *factory;
-        gboolean                 res;
+        gboolean res;
 
         factory = GDM_REMOTE_DISPLAY_FACTORY (G_OBJECT_CLASS (gdm_remote_display_factory_parent_class)->constructor (type,
                                                                                                                      n_construct_properties,

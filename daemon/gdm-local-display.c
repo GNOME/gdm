@@ -89,9 +89,9 @@ gdm_local_display_prepare (GdmDisplay *display)
 {
         GdmLocalDisplay *self = GDM_LOCAL_DISPLAY (display);
         GdmLaunchEnvironment *launch_environment;
-        char          *seat_id;
-        char          *session_class;
-        gboolean       doing_initial_setup = FALSE;
+        char *seat_id;
+        char *session_class;
+        gboolean doing_initial_setup = FALSE;
 
         seat_id = NULL;
 

@@ -112,12 +112,12 @@ out:
 static char *
 prepare_auth_file (void)
 {
-        FILE     *fp = NULL;
-        char     *filename = NULL;
-        GError   *error = NULL;
-        gboolean  prepared = FALSE;
-        Xauth     auth_entry = { 0 };
-        char      localhost[_POSIX_HOST_NAME_MAX + 1] = "";
+        FILE *fp = NULL;
+        char *filename = NULL;
+        GError *error = NULL;
+        gboolean prepared = FALSE;
+        Xauth auth_entry = { 0 };
+        char localhost[_POSIX_HOST_NAME_MAX + 1] = "";
 
         g_debug ("Preparing auth file for X server");
 
@@ -202,21 +202,21 @@ spawn_x_server (State        *state,
                 gboolean      disallow_tcp,
                 GCancellable *cancellable)
 {
-        GPtrArray           *arguments = NULL;
+        GPtrArray *arguments = NULL;
         GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GInputStream        *input_stream = NULL;
-        GDataInputStream    *data_stream = NULL;
-        GError              *error = NULL;
+        GSubprocess *subprocess = NULL;
+        GInputStream *input_stream = NULL;
+        GDataInputStream *data_stream = NULL;
+        GError *error = NULL;
 
-        char     *auth_file;
-        gboolean  is_running = FALSE;
-        int       ret;
-        int       pipe_fds[2];
-        char     *display_fd_string = NULL;
-        char     *vt_string = NULL;
-        char     *display_number;
-        gsize     display_number_size;
+        char *auth_file;
+        gboolean is_running = FALSE;
+        int ret;
+        int pipe_fds[2];
+        char *display_fd_string = NULL;
+        char *vt_string = NULL;
+        char *display_number;
+        gsize display_number_size;
 
         auth_file = prepare_auth_file ();
 
@@ -372,10 +372,10 @@ static gboolean
 update_bus_environment (State        *state,
                         GCancellable *cancellable)
 {
-        GVariantBuilder      builder;
-        GVariant            *reply = NULL;
-        GError              *error = NULL;
-        gboolean             environment_updated = FALSE;
+        GVariantBuilder builder;
+        GVariant *reply = NULL;
+        GError *error = NULL;
+        gboolean environment_updated = FALSE;
 
         g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
         g_variant_builder_add (&builder, "{ss}", "DISPLAY", state->display_name);
@@ -411,20 +411,20 @@ static gboolean
 spawn_bus (State        *state,
            GCancellable *cancellable)
 {
-        GDBusConnection     *bus_connection = NULL;
-        GPtrArray           *arguments = NULL;
+        GDBusConnection *bus_connection = NULL;
+        GPtrArray *arguments = NULL;
         GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GInputStream        *input_stream = NULL;
-        GDataInputStream    *data_stream = NULL;
-        GError              *error = NULL;
-        char                *bus_address_fd_string;
-        char                *bus_address = NULL;
-        gsize                bus_address_size;
+        GSubprocess *subprocess = NULL;
+        GInputStream *input_stream = NULL;
+        GDataInputStream *data_stream = NULL;
+        GError *error = NULL;
+        char *bus_address_fd_string;
+        char *bus_address = NULL;
+        gsize bus_address_size;
 
-        gboolean  is_running = FALSE;
-        int       ret;
-        int       pipe_fds[2];
+        gboolean is_running = FALSE;
+        int ret;
+        int pipe_fds[2];
 
         g_debug ("Running session message bus");
 
@@ -532,7 +532,7 @@ import_environment (State        *state,
 {
         g_autoptr (GVariant) reply = NULL;
         g_autoptr (GVariant) environment_variant = NULL;
-        g_autoptr (GError)   error = NULL;
+        g_autoptr (GError) error = NULL;
 
         reply = g_dbus_connection_call_sync (state->bus_connection,
                                              "org.freedesktop.systemd1",
@@ -596,15 +596,15 @@ spawn_session (State        *state,
                GCancellable *cancellable)
 {
         GSubprocessLauncher *launcher = NULL;
-        GSubprocess         *subprocess = NULL;
-        GError              *error = NULL;
-        gboolean             is_running = FALSE;
-        const char          *vt;
-        static const char   *session_variables[] = { "DISPLAY",
-                                                     "XAUTHORITY",
-                                                     "WAYLAND_DISPLAY",
-                                                     "WAYLAND_SOCKET",
-                                                     NULL };
+        GSubprocess *subprocess = NULL;
+        GError *error = NULL;
+        gboolean is_running = FALSE;
+        const char *vt;
+        static const char *session_variables[] = { "DISPLAY",
+                                                   "XAUTHORITY",
+                                                   "WAYLAND_DISPLAY",
+                                                   "WAYLAND_SOCKET",
+                                                   NULL };
         /* The environment variables listed below are those we have set (or
          * received from our own execution environment) only as a fallback to
          * make things work, as opposed to a information directly pertaining to
@@ -615,7 +615,7 @@ spawn_session (State        *state,
          * to work, but if the user (or the distributor) has customized the PATH
          * via one of systemds user-environment-generators, that version should
          * be preferred. */
-        static const char  *fallback_variables[] = { "PATH", NULL };
+        static const char *fallback_variables[] = { "PATH", NULL };
 
         g_debug ("Running X session");
 
@@ -819,11 +819,11 @@ int
 main (int    argc,
       char **argv)
 {
-        State           *state = NULL;
-        gboolean         debug = FALSE;
-        gboolean         disallow_tcp = TRUE;
-        gboolean         ret;
-        int              exit_status = EX_OK;
+        State *state = NULL;
+        gboolean debug = FALSE;
+        gboolean disallow_tcp = TRUE;
+        gboolean ret;
+        int exit_status = EX_OK;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         textdomain (GETTEXT_PACKAGE);

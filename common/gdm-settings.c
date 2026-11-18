@@ -78,9 +78,9 @@ gdm_settings_get_value (GdmSettings  *settings,
                         char        **value,
                         GError      **error)
 {
-        GError  *local_error;
+        GError *local_error;
         gboolean res;
-        GList   *l;
+        GList *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
         g_return_val_if_fail (settings->backends != NULL, FALSE);
@@ -118,9 +118,9 @@ gdm_settings_set_value (GdmSettings  *settings,
                         const char   *value,
                         GError      **error)
 {
-        GError  *local_error;
+        GError *local_error;
         gboolean res;
-        GList   *l;
+        GList *l;
 
         g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
         g_return_val_if_fail (settings->backends != NULL, FALSE);
@@ -159,7 +159,7 @@ gdm_settings_set_value (GdmSettings  *settings,
 static void
 gdm_settings_class_init (GdmSettingsClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_settings_finalize;
 

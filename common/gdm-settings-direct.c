@@ -88,8 +88,8 @@ gdm_settings_direct_get_int (const char *key,
                              int        *value)
 {
         GdmSettingsEntry *entry;
-        gboolean          ret;
-        gboolean          res;
+        gboolean ret;
+        gboolean res;
         g_autofree char *str = NULL;
 
         g_return_val_if_fail (key != NULL, FALSE);
@@ -116,8 +116,8 @@ gboolean
 gdm_settings_direct_get_uint (const char *key,
                               uint       *value)
 {
-        gboolean          ret;
-        int               intvalue;
+        gboolean ret;
+        int intvalue;
 
         g_return_val_if_fail (key != NULL, FALSE);
         g_return_val_if_fail (value != NULL, FALSE);
@@ -138,8 +138,8 @@ gdm_settings_direct_get_boolean (const char *key,
                                  gboolean   *value)
 {
         GdmSettingsEntry *entry;
-        gboolean          ret;
-        gboolean          res;
+        gboolean ret;
+        gboolean res;
         g_autofree char *str = NULL;
 
         g_return_val_if_fail (key != NULL, FALSE);
@@ -167,8 +167,8 @@ gdm_settings_direct_get_string (const char  *key,
                                 char       **value)
 {
         GdmSettingsEntry *entry;
-        gboolean          ret;
-        gboolean          res;
+        gboolean ret;
+        gboolean res;
         g_autofree char *str = NULL;
 
         g_return_val_if_fail (key != NULL, FALSE);
@@ -205,7 +205,7 @@ gdm_settings_direct_init (GdmSettings *settings,
                           const char  *file,
                           const char  *root)
 {
-        GSList  *list;
+        GSList *list;
 
         g_return_val_if_fail (file != NULL, FALSE);
         g_return_val_if_fail (root != NULL, FALSE);

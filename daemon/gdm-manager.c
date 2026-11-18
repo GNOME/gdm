@@ -153,9 +153,9 @@ G_DEFINE_TYPE_WITH_CODE (GdmManager,
 static gboolean
 plymouth_is_running (void)
 {
-        int      status;
+        int status;
         gboolean res;
-        GError  *error;
+        GError *error;
 
         error = NULL;
         res = g_spawn_command_line_sync ("plymouth --ping",
@@ -173,7 +173,7 @@ static void
 plymouth_prepare_for_transition (void)
 {
         gboolean res;
-        GError  *error;
+        GError *error;
 
         error = NULL;
         res = g_spawn_command_line_sync ("plymouth deactivate",
@@ -188,7 +188,7 @@ static void
 plymouth_quit_with_transition (void)
 {
         gboolean res;
-        GError  *error;
+        GError *error;
 
         error = NULL;
         res = g_spawn_command_line_async ("plymouth quit --retain-splash", &error);
@@ -202,7 +202,7 @@ static void
 plymouth_quit_without_transition (void)
 {
         gboolean res;
-        GError  *error;
+        GError *error;
 
         error = NULL;
         res = g_spawn_command_line_async ("plymouth quit", &error);
@@ -482,11 +482,11 @@ get_display_and_details_for_bus_sender (GdmManager       *self,
                                         gboolean         *out_is_remote)
 {
         GdmDisplay *display = NULL;
-        char       *session_id = NULL;
-        GError     *error = NULL;
-        int         ret;
-        GPid        pid;
-        uid_t       caller_uid, session_uid;
+        char *session_id = NULL;
+        GError *error = NULL;
+        int ret;
+        GPid pid;
+        uid_t caller_uid, session_uid;
 
         ret = gdm_dbus_get_pid_for_name (sender, &pid, &error);
 
@@ -604,8 +604,8 @@ switch_to_compatible_user_session (GdmManager *manager,
                                    GdmSession *session,
                                    gboolean    fail_if_already_switched)
 {
-        gboolean    res;
-        gboolean    ret;
+        gboolean res;
+        gboolean ret;
         const char *username;
         const char *seat_id;
         const char *ssid_to_activate;
@@ -727,10 +727,10 @@ static gboolean
 gdm_manager_handle_register_display (GdmDBusManager        *manager,
                                      GDBusMethodInvocation *invocation)
 {
-        GdmManager      *self = GDM_MANAGER (manager);
-        const char      *sender;
+        GdmManager *self = GDM_MANAGER (manager);
+        const char *sender;
         GDBusConnection *connection;
-        GdmDisplay      *display = NULL;
+        GdmDisplay *display = NULL;
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         connection = g_dbus_method_invocation_get_connection (invocation);
@@ -759,11 +759,11 @@ static gboolean
 gdm_manager_handle_register_session (GdmDBusManager        *manager,
                                      GDBusMethodInvocation *invocation)
 {
-        GdmManager      *self = GDM_MANAGER (manager);
-        const char      *sender;
+        GdmManager *self = GDM_MANAGER (manager);
+        const char *sender;
         GDBusConnection *connection;
-        GdmDisplay      *display = NULL;
-        GdmSession      *session;
+        GdmDisplay *display = NULL;
+        GdmSession *session;
         g_autofree char *tty = NULL;
 
         sender = g_dbus_method_invocation_get_sender (invocation);
@@ -824,15 +824,15 @@ static gboolean
 gdm_manager_handle_open_session (GdmDBusManager        *manager,
                                  GDBusMethodInvocation *invocation)
 {
-        GdmManager       *self = GDM_MANAGER (manager);
-        const char       *sender;
-        GDBusConnection  *connection;
-        GdmDisplay       *display = NULL;
-        GdmSession       *session = NULL;
-        const char       *address;
-        GPid              pid = 0;
-        uid_t             uid = (uid_t) -1;
-        uid_t             allowed_user;
+        GdmManager *self = GDM_MANAGER (manager);
+        const char *sender;
+        GDBusConnection *connection;
+        GdmDisplay *display = NULL;
+        GdmSession *session = NULL;
+        const char *address;
+        GPid pid = 0;
+        uid_t uid = (uid_t) -1;
+        uid_t allowed_user;
 
         g_debug ("GdmManager: trying to open new session");
 
@@ -1129,19 +1129,19 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                                   GDBusMethodInvocation *invocation,
                                                   const char            *username)
 {
-        GdmManager       *self = GDM_MANAGER (manager);
-        const char       *sender;
-        GdmDisplay       *display = NULL;
-        GdmSession       *session;
-        GdmSession       *login_session = NULL;
-        GDBusConnection  *connection;
-        g_autofree char  *seat_id = NULL;
-        g_autofree char  *session_id = NULL;
-        GPid              pid = 0;
-        uid_t             uid = (uid_t) -1;
-        gboolean          is_login_screen = FALSE;
-        gboolean          is_remote = FALSE;
-        g_autofree char  *address = NULL;
+        GdmManager *self = GDM_MANAGER (manager);
+        const char *sender;
+        GdmDisplay *display = NULL;
+        GdmSession *session;
+        GdmSession *login_session = NULL;
+        GDBusConnection *connection;
+        g_autofree char *seat_id = NULL;
+        g_autofree char *session_id = NULL;
+        GPid pid = 0;
+        uid_t uid = (uid_t) -1;
+        gboolean is_login_screen = FALSE;
+        gboolean is_remote = FALSE;
+        g_autofree char *address = NULL;
 
         g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
@@ -1243,8 +1243,8 @@ get_timed_login_details (GdmManager  *manager,
         gboolean res;
         gboolean enabled;
 
-        int      delay;
-        char    *username = NULL;
+        int delay;
+        char *username = NULL;
 
         enabled = FALSE;
         username = NULL;
@@ -1490,9 +1490,9 @@ on_display_status_changed (GdmDisplay *display,
                            GParamSpec *arg1,
                            GdmManager *manager)
 {
-        int         status;
+        int status;
         g_autofree char *session_class = NULL;
-        gboolean    display_is_local = FALSE;
+        gboolean display_is_local = FALSE;
 
         g_object_get (display,
                       "session-class", &session_class,
@@ -1792,8 +1792,8 @@ on_session_credentials_established (GdmSession *session,
 {
         GdmDisplay *display;
         const char *username;
-        gboolean    doing_initial_setup = FALSE;
-        gboolean    switched;
+        gboolean doing_initial_setup = FALSE;
+        gboolean switched;
 
         display = get_display_for_user_session (session);
         if (display == NULL) {
@@ -2028,8 +2028,8 @@ on_session_client_connected (GdmSession   *session,
                              GdmManager   *manager)
 {
         GdmDisplay *display;
-        char    *username;
-        int      delay;
+        char *username;
+        int delay;
         gboolean enabled;
         gboolean allow_timed_login = FALSE;
 
@@ -2144,7 +2144,7 @@ on_session_conversation_started (GdmSession *session,
                                  GdmManager *manager)
 {
         GdmDisplay *display;
-        gboolean    enabled;
+        gboolean enabled;
         g_autofree char *username = NULL;
 
         g_debug ("GdmManager: session conversation started for service %s on session", service_name);
@@ -2189,7 +2189,7 @@ on_session_reauthentication_started (GdmSession *session,
                                      GdmManager *manager)
 {
         GDBusMethodInvocation *invocation;
-        gpointer               source_tag;
+        gpointer source_tag;
 
         g_debug ("GdmManager: reauthentication started");
 
@@ -2220,12 +2220,12 @@ create_user_session_for_display (GdmManager *manager,
                                  uid_t       allowed_user)
 {
         GdmSession *session;
-        gboolean    display_is_local = FALSE;
-        char       *display_device = NULL;
-        char       *remote_hostname = NULL;
-        char       *display_seat_id = NULL;
-        char       *display_id = NULL;
-        char       *autologin_user = NULL;
+        gboolean display_is_local = FALSE;
+        char *display_device = NULL;
+        char *remote_hostname = NULL;
+        char *display_seat_id = NULL;
+        char *display_id = NULL;
+        char *autologin_user = NULL;
         g_auto (GStrv) supported_session_types = NULL;
 
         g_object_get (G_OBJECT (display),
@@ -2609,7 +2609,7 @@ gdm_manager_constructor (GType                  type,
                          guint                  n_construct_properties,
                          GObjectConstructParam *construct_properties)
 {
-        GdmManager      *manager;
+        GdmManager *manager;
 
         manager = GDM_MANAGER (G_OBJECT_CLASS (gdm_manager_parent_class)->constructor (type,
                                                                                        n_construct_properties,
@@ -2623,7 +2623,7 @@ gdm_manager_constructor (GType                  type,
 static void
 gdm_manager_class_init (GdmManagerClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         gdm_display_user_session_quark = g_quark_from_static_string ("gdm-display-user-session");
         gdm_display_reauth_pid_of_caller_quark = g_quark_from_static_string ("gdm-display-reauth-pid-of-caller");

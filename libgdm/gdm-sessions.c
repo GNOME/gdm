@@ -113,14 +113,14 @@ get_systemd_seat (void)
 static gboolean
 key_file_is_relevant (GKeyFile *key_file)
 {
-        GError    *error;
+        GError *error;
         g_autofree char *seat = NULL;
-        gboolean   no_display;
-        gboolean   hidden;
-        gboolean   tryexec_failed;
-        gboolean   can_run_headless;
-        gboolean   only_headless_allowed;
-        char      *tryexec;
+        gboolean no_display;
+        gboolean hidden;
+        gboolean tryexec_failed;
+        gboolean can_run_headless;
+        gboolean only_headless_allowed;
+        char *tryexec;
 
         error = NULL;
         no_display = g_key_file_get_boolean (key_file,
@@ -178,10 +178,10 @@ static void
 load_session_file (const char *id,
                    const char *path)
 {
-        GKeyFile          *key_file;
-        GError            *error;
-        gboolean           res;
-        GdmSessionFile    *session;
+        GKeyFile *key_file;
+        GError *error;
+        gboolean res;
+        GdmSessionFile *session;
 
         key_file = g_key_file_new ();
 
@@ -280,8 +280,8 @@ collect_sessions (void)
 {
         g_autoptr (GHashTable) names_seen_before = NULL;
         g_autoptr (GPtrArray) dirs_search_array = NULL;
-        gchar      *session_dir = NULL;
-        int         i;
+        gchar *session_dir = NULL;
+        int i;
         const gchar *supported_session_types_env = NULL;
         g_auto (GStrv) supported_session_types = NULL;
         const gchar * const *system_data_dirs = g_get_system_data_dirs ();

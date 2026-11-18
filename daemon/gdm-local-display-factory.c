@@ -262,13 +262,13 @@ on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
                            GdmLocalDisplayFactory *factory)
 {
-        int              status;
-        char            *seat_id = NULL;
-        char            *seat_active_session = NULL;
-        char            *session_class = NULL;
-        char            *session_id = NULL;
-        gboolean         is_initial = TRUE;
-        gboolean         is_local = TRUE;
+        int status;
+        char *seat_id = NULL;
+        char *seat_active_session = NULL;
+        char *session_class = NULL;
+        char *session_id = NULL;
+        gboolean is_initial = TRUE;
+        gboolean is_local = TRUE;
 
         if (!factory->is_started) {
                 return;
@@ -1371,8 +1371,8 @@ gdm_local_display_factory_constructor (GType                  type,
                                        guint                  n_construct_properties,
                                        GObjectConstructParam *construct_properties)
 {
-        GdmLocalDisplayFactory      *factory;
-        gboolean                     res;
+        GdmLocalDisplayFactory *factory;
+        gboolean res;
 
         factory = GDM_LOCAL_DISPLAY_FACTORY (G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->constructor (type,
                                                                                                                    n_construct_properties,
@@ -1389,7 +1389,7 @@ gdm_local_display_factory_constructor (GType                  type,
 static void
 gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
 {
-        GObjectClass           *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayFactoryClass *factory_class = GDM_DISPLAY_FACTORY_CLASS (klass);
 
         object_class->get_property = gdm_local_display_factory_get_property;

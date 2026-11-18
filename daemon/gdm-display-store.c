@@ -162,7 +162,7 @@ gdm_display_store_foreach (GdmDisplayStore     *store,
                            GdmDisplayStoreFunc  func,
                            gpointer             user_data)
 {
-        FindClosure  closure;
+        FindClosure closure;
 
         g_return_if_fail (GDM_IS_DISPLAY_STORE (store));
         g_return_if_fail (func != NULL);
@@ -199,7 +199,7 @@ gdm_display_store_find (GdmDisplayStore     *store,
                         gpointer             user_data)
 {
         StoredDisplay *stored_display;
-        FindClosure    closure;
+        FindClosure closure;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), NULL);
         g_return_val_if_fail (predicate != NULL, NULL);
@@ -224,7 +224,7 @@ gdm_display_store_foreach_remove (GdmDisplayStore     *store,
                                   gpointer             user_data)
 {
         FindClosure closure;
-        guint       ret;
+        guint ret;
 
         g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), 0);
         g_return_val_if_fail (func != NULL, 0);
@@ -242,7 +242,7 @@ void
 gdm_display_store_add (GdmDisplayStore *store,
                        GdmDisplay      *display)
 {
-        char          *id;
+        char *id;
         StoredDisplay *stored_display;
 
         g_return_if_fail (GDM_IS_DISPLAY_STORE (store));
@@ -266,7 +266,7 @@ gdm_display_store_add (GdmDisplayStore *store,
 static void
 gdm_display_store_class_init (GdmDisplayStoreClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_display_store_finalize;
 

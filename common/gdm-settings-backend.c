@@ -133,7 +133,7 @@ gdm_settings_backend_value_changed (GdmSettingsBackend *settings_backend,
 static void
 gdm_settings_backend_class_init (GdmSettingsBackendClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_settings_backend_finalize;
 

@@ -341,7 +341,7 @@ create_transient_display (GDBusConnection  *connection,
 {
         GError *local_error = NULL;
         GVariant *reply;
-        const char     *value;
+        const char *value;
 
         reply = g_dbus_connection_call_sync (connection,
                                              GDM_DBUS_NAME,
@@ -436,9 +436,9 @@ gboolean
 gdm_get_login_window_session_id (const char  *seat_id,
                                  char       **session_id)
 {
-        gboolean   ret;
-        int        res, i;
-        char     **sessions;
+        gboolean ret;
+        int res, i;
+        char **sessions;
 
         g_return_val_if_fail (session_id != NULL, FALSE);
 
@@ -536,12 +536,12 @@ goto_login_session (GDBusConnection  *connection,
                     GCancellable     *cancellable,
                     GError          **error)
 {
-        gboolean        ret;
-        int             res;
-        char           *our_session;
-        char           *session_id;
-        char           *seat_id;
-        GError         *local_error = NULL;
+        gboolean ret;
+        int res;
+        char *our_session;
+        char *session_id;
+        char *seat_id;
+        GError *local_error = NULL;
 
         ret = FALSE;
         session_id = NULL;

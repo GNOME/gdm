@@ -261,7 +261,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                           gboolean              start_session)
 {
         gboolean is_initial_setup = FALSE;
-        GHashTable    *hash;
+        GHashTable *hash;
         static const char *const optional_environment[] = {
                 "GI_TYPELIB_PATH",
                 "LANG",
@@ -436,8 +436,8 @@ on_session_setup_complete (GdmSession           *session,
         g_autoptr (GHashTable) hash = NULL;
         g_autoptr (GDataOutputStream) env_output_stream = NULL;
         g_autoptr (GError) error = NULL;
-        GHashTableIter    iter;
-        gpointer          key, value;
+        GHashTableIter iter;
+        gpointer key, value;
 
         hash = build_launch_environment (launch_environment, TRUE);
         env_output_stream = get_environment_file_output_stream (launch_environment, &error);
@@ -827,7 +827,7 @@ gdm_launch_environment_get_property (GObject    *object,
 static void
 gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->get_property = gdm_launch_environment_get_property;
         object_class->set_property = gdm_launch_environment_set_property;

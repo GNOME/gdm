@@ -178,7 +178,7 @@ copy_environment_to_hash (GdmSessionWorkerJob *job,
                           GHashTable          *hash)
 {
         g_auto (GStrv) environment = NULL;
-        gint   i;
+        gint i;
 
         if (job->environment != NULL) {
                 environment = g_strdupv (job->environment);
@@ -204,7 +204,7 @@ get_job_arguments (GdmSessionWorkerJob *job,
         g_autoptr (GPtrArray) args = NULL;
         g_autoptr (GError) error = NULL;
         g_auto (GStrv) argv = NULL;
-        int         i;
+        int i;
 
         args = NULL;
         if (!g_shell_parse_argv (job->command, NULL, &argv, &error)) {
@@ -256,7 +256,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
         g_autoptr (GError) error = NULL;
         g_autoptr (GPtrArray) args = NULL;
         g_autoptr (GPtrArray) env = NULL;
-        gboolean         ret;
+        gboolean ret;
 
         g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s %s",
                  name != NULL? name : "", session_worker_job->command);
@@ -489,7 +489,7 @@ gdm_session_worker_job_init (GdmSessionWorkerJob *session_worker_job)
 static void
 gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->get_property = gdm_session_worker_job_get_property;
         object_class->set_property = gdm_session_worker_job_set_property;

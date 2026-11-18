@@ -138,12 +138,12 @@ parse_key_string (const char  *keystring,
 {
         g_auto (GStrv) split1 = NULL;
         g_auto (GStrv) split2 = NULL;
-        char    *g;
-        char    *k;
-        char    *l;
-        char    *v;
-        char    *tmp1;
-        char    *tmp2;
+        char *g;
+        char *k;
+        char *l;
+        char *v;
+        char *tmp1;
+        char *tmp2;
 
         g_return_val_if_fail (keystring != NULL, FALSE);
 
@@ -252,7 +252,7 @@ save_settings (GdmSettingsDesktopBackend *backend)
 {
         g_autoptr (GError) local_error = NULL;
         g_autofree char *contents = NULL;
-        gsize     length;
+        gsize length;
 
         if (!backend->dirty) {
                 return;
@@ -344,7 +344,7 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend  *backend,
 static void
 gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
 {
-        GObjectClass            *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
         GdmSettingsBackendClass *backend_class = GDM_SETTINGS_BACKEND_CLASS (klass);
 
         object_class->get_property = gdm_settings_desktop_backend_get_property;

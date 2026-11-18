@@ -405,7 +405,7 @@ gdm_display_factory_get_property (GObject    *object,
 static void
 gdm_display_factory_class_init (GdmDisplayFactoryClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->get_property = gdm_display_factory_get_property;
         object_class->set_property = gdm_display_factory_set_property;

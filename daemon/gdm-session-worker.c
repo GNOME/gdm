@@ -931,8 +931,8 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
                                              GdmSessionWorker          *worker)
 {
         struct pam_response *replies;
-        int                  return_value;
-        int                  i;
+        int return_value;
+        int i;
 
         g_debug ("GdmSessionWorker: %d new messages received from PAM\n", number_of_messages);
 
@@ -960,7 +960,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 
         for (i = 0; i < number_of_messages; i++) {
                 gboolean got_response;
-                char    *response;
+                char *response;
 
                 response = NULL;
                 got_response = gdm_session_worker_process_pam_message (worker,
@@ -1254,8 +1254,8 @@ gdm_session_worker_initialize_pam (GdmSessionWorker    *worker,
                                    const char          *seat_id,
                                    GError             **error)
 {
-        struct pam_conv        pam_conversation;
-        int                    error_code;
+        struct pam_conv pam_conversation;
+        int error_code;
         char tty_string[256];
         g_autofree char *service_path = NULL;
 
@@ -1628,12 +1628,12 @@ _lookup_passwd_info (const char  *username,
                      char       **homep,
                      char       **shellp)
 {
-        gboolean       ret;
+        gboolean ret;
         struct passwd *passwd_entry;
-        struct passwd  passwd_buffer;
-        char          *aux_buffer;
-        long           required_aux_buffer_size;
-        gsize          aux_buffer_size;
+        struct passwd passwd_buffer;
+        char *aux_buffer;
+        long required_aux_buffer_size;
+        gsize aux_buffer_size;
 
         ret = FALSE;
         aux_buffer = NULL;
@@ -1738,9 +1738,9 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         g_autofree char *home = NULL;
         gboolean ret;
         gboolean res;
-        uid_t    uid;
-        gid_t    gid;
-        int      error_code;
+        uid_t uid;
+        gid_t gid;
+        int error_code;
 
         ret = FALSE;
 
@@ -2040,7 +2040,7 @@ rotate_logs (const char *path,
 static int
 _open_program_session_log (const char *filename)
 {
-        int   fd;
+        int fd;
 
         rotate_logs (filename, MAX_LOGS);
 
@@ -2086,7 +2086,7 @@ out:
 static int
 _open_user_session_log (const char *dir)
 {
-        int   fd;
+        int fd;
         g_autofree char *filename = NULL;
 
         filename = g_build_filename (dir, GDM_SESSION_LOG_FILENAME, NULL);
@@ -2142,7 +2142,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 {
         struct passwd *passwd_entry;
         pid_t session_pid;
-        int   error_code;
+        int error_code;
 
         gdm_get_pwent_for_name (worker->username, &passwd_entry);
         if (worker->is_program_session) {
@@ -2176,9 +2176,9 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         }
 
         if (session_pid == 0) {
-                g_autofree char  *home_dir = NULL;
+                g_autofree char *home_dir = NULL;
                 g_auto (GStrv) environment = NULL;
-                int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
+                int stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
                 gboolean has_journald = FALSE, needs_controlling_terminal = FALSE;
                 /* Leak the TTY into the session as stdin so that it stays open
                  * without any races. */
@@ -3046,10 +3046,10 @@ gdm_session_worker_handle_initialize (GdmDBusWorker         *object,
                                       GVariant              *details)
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
-        GVariantIter      iter;
-        char             *key;
-        GVariant         *value;
-        gboolean          wait_for_settings = FALSE;
+        GVariantIter iter;
+        char *key;
+        GVariant *value;
+        gboolean wait_for_settings = FALSE;
 
         if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SETUP_COMPLETE)) {
                 return TRUE;
@@ -3332,7 +3332,7 @@ gdm_session_worker_constructor (GType                  type,
                                 guint                  n_construct_properties,
                                 GObjectConstructParam *construct_properties)
 {
-        GdmSessionWorker  *worker;
+        GdmSessionWorker *worker;
         g_autoptr (GError) error = NULL;
 
         worker = GDM_SESSION_WORKER (G_OBJECT_CLASS (gdm_session_worker_parent_class)->constructor (type,
@@ -3401,7 +3401,7 @@ worker_interface_init (GdmDBusWorkerIface *interface)
 static void
 gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->get_property = gdm_session_worker_get_property;
         object_class->set_property = gdm_session_worker_set_property;

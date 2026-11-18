@@ -430,7 +430,7 @@ get_system_session_dirs (GdmSession *self,
 static gboolean
 is_prog_in_path (const char *prog)
 {
-        char    *f;
+        char *f;
         gboolean ret;
 
         f = g_find_program_in_path (prog);
@@ -445,10 +445,10 @@ load_key_file_for_file (GdmSession  *self,
                         const char  *type,
                         char       **full_path)
 {
-        GKeyFile   *key_file;
-        GError     *error = NULL;
-        gboolean    res;
-        char      **search_dirs;
+        GKeyFile *key_file;
+        GError *error = NULL;
+        gboolean res;
+        char **search_dirs;
 
         g_return_val_if_fail (file != NULL, NULL);
 
@@ -496,11 +496,11 @@ get_session_command_for_file (GdmSession  *self,
                               const char  *type,
                               char       **command)
 {
-        GKeyFile   *key_file;
-        GError     *error;
-        char       *exec;
-        gboolean    ret;
-        gboolean    res;
+        GKeyFile *key_file;
+        GError *error;
+        char *exec;
+        gboolean ret;
+        gboolean res;
 
         exec = NULL;
         ret = FALSE;
@@ -591,7 +591,7 @@ get_session_command_for_name (GdmSession  *self,
                               char       **command)
 {
         gboolean res;
-        char    *filename;
+        char *filename;
 
         filename = g_strdup_printf ("%s.desktop", name);
         res = get_session_command_for_file (self, filename, type, command);
@@ -622,13 +622,13 @@ get_default_language_name (GdmSession *self)
 static const char *
 get_fallback_session_name (GdmSession *self)
 {
-        gboolean        res;
-        char          **search_dirs;
-        int             i;
+        gboolean res;
+        char **search_dirs;
+        int i;
         g_autofree char *configured_fallback = NULL;
-        char           *name;
-        GSequence      *sessions;
-        GSequenceIter  *session;
+        char *name;
+        GSequence *sessions;
+        GSequenceIter *session;
 
         if (self->fallback_session_name != NULL) {
                 /* verify that the cached version still exists */
@@ -655,7 +655,7 @@ get_fallback_session_name (GdmSession *self)
 
         search_dirs = get_system_session_dirs (self, NULL);
         for (i = 0; search_dirs[i] != NULL; i++) {
-                GDir       *dir;
+                GDir *dir;
                 const char *base_name;
 
                 dir = g_dir_open (search_dirs[i], 0, NULL);
@@ -1545,7 +1545,7 @@ static void
 export_user_verifier_choice_list_interface (GdmSession      *self,
                                             GDBusConnection *connection)
 {
-        GdmDBusUserVerifierChoiceList   *interface;
+        GdmDBusUserVerifierChoiceList *interface;
 
         interface = GDM_DBUS_USER_VERIFIER_CHOICE_LIST (gdm_dbus_user_verifier_choice_list_skeleton_new ());
 
@@ -2022,7 +2022,7 @@ on_outside_connection_closed (GDBusConnection *connection,
                               GdmSession      *self)
 {
         GCredentials *credentials;
-        GPid          pid_of_client;
+        GPid pid_of_client;
 
         g_debug ("GdmSession: external connection closed");
 
@@ -2048,7 +2048,7 @@ handle_connection_from_outside (GDBusServer     *server,
                                 GdmSession      *self)
 {
         GCredentials *credentials;
-        GPid          pid_of_client;
+        GPid pid_of_client;
 
         g_debug ("GdmSession: Handling new connection from outside");
 
@@ -2125,7 +2125,7 @@ allow_user_function (GDBusAuthObserver *observer,
                      GdmSession        *self)
 {
         uid_t client_uid;
-        GPid  pid_of_client;
+        GPid pid_of_client;
 
         client_uid = g_credentials_get_unix_user (credentials, NULL);
         if (client_uid == self->allowed_user) {
@@ -2235,14 +2235,14 @@ static void
 load_lang_config_file (GdmSession *self)
 {
         static const char *config_file = LANG_CONFIG_FILE;
-        gchar         *contents = NULL;
-        gchar         *p;
-        gchar         *key;
-        gchar         *value;
-        gsize          length;
-        GError        *error;
-        GString       *line;
-        GRegex        *re;
+        gchar *contents = NULL;
+        gchar *p;
+        gchar *key;
+        gchar *value;
+        gsize length;
+        GError *error;
+        GString *line;
+        GRegex *re;
 
         if (!g_file_test (config_file, G_FILE_TEST_EXISTS)) {
                 g_debug ("Cannot access '%s'", config_file);
@@ -2432,7 +2432,7 @@ start_conversation (GdmSession *self,
                     const char *service_name)
 {
         GdmSessionConversation *conversation;
-        char                   *job_name;
+        char *job_name;
 
         conversation = g_new0 (GdmSessionConversation, 1);
         conversation->session = g_object_ref (self);
@@ -2636,9 +2636,9 @@ initialize (GdmSession *self,
             const char *username,
             const char *log_file)
 {
-        GVariantBuilder          details;
-        const char             **extensions;
-        GdmSessionConversation  *conversation;
+        GVariantBuilder details;
+        const char **extensions;
+        GdmSessionConversation *conversation;
 
         g_assert (service_name != NULL);
 
@@ -2859,8 +2859,8 @@ static char *
 get_session_command (GdmSession  *self,
                      GError     **error)
 {
-        gboolean    res;
-        char       *command;
+        gboolean res;
+        char *command;
         const char *session_name;
 
         session_name = get_session_name (self);
@@ -3141,9 +3141,9 @@ gdm_session_start_session (GdmSession *self,
                            const char *service_name)
 {
         GdmSessionConversation *conversation;
-        g_autofree char        *command = NULL;
-        g_autofree char        *program = NULL;
-        g_autoptr (GError)       error = NULL;
+        g_autofree char *command = NULL;
+        g_autofree char *program = NULL;
+        g_autoptr (GError) error = NULL;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (service_name != NULL);
@@ -3523,9 +3523,9 @@ get_session_filename (GdmSession *self)
 static gboolean
 gdm_session_is_wayland_session (GdmSession *self)
 {
-        GKeyFile   *key_file;
-        gboolean    is_wayland_session = FALSE;
-        char            *filename;
+        GKeyFile *key_file;
+        gboolean is_wayland_session = FALSE;
+        char *filename;
         g_autofree char *full_path = NULL;
 
         g_return_val_if_fail (self != NULL, FALSE);
@@ -3906,7 +3906,7 @@ gdm_session_dispose (GObject *object)
 static void
 gdm_session_finalize (GObject *object)
 {
-        GdmSession   *self;
+        GdmSession *self;
         GObjectClass *parent_class;
 
         self = GDM_SESSION (object);

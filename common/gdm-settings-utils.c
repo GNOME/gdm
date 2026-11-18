@@ -185,7 +185,7 @@ text_cb (GMarkupParseContext  *ctx,
          GError              **error)
 {
         ParserInfo *info;
-        char       *t;
+        char *t;
 
         info = (ParserInfo *) user_data;
 
@@ -224,11 +224,11 @@ gdm_settings_parse_schemas (const char  *file,
                             GSList     **schemas)
 {
         GMarkupParseContext *ctx;
-        ParserInfo          *info;
-        char                *contents;
-        gsize                len;
-        GError              *error;
-        gboolean             res;
+        ParserInfo *info;
+        char *contents;
+        gsize len;
+        GError *error;
+        gboolean res;
 
         g_return_val_if_fail (file != NULL, FALSE);
         g_return_val_if_fail (root != NULL, FALSE);
@@ -309,7 +309,7 @@ gdm_settings_parse_value_as_integer (const char *value,
 {
         char *end_of_valid_int;
         glong long_value;
-        gint  int_value;
+        gint int_value;
 
         g_return_val_if_fail (value != NULL, FALSE);
         g_return_val_if_fail (intval != NULL, FALSE);
@@ -335,7 +335,7 @@ gboolean
 gdm_settings_parse_value_as_double  (const char *value,
                                      gdouble    *doubleval)
 {
-        char   *end_of_valid_d;
+        char *end_of_valid_d;
         gdouble double_value = 0;
 
         g_return_val_if_fail (value != NULL, FALSE);

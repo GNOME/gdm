@@ -817,10 +817,10 @@ gdm_display_constructor (GType                  type,
                          guint                  n_construct_properties,
                          GObjectConstructParam *construct_properties)
 {
-        static guint64     serial = 1;
-        GdmDisplay        *self;
+        static guint64 serial = 1;
+        GdmDisplay *self;
         GdmDisplayPrivate *priv;
-        gboolean           res;
+        gboolean res;
 
         self = GDM_DISPLAY (G_OBJECT_CLASS (gdm_display_parent_class)->constructor (type,
                                                                                     n_construct_properties,
@@ -864,7 +864,7 @@ gdm_display_dispose (GObject *object)
 static void
 gdm_display_class_init (GdmDisplayClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->get_property = gdm_display_get_property;
         object_class->set_property = gdm_display_set_property;
@@ -1289,7 +1289,7 @@ void
 gdm_display_start_greeter_session (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        GdmSession    *session;
+        GdmSession *session;
         g_autofree char *seat_id = NULL;
         g_autofree char *hostname = NULL;
 

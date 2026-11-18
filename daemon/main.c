@@ -56,9 +56,9 @@ static gboolean          bus_reconnect  (void);
 
 extern char **environ;
 
-static GdmManager      *manager       = NULL;
-static int              name_id       = -1;
-static GdmSettings     *settings      = NULL;
+static GdmManager *manager = NULL;
+static int name_id = -1;
+static GdmSettings *settings = NULL;
 
 static gboolean
 timed_exit_cb (GMainLoop *loop)
@@ -85,7 +85,7 @@ bus_connection_closed (void)
 static GDBusConnection *
 get_system_bus (void)
 {
-        GError          *error;
+        GError *error;
         GDBusConnection *bus;
 
         error = NULL;
@@ -114,9 +114,9 @@ delete_pid (void)
 static void
 write_pid (void)
 {
-        int     pf;
+        int pf;
         ssize_t written;
-        char    pid[9];
+        char pid[9];
 
         errno = 0;
         pf = open (GDM_PID_FILE, O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, 0644);
@@ -212,14 +212,14 @@ int
 main (int    argc,
       char **argv)
 {
-        GMainLoop          *main_loop;
-        GOptionContext     *context;
-        GError             *error = NULL;
-        gboolean            res;
-        static gboolean     do_timed_exit    = FALSE;
-        static gboolean     print_version    = FALSE;
-        static gboolean     fatal_warnings   = FALSE;
-        static GOptionEntry entries []   = {
+        GMainLoop *main_loop;
+        GOptionContext *context;
+        GError *error = NULL;
+        gboolean res;
+        static gboolean do_timed_exit = FALSE;
+        static gboolean print_version = FALSE;
+        static gboolean fatal_warnings = FALSE;
+        static GOptionEntry entries [] = {
                 { "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
                 { "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time (for debugging)"), NULL },
                 { "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },
@@ -333,9 +333,9 @@ static gboolean
 bus_reconnect ()
 {
         GDBusConnection *bus;
-        gboolean         ret;
-        gboolean         remote_login_enabled;
-        gboolean         show_local_greeter;
+        gboolean ret;
+        gboolean remote_login_enabled;
+        gboolean show_local_greeter;
 
         ret = TRUE;
 

@@ -52,12 +52,12 @@ log_user_message (GdmSessionAuditor *auditor,
                   gint               type,
                   gint               result)
 {
-        GdmSessionLinuxAuditor   *linux_auditor;
-        char                      buf[512];
+        GdmSessionLinuxAuditor *linux_auditor;
+        char buf[512];
         g_autofree char *username = NULL;
         g_autofree char *hostname = NULL;
         g_autofree char *display_device = NULL;
-        struct passwd            *pw;
+        struct passwd *pw;
         int rc;
 
         linux_auditor = GDM_SESSION_LINUX_AUDITOR (auditor);
@@ -114,7 +114,7 @@ gdm_session_linux_auditor_report_logout (GdmSessionAuditor *auditor)
 static void
 gdm_session_linux_auditor_class_init (GdmSessionLinuxAuditorClass *klass)
 {
-        GObjectClass           *object_class;
+        GObjectClass *object_class;
         GdmSessionAuditorClass *auditor_class;
 
         object_class = G_OBJECT_CLASS (klass);
