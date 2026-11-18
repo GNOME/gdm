@@ -118,9 +118,9 @@
 typedef struct
 {
         GdmSessionWorker *worker;
-        GdmSession       *session;
-        GPid              pid_of_caller;
-        uid_t             uid_of_caller;
+        GdmSession *session;
+        GPid pid_of_caller;
+        uid_t uid_of_caller;
 
 } ReauthenticationRequest;
 
@@ -129,49 +129,49 @@ struct _GdmSessionWorker
         GdmDBusWorkerSkeleton parent;
         GdmSessionWorkerState state;
 
-        int               exit_code;
+        int exit_code;
 
-        pam_handle_t     *pam_handle;
+        pam_handle_t *pam_handle;
 
-        GPid              child_pid;
-        guint             child_watch_id;
+        GPid child_pid;
+        guint child_watch_id;
 
         /* from Setup */
-        char             *service;
-        char             *display_device;
-        char             *display_seat_id;
-        char             *hostname;
-        char             *username;
-        char             *log_file;
-        char             *session_id;
-        char             *session_id_of_caller;
-        uid_t             uid;
-        gid_t             gid;
-        gboolean          password_is_required;
-        char            **extensions;
+        char *service;
+        char *display_device;
+        char *display_seat_id;
+        char *hostname;
+        char *username;
+        char *log_file;
+        char *session_id;
+        char *session_id_of_caller;
+        uid_t uid;
+        gid_t gid;
+        gboolean password_is_required;
+        char **extensions;
 
-        int               cred_flags;
-        int               session_vt;
-        int               session_tty_fd;
+        int cred_flags;
+        int session_vt;
+        int session_tty_fd;
 
-        char            **arguments;
-        guint32           cancelled : 1;
-        guint32           timed_out : 1;
-        guint32           is_program_session : 1;
-        guint32           is_reauth_session : 1;
-        guint32           display_is_local : 1;
-        guint32           display_is_initial : 1;
-        guint32           seat0_has_vts : 1;
-        guint             state_change_idle_id;
+        char **arguments;
+        guint32 cancelled : 1;
+        guint32 timed_out : 1;
+        guint32 is_program_session : 1;
+        guint32 is_reauth_session : 1;
+        guint32 display_is_local : 1;
+        guint32 display_is_initial : 1;
+        guint32 seat0_has_vts : 1;
+        guint state_change_idle_id;
         GdmSessionDisplayMode display_mode;
 
-        char                 *server_address;
-        GDBusConnection      *connection;
+        char *server_address;
+        GDBusConnection *connection;
         GdmDBusWorkerManager *manager;
 
-        GHashTable         *reauthentication_requests;
+        GHashTable *reauthentication_requests;
 
-        GdmSessionAuditor  *auditor;
+        GdmSessionAuditor *auditor;
         GdmSessionSettings *user_settings;
 
         GDBusMethodInvocation *pending_invocation;

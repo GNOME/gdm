@@ -31,17 +31,17 @@
 
 typedef struct
 {
-        GdmRemoteDisplay         *display;
+        GdmRemoteDisplay *display;
         GDBusObjectManagerServer *object_manager;
-        guint                     timeout_id;
+        guint timeout_id;
 } PendingExport;
 
 struct _GdmRemoteDisplay
 {
-        GdmDisplay            parent;
+        GdmDisplay parent;
 
         GdmDBusRemoteDisplay *skeleton;
-        PendingExport        *pending_export;
+        PendingExport *pending_export;
 };
 
 static void     gdm_remote_display_class_init    (GdmRemoteDisplayClass *klass);

@@ -48,40 +48,40 @@
 
 typedef struct _GdmDisplayPrivate
 {
-        GObject               parent;
+        GObject parent;
 
-        char                 *id;
-        char                 *seat_id;
-        char                 *session_id;
-        char                 *session_class;
+        char *id;
+        char *seat_id;
+        char *session_id;
+        char *session_class;
 
-        char                 *remote_hostname;
-        int                   status;
-        time_t                creation_time;
+        char *remote_hostname;
+        int status;
+        time_t creation_time;
 
-        char                 *autologin_user;
+        char *autologin_user;
 
-        guint                 finish_idle_id;
+        guint finish_idle_id;
 
-        GDBusConnection      *connection;
+        GDBusConnection *connection;
 
-        GdmDBusDisplay       *display_skeleton;
-        GDBusObjectSkeleton  *object_skeleton;
+        GdmDBusDisplay *display_skeleton;
+        GDBusObjectSkeleton *object_skeleton;
 
-        GDBusProxy           *accountsservice_proxy;
+        GDBusProxy *accountsservice_proxy;
 
         /* this spawns and controls the greeter session */
         GdmLaunchEnvironment *launch_environment;
 
-        guint                 is_local : 1;
-        guint                 is_initial : 1;
-        guint                 allow_timed_login : 1;
-        guint                 have_existing_user_accounts : 1;
-        guint                 doing_initial_setup : 1;
-        guint                 session_registered : 1;
-        guint                 is_exported : 1;
+        guint is_local : 1;
+        guint is_initial : 1;
+        guint allow_timed_login : 1;
+        guint have_existing_user_accounts : 1;
+        guint doing_initial_setup : 1;
+        guint session_registered : 1;
+        guint is_exported : 1;
 
-        GStrv                 supported_session_types;
+        GStrv supported_session_types;
 } GdmDisplayPrivate;
 
 enum {

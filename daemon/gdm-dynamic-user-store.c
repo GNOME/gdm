@@ -69,8 +69,8 @@ typedef struct
 
 typedef struct
 {
-        GWeakRef  store;
-        gint      cancel_fd;
+        GWeakRef store;
+        gint cancel_fd;
 } WorkerContext;
 
 typedef struct

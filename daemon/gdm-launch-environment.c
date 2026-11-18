@@ -64,24 +64,24 @@ extern char **environ;
 
 struct _GdmLaunchEnvironment
 {
-        GObject         parent;
-        GdmSession     *session;
-        char           *session_name;
-        GPid            pid;
+        GObject parent;
+        GdmSession *session;
+        char *session_name;
+        GPid pid;
 
         GdmDynamicUserStore *dyn_user_store;
-        char                *preferred_user_name;
-        char                *user_disp_name;
-        char                *user_member_of;
-        char                *dyn_user_name;
-        uid_t                dyn_uid;
-        char                *dyn_user_home;
+        char *preferred_user_name;
+        char *user_disp_name;
+        char *user_member_of;
+        char *dyn_user_name;
+        uid_t dyn_uid;
+        char *dyn_user_home;
 
-        char           *dconf_profile;
-        char           *session_id;
-        char           *display_seat_id;
-        char           *display_hostname;
-        gboolean        display_is_local;
+        char *dconf_profile;
+        char *session_id;
+        char *display_seat_id;
+        char *display_hostname;
+        gboolean display_is_local;
 };
 
 enum {

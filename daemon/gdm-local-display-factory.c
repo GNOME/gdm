@@ -55,36 +55,36 @@
 
 struct _GdmLocalDisplayFactory
 {
-        GdmDisplayFactory  parent;
+        GdmDisplayFactory parent;
 #ifdef HAVE_UDEV
-        GUdevClient       *gudev_client;
+        GUdevClient *gudev_client;
 #endif
 
         GdmDBusLocalDisplayFactory *skeleton;
         GDBusConnection *connection;
 
         /* FIXME: this needs to be per seat? */
-        guint            num_failures;
+        guint num_failures;
 
-        guint            seat_new_id;
-        guint            seat_removed_id;
-        guint            seat_properties_changed_id;
-        guint            seat_attention_key;
+        guint seat_new_id;
+        guint seat_removed_id;
+        guint seat_properties_changed_id;
+        guint seat_attention_key;
 
 
-        gboolean         seat0_has_platform_graphics;
-        gboolean         seat0_has_boot_up_graphics;
+        gboolean seat0_has_platform_graphics;
+        gboolean seat0_has_boot_up_graphics;
 
-        gboolean         seat0_graphics_check_timed_out;
-        guint            seat0_graphics_check_timeout_id;
+        gboolean seat0_graphics_check_timed_out;
+        guint seat0_graphics_check_timeout_id;
 
-        gulong           uevent_handler_id;
+        gulong uevent_handler_id;
 
-        unsigned int     active_vt;
-        guint            active_vt_watch_id;
-        guint            wait_to_finish_timeout_id;
+        unsigned int active_vt;
+        guint active_vt_watch_id;
+        guint wait_to_finish_timeout_id;
 
-        gboolean         is_started;
+        gboolean is_started;
 };
 
 enum {

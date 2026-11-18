@@ -43,12 +43,12 @@ typedef enum {
 
 struct _GdmDisplayClass
 {
-        GObjectClass   parent_class;
+        GObjectClass parent_class;
 
         /* methods */
         gboolean (*prepare) (GdmDisplay *display);
-        void     (*export)  (GdmDisplay               *display,
-                             GDBusObjectManagerServer *object_manager);
+        void (*export) (GdmDisplay               *display,
+                        GDBusObjectManagerServer *object_manager);
 };
 
 typedef enum

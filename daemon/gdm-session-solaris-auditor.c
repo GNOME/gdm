@@ -52,9 +52,9 @@ struct _GdmSessionSolarisAuditor
         /* cached values to prevent repeated calls
          * to getpwnam
          */
-        char               *username;
-        uid_t               uid;
-        gid_t               gid;
+        char *username;
+        uid_t uid;
+        gid_t gid;
 };
 
 static void gdm_session_solaris_auditor_finalize (GObject *object);

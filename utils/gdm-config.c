@@ -94,8 +94,8 @@ typedef enum {
 
 typedef struct
 {
-        GdmConfigCommand  config_command;
-        GPtrArray        *args;
+        GdmConfigCommand config_command;
+        GPtrArray *args;
 } OptionData;
 
 typedef struct _GdmConfigCommandHandler GdmConfigCommandHandler;
@@ -103,12 +103,12 @@ typedef gboolean (*CommandHandlerFunc) (GdmConfigCommand,
                                         GError **);
 
 typedef struct _GdmConfigCommandHandler {
-        GPtrArray          *entries;
-        GOptionParseFunc    post_parse_func;
-        CommandHandlerFunc  handler_func;
-        CommandHandlerFunc  options_handler_func;
-        gpointer            data;
-        GDestroyNotify      data_destroy;
+        GPtrArray *entries;
+        GOptionParseFunc post_parse_func;
+        CommandHandlerFunc handler_func;
+        CommandHandlerFunc options_handler_func;
+        gpointer data;
+        GDestroyNotify data_destroy;
 } GdmConfigCommandHandler;
 
 static const GOptionEntry generic_entries[] =

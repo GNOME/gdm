@@ -45,29 +45,29 @@
 
 typedef struct
 {
-        GdmSettings  *settings;
+        GdmSettings *settings;
         GCancellable *cancellable;
 
-        GSubprocess  *x_subprocess;
-        char         *auth_file;
-        char         *display_name;
+        GSubprocess *x_subprocess;
+        char *auth_file;
+        char *display_name;
 
-        GSubprocess     *bus_subprocess;
+        GSubprocess *bus_subprocess;
         GDBusConnection *bus_connection;
-        GdmDBusManager  *display_manager_proxy;
-        char            *bus_address;
+        GdmDBusManager *display_manager_proxy;
+        char *bus_address;
 
-        char           **environment;
+        char **environment;
 
-        GSubprocess  *session_subprocess;
-        char         *session_command;
-        int           session_exit_status;
+        GSubprocess *session_subprocess;
+        char *session_command;
+        int session_exit_status;
 
-        guint         register_display_id;
+        guint register_display_id;
 
-        GMainLoop    *main_loop;
+        GMainLoop *main_loop;
 
-        guint32       debug_enabled : 1;
+        guint32 debug_enabled : 1;
 } State;
 
 static FILE *

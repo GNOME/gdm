@@ -38,15 +38,15 @@
 
 struct _GdmClient
 {
-        GObject             parent;
+        GObject parent;
 
-        GdmUserVerifier    *user_verifier;
-        GdmUserVerifier    *user_verifier_for_reauth;
-        GHashTable         *user_verifier_extensions;
+        GdmUserVerifier *user_verifier;
+        GdmUserVerifier *user_verifier_for_reauth;
+        GHashTable *user_verifier_extensions;
 
-        GdmGreeter         *greeter;
+        GdmGreeter *greeter;
 
-        char              **enabled_extensions;
+        char **enabled_extensions;
 };
 
 static void     gdm_client_dispose  (GObject *object);
@@ -151,7 +151,7 @@ get_manager (GdmClient           *client,
 }
 
 typedef struct {
-        GTask           *task;
+        GTask *task;
         GdmUserVerifier *user_verifier;
 } UserVerifierData;
 

@@ -35,14 +35,14 @@
 
 struct _GdmDisplayStore
 {
-        GObject     parent;
+        GObject parent;
         GHashTable *displays;
 };
 
 typedef struct
 {
         GdmDisplayStore *store;
-        GdmDisplay      *display;
+        GdmDisplay *display;
 } StoredDisplay;
 
 enum {
@@ -134,7 +134,7 @@ gdm_display_store_remove (GdmDisplayStore *store,
 typedef struct
 {
         GdmDisplayStoreFunc predicate;
-        gpointer            user_data;
+        gpointer user_data;
 } FindClosure;
 
 static gboolean

@@ -54,16 +54,16 @@ extern char **environ;
 
 struct _GdmSessionWorkerJob
 {
-        GObject         parent;
+        GObject parent;
 
-        char           *command;
-        GPid            pid;
-        gboolean        for_reauth;
+        char *command;
+        GPid pid;
+        gboolean for_reauth;
 
-        guint           child_watch_id;
+        guint child_watch_id;
 
-        char           *server_address;
-        char          **environment;
+        char *server_address;
+        char **environment;
 };
 
 enum {

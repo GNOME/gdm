@@ -46,7 +46,7 @@
 
 struct _GdmLocalDisplay
 {
-        GdmDisplay           parent;
+        GdmDisplay parent;
         GdmDBusLocalDisplay *skeleton;
 };
 

@@ -68,78 +68,78 @@
 
 typedef struct
 {
-        GdmSession            *session;
-        GdmSessionWorkerJob   *job;
-        GPid                   worker_pid;
-        char                  *service_name;
+        GdmSession *session;
+        GdmSessionWorkerJob *job;
+        GPid worker_pid;
+        char *service_name;
         GDBusMethodInvocation *starting_invocation;
-        char                  *starting_username;
+        char *starting_username;
         GDBusMethodInvocation *pending_invocation;
-        GdmDBusWorkerManager  *worker_manager_interface;
-        GdmDBusWorker         *worker_proxy;
-        GCancellable          *worker_cancellable;
-        char                  *session_id;
-        guint32                is_stopping : 1;
+        GdmDBusWorkerManager *worker_manager_interface;
+        GdmDBusWorker *worker_proxy;
+        GCancellable *worker_cancellable;
+        char *session_id;
+        guint32 is_stopping : 1;
 
-        GPid                   reauth_pid_of_caller;
+        GPid reauth_pid_of_caller;
 } GdmSessionConversation;
 
 struct _GdmSession
 {
-        GObject              parent;
+        GObject parent;
 
         /* per open scope */
-        char                *selected_session;
-        char                *saved_session;
-        char                *saved_session_type;
-        char                *saved_language;
-        char                *selected_user;
+        char *selected_session;
+        char *saved_session;
+        char *saved_session_type;
+        char *saved_language;
+        char *selected_user;
 
-        char                *timed_login_username;
-        int                  timed_login_delay;
-        GList               *pending_timed_login_invocations;
+        char *timed_login_username;
+        int timed_login_delay;
+        GList *pending_timed_login_invocations;
 
-        GHashTable          *conversations;
+        GHashTable *conversations;
 
         GdmSessionConversation *session_conversation;
 
-        char                 **conversation_environment;
+        char **conversation_environment;
 
-        GdmDBusUserVerifier   *user_verifier_interface;
-        GHashTable            *user_verifier_extensions;
-        GdmDBusGreeter        *greeter_interface;
+        GdmDBusUserVerifier *user_verifier_interface;
+        GHashTable *user_verifier_extensions;
+        GdmDBusGreeter *greeter_interface;
 
-        GList               *pending_worker_connections;
-        GList               *outside_connections;
+        GList *pending_worker_connections;
+        GList *outside_connections;
 
-        GPid                 session_pid;
+        GPid session_pid;
 
         /* object lifetime scope */
-        char                *session_type;
-        char                *display_hostname;
-        char                *display_device;
-        char                *display_seat_id;
-        gboolean             display_is_local;
+        char *session_type;
+        char *display_hostname;
+        char *display_device;
+        char *display_seat_id;
+        gboolean display_is_local;
 
         GdmSessionVerificationMode verification_mode;
 
-        uid_t                allowed_user;
+        uid_t allowed_user;
 
-        char                *fallback_session_name;
+        char *fallback_session_name;
 
-        GDBusServer         *worker_server;
-        GDBusServer         *outside_server;
-        GHashTable          *environment;
+        GDBusServer *worker_server;
+        GDBusServer *outside_server;
+        GHashTable *environment;
 
-        GStrv                supported_session_types;
+        GStrv supported_session_types;
 
-        char                *session_id_of_caller;
+        char *session_id_of_caller;
 
-        guint32              is_program_session : 1;
-        guint32              display_is_initial : 1;
-        guint32              is_opened : 1;
+        guint32 is_program_session : 1;
+        guint32 display_is_initial : 1;
+        guint32 is_opened : 1;
 
-        char                *session_opened;
+        char *session_opened;
 };
 
 enum {

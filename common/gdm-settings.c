@@ -41,9 +41,9 @@
 
 struct _GdmSettings
 {
-        GObject   parent;
+        GObject parent;
 
-        GList    *backends;
+        GList *backends;
 };
 
 enum {

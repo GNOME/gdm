@@ -37,9 +37,9 @@
 typedef struct _GdmDisplayFactoryPrivate
 {
         GdmDisplayStore *display_store;
-        guint            purge_displays_id;
+        guint purge_displays_id;
 
-       PolkitAuthority  *authority;
+       PolkitAuthority *authority;
 } GdmDisplayFactoryPrivate;
 
 enum {
@@ -266,8 +266,8 @@ gdm_display_factory_on_user_display_creation (GdmDisplayFactory  *factory,
 
 typedef struct
 {
-        const char      *user;
-        GType            display_type;
+        const char *user;
+        GType display_type;
         GDBusConnection *connection;
 } FinishUserDisplayClosure;
 

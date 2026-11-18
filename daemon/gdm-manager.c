@@ -87,27 +87,27 @@ typedef struct
 struct _GdmManager
 {
         GdmDBusManagerSkeleton parent;
-        GdmDynamicUserStore    *dyn_user_store;
-        GdmDisplayStore        *display_store;
+        GdmDynamicUserStore *dyn_user_store;
+        GdmDisplayStore *display_store;
         GdmLocalDisplayFactory *local_factory;
         GdmRemoteDisplayFactory *remote_factory;
-        GdmDisplay             *automatic_login_display;
-        GList                  *user_sessions;
-        GHashTable             *transient_sessions;
-        GHashTable             *open_reauthentication_requests;
-        gboolean                remote_login_enabled;
-        gboolean                show_local_greeter;
+        GdmDisplay *automatic_login_display;
+        GList *user_sessions;
+        GHashTable *transient_sessions;
+        GHashTable *open_reauthentication_requests;
+        gboolean remote_login_enabled;
+        gboolean show_local_greeter;
 
-        gboolean                started;
+        gboolean started;
 
-        GDBusConnection          *connection;
+        GDBusConnection *connection;
         GDBusObjectManagerServer *object_manager;
 
 #ifdef  WITH_PLYMOUTH
-        guint                     plymouth_is_running : 1;
-        guint                     plymouth_quit_timeout_id;
+        guint plymouth_is_running : 1;
+        guint plymouth_quit_timeout_id;
 #endif
-        guint                     did_automatic_login : 1;
+        guint did_automatic_login : 1;
 };
 
 enum {

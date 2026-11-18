@@ -33,10 +33,10 @@ G_DECLARE_DERIVABLE_TYPE (GdmDisplayFactory, gdm_display_factory, GDM, DISPLAY_F
 
 struct _GdmDisplayFactoryClass
 {
-        GObjectClass   parent_class;
+        GObjectClass parent_class;
 
-        gboolean (*start)                  (GdmDisplayFactory *factory);
-        gboolean (*stop)                   (GdmDisplayFactory *factory);
+        gboolean (*start) (GdmDisplayFactory *factory);
+        gboolean (*stop) (GdmDisplayFactory *factory);
 };
 
 typedef enum

@@ -39,10 +39,10 @@
 
 struct _GdmSettingsEntry
 {
-        char   *key;
-        char   *signature;
-        char   *default_value;
-        char   *value;
+        char *key;
+        char *signature;
+        char *default_value;
+        char *value;
 };
 
 GdmSettingsEntry *
@@ -114,11 +114,11 @@ gdm_settings_entry_free (GdmSettingsEntry *entry)
 }
 
 typedef struct {
-        GSList                 *list;
-        GdmSettingsEntry       *entry;
-        gboolean                in_key;
-        gboolean                in_signature;
-        gboolean                in_default;
+        GSList *list;
+        GdmSettingsEntry *entry;
+        gboolean in_key;
+        gboolean in_signature;
+        gboolean in_default;
 } ParserInfo;
 
 static void

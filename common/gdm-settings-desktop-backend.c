@@ -40,10 +40,10 @@ struct _GdmSettingsDesktopBackend
 {
         GdmSettingsBackend parent;
 
-        char       *filename;
-        GKeyFile   *key_file;
-        gboolean    dirty;
-        guint       save_id;
+        char *filename;
+        GKeyFile *key_file;
+        gboolean dirty;
+        guint save_id;
 };
 
 enum {

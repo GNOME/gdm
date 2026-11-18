@@ -36,16 +36,16 @@ G_DECLARE_DERIVABLE_TYPE (GdmSessionAuditor, gdm_session_auditor, GDM, SESSION_A
 
 struct _GdmSessionAuditorClass
 {
-        GObjectClass        parent_class;
+        GObjectClass parent_class;
 
-        void               (*report_password_changed)         (GdmSessionAuditor *auditor);
-        void               (*report_password_change_failure)  (GdmSessionAuditor *auditor);
-        void               (*report_user_accredited)          (GdmSessionAuditor *auditor);
-        void               (*report_login)                    (GdmSessionAuditor *auditor);
-        void               (*report_login_failure)            (GdmSessionAuditor *auditor,
-                                                               int                error_code,
-                                                               const char        *error_message);
-        void               (*report_logout)                   (GdmSessionAuditor *auditor);
+        void (*report_password_changed) (GdmSessionAuditor *auditor);
+        void (*report_password_change_failure) (GdmSessionAuditor *auditor);
+        void (*report_user_accredited) (GdmSessionAuditor *auditor);
+        void (*report_login) (GdmSessionAuditor *auditor);
+        void (*report_login_failure) (GdmSessionAuditor *auditor,
+                                      int                error_code,
+                                      const char        *error_message);
+        void (*report_logout) (GdmSessionAuditor *auditor);
 };
 
 GdmSessionAuditor *       gdm_session_auditor_new                            (const char *hostname,

@@ -40,10 +40,10 @@
 #include "gdm-sessions.h"
 
 typedef struct _GdmSessionFile {
-        char    *id;
-        char    *path;
-        char    *translated_name;
-        char    *translated_comment;
+        char *id;
+        char *path;
+        char *translated_name;
+        char *translated_comment;
 } GdmSessionFile;
 
 static GHashTable *gdm_available_sessions_map;

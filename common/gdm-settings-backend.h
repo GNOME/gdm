@@ -31,23 +31,23 @@ G_DECLARE_DERIVABLE_TYPE (GdmSettingsBackend, gdm_settings_backend, GDM, SETTING
 
 struct _GdmSettingsBackendClass
 {
-        GObjectClass   parent_class;
+        GObjectClass parent_class;
 
         /* methods */
-        gboolean      (*get_value)         (GdmSettingsBackend  *settings_backend,
-                                            const char          *key,
-                                            char               **value,
-                                            GError             **error);
-        gboolean      (*set_value)         (GdmSettingsBackend  *settings_backend,
-                                            const char          *key,
-                                            const char          *value,
-                                            GError             **error);
+        gboolean (*get_value) (GdmSettingsBackend  *settings_backend,
+                               const char          *key,
+                               char               **value,
+                               GError             **error);
+        gboolean (*set_value) (GdmSettingsBackend  *settings_backend,
+                               const char          *key,
+                               const char          *value,
+                               GError             **error);
 
         /* signals */
-        void          (*value_changed)     (GdmSettingsBackend  *settings_backend,
-                                            const char          *key,
-                                            const char          *old_value,
-                                            const char         **new_value);
+        void (*value_changed) (GdmSettingsBackend  *settings_backend,
+                               const char          *key,
+                               const char          *old_value,
+                               const char         **new_value);
 };
 
 typedef enum

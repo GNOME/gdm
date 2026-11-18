@@ -29,15 +29,15 @@
 
 struct _GdmRemoteDisplayFactory
 {
-        GdmDisplayFactory            parent;
+        GdmDisplayFactory parent;
 
         GdmDBusRemoteDisplayFactory *skeleton;
-        GDBusConnection             *connection;
+        GDBusConnection *connection;
 
-        int                          remote_displays_count;
+        int remote_displays_count;
 
-       gboolean                      suspend_inhibited;
-       int                           inhibit_suspend_fd;
+       gboolean suspend_inhibited;
+       int inhibit_suspend_fd;
 };
 
 static void     gdm_remote_display_factory_class_init (GdmRemoteDisplayFactoryClass *klass);
