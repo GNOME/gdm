@@ -1215,17 +1215,16 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
 {
         g_autoptr(GError) error = NULL;
         g_autofree char *id = NULL;
-        gboolean created;
 
-        created = gdm_local_display_factory_create_display (factory,
-                                                            NULL,
-                                                            &id,
-                                                            &error);
-        if (!created) {
+        if (!gdm_local_display_factory_create_display (factory,
+                                                       NULL,
+                                                       &id,
+                                                       &error)) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
-        } else {
-                gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
+                return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
+
+        gdm_dbus_local_display_factory_complete_create_transient_display (skeleton, invocation, id);
 
         return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
