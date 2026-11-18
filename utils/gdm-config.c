@@ -163,7 +163,7 @@ static GOptionEntry reset_entries[] =
         { NULL }
 };
 
-static const char* SC_REMOVAL_ACTIONS[] = {
+static const char *SC_REMOVAL_ACTIONS[] = {
         "none",         /* GSD_SMARTCARD_REMOVAL_ACTION_NONE */
         "lock-screen",  /* GSD_SMARTCARD_REMOVAL_ACTION_LOCK_SCREEN */
         "force-logout", /* GSD_SMARTCARD_REMOVAL_ACTION_FORCE_LOGOUT */
@@ -1003,7 +1003,7 @@ ensure_system_user_dconf_profile (GError **error)
 static gboolean
 ensure_gdm_config_dconf_profile (GError **error)
 {
-        g_autofree char* current_content = NULL;
+        g_autofree char *current_content = NULL;
         gboolean needs_profile_update = TRUE;
 
         g_debug ("Ensuring dconf profile in " GDM_CONFIG_DCONF_PROFILE);
@@ -1024,8 +1024,8 @@ ensure_gdm_config_dconf_profile (GError **error)
         }
 
         if (needs_profile_update) {
-                g_autofree char* default_content = NULL;
-                g_autofree char* profile_content = NULL;
+                g_autofree char *default_content = NULL;
+                g_autofree char *profile_content = NULL;
 
                 if (!g_file_get_contents (GDM_DEFAULT_DCONF_PROFILE, &default_content,
                                           NULL, error)) {
@@ -1329,7 +1329,7 @@ static gboolean
 update_dconf (GError **error)
 {
         g_auto (GStrv) environ = NULL;
-        const char* command[] = { "dconf", "update", NULL };
+        const char *command[] = { "dconf", "update", NULL };
         gint exit_code;
 
         g_debug ("Updating dconf...");

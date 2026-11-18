@@ -44,7 +44,7 @@ struct _GdmSettingsBackendClass
                                             GError             **error);
 
         /* signals */
-        void          (* value_changed)    (GdmSettingsBackend  *settings_backend,
+        void          (*value_changed)     (GdmSettingsBackend  *settings_backend,
                                             const char          *key,
                                             const char          *old_value,
                                             const char         **new_value);

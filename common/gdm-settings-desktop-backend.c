@@ -385,7 +385,7 @@ gdm_settings_desktop_backend_finalize (GObject *object)
 }
 
 GdmSettingsBackend *
-gdm_settings_desktop_backend_new (const char* filename)
+gdm_settings_desktop_backend_new (const char *filename)
 {
         GObject *object;
 

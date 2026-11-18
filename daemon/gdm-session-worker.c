@@ -2002,7 +2002,7 @@ gdm_session_worker_watch_child (GdmSessionWorker *worker)
 }
 
 static gboolean
-_is_loggable_file (const char* filename)
+_is_loggable_file (const char *filename)
 {
         struct stat file_info;
 
