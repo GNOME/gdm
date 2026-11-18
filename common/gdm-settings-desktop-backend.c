@@ -77,7 +77,7 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
                                          backend->filename,
                                          G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
                                          &error);
-        if (! res) {
+        if (!res) {
                 g_warning ("Unable to load file '%s': %s", backend->filename, error->message);
         }
 
@@ -227,7 +227,7 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
         *value = NULL;
 
         /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
-        if (! parse_key_string (key, &g, &k, &l, NULL)) {
+        if (!parse_key_string (key, &g, &k, &l, NULL)) {
                 g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
                 return FALSE;
         }
@@ -254,7 +254,7 @@ save_settings (GdmSettingsDesktopBackend *backend)
         g_autofree char *contents = NULL;
         gsize     length;
 
-        if (! backend->dirty) {
+        if (!backend->dirty) {
                 return;
         }
 
@@ -289,7 +289,7 @@ save_settings_timer (GdmSettingsDesktopBackend *backend)
 static void
 queue_save (GdmSettingsDesktopBackend *backend)
 {
-        if (! backend->dirty) {
+        if (!backend->dirty) {
                 return;
         }
 
@@ -317,7 +317,7 @@ gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
         g_return_val_if_fail (value != NULL, FALSE);
 
         /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
-        if (! parse_key_string (key, &g, &k, &l, NULL)) {
+        if (!parse_key_string (key, &g, &k, &l, NULL)) {
                 g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
                 return FALSE;
         }

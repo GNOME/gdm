@@ -1379,7 +1379,7 @@ gdm_local_display_factory_constructor (GType                  type,
                                                                                                                    construct_properties));
 
         res = register_factory (factory);
-        if (! res) {
+        if (!res) {
                 g_warning ("Unable to register local display factory with system bus");
         }
 

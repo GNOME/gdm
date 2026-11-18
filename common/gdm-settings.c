@@ -105,7 +105,7 @@ gdm_settings_get_value (GdmSettings *settings,
                         break;
                 }
         }
-        if (! res) {
+        if (!res) {
                 g_propagate_error (error, local_error);
         }
 
@@ -149,7 +149,7 @@ gdm_settings_set_value (GdmSettings *settings,
                 }
         }
 
-        if (! res) {
+        if (!res) {
                 g_propagate_error (error, local_error);
         }
 

@@ -160,7 +160,7 @@ plymouth_is_running (void)
         error = NULL;
         res = g_spawn_command_line_sync ("plymouth --ping",
                                          NULL, NULL, &status, &error);
-        if (! res) {
+        if (!res) {
                 g_debug ("Could not ping plymouth: %s", error->message);
                 g_error_free (error);
                 return FALSE;
@@ -178,7 +178,7 @@ plymouth_prepare_for_transition (void)
         error = NULL;
         res = g_spawn_command_line_sync ("plymouth deactivate",
                                          NULL, NULL, NULL, &error);
-        if (! res) {
+        if (!res) {
                 g_warning ("Could not deactivate plymouth: %s", error->message);
                 g_error_free (error);
         }
@@ -192,7 +192,7 @@ plymouth_quit_with_transition (void)
 
         error = NULL;
         res = g_spawn_command_line_async ("plymouth quit --retain-splash", &error);
-        if (! res) {
+        if (!res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
         }
@@ -206,7 +206,7 @@ plymouth_quit_without_transition (void)
 
         error = NULL;
         res = g_spawn_command_line_async ("plymouth quit", &error);
-        if (! res) {
+        if (!res) {
                 g_warning ("Could not quit plymouth: %s", error->message);
                 g_error_free (error);
         }
@@ -630,7 +630,7 @@ switch_to_compatible_user_session (GdmManager *manager,
                 ssid_to_activate = gdm_session_get_session_id (existing_session);
                 if (seat_id != NULL) {
                         res = gdm_activate_session_by_id (manager->connection, NULL, seat_id, ssid_to_activate);
-                        if (! res) {
+                        if (!res) {
                                 g_debug ("GdmManager: unable to activate session: %s", ssid_to_activate);
                                 goto out;
                         }
@@ -1251,7 +1251,7 @@ get_timed_login_details (GdmManager *manager,
         delay = 0;
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
-        if (res && ! enabled) {
+        if (res && !enabled) {
                 goto out;
         }
 
@@ -2061,7 +2061,7 @@ on_session_client_connected (GdmSession      *session,
 
         enabled = get_timed_login_details (manager, &username, &delay);
 
-        if (! enabled) {
+        if (!enabled) {
                 return;
         }
 
@@ -2163,7 +2163,7 @@ on_session_conversation_started (GdmSession *session,
         }
 
         enabled = get_automatic_login_details (manager, display, &username);
-        if (! enabled) {
+        if (!enabled) {
                 return;
         }
 

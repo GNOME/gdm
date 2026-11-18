@@ -281,7 +281,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                                         NULL,
                                         &error);
 
-        if (! ret) {
+        if (!ret) {
                 g_warning ("Could not start command '%s': %s",
                            session_worker_job->command,
                            error->message);

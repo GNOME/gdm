@@ -194,12 +194,12 @@ load_session_file (const char              *id,
                 goto out;
         }
 
-        if (! g_key_file_has_group (key_file, G_KEY_FILE_DESKTOP_GROUP)) {
+        if (!g_key_file_has_group (key_file, G_KEY_FILE_DESKTOP_GROUP)) {
                 goto out;
         }
 
         res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "Name", NULL);
-        if (! res) {
+        if (!res) {
                 g_debug ("\"%s\" contains no \"Name\" key\n", path);
                 goto out;
         }

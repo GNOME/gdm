@@ -575,7 +575,7 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
                                                                     NULL,
                                                                     &error);
 
-        if (! res) {
+        if (!res) {
                 g_debug ("GdmSessionWorker: list request failed: %s", error->message);
         } else {
                 g_debug ("GdmSessionWorker: user selected '%s'", *answerp);
@@ -1760,7 +1760,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                                    &gid,
                                    &home,
                                    &shell);
-        if (! res) {
+        if (!res) {
                 g_debug ("GdmSessionWorker: Unable to lookup account info");
                 error_code = PAM_AUTHINFO_UNAVAIL;
                 g_set_error (error,
@@ -1788,7 +1788,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 }
         }
 
-        if (! _change_user (worker, uid, gid)) {
+        if (!_change_user (worker, uid, gid)) {
                 g_debug ("GdmSessionWorker: Unable to change to user");
                 error_code = PAM_SYSTEM_ERR;
                 g_set_error_literal (error, GDM_SESSION_WORKER_ERROR,
@@ -3148,7 +3148,7 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
         g_debug ("GdmSessionWorker: start program: %s", text);
 
         g_clear_pointer (&worker->arguments, g_strfreev);
-        if (! g_shell_parse_argv (text, NULL, &worker->arguments, &parse_error)) {
+        if (!g_shell_parse_argv (text, NULL, &worker->arguments, &parse_error)) {
                 g_dbus_method_invocation_take_error (invocation,
                                                      g_steal_pointer (&parse_error));
                 return TRUE;

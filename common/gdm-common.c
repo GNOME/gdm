@@ -578,7 +578,7 @@ goto_login_session (GDBusConnection  *connection,
                 }
         }
 
-        if (! ret && g_strcmp0 (seat_id, "seat0") == 0) {
+        if (!ret && g_strcmp0 (seat_id, "seat0") == 0) {
                 res = create_transient_display (connection, cancellable, error);
                 if (res) {
                         ret = TRUE;

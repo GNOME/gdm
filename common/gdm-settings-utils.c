@@ -237,7 +237,7 @@ gdm_settings_parse_schemas (const char  *file,
         contents = NULL;
         error = NULL;
         res = g_file_get_contents (file, &contents, &len, &error);
-        if (! res) {
+        if (!res) {
                 g_warning ("Unable to read schemas file: %s", error->message);
                 g_error_free (error);
                 return FALSE;

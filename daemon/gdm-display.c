@@ -833,7 +833,7 @@ gdm_display_constructor (GType                  type,
                                           serial++);
 
         res = register_display (self);
-        if (! res) {
+        if (!res) {
                 g_warning ("Unable to register display with system bus");
         }
 

@@ -72,7 +72,7 @@ get_value (const char *key,
         gboolean res;
 
         res = gdm_settings_get_value (settings_object, key, &str, NULL);
-        if (! res) {
+        if (!res) {
                 return FALSE;
         }
 
@@ -102,7 +102,7 @@ gdm_settings_direct_get_int (const char        *key,
 
         res = get_value (key, &str);
 
-        if (! res) {
+        if (!res) {
                 /* use the default */
                 str = g_strdup (gdm_settings_entry_get_default_value (entry));
         }
@@ -152,7 +152,7 @@ gdm_settings_direct_get_boolean (const char        *key,
 
         res = get_value (key, &str);
 
-        if (! res) {
+        if (!res) {
                 /* use the default */
                 str = g_strdup (gdm_settings_entry_get_default_value (entry));
         }
@@ -183,7 +183,7 @@ gdm_settings_direct_get_string (const char        *key,
 
         res = get_value (key, &str);
 
-        if (! res) {
+        if (!res) {
                 /* use the default */
                 str = g_strdup (gdm_settings_entry_get_default_value (entry));
         }
@@ -216,7 +216,7 @@ gdm_settings_direct_init (GdmSettings *settings,
                 schemas = NULL;
         }
 
-        if (! gdm_settings_parse_schemas (file, root, &list)) {
+        if (!gdm_settings_parse_schemas (file, root, &list)) {
                 g_warning ("Unable to parse schemas");
                 return FALSE;
         }

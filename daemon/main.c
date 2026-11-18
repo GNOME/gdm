@@ -239,7 +239,7 @@ main (int    argc,
         error = NULL;
         res = g_option_context_parse (context, &argc, &argv, &error);
         g_option_context_free (context);
-        if (! res) {
+        if (!res) {
                 g_printerr ("Failed to parse options: %s\n", error->message);
                 g_error_free (error);
                 return EXIT_FAILURE;
@@ -268,7 +268,7 @@ main (int    argc,
         gdm_log_init ();
 
         settings = gdm_settings_new ();
-        if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
+        if (!gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
                 return EXIT_FAILURE;
         }

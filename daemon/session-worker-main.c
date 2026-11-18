@@ -139,7 +139,7 @@ main (int    argc,
                 exit (EXIT_FAILURE);
         }
 
-        if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
+        if (!gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
                 exit (EXIT_FAILURE);
         }

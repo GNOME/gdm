@@ -468,7 +468,7 @@ load_key_file_for_file (GdmSession   *self,
                                          full_path,
                                          G_KEY_FILE_NONE,
                                          &error);
-        if (! res) {
+        if (!res) {
                 g_debug ("GdmSession: File '%s' not found in search dirs", file);
                 if (error != NULL) {
                         g_debug ("GdmSession: %s", error->message);
@@ -552,7 +552,7 @@ get_session_command_for_file (GdmSession  *self,
                 g_free (exec);
                 exec = NULL;
 
-                if (! res) {
+                if (!res) {
                         g_debug ("GdmSession: Command not found: %s",
                                  G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
                         goto out;
@@ -1141,7 +1141,7 @@ worker_on_saved_session_name_read (GdmDBusWorker          *worker,
 {
         GdmSession *self = conversation->session;
 
-        if (! get_session_command_for_name (self, session_name, self->saved_session_type, NULL)) {
+        if (!get_session_command_for_name (self, session_name, self->saved_session_type, NULL)) {
                 /* ignore sessions that don't exist */
                 g_debug ("GdmSession: not using invalid .dmrc session: %s", session_name);
                 g_free (self->saved_session);
@@ -2867,7 +2867,7 @@ get_session_command (GdmSession  *self,
 
         command = NULL;
         res = get_session_command_for_name (self, session_name, NULL, &command);
-        if (! res) {
+        if (!res) {
                 g_set_error (error,
                              G_IO_ERROR,
                              G_IO_ERROR_NOT_FOUND,
