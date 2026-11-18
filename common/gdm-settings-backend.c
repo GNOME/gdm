@@ -40,7 +40,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 static void     gdm_settings_backend_class_init (GdmSettingsBackendClass *klass);
 static void     gdm_settings_backend_init       (GdmSettingsBackend *settings_backend);
@@ -140,7 +140,7 @@ gdm_settings_backend_class_init (GdmSettingsBackendClass *klass)
         klass->get_value = gdm_settings_backend_real_get_value;
         klass->set_value = gdm_settings_backend_real_set_value;
 
-        signals [VALUE_CHANGED] =
+        signals[VALUE_CHANGED] =
                 g_signal_new ("value-changed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,

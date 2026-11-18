@@ -46,8 +46,8 @@ struct _GdmSessionSolarisAuditor
         adt_session_data_t *audit_session_handle;
 
         guint password_change_initiated : 1;
-        guint password_changed  : 1;
-        guint user_accredited  : 1;
+        guint password_changed : 1;
+        guint user_accredited : 1;
 
         /* cached values to prevent repeated calls
          * to getpwnam
@@ -386,5 +386,4 @@ gdm_session_solaris_auditor_new (const char *hostname,
 
         return GDM_SESSION_AUDITOR (auditor);
 }
-
 

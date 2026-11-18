@@ -51,7 +51,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 static void     gdm_settings_class_init (GdmSettingsClass *klass);
 static void     gdm_settings_init       (GdmSettings *settings);
@@ -163,7 +163,7 @@ gdm_settings_class_init (GdmSettingsClass *klass)
 
         object_class->finalize = gdm_settings_finalize;
 
-        signals [VALUE_CHANGED] =
+        signals[VALUE_CHANGED] =
                 g_signal_new ("value-changed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
@@ -188,7 +188,7 @@ backend_value_changed (GdmSettingsBackend *backend,
         g_debug ("Emitting value-changed %s %s %s", key, old_value, new_value);
 
         /* proxy it to internal listeners */
-        g_signal_emit (settings, signals [VALUE_CHANGED], 0, key, old_value, new_value);
+        g_signal_emit (settings, signals[VALUE_CHANGED], 0, key, old_value, new_value);
 }
 
 void

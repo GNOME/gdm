@@ -108,7 +108,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 static void     gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass);
 static void     gdm_launch_environment_init       (GdmLaunchEnvironment *launch_environment);
@@ -466,7 +466,7 @@ on_session_opened (GdmSession           *session,
 {
         launch_environment->session_id = g_strdup (session_id);
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [OPENED], 0);
+        g_signal_emit (G_OBJECT (launch_environment), signals[OPENED], 0);
         gdm_session_start_session (launch_environment->session, service_name);
 }
 
@@ -477,7 +477,7 @@ on_session_started (GdmSession           *session,
                     GdmLaunchEnvironment *launch_environment)
 {
         launch_environment->pid = pid;
-        g_signal_emit (G_OBJECT (launch_environment), signals [STARTED], 0);
+        g_signal_emit (G_OBJECT (launch_environment), signals[STARTED], 0);
 }
 
 static void
@@ -487,7 +487,7 @@ on_session_exited (GdmSession           *session,
 {
         gdm_session_stop_conversation (launch_environment->session, GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE);
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [EXITED], 0, exit_code);
+        g_signal_emit (G_OBJECT (launch_environment), signals[EXITED], 0, exit_code);
 }
 
 static void
@@ -497,7 +497,7 @@ on_session_died (GdmSession           *session,
 {
         gdm_session_stop_conversation (launch_environment->session, GDM_SESSION_LAUNCH_ENVIRONMENT_SERVICE);
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [DIED], 0, signal_number);
+        g_signal_emit (G_OBJECT (launch_environment), signals[DIED], 0, signal_number);
 }
 
 static void
@@ -531,7 +531,7 @@ on_conversation_stopped (GdmSession           *session,
 
         if (launch_environment->pid > 1) {
                 gdm_signal_pid (-launch_environment->pid, SIGTERM);
-                g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+                g_signal_emit (G_OBJECT (launch_environment), signals[STOPPED], 0);
         }
 
         if (conversation_session != NULL) {
@@ -659,7 +659,7 @@ gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
                 launch_environment->dyn_uid = 0;
         }
 
-        g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+        g_signal_emit (G_OBJECT (launch_environment), signals[STOPPED], 0);
 
         return TRUE;
 }
@@ -867,7 +867,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
         g_object_class_install_properties (object_class, N_PROPS, props);
-        signals [OPENED] =
+        signals[OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -877,7 +877,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [STARTED] =
+        signals[STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -887,7 +887,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [STOPPED] =
+        signals[STOPPED] =
                 g_signal_new ("stopped",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -897,7 +897,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [EXITED] =
+        signals[EXITED] =
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -908,7 +908,7 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
-        signals [DIED] =
+        signals[DIED] =
                 g_signal_new ("died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,

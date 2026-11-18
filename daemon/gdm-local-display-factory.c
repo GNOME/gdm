@@ -96,7 +96,7 @@ enum {
         LAST_SIGNAL,
 };
 
-static guint signals [LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static void     gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass);
 static void     gdm_local_display_factory_init       (GdmLocalDisplayFactory *factory);
@@ -1400,7 +1400,7 @@ gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
         factory_class->start = gdm_local_display_factory_start;
         factory_class->stop = gdm_local_display_factory_stop;
 
-        signals [GRAPHICS_UNSUPPORTED] =
+        signals[GRAPHICS_UNSUPPORTED] =
                 g_signal_new ("graphics-unsupported",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,

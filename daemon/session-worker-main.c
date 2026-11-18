@@ -112,7 +112,7 @@ main (int    argc,
         GdmSessionWorker *worker;
         const char *address;
         gboolean is_for_reauth;
-        static GOptionEntry entries [] = {
+        static GOptionEntry entries[] = {
                 { NULL }
         };
 

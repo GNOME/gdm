@@ -311,7 +311,7 @@ collect_sessions (void)
                 }
         }
 
-        if (!supported_session_types  || g_strv_contains ((const char * const *) supported_session_types, "wayland")) {
+        if (!supported_session_types || g_strv_contains ((const char * const *) supported_session_types, "wayland")) {
                 for (i = 0; system_data_dirs[i]; i++) {
                         session_dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
                         g_ptr_array_add (dirs_search_array, session_dir);

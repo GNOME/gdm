@@ -499,7 +499,7 @@ main (int    argc,
         int exit_status = EX_OK;
         static gboolean handle_registration = FALSE;
 
-        static GOptionEntry entries [] = {
+        static GOptionEntry entries[] = {
                 { "handle-registration", 0, 0, G_OPTION_ARG_NONE, &handle_registration, "Handle session and display registration (fallback for non-GNOME sessions)", NULL },
                 { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", "" },
                 { NULL }

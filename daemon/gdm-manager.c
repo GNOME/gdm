@@ -125,7 +125,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 static void     gdm_manager_class_init          (GdmManagerClass *klass);
 static void     gdm_manager_init                (GdmManager *manager);
@@ -2642,7 +2642,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
         object_class->constructor = gdm_manager_constructor;
         object_class->dispose = gdm_manager_dispose;
 
-        signals [DISPLAY_ADDED] =
+        signals[DISPLAY_ADDED] =
                 g_signal_new ("display-added",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
@@ -2652,7 +2652,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        signals [DISPLAY_REMOVED] =
+        signals[DISPLAY_REMOVED] =
                 g_signal_new ("display-removed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,

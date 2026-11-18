@@ -219,7 +219,7 @@ main (int    argc,
         static gboolean do_timed_exit = FALSE;
         static gboolean print_version = FALSE;
         static gboolean fatal_warnings = FALSE;
-        static GOptionEntry entries [] = {
+        static GOptionEntry entries[] = {
                 { "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
                 { "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time (for debugging)"), NULL },
                 { "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },

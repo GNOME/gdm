@@ -454,7 +454,7 @@ gdm_get_login_window_session_id (const char  *seat_id,
                 goto out;
         }
 
-        for (i = 0; sessions[i]; i ++) {
+        for (i = 0; sessions[i]; i++) {
                 char *service_id = NULL;
                 char *service_class = NULL;
                 char *state = NULL;
@@ -521,7 +521,7 @@ gdm_get_login_window_session_id (const char  *seat_id,
 
 out:
         if (sessions) {
-                for (i = 0; sessions[i]; i ++) {
+                for (i = 0; sessions[i]; i++) {
                         free (sessions[i]);
                 }
 

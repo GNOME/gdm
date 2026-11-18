@@ -157,7 +157,7 @@ gdm_settings_direct_get_boolean (const char *key,
                 str = g_strdup (gdm_settings_entry_get_default_value (entry));
         }
 
-        ret = gdm_settings_parse_value_as_boolean  (str, value);
+        ret = gdm_settings_parse_value_as_boolean (str, value);
 
         return ret;
 }

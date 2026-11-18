@@ -83,7 +83,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, G_TYPE_OBJECT)
 
@@ -151,10 +151,10 @@ session_worker_job_child_watch (GPid                 pid,
 
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
-                g_signal_emit (job, signals [EXITED], 0, code);
+                g_signal_emit (job, signals[EXITED], 0, code);
         } else if (WIFSIGNALED (status)) {
                 int num = WTERMSIG (status);
-                g_signal_emit (job, signals [DIED], 0, num);
+                g_signal_emit (job, signals[DIED], 0, num);
         }
 }
 
@@ -508,7 +508,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
         g_object_class_install_properties (object_class, N_PROPS, props);
-        signals [STARTED] =
+        signals[STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -518,7 +518,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [EXITED] =
+        signals[EXITED] =
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -530,7 +530,7 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                               1,
                               G_TYPE_INT);
 
-        signals [DIED] =
+        signals[DIED] =
                 g_signal_new ("died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,

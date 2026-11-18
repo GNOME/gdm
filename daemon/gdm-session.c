@@ -190,7 +190,7 @@ static void     set_session_type               (GdmSession *self,
                                                 const char *session_type);
 static void     close_conversation             (GdmSessionConversation *conversation);
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GdmSession,
                gdm_session,
@@ -1819,7 +1819,7 @@ gdm_session_handle_client_start_session_when_ready (GdmDBusGreeter        *greet
                                                                     invocation);
         }
         g_signal_emit (G_OBJECT (self),
-                       signals [CLIENT_READY_FOR_SESSION_TO_START],
+                       signals[CLIENT_READY_FOR_SESSION_TO_START],
                        0,
                        service_name,
                        client_is_ready);
@@ -2033,7 +2033,7 @@ on_outside_connection_closed (GDBusConnection *connection,
         pid_of_client = g_credentials_get_unix_pid (credentials, NULL);
 
         g_signal_emit (G_OBJECT (self),
-                       signals [CLIENT_DISCONNECTED],
+                       signals[CLIENT_DISCONNECTED],
                        0,
                        credentials,
                        (guint)
@@ -2071,7 +2071,7 @@ handle_connection_from_outside (GDBusServer     *server,
         pid_of_client = g_credentials_get_unix_pid (credentials, NULL);
 
         g_signal_emit (G_OBJECT (self),
-                       signals [CLIENT_CONNECTED],
+                       signals[CLIENT_CONNECTED],
                        0,
                        credentials,
                        (guint)
@@ -2136,7 +2136,7 @@ allow_user_function (GDBusAuthObserver *observer,
 
         pid_of_client = g_credentials_get_unix_pid (credentials, NULL);
         g_signal_emit (G_OBJECT (self),
-                       signals [CLIENT_REJECTED],
+                       signals[CLIENT_REJECTED],
                        0,
                        credentials,
                        (guint)
@@ -2614,7 +2614,7 @@ on_initialization_complete_cb (GdmDBusWorker *proxy,
                 }
 
                 g_signal_emit (G_OBJECT (self),
-                               signals [SETUP_COMPLETE],
+                               signals[SETUP_COMPLETE],
                                0,
                                service_name);
 
@@ -3339,7 +3339,7 @@ gdm_session_cancel  (GdmSession *self)
 {
         g_return_if_fail (GDM_IS_SESSION (self));
 
-        g_signal_emit (G_OBJECT (self), signals [CANCELLED], 0);
+        g_signal_emit (G_OBJECT (self), signals[CANCELLED], 0);
 }
 
 void
@@ -3952,7 +3952,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
         object_class->dispose = gdm_session_dispose;
         object_class->finalize = gdm_session_finalize;
 
-        signals [CONVERSATION_STARTED] =
+        signals[CONVERSATION_STARTED] =
                 g_signal_new ("conversation-started",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -3962,7 +3962,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        signals [CONVERSATION_STOPPED] =
+        signals[CONVERSATION_STOPPED] =
                 g_signal_new ("conversation-stopped",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -3972,7 +3972,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        signals [SETUP_COMPLETE] =
+        signals[SETUP_COMPLETE] =
                 g_signal_new ("setup-complete",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -3984,7 +3984,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               1,
                               G_TYPE_STRING);
 
-        signals [AUTHENTICATION_FAILED] =
+        signals[AUTHENTICATION_FAILED] =
                 g_signal_new ("authentication-failed",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -3996,7 +3996,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_INT);
-        signals [CREDENTIALS_ESTABLISHED] =
+        signals[CREDENTIALS_ESTABLISHED] =
                 g_signal_new ("credentials-established",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4007,7 +4007,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
-        signals [VERIFICATION_COMPLETE] =
+        signals[VERIFICATION_COMPLETE] =
                 g_signal_new ("verification-complete",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4018,7 +4018,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
-        signals [SESSION_OPENED] =
+        signals[SESSION_OPENED] =
                 g_signal_new ("session-opened",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4030,7 +4030,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_STRING);
-        signals [SESSION_OPENED_FAILED] =
+        signals[SESSION_OPENED_FAILED] =
                 g_signal_new ("session-opened-failed",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4041,7 +4041,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
-        signals [SESSION_STARTED] =
+        signals[SESSION_STARTED] =
                 g_signal_new ("session-started",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4053,7 +4053,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_INT);
-        signals [SESSION_START_FAILED] =
+        signals[SESSION_START_FAILED] =
                 g_signal_new ("session-start-failed",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4064,7 +4064,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
-        signals [SESSION_EXITED] =
+        signals[SESSION_EXITED] =
                 g_signal_new ("session-exited",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4075,7 +4075,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
-        signals [SESSION_DIED] =
+        signals[SESSION_DIED] =
                 g_signal_new ("session-died",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4087,7 +4087,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               1,
                               G_TYPE_INT);
 
-        signals [REAUTHENTICATION_STARTED] =
+        signals[REAUTHENTICATION_STARTED] =
                 g_signal_new ("reauthentication-started",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4099,7 +4099,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_INT,
                               G_TYPE_STRING);
-        signals [REAUTHENTICATED] =
+        signals[REAUTHENTICATED] =
                 g_signal_new ("reauthenticated",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4111,7 +4111,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_STRING,
                               G_TYPE_INT);
-        signals [CANCELLED] =
+        signals[CANCELLED] =
                 g_signal_new ("cancelled",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4122,7 +4122,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               0);
 
-        signals [CLIENT_REJECTED] =
+        signals[CLIENT_REJECTED] =
                 g_signal_new ("client-rejected",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4135,7 +4135,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_CREDENTIALS,
                               G_TYPE_UINT);
 
-        signals [CLIENT_CONNECTED] =
+        signals[CLIENT_CONNECTED] =
                 g_signal_new ("client-connected",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4148,7 +4148,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_CREDENTIALS,
                               G_TYPE_UINT);
 
-        signals [CLIENT_DISCONNECTED] =
+        signals[CLIENT_DISCONNECTED] =
                 g_signal_new ("client-disconnected",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4160,7 +4160,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               2,
                               G_TYPE_CREDENTIALS,
                               G_TYPE_UINT);
-        signals [CLIENT_READY_FOR_SESSION_TO_START] =
+        signals[CLIENT_READY_FOR_SESSION_TO_START] =
                 g_signal_new ("client-ready-for-session-to-start",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,
@@ -4173,7 +4173,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_STRING,
                               G_TYPE_BOOLEAN);
 
-        signals [STOP_CONFLICTING_SESSION] =
+        signals[STOP_CONFLICTING_SESSION] =
                 g_signal_new ("stop-conflicting-session",
                               GDM_TYPE_SESSION,
                               G_SIGNAL_RUN_FIRST,

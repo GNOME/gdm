@@ -166,22 +166,22 @@ parse_key_string (const char  *keystring,
 
         split1 = g_strsplit (keystring, "/", 2);
         if (split1 == NULL
-            || split1 [0] == NULL
-            || split1 [1] == NULL
-            || split1 [0][0] == '\0'
-            || split1 [1][0] == '\0') {
+            || split1[0] == NULL
+            || split1[1] == NULL
+            || split1[0][0] == '\0'
+            || split1[1][0] == '\0') {
                 g_warning ("GdmSettingsDesktopBackend: invalid key: %s", keystring);
                 return FALSE;
         }
 
-        g = split1 [0];
+        g = split1[0];
 
-        split2 = g_strsplit (split1 [1], "=", 2);
+        split2 = g_strsplit (split1[1], "=", 2);
         if (split2 == NULL) {
-                k = split1 [1];
+                k = split1[1];
         } else {
-                k = split2 [0];
-                v = split2 [1];
+                k = split2[0];
+                v = split2[1];
         }
 
         /* trim off the locale */

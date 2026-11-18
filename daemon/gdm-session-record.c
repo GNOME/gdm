@@ -103,7 +103,7 @@ record_set_timestamp (UTMP *u)
 
         /* Set time in TV format */
         now = g_get_real_time ();
-        u->ut_tv.tv_sec  = now / G_USEC_PER_SEC;
+        u->ut_tv.tv_sec = now / G_USEC_PER_SEC;
         u->ut_tv.tv_usec = now % G_USEC_PER_SEC;
         g_debug ("using ut_tv time %ld",
                  (glong) u->ut_tv.tv_sec);

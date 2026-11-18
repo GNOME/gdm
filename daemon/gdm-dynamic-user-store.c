@@ -622,7 +622,7 @@ vl_get_memberships (sd_varlink                *call,
         static const sd_json_dispatch_field dispatch[] = {
                 { "userName",  SD_JSON_VARIANT_STRING, sd_json_dispatch_const_string, offsetof (GetMembershipsParams, username),  0 },
                 { "groupName", SD_JSON_VARIANT_STRING, sd_json_dispatch_const_string, offsetof (GetMembershipsParams, groupname), 0 },
-                { "service" ,  SD_JSON_VARIANT_STRING, sd_json_dispatch_const_string, offsetof (GetMembershipsParams, service),   0 },
+                { "service",   SD_JSON_VARIANT_STRING, sd_json_dispatch_const_string, offsetof (GetMembershipsParams, service),   0 },
                 {}
         };
 

@@ -51,7 +51,7 @@ enum {
         LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
+static guint signals[LAST_SIGNAL] = { 0, };
 
 static void     gdm_display_store_class_init (GdmDisplayStoreClass *klass);
 static void     gdm_display_store_init       (GdmDisplayStore *display_store);
@@ -270,7 +270,7 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
 
         object_class->finalize = gdm_display_store_finalize;
 
-        signals [DISPLAY_ADDED] =
+        signals[DISPLAY_ADDED] =
                 g_signal_new ("display-added",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
@@ -280,7 +280,7 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        signals [DISPLAY_REMOVED] =
+        signals[DISPLAY_REMOVED] =
                 g_signal_new ("display-removed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
