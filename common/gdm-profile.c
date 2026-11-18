@@ -53,7 +53,7 @@ _gdm_profile_log (const char *func,
                 va_end (args);
         }
 
-        prgname = g_get_prgname();
+        prgname = g_get_prgname ();
 
         if (func != NULL) {
                 str = g_strdup_printf ("MARK: %s %s: %s %s",

@@ -299,7 +299,7 @@ gdm_generate_random_bytes (gsize    size,
 {
         g_autofd int fd = -1;
         g_autofree char *bytes = NULL;
-        g_autoptr(GError) read_error = NULL;
+        g_autoptr (GError) read_error = NULL;
 
         /* We don't use the g_rand_* glib apis because they don't document
          * how much entropy they are seeded with, and it might be less
@@ -592,8 +592,8 @@ gboolean
 gdm_goto_login_session (GCancellable *cancellable,
                         GError      **error)
 {
-        g_autoptr(GDBusConnection) connection = NULL;
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GDBusConnection) connection = NULL;
+        g_autoptr (GError) local_error = NULL;
 
         connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, cancellable, &local_error);
         if (connection == NULL) {
@@ -626,7 +626,7 @@ gdm_shell_expand (const char *str,
                   GdmExpandVarFunc expand_var_func,
                   gpointer user_data)
 {
-        GString *s = g_string_new("");
+        GString *s = g_string_new ("");
         const gchar *p, *start;
         gchar c;
         gboolean at_new_word;
@@ -815,7 +815,7 @@ gdm_find_display_session (GPid        pid,
                           GError    **error)
 {
         char *local_session_id = NULL;
-        g_auto(GStrv) sessions = NULL;
+        g_auto (GStrv) sessions = NULL;
         int res;
 
         g_return_val_if_fail (out_session_id != NULL, FALSE);

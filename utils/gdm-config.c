@@ -402,7 +402,7 @@ gdm_config_command_handler_free (GdmConfigCommandHandler *command_handler)
         g_clear_pointer (&command_handler->entries, g_ptr_array_unref);
         g_free (command_handler);
 }
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(GdmConfigCommandHandler, gdm_config_command_handler_free);
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GdmConfigCommandHandler, gdm_config_command_handler_free);
 
 static GdmConfigCommandHandler *
 config_command_get_handler (GdmConfigCommand config_command)
@@ -486,7 +486,7 @@ static GPtrArray *
 read_file_contents_to_array (const char  *file_path,
                              GError     **error)
 {
-        g_autoptr(GPtrArray) array = NULL;
+        g_autoptr (GPtrArray) array = NULL;
         g_autofree char *content = NULL;
 
         array = g_ptr_array_new_with_free_func (g_free);
@@ -547,7 +547,7 @@ build_distro_hook_arguments (const char       *distro_hook,
                              GdmConfigCommand  config_command,
                              GPtrArray        *command_args)
 {
-        g_autoptr(GPtrArray) call_args = NULL;
+        g_autoptr (GPtrArray) call_args = NULL;
         GdmAuthAction action;
 
         action = get_requested_action ();
@@ -585,8 +585,8 @@ try_run_distro_hook (GdmConfigCommand   config_command,
                      char             **stdout_out,
                      GError           **error)
 {
-        g_autoptr(GPtrArray) call_args = NULL;
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GPtrArray) call_args = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *distro_hook = NULL;
         g_autofree char *local_stdout = NULL;
         g_autofree char *local_stderr = NULL;
@@ -706,8 +706,8 @@ set_distro_hook_config (GdmConfigCommand   config_command,
                         const char        *option_value,
                         GError           **error)
 {
-        g_autoptr(GPtrArray) command_args = NULL;
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GPtrArray) command_args = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *local_stdout = NULL;
 
         command_args = g_ptr_array_sized_new (2);
@@ -750,7 +750,7 @@ get_distro_hook_config (GdmAuthType   auth_type,
                         GError      **error)
 {
         g_autofree char *output = NULL;
-        g_autoptr(GPtrArray) command_args = NULL;
+        g_autoptr (GPtrArray) command_args = NULL;
 
         command_args = g_ptr_array_sized_new (2);
         g_ptr_array_add (command_args, (char *) auth_type_to_string (auth_type));
@@ -851,7 +851,7 @@ ensure_dconf_configurable_system_profile (GError **error)
 {
         g_autofree char *profile_file = NULL;
         g_autofree char *db_path = NULL;
-        g_autoptr(GPtrArray) profile_lines = NULL;
+        g_autoptr (GPtrArray) profile_lines = NULL;
         const char *gdm_sys_db;
 
         gdm_sys_db = DCONF_SYSTEM_DB_PREFIX DCONF_SYSTEM_DB_DEFAULT_NAME;
@@ -940,7 +940,7 @@ static char *
 ensure_system_user_dconf_profile (GError **error)
 {
         g_autofree char *db_name = NULL;
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
 
         db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME,
                                                     &local_error);
@@ -979,7 +979,7 @@ ensure_gdm_config_dconf_profile (GError **error)
                              NULL, NULL);
 
         if (current_content) {
-                g_auto(GStrv) content_lines = NULL;
+                g_auto (GStrv) content_lines = NULL;
 
                 content_lines = g_strsplit (current_content, "\n", -1);
 
@@ -1001,7 +1001,7 @@ ensure_gdm_config_dconf_profile (GError **error)
                 profile_content = g_strdup_printf ("# This profile is managed by %s\n"
                                                    "%s\n"
                                                    "%s\n",
-                                                   g_get_prgname(),
+                                                   g_get_prgname (),
                                                    default_content,
                                                    GDM_CONFIG_DCONF_DB);
 
@@ -1024,7 +1024,7 @@ ensure_gdm_config_dconf_profile (GError **error)
 
 static char *schema_to_key (const char *schema)
 {
-        g_auto(GStrv) split = NULL;
+        g_auto (GStrv) split = NULL;
 
         split = g_strsplit (schema, ".", -1);
         return g_strjoinv ("/", split);
@@ -1038,9 +1038,9 @@ write_dconf_setting_to_key_file (const char  *db_name,
                                  GVariant    *value,
                                  GError     **error)
 {
-        g_autoptr(GKeyFile) key_file = NULL;
-        g_autoptr(GError) local_error = NULL;
-        g_autoptr(GVariant) value_ref = NULL;
+        g_autoptr (GKeyFile) key_file = NULL;
+        g_autoptr (GError) local_error = NULL;
+        g_autoptr (GVariant) value_ref = NULL;
         g_autofree char *value_str = NULL;
         g_autofree char *header_comment = NULL;
         g_autofree char *db_dir = NULL;
@@ -1169,8 +1169,8 @@ set_dconf_setting_lock_full (const char *db_name,
                              gboolean    add,
                              GError    **error)
 {
-        g_autoptr(GPtrArray) locks_list = NULL;
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GPtrArray) locks_list = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *lock_file = NULL;
         g_autofree char *file_header = NULL;
         g_autofree char *locked_schema = NULL;
@@ -1287,7 +1287,7 @@ remove_dconf_setting_lock (const char  *db_name,
 static gboolean
 update_dconf (GError **error)
 {
-        g_auto(GStrv) environ = NULL;
+        g_auto (GStrv) environ = NULL;
         const char* command[] = { "dconf", "update", NULL };
         gint exit_code;
 
@@ -1473,7 +1473,7 @@ handle_config_command (GdmConfigCommand          config_command,
                        GdmConfigCommandHandler  *command_handler,
                        GError                  **error)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *output = NULL;
         GdmAuthType auth_type;
 
@@ -1519,7 +1519,7 @@ print_usage (int                   argc,
              char                 *argv[],
              GdmConfigCommand      config_command)
 {
-        g_autoptr(GOptionContext) ctx = NULL;
+        g_autoptr (GOptionContext) ctx = NULL;
         g_autofree char *usage = NULL;
 
         ctx = g_option_context_new (_("COMMAND"));
@@ -1555,12 +1555,12 @@ handle_command (int   argc,
 {
         GdmConfigCommand config_command;
         GdmAuthType auth_type;
-        g_autoptr(GOptionContext) option_cx = NULL;
-        g_autoptr(GdmConfigCommandHandler) command_handler = NULL;
-        g_autoptr(GOptionGroup) group = NULL;
-        g_autoptr(GPtrArray) cmd_args = NULL;
-        g_autoptr(GPtrArray) args_copy = NULL;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GOptionContext) option_cx = NULL;
+        g_autoptr (GdmConfigCommandHandler) command_handler = NULL;
+        g_autoptr (GOptionGroup) group = NULL;
+        g_autoptr (GPtrArray) cmd_args = NULL;
+        g_autoptr (GPtrArray) args_copy = NULL;
+        g_autoptr (GError) error = NULL;
         g_autofree OptionData *options_data = NULL;
         const char *title;
         const char *group_title;
@@ -1624,7 +1624,7 @@ handle_command (int   argc,
         if (geteuid () != 0 && !g_getenv ("UNDER_JHBUILD")) {
                 /* TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command */
                 g_critical (_("You need to be root to use %s “%s” command"),
-                              g_get_prgname(), config_command_to_string (config_command));
+                              g_get_prgname (), config_command_to_string (config_command));
                 return FALSE;
         }
 
@@ -1665,7 +1665,7 @@ static gboolean
 handle_toggle_command (GdmConfigCommand   config_command,
                        GError           **error)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         GdmAuthType auth_type = config_command_to_auth_type (config_command);
         gboolean enabled = (get_requested_action () == ACTION_ENABLED);
 
@@ -1700,7 +1700,7 @@ toggle_smartcard_settings (const char  *key,
                            GVariant    *value,
                            GError     **error)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
 
         /* While this is not strictly needed we also do this for the gdm
          * database so that we keep the values in sync for both profiles */
@@ -1724,7 +1724,7 @@ static gboolean
 handle_smartcard_options (GdmConfigCommand   config_command,
                           GError           **error)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         GVariant *value;
 
         if (!opt_removal_action)
@@ -1756,7 +1756,7 @@ static gboolean
 handle_smartcard (GdmConfigCommand   config_command,
                   GError           **error)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         GdmAuthAction action;
 
         action = get_requested_action ();
@@ -1790,7 +1790,7 @@ get_boolean_string (gboolean val)
 
 static const char *
 get_gdm_setting_state (GdmAuthType auth_type) {
-        g_autoptr(GSettings) login_settings = NULL;
+        g_autoptr (GSettings) login_settings = NULL;
         gboolean enabled;
 
         if (!have_pam_module (auth_type))
@@ -1819,7 +1819,7 @@ get_gdm_setting_state (GdmAuthType auth_type) {
 
 static char *
 get_smartcard_option (const char *option_key) {
-        g_autoptr(GSettings) smartcard_settings = NULL;
+        g_autoptr (GSettings) smartcard_settings = NULL;
         g_autofree char *option_value = NULL;
 
         option_value = get_distro_hook_config (AUTH_SMARTCARD, option_key, NULL);
@@ -1830,7 +1830,7 @@ get_smartcard_option (const char *option_key) {
         smartcard_settings = g_settings_new (GSD_SC_SCHEMA);
 
         if (g_settings_is_writable (smartcard_settings, option_key)) {
-                g_autoptr(GVariant) defalut_value = NULL;
+                g_autoptr (GVariant) defalut_value = NULL;
 
                 defalut_value = g_settings_get_default_value (smartcard_settings,
                                                               option_key);
@@ -1846,7 +1846,7 @@ handle_show (GdmConfigCommand   config_command,
              GError           **error)
 {
         g_autofree char *removal_setting = NULL;
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *default_dconf_profile = NULL;
 
         /* This is not completely correct when getting the smartcard removal
@@ -1862,7 +1862,7 @@ handle_show (GdmConfigCommand   config_command,
 
         removal_setting = get_smartcard_option (GSD_SC_REMOVAL_ACTION_KEY);
 
-        g_print(_("GDM Authorization configuration\n"
+        g_print (_("GDM Authorization configuration\n"
                   "\n"
                   "  Password authentication: %s\n"
                   "  Fingerprint authentication: %s\n"
@@ -1884,8 +1884,8 @@ static gboolean
 handle_reset (GdmConfigCommand   config_command,
               GError           **error)
 {
-        g_autoptr(GError) local_error = NULL;
-        g_autoptr(GFile) profile_file = NULL;
+        g_autoptr (GError) local_error = NULL;
+        g_autoptr (GFile) profile_file = NULL;
         g_autofree char *system_db_name = NULL;
         int i;
 
@@ -1898,7 +1898,7 @@ handle_reset (GdmConfigCommand   config_command,
 
                 while (TRUE) {
                         g_print (C_("Interactive question", "Do you want to continue? [Y/n]? "));
-                        if (!fgets(buffer, sizeof (buffer), stdin))
+                        if (!fgets (buffer, sizeof (buffer), stdin))
                                 continue;
 
                         g_strstrip (buffer);
@@ -1963,7 +1963,7 @@ handle_reset (GdmConfigCommand   config_command,
         system_db_name = get_system_dconf_profile_db_name (DCONF_SYSTEM_DB_DEFAULT_NAME, NULL);
         if (g_strcmp0 (system_db_name, DCONF_SYSTEM_DB_DEFAULT_NAME) == 0) {
                 g_autofree char *profile_file = NULL;
-                g_autoptr(GPtrArray) profile_contents = NULL;
+                g_autoptr (GPtrArray) profile_contents = NULL;
 
                 profile_file = get_dconf_system_profile_file (error);
                 profile_contents = get_system_dconf_profile_contents (NULL);

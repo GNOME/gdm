@@ -102,7 +102,7 @@ record_set_timestamp (UTMP *u)
         gint64 now;
 
         /* Set time in TV format */
-        now = g_get_real_time();
+        now = g_get_real_time ();
         u->ut_tv.tv_sec  = now / G_USEC_PER_SEC;
         u->ut_tv.tv_usec = now % G_USEC_PER_SEC;
         g_debug ("using ut_tv time %ld",
@@ -155,7 +155,7 @@ record_set_line (UTMP       *u,
 
         if (tty != NULL) {
                 if (g_str_has_prefix (tty, "/dev/"))
-                        line = tty + strlen("/dev/");
+                        line = tty + strlen ("/dev/");
                 else
                         line = tty;
         } else if (seat_id != NULL)
@@ -187,9 +187,9 @@ write_login_record (UTMP *record)
         /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
         g_debug ("Adding or updating utmp record for login");
-        setutxent();
+        setutxent ();
         pututxline (record);
-        endutxent();
+        endutxent ();
 #elif defined(HAVE_LOGIN)
 	login (record);
 #endif
@@ -211,9 +211,9 @@ write_logout_record (UTMP *record)
         /* Handle utmp */
 #if defined(HAVE_GETUTXENT)
         g_debug ("Adding or updating utmp record for logout");
-        setutxent();
+        setutxent ();
         pututxline (record);
-        endutxent();
+        endutxent ();
 #elif defined(HAVE_LOGOUT)
         logout (record->ut_line);
 #endif
@@ -231,7 +231,7 @@ write_failed_record (UTMP *record)
 #if defined(HAVE_UPDWTMPX)
         updwtmpx (GDM_BAD_SESSION_RECORDS_FILE, record);
 #elif defined(HAVE_UPDWTMP)
-        updwtmp(GDM_BAD_SESSION_RECORDS_FILE, record);
+        updwtmp (GDM_BAD_SESSION_RECORDS_FILE, record);
 #endif
 }
 

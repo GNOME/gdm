@@ -277,9 +277,9 @@ static gboolean
 look_for_existing_users_sync (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        g_autoptr(GError) error = NULL;
-        g_autoptr(GVariant) call_result = NULL;
-        g_autoptr(GVariant) user_list = NULL;
+        g_autoptr (GError) error = NULL;
+        g_autoptr (GVariant) call_result = NULL;
+        g_autoptr (GVariant) user_list = NULL;
 
         priv = gdm_display_get_instance_private (self);
         priv->accountsservice_proxy = g_dbus_proxy_new_sync (priv->connection,
@@ -774,7 +774,7 @@ static gboolean
 register_display (GdmDisplay *self)
 {
         GdmDisplayPrivate *priv;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
 
         priv = gdm_display_get_instance_private (self);
 
@@ -1143,8 +1143,8 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
                                        gchar       **initial_setup_argument,
                                        GError      **error)
 {
-        g_autoptr(GRegex) regex = NULL;
-        g_autoptr(GMatchInfo) match_info = NULL;
+        g_autoptr (GRegex) regex = NULL;
+        g_autoptr (GMatchInfo) match_info = NULL;
         g_autofree gchar *match_group = NULL;
 
         g_return_val_if_fail (initial_setup_argument != NULL, FALSE);
@@ -1180,7 +1180,7 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
 static gboolean
 kernel_cmdline_initial_setup_force_state (gboolean *force_state)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         g_autofree gchar *contents = NULL;
         g_autofree gchar *setup_argument = NULL;
 

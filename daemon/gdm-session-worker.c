@@ -541,8 +541,8 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
                                         GdmChoiceList    *list,
                                         char            **answerp)
 {
-        g_autoptr(GVariant) choices_as_variant = NULL;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GVariant) choices_as_variant = NULL;
+        g_autoptr (GError) error = NULL;
         GVariantBuilder builder;
         gboolean res;
         size_t i;
@@ -594,8 +594,8 @@ gdm_session_worker_process_custom_json_protocol (GdmSessionWorker            *wo
                                                  GdmPamExtensionJSONProtocol *request,
                                                  GdmPamExtensionJSONProtocol *response)
 {
-        g_autoptr(GError) error = NULL;
-        g_autoptr(JsonParser) parser = NULL;
+        g_autoptr (GError) error = NULL;
+        g_autoptr (JsonParser) parser = NULL;
 
         g_debug ("GdmSessionWorker: sending custom JSON protocol request: %s v%d",
                  request->protocol_name, request->version);
@@ -658,7 +658,7 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
         }
 
         if (gdm_pam_extension_message_match (extended_message, worker->extensions, GDM_PAM_EXTENSION_CHOICE_LIST)) {
-                g_autoptr(GdmPamExtensionChoiceListResponse) list_response = NULL;
+                g_autoptr (GdmPamExtensionChoiceListResponse) list_response = NULL;
                 GdmPamExtensionChoiceListRequest *list_request = (GdmPamExtensionChoiceListRequest *) extended_message;
 
                 list_response = malloc (GDM_PAM_EXTENSION_CHOICE_LIST_RESPONSE_SIZE);
@@ -677,7 +677,7 @@ gdm_session_worker_process_extended_pam_message (GdmSessionWorker          *work
                 *response = gdm_pam_extension_message_to_pam_reply (g_steal_pointer (&list_response));
                 return TRUE;
         } else if (gdm_pam_extension_message_match (extended_message, worker->extensions, GDM_PAM_EXTENSION_CUSTOM_JSON)) {
-                g_autoptr(GdmPamExtensionJSONProtocol) json_response = NULL;
+                g_autoptr (GdmPamExtensionJSONProtocol) json_response = NULL;
                 GdmPamExtensionJSONProtocol *json_request = (GdmPamExtensionJSONProtocol *) extended_message;
 
                 json_response = malloc (GDM_PAM_EXTENSION_CUSTOM_JSON_SIZE);
@@ -1019,8 +1019,8 @@ on_release_display (int signal)
         int fd;
 
         fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
-        ioctl(fd, VT_RELDISP, 1);
-        close(fd);
+        ioctl (fd, VT_RELDISP, 1);
+        close (fd);
 }
 
 static void
@@ -1029,8 +1029,8 @@ on_acquire_display (int signal)
         int fd;
 
         fd = open ("/dev/tty0", O_RDWR | O_NOCTTY);
-        ioctl(fd, VT_RELDISP, VT_ACKACQ);
-        close(fd);
+        ioctl (fd, VT_RELDISP, VT_ACKACQ);
+        close (fd);
 }
 
 static gboolean
@@ -1838,8 +1838,8 @@ static GStrv
 gdm_session_worker_get_reauth_environment (GdmSessionWorker *worker,
                                            uid_t             uid)
 {
-        g_autoptr(GStrvBuilder) builder = g_strv_builder_new ();
-        g_auto(GStrv) pam_environment = NULL;
+        g_autoptr (GStrvBuilder) builder = g_strv_builder_new ();
+        g_auto (GStrv) pam_environment = NULL;
         gsize i;
 
         pam_environment = gdm_session_worker_get_environment (worker);
@@ -2143,7 +2143,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         if (session_pid == 0) {
                 g_autofree char  *home_dir = NULL;
-                g_auto(GStrv) environment = NULL;
+                g_auto (GStrv) environment = NULL;
                 int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
                 gboolean has_journald = FALSE, needs_controlling_terminal = FALSE;
                 /* Leak the TTY into the session as stdin so that it stays open
@@ -2164,7 +2164,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 }
 
 #ifdef ENABLE_SYSTEMD_JOURNAL
-                has_journald = sd_booted() > 0;
+                has_journald = sd_booted () > 0;
 #endif
                 if (!has_journald && worker->is_program_session) {
                         stdout_fd = _open_program_session_log (worker->log_file);
@@ -2603,7 +2603,7 @@ on_saved_session_type_read (GdmSessionWorker *worker)
 static void
 do_setup (GdmSessionWorker *worker)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean res;
 
         res = gdm_session_worker_initialize_pam (worker,
@@ -2628,7 +2628,7 @@ do_setup (GdmSessionWorker *worker)
 static void
 do_authenticate (GdmSessionWorker *worker)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean res;
 
         /* find out who the user is and ensure they are who they say they are
@@ -2657,7 +2657,7 @@ do_authenticate (GdmSessionWorker *worker)
 static void
 do_authorize (GdmSessionWorker *worker)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean res;
 
         /* make sure the user is allowed to log in to this system
@@ -2677,7 +2677,7 @@ do_authorize (GdmSessionWorker *worker)
 static void
 do_accredit (GdmSessionWorker *worker)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean res;
 
         /* get kerberos tickets, setup group lists, etc
@@ -2769,7 +2769,7 @@ do_save_account_details_when_ready (GdmSessionWorker *worker)
 static void
 do_open_session (GdmSessionWorker *worker)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean res;
 
         res = gdm_session_worker_open_session (worker, &error);
@@ -2791,7 +2791,7 @@ do_open_session (GdmSessionWorker *worker)
 static void
 do_start_session (GdmSessionWorker *worker)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean res;
 
         res = gdm_session_worker_start_session (worker, &error);
@@ -2980,8 +2980,8 @@ gdm_session_worker_handle_open (GdmDBusWorker         *object,
 static char **
 filter_extensions (const char * const *extensions)
 {
-        g_autoptr(GPtrArray) array = NULL;
-        g_auto(GStrv) filtered_extensions = NULL;
+        g_autoptr (GPtrArray) array = NULL;
+        g_auto (GStrv) filtered_extensions = NULL;
         size_t i, j;
 
         array = g_ptr_array_new_with_free_func (g_free);
@@ -3092,7 +3092,7 @@ gdm_session_worker_handle_start_program (GdmDBusWorker         *object,
                                          const char            *text)
 {
         GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
-        g_autoptr(GError) parse_error = NULL;
+        g_autoptr (GError) parse_error = NULL;
 
         if (!validate_state_change (worker, invocation, GDM_SESSION_WORKER_STATE_SESSION_STARTED))
                 return TRUE;
@@ -3196,7 +3196,7 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                               GDBusMethodInvocation *invocation)
 {
         ReauthenticationRequest *request;
-        g_auto(GStrv) environment = NULL;
+        g_auto (GStrv) environment = NULL;
         const char *address;
 
         /* The reauth worker runs as root, so only forward what it actually needs
@@ -3291,7 +3291,7 @@ gdm_session_worker_constructor (GType                  type,
                                 GObjectConstructParam *construct_properties)
 {
         GdmSessionWorker  *worker;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
 
         worker = GDM_SESSION_WORKER (G_OBJECT_CLASS (gdm_session_worker_parent_class)->constructor (type,
                                                                                                     n_construct_properties,

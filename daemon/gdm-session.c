@@ -249,7 +249,7 @@ on_authenticate_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authenticate_finish (proxy, res, &error);
@@ -287,7 +287,7 @@ on_authorize_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authorize_finish (proxy, res, &error);
@@ -315,7 +315,7 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
         GdmSession *self;
         char *service_name;
 
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_establish_credentials_finish (proxy, res, &error);
@@ -1555,8 +1555,8 @@ gdm_session_handle_client_custom_json_reply (GdmDBusUserVerifierCustomJSON *cust
                                              const char                    *json,
                                              GdmSession                    *self)
 {
-        g_autoptr(GError) error = NULL;
-        g_autoptr(JsonParser) parser = NULL;
+        g_autoptr (GError) error = NULL;
+        g_autoptr (JsonParser) parser = NULL;
 
         g_debug ("GdmSession: user replied with custom JSON");
 
@@ -3073,7 +3073,7 @@ on_start_program_cb (GdmDBusWorker *worker,
         GdmSession *self;
         char *service_name;
 
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         gboolean worked;
         GPid pid;
 
@@ -3111,7 +3111,7 @@ gdm_session_start_session (GdmSession *self,
         GdmSessionConversation *conversation;
         g_autofree char        *command = NULL;
         g_autofree char        *program = NULL;
-        g_autoptr(GError)       error = NULL;
+        g_autoptr (GError)       error = NULL;
 
         g_return_if_fail (GDM_IS_SESSION (self));
         g_return_if_fail (service_name != NULL);
@@ -3531,8 +3531,8 @@ update_session_type (GdmSession *self)
 gboolean
 gdm_session_session_registers (GdmSession *self)
 {
-        g_autoptr(GError) error = NULL;
-        g_autoptr(GKeyFile) key_file = NULL;
+        g_autoptr (GError) error = NULL;
+        g_autoptr (GKeyFile) key_file = NULL;
         gboolean session_registers = FALSE;
         g_autofree char *filename = NULL;
 

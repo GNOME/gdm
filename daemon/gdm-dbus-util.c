@@ -54,7 +54,7 @@ handle_connection (GDBusServer      *server,
                    GDBusConnection  *new_connection,
                    gpointer          user_data)
 {
-        g_autoptr(GDBusNodeInfo) bus_info = NULL;
+        g_autoptr (GDBusNodeInfo) bus_info = NULL;
         GDBusInterfaceVTable bus_vtable = { handle_bus_method };
 
         bus_info = g_dbus_node_info_new_for_xml (dbus_introspection,
@@ -78,7 +78,7 @@ gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
 {
         g_autofree char *guid = NULL;
         const char *client_address;
-        g_autoptr(GDBusServer) server = NULL;
+        g_autoptr (GDBusServer) server = NULL;
 
         /* Ensure the private bus directory exists */
         if (g_mkdir_with_parents (GDM_PRIVATE_DBUS_DIR, 0711) == -1) {
@@ -102,7 +102,7 @@ gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
         client_address = g_dbus_server_get_client_address (server);
 
         if (g_str_has_prefix (client_address, "unix:path=")) {
-                client_address += strlen("unix:path=");
+                client_address += strlen ("unix:path=");
                 g_chmod (client_address, 0666);
         }
 
@@ -118,8 +118,8 @@ gdm_dbus_get_pid_for_name (const char  *system_bus_name,
                            pid_t       *out_pid,
                            GError     **error)
 {
-        g_autoptr(GDBusConnection) bus = NULL;
-        g_autoptr(GVariant) reply = NULL;
+        g_autoptr (GDBusConnection) bus = NULL;
+        g_autoptr (GVariant) reply = NULL;
         unsigned int v;
 
         g_return_val_if_fail (system_bus_name != NULL, FALSE);
@@ -155,8 +155,8 @@ gdm_dbus_get_uid_for_name (const char  *system_bus_name,
                            uid_t       *out_uid,
                            GError     **error)
 {
-        g_autoptr(GDBusConnection) bus = NULL;
-        g_autoptr(GVariant) reply = NULL;
+        g_autoptr (GDBusConnection) bus = NULL;
+        g_autoptr (GVariant) reply = NULL;
         unsigned int v;
 
         g_return_val_if_fail (system_bus_name != NULL, FALSE);

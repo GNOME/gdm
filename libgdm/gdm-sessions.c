@@ -271,8 +271,8 @@ collect_sessions_from_directory (const char *dirname)
 static void
 collect_sessions (void)
 {
-        g_autoptr(GHashTable) names_seen_before = NULL;
-        g_autoptr(GPtrArray) dirs_search_array = NULL;
+        g_autoptr (GHashTable) names_seen_before = NULL;
+        g_autoptr (GPtrArray) dirs_search_array = NULL;
         gchar      *session_dir = NULL;
         int         i;
         const gchar *supported_session_types_env = NULL;

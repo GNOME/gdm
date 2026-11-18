@@ -339,7 +339,7 @@ gboolean
 gdm_session_settings_load (GdmSessionSettings  *settings,
                            const char          *username)
 {
-        g_autoptr(ActUser) old_user = NULL;
+        g_autoptr (ActUser) old_user = NULL;
 
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
@@ -373,7 +373,7 @@ gboolean
 gdm_session_settings_save (GdmSessionSettings  *settings,
                            const char          *username)
 {
-        g_autoptr(ActUser) user = NULL;
+        g_autoptr (ActUser) user = NULL;
 
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
         g_return_val_if_fail (username != NULL, FALSE);

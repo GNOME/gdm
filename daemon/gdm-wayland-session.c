@@ -212,9 +212,9 @@ static gboolean
 import_environment (State        *state,
                     GCancellable *cancellable)
 {
-        g_autoptr(GVariant) reply = NULL;
-        g_autoptr(GVariant) environment_variant = NULL;
-        g_autoptr(GError)   error = NULL;
+        g_autoptr (GVariant) reply = NULL;
+        g_autoptr (GVariant) environment_variant = NULL;
+        g_autoptr (GError)   error = NULL;
 
         reply = g_dbus_connection_call_sync (state->bus_connection,
                                              "org.freedesktop.systemd1",
@@ -318,7 +318,7 @@ spawn_session (State        *state,
                 size_t i;
 
                 for (i = 0; state->environment[i] != NULL; i++) {
-                        g_auto(GStrv) environment_entry = NULL;
+                        g_auto (GStrv) environment_entry = NULL;
 
                         if (state->environment[i][0] == '\0') {
                                 continue;
@@ -406,7 +406,7 @@ wait_on_subprocesses (State *state)
 static gboolean
 register_session (State *state)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
 
         if (!gdm_dbus_manager_call_register_session_sync (state->display_manager_proxy,
                                                           state->cancellable,
@@ -456,7 +456,7 @@ static void
 register_display_timeout_cb (gpointer user_data)
 {
         State *state = (State *) user_data;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
 
         if (!gdm_dbus_manager_call_register_display_sync (state->display_manager_proxy,
                                                           state->cancellable,

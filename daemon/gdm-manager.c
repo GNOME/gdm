@@ -864,7 +864,7 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         allowed_user = gdm_session_get_allowed_user (session);
 
         if (uid != allowed_user) {
-                g_debug("GdmSession: Denying access to %d, only %d is allowed", uid, allowed_user);
+                g_debug ("GdmSession: Denying access to %d, only %d is allowed", uid, allowed_user);
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_ACCESS_DENIED,
@@ -1180,7 +1180,7 @@ gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager
                                              invocation);
                         return TRUE;
                 } else {
-                        g_debug("GdmManager: user session is frozen; using temporary reauthentication channel");
+                        g_debug ("GdmManager: user session is frozen; using temporary reauthentication channel");
                 }
         } else if (is_login_screen) {
                 g_dbus_method_invocation_return_error_literal (invocation,
@@ -1680,7 +1680,7 @@ on_start_user_session (StartUserSessionOperation *operation)
 
         g_object_ref (display);
         if (doing_initial_setup) {
-                g_autoptr(GError) error = NULL;
+                g_autoptr (GError) error = NULL;
 
                 g_debug ("GdmManager: closing down initial setup display in background");
                 g_object_set (G_OBJECT (display), "status", GDM_DISPLAY_WAITING_TO_FINISH, NULL);

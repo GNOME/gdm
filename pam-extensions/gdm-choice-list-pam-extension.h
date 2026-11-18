@@ -62,7 +62,7 @@ gdm_pam_extension_choice_list_request_init (GdmPamExtensionChoiceListRequest *re
                                                      &request->header.type);
         assert (type_found);
 
-        request->header.length = htobe32 (GDM_PAM_EXTENSION_CHOICE_LIST_REQUEST_SIZE(num_items));
+        request->header.length = htobe32 (GDM_PAM_EXTENSION_CHOICE_LIST_REQUEST_SIZE (num_items));
         request->prompt_message = (char *) title;
         request->list.number_of_items = num_items;
 }

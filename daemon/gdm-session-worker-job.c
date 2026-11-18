@@ -175,7 +175,7 @@ static void
 copy_environment_to_hash (GdmSessionWorkerJob *job,
                           GHashTable          *hash)
 {
-        g_auto(GStrv) environment = NULL;
+        g_auto (GStrv) environment = NULL;
         gint   i;
 
         if (job->environment != NULL) {
@@ -185,7 +185,7 @@ copy_environment_to_hash (GdmSessionWorkerJob *job,
         }
 
         for (i = 0; environment[i]; i++) {
-                g_auto(GStrv) parts = NULL;
+                g_auto (GStrv) parts = NULL;
 
                 parts = g_strsplit (environment[i], "=", 2);
 
@@ -199,9 +199,9 @@ static GPtrArray *
 get_job_arguments (GdmSessionWorkerJob *job,
                    const char          *name)
 {
-        g_autoptr(GPtrArray) args = NULL;
-        g_autoptr(GError) error = NULL;
-        g_auto(GStrv) argv = NULL;
+        g_autoptr (GPtrArray) args = NULL;
+        g_autoptr (GError) error = NULL;
+        g_auto (GStrv) argv = NULL;
         int         i;
 
         args = NULL;
@@ -225,8 +225,8 @@ get_job_arguments (GdmSessionWorkerJob *job,
 static GPtrArray *
 get_job_environment (GdmSessionWorkerJob *job)
 {
-        g_autoptr(GPtrArray) env = NULL;
-        g_autoptr(GHashTable) hash = NULL;
+        g_autoptr (GPtrArray) env = NULL;
+        g_autoptr (GHashTable) hash = NULL;
 
         env = g_ptr_array_new_with_free_func (g_free);
 
@@ -251,9 +251,9 @@ static gboolean
 gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                               const char          *name)
 {
-        g_autoptr(GError) error = NULL;
-        g_autoptr(GPtrArray) args = NULL;
-        g_autoptr(GPtrArray) env = NULL;
+        g_autoptr (GError) error = NULL;
+        g_autoptr (GPtrArray) args = NULL;
+        g_autoptr (GPtrArray) env = NULL;
         gboolean         ret;
 
         g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s %s",

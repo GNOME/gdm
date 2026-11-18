@@ -177,7 +177,7 @@ gdm_local_display_factory_create_display (GdmLocalDisplayFactory  *factory,
                                           char                   **id,
                                           GError                 **error)
 {
-        g_auto(GStrv) session_types = NULL;
+        g_auto (GStrv) session_types = NULL;
         g_autoptr (GdmDisplay) display = NULL;
 
         g_debug ("GdmLocalDisplayFactory: Creating local display");
@@ -293,7 +293,7 @@ on_display_status_changed (GdmDisplay             *display,
                  */
                 if (is_local &&
                     ((g_strcmp0 (session_class, "greeter") != 0 &&
-                      (!seat_active_session || g_strcmp0(session_id, seat_active_session) == 0)) ||
+                      (!seat_active_session || g_strcmp0 (session_id, seat_active_session) == 0)) ||
                      factory->active_vt == GDM_INITIAL_VT || g_strcmp0 (seat_id, "seat0") != 0)) {
                         /* reset num failures */
                         factory->num_failures = 0;
@@ -349,7 +349,7 @@ lookup_by_seat_id (const char *id,
 
         res = g_strcmp0 (current, looking_for) == 0;
 
-        g_free(current);
+        g_free (current);
 
         return res;
 }
@@ -564,7 +564,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
                 g_debug ("GdmLocalDisplayFactory: udev is still settling, so not creating display yet");
 
                 if (is_seat0 && factory->seat0_graphics_check_timeout_id == 0) {
-                        g_debug("GdmLocalDisplayFactory: Waiting for up to %d seconds for a primary GPU to appear",
+                        g_debug ("GdmLocalDisplayFactory: Waiting for up to %d seconds for a primary GPU to appear",
                                 SEAT0_GRAPHICS_CHECK_TIMEOUT);
                         factory->seat0_graphics_check_timeout_id = g_timeout_add_seconds (SEAT0_GRAPHICS_CHECK_TIMEOUT,
                                                                                           on_seat0_graphics_check_timeout,
@@ -711,11 +711,11 @@ on_seat_properties_changed (GDBusConnection *connection,
                             gpointer         user_data)
 {
         const gchar *seat = NULL;
-        g_autoptr(GVariant) changed_props = NULL;
-        g_autoptr(GVariant) changed_prop = NULL;
-        g_autoptr(GVariant) reply = NULL;
-        g_autoptr(GVariant) reply_value = NULL;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GVariant) changed_props = NULL;
+        g_autoptr (GVariant) changed_prop = NULL;
+        g_autoptr (GVariant) reply = NULL;
+        g_autoptr (GVariant) reply_value = NULL;
+        g_autoptr (GError) error = NULL;
         g_autofree const gchar **invalidated_props = NULL;
         gboolean changed = FALSE;
         int ret;
@@ -1213,7 +1213,7 @@ handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
                                  GDBusMethodInvocation      *invocation,
                                  GdmLocalDisplayFactory     *factory)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         g_autofree char *id = NULL;
         gboolean created;
 

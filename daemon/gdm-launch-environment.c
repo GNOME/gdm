@@ -338,7 +338,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
 
                 if (!is_initial_setup &&
-                    setup_seat_persist_dirs(seat_id, launch_environment->dyn_uid, &config_dir, &state_dir)) {
+                    setup_seat_persist_dirs (seat_id, launch_environment->dyn_uid, &config_dir, &state_dir)) {
                         g_hash_table_insert (hash, g_strdup ("XDG_CONFIG_HOME"), config_dir);
                         g_hash_table_insert (hash, g_strdup ("XDG_STATE_HOME"), state_dir);
                 }
@@ -377,8 +377,8 @@ get_environment_file_output_stream (GdmLaunchEnvironment  *launch_environment,
         g_autofree char *config_dir = NULL;
         g_autofree char *environment_dir = NULL;
         g_autofree char *environment_conf = NULL;
-        g_autoptr(GFile) file = NULL;
-        g_autoptr(GFileOutputStream) file_stream = NULL;
+        g_autoptr (GFile) file = NULL;
+        g_autoptr (GFileOutputStream) file_stream = NULL;
         uid_t uid = launch_environment->dyn_uid;
         gid_t gid = GID_NOBODY;
 
@@ -424,9 +424,9 @@ on_session_setup_complete (GdmSession        *session,
                            const char        *service_name,
                            GdmLaunchEnvironment *launch_environment)
 {
-        g_autoptr(GHashTable) hash = NULL;
-        g_autoptr(GDataOutputStream) env_output_stream = NULL;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GHashTable) hash = NULL;
+        g_autoptr (GDataOutputStream) env_output_stream = NULL;
+        g_autoptr (GError) error = NULL;
         GHashTableIter    iter;
         gpointer          key, value;
 
@@ -514,7 +514,7 @@ on_conversation_stopped (GdmSession           *session,
                          const char           *service_name,
                          GdmLaunchEnvironment *launch_environment)
 {
-        g_autoptr(GdmSession) conversation_session = NULL;
+        g_autoptr (GdmSession) conversation_session = NULL;
 
         conversation_session = g_steal_pointer (&launch_environment->session);
 
@@ -567,7 +567,7 @@ gdm_launch_environment_ensure_uid (GdmLaunchEnvironment  *launch_environment,
 gboolean
 gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
 {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
 
         g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), FALSE);
         g_return_val_if_fail (launch_environment->dyn_uid != 0, FALSE);

@@ -29,15 +29,15 @@
 int
 main (int argc, char *argv[])
 {
-        g_autoptr(GKeyFile) key_file = NULL;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GKeyFile) key_file = NULL;
+        g_autoptr (GError) error = NULL;
         gchar *group, *key, *value;
         gboolean saved_okay;
 
-        if (argc < 5 || g_strcmp0(argv[1], "set") != 0) {
-                g_printerr("gdm-runtime-config: command format should be " \
-                           "'gdm-runtime-config set <group> <key> <value>'\n" \
-                           "For example, 'gdm-runtime-config set daemon WaylandEnable true'\n");
+        if (argc < 5 || g_strcmp0 (argv[1], "set") != 0) {
+                g_printerr ("gdm-runtime-config: command format should be " \
+                            "'gdm-runtime-config set <group> <key> <value>'\n" \
+                            "For example, 'gdm-runtime-config set daemon WaylandEnable true'\n");
                 return EX_USAGE;
         }
 

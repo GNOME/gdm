@@ -65,7 +65,7 @@ _gdm_settings_desktop_backend_set_file_name (GdmSettingsDesktopBackend *backend,
                                              const char                *filename)
 {
         gboolean res;
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         g_autofree char *contents = NULL;
 
         g_free (backend->filename);
@@ -136,8 +136,8 @@ parse_key_string (const char *keystring,
                   char      **locale,
                   char      **value)
 {
-        g_auto(GStrv) split1 = NULL;
-        g_auto(GStrv) split2 = NULL;
+        g_auto (GStrv) split1 = NULL;
+        g_auto (GStrv) split2 = NULL;
         char    *g;
         char    *k;
         char    *l;
@@ -214,7 +214,7 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
                                         char              **value,
                                         GError            **error)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *val = NULL;
         g_autofree char *g = NULL;
         g_autofree char *k = NULL;
@@ -250,7 +250,7 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
 static void
 save_settings (GdmSettingsDesktopBackend *backend)
 {
-        g_autoptr(GError) local_error = NULL;
+        g_autoptr (GError) local_error = NULL;
         g_autofree char *contents = NULL;
         gsize     length;
 
