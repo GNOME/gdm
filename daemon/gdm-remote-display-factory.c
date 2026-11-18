@@ -41,8 +41,8 @@ struct _GdmRemoteDisplayFactory
 };
 
 static void     gdm_remote_display_factory_class_init    (GdmRemoteDisplayFactoryClass *klass);
-static void     gdm_remote_display_factory_init          (GdmRemoteDisplayFactory      *factory);
-static void     gdm_remote_display_factory_finalize      (GObject                     *object);
+static void     gdm_remote_display_factory_init          (GdmRemoteDisplayFactory *factory);
+static void     gdm_remote_display_factory_finalize      (GObject *object);
 
 static gpointer remote_display_factory_object = NULL;
 
@@ -144,8 +144,8 @@ pending_create_display_free (PendingCreateDisplay *pending)
 }
 
 static void
-on_display_disposed (gpointer data,
-                     GObject *display)
+on_display_disposed (gpointer  data,
+                     GObject  *display)
 {
         PendingCreateDisplay *pending = data;
         GDBusMethodInvocation *invocation = pending->invocation;

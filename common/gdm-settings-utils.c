@@ -122,12 +122,12 @@ typedef struct {
 } ParserInfo;
 
 static void
-start_element_cb (GMarkupParseContext *ctx,
-                  const char          *element_name,
-                  const char         **attribute_names,
-                  const char         **attribute_values,
-                  gpointer             user_data,
-                  GError             **error)
+start_element_cb (GMarkupParseContext  *ctx,
+                  const char           *element_name,
+                  const char          **attribute_names,
+                  const char          **attribute_values,
+                  gpointer              user_data,
+                  GError              **error)
 {
         ParserInfo *info;
 
@@ -155,10 +155,10 @@ add_schema_entry (ParserInfo *info)
 }
 
 static void
-end_element_cb (GMarkupParseContext *ctx,
-                const char          *element_name,
-                gpointer             user_data,
-                GError             **error)
+end_element_cb (GMarkupParseContext  *ctx,
+                const char           *element_name,
+                gpointer              user_data,
+                GError              **error)
 {
         ParserInfo *info;
 
@@ -178,11 +178,11 @@ end_element_cb (GMarkupParseContext *ctx,
 }
 
 static void
-text_cb (GMarkupParseContext *ctx,
-         const char          *text,
-         gsize                text_len,
-         gpointer             user_data,
-         GError             **error)
+text_cb (GMarkupParseContext  *ctx,
+         const char           *text,
+         gsize                 text_len,
+         gpointer              user_data,
+         GError              **error)
 {
         ParserInfo *info;
         char       *t;

@@ -111,7 +111,7 @@ get_systemd_seat (void)
 
 /* adapted from gnome-menus desktop-entries.c */
 static gboolean
-key_file_is_relevant (GKeyFile     *key_file)
+key_file_is_relevant (GKeyFile *key_file)
 {
         GError    *error;
         g_autofree char *seat = NULL;
@@ -175,8 +175,8 @@ key_file_is_relevant (GKeyFile     *key_file)
 }
 
 static void
-load_session_file (const char              *id,
-                   const char              *path)
+load_session_file (const char *id,
+                   const char *path)
 {
         GKeyFile          *key_file;
         GError            *error;
@@ -333,8 +333,8 @@ collect_sessions (void)
 }
 
 static gint
-compare_session_ids (gconstpointer  a,
-                     gconstpointer  b)
+compare_session_ids (gconstpointer a,
+                     gconstpointer b)
 {
         GdmSessionFile *session_a, *session_b;
         session_a = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map, a);

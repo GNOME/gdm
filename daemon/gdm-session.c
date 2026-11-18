@@ -440,10 +440,10 @@ is_prog_in_path (const char *prog)
 }
 
 static GKeyFile *
-load_key_file_for_file (GdmSession   *self,
-                        const char   *file,
-                        const char   *type,
-                        char        **full_path)
+load_key_file_for_file (GdmSession  *self,
+                        const char  *file,
+                        const char  *type,
+                        char       **full_path)
 {
         GKeyFile   *key_file;
         GError     *error = NULL;
@@ -1438,9 +1438,9 @@ unexport_worker_manager_interface (GdmSession           *self,
 }
 
 static gboolean
-handle_connection_from_worker (GDBusServer      *server,
-                               GDBusConnection  *connection,
-                               GdmSession       *self)
+handle_connection_from_worker (GDBusServer     *server,
+                               GDBusConnection *connection,
+                               GdmSession      *self)
 {
 
         g_debug ("GdmSession: Handling new connection from worker");
@@ -1529,11 +1529,11 @@ begin_verification_conversation (GdmSession            *self,
 }
 
 static gboolean
-gdm_session_handle_client_select_choice (GdmDBusUserVerifierChoiceList    *choice_list_interface,
-                                         GDBusMethodInvocation            *invocation,
-                                         const char                       *service_name,
-                                         const char                       *answer,
-                                         GdmSession                       *self)
+gdm_session_handle_client_select_choice (GdmDBusUserVerifierChoiceList *choice_list_interface,
+                                         GDBusMethodInvocation         *invocation,
+                                         const char                    *service_name,
+                                         const char                    *answer,
+                                         GdmSession                    *self)
 {
         g_debug ("GdmSession: user selected choice '%s'", answer);
         gdm_dbus_user_verifier_choice_list_complete_select_choice (choice_list_interface, invocation);
@@ -1614,7 +1614,7 @@ gdm_session_handle_client_custom_json_report_error (GdmDBusUserVerifierCustomJSO
 
 static void
 export_user_verifier_custom_json_interface (GdmSession      *self,
-                                             GDBusConnection *connection)
+                                            GDBusConnection *connection)
 {
         GdmDBusUserVerifierCustomJSON *interface;
 
@@ -1640,10 +1640,10 @@ export_user_verifier_custom_json_interface (GdmSession      *self,
 }
 
 static gboolean
-gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifier_interface,
-                                             GDBusMethodInvocation  *invocation,
-                                             const char * const *    extensions,
-                                             GDBusConnection        *connection)
+gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier   *user_verifier_interface,
+                                             GDBusMethodInvocation *invocation,
+                                             const char * const    *extensions,
+                                             GDBusConnection       *connection)
 {
         GdmSession *self = g_object_get_data (G_OBJECT (connection), "gdm-session");
         size_t i;
@@ -1672,10 +1672,10 @@ gdm_session_handle_client_enable_extensions (GdmDBusUserVerifier    *user_verifi
         return TRUE;
 }
 static gboolean
-gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verifier_interface,
-                                              GDBusMethodInvocation  *invocation,
-                                              const char             *service_name,
-                                              GdmSession             *self)
+gdm_session_handle_client_begin_verification (GdmDBusUserVerifier   *user_verifier_interface,
+                                              GDBusMethodInvocation *invocation,
+                                              const char            *service_name,
+                                              GdmSession            *self)
 {
         GdmSessionConversation *conversation;
 
@@ -1690,11 +1690,11 @@ gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verif
 }
 
 static gboolean
-gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier    *user_verifier_interface,
-                                                       GDBusMethodInvocation  *invocation,
-                                                       const char             *service_name,
-                                                       const char             *username,
-                                                       GdmSession             *self)
+gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier   *user_verifier_interface,
+                                                       GDBusMethodInvocation *invocation,
+                                                       const char            *service_name,
+                                                       const char            *username,
+                                                       GdmSession            *self)
 {
         GdmSessionConversation *conversation;
 
@@ -1709,11 +1709,11 @@ gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier    *u
 }
 
 static gboolean
-gdm_session_handle_client_answer_query (GdmDBusUserVerifier    *user_verifier_interface,
-                                        GDBusMethodInvocation  *invocation,
-                                        const char             *service_name,
-                                        const char             *answer,
-                                        GdmSession             *self)
+gdm_session_handle_client_answer_query (GdmDBusUserVerifier   *user_verifier_interface,
+                                        GDBusMethodInvocation *invocation,
+                                        const char            *service_name,
+                                        const char            *answer,
+                                        GdmSession            *self)
 {
         gdm_dbus_user_verifier_complete_answer_query (user_verifier_interface,
                                                       invocation);
@@ -1722,9 +1722,9 @@ gdm_session_handle_client_answer_query (GdmDBusUserVerifier    *user_verifier_in
 }
 
 static gboolean
-gdm_session_handle_client_cancel (GdmDBusUserVerifier    *user_verifier_interface,
-                                  GDBusMethodInvocation  *invocation,
-                                  GdmSession             *self)
+gdm_session_handle_client_cancel (GdmDBusUserVerifier   *user_verifier_interface,
+                                  GDBusMethodInvocation *invocation,
+                                  GdmSession            *self)
 {
         gdm_dbus_user_verifier_complete_cancel (user_verifier_interface,
                                                 invocation);
@@ -1733,10 +1733,10 @@ gdm_session_handle_client_cancel (GdmDBusUserVerifier    *user_verifier_interfac
 }
 
 static gboolean
-gdm_session_handle_client_select_session (GdmDBusGreeter         *greeter_interface,
-                                          GDBusMethodInvocation  *invocation,
-                                          const char             *session,
-                                          GdmSession             *self)
+gdm_session_handle_client_select_session (GdmDBusGreeter        *greeter_interface,
+                                          GDBusMethodInvocation *invocation,
+                                          const char            *session,
+                                          GdmSession            *self)
 {
         if (gdm_session_is_running (self)) {
                 const char *username;
@@ -2043,9 +2043,9 @@ on_outside_connection_closed (GDBusConnection *connection,
 }
 
 static gboolean
-handle_connection_from_outside (GDBusServer      *server,
-                                GDBusConnection  *connection,
-                                GdmSession       *self)
+handle_connection_from_outside (GDBusServer     *server,
+                                GDBusConnection *connection,
+                                GdmSession      *self)
 {
         GCredentials *credentials;
         GPid          pid_of_client;
@@ -2990,7 +2990,7 @@ set_up_session_environment (GdmSession *self)
 }
 
 static void
-send_display_mode (GdmSession *self,
+send_display_mode (GdmSession             *self,
                    GdmSessionConversation *conversation)
 {
         GdmSessionDisplayMode mode;
@@ -3003,7 +3003,7 @@ send_display_mode (GdmSession *self,
 }
 
 static void
-send_session_type (GdmSession *self,
+send_session_type (GdmSession             *self,
                    GdmSessionConversation *conversation)
 {
         const char *session_type = "wayland";

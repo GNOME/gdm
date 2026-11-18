@@ -101,8 +101,8 @@ on_info (GdmDBusUserVerifier *user_verifier,
 
 static void
 on_problem (GdmDBusUserVerifier *user_verifier,
-            const char           *service_name,
-            const char           *problem)
+            const char          *service_name,
+            const char          *problem)
 {
         g_print ("\n** WARNING: %s\n", problem);
 }

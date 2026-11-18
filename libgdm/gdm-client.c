@@ -49,8 +49,8 @@ struct _GdmClient
         char              **enabled_extensions;
 };
 
-static void     gdm_client_dispose     (GObject        *object);
-static void     gdm_client_finalize    (GObject        *object);
+static void     gdm_client_dispose     (GObject *object);
+static void     gdm_client_finalize    (GObject *object);
 
 G_DEFINE_TYPE (GdmClient, gdm_client, G_TYPE_OBJECT);
 
@@ -109,9 +109,9 @@ gdm_client_get_open_connection (GdmClient *client)
 }
 
 static void
-on_got_manager (GObject             *object,
-                GAsyncResult        *result,
-                gpointer             user_data)
+on_got_manager (GObject      *object,
+                GAsyncResult *result,
+                gpointer      user_data)
 {
         g_autoptr (GTask)      task = user_data;
         g_autoptr (GdmManager) manager = NULL;
@@ -176,8 +176,8 @@ user_verifier_data_free (UserVerifierData *data)
 }
 
 static void
-complete_user_verifier_proxy_operation (GdmClient          *client,
-                                        UserVerifierData   *data)
+complete_user_verifier_proxy_operation (GdmClient        *client,
+                                        UserVerifierData *data)
 {
         g_task_return_pointer (data->task,
                                g_object_ref (data->user_verifier),
@@ -186,8 +186,8 @@ complete_user_verifier_proxy_operation (GdmClient          *client,
 }
 
 static void
-maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
-                                              UserVerifierData   *data)
+maybe_complete_user_verifier_proxy_operation (GdmClient        *client,
+                                              UserVerifierData *data)
 {
         GHashTable *user_verifier_extensions;
         GHashTableIter iter;
@@ -208,9 +208,9 @@ maybe_complete_user_verifier_proxy_operation (GdmClient          *client,
 }
 
 static void
-on_user_verifier_choice_list_proxy_created (GObject            *source,
-                                            GAsyncResult       *result,
-                                            UserVerifierData   *data)
+on_user_verifier_choice_list_proxy_created (GObject          *source,
+                                            GAsyncResult     *result,
+                                            UserVerifierData *data)
 {
         GHashTable *user_verifier_extensions;
         g_autoptr (GdmClient)       client = NULL;
@@ -234,9 +234,9 @@ on_user_verifier_choice_list_proxy_created (GObject            *source,
 }
 
 static void
-on_user_verifier_custom_json_proxy_created (GObject            *source,
-                                            GAsyncResult       *result,
-                                            UserVerifierData   *data)
+on_user_verifier_custom_json_proxy_created (GObject          *source,
+                                            GAsyncResult     *result,
+                                            UserVerifierData *data)
 {
         GHashTable *user_verifier_extensions;
         g_autoptr (GdmClient) client = NULL;
@@ -263,9 +263,9 @@ on_user_verifier_custom_json_proxy_created (GObject            *source,
 }
 
 static void
-on_user_verifier_extensions_enabled (GdmUserVerifier    *user_verifier,
-                                     GAsyncResult       *result,
-                                     UserVerifierData   *data)
+on_user_verifier_extensions_enabled (GdmUserVerifier  *user_verifier,
+                                     GAsyncResult     *result,
+                                     UserVerifierData *data)
 {
         g_autoptr (GdmClient)       client = NULL;
         GHashTable *user_verifier_extensions;
@@ -341,9 +341,9 @@ free_interface_skeleton (GDBusInterfaceSkeleton *interface)
 }
 
 static void
-on_user_verifier_proxy_created (GObject            *source,
-                                GAsyncResult       *result,
-                                gpointer            user_data)
+on_user_verifier_proxy_created (GObject      *source,
+                                GAsyncResult *result,
+                                gpointer      user_data)
 {
         g_autoptr (GdmClient)       self = NULL;
         GHashTable         *user_verifier_extensions;
@@ -389,9 +389,9 @@ on_user_verifier_proxy_created (GObject            *source,
 }
 
 static void
-on_reauthentication_channel_connected (GObject            *source_object,
-                                       GAsyncResult       *result,
-                                       gpointer            user_data)
+on_reauthentication_channel_connected (GObject      *source_object,
+                                       GAsyncResult *result,
+                                       gpointer      user_data)
 {
         GCancellable *cancellable;
         g_autoptr (GTask)           task = user_data;
@@ -415,9 +415,9 @@ on_reauthentication_channel_connected (GObject            *source_object,
 }
 
 static void
-on_reauthentication_channel_opened (GdmManager         *manager,
-                                    GAsyncResult       *result,
-                                    gpointer            user_data)
+on_reauthentication_channel_opened (GdmManager   *manager,
+                                    GAsyncResult *result,
+                                    gpointer      user_data)
 {
         GCancellable *cancellable;
         g_autoptr (GTask)  task = user_data;
@@ -442,9 +442,9 @@ on_reauthentication_channel_opened (GdmManager         *manager,
 }
 
 static void
-on_got_manager_for_reauthentication (GdmClient           *client,
-                                     GAsyncResult        *result,
-                                     gpointer             user_data)
+on_got_manager_for_reauthentication (GdmClient    *client,
+                                     GAsyncResult *result,
+                                     gpointer      user_data)
 {
         GCancellable *cancellable;
         const char   *username;
@@ -469,9 +469,9 @@ on_got_manager_for_reauthentication (GdmClient           *client,
 }
 
 static GDBusConnection *
-gdm_client_get_connection_sync (GdmClient      *client,
-                                GCancellable   *cancellable,
-                                GError        **error)
+gdm_client_get_connection_sync (GdmClient     *client,
+                                GCancellable  *cancellable,
+                                GError       **error)
 {
         g_autoptr (GdmManager) manager = NULL;
         g_autofree char *address = NULL;
@@ -518,9 +518,9 @@ gdm_client_get_connection_sync (GdmClient      *client,
 }
 
 static GDBusConnection *
-gdm_client_get_connection_finish (GdmClient      *client,
-                                  GAsyncResult   *result,
-                                  GError        **error)
+gdm_client_get_connection_finish (GdmClient     *client,
+                                  GAsyncResult  *result,
+                                  GError       **error)
 {
         GDBusConnection *connection;
 
@@ -536,9 +536,9 @@ gdm_client_get_connection_finish (GdmClient      *client,
 
 static void
 gdm_client_get_connection (GdmClient           *client,
-                            GCancellable        *cancellable,
-                            GAsyncReadyCallback  callback,
-                            gpointer             user_data)
+                           GCancellable        *cancellable,
+                           GAsyncReadyCallback  callback,
+                           gpointer             user_data)
 {
         g_autoptr (GTask) task = NULL;
         g_autoptr (GError) error = NULL;
@@ -743,9 +743,9 @@ gdm_client_open_reauthentication_channel (GdmClient           *client,
  * Returns: (transfer full):  a #GdmUserVerifier
  */
 GdmUserVerifier *
-gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
-                                                 GAsyncResult    *result,
-                                                 GError         **error)
+gdm_client_open_reauthentication_channel_finish (GdmClient     *client,
+                                                 GAsyncResult  *result,
+                                                 GError       **error)
 {
         g_autoptr (GdmUserVerifier) user_verifier = NULL;
 
@@ -866,9 +866,9 @@ gdm_client_get_user_verifier_sync (GdmClient     *client,
 }
 
 static void
-on_connection_for_user_verifier (GdmClient          *client,
-                                 GAsyncResult       *result,
-                                 gpointer            user_data)
+on_connection_for_user_verifier (GdmClient    *client,
+                                 GAsyncResult *result,
+                                 gpointer      user_data)
 {
         GCancellable *cancellable;
         g_autoptr (GTask)           task = user_data;
@@ -942,9 +942,9 @@ gdm_client_get_user_verifier (GdmClient           *client,
  * Returns: (transfer full): a #GdmUserVerifier
  */
 GdmUserVerifier *
-gdm_client_get_user_verifier_finish (GdmClient       *client,
-                                     GAsyncResult    *result,
-                                     GError         **error)
+gdm_client_get_user_verifier_finish (GdmClient     *client,
+                                     GAsyncResult  *result,
+                                     GError       **error)
 {
         g_autoptr (GdmUserVerifier) user_verifier = NULL;
 
@@ -1056,9 +1056,9 @@ query_for_timed_login_requested_signal (GdmGreeter *greeter)
 }
 
 static void
-on_greeter_proxy_created (GObject            *source,
-                          GAsyncResult       *result,
-                          gpointer            user_data)
+on_greeter_proxy_created (GObject      *source,
+                          GAsyncResult *result,
+                          gpointer      user_data)
 {
         g_autoptr (GTask)  task = user_data;
         g_autoptr (GError) error = NULL;
@@ -1078,9 +1078,9 @@ on_greeter_proxy_created (GObject            *source,
 }
 
 static void
-on_connection_for_greeter (GdmClient          *client,
-                           GAsyncResult       *result,
-                           gpointer            user_data)
+on_connection_for_greeter (GdmClient    *client,
+                           GAsyncResult *result,
+                           gpointer      user_data)
 {
         GCancellable *cancellable;
         g_autoptr (GTask)           task = user_data;
@@ -1155,9 +1155,9 @@ gdm_client_get_greeter (GdmClient           *client,
  * Returns: (transfer full): a #GdmGreeter
  */
 GdmGreeter *
-gdm_client_get_greeter_finish (GdmClient       *client,
-                               GAsyncResult    *result,
-                               GError         **error)
+gdm_client_get_greeter_finish (GdmClient     *client,
+                               GAsyncResult  *result,
+                               GError       **error)
 {
         g_autoptr (GdmGreeter) greeter = NULL;
 

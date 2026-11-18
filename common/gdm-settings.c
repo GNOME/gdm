@@ -54,8 +54,8 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_settings_class_init (GdmSettingsClass *klass);
-static void     gdm_settings_init       (GdmSettings      *settings);
-static void     gdm_settings_finalize   (GObject          *object);
+static void     gdm_settings_init       (GdmSettings *settings);
+static void     gdm_settings_finalize   (GObject *object);
 
 static gpointer settings_object = NULL;
 
@@ -73,10 +73,10 @@ gdm_settings_error_quark (void)
 }
 
 gboolean
-gdm_settings_get_value (GdmSettings *settings,
-                        const char  *key,
-                        char       **value,
-                        GError     **error)
+gdm_settings_get_value (GdmSettings  *settings,
+                        const char   *key,
+                        char        **value,
+                        GError      **error)
 {
         GError  *local_error;
         gboolean res;
@@ -113,10 +113,10 @@ gdm_settings_get_value (GdmSettings *settings,
 }
 
 gboolean
-gdm_settings_set_value (GdmSettings *settings,
-                        const char  *key,
-                        const char  *value,
-                        GError     **error)
+gdm_settings_set_value (GdmSettings  *settings,
+                        const char   *key,
+                        const char   *value,
+                        GError      **error)
 {
         GError  *local_error;
         gboolean res;

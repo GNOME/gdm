@@ -54,8 +54,8 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_display_store_class_init    (GdmDisplayStoreClass *klass);
-static void     gdm_display_store_init          (GdmDisplayStore      *display_store);
-static void     gdm_display_store_finalize      (GObject              *object);
+static void     gdm_display_store_init          (GdmDisplayStore *display_store);
+static void     gdm_display_store_finalize      (GObject *object);
 
 G_DEFINE_TYPE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
 
@@ -99,7 +99,7 @@ gdm_display_store_error_quark (void)
 }
 
 void
-gdm_display_store_clear (GdmDisplayStore    *store)
+gdm_display_store_clear (GdmDisplayStore *store)
 {
         g_return_if_fail (GDM_IS_DISPLAY_STORE (store));
         g_debug ("GdmDisplayStore: Clearing display store");
@@ -107,9 +107,9 @@ gdm_display_store_clear (GdmDisplayStore    *store)
 }
 
 static gboolean
-remove_display (char              *id,
-                GdmDisplay        *display,
-                GdmDisplay        *display_to_remove)
+remove_display (char       *id,
+                GdmDisplay *display,
+                GdmDisplay *display_to_remove)
 {
         if (display == display_to_remove) {
                 return TRUE;
@@ -119,8 +119,8 @@ remove_display (char              *id,
 }
 
 gboolean
-gdm_display_store_remove (GdmDisplayStore    *store,
-                          GdmDisplay         *display)
+gdm_display_store_remove (GdmDisplayStore *store,
+                          GdmDisplay      *display)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY_STORE (store), FALSE);
         g_return_val_if_fail (display != NULL, FALSE);
@@ -158,9 +158,9 @@ foreach_func (const char    *id,
 }
 
 void
-gdm_display_store_foreach (GdmDisplayStore    *store,
-                           GdmDisplayStoreFunc func,
-                           gpointer            user_data)
+gdm_display_store_foreach (GdmDisplayStore     *store,
+                           GdmDisplayStoreFunc  func,
+                           gpointer             user_data)
 {
         FindClosure  closure;
 
@@ -194,9 +194,9 @@ gdm_display_store_lookup (GdmDisplayStore *store,
 }
 
 GdmDisplay *
-gdm_display_store_find (GdmDisplayStore    *store,
-                        GdmDisplayStoreFunc predicate,
-                        gpointer            user_data)
+gdm_display_store_find (GdmDisplayStore     *store,
+                        GdmDisplayStoreFunc  predicate,
+                        gpointer             user_data)
 {
         StoredDisplay *stored_display;
         FindClosure    closure;
@@ -219,9 +219,9 @@ gdm_display_store_find (GdmDisplayStore    *store,
 }
 
 guint
-gdm_display_store_foreach_remove (GdmDisplayStore    *store,
-                                  GdmDisplayStoreFunc func,
-                                  gpointer            user_data)
+gdm_display_store_foreach_remove (GdmDisplayStore     *store,
+                                  GdmDisplayStoreFunc  func,
+                                  gpointer             user_data)
 {
         FindClosure closure;
         guint       ret;

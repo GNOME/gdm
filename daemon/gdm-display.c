@@ -108,9 +108,9 @@ enum {
 static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
-static void     gdm_display_init        (GdmDisplay      *self);
-static void     gdm_display_finalize    (GObject         *object);
-static void     queue_finish            (GdmDisplay      *self);
+static void     gdm_display_init        (GdmDisplay *self);
+static void     gdm_display_finalize    (GObject *object);
+static void     queue_finish            (GdmDisplay *self);
 static void     _gdm_display_set_status (GdmDisplay *self,
                                          int         status);
 static gboolean wants_initial_setup (GdmDisplay *self);
@@ -161,9 +161,9 @@ gdm_display_get_session_id (GdmDisplay *self)
 }
 
 gboolean
-gdm_display_get_remote_hostname (GdmDisplay *self,
-                                 char      **hostname,
-                                 GError    **error)
+gdm_display_get_remote_hostname (GdmDisplay  *self,
+                                 char       **hostname,
+                                 GError     **error)
 {
         GdmDisplayPrivate *priv;
 
@@ -178,9 +178,9 @@ gdm_display_get_remote_hostname (GdmDisplay *self,
 }
 
 gboolean
-gdm_display_get_seat_id (GdmDisplay *self,
-                         char      **seat_id,
-                         GError    **error)
+gdm_display_get_seat_id (GdmDisplay  *self,
+                         char       **seat_id,
+                         GError     **error)
 {
         GdmDisplayPrivate *priv;
 
@@ -380,9 +380,9 @@ gdm_display_unmanage (GdmDisplay *self)
 }
 
 gboolean
-gdm_display_get_id (GdmDisplay         *self,
-                    char              **id,
-                    GError            **error)
+gdm_display_get_id (GdmDisplay  *self,
+                    char       **id,
+                    GError     **error)
 {
         GdmDisplayPrivate *priv;
 
@@ -397,9 +397,9 @@ gdm_display_get_id (GdmDisplay         *self,
 }
 
 gboolean
-gdm_display_is_local (GdmDisplay *self,
-                      gboolean   *local,
-                      GError    **error)
+gdm_display_is_local (GdmDisplay  *self,
+                      gboolean    *local,
+                      GError     **error)
 {
         GdmDisplayPrivate *priv;
 
@@ -414,8 +414,8 @@ gdm_display_is_local (GdmDisplay *self,
 }
 
 static void
-_gdm_display_set_id (GdmDisplay     *self,
-                     const char     *id)
+_gdm_display_set_id (GdmDisplay *self,
+                     const char *id)
 {
         GdmDisplayPrivate *priv;
 
@@ -426,8 +426,8 @@ _gdm_display_set_id (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_seat_id (GdmDisplay     *self,
-                          const char     *seat_id)
+_gdm_display_set_seat_id (GdmDisplay *self,
+                          const char *seat_id)
 {
         GdmDisplayPrivate *priv;
 
@@ -438,8 +438,8 @@ _gdm_display_set_seat_id (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_session_id (GdmDisplay     *self,
-                             const char     *session_id)
+_gdm_display_set_session_id (GdmDisplay *self,
+                             const char *session_id)
 {
         GdmDisplayPrivate *priv;
 
@@ -462,8 +462,8 @@ _gdm_display_set_session_class (GdmDisplay *self,
 }
 
 static void
-_gdm_display_set_remote_hostname (GdmDisplay     *self,
-                                  const char     *hostname)
+_gdm_display_set_remote_hostname (GdmDisplay *self,
+                                  const char *hostname)
 {
         GdmDisplayPrivate *priv;
 
@@ -473,8 +473,8 @@ _gdm_display_set_remote_hostname (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_is_local (GdmDisplay     *self,
-                           gboolean        is_local)
+_gdm_display_set_is_local (GdmDisplay *self,
+                           gboolean    is_local)
 {
         GdmDisplayPrivate *priv;
 
@@ -495,8 +495,8 @@ _gdm_display_set_autologin_user (GdmDisplay *self,
 }
 
 static void
-_gdm_display_set_session_registered (GdmDisplay     *self,
-                                     gboolean        registered)
+_gdm_display_set_session_registered (GdmDisplay *self,
+                                     gboolean    registered)
 {
         GdmDisplayPrivate *priv;
 
@@ -519,8 +519,8 @@ _gdm_display_set_launch_environment (GdmDisplay           *self,
 }
 
 static void
-_gdm_display_set_is_initial (GdmDisplay     *self,
-                             gboolean        initial)
+_gdm_display_set_is_initial (GdmDisplay *self,
+                             gboolean    initial)
 {
         GdmDisplayPrivate *priv;
 
@@ -530,8 +530,8 @@ _gdm_display_set_is_initial (GdmDisplay     *self,
 }
 
 static void
-_gdm_display_set_allow_timed_login (GdmDisplay     *self,
-                                    gboolean        allow_timed_login)
+_gdm_display_set_allow_timed_login (GdmDisplay *self,
+                                    gboolean    allow_timed_login)
 {
         GdmDisplayPrivate *priv;
 
@@ -559,10 +559,10 @@ _gdm_display_set_supported_session_types (GdmDisplay         *self,
 }
 
 static void
-gdm_display_set_property (GObject        *object,
-                          guint           prop_id,
-                          const GValue   *value,
-                          GParamSpec     *pspec)
+gdm_display_set_property (GObject      *object,
+                          guint         prop_id,
+                          const GValue *value,
+                          GParamSpec   *pspec)
 {
         GdmDisplay *self;
 
@@ -615,10 +615,10 @@ gdm_display_set_property (GObject        *object,
 }
 
 static void
-gdm_display_get_property (GObject        *object,
-                          guint           prop_id,
-                          GValue         *value,
-                          GParamSpec     *pspec)
+gdm_display_get_property (GObject    *object,
+                          guint       prop_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
 {
         GdmDisplay *self;
         GdmDisplayPrivate *priv;

@@ -99,15 +99,15 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0 };
 
 static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryClass *klass);
-static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
-static void     gdm_local_display_factory_finalize      (GObject                     *object);
+static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory *factory);
+static void     gdm_local_display_factory_finalize      (GObject *object);
 
-static void     ensure_display_for_seat                 (GdmLocalDisplayFactory      *factory,
-                                                         const char                  *seat_id);
+static void     ensure_display_for_seat                 (GdmLocalDisplayFactory *factory,
+                                                         const char             *seat_id);
 
-static void     on_display_status_changed               (GdmDisplay                  *display,
-                                                         GParamSpec                  *arg1,
-                                                         GdmLocalDisplayFactory      *factory);
+static void     on_display_status_changed               (GdmDisplay             *display,
+                                                         GParamSpec             *arg1,
+                                                         GdmLocalDisplayFactory *factory);
 
 static gboolean gdm_local_display_factory_sync_seats    (GdmLocalDisplayFactory *factory);
 static gpointer local_display_factory_object = NULL;
@@ -799,8 +799,8 @@ lookup_by_session_id (const char *id,
 
 static gboolean
 lookup_by_tty (const char *id,
-              GdmDisplay *display,
-              gpointer    user_data)
+               GdmDisplay *display,
+               gpointer    user_data)
 {
         const char *tty_to_find = user_data;
         g_autofree char *tty_to_check = NULL;
@@ -849,8 +849,8 @@ maybe_stop_greeter_in_background (GdmLocalDisplayFactory *factory,
 }
 
 static gboolean
-on_vt_changed (GIOChannel    *source,
-               GIOCondition   condition,
+on_vt_changed (GIOChannel             *source,
+               GIOCondition            condition,
                GdmLocalDisplayFactory *factory)
 {
         GdmDisplayStore *store;
@@ -1000,9 +1000,9 @@ on_vt_changed (GIOChannel    *source,
 
 #ifdef HAVE_UDEV
 static void
-on_uevent (GUdevClient *client,
-           const char  *action,
-           GUdevDevice *device,
+on_uevent (GUdevClient            *client,
+           const char             *action,
+           GUdevDevice            *device,
            GdmLocalDisplayFactory *factory)
 {
         if (!g_udev_device_get_device_file (device)) {
@@ -1205,10 +1205,10 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
 }
 
 static void
-gdm_local_display_factory_set_property (GObject       *object,
-                                        guint          prop_id,
-                                        const GValue  *value,
-                                        GParamSpec    *pspec)
+gdm_local_display_factory_set_property (GObject      *object,
+                                        guint         prop_id,
+                                        const GValue *value,
+                                        GParamSpec   *pspec)
 {
         switch (prop_id) {
         default:

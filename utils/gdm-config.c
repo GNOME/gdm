@@ -347,10 +347,10 @@ auth_type_to_option_key (GdmAuthType auth_type)
 }
 
 static gboolean
-toggle_option_check (GOptionContext *context,
-                     GOptionGroup *group,
-                     gpointer user_data,
-                     GError **error)
+toggle_option_check (GOptionContext  *context,
+                     GOptionGroup    *group,
+                     gpointer         user_data,
+                     GError         **error)
 {
         OptionData *data = user_data;
 
@@ -374,10 +374,10 @@ toggle_option_check (GOptionContext *context,
 }
 
 static gboolean
-smartcard_option_check (GOptionContext *context,
-                        GOptionGroup *group,
-                        gpointer user_data,
-                        GError **error)
+smartcard_option_check (GOptionContext  *context,
+                        GOptionGroup    *group,
+                        gpointer         user_data,
+                        GError         **error)
 {
         OptionData *data = user_data;
 
@@ -472,7 +472,7 @@ config_command_get_handler (GdmConfigCommand config_command)
 
 static void
 config_command_handler_add_to_group (GdmConfigCommandHandler *command_handler,
-                                  GOptionGroup            *group)
+                                     GOptionGroup            *group)
 {
         guint i;
 
@@ -780,7 +780,7 @@ get_distro_hook_config (GdmAuthType   auth_type,
 }
 
 static gboolean
-make_directory_with_parents (const char *path,
+make_directory_with_parents (const char  *path,
                              GError     **error)
 {
         if (!g_file_test (path, G_FILE_TEST_IS_DIR) &&
@@ -1156,8 +1156,8 @@ write_dconf_setting_to_key_file (const char  *db_name,
 }
 
 static gboolean
-remove_dconf_setting_key_file (const char *db_name,
-                               const char *key_file,
+remove_dconf_setting_key_file (const char  *db_name,
+                               const char  *key_file,
                                GError     **error)
 {
         g_autofree char *db_dir = NULL;
@@ -1194,12 +1194,12 @@ get_dconf_db_lock_path (const char *db_name,
 }
 
 static gboolean
-set_dconf_setting_lock_full (const char *db_name,
-                             const char *lock_name,
-                             const char *schema,
-                             const char *key,
-                             gboolean    add,
-                             GError    **error)
+set_dconf_setting_lock_full (const char  *db_name,
+                             const char  *lock_name,
+                             const char  *schema,
+                             const char  *key,
+                             gboolean     add,
+                             GError     **error)
 {
         g_autoptr (GPtrArray) locks_list = NULL;
         g_autoptr (GError) local_error = NULL;
@@ -1276,21 +1276,21 @@ set_dconf_setting_lock_full (const char *db_name,
 }
 
 static gboolean
-set_dconf_setting_lock (const char *db_name,
-                        const char *lock_name,
-                        const char *schema,
-                        const char *key,
-                        GError    **error)
+set_dconf_setting_lock (const char  *db_name,
+                        const char  *lock_name,
+                        const char  *schema,
+                        const char  *key,
+                        GError     **error)
 {
         return set_dconf_setting_lock_full (db_name, lock_name, schema, key, TRUE, error);
 }
 
 static gboolean
-unset_dconf_setting_lock (const char *db_name,
-                          const char *lock_name,
-                          const char *schema,
-                          const char *key,
-                          GError    **error)
+unset_dconf_setting_lock (const char  *db_name,
+                          const char  *lock_name,
+                          const char  *schema,
+                          const char  *key,
+                          GError     **error)
 {
         return set_dconf_setting_lock_full (db_name, lock_name, schema, key, FALSE, error);
 }
@@ -1358,11 +1358,11 @@ write_system_setting_to_db (const char  *db_name,
 }
 
 static gboolean
-write_locked_setting_to_db (const char   *db_name,
-                            const char   *schema,
-                            const char   *key,
-                            GVariant     *value,
-                            GError      **error)
+write_locked_setting_to_db (const char  *db_name,
+                            const char  *schema,
+                            const char  *key,
+                            GVariant    *value,
+                            GError     **error)
 {
         if (!write_system_setting_to_db (db_name, schema, key, value, error)) {
                 return FALSE;
@@ -1381,10 +1381,10 @@ write_locked_setting_to_db (const char   *db_name,
 }
 
 static gboolean
-write_locked_system_settings_to_db (const char   *schema,
-                                    const char   *key,
-                                    GVariant     *value,
-                                    GError      **error)
+write_locked_system_settings_to_db (const char  *schema,
+                                    const char  *key,
+                                    GVariant    *value,
+                                    GError     **error)
 {
         g_autofree char *db_name = NULL;
 
@@ -1558,9 +1558,9 @@ handle_config_command (GdmConfigCommand          config_command,
 }
 
 static gboolean
-print_usage (int                   argc,
-             char                 *argv[],
-             GdmConfigCommand      config_command)
+print_usage (int               argc,
+             char             *argv[],
+             GdmConfigCommand  config_command)
 {
         g_autoptr (GOptionContext) ctx = NULL;
         g_autofree char *usage = NULL;

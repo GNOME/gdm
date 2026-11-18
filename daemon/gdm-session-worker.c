@@ -199,14 +199,14 @@ enum {
 static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
-static void     gdm_session_worker_init         (GdmSessionWorker      *session_worker);
-static void     gdm_session_worker_finalize     (GObject               *object);
+static void     gdm_session_worker_init         (GdmSessionWorker *session_worker);
+static void     gdm_session_worker_finalize     (GObject *object);
 
 static void     gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
                                                              const char       *key,
                                                              const char       *value);
 
-static void     queue_state_change              (GdmSessionWorker      *worker);
+static void     queue_state_change              (GdmSessionWorker *worker);
 
 static void     worker_interface_init           (GdmDBusWorkerIface *iface);
 
@@ -224,10 +224,10 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionWorker,
 
 /* adapted from glib script_execute */
 static void
-script_execute (const gchar *file,
-                char       **argv,
-                char       **envp,
-                gboolean     search_path)
+script_execute (const gchar  *file,
+                char        **argv,
+                char        **envp,
+                gboolean      search_path)
 {
         /* Count the arguments.  */
         int argc = 0;
@@ -273,10 +273,10 @@ my_strchrnul (const char *str, char c)
 
 /* adapted from glib g_execute */
 static gint
-gdm_session_execute (const char *file,
-                     char      **argv,
-                     char      **envp,
-                     gboolean    search_path)
+gdm_session_execute (const char  *file,
+                     char       **argv,
+                     char       **envp,
+                     gboolean     search_path)
 {
         if (*file == '\0') {
                 /* We check the simple case first. */
@@ -490,9 +490,9 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 }
 
 static gboolean
-gdm_session_worker_ask_question (GdmSessionWorker *worker,
-                                 const char       *question,
-                                 char            **answerp)
+gdm_session_worker_ask_question (GdmSessionWorker  *worker,
+                                 const char        *question,
+                                 char             **answerp)
 {
         return gdm_dbus_worker_manager_call_info_query_sync (worker->manager,
                                                              worker->service,
@@ -503,9 +503,9 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 }
 
 static gboolean
-gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
-                                   const char       *question,
-                                   char            **answerp)
+gdm_session_worker_ask_for_secret (GdmSessionWorker  *worker,
+                                   const char        *question,
+                                   char             **answerp)
 {
         return gdm_dbus_worker_manager_call_secret_info_query_sync (worker->manager,
                                                                     worker->service,
@@ -539,10 +539,10 @@ gdm_session_worker_report_problem (GdmSessionWorker *worker,
 
 #ifdef SUPPORTS_PAM_EXTENSIONS
 static gboolean
-gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
-                                        const char       *prompt_message,
-                                        GdmChoiceList    *list,
-                                        char            **answerp)
+gdm_session_worker_ask_list_of_choices (GdmSessionWorker  *worker,
+                                        const char        *prompt_message,
+                                        GdmChoiceList     *list,
+                                        char             **answerp)
 {
         g_autoptr (GVariant) choices_as_variant = NULL;
         g_autoptr (GError) error = NULL;
@@ -585,7 +585,7 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker *worker,
 }
 
 static gboolean
-gdm_session_worker_process_choice_list_request (GdmSessionWorker                   *worker,
+gdm_session_worker_process_choice_list_request (GdmSessionWorker                  *worker,
                                                 GdmPamExtensionChoiceListRequest  *request,
                                                 GdmPamExtensionChoiceListResponse *response)
 {
@@ -1074,8 +1074,8 @@ handle_terminal_vt_switches (GdmSessionWorker *worker,
 }
 
 static void
-fix_terminal_vt_mode (GdmSessionWorker  *worker,
-                      int                tty_fd)
+fix_terminal_vt_mode (GdmSessionWorker *worker,
+                      int               tty_fd)
 {
         struct vt_mode getmode_reply = { 0 };
         int kernel_display_mode = 0;
@@ -1116,8 +1116,8 @@ out:
 }
 
 static void
-jump_to_vt (GdmSessionWorker  *worker,
-            int                vt_number)
+jump_to_vt (GdmSessionWorker *worker,
+            int               vt_number)
 {
         int fd;
         int active_vt_tty_fd;
@@ -1243,15 +1243,15 @@ gdm_session_worker_resolve_service_file (const char *service)
 }
 
 static gboolean
-gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
-                                   const char         *service,
-                                   const char * const *extensions,
-                                   const char         *username,
-                                   const char         *hostname,
-                                   gboolean            display_is_local,
-                                   const char         *display_device,
-                                   const char         *seat_id,
-                                   GError            **error)
+gdm_session_worker_initialize_pam (GdmSessionWorker    *worker,
+                                   const char          *service,
+                                   const char * const  *extensions,
+                                   const char          *username,
+                                   const char          *hostname,
+                                   gboolean             display_is_local,
+                                   const char          *display_device,
+                                   const char          *seat_id,
+                                   GError             **error)
 {
         struct pam_conv        pam_conversation;
         int                    error_code;
@@ -1395,9 +1395,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker   *worker,
 }
 
 static gboolean
-gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
-                                      gboolean          password_is_required,
-                                      GError          **error)
+gdm_session_worker_authenticate_user (GdmSessionWorker  *worker,
+                                      gboolean           password_is_required,
+                                      GError           **error)
 {
         int error_code;
         int authentication_flags;
@@ -1471,9 +1471,9 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
 }
 
 static gboolean
-gdm_session_worker_authorize_user (GdmSessionWorker *worker,
-                                   gboolean          password_is_required,
-                                   GError          **error)
+gdm_session_worker_authorize_user (GdmSessionWorker  *worker,
+                                   gboolean           password_is_required,
+                                   GError           **error)
 {
         int error_code;
         int authentication_flags;
@@ -1591,9 +1591,9 @@ gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
 }
 
 static gboolean
-_change_user (GdmSessionWorker  *worker,
-              uid_t              uid,
-              gid_t              gid)
+_change_user (GdmSessionWorker *worker,
+              uid_t             uid,
+              gid_t             gid)
 {
 #ifdef THE_MAN_PAGE_ISNT_LYING
         /* pam_setcred wants to be called as the authenticated user
@@ -1621,11 +1621,11 @@ _change_user (GdmSessionWorker  *worker,
 }
 
 static gboolean
-_lookup_passwd_info (const char *username,
-                     uid_t      *uidp,
-                     gid_t      *gidp,
-                     char      **homep,
-                     char      **shellp)
+_lookup_passwd_info (const char  *username,
+                     uid_t       *uidp,
+                     gid_t       *gidp,
+                     char       **homep,
+                     char       **shellp)
 {
         gboolean       ret;
         struct passwd *passwd_entry;
@@ -1715,7 +1715,7 @@ _lookup_passwd_info (const char *username,
 
 static char *
 get_var_cb (const char *key,
-            gpointer user_data)
+            gpointer    user_data)
 {
         return gdm_session_worker_get_environment_variable (user_data, key);
 }
@@ -1723,7 +1723,7 @@ get_var_cb (const char *key,
 static void
 load_env_func (const char *var,
                const char *value,
-               gpointer user_data)
+               gpointer    user_data)
 {
         GdmSessionWorker *worker = user_data;
         gdm_session_worker_set_environment_variable (worker, var, value);
@@ -2500,9 +2500,9 @@ gdm_session_worker_set_is_reauth_session (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_set_property (GObject      *object,
-                                guint         prop_id,
-                                const GValue *value,
-                                GParamSpec   *pspec)
+                                 guint         prop_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
 {
         GdmSessionWorker *self;
 
@@ -2523,9 +2523,9 @@ gdm_session_worker_set_property (GObject      *object,
 
 static void
 gdm_session_worker_get_property (GObject    *object,
-                                guint       prop_id,
-                                GValue     *value,
-                                GParamSpec *pspec)
+                                 guint       prop_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
 {
         GdmSessionWorker *self;
 

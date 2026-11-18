@@ -382,7 +382,7 @@ gdm_session_worker_job_get_pid (GdmSessionWorkerJob *session_worker_job)
 
 void
 gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_job,
-                                           const char      *address)
+                                           const char          *address)
 {
         g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
 

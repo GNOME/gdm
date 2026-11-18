@@ -41,7 +41,7 @@ typedef enum
 
 GQuark                     gdm_local_display_factory_error_quark              (void);
 
-GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore        *display_store);
+GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore *display_store);
 
 G_END_DECLS
 

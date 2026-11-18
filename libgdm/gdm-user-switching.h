@@ -26,6 +26,6 @@
 #include <gio/gio.h>
 
 gboolean gdm_goto_login_session_sync (GCancellable  *cancellable,
-				      GError       **error);
+                                      GError       **error);
 
 #endif

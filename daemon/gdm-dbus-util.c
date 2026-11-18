@@ -50,9 +50,9 @@ handle_bus_method (GDBusConnection       *connection,
 }
 
 static gboolean
-handle_connection (GDBusServer      *server,
-                   GDBusConnection  *new_connection,
-                   gpointer          user_data)
+handle_connection (GDBusServer     *server,
+                   GDBusConnection *new_connection,
+                   gpointer         user_data)
 {
         g_autoptr (GDBusNodeInfo) bus_info = NULL;
         GDBusInterfaceVTable bus_vtable = { handle_bus_method };

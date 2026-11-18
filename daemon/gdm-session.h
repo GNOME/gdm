@@ -56,25 +56,25 @@ typedef enum {
 GdmSessionDisplayMode gdm_session_display_mode_from_string (const char *str);
 const char * gdm_session_display_mode_to_string (GdmSessionDisplayMode mode);
 
-GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,
-                                                       uid_t         allowed_user,
-                                                       const char   *display_hostname,
-                                                       const char   *display_device,
-                                                       const char   *display_seat_id,
-                                                       gboolean      display_is_local,
-                                                       const char * const *environment);
-uid_t             gdm_session_get_allowed_user       (GdmSession     *session);
+GdmSession      *gdm_session_new                      (GdmSessionVerificationMode  verification_mode,
+                                                       uid_t                       allowed_user,
+                                                       const char                 *display_hostname,
+                                                       const char                 *display_device,
+                                                       const char                 *display_seat_id,
+                                                       gboolean                    display_is_local,
+                                                       const char * const         *environment);
+uid_t             gdm_session_get_allowed_user       (GdmSession *session);
 void              gdm_session_start_reauthentication (GdmSession *session,
                                                       GPid        pid_of_caller,
                                                       uid_t       uid_of_caller);
 
-const char       *gdm_session_get_server_address          (GdmSession     *session);
-const char       *gdm_session_get_username                (GdmSession     *session);
-const char       *gdm_session_get_display_device          (GdmSession     *session);
-const char       *gdm_session_get_display_seat_id         (GdmSession     *session);
-const char       *gdm_session_get_session_id              (GdmSession     *session);
-gboolean          gdm_session_session_registers           (GdmSession     *session);
-GdmSessionDisplayMode gdm_session_get_display_mode  (GdmSession     *session);
+const char       *gdm_session_get_server_address          (GdmSession *session);
+const char       *gdm_session_get_username                (GdmSession *session);
+const char       *gdm_session_get_display_device          (GdmSession *session);
+const char       *gdm_session_get_display_seat_id         (GdmSession *session);
+const char       *gdm_session_get_session_id              (GdmSession *session);
+gboolean          gdm_session_session_registers           (GdmSession *session);
+GdmSessionDisplayMode gdm_session_get_display_mode  (GdmSession *session);
 gboolean          gdm_session_start_conversation          (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_stop_conversation           (GdmSession *session,

@@ -43,8 +43,8 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_settings_backend_class_init (GdmSettingsBackendClass *klass);
-static void     gdm_settings_backend_init       (GdmSettingsBackend      *settings_backend);
-static void     gdm_settings_backend_finalize   (GObject                 *object);
+static void     gdm_settings_backend_init       (GdmSettingsBackend *settings_backend);
+static void     gdm_settings_backend_finalize   (GObject *object);
 
 G_DEFINE_ABSTRACT_TYPE (GdmSettingsBackend, gdm_settings_backend, G_TYPE_OBJECT)
 
@@ -60,10 +60,10 @@ gdm_settings_backend_error_quark (void)
 }
 
 static gboolean
-gdm_settings_backend_real_get_value (GdmSettingsBackend *settings_backend,
-                                     const char         *key,
-                                     char              **value,
-                                     GError            **error)
+gdm_settings_backend_real_get_value (GdmSettingsBackend  *settings_backend,
+                                     const char          *key,
+                                     char               **value,
+                                     GError             **error)
 {
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
 
@@ -71,10 +71,10 @@ gdm_settings_backend_real_get_value (GdmSettingsBackend *settings_backend,
 }
 
 static gboolean
-gdm_settings_backend_real_set_value (GdmSettingsBackend *settings_backend,
-                                     const char         *key,
-                                     const char         *value,
-                                     GError            **error)
+gdm_settings_backend_real_set_value (GdmSettingsBackend  *settings_backend,
+                                     const char          *key,
+                                     const char          *value,
+                                     GError             **error)
 {
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
 
@@ -82,10 +82,10 @@ gdm_settings_backend_real_set_value (GdmSettingsBackend *settings_backend,
 }
 
 gboolean
-gdm_settings_backend_get_value (GdmSettingsBackend *settings_backend,
-                                const char         *key,
-                                char              **value,
-                                GError            **error)
+gdm_settings_backend_get_value (GdmSettingsBackend  *settings_backend,
+                                const char          *key,
+                                char               **value,
+                                GError             **error)
 {
         gboolean ret;
 
@@ -101,10 +101,10 @@ gdm_settings_backend_get_value (GdmSettingsBackend *settings_backend,
 }
 
 gboolean
-gdm_settings_backend_set_value (GdmSettingsBackend *settings_backend,
-                                const char         *key,
-                                const char         *value,
-                                GError            **error)
+gdm_settings_backend_set_value (GdmSettingsBackend  *settings_backend,
+                                const char          *key,
+                                const char          *value,
+                                GError             **error)
 {
         gboolean ret;
 

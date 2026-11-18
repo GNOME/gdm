@@ -111,8 +111,8 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_launch_environment_class_init    (GdmLaunchEnvironmentClass *klass);
-static void     gdm_launch_environment_init          (GdmLaunchEnvironment      *launch_environment);
-static void     gdm_launch_environment_finalize      (GObject                   *object);
+static void     gdm_launch_environment_init          (GdmLaunchEnvironment *launch_environment);
+static void     gdm_launch_environment_finalize      (GObject *object);
 
 G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
 
@@ -241,7 +241,7 @@ setup_seat_persist_dirs (const char  *seat_id,
 
 static char *
 get_var_cb (const char *var,
-            gpointer user_data)
+            gpointer    user_data)
 {
         const char *value = g_hash_table_lookup (user_data, var);
         return g_strdup (value);
@@ -250,7 +250,7 @@ get_var_cb (const char *var,
 static void
 load_env_func (const char *var,
                const char *value,
-               gpointer user_data)
+               gpointer    user_data)
 {
         GHashTable *environment = user_data;
         g_hash_table_replace (environment, g_strdup (var), g_strdup (value));
@@ -429,8 +429,8 @@ get_environment_file_output_stream (GdmLaunchEnvironment  *launch_environment,
 }
 
 static void
-on_session_setup_complete (GdmSession        *session,
-                           const char        *service_name,
+on_session_setup_complete (GdmSession           *session,
+                           const char           *service_name,
                            GdmLaunchEnvironment *launch_environment)
 {
         g_autoptr (GHashTable) hash = NULL;
@@ -729,7 +729,7 @@ _gdm_launch_environment_set_user_member_of (GdmLaunchEnvironment *launch_environ
 
 static void
 _gdm_launch_environment_set_dconf_profile (GdmLaunchEnvironment *launch_environment,
-                                            const char           *profile)
+                                           const char           *profile)
 {
         g_free (launch_environment->dconf_profile);
         launch_environment->dconf_profile = g_strdup (profile);

@@ -68,9 +68,9 @@ typedef struct {
 } GdmRecursiveChownData;
 
 static gboolean
-chown_file (GFile   *file,
-            gpointer userdata,
-            GError **error)
+chown_file (GFile     *file,
+            gpointer   userdata,
+            GError   **error)
 {
         GdmRecursiveChownData *data = userdata;
 
@@ -228,9 +228,9 @@ recursive_copy_dir (GFile   *source,
 }
 
 gboolean
-gdm_copy_dir_recursively (const char *source,
-                          const char *dest,
-                          GError **error)
+gdm_copy_dir_recursively (const char  *source,
+                          const char  *dest,
+                          GError     **error)
 {
         g_autoptr (GFile) gio_source = NULL;
         g_autoptr (GFile) gio_dest = NULL;

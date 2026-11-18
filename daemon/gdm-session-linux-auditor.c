@@ -99,8 +99,8 @@ gdm_session_linux_auditor_report_login (GdmSessionAuditor *auditor)
 
 static void
 gdm_session_linux_auditor_report_login_failure (GdmSessionAuditor *auditor,
-                                                  int                pam_error_code,
-                                                  const char        *pam_error_string)
+                                                int                pam_error_code,
+                                                const char        *pam_error_string)
 {
         log_user_message (auditor, AUDIT_USER_LOGIN, 0);
 }

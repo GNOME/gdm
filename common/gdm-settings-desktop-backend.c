@@ -55,8 +55,8 @@ enum {
 static GParamSpec *props[N_PROPS] = { NULL, };
 
 static void     gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass);
-static void     gdm_settings_desktop_backend_init       (GdmSettingsDesktopBackend      *settings_desktop_backend);
-static void     gdm_settings_desktop_backend_finalize   (GObject                        *object);
+static void     gdm_settings_desktop_backend_init       (GdmSettingsDesktopBackend *settings_desktop_backend);
+static void     gdm_settings_desktop_backend_finalize   (GObject *object);
 
 G_DEFINE_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM_TYPE_SETTINGS_BACKEND)
 
@@ -110,10 +110,10 @@ gdm_settings_desktop_backend_set_property (GObject      *object,
 }
 
 static void
-gdm_settings_desktop_backend_get_property (GObject      *object,
-                                           guint         prop_id,
-                                           GValue       *value,
-                                           GParamSpec   *pspec)
+gdm_settings_desktop_backend_get_property (GObject    *object,
+                                           guint       prop_id,
+                                           GValue     *value,
+                                           GParamSpec *pspec)
 {
         GdmSettingsDesktopBackend *self;
 
@@ -130,11 +130,11 @@ gdm_settings_desktop_backend_get_property (GObject      *object,
 }
 
 static gboolean
-parse_key_string (const char *keystring,
-                  char      **group,
-                  char      **key,
-                  char      **locale,
-                  char      **value)
+parse_key_string (const char  *keystring,
+                  char       **group,
+                  char       **key,
+                  char       **locale,
+                  char       **value)
 {
         g_auto (GStrv) split1 = NULL;
         g_auto (GStrv) split2 = NULL;
@@ -209,10 +209,10 @@ parse_key_string (const char *keystring,
 }
 
 static gboolean
-gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
-                                        const char         *key,
-                                        char              **value,
-                                        GError            **error)
+gdm_settings_desktop_backend_get_value (GdmSettingsBackend  *backend,
+                                        const char          *key,
+                                        char               **value,
+                                        GError             **error)
 {
         g_autoptr (GError) local_error = NULL;
         g_autofree char *val = NULL;
@@ -302,10 +302,10 @@ queue_save (GdmSettingsDesktopBackend *backend)
 }
 
 static gboolean
-gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
-                                        const char         *key,
-                                        const char         *value,
-                                        GError            **error)
+gdm_settings_desktop_backend_set_value (GdmSettingsBackend  *backend,
+                                        const char          *key,
+                                        const char          *value,
+                                        GError             **error)
 {
         g_autofree char *old_val = NULL;
         g_autofree char *g = NULL;

@@ -115,7 +115,7 @@ on_display_removed (GDBusObjectManager *displays,
 }
 
 static gboolean
-watch_displays (State *state,
+watch_displays (State   *state,
                 GError **error)
 {
         g_autoptr (GDBusObjectManager) displays = NULL;

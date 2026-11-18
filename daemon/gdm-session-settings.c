@@ -45,17 +45,16 @@ struct _GdmSessionSettings
 };
 
 static void gdm_session_settings_finalize (GObject *object);
-static void gdm_session_settings_class_install_properties (GdmSessionSettingsClass *
-                                              settings_class);
+static void gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings_class);
 
 static void gdm_session_settings_set_property (GObject      *object,
-                                              guint         prop_id,
-                                              const GValue *value,
-                                              GParamSpec   *pspec);
-static void gdm_session_settings_get_property (GObject      *object,
-                                              guint         prop_id,
-                                              GValue       *value,
-                                              GParamSpec   *pspec);
+                                               guint         prop_id,
+                                               const GValue *value,
+                                               GParamSpec   *pspec);
+static void gdm_session_settings_get_property (GObject    *object,
+                                               guint       prop_id,
+                                               GValue     *value,
+                                               GParamSpec *pspec);
 
 enum {
         PROP_0 = 0,
@@ -204,9 +203,9 @@ gdm_session_settings_get_session_type (GdmSessionSettings *settings)
 
 static void
 gdm_session_settings_set_property (GObject      *object,
-                                  guint         prop_id,
-                                  const GValue *value,
-                                  GParamSpec   *pspec)
+                                   guint         prop_id,
+                                   const GValue *value,
+                                   GParamSpec   *pspec)
 {
         GdmSessionSettings *settings;
 
@@ -232,9 +231,9 @@ gdm_session_settings_set_property (GObject      *object,
 
 static void
 gdm_session_settings_get_property (GObject    *object,
-                                  guint       prop_id,
-                                  GValue     *value,
-                                  GParamSpec *pspec)
+                                   guint       prop_id,
+                                   GValue     *value,
+                                   GParamSpec *pspec)
 {
         GdmSessionSettings *settings;
 
@@ -274,7 +273,7 @@ gdm_session_settings_new (void)
 }
 
 gboolean
-gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
+gdm_session_settings_is_loaded (GdmSessionSettings *settings)
 {
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
 
@@ -336,8 +335,8 @@ on_user_is_loaded_changed (ActUser            *user,
 }
 
 gboolean
-gdm_session_settings_load (GdmSessionSettings  *settings,
-                           const char          *username)
+gdm_session_settings_load (GdmSessionSettings *settings,
+                           const char         *username)
 {
         g_autoptr (ActUser) old_user = NULL;
 
@@ -370,8 +369,8 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
 }
 
 gboolean
-gdm_session_settings_save (GdmSessionSettings  *settings,
-                           const char          *username)
+gdm_session_settings_save (GdmSessionSettings *settings,
+                           const char         *username)
 {
         g_autoptr (ActUser) user = NULL;
 

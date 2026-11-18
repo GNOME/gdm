@@ -45,7 +45,7 @@ struct _GdmRemoteDisplay
 };
 
 static void     gdm_remote_display_class_init   (GdmRemoteDisplayClass *klass);
-static void     gdm_remote_display_init         (GdmRemoteDisplay      *remote_display);
+static void     gdm_remote_display_init         (GdmRemoteDisplay *remote_display);
 static void     on_pending_export_session_id_set (GdmDisplay *display,
                                                   GParamSpec *pspec,
                                                   gpointer    user_data);

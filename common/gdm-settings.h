@@ -44,14 +44,14 @@ void                gdm_settings_reload                         (GdmSettings *se
 
 /* exported */
 
-gboolean            gdm_settings_get_value                      (GdmSettings *settings,
-                                                                 const char  *key,
-                                                                 char       **value,
-                                                                 GError     **error);
-gboolean            gdm_settings_set_value                      (GdmSettings *settings,
-                                                                 const char  *key,
-                                                                 const char  *value,
-                                                                 GError     **error);
+gboolean            gdm_settings_get_value                      (GdmSettings  *settings,
+                                                                 const char   *key,
+                                                                 char        **value,
+                                                                 GError      **error);
+gboolean            gdm_settings_set_value                      (GdmSettings  *settings,
+                                                                 const char   *key,
+                                                                 const char   *value,
+                                                                 GError      **error);
 
 G_END_DECLS
 

@@ -335,9 +335,9 @@ gdm_generate_random_bytes (gsize    size,
 }
 
 static gboolean
-create_transient_display (GDBusConnection *connection,
-                          GCancellable    *cancellable,
-                          GError         **error)
+create_transient_display (GDBusConnection  *connection,
+                          GCancellable     *cancellable,
+                          GError          **error)
 {
         GError *local_error = NULL;
         GVariant *reply;
@@ -592,8 +592,8 @@ goto_login_session (GDBusConnection  *connection,
 }
 
 gboolean
-gdm_goto_login_session (GCancellable *cancellable,
-                        GError      **error)
+gdm_goto_login_session (GCancellable  *cancellable,
+                        GError       **error)
 {
         g_autoptr (GDBusConnection) connection = NULL;
         g_autoptr (GError) local_error = NULL;
@@ -625,9 +625,9 @@ gdm_shell_var_is_valid_char (gchar c, gboolean first)
  * The caller must free the returned string.
  */
 char *
-gdm_shell_expand (const char *str,
-                  GdmExpandVarFunc expand_var_func,
-                  gpointer user_data)
+gdm_shell_expand (const char       *str,
+                  GdmExpandVarFunc  expand_var_func,
+                  gpointer          user_data)
 {
         GString *s = g_string_new ("");
         const gchar *p, *start;
@@ -819,10 +819,10 @@ gdm_find_graphical_sessions_for_username (const char   *username,
 }
 
 gboolean
-gdm_find_display_session (GPid        pid,
-                          const uid_t uid,
-                          char      **out_session_id,
-                          GError    **error)
+gdm_find_display_session (GPid          pid,
+                          const uid_t   uid,
+                          char        **out_session_id,
+                          GError      **error)
 {
         char *local_session_id = NULL;
         g_auto (GStrv) sessions = NULL;
@@ -879,10 +879,10 @@ gdm_find_display_session (GPid        pid,
 }
 
 static void
-load_env_file (GFile *file,
-               GdmLoadEnvVarFunc load_env_func,
-               GdmExpandVarFunc  expand_func,
-               gpointer user_data)
+load_env_file (GFile             *file,
+               GdmLoadEnvVarFunc  load_env_func,
+               GdmExpandVarFunc   expand_func,
+               gpointer           user_data)
 {
         gchar *contents;
         gchar **lines;
@@ -936,17 +936,17 @@ load_env_file (GFile *file,
 }
 
 static gint
-compare_str (gconstpointer  a,
-             gconstpointer  b)
+compare_str (gconstpointer a,
+             gconstpointer b)
 {
   return strcmp (*(const char **)a, *(const char **)b);
 }
 
 static void
-gdm_load_env_dir (GFile *dir,
-                  GdmLoadEnvVarFunc load_env_func,
-                  GdmExpandVarFunc  expand_func,
-                  gpointer user_data)
+gdm_load_env_dir (GFile             *dir,
+                  GdmLoadEnvVarFunc  load_env_func,
+                  GdmExpandVarFunc   expand_func,
+                  gpointer           user_data)
 {
         GFileInfo *info = NULL;
         GFileEnumerator *enumerator = NULL;
@@ -994,7 +994,7 @@ gdm_load_env_dir (GFile *dir,
 void
 gdm_load_env_d (GdmLoadEnvVarFunc load_env_func,
                 GdmExpandVarFunc  expand_func,
-                gpointer user_data)
+                gpointer          user_data)
 {
         GFile *dir;
 

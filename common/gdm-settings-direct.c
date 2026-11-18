@@ -65,8 +65,8 @@ assert_signature (GdmSettingsEntry *entry,
 }
 
 static gboolean
-get_value (const char *key,
-           char      **value)
+get_value (const char  *key,
+           char       **value)
 {
         g_autofree char *str = NULL;
         gboolean res;
@@ -84,8 +84,8 @@ get_value (const char *key,
 }
 
 gboolean
-gdm_settings_direct_get_int (const char        *key,
-                             int               *value)
+gdm_settings_direct_get_int (const char *key,
+                             int        *value)
 {
         GdmSettingsEntry *entry;
         gboolean          ret;
@@ -113,8 +113,8 @@ gdm_settings_direct_get_int (const char        *key,
 }
 
 gboolean
-gdm_settings_direct_get_uint (const char        *key,
-                              uint              *value)
+gdm_settings_direct_get_uint (const char *key,
+                              uint       *value)
 {
         gboolean          ret;
         int               intvalue;
@@ -134,8 +134,8 @@ gdm_settings_direct_get_uint (const char        *key,
 }
 
 gboolean
-gdm_settings_direct_get_boolean (const char        *key,
-                                 gboolean          *value)
+gdm_settings_direct_get_boolean (const char *key,
+                                 gboolean   *value)
 {
         GdmSettingsEntry *entry;
         gboolean          ret;
@@ -163,8 +163,8 @@ gdm_settings_direct_get_boolean (const char        *key,
 }
 
 gboolean
-gdm_settings_direct_get_string (const char        *key,
-                                char             **value)
+gdm_settings_direct_get_string (const char  *key,
+                                char       **value)
 {
         GdmSettingsEntry *entry;
         gboolean          ret;

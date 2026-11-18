@@ -128,8 +128,8 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_manager_class_init  (GdmManagerClass *klass);
-static void     gdm_manager_init        (GdmManager      *manager);
-static void     gdm_manager_dispose     (GObject         *object);
+static void     gdm_manager_init        (GdmManager *manager);
+static void     gdm_manager_dispose     (GObject *object);
 
 static void     create_user_session_for_display (GdmManager *manager,
                                                  GdmDisplay *display,
@@ -594,7 +594,7 @@ out:
 }
 
 static gboolean        are_sessions_compatible               (GdmSession *session_a,
-                                                               GdmSession *session_b);
+                                                              GdmSession *session_b);
 static GdmDisplay      *get_display_for_user_session          (GdmSession *session);
 static void             update_remote_id_for_existing_session (GdmDisplay *login_display,
                                                                GdmSession *existing_session);
@@ -904,29 +904,29 @@ close_transient_session (GdmManager *self,
 }
 
 static void
-on_reauthentication_client_connected (GdmSession              *session,
-                                      GCredentials            *credentials,
-                                      GPid                     pid_of_client,
-                                      GdmManager              *self)
+on_reauthentication_client_connected (GdmSession   *session,
+                                      GCredentials *credentials,
+                                      GPid          pid_of_client,
+                                      GdmManager   *self)
 {
         g_debug ("GdmManager: client connected to reauthentication server");
 }
 
 static void
-on_reauthentication_client_disconnected (GdmSession              *session,
-                                         GCredentials            *credentials,
-                                         GPid                     pid_of_client,
-                                         GdmManager              *self)
+on_reauthentication_client_disconnected (GdmSession   *session,
+                                         GCredentials *credentials,
+                                         GPid          pid_of_client,
+                                         GdmManager   *self)
 {
         g_debug ("GdmManger: client disconnected from reauthentication server");
         close_transient_session (self, session);
 }
 
 static void
-on_reauthentication_client_rejected (GdmSession              *session,
-                                     GCredentials            *credentials,
-                                     GPid                     pid_of_client,
-                                     GdmManager              *self)
+on_reauthentication_client_rejected (GdmSession   *session,
+                                     GCredentials *credentials,
+                                     GPid          pid_of_client,
+                                     GdmManager   *self)
 {
         GPid pid;
 
@@ -1021,13 +1021,13 @@ clear_user_session (GdmSession *user_session)
 }
 
 static char *
-open_temporary_reauthentication_channel (GdmManager            *self,
-                                         GdmSession            *user_session,
-                                         char                  *seat_id,
-                                         char                  *session_id_of_caller,
-                                         GPid                   pid,
-                                         uid_t                  uid,
-                                         gboolean               is_remote)
+open_temporary_reauthentication_channel (GdmManager *self,
+                                         GdmSession *user_session,
+                                         char       *seat_id,
+                                         char       *session_id_of_caller,
+                                         GPid        pid,
+                                         uid_t       uid,
+                                         gboolean    is_remote)
 {
         GdmSession *session;
         char **environment;
@@ -1236,9 +1236,9 @@ display_is_on_seat0 (GdmDisplay *display)
 }
 
 static gboolean
-get_timed_login_details (GdmManager *manager,
-                         char      **usernamep,
-                         int        *delayp)
+get_timed_login_details (GdmManager  *manager,
+                         char       **usernamep,
+                         int         *delayp)
 {
         gboolean res;
         gboolean enabled;
@@ -1564,7 +1564,7 @@ destroy_start_user_session_operation (StartUserSessionOperation *operation)
 }
 
 static void
-start_user_session (GdmManager *manager,
+start_user_session (GdmManager                *manager,
                     StartUserSessionOperation *operation)
 {
         gdm_session_start_session (operation->session,
@@ -1835,10 +1835,10 @@ on_session_credentials_established (GdmSession *session,
 }
 
 static void
-on_user_session_opened (GdmSession       *session,
-                        const char       *service_name,
-                        const char       *session_id,
-                        GdmManager       *manager)
+on_user_session_opened (GdmSession *session,
+                        const char *service_name,
+                        const char *session_id,
+                        GdmManager *manager)
 {
         manager->user_sessions = g_list_append (manager->user_sessions,
                                                       g_object_ref (session));
@@ -1853,10 +1853,10 @@ on_user_session_opened (GdmSession       *session,
 }
 
 static void
-on_user_session_started (GdmSession      *session,
-                         const char      *service_name,
-                         GPid             pid,
-                         GdmManager      *manager)
+on_user_session_started (GdmSession *session,
+                         const char *service_name,
+                         GPid        pid,
+                         GdmManager *manager)
 {
         g_debug ("GdmManager: session started %d", pid);
 }
@@ -1995,10 +1995,10 @@ on_stop_conflicting_session (GdmSession *login_session,
 }
 
 static void
-on_session_client_ready_for_session_to_start (GdmSession      *session,
-                                              const char      *service_name,
-                                              gboolean         client_is_ready,
-                                              GdmManager      *manager)
+on_session_client_ready_for_session_to_start (GdmSession *session,
+                                              const char *service_name,
+                                              gboolean    client_is_ready,
+                                              GdmManager *manager)
 {
         gboolean waiting_to_start_user_session;
 
@@ -2022,10 +2022,10 @@ on_session_client_ready_for_session_to_start (GdmSession      *session,
 }
 
 static void
-on_session_client_connected (GdmSession      *session,
-                             GCredentials    *credentials,
-                             GPid             pid_of_client,
-                             GdmManager      *manager)
+on_session_client_connected (GdmSession   *session,
+                             GCredentials *credentials,
+                             GPid          pid_of_client,
+                             GdmManager   *manager)
 {
         GdmDisplay *display;
         char    *username;
@@ -2131,8 +2131,8 @@ queue_session_reset (GdmManager *manager,
 }
 
 static void
-on_session_cancelled (GdmSession  *session,
-                      GdmManager  *manager)
+on_session_cancelled (GdmSession *session,
+                      GdmManager *manager)
 {
         g_debug ("GdmManager: Session was cancelled");
         queue_session_reset (manager, session);
@@ -2377,9 +2377,9 @@ gdm_manager_error_quark (void)
 }
 
 static void
-listify_display_ids (const char *id,
-                     GdmDisplay *display,
-                     GPtrArray **array)
+listify_display_ids (const char  *id,
+                     GdmDisplay  *display,
+                     GPtrArray  **array)
 {
         g_ptr_array_add (*array, g_strdup (id));
 }
@@ -2392,9 +2392,9 @@ listify_display_ids (const char *id,
   org.freedesktop.ObjectManager.GetAll
 */
 gboolean
-gdm_manager_get_displays (GdmManager *manager,
-                          GPtrArray **displays,
-                          GError    **error)
+gdm_manager_get_displays (GdmManager  *manager,
+                          GPtrArray  **displays,
+                          GError     **error)
 {
         g_return_val_if_fail (GDM_IS_MANAGER (manager), FALSE);
 
@@ -2561,8 +2561,8 @@ gdm_manager_set_show_local_greeter (GdmManager *manager,
 static void
 gdm_manager_set_property (GObject      *object,
                           guint         prop_id,
-                          const GValue  *value,
-                          GParamSpec    *pspec)
+                          const GValue *value,
+                          GParamSpec   *pspec)
 {
         GdmManager *self;
 

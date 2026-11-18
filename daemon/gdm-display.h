@@ -78,18 +78,18 @@ void                gdm_display_unexport                       (GdmDisplay      
 gboolean            gdm_display_is_exported                    (GdmDisplay *display);
 
 /* exported to bus */
-gboolean            gdm_display_get_id                         (GdmDisplay *display,
-                                                                char      **id,
-                                                                GError    **error);
-gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
-                                                                char      **hostname,
-                                                                GError    **error);
-gboolean            gdm_display_get_seat_id                    (GdmDisplay *display,
-                                                                char      **seat_id,
-                                                                GError    **error);
-gboolean            gdm_display_is_local                       (GdmDisplay *display,
-                                                                gboolean   *local,
-                                                                GError    **error);
+gboolean            gdm_display_get_id                         (GdmDisplay  *display,
+                                                                char       **id,
+                                                                GError     **error);
+gboolean            gdm_display_get_remote_hostname            (GdmDisplay  *display,
+                                                                char       **hostname,
+                                                                GError     **error);
+gboolean            gdm_display_get_seat_id                    (GdmDisplay  *display,
+                                                                char       **seat_id,
+                                                                GError     **error);
+gboolean            gdm_display_is_local                       (GdmDisplay  *display,
+                                                                gboolean    *local,
+                                                                GError     **error);
 gboolean            gdm_display_is_initial                     (GdmDisplay  *display,
                                                                 gboolean    *initial,
                                                                 GError     **error);
@@ -97,8 +97,8 @@ gboolean            gdm_display_is_initial                     (GdmDisplay  *dis
 gboolean            gdm_display_prepare_greeter_session        (GdmDisplay          *display,
                                                                 GdmDynamicUserStore *dyn_user_store,
                                                                 uid_t               *ret_uid);
-void                gdm_display_start_greeter_session          (GdmDisplay  *display);
-void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
+void                gdm_display_start_greeter_session          (GdmDisplay *display);
+void                gdm_display_stop_greeter_session           (GdmDisplay *display);
 
 G_END_DECLS
 

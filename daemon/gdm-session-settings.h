@@ -32,11 +32,11 @@ G_DECLARE_FINAL_TYPE (GdmSessionSettings, gdm_session_settings, GDM, SESSION_SET
 
 GdmSessionSettings *gdm_session_settings_new                (void);
 
-gboolean            gdm_session_settings_load               (GdmSessionSettings  *settings,
-                                                             const char          *username);
-gboolean            gdm_session_settings_save               (GdmSessionSettings  *settings,
-                                                             const char          *username);
-gboolean            gdm_session_settings_is_loaded          (GdmSessionSettings  *settings);
+gboolean            gdm_session_settings_load               (GdmSessionSettings *settings,
+                                                             const char         *username);
+gboolean            gdm_session_settings_save               (GdmSessionSettings *settings,
+                                                             const char         *username);
+gboolean            gdm_session_settings_is_loaded          (GdmSessionSettings *settings);
 char               *gdm_session_settings_get_language_name  (GdmSessionSettings *settings);
 char               *gdm_session_settings_get_session_name   (GdmSessionSettings *settings);
 char               *gdm_session_settings_get_session_type   (GdmSessionSettings *settings);
