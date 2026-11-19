@@ -99,7 +99,7 @@ gdm_session_auditor_class_install_properties (GdmSessionAuditorClass *auditor_cl
         props[PROP_DISPLAY_DEVICE] = g_param_spec_string ("display-device",
                                                           NULL, NULL,
                                                           NULL,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
         g_object_class_install_properties (object_class, N_PROPS, props);
 }

@@ -573,7 +573,7 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
                 if (is_seat0 && factory->seat0_graphics_check_timeout_id == 0) {
                         g_debug ("GdmLocalDisplayFactory: Waiting for up to %d seconds for a primary GPU to appear",
-                                SEAT0_GRAPHICS_CHECK_TIMEOUT);
+                                 SEAT0_GRAPHICS_CHECK_TIMEOUT);
                         factory->seat0_graphics_check_timeout_id = g_timeout_add_seconds (SEAT0_GRAPHICS_CHECK_TIMEOUT,
                                                                                           on_seat0_graphics_check_timeout,
                                                                                           factory);
@@ -1030,25 +1030,25 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
         const char *subsystems[] = { "drm", NULL };
 
         factory->seat_new_id = g_dbus_connection_signal_subscribe (factory->connection,
-                                                                         "org.freedesktop.login1",
-                                                                         "org.freedesktop.login1.Manager",
-                                                                         "SeatNew",
-                                                                         "/org/freedesktop/login1",
-                                                                         NULL,
-                                                                         G_DBUS_SIGNAL_FLAGS_NONE,
-                                                                         on_seat_activate_greeter,
-                                                                         g_object_ref (factory),
-                                                                         g_object_unref);
+                                                                   "org.freedesktop.login1",
+                                                                   "org.freedesktop.login1.Manager",
+                                                                   "SeatNew",
+                                                                   "/org/freedesktop/login1",
+                                                                   NULL,
+                                                                   G_DBUS_SIGNAL_FLAGS_NONE,
+                                                                   on_seat_activate_greeter,
+                                                                   g_object_ref (factory),
+                                                                   g_object_unref);
         factory->seat_removed_id = g_dbus_connection_signal_subscribe (factory->connection,
-                                                                             "org.freedesktop.login1",
-                                                                             "org.freedesktop.login1.Manager",
-                                                                             "SeatRemoved",
-                                                                             "/org/freedesktop/login1",
-                                                                             NULL,
-                                                                             G_DBUS_SIGNAL_FLAGS_NONE,
-                                                                             on_seat_removed,
-                                                                             g_object_ref (factory),
-                                                                             g_object_unref);
+                                                                       "org.freedesktop.login1",
+                                                                       "org.freedesktop.login1.Manager",
+                                                                       "SeatRemoved",
+                                                                       "/org/freedesktop/login1",
+                                                                       NULL,
+                                                                       G_DBUS_SIGNAL_FLAGS_NONE,
+                                                                       on_seat_removed,
+                                                                       g_object_ref (factory),
+                                                                       g_object_unref);
         factory->seat_properties_changed_id = g_dbus_connection_signal_subscribe (factory->connection,
                                                                                   "org.freedesktop.login1",
                                                                                   "org.freedesktop.DBus.Properties",
@@ -1060,15 +1060,15 @@ gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
                                                                                   g_object_ref (factory),
                                                                                   g_object_unref);
         factory->seat_attention_key = g_dbus_connection_signal_subscribe (factory->connection,
-                                                                                "org.freedesktop.login1",
-                                                                                "org.freedesktop.login1.Manager",
-                                                                                "SecureAttentionKey",
-                                                                                "/org/freedesktop/login1",
-                                                                                NULL,
-                                                                                G_DBUS_SIGNAL_FLAGS_NONE,
-                                                                                on_seat_activate_greeter,
-                                                                                g_object_ref (factory),
-                                                                                g_object_unref);
+                                                                          "org.freedesktop.login1",
+                                                                          "org.freedesktop.login1.Manager",
+                                                                          "SecureAttentionKey",
+                                                                          "/org/freedesktop/login1",
+                                                                          NULL,
+                                                                          G_DBUS_SIGNAL_FLAGS_NONE,
+                                                                          on_seat_activate_greeter,
+                                                                          g_object_ref (factory),
+                                                                          g_object_unref);
 
 #ifdef HAVE_UDEV
         factory->gudev_client = g_udev_client_new (subsystems);

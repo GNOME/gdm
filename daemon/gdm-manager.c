@@ -1841,7 +1841,7 @@ on_user_session_opened (GdmSession *session,
                         GdmManager *manager)
 {
         manager->user_sessions = g_list_append (manager->user_sessions,
-                                                      g_object_ref (session));
+                                                g_object_ref (session));
         if (is_automatic_login_service (service_name) &&
             !gdm_session_client_is_connected (session)) {
                 /* If we're auto logging in then don't wait for the go-ahead from a greeter,

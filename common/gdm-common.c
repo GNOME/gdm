@@ -165,11 +165,11 @@ gdm_wait_on_and_disown_pid (int pid,
                         path = g_strdup_printf ("/proc/%ld/cmdline", (long) pid);
                         if (g_file_get_contents (path, &command, NULL, NULL)) {
                                 g_warning ("GdmCommon: process (pid:%d, command '%s') isn't dying after %d seconds, now ignoring it.",
-                                         (int) pid, command, timeout);
+                                           (int) pid, command, timeout);
                                 g_free (command);
                         } else {
                                 g_warning ("GdmCommon: process (pid:%d) isn't dying after %d seconds, now ignoring it.",
-                                         (int) pid, timeout);
+                                           (int) pid, timeout);
                         }
                         g_free (path);
 
@@ -613,8 +613,8 @@ gdm_shell_var_is_valid_char (gchar    c,
                              gboolean first)
 {
         return (!first && g_ascii_isdigit (c)) ||
-                c == '_' ||
-                g_ascii_isalpha (c);
+               c == '_' ||
+               g_ascii_isalpha (c);
 }
 
 /*

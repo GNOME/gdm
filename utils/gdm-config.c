@@ -657,7 +657,7 @@ try_run_distro_hook (GdmConfigCommand   config_command,
         g_debug ("Looking for distro hook “%s”", distro_hook);
 
         if (!g_file_test (distro_hook, G_FILE_TEST_IS_REGULAR |
-                                       G_FILE_TEST_IS_EXECUTABLE)) {
+                          G_FILE_TEST_IS_EXECUTABLE)) {
                 g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
                              "%s is not an executable", distro_hook);
                 return FALSE;
@@ -714,7 +714,7 @@ try_run_distro_hook (GdmConfigCommand   config_command,
         g_debug ("Distro hook ran correctly\n"
                  "Standard output:\n%s\n"
                  "Error output:\n%s",
-                local_stdout, local_stderr);
+                 local_stdout, local_stderr);
 
         if (stdout_out) {
                 *stdout_out = g_steal_pointer (&local_stdout);
@@ -747,8 +747,8 @@ set_distro_hook_config (GdmConfigCommand   config_command,
 
                 if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
                         g_debug ("Distro hook for command %s option-key %s not found: %s",
-                        config_command_to_string (config_command), option_key,
-                        local_error->message);
+                                 config_command_to_string (config_command), option_key,
+                                 local_error->message);
                 }
 
                 g_propagate_prefixed_error (error, g_steal_pointer (&local_error),
@@ -1558,7 +1558,7 @@ handle_config_command (GdmConfigCommand          config_command,
 
         if (check_distro_hook_is_required (config_command)) {
                 g_propagate_prefixed_error (error, g_steal_pointer (&local_error),
-                        _("Failed to run a required distro hook: "));
+                                            _("Failed to run a required distro hook: "));
                 return FALSE;
         }
 
@@ -1579,15 +1579,15 @@ print_usage (int               argc,
 
         g_option_context_parse (ctx, &argc, &argv, NULL);
         usage = g_strdup_printf (_("Commands:\n"
-                "  help         Shows this information\n"
-                "  password     Configure the password authentication\n"
-                "  fingerprint  Configure the fingerprint authentication\n"
-                "  smartcard    Configure the smartcard authentication\n"
-                "  reset        Resets the default configuration\n"
-                "  show         Shows the current configuration\n"
-                "\n"
-                "Use “%s COMMAND --help” to get help on each command.\n"),
-                        g_get_prgname ());
+                                   "  help         Shows this information\n"
+                                   "  password     Configure the password authentication\n"
+                                   "  fingerprint  Configure the fingerprint authentication\n"
+                                   "  smartcard    Configure the smartcard authentication\n"
+                                   "  reset        Resets the default configuration\n"
+                                   "  show         Shows the current configuration\n"
+                                   "\n"
+                                   "Use “%s COMMAND --help” to get help on each command.\n"),
+                                 g_get_prgname ());
 
         g_option_context_set_description (ctx, usage);
 
@@ -1676,7 +1676,7 @@ handle_command (int   argc,
         if (geteuid () != 0 && !g_getenv ("UNDER_JHBUILD")) {
                 /* TRANSLATORS: You need to be root to use PROGRAM-NAME “command” command */
                 g_critical (_("You need to be root to use %s “%s” command"),
-                              g_get_prgname (), config_command_to_string (config_command));
+                            g_get_prgname (), config_command_to_string (config_command));
                 return FALSE;
         }
 
@@ -1923,16 +1923,16 @@ handle_show (GdmConfigCommand   config_command,
         removal_setting = get_smartcard_option (GSD_SC_REMOVAL_ACTION_KEY);
 
         g_print (_("GDM Authorization configuration\n"
-                  "\n"
-                  "  Password authentication: %s\n"
-                  "  Fingerprint authentication: %s\n"
-                  "  Smart Card authentication: %s\n"
-                  "  Smart Card removal action: %s\n"),
-                  get_gdm_setting_state (AUTH_PASSWORD),
-                  get_gdm_setting_state (AUTH_FINGERPRINT),
-                  get_gdm_setting_state (AUTH_SMARTCARD),
-                  removal_setting
-                );
+                   "\n"
+                   "  Password authentication: %s\n"
+                   "  Fingerprint authentication: %s\n"
+                   "  Smart Card authentication: %s\n"
+                   "  Smart Card removal action: %s\n"),
+                 get_gdm_setting_state (AUTH_PASSWORD),
+                 get_gdm_setting_state (AUTH_FINGERPRINT),
+                 get_gdm_setting_state (AUTH_SMARTCARD),
+                 removal_setting
+                 );
 
         if (default_dconf_profile) {
                 g_setenv ("DCONF_PROFILE", default_dconf_profile, TRUE);

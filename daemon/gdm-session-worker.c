@@ -569,12 +569,12 @@ gdm_session_worker_ask_list_of_choices (GdmSessionWorker  *worker,
         choices_as_variant = g_variant_builder_end (&builder);
 
         res = gdm_dbus_worker_manager_call_choice_list_query_sync (worker->manager,
-                                                                    worker->service,
-                                                                    prompt_message,
-                                                                    choices_as_variant,
-                                                                    answerp,
-                                                                    NULL,
-                                                                    &error);
+                                                                   worker->service,
+                                                                   prompt_message,
+                                                                   choices_as_variant,
+                                                                   answerp,
+                                                                   NULL,
+                                                                   &error);
 
         if (!res) {
                 g_debug ("GdmSessionWorker: list request failed: %s", error->message);
@@ -1323,7 +1323,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker    *worker,
 
                 if (error_code != PAM_SUCCESS) {
                         g_debug ("GdmSessionWorker: error informing authentication system of preferred username prompt: %s",
-                                pam_strerror (worker->pam_handle, error_code));
+                                 pam_strerror (worker->pam_handle, error_code));
                         g_set_error_literal (error,
                                              GDM_SESSION_WORKER_ERROR,
                                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,

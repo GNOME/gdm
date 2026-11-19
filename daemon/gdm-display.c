@@ -830,7 +830,7 @@ gdm_display_constructor (GType                  type,
 
         g_free (priv->id);
         priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Displays/%" G_GUINT64_FORMAT,
-                                          serial++);
+                                    serial++);
 
         res = register_display (self);
         if (!res) {
@@ -1195,7 +1195,7 @@ kernel_cmdline_initial_setup_force_state (gboolean *force_state)
 
         if (!g_file_get_contents ("/proc/cmdline", &contents, NULL, &error)) {
                 g_debug ("GdmDisplay: Could not check kernel parameters, not forcing initial setup: %s",
-                          error->message);
+                         error->message);
                 return FALSE;
         }
 

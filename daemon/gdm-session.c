@@ -487,7 +487,7 @@ static gboolean
 is_wayland_headless (GdmSession *self)
 {
         return g_strcmp0 (self->session_type, "wayland") == 0 &&
-                          !self->display_is_local;
+               !self->display_is_local;
 }
 
 static gboolean
@@ -1063,11 +1063,11 @@ worker_on_session_exited (GdmDBusWorker          *worker,
 
         if (WIFEXITED (status)) {
                 g_debug ("GdmSession: Emitting 'session-exited' signal with exit code '%d'",
-                  WEXITSTATUS (status));
+                         WEXITSTATUS (status));
                 g_signal_emit (self, signals[SESSION_EXITED], 0, WEXITSTATUS (status));
         } else if (WIFSIGNALED (status)) {
                 g_debug ("GdmSession: Emitting 'session-died' signal with signal number '%d'",
-                  WTERMSIG (status));
+                         WTERMSIG (status));
                 g_signal_emit (self, signals[SESSION_DIED], 0, WTERMSIG (status));
         }
 }
@@ -1772,9 +1772,9 @@ gdm_session_handle_client_select_user (GdmDBusGreeter        *greeter_interface,
 
                 session_username = gdm_session_get_username (self);
                 g_debug ("GdmSession: refusing to select user %s, since session (%p) already running (for user %s)",
-                          username,
-                          self,
-                          session_username);
+                         username,
+                         self,
+                         session_username);
                 g_dbus_method_invocation_return_error (invocation,
                                                        G_DBUS_ERROR,
                                                        G_DBUS_ERROR_INVALID_ARGS,
@@ -2115,7 +2115,7 @@ setup_worker_server (GdmSession *self)
         g_dbus_server_start (server);
 
         g_debug ("GdmSession: D-Bus server for workers listening on %s",
-        g_dbus_server_get_client_address (self->worker_server));
+                 g_dbus_server_get_client_address (self->worker_server));
 }
 
 static gboolean
@@ -2183,7 +2183,7 @@ setup_outside_server (GdmSession *self)
         g_dbus_server_start (server);
 
         g_debug ("GdmSession: D-Bus server for greeters listening on %s",
-        g_dbus_server_get_client_address (self->outside_server));
+                 g_dbus_server_get_client_address (self->outside_server));
 }
 
 static void
@@ -2328,19 +2328,19 @@ static void
 gdm_session_init (GdmSession *self)
 {
         self->conversations = g_hash_table_new_full (g_str_hash,
-                                                           g_str_equal,
-                                                           (GDestroyNotify) g_free,
-                                                           (GDestroyNotify)
-                                                           free_conversation);
+                                                     g_str_equal,
+                                                     (GDestroyNotify) g_free,
+                                                     (GDestroyNotify)
+                                                     free_conversation);
         self->environment = g_hash_table_new_full (g_str_hash,
-                                                         g_str_equal,
-                                                         (GDestroyNotify) g_free,
-                                                         (GDestroyNotify) g_free);
+                                                   g_str_equal,
+                                                   (GDestroyNotify) g_free,
+                                                   (GDestroyNotify) g_free);
         self->user_verifier_extensions = g_hash_table_new_full (g_str_hash,
-                                                                      g_str_equal,
-                                                                      NULL,
-                                                                      (GDestroyNotify)
-                                                                      unexport_and_free_user_verifier_extension);
+                                                                g_str_equal,
+                                                                NULL,
+                                                                (GDestroyNotify)
+                                                                unexport_and_free_user_verifier_extension);
 
         load_lang_config_file (self);
         setup_worker_server (self);

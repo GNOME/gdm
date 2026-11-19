@@ -79,15 +79,15 @@ on_info_query (GdmDBusUserVerifier *user_verifier,
 
         if (answer[0] == '\0') {
                 gdm_dbus_user_verifier_call_cancel_sync (user_verifier,
-                                                   NULL,
-                                                   NULL);
+                                                         NULL,
+                                                         NULL);
                 g_main_loop_quit (loop);
         } else {
                 gdm_dbus_user_verifier_call_answer_query_sync (user_verifier,
-                                                         service_name,
-                                                         answer,
-                                                         NULL,
-                                                         NULL);
+                                                               service_name,
+                                                               answer,
+                                                               NULL,
+                                                               NULL);
         }
 }
 
@@ -140,10 +140,10 @@ on_secret_info_query (GdmDBusUserVerifier *user_verifier,
         g_print ("\n");
 
         gdm_dbus_user_verifier_call_answer_query_sync (user_verifier,
-                                                 service_name,
-                                                 answer,
-                                                 NULL,
-                                                 NULL);
+                                                       service_name,
+                                                       answer,
+                                                       NULL,
+                                                       NULL);
 }
 
 int

@@ -261,10 +261,10 @@ pick_uid (GdmDynamicUserStore  *store,
         }
 
         g_set_error (error,
-             GDM_DYNAMIC_USER_STORE_ERROR,
-             GDM_DYNAMIC_USER_STORE_ERROR_NO_FREE_UID,
-             "User '%s' not preallocated and system lacks userdb",
-             username);
+                     GDM_DYNAMIC_USER_STORE_ERROR,
+                     GDM_DYNAMIC_USER_STORE_ERROR_NO_FREE_UID,
+                     "User '%s' not preallocated and system lacks userdb",
+                     username);
 
         return FALSE;
 }
@@ -453,15 +453,16 @@ static int
 dynamic_user_build_record (DynamicUser      *user,
                            sd_json_variant **ret)
 {
-        return sd_json_buildo (ret, SD_JSON_BUILD_PAIR_OBJECT ("record",
-                SD_JSON_BUILD_PAIR_STRING ("userName", user->username),
-                SD_JSON_BUILD_PAIR_UNSIGNED ("uid", user->uid),
-                SD_JSON_BUILD_PAIR_UNSIGNED ("gid", user->gid),
-                SD_JSON_BUILD_PAIR_STRING ("realName", user->display_name),
-                SD_JSON_BUILD_PAIR_STRING ("homeDirectory", user->home),
-                SD_JSON_BUILD_PAIR_STRING ("shell", NOLOGIN_PATH),
-                SD_JSON_BUILD_PAIR_STRING ("service", GDM_SERVICE_ID),
-                SD_JSON_BUILD_PAIR_STRING ("disposition", "dynamic")));
+        return sd_json_buildo (ret,
+                               SD_JSON_BUILD_PAIR_OBJECT ("record",
+                                                          SD_JSON_BUILD_PAIR_STRING ("userName", user->username),
+                                                          SD_JSON_BUILD_PAIR_UNSIGNED ("uid", user->uid),
+                                                          SD_JSON_BUILD_PAIR_UNSIGNED ("gid", user->gid),
+                                                          SD_JSON_BUILD_PAIR_STRING ("realName", user->display_name),
+                                                          SD_JSON_BUILD_PAIR_STRING ("homeDirectory", user->home),
+                                                          SD_JSON_BUILD_PAIR_STRING ("shell", NOLOGIN_PATH),
+                                                          SD_JSON_BUILD_PAIR_STRING ("service", GDM_SERVICE_ID),
+                                                          SD_JSON_BUILD_PAIR_STRING ("disposition", "dynamic")));
 }
 
 static int

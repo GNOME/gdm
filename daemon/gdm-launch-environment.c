@@ -421,7 +421,7 @@ get_environment_file_output_stream (GdmLaunchEnvironment  *launch_environment,
         if (fchown (fd, uid, gid) != 0) {
                 int errsv = errno;
                 g_set_error (error, G_IO_ERROR, g_io_error_from_errno (errsv),
-                            "Failed to chown stream for %s: %s", environment_conf, g_strerror (errsv));
+                             "Failed to chown stream for %s: %s", environment_conf, g_strerror (errsv));
                 return NULL;
         }
 

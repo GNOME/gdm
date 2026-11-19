@@ -109,8 +109,8 @@ gdm_session_solaris_auditor_report_login (GdmSessionAuditor *auditor)
        }
 
        if (adt_set_user (adt_ah, solaris_auditor->uid,
-           solaris_auditor->gid, solaris_auditor->uid,
-           solaris_auditor->gid, NULL, ADT_USER) != 0) {
+                         solaris_auditor->gid, solaris_auditor->uid,
+                         solaris_auditor->gid, NULL, ADT_USER) != 0) {
                syslog (LOG_AUTH | LOG_ALERT,
                        "adt_set_user (ADT_login, %s): %m",
                        solaris_auditor->username);
