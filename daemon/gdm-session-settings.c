@@ -212,20 +212,20 @@ gdm_session_settings_set_property (GObject      *object,
         settings = GDM_SESSION_SETTINGS (object);
 
         switch (prop_id) {
-                case PROP_LANGUAGE_NAME:
-                        gdm_session_settings_set_language_name (settings, g_value_get_string (value));
+        case PROP_LANGUAGE_NAME:
+                gdm_session_settings_set_language_name (settings, g_value_get_string (value));
                 break;
 
-                case PROP_SESSION_NAME:
-                        gdm_session_settings_set_session_name (settings, g_value_get_string (value));
+        case PROP_SESSION_NAME:
+                gdm_session_settings_set_session_name (settings, g_value_get_string (value));
                 break;
 
-                case PROP_SESSION_TYPE:
-                        gdm_session_settings_set_session_type (settings, g_value_get_string (value));
+        case PROP_SESSION_TYPE:
+                gdm_session_settings_set_session_type (settings, g_value_get_string (value));
                 break;
 
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         }
 }
 
@@ -240,25 +240,25 @@ gdm_session_settings_get_property (GObject    *object,
         settings = GDM_SESSION_SETTINGS (object);
 
         switch (prop_id) {
-                case PROP_SESSION_NAME:
-                        g_value_set_string (value, settings->session_name);
+        case PROP_SESSION_NAME:
+                g_value_set_string (value, settings->session_name);
                 break;
 
-                case PROP_SESSION_TYPE:
-                        g_value_set_string (value, settings->session_type);
+        case PROP_SESSION_TYPE:
+                g_value_set_string (value, settings->session_type);
                 break;
 
-                case PROP_LANGUAGE_NAME:
-                        g_value_set_string (value, settings->language_name);
+        case PROP_LANGUAGE_NAME:
+                g_value_set_string (value, settings->language_name);
                 break;
 
-                case PROP_IS_LOADED:
-                        g_value_set_boolean (value, gdm_session_settings_is_loaded (settings));
+        case PROP_IS_LOADED:
+                g_value_set_boolean (value, gdm_session_settings_is_loaded (settings));
                 break;
 
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
 }
 
 GdmSessionSettings *

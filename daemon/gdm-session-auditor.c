@@ -213,20 +213,20 @@ gdm_session_auditor_set_property (GObject      *object,
         auditor = GDM_SESSION_AUDITOR (object);
 
         switch (prop_id) {
-                case PROP_USERNAME:
-                        gdm_session_auditor_set_username (auditor, g_value_get_string (value));
+        case PROP_USERNAME:
+                gdm_session_auditor_set_username (auditor, g_value_get_string (value));
                 break;
 
-                case PROP_HOSTNAME:
-                        gdm_session_auditor_set_hostname (auditor, g_value_get_string (value));
+        case PROP_HOSTNAME:
+                gdm_session_auditor_set_hostname (auditor, g_value_get_string (value));
                 break;
 
-                case PROP_DISPLAY_DEVICE:
-                        gdm_session_auditor_set_display_device (auditor, g_value_get_string (value));
+        case PROP_DISPLAY_DEVICE:
+                gdm_session_auditor_set_display_device (auditor, g_value_get_string (value));
                 break;
 
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         }
 }
 
@@ -241,21 +241,21 @@ gdm_session_auditor_get_property (GObject    *object,
         auditor = GDM_SESSION_AUDITOR (object);
 
         switch (prop_id) {
-                case PROP_USERNAME:
-                        g_value_take_string (value, gdm_session_auditor_get_username (auditor));
+        case PROP_USERNAME:
+                g_value_take_string (value, gdm_session_auditor_get_username (auditor));
                 break;
 
-                case PROP_HOSTNAME:
-                        g_value_take_string (value, gdm_session_auditor_get_hostname (auditor));
+        case PROP_HOSTNAME:
+                g_value_take_string (value, gdm_session_auditor_get_hostname (auditor));
                 break;
 
-                case PROP_DISPLAY_DEVICE:
-                        g_value_take_string (value, gdm_session_auditor_get_display_device (auditor));
+        case PROP_DISPLAY_DEVICE:
+                g_value_take_string (value, gdm_session_auditor_get_display_device (auditor));
                 break;
 
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
 }
 
 GdmSessionAuditor *

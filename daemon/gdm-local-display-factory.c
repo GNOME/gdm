@@ -873,14 +873,14 @@ on_vt_changed (GIOChannel             *source,
                 }
 
                 switch (status) {
-                        case G_IO_STATUS_ERROR:
-                            return G_SOURCE_REMOVE;
-                        case G_IO_STATUS_EOF:
-                            return G_SOURCE_REMOVE;
-                        case G_IO_STATUS_AGAIN:
-                            return G_SOURCE_CONTINUE;
-                        case G_IO_STATUS_NORMAL:
-                            break;
+                case G_IO_STATUS_ERROR:
+                        return G_SOURCE_REMOVE;
+                case G_IO_STATUS_EOF:
+                        return G_SOURCE_REMOVE;
+                case G_IO_STATUS_AGAIN:
+                        return G_SOURCE_CONTINUE;
+                case G_IO_STATUS_NORMAL:
+                        break;
                 }
         }
 

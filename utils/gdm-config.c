@@ -247,20 +247,20 @@ const char *
 config_command_to_string (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case COMMAND_HELP:
-                        return "help";
-                case COMMAND_PASSWORD:
-                        return "password";
-                case COMMAND_FINGERPRINT:
-                        return "fingerprint";
-                case COMMAND_SMARTCARD:
-                        return "smartcard";
-                case COMMAND_RESET:
-                        return "reset";
-                case COMMAND_SHOW:
-                        return "show";
-                case COMMAND_UNKNOWN:
-                        return "unknown";
+        case COMMAND_HELP:
+                return "help";
+        case COMMAND_PASSWORD:
+                return "password";
+        case COMMAND_FINGERPRINT:
+                return "fingerprint";
+        case COMMAND_SMARTCARD:
+                return "smartcard";
+        case COMMAND_RESET:
+                return "reset";
+        case COMMAND_SHOW:
+                return "show";
+        case COMMAND_UNKNOWN:
+                return "unknown";
         }
 
         g_assert_not_reached ();
@@ -270,18 +270,18 @@ static const char *
 get_command_title (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case COMMAND_PASSWORD:
-                        return _("Configure Password Authentication.");
-                case COMMAND_FINGERPRINT:
-                        return _("Configure Fingerprint Authentication.");
-                case COMMAND_SMARTCARD:
-                        return _("Configure Smart Card Authentication.");
-                case COMMAND_RESET:
-                        return _("Reset the GDM Authentication configuration.");
-                case COMMAND_SHOW:
-                        return _("Show GDM Authentication configuration.");
-                default:
-                        g_assert_not_reached ();
+        case COMMAND_PASSWORD:
+                return _("Configure Password Authentication.");
+        case COMMAND_FINGERPRINT:
+                return _("Configure Fingerprint Authentication.");
+        case COMMAND_SMARTCARD:
+                return _("Configure Smart Card Authentication.");
+        case COMMAND_RESET:
+                return _("Reset the GDM Authentication configuration.");
+        case COMMAND_SHOW:
+                return _("Show GDM Authentication configuration.");
+        default:
+                g_assert_not_reached ();
         }
 }
 
@@ -289,18 +289,18 @@ static const char *
 get_command_group_title (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case COMMAND_PASSWORD:
-                        return _("Password options");
-                case COMMAND_FINGERPRINT:
-                        return _("Fingerprint options");
-                case COMMAND_SMARTCARD:
-                        return _("Smart Card options");
-                case COMMAND_RESET:
-                        return _("Reset options");
-                case COMMAND_SHOW:
-                        return _("Show options");
-                default:
-                        g_assert_not_reached ();
+        case COMMAND_PASSWORD:
+                return _("Password options");
+        case COMMAND_FINGERPRINT:
+                return _("Fingerprint options");
+        case COMMAND_SMARTCARD:
+                return _("Smart Card options");
+        case COMMAND_RESET:
+                return _("Reset options");
+        case COMMAND_SHOW:
+                return _("Show options");
+        default:
+                g_assert_not_reached ();
         }
 }
 
@@ -308,12 +308,12 @@ static GdmAuthType
 config_command_to_auth_type (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case COMMAND_PASSWORD:
-                case COMMAND_SMARTCARD:
-                case COMMAND_FINGERPRINT:
-                        return (GdmAuthType) config_command;
-                default:
-                        return AUTH_NONE;
+        case COMMAND_PASSWORD:
+        case COMMAND_SMARTCARD:
+        case COMMAND_FINGERPRINT:
+                return (GdmAuthType) config_command;
+        default:
+                return AUTH_NONE;
         }
 }
 
@@ -327,14 +327,14 @@ const char *
 get_pam_module_missing_error (GdmAuthType auth_type)
 {
         switch (auth_type) {
-                case AUTH_PASSWORD:
-                        return _("No PAM module available for Password authentication");
-                case AUTH_SMARTCARD:
-                        return _("No PAM module available for Smart Card authentication");
-                case AUTH_FINGERPRINT:
-                        return _("No PAM module available for Fingerprint authentication");
-                default:
-                        g_assert_not_reached ();
+        case AUTH_PASSWORD:
+                return _("No PAM module available for Password authentication");
+        case AUTH_SMARTCARD:
+                return _("No PAM module available for Smart Card authentication");
+        case AUTH_FINGERPRINT:
+                return _("No PAM module available for Fingerprint authentication");
+        default:
+                g_assert_not_reached ();
         }
 }
 
@@ -342,14 +342,14 @@ const char *
 auth_type_to_option_key (GdmAuthType auth_type)
 {
         switch (auth_type) {
-                case AUTH_PASSWORD:
-                        return PASSWORD_KEY;
-                case AUTH_FINGERPRINT:
-                        return FINGERPRINT_KEY;
-                case AUTH_SMARTCARD:
-                        return SMARTCARD_KEY;
-                default:
-                        g_assert_not_reached ();
+        case AUTH_PASSWORD:
+                return PASSWORD_KEY;
+        case AUTH_FINGERPRINT:
+                return FINGERPRINT_KEY;
+        case AUTH_SMARTCARD:
+                return SMARTCARD_KEY;
+        default:
+                g_assert_not_reached ();
         }
 }
 
@@ -427,24 +427,24 @@ config_command_get_handler (GdmConfigCommand config_command)
         cmd_entries->entries = g_ptr_array_new ();
 
         switch (config_command) {
-                case COMMAND_PASSWORD:
-                case COMMAND_FINGERPRINT:
-                case COMMAND_SMARTCARD:
-                        g_ptr_array_add (cmd_entries->entries, (gpointer) toggle_entries);
-                        cmd_entries->post_parse_func = toggle_option_check;
-                        break;
-                case COMMAND_SHOW:
-                        cmd_entries->handler_func = handle_show;
-                        return g_steal_pointer (&cmd_entries);
-                case COMMAND_RESET:
-                        g_ptr_array_add (cmd_entries->entries, (gpointer) reset_entries);
-                        cmd_entries->handler_func = handle_reset;
-                        return g_steal_pointer (&cmd_entries);
-                case COMMAND_HELP:
-                case COMMAND_UNKNOWN:
-                        return NULL;
-                default:
-                        g_assert_not_reached ();
+        case COMMAND_PASSWORD:
+        case COMMAND_FINGERPRINT:
+        case COMMAND_SMARTCARD:
+                g_ptr_array_add (cmd_entries->entries, (gpointer) toggle_entries);
+                cmd_entries->post_parse_func = toggle_option_check;
+                break;
+        case COMMAND_SHOW:
+                cmd_entries->handler_func = handle_show;
+                return g_steal_pointer (&cmd_entries);
+        case COMMAND_RESET:
+                g_ptr_array_add (cmd_entries->entries, (gpointer) reset_entries);
+                cmd_entries->handler_func = handle_reset;
+                return g_steal_pointer (&cmd_entries);
+        case COMMAND_HELP:
+        case COMMAND_UNKNOWN:
+                return NULL;
+        default:
+                g_assert_not_reached ();
         }
 
         if (config_command == COMMAND_PASSWORD) {
@@ -804,19 +804,19 @@ static gboolean
 check_distro_hook_is_required (GdmConfigCommand config_command)
 {
         switch (config_command) {
-                case COMMAND_SMARTCARD:
-                        /* Enabling smartcard or requiring authentication might
-                         * involve further actions that depend on distribution,
-                         * (such as switching PAM profiles), as per this we
-                         * always require an hook to be present.
-                         * For the generic cases for which GDM already ships PAM
-                         * configuration files, we may use a generic hook that
-                         * does nothing, but leaves us to change the parameters
-                         * that we can handle.
-                         */
-                        return (opt_enable == TRUE || opt_required == TRUE);
-                default:
-                        return FALSE;
+        case COMMAND_SMARTCARD:
+                /* Enabling smartcard or requiring authentication might
+                 * involve further actions that depend on distribution,
+                 * (such as switching PAM profiles), as per this we
+                 * always require an hook to be present.
+                 * For the generic cases for which GDM already ships PAM
+                 * configuration files, we may use a generic hook that
+                 * does nothing, but leaves us to change the parameters
+                 * that we can handle.
+                 */
+                return (opt_enable == TRUE || opt_required == TRUE);
+        default:
+                return FALSE;
         }
 }
 

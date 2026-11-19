@@ -363,7 +363,7 @@ gdm_session_execute (const char  *file,
                                  */
                                 got_eacces = TRUE;
 
-                                /* FALL THRU */
+                        /* FALL THRU */
 
                         case ENOENT:
 #ifdef ESTALE
@@ -873,20 +873,20 @@ get_friendly_error_message (GdmSessionWorker *worker,
                             int               error_code)
 {
         switch (error_code) {
-            case PAM_SUCCESS:
-            case PAM_IGNORE:
+        case PAM_SUCCESS:
+        case PAM_IGNORE:
                 return "";
                 break;
 
-            case PAM_ACCT_EXPIRED:
-            case PAM_AUTHTOK_EXPIRED:
+        case PAM_ACCT_EXPIRED:
+        case PAM_AUTHTOK_EXPIRED:
                 return _("Your account was given a time limit that’s now passed.");
                 break;
 
-            case PAM_MAXTRIES:
+        case PAM_MAXTRIES:
                 return get_max_retries_error_message (worker);
 
-            default:
+        default:
                 break;
         }
 

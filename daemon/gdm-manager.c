@@ -1502,40 +1502,40 @@ on_display_status_changed (GdmDisplay *display,
         status = gdm_display_get_status (display);
 
         switch (status) {
-                case GDM_DISPLAY_PREPARED:
-                        if (g_strcmp0 (session_class, "greeter") == 0) {
-                                set_up_session (manager, display);
-                        }
-                        break;
-                case GDM_DISPLAY_MANAGED:
+        case GDM_DISPLAY_PREPARED:
+                if (g_strcmp0 (session_class, "greeter") == 0) {
+                        set_up_session (manager, display);
+                }
+                break;
+        case GDM_DISPLAY_MANAGED:
 #ifdef WITH_PLYMOUTH
-                        if (display_is_local && manager->plymouth_is_running) {
-                                plymouth_quit_with_transition ();
-                                manager->plymouth_is_running = FALSE;
-                                g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
-                        }
+                if (display_is_local && manager->plymouth_is_running) {
+                        plymouth_quit_with_transition ();
+                        manager->plymouth_is_running = FALSE;
+                        g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
+                }
 #endif
-                        break;
-                case GDM_DISPLAY_FAILED:
-                case GDM_DISPLAY_UNMANAGED:
-                case GDM_DISPLAY_FINISHED:
+                break;
+        case GDM_DISPLAY_FAILED:
+        case GDM_DISPLAY_UNMANAGED:
+        case GDM_DISPLAY_FINISHED:
 #ifdef WITH_PLYMOUTH
-                        if (display_is_local && manager->plymouth_is_running) {
-                                plymouth_quit_without_transition ();
-                                manager->plymouth_is_running = FALSE;
-                                g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
-                        }
+                if (display_is_local && manager->plymouth_is_running) {
+                        plymouth_quit_without_transition ();
+                        manager->plymouth_is_running = FALSE;
+                        g_clear_handle_id (&manager->plymouth_quit_timeout_id, g_source_remove);
+                }
 #endif
 
-                        g_object_set_qdata (G_OBJECT (display), gdm_display_user_session_quark, NULL);
+                g_object_set_qdata (G_OBJECT (display), gdm_display_user_session_quark, NULL);
 
-                        if (display == manager->automatic_login_display) {
-                                g_clear_weak_pointer (&manager->automatic_login_display);
-                                manager->did_automatic_login = TRUE;
-                        }
-                        break;
-                default:
-                        break;
+                if (display == manager->automatic_login_display) {
+                        g_clear_weak_pointer (&manager->automatic_login_display);
+                        manager->did_automatic_login = TRUE;
+                }
+                break;
+        default:
+                break;
         }
 
 }
