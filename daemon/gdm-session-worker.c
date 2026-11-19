@@ -261,7 +261,8 @@ script_execute (const gchar  *file,
 }
 
 static char *
-my_strchrnul (const char *str, char c)
+my_strchrnul (const char *str,
+              char        c)
 {
         char *p = (char*) str;
         while (*p && (*p != c)) {

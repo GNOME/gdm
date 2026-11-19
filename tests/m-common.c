@@ -35,7 +35,8 @@ static GOptionEntry entries[] = {
 };
 
 int
-main (int argc, char **argv)
+main (int    argc,
+      char **argv)
 {
         GOptionContext *context;
         SRunner        *r;

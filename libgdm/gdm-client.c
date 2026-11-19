@@ -156,7 +156,8 @@ typedef struct {
 } UserVerifierData;
 
 static UserVerifierData *
-user_verifier_data_new (GTask *task, GdmUserVerifier *user_verifier)
+user_verifier_data_new (GTask           *task,
+                        GdmUserVerifier *user_verifier)
 {
         UserVerifierData *data;
 

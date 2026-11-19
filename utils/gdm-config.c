@@ -99,7 +99,8 @@ typedef struct
 } OptionData;
 
 typedef struct _GdmConfigCommandHandler GdmConfigCommandHandler;
-typedef gboolean (*CommandHandlerFunc) (GdmConfigCommand, GError **);
+typedef gboolean (*CommandHandlerFunc) (GdmConfigCommand,
+                                        GError **);
 
 typedef struct _GdmConfigCommandHandler {
         GPtrArray          *entries;
@@ -170,12 +171,18 @@ static const char* SC_REMOVAL_ACTIONS[] = {
         NULL,
 };
 
-static gboolean handle_password (GdmConfigCommand, GError **);
-static gboolean handle_fingerprint (GdmConfigCommand, GError **);
-static gboolean handle_smartcard (GdmConfigCommand, GError **);
-static gboolean handle_smartcard_options (GdmConfigCommand, GError **);
-static gboolean handle_show (GdmConfigCommand, GError **);
-static gboolean handle_reset (GdmConfigCommand, GError **);
+static gboolean handle_password (GdmConfigCommand,
+                                 GError **);
+static gboolean handle_fingerprint (GdmConfigCommand,
+                                    GError **);
+static gboolean handle_smartcard (GdmConfigCommand,
+                                  GError **);
+static gboolean handle_smartcard_options (GdmConfigCommand,
+                                          GError **);
+static gboolean handle_show (GdmConfigCommand,
+                             GError **);
+static gboolean handle_reset (GdmConfigCommand,
+                              GError **);
 
 static GdmAuthAction
 get_requested_action (void)
@@ -1458,7 +1465,9 @@ write_locked_gdm_settings_to_db (GdmAuthType   auth_type,
 }
 
 static GPtrArray *
-create_cmd_args (int argc, gchar **argv, GdmConfigCommand command)
+create_cmd_args (int                argc,
+                 gchar            **argv,
+                 GdmConfigCommand   command)
 {
         GPtrArray *args;
         const char *command_str;
@@ -2098,7 +2107,8 @@ handle_reset (GdmConfigCommand   config_command,
 }
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
         g_autofree char *program_name = NULL;
 

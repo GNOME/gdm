@@ -27,7 +27,8 @@
 #include <glib.h>
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
         g_autoptr (GKeyFile) key_file = NULL;
         g_autoptr (GError) error = NULL;

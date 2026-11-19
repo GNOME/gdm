@@ -40,7 +40,8 @@ teardown (void)
 }
 
 static char *
-expand_fn (const char *var, gpointer data)
+expand_fn (const char *var,
+           gpointer    data)
 {
         if (strcmp (var, "FOO") == 0) {
                 return g_strdup ("BAR");

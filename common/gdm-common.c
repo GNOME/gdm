@@ -609,7 +609,8 @@ gdm_goto_login_session (GCancellable  *cancellable,
 }
 
 gboolean
-gdm_shell_var_is_valid_char (gchar c, gboolean first)
+gdm_shell_var_is_valid_char (gchar    c,
+                             gboolean first)
 {
         return (!first && g_ascii_isdigit (c)) ||
                 c == '_' ||
