@@ -41,7 +41,7 @@ struct _GdmDisplayFactoryClass
 
 typedef enum
 {
-         GDM_DISPLAY_FACTORY_ERROR_GENERAL
+        GDM_DISPLAY_FACTORY_ERROR_GENERAL
 } GdmDisplayFactoryError;
 
 #define GDM_DISPLAY_FACTORY_ERROR gdm_display_factory_error_quark ()

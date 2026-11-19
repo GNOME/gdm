@@ -39,7 +39,7 @@ typedef struct _GdmDisplayFactoryPrivate
         GdmDisplayStore *display_store;
         guint purge_displays_id;
 
-       PolkitAuthority *authority;
+        PolkitAuthority *authority;
 } GdmDisplayFactoryPrivate;
 
 enum {

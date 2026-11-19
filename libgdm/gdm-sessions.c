@@ -53,11 +53,11 @@ static gboolean gdm_sessions_map_is_initialized = FALSE;
 static void
 gdm_session_file_free (GdmSessionFile *session)
 {
-  g_free (session->id);
-  g_free (session->path);
-  g_free (session->translated_name);
-  g_free (session->translated_comment);
-  g_free (session);
+        g_free (session->id);
+        g_free (session->path);
+        g_free (session->translated_name);
+        g_free (session->translated_comment);
+        g_free (session);
 }
 
 static char *
@@ -221,7 +221,7 @@ load_session_file (const char *id,
         g_hash_table_insert (gdm_available_sessions_map,
                              g_strdup (id),
                              session);
- out:
+out:
         g_key_file_free (key_file);
 }
 

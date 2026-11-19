@@ -34,7 +34,7 @@ G_DECLARE_FINAL_TYPE (GdmManager, gdm_manager, GDM, MANAGER, GdmDBusManagerSkele
 
 typedef enum
 {
-         GDM_MANAGER_ERROR_GENERAL
+        GDM_MANAGER_ERROR_GENERAL
 } GdmManagerError;
 
 #define GDM_MANAGER_ERROR gdm_manager_error_quark ()

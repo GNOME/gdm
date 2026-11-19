@@ -89,8 +89,8 @@ typedef struct
 
 typedef enum
 {
-  VARLINK_REPLY_FINAL,
-  VARLINK_REPLY_MORE_FOLLOW,
+        VARLINK_REPLY_FINAL,
+        VARLINK_REPLY_MORE_FOLLOW,
 } VarlinkReplyMode;
 
 static void     gdm_dynamic_user_store_class_init (GdmDynamicUserStoreClass *klass);

@@ -1040,7 +1040,7 @@ static void
 on_timed_login_details_got (GdmGreeter   *greeter,
                             GAsyncResult *result)
 {
-    gdm_greeter_call_get_timed_login_details_finish (greeter, NULL, NULL, NULL, result, NULL);
+        gdm_greeter_call_get_timed_login_details_finish (greeter, NULL, NULL, NULL, result, NULL);
 }
 
 static void

@@ -96,8 +96,8 @@ gdm_pam_extension_choice_list_response_free (GdmPamExtensionChoiceListResponse *
         }
 
         if (response->key != NULL) {
-               gdm_pam_extension_zero_buffer (response->key, strlen (response->key));
-               free (response->key);
+                gdm_pam_extension_zero_buffer (response->key, strlen (response->key));
+                free (response->key);
         }
         free (response);
 }

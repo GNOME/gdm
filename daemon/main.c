@@ -101,7 +101,7 @@ get_system_bus (void)
                           G_CALLBACK (bus_connection_closed), NULL);
         g_dbus_connection_set_exit_on_close (bus, FALSE);
 
- out:
+out:
         return bus;
 }
 
@@ -369,6 +369,6 @@ bus_reconnect ()
                                                 NULL);
 
         ret = FALSE;
- out:
+out:
         return ret;
 }

@@ -168,19 +168,19 @@ migrate_working_dir (GError **error)
         if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.local/state",
                                        GDM_WORKING_DIR "/seat0/state",
                                        error)) {
-               if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-                       return FALSE;
-               }
+                if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+                        return FALSE;
+                }
 
                 /* The directory not existing isn't an error */
                 g_clear_error (error);
-       }
+        }
 
         if (!gdm_copy_dir_recursively (GDM_WORKING_DIR "/.config",
                                        GDM_WORKING_DIR "/seat0/config",
                                        error)) {
                 if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-                       return FALSE;
+                        return FALSE;
                 }
 
                 g_clear_error (error);
@@ -310,11 +310,11 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                 is_initial_setup = strcmp (launch_environment->dconf_profile, INITIAL_SETUP_DCONF_PROFILE) == 0;
 
                 if (!is_initial_setup) {
-			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
-			g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
-			g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
-			g_hash_table_insert (hash, g_strdup ("GVFS_REMOTE_VOLUME_MONITOR_IGNORE"), g_strdup ("1"));
-		}
+                        /* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
+                        g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
+                        g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
+                        g_hash_table_insert (hash, g_strdup ("GVFS_REMOTE_VOLUME_MONITOR_IGNORE"), g_strdup ("1"));
+                }
         }
 
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);

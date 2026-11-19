@@ -34,7 +34,7 @@ G_DECLARE_FINAL_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM, LO
 
 typedef enum
 {
-         GDM_LOCAL_DISPLAY_FACTORY_ERROR_GENERAL
+        GDM_LOCAL_DISPLAY_FACTORY_ERROR_GENERAL
 } GdmLocalDisplayFactoryError;
 
 #define GDM_LOCAL_DISPLAY_FACTORY_ERROR gdm_local_display_factory_error_quark ()

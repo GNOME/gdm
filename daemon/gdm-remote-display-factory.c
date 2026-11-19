@@ -36,8 +36,8 @@ struct _GdmRemoteDisplayFactory
 
         int remote_displays_count;
 
-       gboolean suspend_inhibited;
-       int inhibit_suspend_fd;
+        gboolean suspend_inhibited;
+        int inhibit_suspend_fd;
 };
 
 static void     gdm_remote_display_factory_class_init (GdmRemoteDisplayFactoryClass *klass);
@@ -583,7 +583,7 @@ gdm_remote_display_factory_class_init (GdmRemoteDisplayFactoryClass *klass)
 static void
 gdm_remote_display_factory_init (GdmRemoteDisplayFactory *factory)
 {
-  factory->inhibit_suspend_fd = -1;
+        factory->inhibit_suspend_fd = -1;
 }
 
 GdmRemoteDisplayFactory *

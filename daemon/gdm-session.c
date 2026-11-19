@@ -603,20 +603,20 @@ get_session_command_for_name (GdmSession  *self,
 static const char *
 get_default_language_name (GdmSession *self)
 {
-    const char *default_language;
+        const char *default_language;
 
-    if (self->saved_language != NULL) {
-            return self->saved_language;
-    }
+        if (self->saved_language != NULL) {
+                return self->saved_language;
+        }
 
-    default_language = g_hash_table_lookup (self->environment,
-                                            "LANG");
+        default_language = g_hash_table_lookup (self->environment,
+                                                "LANG");
 
-    if (default_language != NULL) {
-            return default_language;
-    }
+        if (default_language != NULL) {
+                return default_language;
+        }
 
-    return setlocale (LC_MESSAGES, NULL);
+        return setlocale (LC_MESSAGES, NULL);
 }
 
 static const char *
@@ -693,12 +693,12 @@ get_fallback_session_name (GdmSession *self)
         }
 
         do {
-               name = g_sequence_get (session);
-               if (name) {
-                       break;
-               }
+                name = g_sequence_get (session);
+                if (name) {
+                        break;
+                }
 
-               session = g_sequence_iter_next (session);
+                session = g_sequence_iter_next (session);
         } while (!g_sequence_iter_is_end (session));
 
         g_free (self->fallback_session_name);
@@ -706,7 +706,7 @@ get_fallback_session_name (GdmSession *self)
 
         g_sequence_free (sessions);
 
- out:
+out:
         return self->fallback_session_name;
 }
 
@@ -1230,8 +1230,8 @@ on_worker_connection_closed (GDBusConnection *connection,
                              GdmSession      *self)
 {
         self->pending_worker_connections =
-            g_list_remove (self->pending_worker_connections,
-                           connection);
+                g_list_remove (self->pending_worker_connections,
+                               connection);
         g_object_set_data (G_OBJECT (connection),
                            "gdm-dbus-worker-manager-interface",
                            NULL);
@@ -2153,9 +2153,9 @@ setup_outside_server (GdmSession *self)
         GDBusServer *server;
         GError *error = NULL;
 
-         g_debug ("GdmSession: Creating D-Bus server for greeters and such for session %s (%p)",
-                  gdm_session_get_session_id (self),
-                  self);
+        g_debug ("GdmSession: Creating D-Bus server for greeters and such for session %s (%p)",
+                 gdm_session_get_session_id (self),
+                 self);
 
         observer = g_dbus_auth_observer_new ();
         g_signal_connect_object (observer,
@@ -2300,7 +2300,7 @@ load_lang_config_file (GdmSession *self)
                 value = g_match_info_fetch_named (match_info, "value");
 
                 if (key && *key && value && *value) {
-			g_setenv (key, value, TRUE);
+                        g_setenv (key, value, TRUE);
                 }
 
                 g_free (key);
@@ -2890,15 +2890,15 @@ get_session_desktop_names (GdmSession *self)
         g_debug ("GdmSession: getting desktop names for file '%s'", filename);
         keyfile = load_key_file_for_file (self, filename, NULL, NULL);
         if (keyfile != NULL) {
-              gchar **names;
+                gchar **names;
 
-              names = g_key_file_get_string_list (keyfile, G_KEY_FILE_DESKTOP_GROUP,
-                                                  "DesktopNames", NULL, NULL);
-              if (names != NULL) {
-                      desktop_names = g_strjoinv (":", names);
+                names = g_key_file_get_string_list (keyfile, G_KEY_FILE_DESKTOP_GROUP,
+                                                    "DesktopNames", NULL, NULL);
+                if (names != NULL) {
+                        desktop_names = g_strjoinv (":", names);
 
-                      g_strfreev (names);
-              }
+                        g_strfreev (names);
+                }
         }
 
         g_key_file_free (keyfile);
@@ -2932,7 +2932,7 @@ set_up_session_language (GdmSession *self)
                 if (strcmp (environment[i], "LANG") != 0 &&
                     strcmp (environment[i], "LANGUAGE") != 0 &&
                     !g_str_has_prefix (environment[i], "LC_")) {
-                    continue;
+                        continue;
                 }
 
                 value = g_getenv (environment[i]);

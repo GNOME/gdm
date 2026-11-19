@@ -32,7 +32,7 @@ G_DECLARE_FINAL_TYPE (GdmDisplayStore, gdm_display_store, GDM, DISPLAY_STORE, GO
 
 typedef enum
 {
-         GDM_DISPLAY_STORE_ERROR_GENERAL
+        GDM_DISPLAY_STORE_ERROR_GENERAL
 } GdmDisplayStoreError;
 
 #define GDM_DISPLAY_STORE_ERROR gdm_display_store_error_quark ()

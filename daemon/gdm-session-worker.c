@@ -976,7 +976,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 
         return_value = PAM_SUCCESS;
 
- out:
+out:
         if (return_value != PAM_SUCCESS || responses == NULL) {
                 for (i = 0; i < number_of_messages; i++) {
                         gdm_session_worker_clear_pam_response (worker,
@@ -1002,13 +1002,13 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 static void
 gdm_session_worker_start_auditor (GdmSessionWorker *worker)
 {
-    /* Use dummy auditor so program session doesn't pollute user audit logs
-     */
-    if (worker->is_program_session) {
-            worker->auditor = gdm_session_auditor_new (worker->hostname,
-                                                       worker->display_device);
-            return;
-    }
+        /* Use dummy auditor so program session doesn't pollute user audit logs
+         */
+        if (worker->is_program_session) {
+                worker->auditor = gdm_session_auditor_new (worker->hostname,
+                                                           worker->display_device);
+                return;
+        }
 
 /* FIXME: it may make sense at some point to keep a list of
  * auditors, instead of assuming they are mutually exclusive
@@ -1386,7 +1386,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker    *worker,
                 worker->password_is_required = TRUE;
         }
 
- out:
+out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
                 return FALSE;
@@ -1462,7 +1462,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker  *worker,
         g_debug ("GdmSessionWorker: state AUTHENTICATED");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_AUTHENTICATED);
 
- out:
+out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
                 return FALSE;
@@ -1527,7 +1527,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker  *worker,
         g_debug ("GdmSessionWorker: state AUTHORIZED");
         gdm_session_worker_set_state (worker, GDM_SESSION_WORKER_STATE_AUTHORIZED);
 
- out:
+out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
                 return FALSE;
@@ -1653,7 +1653,7 @@ _lookup_passwd_info (const char  *username,
          * passwd_entry doesn't potentially get stomped on
          * by a PAM module
          */
- again:
+again:
         passwd_entry = NULL;
 #ifdef HAVE_POSIX_GETPWNAM_R
         errno = getpwnam_r (username,
@@ -1705,7 +1705,7 @@ _lookup_passwd_info (const char  *username,
         }
 
         ret = TRUE;
- out:
+out:
         if (aux_buffer != NULL) {
                 g_assert (aux_buffer_size > 0);
                 g_slice_free1 (aux_buffer_size, aux_buffer);
@@ -1819,7 +1819,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
 
         ret = TRUE;
 
- out:
+out:
         if (ret) {
                 g_debug ("GdmSessionWorker: state ACCREDITED");
                 ret = TRUE;
@@ -2346,7 +2346,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
         gdm_session_worker_watch_child (worker);
 
- out:
+out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
                 return FALSE;
@@ -2405,11 +2405,11 @@ set_up_for_new_vt (GdmSessionWorker *worker)
                                                      vt_string);
 
         if (worker->display_is_initial) {
-             worker->session_tty_fd = initial_vt_fd;
+                worker->session_tty_fd = initial_vt_fd;
         } else {
-             g_snprintf (tty_string, sizeof (tty_string), "/dev/tty%d", session_vt);
-             worker->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
-             close (initial_vt_fd);
+                g_snprintf (tty_string, sizeof (tty_string), "/dev/tty%d", session_vt);
+                worker->session_tty_fd = open (tty_string, O_RDWR | O_NOCTTY);
+                close (initial_vt_fd);
         }
 
         pam_set_item (worker->pam_handle, PAM_TTY, tty_string);
@@ -2471,7 +2471,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
                 worker->session_id = g_steal_pointer (&session_id);
         }
 
- out:
+out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
                 worker->session_vt = 0;

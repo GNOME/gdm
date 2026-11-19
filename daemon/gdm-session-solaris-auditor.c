@@ -93,59 +93,59 @@ gdm_session_solaris_auditor_report_user_accredited (GdmSessionAuditor *auditor)
 static void
 gdm_session_solaris_auditor_report_login (GdmSessionAuditor *auditor)
 {
-       GdmSessionSolarisAuditor *solaris_auditor;
-       adt_session_data_t *adt_ah;  /* Audit session handle */
-       adt_event_data_t *event;   /* Event to generate */
+        GdmSessionSolarisAuditor *solaris_auditor;
+        adt_session_data_t *adt_ah;  /* Audit session handle */
+        adt_event_data_t *event;   /* Event to generate */
 
-       solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
+        solaris_auditor = GDM_SESSION_SOLARIS_AUDITOR (auditor);
 
-       g_return_if_fail (solaris_auditor->username != NULL);
+        g_return_if_fail (solaris_auditor->username != NULL);
 
-       adt_ah = NULL;
-       if (adt_start_session (&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
-               syslog (LOG_AUTH | LOG_ALERT,
-                       "adt_start_session (ADT_login): %m");
-               goto cleanup;
-       }
+        adt_ah = NULL;
+        if (adt_start_session (&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
+                syslog (LOG_AUTH | LOG_ALERT,
+                        "adt_start_session (ADT_login): %m");
+                goto cleanup;
+        }
 
-       if (adt_set_user (adt_ah, solaris_auditor->uid,
-                         solaris_auditor->gid, solaris_auditor->uid,
-                         solaris_auditor->gid, NULL, ADT_USER) != 0) {
-               syslog (LOG_AUTH | LOG_ALERT,
-                       "adt_set_user (ADT_login, %s): %m",
-                       solaris_auditor->username);
-       }
+        if (adt_set_user (adt_ah, solaris_auditor->uid,
+                          solaris_auditor->gid, solaris_auditor->uid,
+                          solaris_auditor->gid, NULL, ADT_USER) != 0) {
+                syslog (LOG_AUTH | LOG_ALERT,
+                        "adt_set_user (ADT_login, %s): %m",
+                        solaris_auditor->username);
+        }
 
-       event = adt_alloc_event (adt_ah, ADT_login);
-       if (event == NULL) {
-               syslog (LOG_AUTH | LOG_ALERT, "adt_alloc_event (ADT_login): %m");
-       } else if (adt_put_event (event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
-               syslog (LOG_AUTH | LOG_ALERT,
-                       "adt_put_event (ADT_login, ADT_SUCCESS): %m");
-       }
+        event = adt_alloc_event (adt_ah, ADT_login);
+        if (event == NULL) {
+                syslog (LOG_AUTH | LOG_ALERT, "adt_alloc_event (ADT_login): %m");
+        } else if (adt_put_event (event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
+                syslog (LOG_AUTH | LOG_ALERT,
+                        "adt_put_event (ADT_login, ADT_SUCCESS): %m");
+        }
 
-       if (solaris_auditor->password_changed) {
+        if (solaris_auditor->password_changed) {
 
-               g_assert (solaris_auditor->password_change_initiated);
+                g_assert (solaris_auditor->password_change_initiated);
 
-               /* Also audit password change */
-               adt_free_event (event);
-               event = adt_alloc_event (adt_ah, ADT_passwd);
-               if (event == NULL) {
-                       syslog (LOG_AUTH | LOG_ALERT,
-                               "adt_alloc_event (ADT_passwd): %m");
-               } else if (adt_put_event (event, ADT_SUCCESS,
-                                         ADT_SUCCESS) != 0) {
+                /* Also audit password change */
+                adt_free_event (event);
+                event = adt_alloc_event (adt_ah, ADT_passwd);
+                if (event == NULL) {
+                        syslog (LOG_AUTH | LOG_ALERT,
+                                "adt_alloc_event (ADT_passwd): %m");
+                } else if (adt_put_event (event, ADT_SUCCESS,
+                                          ADT_SUCCESS) != 0) {
 
-                       syslog (LOG_AUTH | LOG_ALERT,
-                               "adt_put_event (ADT_passwd, ADT_SUCCESS): %m");
-               }
-       }
+                        syslog (LOG_AUTH | LOG_ALERT,
+                                "adt_put_event (ADT_passwd, ADT_SUCCESS): %m");
+                }
+        }
 
-       adt_free_event (event);
+        adt_free_event (event);
 
 cleanup:
-       solaris_auditor->audit_session_handle = adt_ah;
+        solaris_auditor->audit_session_handle = adt_ah;
 }
 
 static void

@@ -31,8 +31,8 @@ G_DECLARE_FINAL_TYPE (GdmDynamicUserStore, gdm_dynamic_user_store, GDM, DYNAMIC_
 
 typedef enum
 {
-  GDM_DYNAMIC_USER_STORE_ERROR_NO_FREE_UID,
-  GDM_DYNAMIC_USER_STORE_ERROR_NO_SUCH_GROUP,
+        GDM_DYNAMIC_USER_STORE_ERROR_NO_FREE_UID,
+        GDM_DYNAMIC_USER_STORE_ERROR_NO_SUCH_GROUP,
 } GdmDynamicUserStoreError;
 
 #define GDM_DYNAMIC_USER_STORE_ERROR (gdm_dynamic_user_store_error_quark ())

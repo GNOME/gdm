@@ -141,7 +141,7 @@ gdm_wait_on_and_disown_pid (int pid,
                 flags = 0;
                 num_tries = 0;
         }
- wait_again:
+wait_again:
         errno = 0;
         already_reaped = FALSE;
         ret = waitpid (pid, &status, flags);
@@ -195,7 +195,7 @@ gdm_wait_on_and_disown_pid (int pid,
 int
 gdm_wait_on_pid (int pid)
 {
-    return gdm_wait_on_and_disown_pid (pid, 0);
+        return gdm_wait_on_and_disown_pid (pid, 0);
 }
 
 int
@@ -940,7 +940,7 @@ static gint
 compare_str (gconstpointer a,
              gconstpointer b)
 {
-  return strcmp (*(const char **)a, *(const char **)b);
+        return strcmp (*(const char **)a, *(const char **)b);
 }
 
 static void
@@ -972,7 +972,7 @@ gdm_load_env_dir (GFile             *dir,
                 if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR &&
                     !g_file_info_get_is_hidden (info) &&
                     g_str_has_suffix (g_file_info_get_name (info), ".env")) {
-                  g_ptr_array_add (names, g_strdup (g_file_info_get_name (info)));
+                        g_ptr_array_add (names, g_strdup (g_file_info_get_name (info)));
                 }
 
                 g_clear_object (&info);
@@ -987,7 +987,7 @@ gdm_load_env_dir (GFile             *dir,
                 g_object_unref (file);
         }
 
- out:
+out:
         g_clear_pointer (&names, g_ptr_array_unref);
         g_clear_object (&enumerator);
 }

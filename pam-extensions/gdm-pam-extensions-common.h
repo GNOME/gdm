@@ -42,9 +42,9 @@ gdm_pam_extension_zero_buffer (void   *s,
                                size_t  n)
 {
 #if (defined(__GLIBC__) && defined(__GLIBC_MINOR__) && \
-    (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 25)) && \
-    (defined(_GNU_SOURCE) || defined(_DEFAULT_SOURCE))) || \
-    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
+        (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 25)) && \
+        (defined(_GNU_SOURCE) || defined(_DEFAULT_SOURCE))) || \
+        defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
         explicit_bzero (s, n);
 #else
         memset (s, 0, n);

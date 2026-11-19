@@ -860,7 +860,7 @@ get_dconf_system_profile_file (GError **error)
 
                 filename = g_build_filename (prefix, "dconf", "profile", profile, NULL);
                 if (g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
-                            return g_steal_pointer (&filename);
+                        return g_steal_pointer (&filename);
                 }
         } while ((prefix = *xdg_data_dirs++));
 

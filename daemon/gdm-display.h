@@ -53,9 +53,9 @@ struct _GdmDisplayClass
 
 typedef enum
 {
-         GDM_DISPLAY_ERROR_GENERAL,
-         GDM_DISPLAY_ERROR_GETTING_USER_INFO,
-         GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+        GDM_DISPLAY_ERROR_GENERAL,
+        GDM_DISPLAY_ERROR_GETTING_USER_INFO,
+        GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
 } GdmDisplayError;
 
 #define GDM_DISPLAY_ERROR gdm_display_error_quark ()

@@ -652,7 +652,7 @@ switch_to_compatible_user_session (GdmManager *manager,
 
         ret = TRUE;
 
- out:
+out:
         return ret;
 }
 
@@ -1227,7 +1227,7 @@ display_is_on_seat0 (GdmDisplay *display)
         g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
 
         if (g_strcmp0 (seat_id, "seat0") != 0) {
-            is_on_seat0 = FALSE;
+                is_on_seat0 = FALSE;
         }
 
         g_free (seat_id);
@@ -1269,7 +1269,7 @@ get_timed_login_details (GdmManager  *manager,
                 delay = 10;
         }
 
- out:
+out:
         if (enabled) {
                 g_debug ("GdmDisplay: Got timed login details for display: %d %s %d",
                          enabled,

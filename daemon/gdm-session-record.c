@@ -194,7 +194,7 @@ write_login_record (UTMP *record)
         pututxline (record);
         endutxent ();
 #elif defined(HAVE_LOGIN)
-	login (record);
+        login (record);
 #endif
 }
 

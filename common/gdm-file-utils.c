@@ -55,7 +55,7 @@ gdm_walk_dir_recursively (GFile                     *dir,
                                 return FALSE;
                         }
                 } else if (!cb (child, userdata, error)) {
-                          return FALSE;
+                        return FALSE;
                 }
         }
 

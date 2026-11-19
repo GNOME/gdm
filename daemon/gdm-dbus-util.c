@@ -28,13 +28,13 @@
 
 /* a subset of org.freedesktop.DBus interface, to be used by internal servers */
 static const char *dbus_introspection =
-"<node name=\"/org/freedesktop/DBus\">"
-"  <interface name=\"org.freedesktop.DBus\">"
-"    <method name=\"AddMatch\">"
-"      <arg name=\"match_rule\" type=\"s\" direction=\"in\" />"
-"    </method>"
-"  </interface>"
-"</node>";
+        "<node name=\"/org/freedesktop/DBus\">"
+        "  <interface name=\"org.freedesktop.DBus\">"
+        "    <method name=\"AddMatch\">"
+        "      <arg name=\"match_rule\" type=\"s\" direction=\"in\" />"
+        "    </method>"
+        "  </interface>"
+        "</node>";
 
 static void
 handle_bus_method (GDBusConnection       *connection,

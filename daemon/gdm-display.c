@@ -548,9 +548,9 @@ _gdm_display_set_supported_session_types (GdmDisplay         *self,
         GdmDisplayPrivate *priv;
         g_autofree char *supported_session_types_string = NULL;
 
-	if (supported_session_types != NULL) {
-          supported_session_types_string = g_strjoinv (":", (GStrv) supported_session_types);
-	}
+        if (supported_session_types != NULL) {
+                supported_session_types_string = g_strjoinv (":", (GStrv) supported_session_types);
+        }
 
         priv = gdm_display_get_instance_private (self);
         g_debug ("GdmDisplay: supported session types: %s", supported_session_types_string);
@@ -1158,7 +1158,7 @@ kernel_cmdline_initial_setup_argument (const gchar  *contents,
         regex = g_regex_new ("\\bgnome.initial-setup=([^\\s]*)\\b", 0, 0, error);
 
         if (!regex) {
-            return FALSE;
+                return FALSE;
         }
 
         if (!g_regex_match (regex, contents, 0, &match_info)) {

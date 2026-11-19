@@ -461,10 +461,10 @@ udev_is_settled (GdmLocalDisplayFactory *factory)
                         boot_vga = g_udev_device_get_sysfs_attr_as_int (pci_device, "boot_vga");
 
                         if (boot_vga == 1) {
-                                 g_debug ("GdmLocalDisplayFactory: Found primary PCI graphics adapter, proceeding.");
-                                 factory->seat0_has_boot_up_graphics = TRUE;
-                                 is_settled = TRUE;
-                                 break;
+                                g_debug ("GdmLocalDisplayFactory: Found primary PCI graphics adapter, proceeding.");
+                                factory->seat0_has_boot_up_graphics = TRUE;
+                                is_settled = TRUE;
+                                break;
                         }
                 }
 
@@ -970,8 +970,8 @@ on_vt_changed (GIOChannel             *source,
                                 g_debug ("GdmLocalDisplayFactory: switched to registered user session, so reaping login screen in %d seconds",
                                          WAIT_TO_FINISH_TIMEOUT);
                                 if (factory->wait_to_finish_timeout_id != 0) {
-                                         g_debug ("GdmLocalDisplayFactory: deferring previous login screen clean up operation");
-                                         g_source_remove (factory->wait_to_finish_timeout_id);
+                                        g_debug ("GdmLocalDisplayFactory: deferring previous login screen clean up operation");
+                                        g_source_remove (factory->wait_to_finish_timeout_id);
                                 }
 
                                 factory->wait_to_finish_timeout_id = g_timeout_add_seconds (WAIT_TO_FINISH_TIMEOUT,
