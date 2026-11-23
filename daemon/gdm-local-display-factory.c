@@ -622,7 +622,8 @@ ensure_display_for_seat (GdmLocalDisplayFactory *factory,
 
 static void
 delete_display (GdmLocalDisplayFactory *factory,
-                const char             *seat_id) {
+                const char             *seat_id)
+{
 
         GdmDisplayStore *store;
 

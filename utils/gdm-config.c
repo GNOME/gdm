@@ -213,7 +213,8 @@ smartcard_option_is_valid (const char *option_key,
 }
 
 static GdmConfigCommand
-parse_config_command (const char *command) {
+parse_config_command (const char *command)
+{
         if (g_str_equal (command, "help")) {
                 return COMMAND_HELP;
         } else if (g_str_equal (command, "password")) {
@@ -1022,7 +1023,8 @@ ensure_gdm_config_dconf_profile (GError **error)
         return TRUE;
 }
 
-static char *schema_to_key (const char *schema)
+static char *
+schema_to_key (const char *schema)
 {
         g_auto (GStrv) split = NULL;
 
@@ -1789,7 +1791,8 @@ get_boolean_string (gboolean val)
 }
 
 static const char *
-get_gdm_setting_state (GdmAuthType auth_type) {
+get_gdm_setting_state (GdmAuthType auth_type)
+{
         g_autoptr (GSettings) login_settings = NULL;
         gboolean enabled;
 
@@ -1818,7 +1821,8 @@ get_gdm_setting_state (GdmAuthType auth_type) {
 }
 
 static char *
-get_smartcard_option (const char *option_key) {
+get_smartcard_option (const char *option_key)
+{
         g_autoptr (GSettings) smartcard_settings = NULL;
         g_autofree char *option_value = NULL;
 
