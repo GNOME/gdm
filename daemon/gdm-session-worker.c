@@ -240,7 +240,7 @@ script_execute (const gchar  *file,
         {
                 char **new_argv;
 
-                new_argv = g_new0 (gchar*, argc + 2); /* /bin/sh and NULL */
+                new_argv = g_new0 (gchar *, argc + 2); /* /bin/sh and NULL */
 
                 new_argv[0] = (char *) "/bin/sh";
                 new_argv[1] = (char *) file;
@@ -264,7 +264,7 @@ static char *
 my_strchrnul (const char *str,
               char        c)
 {
-        char *p = (char*) str;
+        char *p = (char *) str;
         while (*p && (*p != c)) {
                 ++p;
         }

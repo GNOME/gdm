@@ -33,7 +33,7 @@ gdm_walk_dir_recursively (GFile                     *dir,
         GFile *child;
 
         enumerator = g_file_enumerate_children (dir,
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE","
+                                                G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                                 NULL, error);
@@ -190,7 +190,7 @@ recursive_copy_dir (GFile   *source,
         }
 
         enumerator = g_file_enumerate_children (source,
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE","
+                                                G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                                 NULL, error);

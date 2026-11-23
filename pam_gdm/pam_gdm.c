@@ -40,7 +40,7 @@ gdm_pam_zero_buffer (void   *s,
         explicit_bzero (s, n);
 #else
         memset (s, 0, n);
-        __asm__ __volatile__ ("" : : "r"(s) : "memory");
+        __asm__ __volatile__ ("" : : "r" (s) : "memory");
 #endif
 }
 
