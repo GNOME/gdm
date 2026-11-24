@@ -78,15 +78,23 @@ lookup_by_autologin_user (const char *id,
 }
 
 static GdmDisplay *
-gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
-                                           const char              *autologin_user,
-                                           const char              *remote_id,
-                                           const char              *remote_hostname)
+gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory  *factory,
+                                           const char               *autologin_user,
+                                           const char               *remote_id,
+                                           const char               *remote_hostname,
+                                           GError                  **error)
 {
         g_autoptr (GdmDisplay) display = NULL;
         GdmDisplayStore *store;
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        if (remote_id != NULL &&
+            gdm_display_store_find (store, lookup_by_remote_id, (gpointer) remote_id) != NULL) {
+                g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
+                             "A remote display with remote ID %s already exists", remote_id);
+                return NULL;
+        }
 
         if (autologin_user != NULL && remote_id != NULL) {
                 GdmDisplay *existing_display;
@@ -117,6 +125,8 @@ gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
 
         if (!gdm_display_prepare (display)) {
                 gdm_display_unmanage (display);
+                g_set_error_literal (error, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                                     "Error creating remote display");
                 return NULL;
         }
 
@@ -225,6 +235,7 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
         g_autofree char *remote_id = NULL;
         g_autofree char *remote_hostname = NULL;
         g_autofree char *preauthenticated_user = NULL;
+        g_autoptr (GError) error = NULL;
         GdmDisplay *display;
 
         g_variant_lookup (properties, "remote-id", "o", &remote_id);
@@ -242,12 +253,10 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
         display = gdm_remote_display_factory_create_display (factory,
                                                              preauthenticated_user,
                                                              remote_id,
-                                                             remote_hostname);
+                                                             remote_hostname,
+                                                             &error);
         if (display == NULL) {
-                g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_FAILED,
-                                                               "Error creating remote display");
+                g_dbus_method_invocation_return_gerror (invocation, error);
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
@@ -273,12 +282,13 @@ handle_create_user_display (GdmDBusRemoteDisplayFactory *skeleton,
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        display = gdm_remote_display_factory_create_display (factory, user, NULL, NULL);
+        display = gdm_remote_display_factory_create_display (factory,
+                                                             user,
+                                                             NULL,
+                                                             NULL,
+                                                             &error);
         if (display == NULL) {
-                g_dbus_method_invocation_return_error (invocation,
-                                                       G_DBUS_ERROR,
-                                                       G_DBUS_ERROR_FAILED,
-                                                       "Error creating remote display");
+                g_dbus_method_invocation_return_gerror (invocation, error);
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 

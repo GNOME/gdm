@@ -23,6 +23,8 @@
           the created :ref:`org.gnome.DisplayManager.RemoteDisplay`.
           Note that while the ID is formatted as a D-Bus object path, no actual
           D-Bus object is exposed at this path.
+          The call fails if a remote display with this ``remote-id`` already
+          exists, including when attaching to an existing user display.
 
         * ``hostname`` (``s``)
 
