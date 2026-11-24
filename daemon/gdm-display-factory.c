@@ -187,8 +187,8 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
 
         method = g_dbus_method_invocation_get_method_name (invocation);
-        if (g_strcmp0 (method, "CreateUserDisplay") != 0 &&
-            g_strcmp0 (method, "DestroyUserDisplay") != 0)
+        if (!g_str_equal (method, "CreateUserDisplay") &&
+            !g_str_equal (method, "DestroyUserDisplay"))
                 return TRUE;
 
         if (!ensure_polkit_authority (factory, &local_error)) {
