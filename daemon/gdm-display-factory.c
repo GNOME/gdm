@@ -201,7 +201,7 @@ gdm_display_factory_authorize_manage_user_displays (GdmDisplayFactory      *fact
         priv = gdm_display_factory_get_instance_private (factory);
 
         parameters = g_dbus_method_invocation_get_parameters (invocation);
-        g_variant_get (parameters, "(s)", &user);
+        g_variant_get (parameters, "(&s)", &user);
         details = polkit_details_new ();
         polkit_details_insert (details, "user", user);
 
