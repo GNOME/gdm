@@ -49,6 +49,22 @@ static gpointer remote_display_factory_object = NULL;
 G_DEFINE_TYPE (GdmRemoteDisplayFactory, gdm_remote_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
 static gboolean
+lookup_by_remote_id (const char *id,
+                     GdmDisplay *display,
+                     gpointer    user_data)
+{
+        const char *remote_id = user_data;
+        g_autofree char *display_remote_id = NULL;
+
+        if (!GDM_IS_REMOTE_DISPLAY (display))
+                return FALSE;
+
+        display_remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (display));
+
+        return g_strcmp0 (remote_id, display_remote_id) == 0;
+}
+
+static gboolean
 lookup_by_autologin_user (const char *id,
                           GdmDisplay *display,
                           gpointer    user_data)
@@ -107,46 +123,97 @@ gdm_remote_display_factory_create_display (GdmRemoteDisplayFactory *factory,
         return display;
 }
 
+typedef struct
+{
+        GDBusMethodInvocation   *invocation;
+        GdmRemoteDisplayFactory *factory;
+        char                    *remote_id;
+} PendingCreateDisplay;
+
+static void complete_invocation_when_exported (GdmRemoteDisplayFactory *factory,
+                                               GdmDisplay              *display,
+                                               GDBusMethodInvocation   *invocation);
+
+static void
+pending_create_display_free (PendingCreateDisplay *pending)
+{
+        g_clear_object (&pending->factory);
+        g_free (pending->remote_id);
+        g_free (pending);
+}
+
 static void
 on_display_disposed (gpointer data,
                      GObject *display)
 {
-        GDBusMethodInvocation *invocation = data;
+        PendingCreateDisplay *pending = data;
+        GDBusMethodInvocation *invocation = pending->invocation;
+        GdmRemoteDisplayFactory *factory = pending->factory;
+        const char *remote_id = pending->remote_id;
+        GdmDisplay *replacement;
+        GdmDisplayStore *store;
+
+        /* Direct login replaces the prepared display with a user display. */
+        if (remote_id != NULL) {
+                store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+                replacement = gdm_display_store_find (store,
+                                                      lookup_by_remote_id,
+                                                      (gpointer) remote_id);
+                if (replacement != NULL && replacement != (GdmDisplay *) display) {
+                        complete_invocation_when_exported (factory,
+                                                           replacement,
+                                                           invocation);
+                        pending_create_display_free (pending);
+                        return;
+                }
+        }
 
         g_dbus_method_invocation_return_error_literal (invocation,
                                                        G_DBUS_ERROR,
                                                        G_DBUS_ERROR_FAILED,
                                                        "Display destroyed before being exported");
+        pending_create_display_free (pending);
 }
 
 static void
 on_display_exported (GdmDisplay            *display,
                      GParamSpec            *pspec,
-                     GDBusMethodInvocation *invocation)
+                     PendingCreateDisplay  *pending)
 {
+        g_autofree char *id = NULL;
+
         if (!gdm_display_is_exported (display))
                 return;
 
-        g_signal_handlers_disconnect_by_func (display, on_display_exported, invocation);
-        g_object_weak_unref (G_OBJECT (display), on_display_disposed, invocation);
+        g_signal_handlers_disconnect_by_func (display, on_display_exported, pending);
+        g_object_weak_unref (G_OBJECT (display), on_display_disposed, pending);
 
-        g_dbus_method_invocation_return_value (invocation, NULL);
+        gdm_display_get_id (display, &id, NULL);
+        g_dbus_method_invocation_return_value (pending->invocation, NULL);
+        pending_create_display_free (pending);
 }
 
 static void
-complete_invocation_when_exported (GdmDisplay            *display,
-                                   GDBusMethodInvocation *invocation)
+complete_invocation_when_exported (GdmRemoteDisplayFactory *factory,
+                                   GdmDisplay              *display,
+                                   GDBusMethodInvocation   *invocation)
 {
+        PendingCreateDisplay *pending;
+
         if (gdm_display_is_exported (display)) {
                 g_dbus_method_invocation_return_value (invocation, NULL);
                 return;
         }
 
-        g_signal_connect_object (display, "notify::is-exported",
-                                 G_CALLBACK (on_display_exported),
-                                 invocation,
-                                 0);
-        g_object_weak_ref (G_OBJECT (display), on_display_disposed, invocation);
+        pending = g_new0 (PendingCreateDisplay, 1);
+        pending->invocation = invocation;
+        pending->factory = g_object_ref (factory);
+        pending->remote_id = gdm_remote_display_get_remote_id (GDM_REMOTE_DISPLAY (display));
+
+        g_signal_connect (display, "notify::is-exported",
+                          G_CALLBACK (on_display_exported),
+                          pending);
+        g_object_weak_ref (G_OBJECT (display), on_display_disposed, pending);
 }
 
 static gboolean
@@ -184,7 +251,7 @@ handle_create_remote_display (GdmDBusRemoteDisplayFactory *skeleton,
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        complete_invocation_when_exported (display, invocation);
+        complete_invocation_when_exported (factory, display, invocation);
 
         return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
