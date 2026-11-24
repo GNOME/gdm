@@ -54,9 +54,22 @@
 
         Available options:
 
+        * ``id`` (``o``)
+
+          The display ID returned by CreateDisplay, not the ``remote-id``
+          option passed to it. The display must be a remote display.
+
         * ``user`` (``s``)
 
-          Required. The username whose display should be destroyed.
+          The username whose display should be destroyed.
+
+        * ``remote-id`` (``o``)
+
+          The unique remote ID passed to CreateDisplay.
+          The first matching remote display is destroyed. The call fails
+          if no remote display matches.
+
+        Exactly one of ``id``, ``remote-id`` or ``user`` must be provided.
     -->
     <method name="DestroyDisplay">
       <arg name="properties" direction="in" type="a{sv}"/>

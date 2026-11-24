@@ -312,6 +312,29 @@ lookup_by_user (const char *id,
 }
 
 gboolean
+gdm_display_factory_destroy_display_by_id (GdmDisplayFactory  *factory,
+                                           const char         *id,
+                                           GType               display_type,
+                                           GError            **error)
+{
+        GdmDisplay *display;
+        GdmDisplayStore *store;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY_FACTORY (factory), FALSE);
+
+        store = gdm_display_factory_get_display_store (factory);
+        display = gdm_display_store_lookup (store, id);
+        if (display == NULL ||
+            !G_TYPE_CHECK_INSTANCE_TYPE (display, display_type)) {
+                g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
+                             "No display with ID %s belongs to this factory", id);
+                return FALSE;
+        }
+
+        return gdm_display_factory_destroy_display (display, error);
+}
+
+gboolean
 gdm_display_factory_destroy_display_by_user (GdmDisplayFactory  *factory,
                                              const char         *user,
                                              GType               display_type,

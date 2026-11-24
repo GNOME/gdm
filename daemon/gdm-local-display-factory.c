@@ -1269,22 +1269,34 @@ handle_destroy_display (GdmDBusLocalDisplayFactory *skeleton,
                         GdmLocalDisplayFactory     *factory)
 {
         g_autoptr (GError) error = NULL;
+        g_autofree char *id = NULL;
         g_autofree char *user = NULL;
+        gboolean success;
 
+        g_variant_lookup (properties, "id", "o", &id);
         g_variant_lookup (properties, "user", "s", &user);
 
-        if (user == NULL) {
+        if ((id == NULL) == (user == NULL)) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_INVALID_ARGS,
-                                                               "Missing user in properties");
+                                                               "Need exactly one of id or user in properties");
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        if (!gdm_display_factory_destroy_display_by_user (GDM_DISPLAY_FACTORY (factory),
-                                                          user,
-                                                          GDM_TYPE_LOCAL_DISPLAY,
-                                                          &error)) {
+        if (id != NULL) {
+                success = gdm_display_factory_destroy_display_by_id (GDM_DISPLAY_FACTORY (factory),
+                                                                     id,
+                                                                     GDM_TYPE_LOCAL_DISPLAY,
+                                                                     &error);
+        } else {
+                success = gdm_display_factory_destroy_display_by_user (GDM_DISPLAY_FACTORY (factory),
+                                                                       user,
+                                                                       GDM_TYPE_LOCAL_DISPLAY,
+                                                                       &error);
+        }
+
+        if (!success) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }

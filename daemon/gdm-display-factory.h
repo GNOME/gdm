@@ -61,6 +61,10 @@ gboolean                   gdm_display_factory_on_user_display_creation (GdmDisp
                                                                          GError            **error);
 gboolean                   gdm_display_factory_destroy_display (GdmDisplay  *display,
                                                                  GError     **error);
+gboolean                   gdm_display_factory_destroy_display_by_id (GdmDisplayFactory  *factory,
+                                                                       const char         *id,
+                                                                       GType               display_type,
+                                                                       GError            **error);
 gboolean                   gdm_display_factory_destroy_display_by_user (GdmDisplayFactory  *factory,
                                                                          const char         *user,
                                                                          GType               display_type,

@@ -39,9 +39,16 @@
 
         Available options:
 
+        * ``id`` (``o``)
+
+          The display ID returned by CreateDisplay. The display must be
+          a local display.
+
         * ``user`` (``s``)
 
-          Required. The username whose display should be destroyed.
+          The username whose display should be destroyed.
+
+        Exactly one of ``id`` or ``user`` must be provided.
     -->
     <method name="DestroyDisplay">
       <arg name="properties" direction="in" type="a{sv}"/>

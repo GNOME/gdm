@@ -285,28 +285,65 @@ handle_create_display (GdmDBusRemoteDisplayFactory *skeleton,
 }
 
 static gboolean
+gdm_remote_display_factory_destroy_display_by_remote_id (GdmRemoteDisplayFactory  *factory,
+                                                         const char               *remote_id,
+                                                         GError                  **error)
+{
+        GdmDisplayStore *store;
+        GdmDisplay *display;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        display = gdm_display_store_find (store, lookup_by_remote_id, (gpointer) remote_id);
+        if (display == NULL) {
+                g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
+                             "No remote display with remote ID %s exists", remote_id);
+                return FALSE;
+        }
+
+        return gdm_display_factory_destroy_display (display, error);
+}
+
+static gboolean
 handle_destroy_display (GdmDBusRemoteDisplayFactory *skeleton,
                         GDBusMethodInvocation       *invocation,
                         GVariant                    *properties,
                         GdmRemoteDisplayFactory     *factory)
 {
         g_autoptr (GError) error = NULL;
+        g_autofree char *id = NULL;
+        g_autofree char *remote_id = NULL;
         g_autofree char *user = NULL;
+        gboolean success;
 
+        g_variant_lookup (properties, "id", "o", &id);
+        g_variant_lookup (properties, "remote-id", "o", &remote_id);
         g_variant_lookup (properties, "user", "s", &user);
 
-        if (user == NULL) {
+        if ((id != NULL) + (remote_id != NULL) + (user != NULL) != 1) {
                 g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_INVALID_ARGS,
-                                                               "Missing user in properties");
+                                                               "Need exactly one of id, remote-id or user in properties");
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
 
-        if (!gdm_display_factory_destroy_display_by_user (GDM_DISPLAY_FACTORY (factory),
-                                                          user,
-                                                          GDM_TYPE_REMOTE_DISPLAY,
-                                                          &error)) {
+        if (id != NULL) {
+                success = gdm_display_factory_destroy_display_by_id (GDM_DISPLAY_FACTORY (factory),
+                                                                     id,
+                                                                     GDM_TYPE_REMOTE_DISPLAY,
+                                                                     &error);
+        } else if (remote_id != NULL) {
+                success = gdm_remote_display_factory_destroy_display_by_remote_id (factory,
+                                                                                   remote_id,
+                                                                                   &error);
+        } else {
+                success = gdm_display_factory_destroy_display_by_user (GDM_DISPLAY_FACTORY (factory),
+                                                                       user,
+                                                                       GDM_TYPE_REMOTE_DISPLAY,
+                                                                       &error);
+        }
+
+        if (!success) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
                 return G_DBUS_METHOD_INVOCATION_HANDLED;
         }
